@@ -12,8 +12,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="bin\Debug"
-			IntermediateDirectory="bin\Debug"
+			OutputDirectory="bin\vc71\Debug"
+			IntermediateDirectory="build\vc71\Debug"
 			ConfigurationType="2"
 			CharacterSet="2">
 			<Tool
@@ -39,7 +39,7 @@
 				GenerateDebugInformation="TRUE"
 				ProgramDatabaseFile="$(OutDir)/QuantlibWrapper.pdb"
 				SubSystem="2"
-				ImportLibrary="$(OutDir)/NQuantlibc.lib"
+				ImportLibrary="$(OutDir)/NQuantLibc.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>
@@ -64,8 +64,8 @@
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
-			OutputDirectory="bin\Release"
-			IntermediateDirectory="bin\Release"
+			OutputDirectory="bin\vc71\Release"
+			IntermediateDirectory="build\vc71\Release"
 			ConfigurationType="2"
 			CharacterSet="2">
 			<Tool
@@ -84,14 +84,14 @@
 				Name="VCCustomBuildTool"/>
 			<Tool
 				Name="VCLinkerTool"
-				OutputFile="$(OutDir)/NQuantlibc.dll"
+				OutputFile="$(OutDir)/NQuantLibc.dll"
 				LinkIncremental="1"
 				AdditionalLibraryDirectories="$(QL_DIR)\lib"
 				GenerateDebugInformation="TRUE"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				ImportLibrary="$(OutDir)/NQuantlibc.lib"
+				ImportLibrary="$(OutDir)/NQuantLibc.lib"
 				TargetMachine="1"/>
 			<Tool
 				Name="VCMIDLTool"/>

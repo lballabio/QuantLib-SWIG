@@ -36,7 +36,7 @@
                     NoStdLib = "false"
                     NoWarn = ""
                     Optimize = "false"
-                    OutputPath = "bin\Debug\"
+                    OutputPath = "bin\vc71\Debug\"
                     RegisterForComInterop = "false"
                     RemoveIntegerChecks = "false"
                     TreatWarningsAsErrors = "false"
@@ -56,7 +56,7 @@
                     NoStdLib = "false"
                     NoWarn = ""
                     Optimize = "true"
-                    OutputPath = "bin\Release\"
+                    OutputPath = "bin\vc71\Release\"
                     RegisterForComInterop = "false"
                     RemoveIntegerChecks = "false"
                     TreatWarningsAsErrors = "false"
@@ -324,6 +324,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "BlackVarianceCurve.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "BlackVarianceSurface.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -385,6 +390,11 @@
                 />
                 <File
                     RelPath = "BRLCurrency.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "Business252.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -699,6 +709,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "DefaultProbabilityHelperVector.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "DefaultProbabilityTermStructure.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -994,162 +1009,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EuriborSwapFixA.cs"
+                    RelPath = "EuriborSwapIfrFix.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EuriborSwapFixA10Y.cs"
+                    RelPath = "EuriborSwapIsdaFixA.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EuriborSwapFixA12Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA15Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA1Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA20Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA25Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA2Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA30Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA3Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA4Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA5Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA6Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA7Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA8Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixA9Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR10Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR12Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR15Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR1Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR20Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR25Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR2Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR30Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR3Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR4Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR5Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR6Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR7Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR8Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EuriborSwapFixIFR9Y.cs"
+                    RelPath = "EuriborSwapIsdaFixB.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -1229,242 +1099,17 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EurliborSwapFixA.cs"
+                    RelPath = "EurLiborSwapIfrFix.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EurliborSwapFixA10Y.cs"
+                    RelPath = "EurLiborSwapIsdaFixA.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "EurliborSwapFixA12Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA15Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA1Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA20Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA25Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA2Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA30Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA3Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA4Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA5Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA6Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA7Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA8Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixA9Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB10Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB12Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB15Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB1Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB20Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB25Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB2Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB30Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB3Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB4Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB5Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB6Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB7Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB8Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixB9Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR10Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR12Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR15Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR1Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR20Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR25Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR2Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR30Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR3Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR4Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR5Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR6Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR7Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR8Y.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
-                    RelPath = "EurliborSwapFixIFR9Y.cs"
+                    RelPath = "EurLiborSwapIsdaFixB.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -1750,6 +1395,11 @@
                 />
                 <File
                     RelPath = "GeneralizedBlackScholesProcess.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "GeometricBrownianMotionProcess.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -2419,6 +2069,11 @@
                     BuildAction = "Compile"
                 />
                 <File
+                    RelPath = "PiecewiseFlatHazardRate.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
                     RelPath = "PKRCurrency.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -2660,6 +2315,11 @@
                 />
                 <File
                     RelPath = "SEKCurrency.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "SEKLibor.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
@@ -2974,11 +2634,6 @@
                     BuildAction = "Compile"
                 />
                 <File
-                    RelPath = "SWIGTYPE_p_std__vectorT_unsigned_int_t.cs"
-                    SubType = "Code"
-                    BuildAction = "Compile"
-                />
-                <File
                     RelPath = "SWIGTYPE_p_StochasticProcess.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
@@ -3130,6 +2785,11 @@
                 />
                 <File
                     RelPath = "UnitedStates.cs"
+                    SubType = "Code"
+                    BuildAction = "Compile"
+                />
+                <File
+                    RelPath = "UnsignedIntVector.cs"
                     SubType = "Code"
                     BuildAction = "Compile"
                 />
