@@ -1849,6 +1849,10 @@ class DeltaVolQuote : public Quote {
     enum DeltaType { Spot, Fwd, PaSpot, PaFwd };
     enum AtmType { AtmNull, AtmSpot, AtmFwd, AtmDeltaNeutral,
                    AtmVegaMax, AtmGammaMax, AtmPutCall50 };
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    DeltaVolQuote();
+#endif
 };
 
 %template(DeltaVolQuote) boost::shared_ptr<DeltaVolQuote>;
