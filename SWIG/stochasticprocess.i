@@ -30,9 +30,28 @@ using QuantLib::StochasticProcess;
 %}
 
 %ignore StochasticProcess;
-class StochasticProcess {};
+class StochasticProcess {
+  public:
+    virtual Size size() const = 0;
+    virtual Size factors() const;
+    virtual Array initialValues() const = 0;
+    virtual Array drift(Time t, const Array& x) const = 0;
+    virtual Matrix diffusion(Time t, const Array& x) const = 0;
+    virtual Array expectation(Time t0, const Array& x0, Time dt) const;
+    virtual Matrix stdDeviation(Time t0, const Array& x0, Time dt) const;
+    virtual Matrix covariance(Time t0, const Array& x0, Time dt) const;
+    virtual Array evolve(Time t0, const Array& x0,
+                         Time dt, const Array& dw) const;
+};
 %template(StochasticProcess) boost::shared_ptr<StochasticProcess>;
 IsObservable(boost::shared_ptr<StochasticProcess>);
+
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<StochasticProcess> )
+#endif
+%template(StochasticProcessVector)
+std::vector<boost::shared_ptr<StochasticProcess> >;
+
 
 %{
 using QuantLib::StochasticProcess1D;
@@ -393,16 +412,6 @@ class GsrProcessPtr : public StochasticProcess1DPtr {
         return boost::dynamic_pointer_cast<GsrProcess>(proc);
     }
 %}
-
-// allow use of diffusion process vectors
-#if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<StochasticProcess> )
-#endif
-%template(StochasticProcessVector)
-std::vector<boost::shared_ptr<StochasticProcess> >;
-
-typedef std::vector<boost::shared_ptr<StochasticProcess> >
-StochasticProcessVector;
 
 
 #endif
