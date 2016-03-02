@@ -413,8 +413,107 @@ class JavaCostFunction {
   public:
     JavaCostFunction(CostFunctionDelegate* delegate);
 
-    virtual ~JavaCostFunction();	
-    virtual Real value(const Array& x ) const;	
+    virtual ~JavaCostFunction();
+    virtual Real value(const Array& x ) const;
+    virtual Disposable<Array> values(const Array& x) const;
+
+  private:
+    CostFunctionDelegate* delegate_;
+};
+
+%feature("director") CostFunctionDelegate;
+
+class CostFunctionDelegate {
+  public:
+    virtual ~CostFunctionDelegate();
+
+    virtual Real value(const Array& x) const;
+    virtual Array values(const Array& x) const;
+};
+
+#elif defined(SWIGCSHARP)
+
+%module(directors="1") NQuantLibc
+%rename(call) operator();
+%{
+class UnaryFunctionDelegate {
+  public:
+    virtual ~UnaryFunctionDelegate() {}
+    virtual Real value(Real x) const {
+        QL_FAIL("implementation of UnaryFunctionDelegate.value is missing");
+    };
+};
+
+class UnaryFunction : public std::unary_function<Real, Real> {
+  public:
+    UnaryFunction(UnaryFunctionDelegate* delegate)
+    : delegate_(delegate) { }
+
+    virtual ~UnaryFunction() { }
+
+    Real operator()(Real x) const {
+        return delegate_->value(x);
+    }
+
+  private:
+    UnaryFunctionDelegate* delegate_;
+};
+%}
+
+class UnaryFunction {
+  public:
+    UnaryFunction(UnaryFunctionDelegate*);
+    Real operator()(Real x) const;
+};
+
+%feature("director") UnaryFunctionDelegate;
+
+class UnaryFunctionDelegate {
+  public:
+    virtual ~UnaryFunctionDelegate();
+    virtual Real value(Real x) const;
+};
+
+%{
+class CostFunctionDelegate {
+  public:
+    virtual ~CostFunctionDelegate() {}
+    virtual Real value(const Array& x) const {
+      QL_FAIL("implementation of CostFunctionDelegate.value is missing");
+    }
+
+    virtual Array values(const Array& x) const {
+      QL_FAIL("implementation of CostFunctionDelegate.values is missing");
+    }
+};
+
+class DotNetCostFunction : public CostFunction {
+  public:
+    DotNetCostFunction(CostFunctionDelegate* delegate)
+    : delegate_(delegate) { }
+
+    virtual ~DotNetCostFunction(){ }
+
+    virtual Real value(const Array& x ) const{
+      return delegate_->value(x);
+    }
+
+    virtual Disposable<Array> values(const Array& x) const {
+      Array retVal = delegate_->values(x);
+      return retVal;
+    }
+
+  private:
+    CostFunctionDelegate* delegate_;
+};
+%}
+
+class DotNetCostFunction {
+  public:
+    DotNetCostFunction(CostFunctionDelegate* delegate);
+
+    virtual ~DotNetCostFunction();
+    virtual Real value(const Array& x ) const;
     virtual Disposable<Array> values(const Array& x) const;
 
   private:
