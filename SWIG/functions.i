@@ -433,7 +433,6 @@ class CostFunctionDelegate {
 
 #elif defined(SWIGCSHARP)
 
-%module(directors="1") NQuantLibc
 %rename(call) operator();
 %{
 class UnaryFunctionDelegate {
