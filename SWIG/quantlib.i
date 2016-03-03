@@ -21,7 +21,7 @@
 #if defined(SWIGRUBY)
 %module QuantLibc
 #elif defined(SWIGCSHARP)
-%module NQuantLibc
+%module(directors="1") NQuantLibc
 #elif defined(SWIGJAVA)
 %module(directors="1") QuantLib
 #else
