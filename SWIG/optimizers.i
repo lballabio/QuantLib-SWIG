@@ -104,18 +104,7 @@ class SolverName {
             UnaryFunction f(function);
             return self->solve(f, xAccuracy, guess, xMin, xMax);
         }
-        #elif defined(SWIGJAVA)
-        Real solve(UnaryFunctionDelegate* function, Real xAccuracy,
-                   Real guess, Real step) {
-            UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, step);
-        }
-        Real solve(UnaryFunctionDelegate* function, Real xAccuracy,
-                   Real guess, Real xMin, Real xMax) {
-            UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, xMin, xMax);
-        }
-		#elif defined(SWIGCSHARP)
+        #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
         Real solve(UnaryFunctionDelegate* function, Real xAccuracy,
                    Real guess, Real step) {
             UnaryFunction f(function);
@@ -324,7 +313,8 @@ using QuantLib::Problem;
 }
 #elif defined(SWIGJAVA)
 %extend Optimizer {
-    Array solve(CostFunctionDelegate* function, Constraint& c, OptimizationMethod& m,
+    Array solve(CostFunctionDelegate* function,
+                Constraint& c, OptimizationMethod& m,
                 EndCriteria &e, Array &iv) {
         JavaCostFunction f(function);
         Problem p(f,c,iv);
@@ -334,7 +324,8 @@ using QuantLib::Problem;
 }
 #elif defined(SWIGCSHARP)
 %extend Optimizer {
-    Array solve(CostFunctionDelegate* function, Constraint& c, OptimizationMethod& m,
+    Array solve(CostFunctionDelegate* function,
+                Constraint& c, OptimizationMethod& m,
                 EndCriteria &e, Array &iv) {
         DotNetCostFunction f(function);
         Problem p(f,c,iv);
