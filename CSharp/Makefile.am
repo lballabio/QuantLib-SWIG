@@ -2,7 +2,7 @@
 CLEANFILES = cpp/quantlib_wrap.* csharp/*.cs *.so *.dll \
              examples/*.so examples/*.dll examples/*.exe
 
-BUILT_SOURCES = cpp/quantlib_wrap.cpp
+BUILT_SOURCES = cpp/quantlib_wrap.cpp cpp/quantlib_wrap.h
 
 if HAVE_MCS
 if BUILD_MCS
@@ -36,15 +36,16 @@ examples/NQuantLib.dll: NQuantLib.dll
 endif
 endif
 
-cpp/quantlib_wrap.cpp: ../SWIG/*.i
+$(BUILT_SOURCES): ../SWIG/*.i
 	$(SWIG) -csharp -c++ -outdir csharp \
             -namespace QuantLib -o cpp/quantlib_wrap.cpp ../SWIG/quantlib.i
 
-dist-hook: cpp/quantlib_wrap.cpp
+dist-hook: $(BUILT_SOURCES)
 	mkdir -p $(distdir)/cpp
 	cp ./cpp/*.vcproj $(distdir)/cpp
 	cp ./cpp/*.vcxproj $(distdir)/cpp
 	cp ./cpp/quantlib_wrap.cpp $(distdir)/cpp
+	cp ./cpp/quantlib_wrap.h $(distdir)/cpp
 	cp ./cpp/QuantlibWrapper.h ./cpp/QuantlibWrapper.cpp $(distdir)/cpp
 	cp ./cpp/stdafx.h $(distdir)/cpp
 	mkdir -p $(distdir)/csharp
