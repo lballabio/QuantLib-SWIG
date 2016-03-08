@@ -114,6 +114,12 @@ class Calendar {
         #endif
         #endif
     }
+    #if defined(SWIGPYTHON)
+    %pythoncode %{
+    def __hash__(self):
+        return hash(self.name())
+    %}
+    #endif
 };
 
 #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
