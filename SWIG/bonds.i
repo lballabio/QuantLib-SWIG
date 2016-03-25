@@ -398,7 +398,7 @@ class CallableFixedRateBondPtr : public BondPtr {
                 BusinessDayConvention paymentConvention,
                 Real redemption,
                 Date issueDate,
-                const CallabilitySchedule &putCallSchedule) {
+                const std::vector<boost::shared_ptr<Callability> > &putCallSchedule) {
             return new CallableFixedRateBondPtr(
                 new CallableFixedRateBond(settlementDays, faceAmount,
                                           schedule, coupons, accrualDayCounter,
