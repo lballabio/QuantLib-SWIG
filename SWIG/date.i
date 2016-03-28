@@ -229,6 +229,12 @@ class Period {
         }
         #endif
     }
+    #if defined(SWIGPYTHON)
+    %pythoncode %{
+    def __hash__(self):
+        return hash(str(self))
+    %}
+    #endif
 };
 
 namespace std {
