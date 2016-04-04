@@ -30,21 +30,18 @@ grep -o -E 'Compile *Include *= *".*"' CSharp/csharp/NQuantLib.csproj \
 
 # Write out differences...
 
-echo 'Visual Studio 8:' > sync.report
-diff -b csharp.vc8.files csharp.ref.files >> sync.report
+echo 'Visual Studio 8:'
+diff -b csharp.vc8.files csharp.ref.files
 
-echo '' >> sync.report
-echo '' >> sync.report
-echo 'Visual Studio 9:' >> sync.report
-diff -b csharp.vc9.files csharp.ref.files >> sync.report
+echo ''
+echo ''
+echo 'Visual Studio 9:'
+diff -b csharp.vc9.files csharp.ref.files
 
-echo '' >> sync.report
-echo '' >> sync.report
-echo 'Visual Studio 10 and above:' >> sync.report
-diff -b csharp.vc1x.files csharp.ref.files >> sync.report
+echo ''
+echo ''
+echo 'Visual Studio 10 and above:'
+diff -b csharp.vc1x.files csharp.ref.files
 
 # ...and cleanup
 rm -f csharp.*.files
-
-cat sync.report
-

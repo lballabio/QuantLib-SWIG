@@ -225,6 +225,7 @@
     <Compile Include="ConvertibleFloatingRateBond.cs" />
     <Compile Include="ConvertibleZeroCouponBond.cs" />
     <Compile Include="COPCurrency.cs" />
+    <Compile Include="CostFunctionDelegate.cs" />
     <Compile Include="Coupon.cs" />
     <Compile Include="CPI.cs" />
     <Compile Include="CPIBond.cs" />
@@ -253,6 +254,7 @@
     <Compile Include="DefaultProbabilityHelperVector.cs" />
     <Compile Include="DefaultProbabilityTermStructure.cs" />
     <Compile Include="DefaultProbabilityTermStructureHandle.cs" />
+    <Compile Include="DeltaVolQuote.cs" />
     <Compile Include="DeltaVolQuoteHandle.cs" />
     <Compile Include="DEMCurrency.cs" />
     <Compile Include="Denmark.cs" />
@@ -270,6 +272,7 @@
     <Compile Include="DKKCurrency.cs" />
     <Compile Include="DKKLibor.cs" />
     <Compile Include="DMinus.cs" />
+    <Compile Include="DotNetCostFunction.cs" />
     <Compile Include="DoubleBarrier.cs" />
     <Compile Include="DoubleBarrierOption.cs" />
     <Compile Include="DoubleVector.cs" />
@@ -349,10 +352,12 @@
     <Compile Include="FDAmericanEngine.cs" />
     <Compile Include="FDBermudanEngine.cs" />
     <Compile Include="FdBlackScholesAsianEngine.cs" />
+    <Compile Include="FdBlackScholesBarrierEngine.cs" />
     <Compile Include="FdBlackScholesVanillaEngine.cs" />
     <Compile Include="FDDividendAmericanEngine.cs" />
     <Compile Include="FDDividendEuropeanEngine.cs" />
     <Compile Include="FDEuropeanEngine.cs" />
+    <Compile Include="FdmSchemeDesc.cs" />
     <Compile Include="FDShoutEngine.cs" />
     <Compile Include="FedFunds.cs" />
     <Compile Include="FFTVarianceGammaEngine.cs" />
@@ -362,6 +367,7 @@
     <Compile Include="FittingMethod.cs" />
     <Compile Include="FixedDividend.cs" />
     <Compile Include="FixedRateBond.cs" />
+    <Compile Include="FixedRateBondForward.cs" />
     <Compile Include="FixedRateBondHelper.cs" />
     <Compile Include="FixedRateCoupon.cs" />
     <Compile Include="FlatForward.cs" />
@@ -371,6 +377,7 @@
     <Compile Include="FloatingRateCouponPricer.cs" />
     <Compile Include="Floor.cs" />
     <Compile Include="FloorTruncation.cs" />
+    <Compile Include="Forward.cs" />
     <Compile Include="ForwardCurve.cs" />
     <Compile Include="ForwardEuropeanEngine.cs" />
     <Compile Include="ForwardFlat.cs" />
@@ -718,17 +725,16 @@
     <Compile Include="SwaptionVolCube2.cs" />
     <Compile Include="Sweden.cs" />
     <Compile Include="SWIGTYPE_p_BlackVolTermStructure.cs" />
-    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_DeltaVolQuote_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_EndCriteria_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_IborIndex_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_OptimizationMethod_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SwapIndex_t.cs" />
     <Compile Include="SWIGTYPE_p_CalibratedModel.cs" />
-    <Compile Include="SWIGTYPE_p_CallabilitySchedule.cs" />
     <Compile Include="SWIGTYPE_p_CapFloorTermVolatilityStructure.cs" />
     <Compile Include="SWIGTYPE_p_CashFlow.cs" />
     <Compile Include="SWIGTYPE_p_DefaultProbabilityHelper.cs" />
     <Compile Include="SWIGTYPE_p_DefaultProbabilityTermStructure.cs" />
+    <Compile Include="SWIGTYPE_p_DisposableT_Array_t.cs" />
     <Compile Include="SWIGTYPE_p_Dividend.cs" />
     <Compile Include="SWIGTYPE_p_EndCriteria__Type.cs" />
     <Compile Include="SWIGTYPE_p_FloatingRateCouponPricer.cs" />
@@ -777,6 +783,8 @@
     <Compile Include="TWDCurrency.cs" />
     <Compile Include="Ukraine.cs" />
     <Compile Include="UKRPI.cs" />
+    <Compile Include="UnaryFunction.cs" />
+    <Compile Include="UnaryFunctionDelegate.cs" />
     <Compile Include="UniformLowDiscrepancySequenceGenerator.cs" />
     <Compile Include="UniformRandomGenerator.cs" />
     <Compile Include="UniformRandomSequenceGenerator.cs" />
@@ -837,6 +845,7 @@
     <Compile Include="_BoundaryCondition.cs" />
     <Compile Include="_CalibrationHelper.cs" />
     <Compile Include="_Callability.cs" />
+    <Compile Include="_DeltaVolQuote.cs" />
     <Compile Include="_Exercise.cs" />
     <Compile Include="_VanillaSwap.cs" />
     <Compile Include="_YearOnYearInflationSwap.cs" />
