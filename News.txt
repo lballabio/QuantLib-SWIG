@@ -1,5 +1,5 @@
 
-Release 1.8 - April 2015
+Release 1.8 - May 2016
 Changes since release 1.7:
 - in sync with QuantLib 1.8.
 - exported finite-difference barrier engine (thanks to Jayanth R. Varma).
