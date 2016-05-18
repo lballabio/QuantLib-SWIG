@@ -1,14 +1,20 @@
 
-Release 1.7 - November 2015
-Changes since release 1.6.2:
-- in sync with QuantLib 1.7.
-- added optimizer interface for Java/Scala (thanks to Klaus Spanderen).
-- exported new Romanian and Israelian calendars (thanks to Riccardo Barone).
-- exported barrier and double barrier engines (thanks to Riccardo Ghetta).
-- exported a few missing methods of the Calendar class (thanks to Benoit Barthelet).
-- exported OptionletStripper1 and StrippedOptionletAdapter (thanks to Matthias Groncki).
-- exported more inspectors for discount and zero curves (thanks to Matthias Groncki).
-- exported the Libor class and the IborIndex::clone method (thanks to Matthias Groncki).
-- exported additional methods for VanillaSwap (thanks to Gouthaman Balaraman).
-- exported fixed-parameter constraint for calibration in short rate models
-  (thanks to Gouthaman Balaraman).
+Release 1.8 - May 2016
+Changes since release 1.7:
+- in sync with QuantLib 1.8.
+- exported finite-difference barrier engine (thanks to Jayanth R. Varma).
+- exported FixedRateBondForward and BondFunctions::zSpread (thanks to
+  Gouthaman Balaraman).
+- fix compilation error on Mac OS X Yosemite (thanks to Alex Cooper).
+- let the Java module use the compiler defined by $CXX (thanks to Richard Gomes).
+- let the Python module use the same compiler used for QuantLib
+  (thanks to GitHub user EthiaclBanker).
+- exported solver and optimizer functionality to C# (thanks to GitHub
+  user dave-fl).
+- in the Python module, also defined __hash__ for classes that defined
+  __eq__. This makes them suitable to use as dictionary keys.
+- fixed CallableFixedRateBond call in Python (thanks to Gouthaman Balaraman).
+- exported Schedule::until (thanks to GitHub user alexsbromberg).
+- exported StochasticProcess interface.
+
+  
