@@ -24,6 +24,7 @@
 %include date.i
 %include calendars.i
 %include daycounters.i
+%include futures.i
 %include marketelements.i
 %include types.i
 %include vectors.i
@@ -166,49 +167,79 @@ class FuturesRateHelperPtr : public boost::shared_ptr<RateHelper> {
     %extend {
         FuturesRateHelperPtr(
                 const Handle<Quote>& price,
-                const Date& immDate,
+                const Date& iborStartDate,
                 Natural nMonths,
                 const Calendar& calendar,
                 BusinessDayConvention convention,
                 bool endOfMonth,
                 const DayCounter& dayCounter,
-                const Handle<Quote>& convexityAdjustment) {
+                const Handle<Quote>& convexityAdjustment,
+                Futures::Type type = Futures::IMM) {
             return new FuturesRateHelperPtr(
-                new FuturesRateHelper(price,immDate,nMonths,
+                new FuturesRateHelper(price,iborStartDate,nMonths,
                                       calendar,convention,endOfMonth,
-                                      dayCounter,convexityAdjustment));
-        }
-        FuturesRateHelperPtr(
-                Real price, const Date& immDate, Natural nMonths,
-                const Calendar& calendar, BusinessDayConvention convention,
-                bool endOfMonth, const DayCounter& dayCounter,
-                Rate convexityAdjustment = 0.0) {
-            return new FuturesRateHelperPtr(
-                new FuturesRateHelper(price,immDate,nMonths,
-                                      calendar,convention,endOfMonth,
-                                      dayCounter,convexityAdjustment));
-        }
-        FuturesRateHelperPtr(
-                const Handle<Quote>& price,
-                const Date& immDate,
-                const IborIndexPtr& index,
-                const Handle<Quote>& convexityAdjustment) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new FuturesRateHelperPtr(
-                new FuturesRateHelper(price,immDate,libor,
-                                      convexityAdjustment));
+                                      dayCounter,convexityAdjustment,type));
         }
         FuturesRateHelperPtr(
                 Real price,
-                const Date& immDate,
+				const Date& iborStartDate,
+				Natural nMonths,
+                const Calendar& calendar,
+				BusinessDayConvention convention,
+                bool endOfMonth,
+				const DayCounter& dayCounter,
+                Rate convexityAdjustment = 0.0,
+                Futures::Type type = Futures::IMM) {
+            return new FuturesRateHelperPtr(
+                new FuturesRateHelper(price,iborStartDate,nMonths,
+                                      calendar,convention,endOfMonth,
+                                      dayCounter,convexityAdjustment,type));
+        }
+        FuturesRateHelperPtr(
+                const Handle<Quote>& price,
+                const Date& iborStartDate,
+                const Date& iborEndDate,
+                const DayCounter& dayCounter,
+                const Handle<Quote>& convexityAdjustment,
+                Futures::Type type = Futures::IMM) {
+            return new FuturesRateHelperPtr(
+                new FuturesRateHelper(price,iborStartDate,iborEndDate,
+                                      dayCounter,convexityAdjustment,type));
+        }
+        FuturesRateHelperPtr(
+                Real price,
+				const Date& iborStartDate,
+				const Date& iborEndDate,
+				const DayCounter& dayCounter,
+                Rate convexityAdjustment = 0.0,
+                Futures::Type type = Futures::IMM) {
+            return new FuturesRateHelperPtr(
+                new FuturesRateHelper(price,iborStartDate,iborEndDate,
+                                      dayCounter,convexityAdjustment,type));
+        }
+        FuturesRateHelperPtr(
+                const Handle<Quote>& price,
+                const Date& iborStartDate,
                 const IborIndexPtr& index,
-                Real convexityAdjustment = 0.0) {
+                const Handle<Quote>& convexityAdjustment,
+                Futures::Type type = Futures::IMM) {
             boost::shared_ptr<IborIndex> libor =
                 boost::dynamic_pointer_cast<IborIndex>(index);
             return new FuturesRateHelperPtr(
-                new FuturesRateHelper(price,immDate,libor,
-                                      convexityAdjustment));
+                new FuturesRateHelper(price,iborStartDate,libor,
+                                      convexityAdjustment,type));
+        }
+        FuturesRateHelperPtr(
+                Real price,
+                const Date& iborStartDate,
+                const IborIndexPtr& index,
+                Real convexityAdjustment = 0.0,
+                Futures::Type type = Futures::IMM) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new FuturesRateHelperPtr(
+                new FuturesRateHelper(price,iborStartDate,libor,
+                                      convexityAdjustment,type));
         }
     }
 };

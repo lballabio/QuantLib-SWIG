@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="../QuantLib.props" />
   <PropertyGroup>
@@ -177,6 +177,7 @@
     <Compile Include="ARSCurrency.cs" />
     <Compile Include="AssetOrNothingPayoff.cs" />
     <Compile Include="AssetSwap.cs" />
+    <Compile Include="ASX.cs" />
     <Compile Include="ATSCurrency.cs" />
     <Compile Include="AUDCurrency.cs" />
     <Compile Include="AUDLibor.cs" />
@@ -461,6 +462,7 @@
     <Compile Include="FRHICP.cs" />
     <Compile Include="FritschButlandCubic.cs" />
     <Compile Include="FritschButlandLogCubic.cs" />
+    <Compile Include="Futures.cs" />
     <Compile Include="FuturesRateHelper.cs" />
     <Compile Include="G2.cs" />
     <Compile Include="G2SwaptionEngine.cs" />
