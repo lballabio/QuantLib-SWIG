@@ -45,7 +45,6 @@ class CapFloorPtr : public boost::shared_ptr<Instrument> {
     %rename("floor-rates") floorRates;
     %rename("start-date") startDate;
     %rename("maturity-date") maturityDate;
-    %rename("last-floating-rate-coupon") lastFloatingRateCoupon;
     %rename("atm-rate") atmRate;
     #endif
   public:
