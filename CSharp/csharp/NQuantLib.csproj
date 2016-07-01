@@ -680,6 +680,7 @@
     <Compile Include="PiecewiseLogCubicDiscount.cs" />
     <Compile Include="PiecewiseYoYInflation.cs" />
     <Compile Include="PiecewiseZeroInflation.cs" />
+    <Compile Include="Pillar.cs" />
     <Compile Include="PKRCurrency.cs" />
     <Compile Include="PlainVanillaPayoff.cs" />
     <Compile Include="PLNCurrency.cs" />
