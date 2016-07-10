@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
   <Import Project="../QuantLib.props" />
   <PropertyGroup>
@@ -173,6 +173,7 @@
     <Compile Include="AnalyticEuropeanEngine.cs" />
     <Compile Include="AnalyticHaganPricer.cs" />
     <Compile Include="AnalyticHestonEngine.cs" />
+    <Compile Include="Aonia.cs" />
     <Compile Include="Argentina.cs" />
     <Compile Include="ARSCurrency.cs" />
     <Compile Include="AssetOrNothingPayoff.cs" />
@@ -193,6 +194,13 @@
     <Compile Include="BatesEngine.cs" />
     <Compile Include="BatesModel.cs" />
     <Compile Include="BatesProcess.cs" />
+    <Compile Include="Bbsw.cs" />
+    <Compile Include="Bbsw1M.cs" />
+    <Compile Include="Bbsw2M.cs" />
+    <Compile Include="Bbsw3M.cs" />
+    <Compile Include="Bbsw4M.cs" />
+    <Compile Include="Bbsw5M.cs" />
+    <Compile Include="Bbsw6M.cs" />
     <Compile Include="BDTCurrency.cs" />
     <Compile Include="BEFCurrency.cs" />
     <Compile Include="BermudanExercise.cs" />
@@ -211,6 +219,13 @@
     <Compile Include="BivariateCumulativeNormalDistributionDr78.cs" />
     <Compile Include="BivariateCumulativeNormalDistributionWe04DP.cs" />
     <Compile Include="BjerksundStenslandEngine.cs" />
+    <Compile Include="Bkbm.cs" />
+    <Compile Include="Bkbm1M.cs" />
+    <Compile Include="Bkbm2M.cs" />
+    <Compile Include="Bkbm3M.cs" />
+    <Compile Include="Bkbm4M.cs" />
+    <Compile Include="Bkbm5M.cs" />
+    <Compile Include="Bkbm6M.cs" />
     <Compile Include="BlackCalculator.cs" />
     <Compile Include="BlackCapFloorEngine.cs" />
     <Compile Include="BlackConstantVol.cs" />
@@ -649,6 +664,7 @@
     <Compile Include="NumericHaganPricer.cs" />
     <Compile Include="NZDCurrency.cs" />
     <Compile Include="NZDLibor.cs" />
+    <Compile Include="Nzocr.cs" />
     <Compile Include="Observable.cs" />
     <Compile Include="OISRateHelper.cs" />
     <Compile Include="OneDayCounter.cs" />
