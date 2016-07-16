@@ -259,6 +259,26 @@ class FixedRateBondPtr : public BondPtr {
                                   exCouponPeriod, exCouponCalendar,
                                   exCouponConvention, exCouponEndOfMonth));
         }
+        //! generic compounding and frequency InterestRate coupons 
+        FixedRateBondPtr(Integer settlementDays,
+              Real faceAmount,
+              const Schedule& schedule,
+              const std::vector<InterestRate>& coupons,
+              BusinessDayConvention paymentConvention = QuantLib::Following,
+              Real redemption = 100.0,
+              const Date& issueDate = Date(),
+              const Calendar& paymentCalendar = Calendar(),
+              const Period& exCouponPeriod = Period(),
+              const Calendar& exCouponCalendar = Calendar(),
+              const BusinessDayConvention exCouponConvention = QuantLib::Unadjusted,
+              bool exCouponEndOfMonth = false) {
+	       return new FixedRateBondPtr(
+		      new FixedRateBond(settlementDays, faceAmount,
+		                  schedule, coupons, paymentConvention,
+		                  redemption, issueDate, paymentCalendar,
+		                  exCouponPeriod, exCouponCalendar,
+		                  exCouponConvention, exCouponEndOfMonth));
+		}
         Frequency frequency() const {
             return boost::dynamic_pointer_cast<FixedRateBond>(*self)
                 ->frequency();
