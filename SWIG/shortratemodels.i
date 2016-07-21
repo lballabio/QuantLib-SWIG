@@ -50,7 +50,6 @@ class ShortRateModel {
                const std::vector<boost::shared_ptr<CalibrationHelper> >&);
     EndCriteria::Type endCriteria() const;
     void setParams(const Array& params);
-    Integer functionEvaluation() const;
 };
 
 %template(ShortRateModel) boost::shared_ptr<ShortRateModel>;
