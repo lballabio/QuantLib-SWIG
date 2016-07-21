@@ -203,6 +203,7 @@
 %include forwardcurve.i
 %include fra.i
 %include functions.i
+%include futures.i
 %include gaussian1dmodel.i
 %include grid.i
 %include indexes.i
