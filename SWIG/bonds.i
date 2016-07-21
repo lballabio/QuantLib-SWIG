@@ -232,9 +232,6 @@ class ZeroCouponBondPtr : public BondPtr {
 
 %rename(FixedRateBond) FixedRateBondPtr;
 class FixedRateBondPtr : public BondPtr {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") FixedRateBondPtr;
-    #endif
   public:
     %extend {
         FixedRateBondPtr(
@@ -260,17 +257,18 @@ class FixedRateBondPtr : public BondPtr {
                                   exCouponConvention, exCouponEndOfMonth));
         }
         //! generic compounding and frequency InterestRate coupons 
-        FixedRateBondPtr(Integer settlementDays,
+        FixedRateBondPtr(
+              Integer settlementDays,
               Real faceAmount,
               const Schedule& schedule,
               const std::vector<InterestRate>& coupons,
-              BusinessDayConvention paymentConvention = QuantLib::Following,
+              BusinessDayConvention paymentConvention = Following,
               Real redemption = 100.0,
               const Date& issueDate = Date(),
               const Calendar& paymentCalendar = Calendar(),
               const Period& exCouponPeriod = Period(),
               const Calendar& exCouponCalendar = Calendar(),
-              const BusinessDayConvention exCouponConvention = QuantLib::Unadjusted,
+              BusinessDayConvention exCouponConvention = Unadjusted,
               bool exCouponEndOfMonth = false) {
 	       return new FixedRateBondPtr(
 		      new FixedRateBond(settlementDays, faceAmount,
