@@ -187,12 +187,12 @@ class FuturesRateHelperPtr : public boost::shared_ptr<RateHelper> {
         }
         FuturesRateHelperPtr(
                 Real price,
-				const Date& iborStartDate,
-				Natural nMonths,
+                const Date& iborStartDate,
+                Natural nMonths,
                 const Calendar& calendar,
-				BusinessDayConvention convention,
+                BusinessDayConvention convention,
                 bool endOfMonth,
-				const DayCounter& dayCounter,
+                const DayCounter& dayCounter,
                 Rate convexityAdjustment = 0.0,
                 Futures::Type type = Futures::IMM) {
             return new FuturesRateHelperPtr(
@@ -213,9 +213,9 @@ class FuturesRateHelperPtr : public boost::shared_ptr<RateHelper> {
         }
         FuturesRateHelperPtr(
                 Real price,
-				const Date& iborStartDate,
-				const Date& iborEndDate,
-				const DayCounter& dayCounter,
+                const Date& iborStartDate,
+                const Date& iborEndDate,
+                const DayCounter& dayCounter,
                 Rate convexityAdjustment = 0.0,
                 Futures::Type type = Futures::IMM) {
             return new FuturesRateHelperPtr(
@@ -276,7 +276,7 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                                    fixedDayCount, libor,
                                    spread, fwdStart,
                                    discountingCurve, settlementDays,
-								   pillar, customPillarDate));
+                                   pillar, customPillarDate));
         }
         SwapRateHelperPtr(
                 Rate rate,
@@ -301,7 +301,7 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                                    fixedDayCount, libor,
                                    spread, fwdStart,
                                    discountingCurve, settlementDays,
-								   pillar, customPillarDate));
+                                   pillar, customPillarDate));
         }
         SwapRateHelperPtr(
                 const Handle<Quote>& rate,
@@ -318,7 +318,7 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 new SwapRateHelper(rate, swapIndex,
                                    spread, fwdStart,
                                    discountingCurve,
-								   pillar, customPillarDate));
+                                   pillar, customPillarDate));
         }
         SwapRateHelperPtr(
                 Rate rate,
@@ -335,7 +335,7 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 new SwapRateHelper(rate, swapIndex,
                                    spread, fwdStart,
                                    discountingCurve,
-								   pillar, customPillarDate));
+                                   pillar, customPillarDate));
         }
         VanillaSwapPtr swap() {
             return boost::dynamic_pointer_cast<SwapRateHelper>(*self)->swap();
