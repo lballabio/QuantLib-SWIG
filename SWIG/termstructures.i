@@ -112,9 +112,12 @@ class ZeroSpreadedTermStructurePtr
     %extend {
         ZeroSpreadedTermStructurePtr(
                                 const Handle<YieldTermStructure>& curveHandle,
-                                const Handle<Quote>& spreadHandle) {
+                                const Handle<Quote>& spreadHandle,
+                                Compounding comp = QuantLib::Continuous,
+                                Frequency freq = QuantLib::NoFrequency,
+                                const DayCounter& dc = DayCounter()) {
             return new ZeroSpreadedTermStructurePtr(
-                new ZeroSpreadedTermStructure(curveHandle,spreadHandle));
+                new ZeroSpreadedTermStructure(curveHandle,spreadHandle, comp, freq, dc));
         }
     }
 };
@@ -151,10 +154,14 @@ class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
         Name##Ptr(
                 const Handle<YieldTermStructure>& curveHandle,
                 const std::vector< Handle<Quote> >& spreadHandles,
-                const std::vector<Date>& dates) {
+                const std::vector<Date>& dates,
+                Compounding comp = QuantLib::Continuous,
+                Frequency freq = QuantLib::NoFrequency,
+                const DayCounter& dc = DayCounter(),
+                const Interpolator& factory = Interpolator()) {
             return new Name##Ptr(
                 new InterpolatedPiecewiseZeroSpreadedTermStructure<Interpolator>(
-                          curveHandle,spreadHandles,dates));
+                          curveHandle,spreadHandles,dates,comp,freq,dc,factory));
         }
     }
 };
