@@ -220,6 +220,7 @@
 %include observer.i
 %include operators.i
 %include optimizers.i
+%include parameter.i
 %include options.i
 %include payoffs.i
 %include piecewiseyieldcurve.i

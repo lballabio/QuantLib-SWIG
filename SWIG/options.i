@@ -6,6 +6,7 @@
  Copyright (C) 2008 Tito Ingargiola
  Copyright (C) 2010, 2012 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
+ Copyright (C) 2016 Gouthaman Balaraman
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,8 @@
 %include stl.i
 %include linearalgebra.i
 %include calibrationhelpers.i
+%include grid.i
+%include parameter.i
 
 // option and barrier types
 %{
@@ -379,6 +382,66 @@ class HestonModelPtr : public boost::shared_ptr<CalibratedModel> {
     }
 };
 
+
+
+%{
+using QuantLib::PiecewiseTimeDependentHestonModel;
+typedef boost::shared_ptr<CalibratedModel> PiecewiseTimeDependentHestonModelPtr;
+%}
+
+%rename(PiecewiseTimeDependentHestonModel) PiecewiseTimeDependentHestonModelPtr;
+class PiecewiseTimeDependentHestonModelPtr : public boost::shared_ptr<CalibratedModel> {
+    public:
+      %extend {
+         PiecewiseTimeDependentHestonModelPtr(
+              const Handle<YieldTermStructure>& riskFreeRate,
+              const Handle<YieldTermStructure>& dividendYield,
+              const Handle<Quote>& s0,
+              Real v0,
+              const Parameter& theta,
+              const Parameter& kappa,
+              const Parameter& sigma,
+              const Parameter& rho,
+              const TimeGrid& timeGrid) {
+            return new PiecewiseTimeDependentHestonModelPtr (
+                new PiecewiseTimeDependentHestonModel(riskFreeRate,
+                    dividendYield, s0, v0, theta, kappa, 
+                    sigma, rho, timeGrid));
+        }
+    
+        Real theta(Time t) const { 
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->theta(t);
+        }
+        Real kappa(Time t) const {
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->kappa(t);
+        }
+        Real sigma(Time t) const {
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->sigma(t);
+        }
+        Real rho(Time t)   const { 
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->rho(t);
+        }
+        Real v0()          const { 
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->v0();
+        }
+        Real s0()          const { 
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->s0();
+        }
+        const TimeGrid& timeGrid() const {
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->timeGrid();
+        }
+        const Handle<YieldTermStructure>& dividendYield() const {
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->dividendYield();
+        }
+        const Handle<YieldTermStructure>& riskFreeRate() const {
+            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->riskFreeRate();
+        }
+    
+    }
+};
+
+
+
 %{
 using QuantLib::AnalyticHestonEngine;
 typedef boost::shared_ptr<PricingEngine> AnalyticHestonEnginePtr;
@@ -408,6 +471,40 @@ class AnalyticHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
             return new AnalyticHestonEnginePtr(
                 new AnalyticHestonEngine(hModel, relTolerance,maxEvaluations));
         }
+    }
+};
+
+%{
+using QuantLib::AnalyticPTDHestonEngine;
+typedef boost::shared_ptr<PricingEngine> AnalyticPTDHestonEnginePtr;
+%}
+
+%rename(AnalyticPTDHestonEngine) AnalyticPTDHestonEnginePtr;
+class AnalyticPTDHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        AnalyticPTDHestonEnginePtr(
+            const PiecewiseTimeDependentHestonModelPtr & model,
+            Real relTolerance, Size maxEvaluations) {
+                const boost::shared_ptr<PiecewiseTimeDependentHestonModel> hmodel = 
+                    boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(model);
+                return new AnalyticPTDHestonEnginePtr(
+                    new AnalyticPTDHestonEngine(hmodel, relTolerance, maxEvaluations)
+            );
+        }
+
+        // Constructor using Laguerre integration
+        // and Gatheral's version of complex log.
+        AnalyticPTDHestonEnginePtr(
+            const PiecewiseTimeDependentHestonModelPtr & model,
+            Size integrationOrder = 144) {
+                const boost::shared_ptr<PiecewiseTimeDependentHestonModel> hmodel = 
+                    boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(model);
+                return new AnalyticPTDHestonEnginePtr(
+                    new AnalyticPTDHestonEngine(hmodel, integrationOrder)
+            );
+        }
+    
     }
 };
 

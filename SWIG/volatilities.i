@@ -344,6 +344,20 @@ class BlackVarianceSurfacePtr
             }
             return new BlackVarianceSurfacePtr(surf);
         }
+        void setInterpolation(const std::string& interpolator = "")
+        {
+            std::string s = boost::algorithm::to_lower_copy(interpolator);
+            boost::shared_ptr<BlackVarianceSurface> surf =
+                boost::dynamic_pointer_cast<BlackVarianceSurface>(*self);
+            if (s == "" || s == "bilinear") {
+                surf->setInterpolation<QuantLib::Bilinear>();
+            } else if (s == "bicubic") {
+                surf->setInterpolation<QuantLib::Bicubic>();
+            } else {
+                QL_FAIL("Unknown interpolator: " << interpolator);
+            }
+            
+        }
         static const BlackVarianceSurface::Extrapolation
             ConstantExtrapolation =
             BlackVarianceSurface::ConstantExtrapolation;
@@ -393,6 +407,61 @@ class LocalConstantVolPtr : public boost::shared_ptr<LocalVolTermStructure> {
             return new LocalConstantVolPtr(
                 new LocalConstantVol(settlementDays, calendar,
                                      volatility, dayCounter));
+        }
+    }
+};
+
+
+
+// constant local vol term structure
+%{
+using QuantLib::LocalVolSurface;
+typedef boost::shared_ptr<LocalVolTermStructure> LocalVolSurfacePtr;
+%}
+%rename(LocalVolSurface) LocalVolSurfacePtr;
+class LocalVolSurfacePtr : public boost::shared_ptr<LocalVolTermStructure> {
+    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    %rename("reference-date")       referenceDate;
+    %rename("day-counter") dayCounter;
+    %rename("max-date") maxDate;
+    %rename("min-strike") minStrike;
+    %rename("max-strike") maxStrike;    
+    #endif
+
+    public:
+     %extend {
+        LocalVolSurfacePtr(const Handle<BlackVolTermStructure>& blackTS,
+                        const Handle<YieldTermStructure>& riskFreeTS,
+                        const Handle<YieldTermStructure>& dividendTS,
+                        const Handle<Quote>& underlying) {
+            return new LocalVolSurfacePtr(
+                new LocalVolSurface(blackTS, riskFreeTS, 
+                    dividendTS, underlying));
+        
+        }
+        LocalVolSurfacePtr(const Handle<BlackVolTermStructure>& blackTS,
+                        const Handle<YieldTermStructure>& riskFreeTS,
+                        const Handle<YieldTermStructure>& dividendTS,
+                        Real underlying) {
+            return new LocalVolSurfacePtr(
+                new LocalVolSurface(blackTS, riskFreeTS, 
+                    dividendTS, underlying));
+        }
+        
+        const Date& referenceDate() const {
+            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->referenceDate();
+        }
+        DayCounter dayCounter() const {
+            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->dayCounter();
+        }
+        Date maxDate() const {
+            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->maxDate();
+        }
+        Real minStrike() const {
+            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->minStrike();
+        }
+        Real maxStrike() const {
+            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->maxStrike();
         }
     }
 };

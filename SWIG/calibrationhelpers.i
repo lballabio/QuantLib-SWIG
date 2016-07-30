@@ -195,6 +195,9 @@ class CalibratedModel {
         OptimizationMethod&, const EndCriteria &,
         const Constraint& constraint = Constraint(),
         const std::vector<Real>& weights = std::vector<Real>());
+    void setParams(const Array& params);
+    Real value(const Array& params,
+               const std::vector<boost::shared_ptr<CalibrationHelper> >&);
 };
 
 
