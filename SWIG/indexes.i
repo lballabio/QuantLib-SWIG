@@ -513,7 +513,7 @@ export_overnight_instance(Aonia);
 export_overnight_instance(Eonia);
 export_overnight_instance(Sonia);
 export_overnight_instance(FedFunds);
-export_overnight_instance(N);
+export_overnight_instance(Nzocr);
 
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);
