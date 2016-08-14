@@ -3,6 +3,7 @@
  Copyright (C) 2009 Joseph Malicki
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2014 Simon Mazzucca
+ Copyright (C) 2016 Gouthaman Balaraman
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -396,8 +397,10 @@ class DiscountingBondEnginePtr : public boost::shared_ptr<PricingEngine> {
 %{
 using QuantLib::CallableFixedRateBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
+using QuantLib::BlackCallableFixedRateBondEngine;
 typedef boost::shared_ptr<Instrument> CallableFixedRateBondPtr;
 typedef boost::shared_ptr<PricingEngine> TreeCallableFixedRateBondEnginePtr;
+typedef boost::shared_ptr<PricingEngine> BlackCallableFixedRateBondEnginePtr;
 %}
 
 %rename(CallableFixedRateBond) CallableFixedRateBondPtr;
@@ -450,6 +453,21 @@ class TreeCallableFixedRateBondEnginePtr
                                                     termStructure));
         }
     }
+};
+
+%rename(BlackCallableFixedRateBondEngine) BlackCallableFixedRateBondEnginePtr;
+class BlackCallableFixedRateBondEnginePtr 
+    : public boost::shared_ptr<PricingEngine> {
+    public:
+    %extend {
+        BlackCallableFixedRateBondEnginePtr(
+                const Handle<Quote>& fwdYieldVol,
+                const Handle<YieldTermStructure>& discountCurve) {
+            return new BlackCallableFixedRateBondEnginePtr(
+                new BlackCallableFixedRateBondEngine(fwdYieldVol, discountCurve));
+        }
+        
+    }    
 };
 
 %{
