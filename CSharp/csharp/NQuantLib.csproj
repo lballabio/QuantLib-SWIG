@@ -554,6 +554,7 @@
     <Compile Include="IntegralEngine.cs" />
     <Compile Include="InterestRate.cs" />
     <Compile Include="InterestRateIndex.cs" />
+    <Compile Include="InterestRateVector.cs" />
     <Compile Include="IntervalPrice.cs" />
     <Compile Include="IntervalPriceTimeSeries.cs" />
     <Compile Include="IntervalPriceVector.cs" />
