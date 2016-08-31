@@ -454,14 +454,15 @@ class FxSwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 bool endOfMonth,
                 bool isFxBaseCurrencyCollateralCurrency,
                 const Handle<YieldTermStructure>& coll
-                                = Handle<YieldTermStructure>()) {
+                                = Handle<YieldTermStructure>(),
+                bool requireUSCalendar = true) {
             return new FxSwapRateHelperPtr(
                 new FxSwapRateHelper(fwdPoint, spotFx, tenor,
                                      fixingDays, calendar, convention,
                                      endOfMonth,
                                      isFxBaseCurrencyCollateralCurrency,
-                                     coll)); 
-        }
+                                     coll, requireUSCalendar));
+        } 
    }
 };
 

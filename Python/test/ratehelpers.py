@@ -188,7 +188,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
                                 calendar,
                                 QuantLib.ModifiedFollowing,
                                 True, True,
-                                base_ccy_yts)
+                                base_ccy_yts,
+                                True)
                          for n, unit in fx_swaps.keys()]
 
         # term-structure construction
