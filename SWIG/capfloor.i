@@ -60,15 +60,15 @@ class CapFloorPtr : public boost::shared_ptr<Instrument> {
                 impliedVolatility(price, curve, guess, accuracy,
                                   maxEvaluations, minVol, maxVol);
         }
-        const Leg& floatingLeg() const { 
+        const Leg& floatingLeg() const {
      		return boost::dynamic_pointer_cast<CapFloor>(*self)->floatingLeg();
      	}
-     	
-        const std::vector<Rate>& capRates() const { 
-        	return boost::dynamic_pointer_cast<CapFloor>(*self)->capRates(); 
+
+        const std::vector<Rate>& capRates() const {
+        	return boost::dynamic_pointer_cast<CapFloor>(*self)->capRates();
         }
-        const std::vector<Rate>& floorRates() const { 
-        	return boost::dynamic_pointer_cast<CapFloor>(*self)->floorRates(); 
+        const std::vector<Rate>& floorRates() const {
+        	return boost::dynamic_pointer_cast<CapFloor>(*self)->floorRates();
         }
         Date startDate() const {
         	return boost::dynamic_pointer_cast<CapFloor>(*self)->startDate();
@@ -143,5 +143,28 @@ class BlackCapFloorEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+%{
+using QuantLib::BachelierCapFloorEngine;
+typedef boost::shared_ptr<PricingEngine> BachelierCapFloorEnginePtr;
+%}
+
+%rename(BachelierCapFloorEngine) BachelierCapFloorEnginePtr;
+class BachelierCapFloorEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        BachelierCapFloorEnginePtr(
+                           const Handle<YieldTermStructure>& termStructure,
+                           const Handle<Quote>& vol) {
+            return new BachelierCapFloorEnginePtr(
+                                new BachelierCapFloorEngine(termStructure,vol));
+        }
+        BachelierCapFloorEnginePtr(
+                           const Handle<YieldTermStructure>& termStructure,
+                           const Handle<OptionletVolatilityStructure>& vol) {
+            return new BachelierCapFloorEnginePtr(
+                                new BachelierCapFloorEngine(termStructure,vol));
+        }
+    }
+};
 
 #endif
