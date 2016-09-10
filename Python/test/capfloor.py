@@ -26,19 +26,11 @@ class CapFloorTest(unittest.TestCase):
 
         self.calendar = ql.TARGET()
         self.flat_forward_rate = 0.01
-        self.day_counter = ql.Actual360()
-
-        # self.sched = QuantLib.Schedule(self.issue_date, self.maturity_date,
-        #                                QuantLib.Period(QuantLib.Semiannual), self.calendar,
-        #                                QuantLib.Unadjusted, QuantLib.Unadjusted,
-        #                                QuantLib.DateGeneration.Backward, False)
-        self.strike = 0.01
-
-
+        self.rate_day_counter = ql.Actual360()
         self.flat_forward = ql.FlatForward(self.today_date,
-                                            self.flat_forward_rate,
-                                            self.day_counter,
-                                            ql.Continuous, ql.Annual)
+                                           self.flat_forward_rate,
+                                           self.rate_day_counter,
+                                           ql.Continuous, ql.Annual)
         self.term_structure_handle = \
             ql.RelinkableYieldTermStructureHandle(self.flat_forward)
 
@@ -71,9 +63,9 @@ class CapFloorTest(unittest.TestCase):
                                    self.ibor_index)
         self.strike = 0.01
         self.cap = ql.Cap(self.ibor_leg, [self.strike])
-        self.cap_npv = 153.52
+        self.cap_npv = 425.9
 
-        self.black_vol = ql.QuoteHandle(ql.SimpleQuote(0.2))
+        self.black_vol = ql.QuoteHandle(ql.SimpleQuote(0.6))
 
     def testBlackCapFloorEngine(self):
         """ Testing BlackCapFloorEngine """
@@ -82,13 +74,14 @@ class CapFloorTest(unittest.TestCase):
 
         self.cap.setPricingEngine(black_engine)
         npv = self.cap.NPV()
-        self.assertAlmostEqual(npv, self.cap_npv, places=2, msg="NPV method is broken")
-        vol_guess = 0.9
+        self.assertAlmostEqual(npv, self.cap_npv,
+                               places=1, msg="NPV method is broken")
+        vol_guess = 0.5
         imp_vol = self.cap.impliedVolatility(npv,
                                              self.term_structure_handle,
                                              vol_guess)
-        self.assertAlmostEqual(self.black_vol.value(), 
-                               imp_vol, places=4, 
+        self.assertAlmostEqual(self.black_vol.value(),
+                               imp_vol, places=4,
                                msg="Implied volatility method is broken")
 
 
@@ -101,17 +94,15 @@ class CapFloorTest(unittest.TestCase):
                                                          ql.SimpleQuote(bpvol)))
                                                                     
         self.cap.setPricingEngine(bachelier_engine)
-        npv = self.cap.NPV()
-        print(npv)
-        # self.assertAlmostEqual(npv, self.cap_npv, places=2, msg="NPV method is broken")
-        vol_guess = 0.005
+
+        # 50 bps
+        vol_guess = 50 / 1e4
+
         imp_vol = self.cap.impliedVolatility(self.cap_npv, 
                                              self.term_structure_handle,
-                                             vol_guess)
+                                             vol_guess,
+                                             type=ql.Normal)
 
-
-        print("BPVOL = {}".format(bpvol))
-        print("IMPVOL = {}".format(imp_vol))
         self.assertAlmostEqual(bpvol, imp_vol, places=4,
                                msg="Normal Implied volatility method is broken")
 

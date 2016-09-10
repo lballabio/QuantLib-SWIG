@@ -50,15 +50,18 @@ class CapFloorPtr : public boost::shared_ptr<Instrument> {
   public:
      %extend {
         Volatility impliedVolatility(Real price,
-                                     const Handle<YieldTermStructure>& curve,
-                                     Volatility guess,
-                                     Real accuracy = 1.0e-4,
-                                     Size maxEvaluations = 100,
-                                     Volatility minVol = 1.0e-7,
-                                     Volatility maxVol = 4.0) const {
+	                                 const Handle<YieldTermStructure>& disc,
+	                                 Volatility guess,
+	                                 Real accuracy = 1.0e-4,
+	                                 Natural maxEvaluations = 100,
+	                                 Volatility minVol = 1.0e-7,
+	                                 Volatility maxVol = 4.0,
+	                                 VolatilityType type = ShiftedLognormal,
+	                                 Real displacement = 0.0) const {
             return boost::dynamic_pointer_cast<CapFloor>(*self)->
-                impliedVolatility(price, curve, guess, accuracy,
-                                  maxEvaluations, minVol, maxVol);
+                impliedVolatility(price, disc, guess, accuracy,
+                                  maxEvaluations, minVol, maxVol,
+                                  type, displacement);
         }
         const Leg& floatingLeg() const {
      		return boost::dynamic_pointer_cast<CapFloor>(*self)->floatingLeg();
