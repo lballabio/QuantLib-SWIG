@@ -37,7 +37,7 @@ class CapFloorTest(unittest.TestCase):
         self.interpolation = ql.Linear()
 
         self.start_date = ql.Date(13, 9, 2016)
-        self.maturity_date = ql.Date(14, 9, 2026)
+        self.maturity_date = ql.Date(13, 9, 2017)
         self.period = ql.Period(6, ql.Months)
         self.buss_convention = ql.ModifiedFollowing
         self.date_gen_rule = ql.DateGeneration.Forward
@@ -63,7 +63,7 @@ class CapFloorTest(unittest.TestCase):
                                    self.ibor_index)
         self.strike = 0.01
         self.cap = ql.Cap(self.ibor_leg, [self.strike])
-        self.cap_npv = 425.9
+        self.cap_npv = 8.54
 
         self.black_vol = ql.QuoteHandle(ql.SimpleQuote(0.6))
 
