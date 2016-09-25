@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,8 +26,10 @@
 %include volatilities.i
 %include swap.i
 %include old_volatility.i
+%include daycounters.i
 
 %{
+using QuantLib::Actual365Fixed;
 using QuantLib::Swaption;
 using QuantLib::Settlement;
 typedef boost::shared_ptr<Instrument> SwaptionPtr;
@@ -56,7 +59,9 @@ class SwaptionPtr : public boost::shared_ptr<Instrument> {
 
 %{
 using QuantLib::BlackSwaptionEngine;
+using QuantLib::BachelierSwaptionEngine;
 typedef boost::shared_ptr<PricingEngine> BlackSwaptionEnginePtr;
+typedef boost::shared_ptr<PricingEngine> BachelierSwaptionEnginePtr;
 %}
 
 %rename(BlackSwaptionEngine) BlackSwaptionEnginePtr;
@@ -65,15 +70,37 @@ class BlackSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
     %extend {
         BlackSwaptionEnginePtr(
                            const Handle<YieldTermStructure> & discountCurve,
-                           const Handle<Quote>& vol) {
+                           const Handle<Quote>& vol,
+                           const DayCounter& dc = Actual365Fixed(),
+                           Real displacement = 0.0) {
             return new BlackSwaptionEnginePtr(
-                                 new BlackSwaptionEngine(discountCurve, vol));
+                          new BlackSwaptionEngine(discountCurve, vol, dc, displacement));
         }
         BlackSwaptionEnginePtr(
                            const Handle<YieldTermStructure> & discountCurve,
                            const Handle<SwaptionVolatilityStructure>& v) {
             return new BlackSwaptionEnginePtr(
                                    new BlackSwaptionEngine(discountCurve, v));
+        }
+    }
+};
+
+%rename(BachelierSwaptionEngine) BachelierSwaptionEnginePtr;
+class BachelierSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        BachelierSwaptionEnginePtr(
+                           const Handle<YieldTermStructure> & discountCurve,
+                           const Handle<Quote>& vol,
+                           const DayCounter& dc = Actual365Fixed()) {
+            return new BlackSwaptionEnginePtr(
+                          new BachelierSwaptionEngine(discountCurve, vol, dc));
+        }
+        BachelierSwaptionEnginePtr(
+                           const Handle<YieldTermStructure> & discountCurve,
+                           const Handle<SwaptionVolatilityStructure>& v) {
+            return new BlackSwaptionEnginePtr(
+                                   new BachelierSwaptionEngine(discountCurve, v));
         }
     }
 };
