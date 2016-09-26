@@ -80,7 +80,7 @@
 %{
 #include <ql/quantlib.hpp>
 
-#if QL_HEX_VERSION < 0x010800f0
+#if QL_HEX_VERSION < 0x010900f0
     #error using an old version of QuantLib, please update
 #endif
 
@@ -203,6 +203,7 @@
 %include forwardcurve.i
 %include fra.i
 %include functions.i
+%include futures.i
 %include gaussian1dmodel.i
 %include grid.i
 %include indexes.i
@@ -219,6 +220,7 @@
 %include observer.i
 %include operators.i
 %include optimizers.i
+%include parameter.i
 %include options.i
 %include payoffs.i
 %include piecewiseyieldcurve.i

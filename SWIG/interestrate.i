@@ -22,6 +22,7 @@
 %include common.i
 %include types.i
 %include daycounters.i
+%include stl.i
 
 %{
 using QuantLib::Compounding;
@@ -102,6 +103,11 @@ class InterestRate {
         }
     }
 };
+
+
+namespace std {
+    %template(InterestRateVector) vector<InterestRate>;
+}
 
 
 #endif

@@ -67,6 +67,7 @@ class Schedule {
     Size size() const;
     Date date(Size i) const;
     bool isRegular(Size i) const;
+    Schedule until(Date truncationDate) const;
     %extend {
         #if defined(SWIGPYTHON) || defined(SWIGRUBY)
         Date __getitem__(Integer i) {

@@ -3,6 +3,7 @@
  Copyright (C) 2003, 2007, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Luis Cota
+ Copyright (C) 2016 Gouthaman Balaraman
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -95,7 +96,11 @@ class SwaptionHelperPtr : public boost::shared_ptr<CalibrationHelper> {
                           const DayCounter& floatingLegDayCounter,
                           const Handle<YieldTermStructure>& termStructure,
                           CalibrationHelper::CalibrationErrorType errorType
-                                    = CalibrationHelper::RelativePriceError) {
+                                    = CalibrationHelper::RelativePriceError,
+                          const Real strike = Null<Real>(),
+                          const Real nominal = 1.0,
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real shift = 0.0) {
             boost::shared_ptr<IborIndex> libor =
                 boost::dynamic_pointer_cast<IborIndex>(index);
             return new SwaptionHelperPtr(
@@ -104,8 +109,63 @@ class SwaptionHelperPtr : public boost::shared_ptr<CalibrationHelper> {
                                    fixedLegDayCounter,
                                    floatingLegDayCounter,
                                    termStructure,
-                                   errorType));
+                                   errorType,
+                                   strike, nominal, 
+                                   type, shift));
         }
+        
+        SwaptionHelperPtr(const Date& exerciseDate, const Period& length,
+                          const Handle<Quote>& volatility,
+                          const IborIndexPtr& index,
+                          const Period& fixedLegTenor,
+                          const DayCounter& fixedLegDayCounter,
+                          const DayCounter& floatingLegDayCounter,
+                          const Handle<YieldTermStructure>& termStructure,
+                          CalibrationHelper::CalibrationErrorType errorType
+                                    = CalibrationHelper::RelativePriceError,
+                          const Real strike = Null<Real>(),
+                          const Real nominal = 1.0,
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real shift = 0.0) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new SwaptionHelperPtr(
+                new SwaptionHelper(exerciseDate,length,volatility,
+                                   libor,fixedLegTenor,
+                                   fixedLegDayCounter,
+                                   floatingLegDayCounter,
+                                   termStructure,
+                                   errorType,
+                                   strike, nominal, 
+                                   type, shift));
+        }
+        
+        SwaptionHelperPtr(const Date& exerciseDate, const Date& endDate,
+                          const Handle<Quote>& volatility,
+                          const IborIndexPtr& index,
+                          const Period& fixedLegTenor,
+                          const DayCounter& fixedLegDayCounter,
+                          const DayCounter& floatingLegDayCounter,
+                          const Handle<YieldTermStructure>& termStructure,
+                          CalibrationHelper::CalibrationErrorType errorType
+                                    = CalibrationHelper::RelativePriceError,
+                          const Real strike = Null<Real>(),
+                          const Real nominal = 1.0,
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real shift = 0.0) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new SwaptionHelperPtr(
+                new SwaptionHelper(exerciseDate,endDate,volatility,
+                                   libor,fixedLegTenor,
+                                   fixedLegDayCounter,
+                                   floatingLegDayCounter,
+                                   termStructure,
+                                   errorType,
+                                   strike, nominal, 
+                                   type, shift));
+        }
+        
         std::vector<Time> times() {
             std::list<Time> l;
             (*self)->addTimesTo(l);
@@ -195,6 +255,9 @@ class CalibratedModel {
         OptimizationMethod&, const EndCriteria &,
         const Constraint& constraint = Constraint(),
         const std::vector<Real>& weights = std::vector<Real>());
+    void setParams(const Array& params);
+    Real value(const Array& params,
+               const std::vector<boost::shared_ptr<CalibrationHelper> >&);
 };
 
 

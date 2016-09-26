@@ -46,6 +46,10 @@ class ShortRateModel {
         const Constraint& constraint = Constraint(),
         const std::vector<Real>& weights = std::vector<Real>(),
         const std::vector<bool> & fixParameters = std::vector<bool>());
+    Real value(const Array& params,
+               const std::vector<boost::shared_ptr<CalibrationHelper> >&);
+    EndCriteria::Type endCriteria() const;
+    void setParams(const Array& params);
 };
 
 %template(ShortRateModel) boost::shared_ptr<ShortRateModel>;

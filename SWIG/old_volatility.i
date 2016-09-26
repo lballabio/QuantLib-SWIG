@@ -196,6 +196,9 @@ typedef boost::shared_ptr<StrippedOptionletBase> OptionletStripper1Ptr;
 
 %rename(OptionletStripper1) OptionletStripper1Ptr;
 class OptionletStripper1Ptr : public boost::shared_ptr<StrippedOptionletBase> {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") OptionletStripper1Ptr;
+    #endif
 public:
     %extend{
         OptionletStripper1Ptr(const CapFloorTermVolSurfacePtr & parVolSurface,

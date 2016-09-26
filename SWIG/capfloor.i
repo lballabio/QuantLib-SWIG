@@ -40,6 +40,12 @@ typedef boost::shared_ptr<Instrument> CollarPtr;
 class CapFloorPtr : public boost::shared_ptr<Instrument> {
     #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
     %rename("implied-volatility") impliedVolatility;
+    %rename("floating-leg") floatingLeg;
+    %rename("cap-rates") capRates;
+    %rename("floor-rates") floorRates;
+    %rename("start-date") startDate;
+    %rename("maturity-date") maturityDate;
+    %rename("atm-rate") atmRate;
     #endif
   public:
      %extend {
@@ -53,6 +59,26 @@ class CapFloorPtr : public boost::shared_ptr<Instrument> {
             return boost::dynamic_pointer_cast<CapFloor>(*self)->
                 impliedVolatility(price, curve, guess, accuracy,
                                   maxEvaluations, minVol, maxVol);
+        }
+        const Leg& floatingLeg() const { 
+     		return boost::dynamic_pointer_cast<CapFloor>(*self)->floatingLeg();
+     	}
+     	
+        const std::vector<Rate>& capRates() const { 
+        	return boost::dynamic_pointer_cast<CapFloor>(*self)->capRates(); 
+        }
+        const std::vector<Rate>& floorRates() const { 
+        	return boost::dynamic_pointer_cast<CapFloor>(*self)->floorRates(); 
+        }
+        Date startDate() const {
+        	return boost::dynamic_pointer_cast<CapFloor>(*self)->startDate();
+        }
+        Date maturityDate() const {
+        	return boost::dynamic_pointer_cast<CapFloor>(*self)->maturityDate();
+        }
+
+        Rate atmRate(const boost::shared_ptr<YieldTermStructure>& discountCurve) const {
+        	return boost::dynamic_pointer_cast<CapFloor>(*self)->atmRate(*discountCurve);
         }
     }
 };

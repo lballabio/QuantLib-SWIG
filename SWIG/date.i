@@ -702,5 +702,42 @@ struct IMM {
                                 const Date& referenceDate = Date());
 };
 
+%{
+using QuantLib::ASX;
+%}
+
+struct ASX {
+    #if defined(SWIGRUBY)
+    %rename("isASXdate?")        isASXdate;
+    %rename("isASXcode?")        isASXcode;
+    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    %rename("is-asx-date?")      isASXdate;
+    %rename("is-asx-code?")      isASXcode;
+    %rename("next-date")         nextDate;
+    %rename("next-code")         nextCode;
+    #endif
+    enum Month { F =  1, G =  2, H =  3,
+                 J =  4, K =  5, M =  6,
+                 N =  7, Q =  8, U =  9,
+                 V = 10, X = 11, Z = 12 };
+
+    static bool isASXdate(const Date& d,
+                          bool mainCycle = true);
+    static bool isASXcode(const std::string& code,
+                          bool mainCycle = true);
+    static std::string code(const Date& asxDate);
+    static Date date(const std::string& asxCode,
+                     const Date& referenceDate = Date());
+    static Date nextDate(const Date& d = Date(),
+                         bool mainCycle = true);
+    static Date nextDate(const std::string& asxCode,
+                         bool mainCycle = true,
+                         const Date& referenceDate = Date());
+    static std::string nextCode(const Date& d = Date(),
+                                bool mainCycle = true);
+    static std::string nextCode(const std::string& asxCode,
+                                bool mainCycle = true,
+                                const Date& referenceDate = Date());
+};
 
 #endif

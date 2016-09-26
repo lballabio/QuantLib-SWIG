@@ -80,6 +80,7 @@ class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
 
 
 export_zero_curve(ZeroCurve,Linear);
+export_zero_curve(MonotonicCubicZeroCurve,MonotonicCubic);
 
 // add interpolations as you wish, e.g.,
 // export_zero_curve(CubicZeroCurve,Cubic);

@@ -3,6 +3,7 @@
  Copyright (C) 2009 Joseph Malicki
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2014 Simon Mazzucca
+ Copyright (C) 2016 Gouthaman Balaraman
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -232,9 +233,6 @@ class ZeroCouponBondPtr : public BondPtr {
 
 %rename(FixedRateBond) FixedRateBondPtr;
 class FixedRateBondPtr : public BondPtr {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") FixedRateBondPtr;
-    #endif
   public:
     %extend {
         FixedRateBondPtr(
@@ -259,6 +257,27 @@ class FixedRateBondPtr : public BondPtr {
                                   exCouponPeriod, exCouponCalendar,
                                   exCouponConvention, exCouponEndOfMonth));
         }
+        //! generic compounding and frequency InterestRate coupons 
+        FixedRateBondPtr(
+              Integer settlementDays,
+              Real faceAmount,
+              const Schedule& schedule,
+              const std::vector<InterestRate>& coupons,
+              BusinessDayConvention paymentConvention = Following,
+              Real redemption = 100.0,
+              const Date& issueDate = Date(),
+              const Calendar& paymentCalendar = Calendar(),
+              const Period& exCouponPeriod = Period(),
+              const Calendar& exCouponCalendar = Calendar(),
+              BusinessDayConvention exCouponConvention = Unadjusted,
+              bool exCouponEndOfMonth = false) {
+	       return new FixedRateBondPtr(
+		      new FixedRateBond(settlementDays, faceAmount,
+		                  schedule, coupons, paymentConvention,
+		                  redemption, issueDate, paymentCalendar,
+		                  exCouponPeriod, exCouponCalendar,
+		                  exCouponConvention, exCouponEndOfMonth));
+		}
         Frequency frequency() const {
             return boost::dynamic_pointer_cast<FixedRateBond>(*self)
                 ->frequency();
@@ -378,8 +397,10 @@ class DiscountingBondEnginePtr : public boost::shared_ptr<PricingEngine> {
 %{
 using QuantLib::CallableFixedRateBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
+using QuantLib::BlackCallableFixedRateBondEngine;
 typedef boost::shared_ptr<Instrument> CallableFixedRateBondPtr;
 typedef boost::shared_ptr<PricingEngine> TreeCallableFixedRateBondEnginePtr;
+typedef boost::shared_ptr<PricingEngine> BlackCallableFixedRateBondEnginePtr;
 %}
 
 %rename(CallableFixedRateBond) CallableFixedRateBondPtr;
@@ -398,7 +419,7 @@ class CallableFixedRateBondPtr : public BondPtr {
                 BusinessDayConvention paymentConvention,
                 Real redemption,
                 Date issueDate,
-                const CallabilitySchedule &putCallSchedule) {
+                const std::vector<boost::shared_ptr<Callability> > &putCallSchedule) {
             return new CallableFixedRateBondPtr(
                 new CallableFixedRateBond(settlementDays, faceAmount,
                                           schedule, coupons, accrualDayCounter,
@@ -432,6 +453,21 @@ class TreeCallableFixedRateBondEnginePtr
                                                     termStructure));
         }
     }
+};
+
+%rename(BlackCallableFixedRateBondEngine) BlackCallableFixedRateBondEnginePtr;
+class BlackCallableFixedRateBondEnginePtr 
+    : public boost::shared_ptr<PricingEngine> {
+    public:
+    %extend {
+        BlackCallableFixedRateBondEnginePtr(
+                const Handle<Quote>& fwdYieldVol,
+                const Handle<YieldTermStructure>& discountCurve) {
+            return new BlackCallableFixedRateBondEnginePtr(
+                new BlackCallableFixedRateBondEngine(fwdYieldVol, discountCurve));
+        }
+        
+    }    
 };
 
 %{
