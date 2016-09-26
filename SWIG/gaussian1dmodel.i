@@ -24,6 +24,7 @@
 %include options.i
 %include indexes.i
 %include optimizers.i
+%include calibrationhelpers.i
 
 %{
 using QuantLib::Gaussian1dModel;
@@ -44,7 +45,7 @@ class Gaussian1dModel {
                             const Handle<YieldTermStructure> &yts =
                                 Handle<YieldTermStructure>());
 
-		 const Real numeraire(const Date &referenceDate, const Real y = 0.0,
+		const Real numeraire(const Date &referenceDate, const Real y = 0.0,
                              const Handle<YieldTermStructure> &yts =
                                  Handle<YieldTermStructure>()) const;
 
@@ -96,33 +97,60 @@ class GsrPtr : public boost::shared_ptr<Gaussian1dModel> {
   public:
     %extend {
 
-	GsrPtr(const Handle<YieldTermStructure> &termStructure,
-            const std::vector<Date> &volstepdates,
-            const std::vector<Handle<Quote> > &volatilities,
-            const std::vector<Handle<Quote> > &reversions, const Real T = 60.0) {
+		GsrPtr(const Handle<YieldTermStructure> &termStructure,
+				const std::vector<Date> &volstepdates,
+				const std::vector<Handle<Quote> > &volatilities,
+				const std::vector<Handle<Quote> > &reversions, const Real T = 60.0) {
 			return new GsrPtr(new Gsr(termStructure, volstepdates, volatilities, reversions, T));
 		}
-	
-	void calibrateVolatilitiesIterative(
-            const std::vector<boost::shared_ptr<CalibrationHelper> > &helpers,
-            OptimizationMethod &method, const EndCriteria &endCriteria,
-            const Constraint &constraint = Constraint(),
-            const std::vector<Real> &weights = std::vector<Real>()) {
-				boost::dynamic_pointer_cast<Gsr>(*self)->calibrateVolatilitiesIterative(helpers, method, 
-						endCriteria, constraint, weights);
-            }
-    }
-
+		
+		void calibrateVolatilitiesIterative(
+				const std::vector<boost::shared_ptr<CalibrationHelper> > &helpers,
+				OptimizationMethod &method, const EndCriteria &endCriteria,
+				const Constraint &constraint = Constraint(),
+				const std::vector<Real> &weights = std::vector<Real>()) {
+			boost::dynamic_pointer_cast<Gsr>(*self)->calibrateVolatilitiesIterative(helpers, method, 
+				endCriteria, constraint, weights);
+		}
+		
+		void calibrate(
+			const std::vector<boost::shared_ptr<CalibrationHelper> >& helpers,
+			OptimizationMethod& method, const EndCriteria & endCriteria,
+			const Constraint& constraint = Constraint(),
+			const std::vector<Real>& weights = std::vector<Real>(),
+			const std::vector<bool> & fixParameters = std::vector<bool>()){
+			boost::dynamic_pointer_cast<Gsr>(*self)->calibrate(helpers, method, 
+				endCriteria, constraint, weights, fixParameters);
+		}
+		
+		Array params() const{
+			return boost::dynamic_pointer_cast<Gsr>(*self)->params();
+		}
+		Real value(const Array& params,
+				   const std::vector<boost::shared_ptr<CalibrationHelper> >& helpers){
+			return boost::dynamic_pointer_cast<Gsr>(*self)->value(params, helpers);
+		}
+		EndCriteria::Type endCriteria() const{
+			return boost::dynamic_pointer_cast<Gsr>(*self)->endCriteria();
+		}
+		void setParams(const Array& params){
+			boost::dynamic_pointer_cast<Gsr>(*self)->setParams(params);
+		}
+		Integer functionEvaluation() const{
+			return boost::dynamic_pointer_cast<Gsr>(*self)->functionEvaluation();
+		}
+	}
 };
-
 
 // Pricing Engines
 
 %{
 using QuantLib::Gaussian1dSwaptionEngine;
+using QuantLib::Gaussian1dJamshidianSwaptionEngine;
 using QuantLib::Gaussian1dNonstandardSwaptionEngine;
  
 typedef boost::shared_ptr<PricingEngine> Gaussian1dSwaptionEnginePtr;
+typedef boost::shared_ptr<PricingEngine> Gaussian1dJamshidianSwaptionEnginePtr;
 typedef boost::shared_ptr<PricingEngine> Gaussian1dNonstandardSwaptionEnginePtr;
 %}
 
@@ -142,7 +170,18 @@ class Gaussian1dSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
 		}
 	
     }
+};
 
+%rename(Gaussian1dJamshidianSwaptionEngine) Gaussian1dJamshidianSwaptionEnginePtr;
+class Gaussian1dJamshidianSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+
+	Gaussian1dJamshidianSwaptionEnginePtr(const boost::shared_ptr<Gaussian1dModel> &model) {
+			return new Gaussian1dJamshidianSwaptionEnginePtr(new Gaussian1dJamshidianSwaptionEngine(model));
+		}
+	
+    }
 };
 
 %rename(Gaussian1dNonstandardSwaptionEngine) Gaussian1dNonstandardSwaptionEnginePtr;
