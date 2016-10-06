@@ -50,38 +50,38 @@ class CapFloorPtr : public boost::shared_ptr<Instrument> {
   public:
      %extend {
         Volatility impliedVolatility(Real price,
-	                                 const Handle<YieldTermStructure>& disc,
-	                                 Volatility guess,
-	                                 Real accuracy = 1.0e-4,
-	                                 Natural maxEvaluations = 100,
-	                                 Volatility minVol = 1.0e-7,
-	                                 Volatility maxVol = 4.0,
-	                                 VolatilityType type = ShiftedLognormal,
-	                                 Real displacement = 0.0) const {
+                                     const Handle<YieldTermStructure>& disc,
+                                     Volatility guess,
+                                     Real accuracy = 1.0e-4,
+                                     Natural maxEvaluations = 100,
+                                     Volatility minVol = 1.0e-7,
+                                     Volatility maxVol = 4.0,
+                                     VolatilityType type = ShiftedLognormal,
+                                     Real displacement = 0.0) const {
             return boost::dynamic_pointer_cast<CapFloor>(*self)->
                 impliedVolatility(price, disc, guess, accuracy,
                                   maxEvaluations, minVol, maxVol,
                                   type, displacement);
         }
         const Leg& floatingLeg() const {
-     		return boost::dynamic_pointer_cast<CapFloor>(*self)->floatingLeg();
-     	}
+            return boost::dynamic_pointer_cast<CapFloor>(*self)->floatingLeg();
+        }
 
         const std::vector<Rate>& capRates() const {
-        	return boost::dynamic_pointer_cast<CapFloor>(*self)->capRates();
+            return boost::dynamic_pointer_cast<CapFloor>(*self)->capRates();
         }
         const std::vector<Rate>& floorRates() const {
-        	return boost::dynamic_pointer_cast<CapFloor>(*self)->floorRates();
+            return boost::dynamic_pointer_cast<CapFloor>(*self)->floorRates();
         }
         Date startDate() const {
-        	return boost::dynamic_pointer_cast<CapFloor>(*self)->startDate();
+            return boost::dynamic_pointer_cast<CapFloor>(*self)->startDate();
         }
         Date maturityDate() const {
-        	return boost::dynamic_pointer_cast<CapFloor>(*self)->maturityDate();
+            return boost::dynamic_pointer_cast<CapFloor>(*self)->maturityDate();
         }
 
         Rate atmRate(const boost::shared_ptr<YieldTermStructure>& discountCurve) const {
-        	return boost::dynamic_pointer_cast<CapFloor>(*self)->atmRate(*discountCurve);
+            return boost::dynamic_pointer_cast<CapFloor>(*self)->atmRate(*discountCurve);
         }
     }
 };
