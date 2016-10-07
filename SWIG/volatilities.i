@@ -448,22 +448,6 @@ class LocalVolSurfacePtr : public boost::shared_ptr<LocalVolTermStructure> {
                 new LocalVolSurface(blackTS, riskFreeTS, 
                     dividendTS, underlying));
         }
-        
-        const Date& referenceDate() const {
-            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->referenceDate();
-        }
-        DayCounter dayCounter() const {
-            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->dayCounter();
-        }
-        Date maxDate() const {
-            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->maxDate();
-        }
-        Real minStrike() const {
-            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->minStrike();
-        }
-        Real maxStrike() const {
-            return boost::dynamic_pointer_cast<LocalVolSurface>(*self)->maxStrike();
-        }
     }
 };
 
