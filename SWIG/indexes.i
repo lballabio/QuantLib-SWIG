@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2015 Matthias Groncki
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -404,6 +405,11 @@ class Name##Ptr : public SwapIndexPtr {
                                     Handle<YieldTermStructure>()) {
           return new Name##Ptr(new Name(tenor,h));
       }
+      Name##Ptr(const Period &tenor,
+                const Handle<YieldTermStructure>& h1,
+                const Handle<YieldTermStructure>& h2) {
+          return new Name##Ptr(new Name(tenor,h1,h2));
+      }
     }
 };
 %enddef
@@ -420,6 +426,10 @@ class Name##Ptr : public Base##Ptr {
       Name##Ptr(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>()) {
           return new Name##Ptr(new Name(h));
+      }
+      Name##Ptr(const Handle<YieldTermStructure>& h1,
+                const Handle<YieldTermStructure>& h2) {
+          return new Name##Ptr(new Name(h1,h2));
       }
     }
 };
