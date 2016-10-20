@@ -3,6 +3,7 @@
  Copyright (C) 2007 StatPro Italia srl
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Gouthaman Balaraman
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,10 +30,12 @@
 %{
 using QuantLib::Swap;
 using QuantLib::VanillaSwap;
+using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
 
 typedef boost::shared_ptr<Instrument> SwapPtr;
 typedef boost::shared_ptr<Instrument> VanillaSwapPtr;
+typedef boost::shared_ptr<Instrument> NonstandardSwapPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingSwapEnginePtr;
 %}
 
@@ -170,6 +173,104 @@ class VanillaSwapPtr : public SwapPtr {
     }
 };
 
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_NonstandardSwap) NonstandardSwap;
+#else
+%ignore NonstandardSwap;
+#endif
+class NonstandardSwap {
+  public:
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    NonstandardSwap();
+#endif
+};
+
+%rename(NonstandardSwap) NonstandardSwapPtr;
+class NonstandardSwapPtr : public SwapPtr {
+    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+	%rename ("floating-leg")       floatingLeg;
+	%rename ("fixed-leg")          fixedLeg;
+	%rename ("floating-nominals")  floatingNominals;
+	%rename ("fixed-nominals")     fixedNominals;
+	%rename ("fixed-schedule")     fixedSchedule;
+	%rename ("floating-schedule")  floatingSchedule;
+	%rename ("fixed-rate")         fixedRate;
+	%rename ("fixed-day-count")    fixedDayCount;
+	%rename ("floating-day-count") floatingDayCount;
+
+    #endif
+  public:
+    %extend {
+        NonstandardSwapPtr(VanillaSwap::Type type,
+                           const std::vector<Real> &fixedNominal,
+                           const std::vector<Real> &floatingNominal,
+                           const Schedule &fixedSchedule,
+                           const std::vector<Real> &fixedRate,
+                           const DayCounter &fixedDayCount,
+                           const Schedule &floatSchedule,
+                           const IborIndexPtr &index,
+                           const std::vector<Real> &gearing,
+                           const std::vector<Spread> &spread,
+                           const DayCounter &floatDayCount,
+                           const bool intermediateCapitalExchange = false,
+                           const bool finalCapitalExchange = false,
+                           BusinessDayConvention paymentConvention = Following) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new NonstandardSwapPtr(
+                new NonstandardSwap(type,fixedNominal,floatingNominal,fixedSchedule,fixedRate,
+                                    fixedDayCount,floatSchedule,libor,gearing,
+                                    spread,floatDayCount,intermediateCapitalExchange,
+                                    finalCapitalExchange, paymentConvention));
+        }
+        // Inspectors
+        const Leg& fixedLeg() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->fixedLeg();
+        }
+        const Leg& floatingLeg() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->floatingLeg();
+        }
+        std::vector<Real> fixedNominals() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->fixedNominal();
+        }
+        std::vector<Real> floatingNominals() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->floatingNominal();
+        }
+        const Schedule& fixedSchedule() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->fixedSchedule();
+        }
+        const Schedule& floatingSchedule() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->floatingSchedule();
+        }
+        std::vector<Rate> fixedRate() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->fixedRate();
+        }
+        std::vector<Spread> spreads() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->spreads();
+        }
+        std::vector<Spread> gearings() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->gearings();
+        }
+        const DayCounter& floatingDayCount() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->floatingDayCount();
+        }
+        const DayCounter& fixedDayCount() {
+	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+		        ->fixedDayCount();
+        }
+    }
+};
 
 %rename(DiscountingSwapEngine) DiscountingSwapEnginePtr;
 class DiscountingSwapEnginePtr : public boost::shared_ptr<PricingEngine> {
