@@ -243,27 +243,6 @@ class BondFunctions {
                         maxIterations,
                         guess);
         }
-        // alias for yield (as in bond.i)
-        static Rate bondYield(const BondPtr& bond,
-                          Real cleanPrice,
-                          const DayCounter& dayCounter,
-                          Compounding compounding,
-                          Frequency frequency,
-                          Date settlementDate = Date(),
-                          Real accuracy = 1.0e-10,
-                          Size maxIterations = 100,
-                          Rate guess = 0.05) {
-            return QuantLib::BondFunctions::yield(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        cleanPrice,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate,
-                        accuracy,
-                        maxIterations,
-                        guess);
-        }
         static Time duration(const BondPtr& bond,
                              const InterestRate& yield,
                              Duration::Type type = Duration::Modified,
