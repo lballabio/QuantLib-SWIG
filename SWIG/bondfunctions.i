@@ -31,7 +31,9 @@ using QuantLib::BondFunctions;
 %}
 
 class BondFunctions {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGPYTHON) || defined (SWIGRUBY)
+    %rename(bondYield) yield;
+    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
     %rename("start-date")                 startDate;
     %rename("maturity-date")              maturityDate;
     %rename("is-tradeable")               isTradable;
@@ -224,27 +226,6 @@ class BondFunctions {
                         settlementDate);
         }
         static Rate yield(const BondPtr& bond,
-                          Real cleanPrice,
-                          const DayCounter& dayCounter,
-                          Compounding compounding,
-                          Frequency frequency,
-                          Date settlementDate = Date(),
-                          Real accuracy = 1.0e-10,
-                          Size maxIterations = 100,
-                          Rate guess = 0.05) {
-            return QuantLib::BondFunctions::yield(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        cleanPrice,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate,
-                        accuracy,
-                        maxIterations,
-                        guess);
-        }
-        // alias for yield (as in bond.i)
-        static Rate bondYield(const BondPtr& bond,
                           Real cleanPrice,
                           const DayCounter& dayCounter,
                           Compounding compounding,
