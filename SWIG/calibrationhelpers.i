@@ -74,6 +74,8 @@ class CalibrationHelper {
                                  Real accuracy, Size maxEvaluations,
                                  Volatility minVol, Volatility maxVol) const;
     Real blackPrice(Volatility volatility) const;
+    Handle<Quote> volatility() const;
+    VolatilityType volatilityType() const;
 };
 %template(CalibrationHelper) boost::shared_ptr<CalibrationHelper>;
 %extend boost::shared_ptr<CalibrationHelper> {
