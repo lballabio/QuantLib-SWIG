@@ -4,6 +4,7 @@
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Luis Cota
  Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -82,6 +83,22 @@ class CalibrationHelper {
         CalibrationHelper::PriceError;
     static const CalibrationHelper::CalibrationErrorType ImpliedVolError =
         CalibrationHelper::ImpliedVolError;
+    Date swaptionExpiryDate() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->exercise()->date(0) : Null<Date>();
+    }
+    Real swaptionStrike() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->underlyingSwap()->fixedRate() : Null<Real>();
+    }
+    Real swaptionNominal() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->underlyingSwap()->nominal() : Null<Real>();
+    }
+    Date swaptionMaturityDate() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->underlyingSwap()->fixedSchedule().dates().back() : Null<Date>();
+    }
 }
 
 %rename(SwaptionHelper) SwaptionHelperPtr;
