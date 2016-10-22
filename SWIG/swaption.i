@@ -60,8 +60,6 @@ class SwaptionPtr : public boost::shared_ptr<Instrument> {
 using QuantLib::BasketGeneratingEngine;
 %}
 
-%template(
-
 %rename(NonstandardSwaption) NonstandardSwaptionPtr;
 class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
   public:
