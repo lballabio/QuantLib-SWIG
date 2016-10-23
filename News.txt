@@ -1,20 +1,54 @@
 
-Release 1.8 - May 2016
-Changes since release 1.7:
-- in sync with QuantLib 1.8.
-- exported finite-difference barrier engine (thanks to Jayanth R. Varma).
-- exported FixedRateBondForward and BondFunctions::zSpread (thanks to
-  Gouthaman Balaraman).
-- fix compilation error on Mac OS X Yosemite (thanks to Alex Cooper).
-- let the Java module use the compiler defined by $CXX (thanks to Richard Gomes).
-- let the Python module use the same compiler used for QuantLib
-  (thanks to GitHub user EthiaclBanker).
-- exported solver and optimizer functionality to C# (thanks to GitHub
-  user dave-fl).
-- in the Python module, also defined __hash__ for classes that defined
-  __eq__. This makes them suitable to use as dictionary keys.
-- fixed CallableFixedRateBond call in Python (thanks to Gouthaman Balaraman).
-- exported Schedule::until (thanks to GitHub user alexsbromberg).
-- exported StochasticProcess interface.
+Changes for QuantLib-SWIG 1.9
+=============================
 
-  
+The most notable changes are included below.
+A detailed list of changes is available in ChangeLog.txt and at
+<https://github.com/lballabio/QuantLib-SWIG/milestone/2?closed=1>.
+
+- dropped support for Visual C++ 8 (2005), which as of April 2016 is
+  unsupported by Microsoft.
+
+- removed harmful redefinition of `SWIGSTDCALL` preventing debugging
+  of C# module (thanks to Fabrice Lecuyer to the heads-up).
+
+- if present in the environment, `LDFLAGS` is now passed to the
+  linker when building the Python wrappers (thanks to Gouthaman
+  Balaraman).
+
+- if present in the environment, `CXXFLAGS` and `LDFLAGS` are now
+  passed to the linker when building the Java wrappers (thanks to
+  Martin Ross).
+
+- added a few inspectors to the `CapFloor` class (thanks to Gouthaman
+  Balaraman).
+
+- exported the `ASX`, `Futures` and `Pillar` structs, used in a few
+  newly-exported rate-helper constructors (thanks to Fabrice Lecuyer).
+
+- allow the use of normal volatilities for cap, floors and swaptions
+  (thanks to Gouthaman Balaraman, Peter Caspers and Wojciech
+  Slusarski).
+
+- exported the `LocalVolSurface` class (thanks to Gouthaman Balaraman).
+
+- exported the `AnalyticPTDHestonEngine` class (thanks to Gouthaman
+  Balaraman).
+
+- exported the `BlackCallableFixedRateBondEngine` class (thanks to
+  Gouthaman Balaraman).
+
+- exported monotonic-cubic zero curve (thanks to Andres Hernandez).
+
+- exported `ShortRateModel` inspectors (thanks to Andres Hernandez).
+
+- added overloaded constructor for `FixedRateBond` taking a vector of
+  `InterestRate` instances (thanks to Gouthaman Balaraman).
+  Unfortunately, this prevents kwargs support in Python.
+
+- swap indexes can now be built with an exogenous discount curve
+  (thanks to Peter Caspers).
+
+- exported BBSW, BKBM, NZOCR and Aonia indexes (thanks to Fabrice Lecuyer).
+
+
