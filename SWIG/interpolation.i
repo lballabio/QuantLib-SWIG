@@ -184,7 +184,7 @@ class MonotonicCubic : public Cubic {
             QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
-class LogCubic : QuantLib::LogCubic {
+class LogCubic : public QuantLib::LogCubic {
   public:
     LogCubic()
     : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger) {}
