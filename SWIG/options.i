@@ -806,6 +806,27 @@ class FdBlackScholesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+%{
+using QuantLib::FdBatesVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
+%}
+
+%rename(FdBatesVanillaEngine) FdBatesVanillaEnginePtr;
+class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdBatesVanillaEnginePtr(const BatesProcessPtr& process,
+                            Size tGrid = 100, Size xGrid = 100, Size vGrid=50, Size dampingSteps = 0) {
+            boost::shared_ptr<BatesProcess> bProcess =
+                 boost::dynamic_pointer_cast<BatesProcess>(
+                                                                     process);
+            QL_REQUIRE(bProcess, "Bates Process required");
+            return new FdBatesVanillaEnginePtr(
+                            new FdBatesVanillaEngine( bProcess,tGrid, xGrid, vGrid, dampingSteps));
+        }
+    }
+};
+
 
 %{
 using QuantLib::ContinuousArithmeticAsianLevyEngine;
