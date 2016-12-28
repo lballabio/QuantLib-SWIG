@@ -218,6 +218,15 @@ class Period {
         bool __lt__(const Period& other) {
             return *self < other;
         }
+        bool __gt__(const Period& other) {
+            return other < *self;
+        }
+        bool __le__(const Period& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Period& other) {
+            return !(*self < other);
+        }
         #endif
         bool __eq__(const Period& other) {
             return *self == other;
@@ -542,6 +551,15 @@ class Date {
         }
         bool __lt__(const Date& other) {
             return *self < other;
+        }
+        bool __gt__(const Date& other) {
+            return other < *self;
+        }
+        bool __le__(const Date& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Date& other) {
+            return !(*self < other);
         }
         #endif
         #if defined(SWIGRUBY)

@@ -57,6 +57,15 @@ class Money {
         bool __lt__(const Money& other) {
             return *self < other;
         }
+        bool __gt__(const Money& other) {
+            return other < *self;
+        }
+        bool __le__(const Money& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Money& other) {
+            return !(*self < other);
+        }
         #endif
         int __cmp__(const Money& other) {
             if (*self < other)
