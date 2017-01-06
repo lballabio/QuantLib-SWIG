@@ -74,13 +74,6 @@ const char* __version__;
 %}
 #endif
 
-#if defined(SWIGCSHARP)
-%{
-#define SWIGSTDCALL
-%}
-#endif
-
-
 //#if defined(SWIGPYTHON)
 //%feature("autodoc");
 //#endif
