@@ -20,6 +20,7 @@ import sys
 import unittest
 
 from date import DateTest
+from daycounters import DayCountersTest
 from instruments import InstrumentTest
 from marketelements import MarketElementTest
 from integrals import IntegralTest
@@ -38,6 +39,7 @@ def test():
     suite = unittest.TestSuite()
 
     suite.addTest(DateTest())
+    suite.addTest(DayCountersTest())
     suite.addTest(unittest.makeSuite(InstrumentTest,'test'))
     suite.addTest(unittest.makeSuite(MarketElementTest,'test'))
     suite.addTest(unittest.makeSuite(IntegralTest,'test'))
