@@ -205,6 +205,7 @@ class SwaptionVolatilityStructure : public Extrapolator {
                        Rate strike, bool extrapolate = false) const;
     Real blackVariance(Time start, Time length,
                        Rate strike, bool extrapolate = false) const;
+    Date optionDateFromTenor(const Period& p) const;
 };
 
 %template(SwaptionVolatilityStructure)
