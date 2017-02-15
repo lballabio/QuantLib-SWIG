@@ -30,13 +30,15 @@ using QuantLib::Simple;
 using QuantLib::Compounded;
 using QuantLib::Continuous;
 using QuantLib::SimpleThenCompounded;
+using QuantLib::CompoundedThenSimple;
 %}
 
 enum Compounding {
     Simple,
     Compounded,
     Continuous,
-    SimpleThenCompounded
+    SimpleThenCompounded,
+    CompoundedThenSimple    
 };
 
 
