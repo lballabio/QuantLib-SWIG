@@ -665,6 +665,8 @@
     <Compile Include="NodeVector.cs" />
     <Compile Include="NOKCurrency.cs" />
     <Compile Include="NonCentralChiSquareDistribution.cs" />
+    <Compile Include="NonstandardSwap.cs" />
+    <Compile Include="NonstandardSwaption.cs" />
     <Compile Include="NormalDistribution.cs" />
     <Compile Include="Norway.cs" />
     <Compile Include="NPRCurrency.cs" />
@@ -734,6 +736,7 @@
     <Compile Include="RateHelper.cs" />
     <Compile Include="RateHelperVector.cs" />
     <Compile Include="RealTimeSeries.cs" />
+    <Compile Include="RebatedExercise.cs" />
     <Compile Include="Redemption.cs" />
     <Compile Include="Region.cs" />
     <Compile Include="RelinkableBlackVolTermStructureHandle.cs" />
@@ -948,6 +951,7 @@
     <Compile Include="_Callability.cs" />
     <Compile Include="_DeltaVolQuote.cs" />
     <Compile Include="_Exercise.cs" />
+    <Compile Include="_NonstandardSwap.cs" />
     <Compile Include="_VanillaSwap.cs" />
     <Compile Include="_YearOnYearInflationSwap.cs" />
     <Compile Include="_ZeroCouponInflationSwap.cs" />
