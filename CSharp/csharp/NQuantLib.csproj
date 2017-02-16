@@ -190,6 +190,7 @@
     <Compile Include="BachelierSwaptionEngine.cs" />
     <Compile Include="BackwardFlat.cs" />
     <Compile Include="BackwardFlatInterpolation.cs" />
+    <Compile Include="BackwardFlatZeroCurve.cs" />
     <Compile Include="BaroneAdesiWhaleyEngine.cs" />
     <Compile Include="Barrier.cs" />
     <Compile Include="BarrierOption.cs" />
@@ -322,6 +323,7 @@
     <Compile Include="Cubic.cs" />
     <Compile Include="CubicBSplinesFitting.cs" />
     <Compile Include="CubicNaturalSpline.cs" />
+    <Compile Include="CubicZeroCurve.cs" />
     <Compile Include="CumulativeBinomialDistribution.cs" />
     <Compile Include="CumulativeNormalDistribution.cs" />
     <Compile Include="CumulativePoissonDistribution.cs" />
@@ -471,6 +473,7 @@
     <Compile Include="ForwardEuropeanEngine.cs" />
     <Compile Include="ForwardFlat.cs" />
     <Compile Include="ForwardFlatInterpolation.cs" />
+    <Compile Include="ForwardFlatZeroCurve.cs" />
     <Compile Include="ForwardRate.cs" />
     <Compile Include="ForwardRateAgreement.cs" />
     <Compile Include="ForwardSpreadedTermStructure.cs" />
@@ -608,8 +611,10 @@
     <Compile Include="LocalVolTermStructureHandle.cs" />
     <Compile Include="LogCubic.cs" />
     <Compile Include="LogCubicNaturalSpline.cs" />
+    <Compile Include="LogCubicZeroCurve.cs" />
     <Compile Include="LogLinear.cs" />
     <Compile Include="LogLinearInterpolation.cs" />
+    <Compile Include="LogLinearZeroCurve.cs" />
     <Compile Include="LogParabolic.cs" />
     <Compile Include="LTLCurrency.cs" />
     <Compile Include="LUFCurrency.cs" />
