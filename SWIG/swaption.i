@@ -120,6 +120,11 @@ class BlackSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
             return new BlackSwaptionEnginePtr(
                                    new BlackSwaptionEngine(discountCurve, v));
         }
+
+	Real vega() {
+                return boost::dynamic_pointer_cast<Swaption>(*self)->result<Real>("vega");
+        }
+
     }
 };
 
