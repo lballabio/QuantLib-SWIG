@@ -22,6 +22,7 @@
 #define quantlib_day_counters_i
 
 %include common.i
+%include calendars.i
 %include date.i
 %include types.i
 %include stl.i
@@ -95,7 +96,10 @@ namespace QuantLib {
     };
     class OneDayCounter : public DayCounter {};
     class SimpleDayCounter : public DayCounter {};
-    class Business252 : public DayCounter {};
+    class Business252 : public DayCounter {
+      public:
+        Business252(Calendar c = Brazil());
+    };
 }
 
 
