@@ -266,9 +266,9 @@ class BFGS : public OptimizationMethod {
 
 class LevenbergMarquardt : public OptimizationMethod {
   public:
-	LevenbergMarquardt(Real epsfcn = 1.0e-8,
-	                   Real xtol = 1.0e-8,
-    	               Real gtol = 1.0e-8);
+    LevenbergMarquardt(Real epsfcn = 1.0e-8,
+                       Real xtol = 1.0e-8,
+                       Real gtol = 1.0e-8);
 };
 
 class DifferentialEvolution : public OptimizationMethod {
@@ -309,7 +309,7 @@ class ReannealingTrivial {
 class GaussianSimulatedAnnealing : public OptimizationMethod {
   public:
     enum ResetScheme{
-		NoResetScheme,
+        NoResetScheme,
         ResetToBestPoint,
         ResetToOrigin
     };
@@ -327,7 +327,7 @@ class GaussianSimulatedAnnealing : public OptimizationMethod {
 class MirrorGaussianSimulatedAnnealing : public OptimizationMethod {
   public:
     enum ResetScheme{
-		NoResetScheme,
+        NoResetScheme,
         ResetToBestPoint,
         ResetToOrigin
     };
@@ -345,7 +345,7 @@ class MirrorGaussianSimulatedAnnealing : public OptimizationMethod {
 class LogNormalSimulatedAnnealing : public OptimizationMethod {
   public:
    enum ResetScheme{
-		NoResetScheme,
+        NoResetScheme,
         ResetToBestPoint,
         ResetToOrigin
     };
