@@ -111,6 +111,15 @@ class GsrPtr : public boost::shared_ptr<Gaussian1dModel> {
 				boost::dynamic_pointer_cast<Gsr>(*self)->calibrateVolatilitiesIterative(helpers, method, 
 						endCriteria, constraint, weights);
             }
+	
+	const Array &reversion() const {
+		return boost::dynamic_pointer_cast<Gsr>(*self)->reversion();
+	}
+
+	const Array &volatility() const {
+		return boost::dynamic_pointer_cast<Gsr>(*self)->volatility();
+	}
+	
     }
 
 };
