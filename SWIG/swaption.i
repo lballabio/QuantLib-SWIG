@@ -124,6 +124,10 @@ class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
             return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->
                 calibrationBasket(swapIndex, swaptionVolatility, type);
         }
+
+		Real underlyingValue() {
+			return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->result<Real>("underlyingValue");
+		}
     }
 };
 
