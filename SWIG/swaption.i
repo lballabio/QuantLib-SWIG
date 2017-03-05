@@ -33,8 +33,10 @@ using QuantLib::Actual365Fixed;
 using QuantLib::Swaption;
 using QuantLib::NonstandardSwaption;
 using QuantLib::Settlement;
+using QuantLib::FloatFloatSwaption;
 typedef boost::shared_ptr<Instrument> SwaptionPtr;
 typedef boost::shared_ptr<Instrument> NonstandardSwaptionPtr;
+typedef boost::shared_ptr<Instrument> FloatFloatSwaptionPtr;
 %}
 
 struct Settlement {
@@ -88,6 +90,38 @@ class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
             boost::shared_ptr<SwapIndex> swapIndex =
                 boost::dynamic_pointer_cast<SwapIndex>(standardSwapBase);
             return boost::dynamic_pointer_cast<NonstandardSwaption>(*self)->
+                calibrationBasket(swapIndex, swaptionVolatility, type);
+        }
+    }
+};
+
+%rename(FloatFloatSwaption) FloatFloatSwaptionPtr;
+class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
+  public:
+    %extend {
+        FloatFloatSwaptionPtr(const FloatFloatSwapPtr& simpleSwap,
+                    const boost::shared_ptr<Exercise>& exercise) {
+            boost::shared_ptr<FloatFloatSwap> swap =
+                 boost::dynamic_pointer_cast<FloatFloatSwap>(simpleSwap);
+            QL_REQUIRE(swap, "floatfloat swap required");
+            return new FloatFloatSwaptionPtr(new FloatFloatSwaption(swap,exercise));
+        }
+
+		std::vector<boost::shared_ptr<CalibrationHelper> > calibrationBasket(
+            boost::shared_ptr<Index> standardSwapBase,
+            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+            std::string typeStr) {
+
+            BasketGeneratingEngine::CalibrationBasketType type;
+            if(typeStr == "Naive")
+                type = BasketGeneratingEngine::Naive;
+            else if(typeStr == "MaturityStrikeByDeltaGamma")
+                type = BasketGeneratingEngine::MaturityStrikeByDeltaGamma;
+            else
+                QL_FAIL("type " << typeStr << "unknown.");
+            boost::shared_ptr<SwapIndex> swapIndex =
+                boost::dynamic_pointer_cast<SwapIndex>(standardSwapBase);
+            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->
                 calibrationBasket(swapIndex, swaptionVolatility, type);
         }
     }

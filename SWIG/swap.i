@@ -32,11 +32,13 @@ using QuantLib::Swap;
 using QuantLib::VanillaSwap;
 using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
+using QuantLib::FloatFloatSwap;
 
 typedef boost::shared_ptr<Instrument> SwapPtr;
 typedef boost::shared_ptr<Instrument> VanillaSwapPtr;
 typedef boost::shared_ptr<Instrument> NonstandardSwapPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingSwapEnginePtr;
+typedef boost::shared_ptr<Instrument> FloatFloatSwapPtr;
 %}
 
 %rename(Swap) SwapPtr;
@@ -55,6 +57,9 @@ class SwapPtr : public boost::shared_ptr<Instrument> {
         }
         const Leg & leg(Size i){
             return boost::dynamic_pointer_cast<Swap>(*self)->leg(i);
+        }
+		Real legNPV(Size j) const {
+            return boost::dynamic_pointer_cast<Swap>(*self)->legNPV(j);
         }
     }
 };
@@ -340,5 +345,58 @@ class AssetSwapPtr : public SwapPtr {
     }
 };
 
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_FloatFloatSwap) FloatFloatSwap;
+#else
+%ignore FloatFloatSwap;
+#endif
+class FloatFloatSwap {
+  public:
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    FloatFloatSwap();
+#endif
+};
+
+%rename(FloatFloatSwap) FloatFloatSwapPtr;
+class FloatFloatSwapPtr : public SwapPtr {
+
+  public:
+    %extend {
+        FloatFloatSwapPtr(VanillaSwap::Type type, const std::vector<Real> &nominal1,
+            const std::vector<Real> &nominal2, const Schedule &schedule1,
+            const InterestRateIndexPtr &indexPtr1,
+            const DayCounter &dayCount1, const Schedule &schedule2,
+            const InterestRateIndexPtr &indexPtr2,
+            const DayCounter &dayCount2,
+            const bool intermediateCapitalExchange = false,
+            const bool finalCapitalExchange = false,
+            const std::vector<Real> &gearing1 = std::vector<Real>(),
+            const std::vector<Real> &spread1 = std::vector<Real>(),
+            const std::vector<Real> &cappedRate1 = std::vector<Real>(),
+            const std::vector<Real> &flooredRate1 = std::vector<Real>(),
+			const std::vector<Real> &gearing2 = std::vector<Real>(),
+            const std::vector<Real> &spread2 = std::vector<Real>(),
+            const std::vector<Real> &cappedRate2 = std::vector<Real>(),
+            const std::vector<Real> &flooredRate2 = std::vector<Real>(),
+			BusinessDayConvention paymentConvention1 = Following,
+			BusinessDayConvention paymentConvention2 = Following) {
+            boost::shared_ptr<InterestRateIndex> index1 =
+                boost::dynamic_pointer_cast<InterestRateIndex>(indexPtr1);
+			boost::shared_ptr<InterestRateIndex> index2 =
+                boost::dynamic_pointer_cast<InterestRateIndex>(indexPtr2);
+            return new FloatFloatSwapPtr(
+                    new FloatFloatSwap(type, nominal1,nominal2,schedule1,
+                                    index1,dayCount1,schedule2,
+                                    index2, dayCount2,
+									intermediateCapitalExchange, finalCapitalExchange,
+									gearing1, spread1, cappedRate1,
+									flooredRate1, gearing2, spread2,
+									cappedRate2, flooredRate2,
+									paymentConvention1, paymentConvention2));
+        }
+
+	}
+};
 
 #endif
