@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2014 Matthias Groncki
+ Copyright (C) 2017 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -87,7 +88,10 @@ class Gaussian1dModel {
 
 %{
 using QuantLib::Gsr;
+using QuantLib::MarkovFunctional;
+
 typedef boost::shared_ptr<Gaussian1dModel> GsrPtr;
+typedef boost::shared_ptr<MarkovFunctional> MarkovFunctionalPtr;
 %}
 
 
@@ -124,6 +128,43 @@ class GsrPtr : public boost::shared_ptr<Gaussian1dModel> {
 
 };
 
+
+%rename(MarkovFunctional) MarkovFunctionalPtr;
+class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
+  public:
+    %extend {
+
+	MarkovFunctionalPtr(const Handle<YieldTermStructure> &termStructure,
+			const Real reversion,
+			const std::vector<Date> &volstepdates,
+			const std::vector<Real> &volatilities,
+			const Handle<SwaptionVolatilityStructure> &swaptionVol,
+			const std::vector<Date> &swaptionExpiries,
+			const std::vector<Period> &swaptionTenors,
+			const SwapIndexPtr& swapIndexBase) {
+			const boost::shared_ptr<SwapIndex> swi =
+                boost::dynamic_pointer_cast<SwapIndex>(swapIndexBase);
+			return new MarkovFunctionalPtr(new MarkovFunctional(termStructure, reversion, volstepdates, volatilities, swaptionVol,
+			swaptionExpiries, swaptionTenors, swi));
+		}
+
+	
+	void calibrate(
+		const std::vector<boost::shared_ptr<CalibrationHelper> > &helper,
+            OptimizationMethod &method, const EndCriteria &endCriteria,
+            const Constraint &constraint = Constraint(),
+            const std::vector<Real> &weights = std::vector<Real>(),
+            const std::vector<bool> &fixParameters = std::vector<bool>()) {
+			boost::dynamic_pointer_cast<MarkovFunctional>(*self)->calibrate(helper, method, 
+					endCriteria, constraint, weights, fixParameters);
+		}
+		
+	const Array &volatility() const {
+		return boost::dynamic_pointer_cast<MarkovFunctional>(*self)->volatility();
+	}
+	
+    }
+};
 
 // Pricing Engines
 
