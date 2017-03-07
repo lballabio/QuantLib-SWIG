@@ -158,11 +158,51 @@ class GsrPtr : public boost::shared_ptr<Gaussian1dModel> {
 };
 
 
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_MarkovFunctional) MarkovFunctional;
+#else
+%ignore MarkovFunctional;
+#endif
+%rename (MarkovFunctional_ModelSettings) MarkovFunctional::ModelSettings;
+%feature ("flatnested") ModelSettings;
+class MarkovFunctional {
+  public:
+    struct ModelSettings {
+	   enum Adjustments {
+			AdjustNone = 0,
+			AdjustDigitals = 1 << 0,
+			AdjustYts = 1 << 1,
+			ExtrapolatePayoffFlat = 1 << 2,
+			NoPayoffExtrapolation = 1 << 3,
+			KahaleSmile = 1 << 4,
+			SmileExponentialExtrapolation = 1 << 5,
+			KahaleInterpolation = 1 << 6,
+			SmileDeleteArbitragePoints = 1 << 7,
+			SabrSmile = 1 << 8
+		};
+	};
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    MarkovFunctional();
+#endif
+};
+
 
 %rename(MarkovFunctional) MarkovFunctionalPtr;
 class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
   public:
     %extend {
+
+	static const MarkovFunctional::ModelSettings::Adjustments AdjustNone = MarkovFunctional::ModelSettings::AdjustNone;
+	static const MarkovFunctional::ModelSettings::Adjustments AdjustDigitals = MarkovFunctional::ModelSettings::AdjustDigitals;
+	static const MarkovFunctional::ModelSettings::Adjustments AdjustYts = MarkovFunctional::ModelSettings::AdjustYts;
+	static const MarkovFunctional::ModelSettings::Adjustments ExtrapolatePayoffFlat = MarkovFunctional::ModelSettings::ExtrapolatePayoffFlat;
+	static const MarkovFunctional::ModelSettings::Adjustments NoPayoffExtrapolation = MarkovFunctional::ModelSettings::NoPayoffExtrapolation;
+	static const MarkovFunctional::ModelSettings::Adjustments KahaleSmile = MarkovFunctional::ModelSettings::KahaleSmile;
+	static const MarkovFunctional::ModelSettings::Adjustments SmileExponentialExtrapolation = MarkovFunctional::ModelSettings::SmileExponentialExtrapolation;
+	static const MarkovFunctional::ModelSettings::Adjustments KahaleInterpolation = MarkovFunctional::ModelSettings::KahaleInterpolation;
+	static const MarkovFunctional::ModelSettings::Adjustments SmileDeleteArbitragePoints = MarkovFunctional::ModelSettings::SmileDeleteArbitragePoints;
+	static const MarkovFunctional::ModelSettings::Adjustments SabrSmile = MarkovFunctional::ModelSettings::SabrSmile;
 
 	MarkovFunctionalPtr(const Handle<YieldTermStructure> &termStructure,
 			const Real reversion,
@@ -171,13 +211,23 @@ class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
 			const Handle<SwaptionVolatilityStructure> &swaptionVol,
 			const std::vector<Date> &swaptionExpiries,
 			const std::vector<Period> &swaptionTenors,
-			const SwapIndexPtr& swapIndexBase) {
-			const boost::shared_ptr<SwapIndex> swi =
+			const SwapIndexPtr& swapIndexBase,
+			const Size yGridPoints = 64,
+			const Real yStdDevs = 7.0,
+			const Size gaussHermitePoints = 32,
+			const Real digitalGap = 1E-5,
+			const Real marketRateAccuracy = 1E-7,
+			const Real lowerRateBound = 0.0,
+			const Real upperRateBound = 2.0,
+			const int adjustments = MarkovFunctional::ModelSettings::KahaleSmile | MarkovFunctional::ModelSettings::SmileExponentialExtrapolation,
+			const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>()) {
+			const boost::shared_ptr<SwapIndex> swapIndex =
                 boost::dynamic_pointer_cast<SwapIndex>(swapIndexBase);
+			MarkovFunctional::ModelSettings modelSettings = MarkovFunctional::ModelSettings(yGridPoints, yStdDevs, gaussHermitePoints, digitalGap,
+											marketRateAccuracy, lowerRateBound, upperRateBound, adjustments, smileMoneyCheckpoints);
 			return new MarkovFunctionalPtr(new MarkovFunctional(termStructure, reversion, volstepdates, volatilities, swaptionVol,
-			swaptionExpiries, swaptionTenors, swi));
+			swaptionExpiries, swaptionTenors, swapIndex, modelSettings));
 		}
-
 	
 	void calibrate(
 		const std::vector<boost::shared_ptr<CalibrationHelper> > &helper,
@@ -195,7 +245,6 @@ class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
 	
     }
 };
-
 
 // Pricing Engines
 
