@@ -92,7 +92,7 @@ using QuantLib::Gsr;
 using QuantLib::MarkovFunctional;
 
 typedef boost::shared_ptr<Gaussian1dModel> GsrPtr;
-typedef boost::shared_ptr<MarkovFunctional> MarkovFunctionalPtr;
+typedef boost::shared_ptr<Gaussian1dModel> MarkovFunctionalPtr;
 %}
 
 
