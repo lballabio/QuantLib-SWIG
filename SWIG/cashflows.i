@@ -524,14 +524,16 @@ class CappedFlooredCmsCouponPtr: public CappedFlooredCouponPtr {
 class LinearTsrPricerPtr : public CmsCouponPricerPtr {
   public:
     %extend {
-        LinearTsrPricerPtr(const Handle<SwaptionVolatilityStructure> &swaptionVol,
-				const Handle<Quote> &meanReversion,
-				const Handle<YieldTermStructure> &couponDiscountCurve =
-					Handle<YieldTermStructure>(),
-				const LinearTsrPricer::Settings &settings = LinearTsrPricer::Settings()) {
+        LinearTsrPricerPtr(
+            const Handle<SwaptionVolatilityStructure> &swaptionVol,
+            const Handle<Quote> &meanReversion,
+            const Handle<YieldTermStructure> &couponDiscountCurve =
+                                                 Handle<YieldTermStructure>(),
+            const LinearTsrPricer::Settings &settings =
+                                                LinearTsrPricer::Settings()) {
             return new LinearTsrPricerPtr(
-                            new LinearTsrPricer(swaptionVol, meanReversion, couponDiscountCurve,
-							settings));
+                          new LinearTsrPricer(swaptionVol, meanReversion,
+                                              couponDiscountCurve, settings));
         }
     }
 };

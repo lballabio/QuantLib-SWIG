@@ -108,7 +108,7 @@ class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
             return new FloatFloatSwaptionPtr(new FloatFloatSwaption(swap,exercise));
         }
 
-		std::vector<boost::shared_ptr<CalibrationHelper> > calibrationBasket(
+        std::vector<boost::shared_ptr<CalibrationHelper> > calibrationBasket(
             boost::shared_ptr<Index> standardSwapBase,
             boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
             std::string typeStr) {
@@ -126,9 +126,9 @@ class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
                 calibrationBasket(swapIndex, swaptionVolatility, type);
         }
 
-		Real underlyingValue() {
-			return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->result<Real>("underlyingValue");
-		}
+        Real underlyingValue() {
+            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->result<Real>("underlyingValue");
+        }
     }
 };
 
@@ -160,7 +160,7 @@ class BlackSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
                                    new BlackSwaptionEngine(discountCurve, v));
         }
 
-	Real vega() {
+    Real vega() {
                 return boost::dynamic_pointer_cast<Swaption>(*self)->result<Real>("vega");
         }
 
