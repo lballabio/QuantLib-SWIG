@@ -92,7 +92,7 @@ namespace QuantLib {
     class ActualActual : public DayCounter {
       public:
         enum Convention { ISMA, Bond, ISDA, Historical, Actual365, AFB, Euro };
-        ActualActual(Convention c = ISDA);
+        ActualActual(Convention c = ISDA, const Schedule& schedule = Schedule());
     };
     class OneDayCounter : public DayCounter {};
     class SimpleDayCounter : public DayCounter {};
