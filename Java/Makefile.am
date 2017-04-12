@@ -27,6 +27,7 @@ QuantLib.jar: quantlib_wrap.cpp org/quantlib/*.java
 	$(JAR) cf QuantLib.jar -C bin org
 
 install-exec-local:
+	mkdir -p $(DESTDIR)/$(libdir)
 	cp -p libQuantLibJNI.@JNILIB_EXTENSION@ $(DESTDIR)/$(libdir)/libQuantLibJNI.@JNILIB_EXTENSION@
 	cp -p QuantLib.jar $(DESTDIR)/$(libdir)/QuantLib.jar
 
