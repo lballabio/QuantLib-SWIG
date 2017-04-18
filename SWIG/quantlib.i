@@ -62,11 +62,7 @@ const char* __version__;
 %pragma(java) jniclasscode=%{
   /// Load the JNI library
   static {
-    try { System.loadLibrary("QuantLibJNI"); }
-    catch (RuntimeException e) {
-      e.printStackTrace();
-      System.exit(1);
-    }
+    System.loadLibrary("QuantLibJNI");
   }
 %}
 
