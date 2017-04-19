@@ -395,6 +395,7 @@ class DiscountingBondEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 
 %{
+using QuantLib::CallableBond;
 using QuantLib::CallableFixedRateBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
@@ -426,6 +427,20 @@ class CallableFixedRateBondPtr : public BondPtr {
                                           paymentConvention, redemption,
                                           issueDate, putCallSchedule));
         }
+
+	Real OAS(Real marketPrice,
+		     RelinkableHandle<YieldTermStructure>& engineTS,
+		     Real accuracy,
+		     Size maxIterations,
+		     Spread guess)
+	{
+	  return boost::dynamic_pointer_cast<CallableBond>(*self)
+	    ->OAS(marketPrice,
+		  engineTS,
+		  accuracy,
+		  maxIterations,
+		  guess);
+	}
     }
 };
 
