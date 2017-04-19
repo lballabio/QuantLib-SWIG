@@ -429,15 +429,20 @@ class CallableFixedRateBondPtr : public BondPtr {
                                           issueDate, putCallSchedule));
         }
 
-	Real OAS(Real marketPrice,
-		     RelinkableHandle<YieldTermStructure>& engineTS,
-		     Real accuracy,
-		     Size maxIterations,
-		     Spread guess)
+	Real OAS(Real cleanPrice,
+		 RelinkableHandle<YieldTermStructure>& engineTS,
+		 const DayCounter& dc,
+		 Compounding compounding,
+		 Frequency freq,
+		 const Date& settlementDate = Date(),
+		 Real accuracy =1e-10,
+		 Size maxIterations = 100,
+		 Spread guess = 0.0)
 	{
 	  return boost::dynamic_pointer_cast<CallableBond>(*self)
-	    ->OAS(marketPrice,
+	    ->OAS(cleanPrice,
 		  engineTS,
+		  dc, compounding, freq, settlementDate,
 		  accuracy,
 		  maxIterations,
 		  guess);
