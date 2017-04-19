@@ -4,6 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2014 Simon Mazzucca
  Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2017 BN Algorithms Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
