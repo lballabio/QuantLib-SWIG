@@ -447,6 +447,50 @@ class CallableFixedRateBondPtr : public BondPtr {
 		  maxIterations,
 		  guess);
 	}
+
+	Real cleanPriceOAS(Real oas,
+                           RelinkableHandle<YieldTermStructure>& engineTS,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date())
+	{
+	  return boost::dynamic_pointer_cast<CallableBond>(*self)
+	    ->cleanPriceOAS(oas,
+			    engineTS,
+			    dayCounter,
+			    compounding,
+			    frequency,
+			    settlementDate);
+	}
+
+        Real effectiveDuration(Real oas,
+                               RelinkableHandle<YieldTermStructure>& engineTS,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency)
+	{
+	  return boost::dynamic_pointer_cast<CallableBond>(*self)
+	    ->effectiveDuration(oas,
+				engineTS,
+				dayCounter,
+                                compounding,
+                                frequency);
+	}
+
+        Real effectiveConvexity(Real oas,
+                                RelinkableHandle<YieldTermStructure>& engineTS,
+                                const DayCounter& dayCounter,
+                                Compounding compounding,
+                                Frequency frequency)
+	{
+	  return boost::dynamic_pointer_cast<CallableBond>(*self)
+	    ->effectiveConvexity(oas,
+				 engineTS,
+				 dayCounter,
+				 compounding,
+                                 frequency);
+	}
     }
 };
 
