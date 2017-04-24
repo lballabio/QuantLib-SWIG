@@ -33,6 +33,7 @@ import org.quantlib.Quote;
 import org.quantlib.SimpleQuote;
 import org.quantlib.YieldTermStructure;
 import org.quantlib.YieldTermStructureHandle;
+import org.quantlib.RelinkableYieldTermStructureHandle;
 import org.quantlib.InterestRate;
 import org.quantlib.Month;
 import org.quantlib.Date;
@@ -68,7 +69,7 @@ public class CallableBonds {
     }
 
     public static void priceCallable(double sigma,
-				     YieldTermStructureHandle termStructure,
+				     RelinkableYieldTermStructureHandle termStructure,
 				     CallableFixedRateBond callableBond,
 				     Frequency frequency,				     
 				     DayCounter bondDayCounter)
@@ -100,6 +101,40 @@ public class CallableBonds {
 						     accuracy,
 						     maxIterations));
 
+	System.out.printf("QuantLib OAS from model clean price (bp)  %10.2f \n",
+			  10000.0 * callableBond.OAS(callableBond.cleanPrice(),
+						     termStructure,
+						     bondDayCounter,
+						     Compounding.Compounded,
+						     frequency));
+
+
+	double cp=callableBond.cleanPriceOAS(10*1e-4,
+					   termStructure,
+					   bondDayCounter,
+					   Compounding.Compounded,
+					   frequency);
+	System.out.printf("QuantLib spreaded clean price with 10bp OAS %f \n",
+			  cp);
+
+	System.out.printf("QuantLib OAS from spreaded clean price (bp)  %10.2f \n",
+			  10000.0 * callableBond.OAS(cp,
+						     termStructure,
+						     bondDayCounter,
+						     Compounding.Compounded,
+						     frequency));
+
+	System.out.printf("QuantLib effectiveDuration / convexity for 10bp OAS %f / %f \n",
+			  callableBond.effectiveDuration(10*1e-4,
+							 termStructure,
+							 bondDayCounter,
+							 Compounding.Compounded,
+							 frequency),
+			  callableBond.effectiveConvexity(10*1e-4,
+							  termStructure,
+							  bondDayCounter,
+							  Compounding.Compounded,
+							  frequency));
     }
 				     
 
@@ -119,8 +154,8 @@ public class CallableBonds {
 			     Compounding.Compounded,
 			     Frequency.Semiannual);
 
-        YieldTermStructureHandle termStructure =
-	    new YieldTermStructureHandle(flatRate(today,
+        RelinkableYieldTermStructureHandle termStructure =
+	    new RelinkableYieldTermStructureHandle(flatRate(today,
 						  new SimpleQuote(bbIR.rate()),
 						  bbIR.dayCounter(),
 						  bbIR.compounding(),
