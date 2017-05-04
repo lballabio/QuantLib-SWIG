@@ -468,28 +468,32 @@ class CallableFixedRateBondPtr : public BondPtr {
                                RelinkableHandle<YieldTermStructure>& engineTS,
                                const DayCounter& dayCounter,
                                Compounding compounding,
-                               Frequency frequency)
+                               Frequency frequency,
+			       Real bump=2e-4)
 	{
 	  return boost::dynamic_pointer_cast<CallableBond>(*self)
 	    ->effectiveDuration(oas,
 				engineTS,
 				dayCounter,
                                 compounding,
-                                frequency);
+                                frequency,
+				bump);
 	}
 
         Real effectiveConvexity(Real oas,
                                 RelinkableHandle<YieldTermStructure>& engineTS,
                                 const DayCounter& dayCounter,
                                 Compounding compounding,
-                                Frequency frequency)
+                                Frequency frequency,
+                                Real bump=2e-4)
 	{
 	  return boost::dynamic_pointer_cast<CallableBond>(*self)
 	    ->effectiveConvexity(oas,
 				 engineTS,
 				 dayCounter,
 				 compounding,
-                                 frequency);
+                                 frequency,
+				 bump);
 	}
     }
 };
