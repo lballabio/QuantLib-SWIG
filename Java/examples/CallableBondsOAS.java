@@ -229,7 +229,47 @@ public class CallableBondsOAS {
 					 100.0,
 					 issue,
 					 callSchedule);
-    }    
+    }
+
+    static public CallableFixedRateBond mkWRI()
+    {
+	double coupon = 0.0646;
+	Date issue = new Date(11, Month.August, 1998);
+	Date matur = new Date(11, Month.August, 2028);
+
+	DoubleVector coupons = new DoubleVector();
+        coupons.add(coupon);
+
+        CallabilitySchedule callSchedule =
+	    new CallabilitySchedule();
+
+        double callPrice = 100.; 
+        Date callDate =new Date(11, Month.August, 2018);
+
+	CallabilityPrice myPrice=
+	    new CallabilityPrice(callPrice,
+				 CallabilityPrice.Type.Clean);
+	callSchedule.add(new Callability(myPrice,
+					 Callability.Put,
+					 callDate));
+
+	return new CallableFixedRateBond(1,
+					 100.0,
+					 new Schedule(issue,
+						      matur,
+						      new Period(Frequency.Semiannual),
+						      new UnitedStates(UnitedStates.Market.GovernmentBond),
+						      BusinessDayConvention.Unadjusted,
+						      BusinessDayConvention.Unadjusted,						      
+						      DateGeneration.Rule.Backward,
+						      false),
+					 coupons,
+					 new Thirty360(Thirty360.Convention.USA),
+					 BusinessDayConvention.ModifiedFollowing,
+					 100.0,
+					 issue,
+					 callSchedule);
+    }        
 
     public static TreeCallableFixedRateBondEngine mkEngine(RelinkableYieldTermStructureHandle yc)
     {
@@ -255,7 +295,7 @@ public class CallableBondsOAS {
 			  b.cleanPrice(),
 			  cleanOAS,
 			  b.effectiveDuration(OAS * 1e-4, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual),
-			  b.effectiveConvexity(OAS * 1e-4, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual)			  
+			  b.effectiveConvexity(OAS * 1e-4, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual, 1e-2)			  
 			  );
     }
 			   
@@ -288,6 +328,11 @@ public class CallableBondsOAS {
 	fhmlc.setPricingEngine(eng);
 	System.out.println("* FHMLC *:");	
 	printPricing(fhmlc, -42.0, ych);
+
+	CallableFixedRateBond wri = mkWRI();
+	wri.setPricingEngine(eng);
+	System.out.println("* WRI *:");	
+	printPricing(wri, 558.8, ych);
 	
 	
 
