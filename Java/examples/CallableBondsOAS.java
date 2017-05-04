@@ -47,6 +47,7 @@ import org.quantlib.DoubleVector;
 import org.quantlib.ZeroCouponBond;
 import org.quantlib.FlatForward;
 import org.quantlib.Actual360;
+import org.quantlib.Thirty360;
 import org.quantlib.ActualActual;
 import org.quantlib.Month;
 import org.quantlib.Frequency;
@@ -184,6 +185,52 @@ public class CallableBondsOAS {
 					 callSchedule);
     }
 
+    static public CallableFixedRateBond mkFHMLC()
+    {
+	double coupon = 0.0275;
+	Date issue = new Date(26, Month.September, 2016);
+	Date matur = new Date(26, Month.September, 2036);
+
+	DoubleVector coupons = new DoubleVector();
+        coupons.add(coupon);
+
+        CallabilitySchedule callSchedule =
+	    new CallabilitySchedule();
+
+        double callPrice = 100.; 
+	long numberOfCallDates = 76;
+        Date callDate =new Date(26, Month.September, 2017);
+	Calendar nullCalendar = new NullCalendar();	
+
+        for (long i=0; i< numberOfCallDates; ++i) {
+
+            CallabilityPrice myPrice=
+		new CallabilityPrice(callPrice,
+				      CallabilityPrice.Type.Clean);
+            callSchedule.add(new Callability(myPrice,
+					     Callability.Call,
+					     callDate));
+            callDate = nullCalendar.advance(callDate, 3, TimeUnit.Months);
+        }	
+
+	return new CallableFixedRateBond(1,
+					 100.0,
+					 new Schedule(issue,
+						      matur,
+						      new Period(Frequency.Semiannual),
+						      new UnitedStates(UnitedStates.Market.GovernmentBond),
+						      BusinessDayConvention.Unadjusted,
+						      BusinessDayConvention.Unadjusted,						      
+						      DateGeneration.Rule.Backward,
+						      false),
+					 coupons,
+					 new Thirty360(Thirty360.Convention.USA),
+					 BusinessDayConvention.ModifiedFollowing,
+					 100.0,
+					 issue,
+					 callSchedule);
+    }    
+
     public static TreeCallableFixedRateBondEngine mkEngine(RelinkableYieldTermStructureHandle yc)
     {
 	double reversionParameter=0.03;
@@ -236,6 +283,12 @@ public class CallableBondsOAS {
 
 	System.out.println("* BLRDG *:");	
 	printPricing(blrdg, 28.01, ych);
+
+	CallableFixedRateBond fhmlc = mkFHMLC();
+	fhmlc.setPricingEngine(eng);
+	System.out.println("* FHMLC *:");	
+	printPricing(fhmlc, -42.0, ych);
+	
 	
 
     }
