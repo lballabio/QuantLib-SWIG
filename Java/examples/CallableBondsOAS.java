@@ -18,6 +18,8 @@
 
 package examples;
 
+import java.util.stream.IntStream;
+
 import org.quantlib.Settings;
 
 import org.quantlib.CallableFixedRateBond;
@@ -298,6 +300,24 @@ public class CallableBondsOAS {
 			  b.effectiveConvexity(OAS * 1e-4, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual, 1e-2)			  
 			  );
     }
+
+    /** Example OAS calculation function that is thread safe
+
+	Note that separate bonds, engines and a relinkable handle are
+	made for each valuation which is a requirement for thread
+	safety: i.e., any bond, execution engine or relinkable handle
+	should called by a single thread at any one time
+    */
+    public static double valuePar(double OAS,
+				  YieldTermStructure yc)
+    {
+	CallableFixedRateBond b2 =mkWRI();
+	RelinkableYieldTermStructureHandle ych= new RelinkableYieldTermStructureHandle(yc);
+	TreeCallableFixedRateBondEngine eng =mkEngine(ych);
+	b2.setPricingEngine(eng);
+	double cleanOAS=b2.cleanPriceOAS(OAS * 1e-4, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual);
+	return 1e4* b2.OAS(cleanOAS, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual);
+    }
 			   
 			   
 
@@ -333,9 +353,12 @@ public class CallableBondsOAS {
 	wri.setPricingEngine(eng);
 	System.out.println("* WRI *:");	
 	printPricing(wri, 558.8, ych);
-	
-	
 
+	// Example multi-threaded parallel execution
+	IntStream.range(0,100).parallel()
+	    .mapToDouble( e -> { return valuePar(558.8-0.0000001*e, yc); })
+	    .forEachOrdered( e ->  { System.out.print( e +" ");} );
+	
     }
 
     

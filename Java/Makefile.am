@@ -15,7 +15,7 @@ if HAVE_JAVA
 if BUILD_JAVA
 
 examples/%.class: examples/%.java QuantLib.jar
-	$(JAVAC) -source 1.5 -cp QuantLib.jar examples/$*.java
+	$(JAVAC)  -cp QuantLib.jar examples/$*.java
 
 .PHONY: $(EXAMPLES)
 
