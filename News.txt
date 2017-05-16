@@ -1,54 +1,41 @@
 
-Changes for QuantLib-SWIG 1.9
-=============================
+Changes for QuantLib-SWIG 1.10
+==============================
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/2?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/3?closed=1>.
 
-- dropped support for Visual C++ 8 (2005), which as of April 2016 is
-  unsupported by Microsoft.
+- Unified Visual Studio solution file for the C# module. The provided
+  file works for all versions from 2010 to 2017.
 
-- removed harmful redefinition of `SWIGSTDCALL` preventing debugging
-  of C# module (thanks to Fabrice Lecuyer to the heads-up).
+- Exported newly added CDS2015 date-generation rule.
 
-- if present in the environment, `LDFLAGS` is now passed to the
-  linker when building the Python wrappers (thanks to Gouthaman
-  Balaraman).
+- Exported GSR model (thanks to Andres Hernandez).
 
-- if present in the environment, `CXXFLAGS` and `LDFLAGS` are now
-  passed to the linker when building the Java wrappers (thanks to
+- Exported Markov functional model (thanks to Matthias Lungwitz).
+
+- Exported hybrid simulated annealing optimizer (thanks to Andres
+  Hernandez).
+
+- Exported vega method for swaptions (thanks to Alexander Baker).
+
+- Exported more instantiations of piecewise yield curve (thanks to
+  Grant Bartel).
+
+- Exported non-standard swap and swaption (thanks to Peter Caspers).
+
+- Exported newly added CompoundingThenSimple convention (thanks to
   Martin Ross).
 
-- added a few inspectors to the `CapFloor` class (thanks to Gouthaman
-  Balaraman).
+- Allow using an arbitrary solver to calculate yields (thanks to
+  Daniel Hrabovcak).
 
-- exported the `ASX`, `Futures` and `Pillar` structs, used in a few
-  newly-exported rate-helper constructors (thanks to Fabrice Lecuyer).
+- Allow passing a schedule to Actual/Actual day counter for correct
+  calculation of reference dates (thanks to Ryan Taylor).
 
-- allow the use of normal volatilities for cap, floors and swaptions
-  (thanks to Gouthaman Balaraman, Peter Caspers and Wojciech
-  Slusarski).
+- Allow passing an arbitrary calendar to business/252 calendar (thanks
+  to Stanislav Vinokurov).
 
-- exported the `LocalVolSurface` class (thanks to Gouthaman Balaraman).
-
-- exported the `AnalyticPTDHestonEngine` class (thanks to Gouthaman
-  Balaraman).
-
-- exported the `BlackCallableFixedRateBondEngine` class (thanks to
-  Gouthaman Balaraman).
-
-- exported monotonic-cubic zero curve (thanks to Andres Hernandez).
-
-- exported `ShortRateModel` inspectors (thanks to Andres Hernandez).
-
-- added overloaded constructor for `FixedRateBond` taking a vector of
-  `InterestRate` instances (thanks to Gouthaman Balaraman).
-  Unfortunately, this prevents kwargs support in Python.
-
-- swap indexes can now be built with an exogenous discount curve
-  (thanks to Peter Caspers).
-
-- exported BBSW, BKBM, NZOCR and Aonia indexes (thanks to Fabrice Lecuyer).
-
+- Fixed comparison operators in Python 3.x (thanks to Rob Chu).
 
