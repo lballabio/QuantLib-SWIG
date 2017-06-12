@@ -25,6 +25,7 @@
 
 %include calibrationhelpers.i
 %include grid.i
+%include options.i
 
 // the base class for models
 %{
@@ -141,11 +142,15 @@ using QuantLib::TreeSwaptionEngine;
 using QuantLib::AnalyticCapFloorEngine;
 using QuantLib::TreeCapFloorEngine;
 using QuantLib::G2SwaptionEngine;
+using QuantLib::FdG2SwaptionEngine;
+using QuantLib::FdHullWhiteSwaptionEngine;
 typedef boost::shared_ptr<PricingEngine> JamshidianSwaptionEnginePtr;
 typedef boost::shared_ptr<PricingEngine> TreeSwaptionEnginePtr;
 typedef boost::shared_ptr<PricingEngine> AnalyticCapFloorEnginePtr;
 typedef boost::shared_ptr<PricingEngine> TreeCapFloorEnginePtr;
 typedef boost::shared_ptr<PricingEngine> G2SwaptionEnginePtr;
+typedef boost::shared_ptr<PricingEngine> FdG2SwaptionEnginePtr;
+typedef boost::shared_ptr<PricingEngine> FdHullWhiteSwaptionEnginePtr;
 %}
 
 %rename(JamshidianSwaptionEngine) JamshidianSwaptionEnginePtr;
@@ -252,5 +257,37 @@ class G2SwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+
+%rename(FdG2SwaptionEngine) FdG2SwaptionEnginePtr;
+class FdG2SwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdG2SwaptionEnginePtr(const boost::shared_ptr<ShortRateModel>& model,
+                            Size tGrid = 100, Size xGrid = 50, Size yGrid = 50,
+							Size dampingSteps = 0, Real invEps = 1e-5,
+							const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            boost::shared_ptr<G2> g2 =
+                boost::dynamic_pointer_cast<G2>(model);
+            return new FdG2SwaptionEnginePtr(
+                                    new FdG2SwaptionEngine(g2,tGrid,xGrid,yGrid,dampingSteps,invEps,schemeDesc));
+        }
+    }
+};
+
+%rename(FdHullWhiteSwaptionEngine) FdHullWhiteSwaptionEnginePtr;
+class FdHullWhiteSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdHullWhiteSwaptionEnginePtr(const boost::shared_ptr<ShortRateModel>& model,
+                            Size tGrid = 100, Size xGrid = 100,
+							Size dampingSteps = 0, Real invEps = 1e-5,
+							const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas()) {
+            boost::shared_ptr<HullWhite> hw =
+                boost::dynamic_pointer_cast<HullWhite>(model);
+            return new FdHullWhiteSwaptionEnginePtr(
+                                    new FdHullWhiteSwaptionEngine(hw,tGrid,xGrid,dampingSteps,invEps,schemeDesc));
+        }
+    }
+};
 
 #endif
