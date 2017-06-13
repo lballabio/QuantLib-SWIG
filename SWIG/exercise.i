@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2003 StatPro Italia srl
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -60,9 +61,11 @@ class Exercise {
 using QuantLib::EuropeanExercise;
 using QuantLib::AmericanExercise;
 using QuantLib::BermudanExercise;
+using QuantLib::RebatedExercise;
 typedef boost::shared_ptr<Exercise> EuropeanExercisePtr;
 typedef boost::shared_ptr<Exercise> AmericanExercisePtr;
 typedef boost::shared_ptr<Exercise> BermudanExercisePtr;
+typedef boost::shared_ptr<Exercise> RebatedExercisePtr;
 %}
 
 %rename(EuropeanExercise) EuropeanExercisePtr;
@@ -100,6 +103,30 @@ class BermudanExercisePtr : public boost::shared_ptr<Exercise> {
             return new BermudanExercisePtr(
                                         new BermudanExercise(dates,
                                                              payoffAtExpiry));
+        }
+    }
+};
+
+%{
+using QuantLib::BusinessDayConvention;
+using QuantLib::Calendar;
+using QuantLib::Following;
+using QuantLib::NullCalendar;
+%}
+
+%rename(RebatedExercise) RebatedExercisePtr;
+class RebatedExercisePtr : public boost::shared_ptr<Exercise> {
+  public:
+    %extend {
+        RebatedExercisePtr(const boost::shared_ptr<Exercise> exercise,
+                           const std::vector<Real> rebates,
+                           Natural rebateSettlementDays = 0,
+                           const Calendar &rebatePaymentCalendar = NullCalendar(),
+                           const BusinessDayConvention rebatePaymentConvention = Following) {
+            return new RebatedExercisePtr(new RebatedExercise(*exercise, rebates,
+                                                              rebateSettlementDays,
+                                                              rebatePaymentCalendar,
+                                                              rebatePaymentConvention));
         }
     }
 };

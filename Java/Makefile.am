@@ -23,7 +23,7 @@ libQuantLibJNI.@JNILIB_EXTENSION@: quantlib_wrap.o
 
 QuantLib.jar: quantlib_wrap.cpp org/quantlib/*.java
 	mkdir -p bin
-	find org/quantlib -name '*.java' | xargs $(JAVAC) -d bin
+	find org/quantlib -name '*.java' | xargs $(JAVAC) -g -d bin
 	$(JAR) cf QuantLib.jar -C bin org
 
 install-exec-local:

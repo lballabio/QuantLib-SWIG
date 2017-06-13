@@ -22,6 +22,7 @@
 #define quantlib_optimizers_i
 
 %include functions.i
+%include linearalgebra.i
 
 // 1D Solvers
 
@@ -120,6 +121,7 @@ class SolverName {
 };
 %enddef
 
+// Keep this list in sync with bondfunctions.i yield solvers.
 // Actual solvers
 DeclareSolver(Brent);
 DeclareSolver(Bisection);
@@ -142,6 +144,7 @@ using QuantLib::BoundaryConstraint;
 using QuantLib::NoConstraint;
 using QuantLib::PositiveConstraint;
 using QuantLib::CompositeConstraint;
+using QuantLib::NonhomogeneousBoundaryConstraint;
 %}
 
 class Constraint {
@@ -168,6 +171,11 @@ class PositiveConstraint : public Constraint {
 class CompositeConstraint : public Constraint {
   public:
     CompositeConstraint(const Constraint& c1, const Constraint& c2);
+};
+
+class NonhomogeneousBoundaryConstraint : public Constraint {
+  public:
+    NonhomogeneousBoundaryConstraint(const Array& l, const Array& u);
 };
 
 %{
@@ -219,6 +227,16 @@ using QuantLib::SteepestDescent;
 using QuantLib::BFGS;
 using QuantLib::LevenbergMarquardt;
 using QuantLib::DifferentialEvolution;
+using QuantLib::SamplerGaussian;
+using QuantLib::SamplerLogNormal;
+using QuantLib::SamplerMirrorGaussian;
+using QuantLib::ProbabilityBoltzmannDownhill;
+using QuantLib::TemperatureExponential;
+using QuantLib::ReannealingTrivial;
+using QuantLib::GaussianSimulatedAnnealing;
+using QuantLib::MirrorGaussianSimulatedAnnealing;
+using QuantLib::LogNormalSimulatedAnnealing;
+
 %}
 
 class OptimizationMethod {
@@ -249,14 +267,98 @@ class BFGS : public OptimizationMethod {
 
 class LevenbergMarquardt : public OptimizationMethod {
   public:
-	LevenbergMarquardt(Real epsfcn = 1.0e-8,
-	                   Real xtol = 1.0e-8,
-    	               Real gtol = 1.0e-8);
+    LevenbergMarquardt(Real epsfcn = 1.0e-8,
+                       Real xtol = 1.0e-8,
+                       Real gtol = 1.0e-8);
 };
 
 class DifferentialEvolution : public OptimizationMethod {
   public:
     DifferentialEvolution();
+};
+
+class SamplerGaussian{
+  public:
+    SamplerGaussian(unsigned long seed = 0);
+};
+
+class SamplerLogNormal{
+  public:
+    SamplerLogNormal(unsigned long seed = 0);
+};
+
+class SamplerMirrorGaussian{
+  public:
+    SamplerMirrorGaussian(const Array& lower, const Array& upper, unsigned long seed = 0);
+};
+
+class ProbabilityBoltzmannDownhill{
+  public:
+    ProbabilityBoltzmannDownhill(unsigned long seed = 0);
+};
+
+class TemperatureExponential {
+  public:
+    TemperatureExponential(Real initialTemp, Size dimension, Real power = 0.95);
+};
+
+class ReannealingTrivial {
+  public:
+    ReannealingTrivial();
+};
+
+class GaussianSimulatedAnnealing : public OptimizationMethod {
+  public:
+    enum ResetScheme{
+        NoResetScheme,
+        ResetToBestPoint,
+        ResetToOrigin
+    };
+    GaussianSimulatedAnnealing(const SamplerGaussian &sampler,
+            const ProbabilityBoltzmannDownhill &probability,
+            const TemperatureExponential &temperature,
+            const ReannealingTrivial &reannealing = ReannealingTrivial(),
+            Real startTemperature = 200.0,
+            Real endTemperature = 0.01,
+            Size reAnnealSteps = 50,
+            ResetScheme resetScheme = ResetToBestPoint,
+            Size resetSteps = 150);
+};
+
+class MirrorGaussianSimulatedAnnealing : public OptimizationMethod {
+  public:
+    enum ResetScheme{
+        NoResetScheme,
+        ResetToBestPoint,
+        ResetToOrigin
+    };
+    MirrorGaussianSimulatedAnnealing(const SamplerMirrorGaussian &sampler,
+            const ProbabilityBoltzmannDownhill &probability,
+            const TemperatureExponential &temperature,
+            const ReannealingTrivial &reannealing = ReannealingTrivial(),
+            Real startTemperature = 200.0,
+            Real endTemperature = 0.01,
+            Size reAnnealSteps = 50,
+            ResetScheme resetScheme = ResetToBestPoint,
+            Size resetSteps = 150);
+};
+
+class LogNormalSimulatedAnnealing : public OptimizationMethod {
+  public:
+   enum ResetScheme{
+        NoResetScheme,
+        ResetToBestPoint,
+        ResetToOrigin
+    };
+    LogNormalSimulatedAnnealing(const SamplerLogNormal &sampler,
+            const ProbabilityBoltzmannDownhill &probability,
+            const TemperatureExponential &temperature,
+            const ReannealingTrivial &reannealing = ReannealingTrivial(),
+            Real startTemperature = 10.0,
+            Real endTemperature = 0.01,
+            Size reAnnealSteps = 50,
+            ResetScheme resetScheme = ResetToBestPoint,
+            Size resetSteps = 150);
 };
 
 %{

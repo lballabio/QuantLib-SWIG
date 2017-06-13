@@ -22,6 +22,7 @@
 #define quantlib_day_counters_i
 
 %include common.i
+%include calendars.i
 %include date.i
 %include types.i
 %include stl.i
@@ -91,11 +92,14 @@ namespace QuantLib {
     class ActualActual : public DayCounter {
       public:
         enum Convention { ISMA, Bond, ISDA, Historical, Actual365, AFB, Euro };
-        ActualActual(Convention c = ISDA);
+        ActualActual(Convention c = ISDA, const Schedule& schedule = Schedule());
     };
     class OneDayCounter : public DayCounter {};
     class SimpleDayCounter : public DayCounter {};
-    class Business252 : public DayCounter {};
+    class Business252 : public DayCounter {
+      public:
+        Business252(Calendar c = Brazil());
+    };
 }
 
 

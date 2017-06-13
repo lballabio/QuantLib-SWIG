@@ -124,6 +124,7 @@
     <Compile Include="BachelierSwaptionEngine.cs" />
     <Compile Include="BackwardFlat.cs" />
     <Compile Include="BackwardFlatInterpolation.cs" />
+    <Compile Include="BackwardFlatZeroCurve.cs" />
     <Compile Include="BaroneAdesiWhaleyEngine.cs" />
     <Compile Include="Barrier.cs" />
     <Compile Include="BarrierOption.cs" />
@@ -256,6 +257,7 @@
     <Compile Include="Cubic.cs" />
     <Compile Include="CubicBSplinesFitting.cs" />
     <Compile Include="CubicNaturalSpline.cs" />
+    <Compile Include="CubicZeroCurve.cs" />
     <Compile Include="CumulativeBinomialDistribution.cs" />
     <Compile Include="CumulativeNormalDistribution.cs" />
     <Compile Include="CumulativePoissonDistribution.cs" />
@@ -398,6 +400,8 @@
     <Compile Include="FloatingRateBond.cs" />
     <Compile Include="FloatingRateCoupon.cs" />
     <Compile Include="FloatingRateCouponPricer.cs" />
+    <Compile Include="FloatFloatSwap.cs" />
+    <Compile Include="FloatFloatSwaption.cs" />
     <Compile Include="Floor.cs" />
     <Compile Include="FloorTruncation.cs" />
     <Compile Include="Forward.cs" />
@@ -405,6 +409,7 @@
     <Compile Include="ForwardEuropeanEngine.cs" />
     <Compile Include="ForwardFlat.cs" />
     <Compile Include="ForwardFlatInterpolation.cs" />
+    <Compile Include="ForwardFlatZeroCurve.cs" />
     <Compile Include="ForwardRate.cs" />
     <Compile Include="ForwardRateAgreement.cs" />
     <Compile Include="ForwardSpreadedTermStructure.cs" />
@@ -434,6 +439,8 @@
     <Compile Include="GaussGegenbauerIntegration.cs" />
     <Compile Include="GaussHermiteIntegration.cs" />
     <Compile Include="GaussHyperbolicIntegration.cs" />
+    <Compile Include="Gaussian1dFloatFloatSwaptionEngine.cs" />
+    <Compile Include="Gaussian1dJamshidianSwaptionEngine.cs" />
     <Compile Include="Gaussian1dModel.cs" />
     <Compile Include="Gaussian1dNonstandardSwaptionEngine.cs" />
     <Compile Include="Gaussian1dSwaptionEngine.cs" />
@@ -442,6 +449,7 @@
     <Compile Include="GaussianPathGenerator.cs" />
     <Compile Include="GaussianRandomGenerator.cs" />
     <Compile Include="GaussianRandomSequenceGenerator.cs" />
+    <Compile Include="GaussianSimulatedAnnealing.cs" />
     <Compile Include="GaussianSobolPathGenerator.cs" />
     <Compile Include="GaussJacobiIntegration.cs" />
     <Compile Include="GaussKronrodAdaptive.cs" />
@@ -536,18 +544,24 @@
     <Compile Include="Libor.cs" />
     <Compile Include="Linear.cs" />
     <Compile Include="LinearInterpolation.cs" />
+    <Compile Include="LinearTsrPricer.cs" />
     <Compile Include="LocalConstantVol.cs" />
     <Compile Include="LocalVolSurface.cs" />
     <Compile Include="LocalVolTermStructure.cs" />
     <Compile Include="LocalVolTermStructureHandle.cs" />
     <Compile Include="LogCubic.cs" />
     <Compile Include="LogCubicNaturalSpline.cs" />
+    <Compile Include="LogCubicZeroCurve.cs" />
     <Compile Include="LogLinear.cs" />
     <Compile Include="LogLinearInterpolation.cs" />
+    <Compile Include="LogLinearZeroCurve.cs" />
+    <Compile Include="LogNormalSimulatedAnnealing.cs" />
     <Compile Include="LogParabolic.cs" />
     <Compile Include="LTLCurrency.cs" />
     <Compile Include="LUFCurrency.cs" />
     <Compile Include="LVLCurrency.cs" />
+    <Compile Include="MarkovFunctional.cs" />
+    <Compile Include="MarkovFunctionalSettings.cs" />
     <Compile Include="Matrix.cs" />
     <Compile Include="MaxBasketPayoff.cs" />
     <Compile Include="MCAmericanBasketEngine.cs" />
@@ -565,6 +579,7 @@
     <Compile Include="Mexico.cs" />
     <Compile Include="MidPointCdsEngine.cs" />
     <Compile Include="MinBasketPayoff.cs" />
+    <Compile Include="MirrorGaussianSimulatedAnnealing.cs" />
     <Compile Include="Money.cs" />
     <Compile Include="MonotonicCubic.cs" />
     <Compile Include="MonotonicCubicNaturalSpline.cs" />
@@ -599,6 +614,9 @@
     <Compile Include="NodeVector.cs" />
     <Compile Include="NOKCurrency.cs" />
     <Compile Include="NonCentralChiSquareDistribution.cs" />
+    <Compile Include="NonhomogeneousBoundaryConstraint.cs" />
+    <Compile Include="NonstandardSwap.cs" />
+    <Compile Include="NonstandardSwaption.cs" />
     <Compile Include="NormalDistribution.cs" />
     <Compile Include="Norway.cs" />
     <Compile Include="NPRCurrency.cs" />
@@ -652,6 +670,7 @@
     <Compile Include="PositiveConstraint.cs" />
     <Compile Include="PricingEngine.cs" />
     <Compile Include="Protection.cs" />
+    <Compile Include="ProbabilityBoltzmannDownhill.cs" />
     <Compile Include="PTECurrency.cs" />
     <Compile Include="QlArray.cs" />
     <Compile Include="QuantoDoubleBarrierOption.cs" />
@@ -668,6 +687,8 @@
     <Compile Include="RateHelper.cs" />
     <Compile Include="RateHelperVector.cs" />
     <Compile Include="RealTimeSeries.cs" />
+    <Compile Include="ReannealingTrivial.cs" />
+    <Compile Include="RebatedExercise.cs" />
     <Compile Include="Redemption.cs" />
     <Compile Include="Region.cs" />
     <Compile Include="RelinkableBlackVolTermStructureHandle.cs" />
@@ -700,6 +721,9 @@
     <Compile Include="SampleNumber.cs" />
     <Compile Include="SamplePath.cs" />
     <Compile Include="SampleRealVector.cs" />
+    <Compile Include="SamplerGaussian.cs" />
+    <Compile Include="SamplerLogNormal.cs" />
+    <Compile Include="SamplerMirrorGaussian.cs" />
     <Compile Include="SARCurrency.cs" />
     <Compile Include="SaudiArabia.cs" />
     <Compile Include="Schedule.cs" />
@@ -776,6 +800,7 @@
     <Compile Include="SWIGTYPE_p_Index.cs" />
     <Compile Include="SWIGTYPE_p_InflationTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_Instrument.cs" />
+    <Compile Include="SWIGTYPE_p_LinearTsrPricer__Settings.cs" />
     <Compile Include="SWIGTYPE_p_LocalVolTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_Observable.cs" />
     <Compile Include="SWIGTYPE_p_OptionletVolatilityStructure.cs" />
@@ -798,6 +823,7 @@
     <Compile Include="Switzerland.cs" />
     <Compile Include="Taiwan.cs" />
     <Compile Include="TARGET.cs" />
+    <Compile Include="TemperatureExponential.cs" />
     <Compile Include="THBCurrency.cs" />
     <Compile Include="Thirty360.cs" />
     <Compile Include="Tibor.cs" />
@@ -882,6 +908,9 @@
     <Compile Include="_Callability.cs" />
     <Compile Include="_DeltaVolQuote.cs" />
     <Compile Include="_Exercise.cs" />
+    <Compile Include="_Gaussian1dFloatFloatSwaptionEngine.cs" />
+    <Compile Include="_MarkovFunctional.cs" />
+    <Compile Include="_NonstandardSwap.cs" />
     <Compile Include="_VanillaSwap.cs" />
     <Compile Include="_YearOnYearInflationSwap.cs" />
     <Compile Include="_ZeroCouponInflationSwap.cs" />
