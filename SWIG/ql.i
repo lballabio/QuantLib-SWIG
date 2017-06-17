@@ -19,6 +19,8 @@
 
 // Undefine symbols that are also used in quantlib
 
+%feature("autodoc", "2");
+
 #if defined(SWIGPYTHON)
 %{
 #ifdef barrier
