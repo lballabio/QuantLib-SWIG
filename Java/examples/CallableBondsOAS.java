@@ -288,9 +288,10 @@ public class CallableBondsOAS {
 
     public static void printPricing(CallableFixedRateBond b,
 				    double OAS,
-				    RelinkableYieldTermStructureHandle ych)
+				    RelinkableYieldTermStructureHandle ych,
+				    Date settlementDate)
     {
-	double cleanOAS=b.cleanPriceOAS(OAS * 1e-4, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual);
+	double cleanOAS=b.cleanPriceOAS(OAS * 1e-4, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual, settlementDate);
         System.out.printf("OAS (round-trip): %6.4f \t NPV: %8.4f \t Clean: %8.4f \t Clean w/OAS:%8.4f \t EffDur: %6.4f \t EffCvx: %6.4f  \n",
 			  1e4* b.OAS(cleanOAS, ych, new ActualActual(ActualActual.Convention.Bond), Compounding.Compounded, Frequency.Semiannual), 
 			  b.NPV(),
@@ -336,23 +337,24 @@ public class CallableBondsOAS {
 	ust1.setPricingEngine(eng);
 
 	System.out.println("* UST1 *:");	
-	printPricing(ust1, 0.3, ych);
+	printPricing(ust1, 0.3, ych, today);
 
+	Calendar nullCalendar = new NullCalendar();
 	CallableFixedRateBond blrdg= mkBLRDG();
 	blrdg.setPricingEngine(eng);
 
 	System.out.println("* BLRDG *:");	
-	printPricing(blrdg, 28.01, ych);
+	printPricing(blrdg, 28.01, ych, nullCalendar.advance(today, 3, TimeUnit.Days));
 
 	CallableFixedRateBond fhmlc = mkFHMLC();
 	fhmlc.setPricingEngine(eng);
 	System.out.println("* FHMLC *:");	
-	printPricing(fhmlc, -42.0, ych);
+	printPricing(fhmlc, -42.0, ych, today);
 
 	CallableFixedRateBond wri = mkWRI();
 	wri.setPricingEngine(eng);
 	System.out.println("* WRI *:");	
-	printPricing(wri, 558.8, ych);
+	printPricing(wri, 558.8, ych, today);
 
 	// Example multi-threaded parallel execution
 	IntStream.range(0,100).parallel()
