@@ -121,6 +121,11 @@ class my_build_ext(build_ext):
                 QL_INSTALL_DIR = os.environ['QL_DIR']
                 self.include_dirs += [QL_INSTALL_DIR]
                 self.library_dirs += [os.path.join(QL_INSTALL_DIR, 'lib')]
+
+                QLEXT_INSTALL_DIR = os.environ['QLEXT_DIR']
+                self.include_dirs += [QLEXT_INSTALL_DIR]
+                self.library_dirs += [os.path.join(QLEXT_INSTALL_DIR, 'lib')]
+
             except KeyError:
                 print('warning: unable to detect QuantLib installation')
 

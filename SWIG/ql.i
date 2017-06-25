@@ -81,6 +81,7 @@
 
 %{
 #include <ql/quantlib.hpp>
+#include <qlext/quantlibext.hpp>
 
 #if QL_HEX_VERSION < 0x011100f0
     #error using an old version of QuantLib, please update
