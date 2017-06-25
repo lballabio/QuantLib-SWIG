@@ -27,7 +27,7 @@ from distutils import sysconfig
 
 class test(Command):
     # Original version of this class posted
-    # by Berthold Höllmann to distutils-sig@python.org
+    # by Berthold Hï¿½llmann to distutils-sig@python.org
     description = "test the distribution prior to install"
 
     user_options = [
@@ -158,6 +158,8 @@ class my_build_ext(build_ext):
             ql_link_args = \
                 os.popen('quantlib-config --libs').read()[:-1].split()
 
+            ql_link_args.append('-lQuantLibExt')
+
             self.define += [ (arg[2:],None) for arg in ql_compile_args
                              if arg.startswith('-D') ]
             self.include_dirs += [ arg[2:] for arg in ql_compile_args
@@ -252,4 +254,3 @@ framework for quantitative finance.
                           'build_ext': my_build_ext
                           }
       )
-

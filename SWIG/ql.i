@@ -19,6 +19,8 @@
 
 // Undefine symbols that are also used in quantlib
 
+%feature("autodoc", "2");
+
 #if defined(SWIGPYTHON)
 %{
 #ifdef barrier
@@ -181,6 +183,7 @@
 %include vectors.i
 %include basketoptions.i
 %include bonds.i
+%include bonds_ext.i
 %include bondfunctions.i
 %include calendars.i
 %include calibrationhelpers.i
