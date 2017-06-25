@@ -183,6 +183,7 @@
 %include vectors.i
 %include basketoptions.i
 %include bonds.i
+%include bonds_ext.i
 %include bondfunctions.i
 %include calendars.i
 %include calibrationhelpers.i
