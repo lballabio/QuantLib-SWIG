@@ -238,6 +238,7 @@
 %include statistics.i
 %include stochasticprocess.i
 %include swap.i
+%include swap_ext.i
 %include swaption.i
 %include termstructures.i
 %include timebasket.i
