@@ -121,6 +121,7 @@ class SolverName {
 };
 %enddef
 
+// Keep this list in sync with bondfunctions.i yield solvers.
 // Actual solvers
 DeclareSolver(Brent);
 DeclareSolver(Bisection);

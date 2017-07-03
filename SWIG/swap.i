@@ -4,6 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Gouthaman Balaraman
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2017 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,11 +33,13 @@ using QuantLib::Swap;
 using QuantLib::VanillaSwap;
 using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
+using QuantLib::FloatFloatSwap;
 
 typedef boost::shared_ptr<Instrument> SwapPtr;
 typedef boost::shared_ptr<Instrument> VanillaSwapPtr;
 typedef boost::shared_ptr<Instrument> NonstandardSwapPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingSwapEnginePtr;
+typedef boost::shared_ptr<Instrument> FloatFloatSwapPtr;
 %}
 
 %rename(Swap) SwapPtr;
@@ -55,6 +58,9 @@ class SwapPtr : public boost::shared_ptr<Instrument> {
         }
         const Leg & leg(Size i){
             return boost::dynamic_pointer_cast<Swap>(*self)->leg(i);
+        }
+        Real legNPV(Size j) const {
+            return boost::dynamic_pointer_cast<Swap>(*self)->legNPV(j);
         }
     }
 };
@@ -81,16 +87,16 @@ class VanillaSwapPtr : public SwapPtr {
     %rename("fair-spread")      fairSpread;
     %rename("fixed-leg-BPS")    fixedLegBPS;
     %rename("floating-leg-BPS") floatingLegBPS;
-	%rename ("fixed-leg-NPV") fixedLegNPV;
-	%rename ("floating-leg-NPV") floatingLegNPV;
-	%rename ("floating-leg") floatingLeg;
-	%rename ("fixed-leg") fixedLeg;
-	%rename ("fixed-schedule") fixedSchedule;
-	%rename ("floating-schedule") floatingSchedule;
-	%rename ("fixed-rate") fixedRate;
-	%rename ("fixed-day-count") fixedDayCount;
-	%rename ("floating-day-count") floatingDayCount;
-	
+    %rename ("fixed-leg-NPV") fixedLegNPV;
+    %rename ("floating-leg-NPV") floatingLegNPV;
+    %rename ("floating-leg") floatingLeg;
+    %rename ("fixed-leg") fixedLeg;
+    %rename ("fixed-schedule") fixedSchedule;
+    %rename ("floating-schedule") floatingSchedule;
+    %rename ("fixed-rate") fixedRate;
+    %rename ("fixed-day-count") fixedDayCount;
+    %rename ("floating-day-count") floatingDayCount;
+    
     #endif
   public:
     %extend {
@@ -124,51 +130,51 @@ class VanillaSwapPtr : public SwapPtr {
         Real floatingLegBPS() {
             return boost::dynamic_pointer_cast<VanillaSwap>(*self)
                  ->floatingLegBPS();
-        }	
+        }   
         Real fixedLegNPV() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->fixedLegNPV();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->fixedLegNPV();
         }
         Real floatingLegNPV() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->floatingLegNPV();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->floatingLegNPV();
         }
         // Inspectors 
         const Leg& fixedLeg() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->fixedLeg();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->fixedLeg();
         }
         const Leg& floatingLeg() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->floatingLeg();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->floatingLeg();
         }
         Real nominal() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->nominal();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->nominal();
         }
         const Schedule& fixedSchedule() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->fixedSchedule();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->fixedSchedule();
         }
         const Schedule& floatingSchedule() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->floatingSchedule();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->floatingSchedule();
         }
         Rate fixedRate() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->fixedRate();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->fixedRate();
         }
         Spread spread() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->spread();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->spread();
         }
         const DayCounter& floatingDayCount() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->floatingDayCount();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->floatingDayCount();
         }
         const DayCounter& fixedDayCount() {
-	        return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-		        ->fixedDayCount();
+            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
+                ->fixedDayCount();
         }
     }
 };
@@ -189,16 +195,15 @@ class NonstandardSwap {
 %rename(NonstandardSwap) NonstandardSwapPtr;
 class NonstandardSwapPtr : public SwapPtr {
     #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-	%rename ("floating-leg")       floatingLeg;
-	%rename ("fixed-leg")          fixedLeg;
-	%rename ("floating-nominals")  floatingNominals;
-	%rename ("fixed-nominals")     fixedNominals;
-	%rename ("fixed-schedule")     fixedSchedule;
-	%rename ("floating-schedule")  floatingSchedule;
-	%rename ("fixed-rate")         fixedRate;
-	%rename ("fixed-day-count")    fixedDayCount;
-	%rename ("floating-day-count") floatingDayCount;
-
+    %rename ("floating-leg")       floatingLeg;
+    %rename ("fixed-leg")          fixedLeg;
+    %rename ("floating-nominals")  floatingNominals;
+    %rename ("fixed-nominals")     fixedNominals;
+    %rename ("fixed-schedule")     fixedSchedule;
+    %rename ("floating-schedule")  floatingSchedule;
+    %rename ("fixed-rate")         fixedRate;
+    %rename ("fixed-day-count")    fixedDayCount;
+    %rename ("floating-day-count") floatingDayCount;
     #endif
   public:
     %extend {
@@ -226,48 +231,48 @@ class NonstandardSwapPtr : public SwapPtr {
         }
         // Inspectors
         const Leg& fixedLeg() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->fixedLeg();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->fixedLeg();
         }
         const Leg& floatingLeg() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->floatingLeg();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->floatingLeg();
         }
         std::vector<Real> fixedNominals() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->fixedNominal();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->fixedNominal();
         }
         std::vector<Real> floatingNominals() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->floatingNominal();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->floatingNominal();
         }
         const Schedule& fixedSchedule() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->fixedSchedule();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->fixedSchedule();
         }
         const Schedule& floatingSchedule() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->floatingSchedule();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->floatingSchedule();
         }
         std::vector<Rate> fixedRate() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->fixedRate();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->fixedRate();
         }
         std::vector<Spread> spreads() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->spreads();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->spreads();
         }
         std::vector<Spread> gearings() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->gearings();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->gearings();
         }
         const DayCounter& floatingDayCount() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->floatingDayCount();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->floatingDayCount();
         }
         const DayCounter& fixedDayCount() {
-	        return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-		        ->fixedDayCount();
+            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
+                ->fixedDayCount();
         }
     }
 };
@@ -340,5 +345,45 @@ class AssetSwapPtr : public SwapPtr {
     }
 };
 
+%rename(FloatFloatSwap) FloatFloatSwapPtr;
+class FloatFloatSwapPtr : public SwapPtr {
+
+  public:
+    %extend {
+        FloatFloatSwapPtr(VanillaSwap::Type type, const std::vector<Real> &nominal1,
+            const std::vector<Real> &nominal2, const Schedule &schedule1,
+            const InterestRateIndexPtr &indexPtr1,
+            const DayCounter &dayCount1, const Schedule &schedule2,
+            const InterestRateIndexPtr &indexPtr2,
+            const DayCounter &dayCount2,
+            const bool intermediateCapitalExchange = false,
+            const bool finalCapitalExchange = false,
+            const std::vector<Real> &gearing1 = std::vector<Real>(),
+            const std::vector<Real> &spread1 = std::vector<Real>(),
+            const std::vector<Real> &cappedRate1 = std::vector<Real>(),
+            const std::vector<Real> &flooredRate1 = std::vector<Real>(),
+            const std::vector<Real> &gearing2 = std::vector<Real>(),
+            const std::vector<Real> &spread2 = std::vector<Real>(),
+            const std::vector<Real> &cappedRate2 = std::vector<Real>(),
+            const std::vector<Real> &flooredRate2 = std::vector<Real>(),
+            BusinessDayConvention paymentConvention1 = Following,
+            BusinessDayConvention paymentConvention2 = Following) {
+            boost::shared_ptr<InterestRateIndex> index1 =
+                boost::dynamic_pointer_cast<InterestRateIndex>(indexPtr1);
+            boost::shared_ptr<InterestRateIndex> index2 =
+                boost::dynamic_pointer_cast<InterestRateIndex>(indexPtr2);
+            return new FloatFloatSwapPtr(
+                    new FloatFloatSwap(type, nominal1,nominal2,schedule1,
+                                    index1,dayCount1,schedule2,
+                                    index2, dayCount2,
+                                    intermediateCapitalExchange, finalCapitalExchange,
+                                    gearing1, spread1, cappedRate1,
+                                    flooredRate1, gearing2, spread2,
+                                    cappedRate2, flooredRate2,
+                                    paymentConvention1, paymentConvention2));
+        }
+
+    }
+};
 
 #endif
