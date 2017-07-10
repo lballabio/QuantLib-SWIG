@@ -25,6 +25,8 @@
 %include date.i
 %include stl.i
 
+%define QL_TYPECHECK_BUSINESSDAYCONVENTION       6210    %enddef
+
 %{
 using QuantLib::Calendar;
 %}
@@ -56,6 +58,20 @@ using QuantLib::JoinBusinessDays;
 
 enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
 
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<BusinessDayConvention> %{
+	if($input == Py_None)
+		$1 = boost::none;
+	else
+		$1 = (BusinessDayConvention) PyLong_AsSize_t($input);
+%}
+%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) boost::optional<BusinessDayConvention> {
+if (PyLong_Check($input) || Py_None == $input) 
+	$1 = 1;
+else
+	$1 = 0;
+}
+#endif
 
 #if defined(SWIGRUBY)
 %mixin Calendar "Comparable";

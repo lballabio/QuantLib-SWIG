@@ -24,13 +24,12 @@
 %include calendars.i
 %include types.i
 
+%define QL_TYPECHECK_DATEGENERATION       7210    %enddef
+
 %{
 using QuantLib::Schedule;
 using QuantLib::DateGeneration;
 %}
-
-%define QL_TYPECHECK_BUSINESSDAYCONVENTION       5210    %enddef
-%define QL_TYPECHECK_PERIOD				         5220    %enddef
 
 struct DateGeneration {
     enum Rule { Backward, Forward,
@@ -38,6 +37,20 @@ struct DateGeneration {
                 Twentieth, TwentiethIMM,
                 OldCDS, CDS, CDS2015 };
 };
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<DateGeneration::Rule> %{
+	if($input == Py_None)
+		$1 = boost::none;
+	else
+		$1 = (DateGeneration::Rule) PyLong_AsSize_t($input);
+%}
+%typecheck (QL_TYPECHECK_DATEGENERATION) boost::optional<DateGeneration::Rule> {
+if (PyLong_Check($input) || Py_None == $input) 
+	$1 = 1;
+else
+	$1 = 0;
+}
+#endif
 
 #if defined(SWIGRUBY)
 %mixin Schedule "Enumerable";
@@ -53,48 +66,17 @@ class Schedule {
     %rename("is-regular?") isRegular;
     #endif
   public:
-
 	#if defined(SWIGPYTHON)
-	%typemap(in) boost::optional<BusinessDayConvention> %{
-		if($input == Py_None)
-			$1 = boost::none;
-		else
-			$1 = (BusinessDayConvention) PyLong_AsSize_t($input);
-	%}
-	%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) boost::optional<BusinessDayConvention> {
-	if (PyLong_Check($input) || Py_None == $input) 
-		$1 = 1;
-	else
-		$1 = 0;
-	}
-	%typemap(in) boost::optional<Period> %{
-		if($input == Py_None)
-			$1 = boost::none;
-		else
-		{
-			Period *temp;
-			if (!SWIG_IsOK(SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0)))
-				SWIG_exception_fail(SWIG_TypeError, "in method '$symname', expecting type Period");
-			$1 = (boost::optional<Period>) *temp;
-		}
-	%}
-	%typecheck (QL_TYPECHECK_PERIOD) boost::optional<Period> {
-		if($input == Py_None)
-			$1 = 1;
-		else {
-			Period *temp;
-			int res = SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0);
-			$1 = SWIG_IsOK(res) ? 1 : 0;
-		}
-		
-	}
 	Schedule(const std::vector<Date>&,
 			 const Calendar& calendar = NullCalendar(),
 			 const BusinessDayConvention
 								convention = Unadjusted,
 			 boost::optional<BusinessDayConvention>
 				 terminationDateConvention = boost::none,
-			 const boost::optional<Period> tenor = boost::none);
+			 const boost::optional<Period> tenor = boost::none,
+			 boost::optional<DateGeneration::Rule> rule = boost::none,
+			 boost::optional<bool> endOfMonth = boost::none,
+			 const std::vector<bool>& isRegular = std::vector<bool>(0));
 	#else
 	Schedule(const std::vector<Date>&,
 		 const Calendar& calendar = NullCalendar(),
