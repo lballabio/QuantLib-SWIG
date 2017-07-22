@@ -32,19 +32,20 @@ from cms import CmsTest
 from assetswap import AssetSwapTest
 from capfloor import CapFloorTest
 
+
 def test():
     import QuantLib
-    print('testing QuantLib ' +  QuantLib.__version__)
+    print('testing QuantLib ' + QuantLib.__version__)
 
     suite = unittest.TestSuite()
 
     suite.addTest(DateTest())
     suite.addTest(DayCountersTest())
-    suite.addTest(unittest.makeSuite(InstrumentTest,'test'))
-    suite.addTest(unittest.makeSuite(MarketElementTest,'test'))
-    suite.addTest(unittest.makeSuite(IntegralTest,'test'))
+    suite.addTest(unittest.makeSuite(InstrumentTest, 'test'))
+    suite.addTest(unittest.makeSuite(MarketElementTest, 'test'))
+    suite.addTest(unittest.makeSuite(IntegralTest, 'test'))
     suite.addTest(Solver1DTest())
-    suite.addTest(unittest.makeSuite(TermStructureTest,'test'))
+    suite.addTest(unittest.makeSuite(TermStructureTest, 'test'))
     suite.addTest(unittest.makeSuite(FixedRateBondTest, 'test'))
     suite.addTest(unittest.makeSuite(FixedRateBondHelperTest, 'test'))
     suite.addTest(unittest.makeSuite(CmsTest, 'test'))
@@ -55,6 +56,7 @@ def test():
 
     if not result.wasSuccessful:
         sys.exit(1)
+
 
 if __name__ == '__main__':
     test()
