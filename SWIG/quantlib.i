@@ -58,6 +58,16 @@ const char* __version__;
 %mutable;
 #endif
 
+#if defined(JAVA_AUTOLOAD)
+// Automatically load the shared library for JAVA binding
+%pragma(java) jniclasscode=%{
+  /// Load the JNI library
+  static {
+    System.loadLibrary("QuantLibJNI");
+  }
+%}
+#endif
+
 #if defined(SWIGGUILE)
 // code for loading shared library
 %scheme%{

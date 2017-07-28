@@ -3,7 +3,13 @@ CLEANFILES = quantlib_wrap.cpp libQuantLibJNI.@JNILIB_EXTENSION@ QuantLib.jar
 
 BUILT_SOURCES = quantlib_wrap.cpp quantlib_wrap.h
 
-EXAMPLES = Bonds DiscreteHedging EquityOptions FRA UnaryFunctions
+EXAMPLES = Bonds CallableBonds DiscreteHedging EquityOptions FRA UnaryFunctions
+
+SWIGFLAGS =
+
+if JAVA_AUTOLOAD
+SWIGFLAGS += -DJAVA_AUTOLOAD
+endif
 
 if HAVE_JAVA
 if BUILD_JAVA
@@ -27,6 +33,7 @@ QuantLib.jar: quantlib_wrap.cpp org/quantlib/*.java
 	$(JAR) cf QuantLib.jar -C bin org
 
 install-exec-local:
+	mkdir -p $(DESTDIR)/$(libdir)
 	cp -p libQuantLibJNI.@JNILIB_EXTENSION@ $(DESTDIR)/$(libdir)/libQuantLibJNI.@JNILIB_EXTENSION@
 	cp -p QuantLib.jar $(DESTDIR)/$(libdir)/QuantLib.jar
 
@@ -41,7 +48,7 @@ endif
 
 quantlib_wrap.cpp: ../SWIG/*.i
 	mkdir -p org/quantlib
-	$(SWIG) -java -c++ -outdir org/quantlib \
+	$(SWIG) $(SWIGFLAGS) -java -c++ -outdir org/quantlib \
             -package org.quantlib -o quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook:

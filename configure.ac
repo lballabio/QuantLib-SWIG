@@ -130,6 +130,13 @@ AC_ARG_ENABLE([java],
               [build_java=$enableval],
               [build_java=yes])
 AM_CONDITIONAL(BUILD_JAVA, test "$build_java" != "no")
+AC_ARG_ENABLE([java-autoload],
+              AC_HELP_STRING([--disable-java-autoload],
+                             [If disabled, the Java JNI shared library
+			     will not be automatically loaded]),
+              [java_autoload=$enableval],
+              [java_autoload=yes])
+AM_CONDITIONAL(JAVA_AUTOLOAD, test "$java_autoload" != "no")
 
 AC_ARG_WITH([jdk-include],
             AC_HELP_STRING([--with-jdk-include=INCLUDE_PATH],
