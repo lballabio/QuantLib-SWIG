@@ -106,7 +106,12 @@ class HullWhitePtr : public boost::shared_ptr<ShortRateModel> {
         Real discountBond(Time now, Time maturity, Rate rate) const{
             return boost::dynamic_pointer_cast<HullWhite>(*self)->
                                             discountBond(now, maturity, rate);  
-        } 
+        }
+        static Rate convexityBias(Real futurePrice, Time t, Time T, 
+                                  Real sigma, Real a) {
+            return QuantLib::HullWhite::convexityBias(futurePrice, t, T, 
+                                                      sigma, a);
+        }
     }
 };
 
