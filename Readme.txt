@@ -26,7 +26,19 @@ On Linux/Unix, you can run:
     make check
     sudo make install
 
-to build, test and install al modules. If you're only interested in a
+to build, test and install al modules. 
+
+If you want to use your *local* QuantLib version (e.g. if you want to test
+your local dev or have no rights `make install` on your system) you need to 
+extend your compiler flags to include the relevant path:
+
+    export CPPFLAGS="-I/path/to/your/ql/include/dir -L/path/to/your/ql/lib/dir":$CPPFLAGS
+
+and update your PATH environment to include the quantlib-config like:
+
+    export PATH=/path/to/your/ql/dir:$PATH
+
+If you're only interested in a
 specific language, you can tell make to only work in its subdirectory,
 as in:
 
