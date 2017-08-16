@@ -31,19 +31,20 @@ to build, test and install al modules.
 If you want to use your *local* QuantLib dev version without installing it (i.e.
 **no** `make install` after your `make` - e.g. if you want to test your 
 local dev or have no rights to `make install` on your system) you can do the 
-following:
+following (this needs to be done before `configure`):
 
-- configure QuantLib to use your dev include and lib path like
-    `$./configure --prefix=/path/to/your/qldir/ 
-    --libdir=/path/to/your/qldir/ql/.libs 
-    --includedir=/path/to/your/qldir/`
-    since you are not installing, this will only provide the necessary path
-    information for the quantlib-config file.
+- configure your QuantLib build to use your dev include and lib path like
+`$./configure --prefix=/path/to/your/qldir/ 
+--libdir=/path/to/your/qldir/ql/.libs 
+--includedir=/path/to/your/qldir/`
+since you are not installing, this will only provide the necessary path
+information for the quantlib-config file.
 - add *quantlib-config* to your path enviroment by extending it like
-    `$ export PATH:/path/to/your/qldir:$PATH`
-- add path to your QuantLib share object lib (.so extension) to your shared 
-object search path (temporarly - this should not be your production setting).
-    `$ export LD_LIBRARY_PATH=/path/to/your/qldir/ql/.libs`
+`$ export PATH:/path/to/your/qldir:$PATH`
+- add search path to your swigged QuantLib shared object lib (.so extension),
+so that it can find your dev libQuantLib.so.
+`$ export CPPFLAGS=-Wl,-rpath,/path/to/your/qldir/ql/.libs`
+This flag will include the absolute path to your dev lib.
 
 If you're only interested in a
 specific language, you can tell make to only work in its subdirectory,
