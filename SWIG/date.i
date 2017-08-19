@@ -257,6 +257,12 @@ using QuantLib::Date;
 using QuantLib::DateParser;
 %}
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+import datetime
+%}
+#endif
+
 #if defined(SWIGR)
 %Rruntime %{
 setAs("_p_Date", "character",
@@ -573,6 +579,16 @@ class Date {
         }
         #endif
     }
+    #if defined(SWIGPYTHON)
+    %pythoncode %{
+    def to_date(self):
+        return datetime.date(self.year(), self.month(), self.dayOfMonth())
+
+    @staticmethod
+    def from_date(date):
+        return Date(date.day, date.month, date.year)
+    %}
+    #endif
 };
 
 class DateParser {

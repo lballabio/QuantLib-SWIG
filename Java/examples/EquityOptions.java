@@ -74,14 +74,6 @@ import org.quantlib.YieldTermStructureHandle;
  */
 public class EquityOptions {
 
-    static {
-        try {
-            System.loadLibrary("QuantLibJNI");
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) throws Exception {
         long beginTime = System.currentTimeMillis();
 

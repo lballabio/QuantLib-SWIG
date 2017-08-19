@@ -54,10 +54,6 @@ import org.quantlib.YieldTermStructureHandle;
  **/
 public class DiscreteHedging {
 
-    static {  // Load QuantLib
-        try { System.loadLibrary("QuantLibJNI"); }
-        catch (RuntimeException e) { e.printStackTrace(); }
-    }
 
     public static void main(String[] args) throws Exception {
 

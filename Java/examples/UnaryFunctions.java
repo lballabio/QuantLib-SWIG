@@ -5,14 +5,6 @@ import org.quantlib.UnaryFunctionDelegate;
 import org.quantlib.Brent;
 
 public class UnaryFunctions {
-    static {
-        try {
-            System.loadLibrary("QuantLibJNI");
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-    }
-
 
     public static void main(String[] args) throws java.lang.InterruptedException {
     long beginTime = System.currentTimeMillis();
