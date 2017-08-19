@@ -87,6 +87,10 @@ class VasicekPtr : public boost::shared_ptr<ShortRateModel> {
         DiscountFactor discount(Time t) const {
             return boost::dynamic_pointer_cast<Vasicek>(*self)->discount(t);
         }
+        
+        Real discountBond(Time now, Time maturity, Rate rate) const {
+            return boost::dynamic_pointer_cast<Vasicek>(*self)->discountBond(now, maturity, rate);
+        }
     }
 };
 
@@ -102,6 +106,10 @@ class HullWhitePtr : public boost::shared_ptr<ShortRateModel> {
         }
         DiscountFactor discount(Time t) const {
             return boost::dynamic_pointer_cast<HullWhite>(*self)->discount(t);
+        }
+        
+        Real discountBond(Time now, Time maturity, Rate rate) const {
+            return boost::dynamic_pointer_cast<HullWhite>(*self)->discountBond(now, maturity, rate);
         }
     }
 };
@@ -129,6 +137,10 @@ class G2Ptr : public boost::shared_ptr<ShortRateModel> {
         }
         DiscountFactor discount(Time t) const {
             return boost::dynamic_pointer_cast<G2>(*self)->discount(t);
+        }
+        
+        Real discountBond(Time t, Time T, Rate x, Rate y) const{
+            return boost::dynamic_pointer_cast<G2>(*self)->discountBond(t, T, x, y);
         }
     }
 };
