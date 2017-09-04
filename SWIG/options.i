@@ -2186,4 +2186,29 @@ class BinomialDoubleBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+%{
+using QuantLib::BlackDeltaCalculator;
+%}
+
+class BlackDeltaCalculator{
+  public:
+    %extend {
+        BlackDeltaCalculator(
+            Option::Type ot,
+            DeltaVolQuote::DeltaType dt,
+            Real spot,
+            DiscountFactor dDiscount,
+            DiscountFactor fDiscount,
+            Real stDev) {
+                return new BlackDeltaCalculator(ot, dt, spot,
+                                                dDiscount, fDiscount,
+                                                stDev);
+        }
+    }
+    Real deltaFromStrike(Real strike) const;
+    Real strikeFromDelta(Real delta) const;
+};
+
+
+
 #endif
