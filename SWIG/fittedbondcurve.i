@@ -31,7 +31,7 @@ typedef QuantLib::FittedBondDiscountCurve::FittingMethod FittingMethod;
 std::vector<boost::shared_ptr<BondHelper> > convert_bond_helpers(
                  const std::vector<boost::shared_ptr<RateHelper> >& helpers) {
     std::vector<boost::shared_ptr<BondHelper> > result(helpers.size());
-    for (int i=0; i<helpers.size(); ++i)
+    for (Size i=0; i<helpers.size(); ++i)
         result[i] = boost::dynamic_pointer_cast<BondHelper>(helpers[i]);
     return result;
 }

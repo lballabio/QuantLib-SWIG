@@ -1,20 +1,41 @@
 
-Release 1.8 - May 2016
-Changes since release 1.7:
-- in sync with QuantLib 1.8.
-- exported finite-difference barrier engine (thanks to Jayanth R. Varma).
-- exported FixedRateBondForward and BondFunctions::zSpread (thanks to
-  Gouthaman Balaraman).
-- fix compilation error on Mac OS X Yosemite (thanks to Alex Cooper).
-- let the Java module use the compiler defined by $CXX (thanks to Richard Gomes).
-- let the Python module use the same compiler used for QuantLib
-  (thanks to GitHub user EthiaclBanker).
-- exported solver and optimizer functionality to C# (thanks to GitHub
-  user dave-fl).
-- in the Python module, also defined __hash__ for classes that defined
-  __eq__. This makes them suitable to use as dictionary keys.
-- fixed CallableFixedRateBond call in Python (thanks to Gouthaman Balaraman).
-- exported Schedule::until (thanks to GitHub user alexsbromberg).
-- exported StochasticProcess interface.
+Changes for QuantLib-SWIG 1.10
+==============================
 
-  
+The most notable changes are included below.
+A detailed list of changes is available in ChangeLog.txt and at
+<https://github.com/lballabio/QuantLib-SWIG/milestone/3?closed=1>.
+
+- Unified Visual Studio solution file for the C# module. The provided
+  file works for all versions from 2010 to 2017.
+
+- Exported newly added CDS2015 date-generation rule.
+
+- Exported GSR model (thanks to Andres Hernandez).
+
+- Exported Markov functional model (thanks to Matthias Lungwitz).
+
+- Exported hybrid simulated annealing optimizer (thanks to Andres
+  Hernandez).
+
+- Exported vega method for swaptions (thanks to Alexander Baker).
+
+- Exported more instantiations of piecewise yield curve (thanks to
+  Grant Bartel).
+
+- Exported non-standard swap and swaption (thanks to Peter Caspers).
+
+- Exported newly added CompoundingThenSimple convention (thanks to
+  Martin Ross).
+
+- Allow using an arbitrary solver to calculate yields (thanks to
+  Daniel Hrabovcak).
+
+- Allow passing a schedule to Actual/Actual day counter for correct
+  calculation of reference dates (thanks to Ryan Taylor).
+
+- Allow passing an arbitrary calendar to business/252 calendar (thanks
+  to Stanislav Vinokurov).
+
+- Fixed comparison operators in Python 3.x (thanks to Rob Chu).
+

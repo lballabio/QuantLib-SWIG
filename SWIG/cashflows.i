@@ -3,6 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2010, 2011 Lluis Pujol Bajador
+ Copyright (C) 2017 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -422,9 +423,11 @@ using QuantLib::CmsCouponPricer;
 using QuantLib::AnalyticHaganPricer;
 using QuantLib::NumericHaganPricer;
 using QuantLib::GFunctionFactory;
+using QuantLib::LinearTsrPricer;
 typedef boost::shared_ptr<FloatingRateCouponPricer> CmsCouponPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> AnalyticHaganPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> NumericHaganPricerPtr;
+typedef boost::shared_ptr<FloatingRateCouponPricer> LinearTsrPricerPtr;
 %}
 
 %rename(CmsCouponPricer) CmsCouponPricerPtr;
@@ -515,6 +518,25 @@ class CappedFlooredCmsCouponPtr: public CappedFlooredCouponPtr {
     }
 };
 
+
+
+%rename(LinearTsrPricer) LinearTsrPricerPtr;
+class LinearTsrPricerPtr : public CmsCouponPricerPtr {
+  public:
+    %extend {
+        LinearTsrPricerPtr(
+            const Handle<SwaptionVolatilityStructure> &swaptionVol,
+            const Handle<Quote> &meanReversion,
+            const Handle<YieldTermStructure> &couponDiscountCurve =
+                                                 Handle<YieldTermStructure>(),
+            const LinearTsrPricer::Settings &settings =
+                                                LinearTsrPricer::Settings()) {
+            return new LinearTsrPricerPtr(
+                          new LinearTsrPricer(swaptionVol, meanReversion,
+                                              couponDiscountCurve, settings));
+        }
+    }
+};
 
 // cash flow vector builders
 

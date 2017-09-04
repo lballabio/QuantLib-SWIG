@@ -218,6 +218,15 @@ class Period {
         bool __lt__(const Period& other) {
             return *self < other;
         }
+        bool __gt__(const Period& other) {
+            return other < *self;
+        }
+        bool __le__(const Period& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Period& other) {
+            return !(*self < other);
+        }
         #endif
         bool __eq__(const Period& other) {
             return *self == other;
@@ -247,6 +256,12 @@ namespace std {
 using QuantLib::Date;
 using QuantLib::DateParser;
 %}
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+import datetime
+%}
+#endif
 
 #if defined(SWIGR)
 %Rruntime %{
@@ -543,6 +558,15 @@ class Date {
         bool __lt__(const Date& other) {
             return *self < other;
         }
+        bool __gt__(const Date& other) {
+            return other < *self;
+        }
+        bool __le__(const Date& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Date& other) {
+            return !(*self < other);
+        }
         #endif
         #if defined(SWIGRUBY)
         Date succ() {
@@ -555,6 +579,16 @@ class Date {
         }
         #endif
     }
+    #if defined(SWIGPYTHON)
+    %pythoncode %{
+    def to_date(self):
+        return datetime.date(self.year(), self.month(), self.dayOfMonth())
+
+    @staticmethod
+    def from_date(date):
+        return Date(date.day, date.month, date.year)
+    %}
+    #endif
 };
 
 class DateParser {

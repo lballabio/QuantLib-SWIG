@@ -20,6 +20,7 @@ import sys
 import unittest
 
 from date import DateTest
+from daycounters import DayCountersTest
 from instruments import InstrumentTest
 from marketelements import MarketElementTest
 from integrals import IntegralTest
@@ -29,6 +30,7 @@ from bonds import FixedRateBondTest
 from ratehelpers import FixedRateBondHelperTest, FxSwapRateHelperTest
 from cms import CmsTest
 from assetswap import AssetSwapTest
+from capfloor import CapFloorTest
 
 def test():
     import QuantLib
@@ -37,6 +39,7 @@ def test():
     suite = unittest.TestSuite()
 
     suite.addTest(DateTest())
+    suite.addTest(DayCountersTest())
     suite.addTest(unittest.makeSuite(InstrumentTest,'test'))
     suite.addTest(unittest.makeSuite(MarketElementTest,'test'))
     suite.addTest(unittest.makeSuite(IntegralTest,'test'))
@@ -47,6 +50,7 @@ def test():
     suite.addTest(unittest.makeSuite(CmsTest, 'test'))
     suite.addTest(unittest.makeSuite(AssetSwapTest, 'test'))
     suite.addTest(unittest.makeSuite(FxSwapRateHelperTest, 'test'))
+    suite.addTest(unittest.makeSuite(CapFloorTest, 'test'))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 

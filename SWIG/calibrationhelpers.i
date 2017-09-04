@@ -3,6 +3,8 @@
  Copyright (C) 2003, 2007, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Luis Cota
+ Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2016 Peter Caspers
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -72,6 +74,8 @@ class CalibrationHelper {
                                  Real accuracy, Size maxEvaluations,
                                  Volatility minVol, Volatility maxVol) const;
     Real blackPrice(Volatility volatility) const;
+    Handle<Quote> volatility() const;
+    VolatilityType volatilityType() const;
 };
 %template(CalibrationHelper) boost::shared_ptr<CalibrationHelper>;
 %extend boost::shared_ptr<CalibrationHelper> {
@@ -81,6 +85,22 @@ class CalibrationHelper {
         CalibrationHelper::PriceError;
     static const CalibrationHelper::CalibrationErrorType ImpliedVolError =
         CalibrationHelper::ImpliedVolError;
+    Date swaptionExpiryDate() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->exercise()->date(0) : Null<Date>();
+    }
+    Real swaptionStrike() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->underlyingSwap()->fixedRate() : Null<Real>();
+    }
+    Real swaptionNominal() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->underlyingSwap()->nominal() : Null<Real>();
+    }
+    Date swaptionMaturityDate() {
+        boost::shared_ptr<SwaptionHelper> s = boost::dynamic_pointer_cast<SwaptionHelper>(*self);
+        return s ? s->swaption()->underlyingSwap()->fixedSchedule().dates().back() : Null<Date>();
+    }
 }
 
 %rename(SwaptionHelper) SwaptionHelperPtr;
@@ -95,7 +115,11 @@ class SwaptionHelperPtr : public boost::shared_ptr<CalibrationHelper> {
                           const DayCounter& floatingLegDayCounter,
                           const Handle<YieldTermStructure>& termStructure,
                           CalibrationHelper::CalibrationErrorType errorType
-                                    = CalibrationHelper::RelativePriceError) {
+                                    = CalibrationHelper::RelativePriceError,
+                          const Real strike = Null<Real>(),
+                          const Real nominal = 1.0,
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real shift = 0.0) {
             boost::shared_ptr<IborIndex> libor =
                 boost::dynamic_pointer_cast<IborIndex>(index);
             return new SwaptionHelperPtr(
@@ -104,8 +128,63 @@ class SwaptionHelperPtr : public boost::shared_ptr<CalibrationHelper> {
                                    fixedLegDayCounter,
                                    floatingLegDayCounter,
                                    termStructure,
-                                   errorType));
+                                   errorType,
+                                   strike, nominal, 
+                                   type, shift));
         }
+        
+        SwaptionHelperPtr(const Date& exerciseDate, const Period& length,
+                          const Handle<Quote>& volatility,
+                          const IborIndexPtr& index,
+                          const Period& fixedLegTenor,
+                          const DayCounter& fixedLegDayCounter,
+                          const DayCounter& floatingLegDayCounter,
+                          const Handle<YieldTermStructure>& termStructure,
+                          CalibrationHelper::CalibrationErrorType errorType
+                                    = CalibrationHelper::RelativePriceError,
+                          const Real strike = Null<Real>(),
+                          const Real nominal = 1.0,
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real shift = 0.0) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new SwaptionHelperPtr(
+                new SwaptionHelper(exerciseDate,length,volatility,
+                                   libor,fixedLegTenor,
+                                   fixedLegDayCounter,
+                                   floatingLegDayCounter,
+                                   termStructure,
+                                   errorType,
+                                   strike, nominal, 
+                                   type, shift));
+        }
+        
+        SwaptionHelperPtr(const Date& exerciseDate, const Date& endDate,
+                          const Handle<Quote>& volatility,
+                          const IborIndexPtr& index,
+                          const Period& fixedLegTenor,
+                          const DayCounter& fixedLegDayCounter,
+                          const DayCounter& floatingLegDayCounter,
+                          const Handle<YieldTermStructure>& termStructure,
+                          CalibrationHelper::CalibrationErrorType errorType
+                                    = CalibrationHelper::RelativePriceError,
+                          const Real strike = Null<Real>(),
+                          const Real nominal = 1.0,
+                          const VolatilityType type = ShiftedLognormal,
+                          const Real shift = 0.0) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new SwaptionHelperPtr(
+                new SwaptionHelper(exerciseDate,endDate,volatility,
+                                   libor,fixedLegTenor,
+                                   fixedLegDayCounter,
+                                   floatingLegDayCounter,
+                                   termStructure,
+                                   errorType,
+                                   strike, nominal, 
+                                   type, shift));
+        }
+        
         std::vector<Time> times() {
             std::list<Time> l;
             (*self)->addTimesTo(l);

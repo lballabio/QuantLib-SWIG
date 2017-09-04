@@ -2,6 +2,7 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2016 Gouthaman Balaraman
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,9 +45,11 @@ typedef QuantLib::PseudoRandom::rng_type GaussianRandomGenerator;
 using QuantLib::RandomSequenceGenerator;
 
 typedef QuantLib::PseudoRandom::ursg_type UniformRandomSequenceGenerator;
+using QuantLib::SobolBrownianGenerator;
 
 using QuantLib::HaltonRsg;
 using QuantLib::SobolRsg;
+using QuantLib::SobolBrownianBridgeRsg;
 
 typedef QuantLib::LowDiscrepancy::ursg_type
     UniformLowDiscrepancySequenceGenerator;
@@ -170,15 +173,32 @@ class GaussianRandomGenerator {
 
 class HaltonRsg {
   public:
-    HaltonRsg(Size dimensionality);
+    HaltonRsg(Size dimensionality, unsigned long seed = 0,
+                  bool randomStart = true, bool randomShift = false);
     const Sample<std::vector<Real> >& nextSequence() const;
+    const Sample<std::vector<Real> >& lastSequence() const;
     Size dimension() const;
 };
 
 class SobolRsg {
   public:
-    SobolRsg(Size dimensionality, BigInteger seed=0);
+    enum DirectionIntegers {
+            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux,
+            JoeKuoD5, JoeKuoD6, JoeKuoD7,
+            Kuo, Kuo2, Kuo3 };
+    SobolRsg(Size dimensionality, BigInteger seed=0,
+            DirectionIntegers directionIntegers = QuantLib::SobolRsg::Jaeckel);
     const Sample<std::vector<Real> >& nextSequence() const;
+    const Sample<std::vector<Real> >& lastSequence() const;
+    Size dimension() const;
+};
+
+
+class SobolBrownianBridgeRsg {
+  public:
+    SobolBrownianBridgeRsg(Size factors, Size steps);
+    const Sample<std::vector<Real> >&  nextSequence() const;
+    const Sample<std::vector<Real> >&  lastSequence() const;
     Size dimension() const;
 };
 

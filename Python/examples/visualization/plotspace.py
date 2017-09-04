@@ -33,7 +33,7 @@ class PlotSpace:
             GUI.invoke_later(self.p.add_source_data, s1.data)
 
     def add_surface_data(self, xrange, yrange, f):
-        print "Start!!!"
+        print("Start!!!")
         calc_thread = self.CalcThread(self, xrange, yrange, f)
         calc_thread.start()
     def add_surface_data_immediate(self, xrange, yrange, f):

@@ -10,19 +10,13 @@ find CSharp/csharp -name '*.cs' \
 | awk -F'/' '{ print $3 }' \
 | sort > csharp.ref.files
 
-# extract file names from VC8 project.
-
-grep -o -E 'Compile *Include *= *".*"' CSharp/csharp/NQuantLib_vc8.csproj \
-| awk -F'"' '{ print $2 }' \
-| sort > csharp.vc8.files
-
-# Same for VC9...
+# Extract file names from VC9 project.
 
 grep -o -E 'Compile *Include *= *".*"' CSharp/csharp/NQuantLib_vc9.csproj \
 | awk -F'"' '{ print $2 }' \
 | sort > csharp.vc9.files
 
-# ...and VC10 and above.
+# Same for and VC10 and above.
 
 grep -o -E 'Compile *Include *= *".*"' CSharp/csharp/NQuantLib.csproj \
 | awk -F'"' '{ print $2 }' \
@@ -30,11 +24,6 @@ grep -o -E 'Compile *Include *= *".*"' CSharp/csharp/NQuantLib.csproj \
 
 # Write out differences...
 
-echo 'Visual Studio 8:'
-diff -b csharp.vc8.files csharp.ref.files
-
-echo ''
-echo ''
 echo 'Visual Studio 9:'
 diff -b csharp.vc9.files csharp.ref.files
 
@@ -45,3 +34,4 @@ diff -b csharp.vc1x.files csharp.ref.files
 
 # ...and cleanup
 rm -f csharp.*.files
+
