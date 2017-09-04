@@ -14,13 +14,6 @@ import org.quantlib.Euribor3M;
 
 public class FRA {
 
-    static {
-        try {
-            System.loadLibrary("QuantLibJNI");
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-    }
 
     public static void main(String[] args) throws Exception {
 

@@ -70,13 +70,6 @@ import org.quantlib.YieldTermStructureHandle;
 import org.quantlib.ZeroCouponBond;
 
 public class Bonds {
-    static {
-        try {
-            System.loadLibrary("QuantLibJNI");
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-    }
     public static void main(String[] args) throws Exception {
 
         // MARKET DATA
