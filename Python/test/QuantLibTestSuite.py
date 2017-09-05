@@ -31,6 +31,7 @@ from ratehelpers import FixedRateBondHelperTest
 from cms import CmsTest
 from assetswap import AssetSwapTest
 from capfloor import CapFloorTest
+from blackformula import BlackDeltaCalculatorTest
 
 def test():
     import QuantLib
@@ -50,6 +51,7 @@ def test():
     suite.addTest(unittest.makeSuite(CmsTest, 'test'))
     suite.addTest(unittest.makeSuite(AssetSwapTest, 'test'))
     suite.addTest(unittest.makeSuite(CapFloorTest, 'test'))
+    suite.addTest(unittest.makeSuite(BlackDeltaCalculatorTest, 'test'))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 

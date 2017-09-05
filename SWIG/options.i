@@ -2207,6 +2207,7 @@ class BlackDeltaCalculator{
     }
     Real deltaFromStrike(Real strike) const;
     Real strikeFromDelta(Real delta) const;
+    Real atmStrike(DeltaVolQuote::AtmType atmT) const;
 };
 
 
