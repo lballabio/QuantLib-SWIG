@@ -24,6 +24,8 @@
 %include calendars.i
 %include types.i
 
+%define QL_TYPECHECK_DATEGENERATION       7210    %enddef
+
 %{
 using QuantLib::Schedule;
 using QuantLib::DateGeneration;
@@ -35,6 +37,22 @@ struct DateGeneration {
                 Twentieth, TwentiethIMM,
                 OldCDS, CDS, CDS2015 };
 };
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<DateGeneration::Rule> %{
+    if($input == Py_None)
+        $1 = boost::none;
+    else if (PyInt_Check($input))
+        $1 = (DateGeneration::Rule) PyInt_AsLong($input);
+    else
+        $1 = (DateGeneration::Rule) PyLong_AsLong($input);
+%}
+%typecheck (QL_TYPECHECK_DATEGENERATION) boost::optional<DateGeneration::Rule> {
+if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
+    $1 = 1;
+else
+    $1 = 0;
+}
+#endif
 
 #if defined(SWIGRUBY)
 %mixin Schedule "Enumerable";
@@ -50,9 +68,21 @@ class Schedule {
     %rename("is-regular?") isRegular;
     #endif
   public:
+    #if defined(SWIGPYTHON)
     Schedule(const std::vector<Date>&,
-             const Calendar& calendar,
-             BusinessDayConvention rollingConvention);
+             const Calendar& calendar = NullCalendar(),
+             const BusinessDayConvention convention = Unadjusted,
+             boost::optional<BusinessDayConvention>
+             terminationDateConvention = boost::none,
+             const boost::optional<Period> tenor = boost::none,
+             boost::optional<DateGeneration::Rule> rule = boost::none,
+             boost::optional<bool> endOfMonth = boost::none,
+             const std::vector<bool>& isRegular = std::vector<bool>(0));
+    #else
+    Schedule(const std::vector<Date>&,
+         const Calendar& calendar = NullCalendar(),
+         const BusinessDayConvention convention = Unadjusted);
+    #endif
     Schedule(const Date& effectiveDate,
              const Date& terminationDate,
              const Period& tenor,

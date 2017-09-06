@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import os, sys, math
+import os, sys, math, codecs
 from distutils.cmd import Command
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build
@@ -239,7 +239,8 @@ framework for quantitative finance.
       author           = "QuantLib Team",
       author_email     = "quantlib-users@lists.sourceforge.net",
       url              = "http://quantlib.org",
-      license          = open('../LICENSE.TXT','r+').read(),
+      license          = codecs.open('../LICENSE.TXT','r+',
+                                     encoding='utf8').read(),
       classifiers      = classifiers,
       py_modules       = ['QuantLib.__init__','QuantLib.QuantLib'],
       ext_modules      = [Extension("QuantLib._QuantLib",

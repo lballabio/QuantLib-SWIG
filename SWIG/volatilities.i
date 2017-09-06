@@ -469,41 +469,49 @@ class ConstantOptionletVolatilityPtr
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(referenceDate,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
         ConstantOptionletVolatilityPtr(const Date& referenceDate,
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(referenceDate,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
         ConstantOptionletVolatilityPtr(Natural settlementDays,
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(settlementDays,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
         ConstantOptionletVolatilityPtr(Natural settlementDays,
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(settlementDays,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
     }
 };
@@ -664,6 +672,26 @@ class SwaptionVolCube1Ptr
                     volSpreads, swi, shortSwi, vegaWeightedSmileFit,
                     parametersGuess,isParameterFixed,isAtmCalibrated,
                     endCriteria,maxErrorTolerance,optMethod));
+        }
+
+        Matrix sparseSabrParameters() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->sparseSabrParameters();
+        }
+
+        Matrix denseSabrParameters() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->denseSabrParameters();
+        }
+
+        Matrix marketVolCube() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->marketVolCube();
+        }
+
+        Matrix volCubeAtmCalibrated() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->volCubeAtmCalibrated();
         }
     }
 };

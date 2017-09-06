@@ -22,6 +22,8 @@
 %include stl.i
 %include exception.i
 
+%define QL_TYPECHECK_BOOL       7210    %enddef
+
 %{
 // This is necessary to avoid compile failures on 
 // GCC 4
@@ -31,9 +33,25 @@
 #define BOOST_DISABLE_ASSERTS 1
 #endif
 
-
 #include <boost/algorithm/string/case_conv.hpp>
 %}
+
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<bool> %{
+	if($input == Py_None)
+		$1 = boost::none;
+	else if ($input == Py_True)
+		$1 = true;
+	else
+		$1 = false;
+%}
+%typecheck (QL_TYPECHECK_BOOL) boost::optional<bool> {
+if (PyBool_Check($input) || Py_None == $input) 
+	$1 = 1;
+else
+	$1 = 0;
+}
+#endif
 
 #if defined(SWIGRUBY)
 %{

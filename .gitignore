@@ -11,6 +11,7 @@ CSharp/cpp/build
 CSharp/csharp/obj
 CSharp/examples/bin
 CSharp/examples/obj
+CSharp/.vs/
 Guile/quantlib_wrap.cpp
 Java/bin/
 Java/quantlib_wrap.cpp
