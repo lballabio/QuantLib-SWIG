@@ -29,87 +29,43 @@ using QuantLib::bachelierBlackFormulaImpliedVol;
 %}
 
 
-%rename(blackFormula) blackFormulaPtr;
-%rename(blackFormulaImpliedStdDev) blackFormulaImpliedStdDevPtr;
-%rename(blackFormulaCashItmProbability) blackFormulaCashItmProbabilityPtr;
-%rename(bachelierBlackFormula) bachelierBlackFormulaPtr;
-%rename(bachelierBlackFormulaImpliedVol) bachelierBlackFormulaImpliedVolPtr;
+Real blackFormula(Option::Type optionType,
+                    Real strike,
+                    Real forward,
+                    Real stdDev,
+                    Real discount = 1.0,
+                    Real displacement = 0.0);
 
-%inline %{
-
-    Real blackFormulaPtr(Option::Type optionType,
-                      Real strike,
-                      Real forward,
-                      Real stdDev,
-                      Real discount = 1.0,
-                      Real displacement = 0.0) {
-       return QuantLib::blackFormula(optionType,
-                                     strike,
-                                     forward,
-                                     stdDev,
-                                     discount,
-                                     displacement);
-    }
-
-    Real blackFormulaImpliedStdDevPtr(Option::Type optionType,
-                                   Real strike,
-                                   Real forward,
-                                   Real blackPrice,
-                                   Real discount = 1.0,
-                                   Real displacement = 0.0,
-                                   Real guess = Null<Real>(),
-                                   Real accuracy = 1.0e-6,
-                                   Natural maxIterations = 100) {
-        return QuantLib::blackFormulaImpliedStdDev(optionType,
-                                                   strike,
-                                                   forward,
-                                                   blackPrice,
-                                                   discount,
-                                                   displacement,
-                                                   guess,
-                                                   accuracy,
-                                                   maxIterations);
-    }
+Real blackFormulaImpliedStdDev(Option::Type optionType,
+                                Real strike,
+                                Real forward,
+                                Real blackPrice,
+                                Real discount = 1.0,
+                                Real displacement = 0.0,
+                                Real guess = Null<Real>(),
+                                Real accuracy = 1.0e-6,
+                                Natural maxIterations = 100);
 
 
-    Real blackFormulaCashItmProbabilityPtr(Option::Type optionType,
-                                        Real strike,
-                                        Real forward,
-                                        Real stdDev,
-                                        Real displacement = 0.0) {
-        return QuantLib::blackFormulaCashItmProbability(optionType,
-                                                        strike,
-                                                        forward,
-                                                        stdDev,
-                                                        displacement);
-    }
+Real blackFormulaCashItmProbability(Option::Type optionType,
+                                    Real strike,
+                                    Real forward,
+                                    Real stdDev,
+                                    Real displacement = 0.0);
 
-    Real bachelierBlackFormulaPtr(Option::Type optionType,
-                               Real strike,
-                               Real forward,
-                               Real stdDev,
-                               Real discount = 1.0) {
-        return QuantLib::bachelierBlackFormula(optionType,
-                                               strike,
-                                               forward,
-                                               stdDev,
-                                               discount);
-    }
+Real bachelierBlackFormula(Option::Type optionType,
+                            Real strike,
+                            Real forward,
+                            Real stdDev,
+                            Real discount = 1.0);
 
-    Real bachelierBlackFormulaImpliedVolPtr(Option::Type optionType,
-                                   Real strike,
-                                   Real forward,
-                                   Real tte,
-                                   Real bachelierPrice,
-                                   Real discount = 1.0) {
-        return QuantLib::bachelierBlackFormulaImpliedVol(optionType,
-                                                         strike,
-                                                         forward,
-                                                         tte,
-                                                         bachelierPrice,
-                                                         discount);
-    }                  
-%}
+Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
+                                Real strike,
+                                Real forward,
+                                Real tte,
+                                Real bachelierPrice,
+                                Real discount = 1.0);
+
 
 #endif
 
