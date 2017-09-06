@@ -665,6 +665,26 @@ class SwaptionVolCube1Ptr
                     parametersGuess,isParameterFixed,isAtmCalibrated,
                     endCriteria,maxErrorTolerance,optMethod));
         }
+
+        Matrix sparseSabrParameters() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->sparseSabrParameters();
+        }
+
+        Matrix denseSabrParameters() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->denseSabrParameters();
+        }
+
+        Matrix marketVolCube() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->marketVolCube();
+        }
+
+        Matrix volCubeAtmCalibrated() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->volCubeAtmCalibrated();
+        }
     }
 };
 
