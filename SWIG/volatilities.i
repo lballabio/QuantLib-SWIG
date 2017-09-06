@@ -470,8 +470,8 @@ class ConstantOptionletVolatilityPtr
                                        BusinessDayConvention bdc,
                                        Volatility volatility,
                                        const DayCounter& dayCounter,
-								       const VolatilityType type = ShiftedLognormal,
-								       const Real shift = 0.0) {
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(referenceDate,
                                                 cal, bdc, volatility,
@@ -482,8 +482,8 @@ class ConstantOptionletVolatilityPtr
                                        BusinessDayConvention bdc,
                                        const Handle<Quote>& volatility,
                                        const DayCounter& dayCounter,
-								       const VolatilityType type = ShiftedLognormal,
-								       const Real shift = 0.0) {
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(referenceDate,
                                                 cal, bdc, volatility,
@@ -494,8 +494,8 @@ class ConstantOptionletVolatilityPtr
                                        BusinessDayConvention bdc,
                                        Volatility volatility,
                                        const DayCounter& dayCounter,
-								       const VolatilityType type = ShiftedLognormal,
-								       const Real shift = 0.0) {
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(settlementDays,
                                                 cal, bdc, volatility,
@@ -506,8 +506,8 @@ class ConstantOptionletVolatilityPtr
                                        BusinessDayConvention bdc,
                                        const Handle<Quote>& volatility,
                                        const DayCounter& dayCounter,
-								       const VolatilityType type = ShiftedLognormal,
-								       const Real shift = 0.0) {
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(settlementDays,
                                                 cal, bdc, volatility,
