@@ -62,11 +62,13 @@ enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
 %typemap(in) boost::optional<BusinessDayConvention> %{
 	if($input == Py_None)
 		$1 = boost::none;
+    else if (PyInt_Check($input))
+        $1 = (BusinessDayConvention) PyInt_AsLong($input);
 	else
-		$1 = (BusinessDayConvention) PyLong_AsSize_t($input);
+		$1 = (BusinessDayConvention) PyLong_AsLong($input);
 %}
 %typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) boost::optional<BusinessDayConvention> {
-if (PyLong_Check($input) || Py_None == $input) 
+if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
 	$1 = 1;
 else
 	$1 = 0;
