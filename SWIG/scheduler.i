@@ -39,16 +39,16 @@ struct DateGeneration {
 };
 #if defined(SWIGPYTHON)
 %typemap(in) boost::optional<DateGeneration::Rule> %{
-	if($input == Py_None)
-		$1 = boost::none;
-	else
-		$1 = (DateGeneration::Rule) PyLong_AsSize_t($input);
+    if($input == Py_None)
+        $1 = boost::none;
+    else
+        $1 = (DateGeneration::Rule) PyLong_AsSize_t($input);
 %}
 %typecheck (QL_TYPECHECK_DATEGENERATION) boost::optional<DateGeneration::Rule> {
 if (PyLong_Check($input) || Py_None == $input) 
-	$1 = 1;
+    $1 = 1;
 else
-	$1 = 0;
+    $1 = 0;
 }
 #endif
 
@@ -66,23 +66,21 @@ class Schedule {
     %rename("is-regular?") isRegular;
     #endif
   public:
-	#if defined(SWIGPYTHON)
-	Schedule(const std::vector<Date>&,
-			 const Calendar& calendar = NullCalendar(),
-			 const BusinessDayConvention
-								convention = Unadjusted,
-			 boost::optional<BusinessDayConvention>
-				 terminationDateConvention = boost::none,
-			 const boost::optional<Period> tenor = boost::none,
-			 boost::optional<DateGeneration::Rule> rule = boost::none,
-			 boost::optional<bool> endOfMonth = boost::none,
-			 const std::vector<bool>& isRegular = std::vector<bool>(0));
-	#else
-	Schedule(const std::vector<Date>&,
-		 const Calendar& calendar = NullCalendar(),
-		 const BusinessDayConvention 
-							convention = Unadjusted);
-	#endif
+    #if defined(SWIGPYTHON)
+    Schedule(const std::vector<Date>&,
+             const Calendar& calendar = NullCalendar(),
+             const BusinessDayConvention convention = Unadjusted,
+             boost::optional<BusinessDayConvention>
+             terminationDateConvention = boost::none,
+             const boost::optional<Period> tenor = boost::none,
+             boost::optional<DateGeneration::Rule> rule = boost::none,
+             boost::optional<bool> endOfMonth = boost::none,
+             const std::vector<bool>& isRegular = std::vector<bool>(0));
+    #else
+    Schedule(const std::vector<Date>&,
+         const Calendar& calendar = NullCalendar(),
+         const BusinessDayConvention convention = Unadjusted);
+    #endif
     Schedule(const Date& effectiveDate,
              const Date& terminationDate,
              const Period& tenor,
