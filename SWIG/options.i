@@ -815,14 +815,15 @@ typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
 class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
-        FdBatesVanillaEnginePtr(const BatesProcessPtr& process,
-                            Size tGrid = 100, Size xGrid = 100, Size vGrid=50, Size dampingSteps = 0) {
-            boost::shared_ptr<BatesProcess> bProcess =
-                 boost::dynamic_pointer_cast<BatesProcess>(
-                                                                     process);
-            QL_REQUIRE(bProcess, "Bates Process required");
+        FdBatesVanillaEnginePtr(const BatesModelPtr& model,
+                                Size tGrid = 100, Size xGrid = 100,
+                                Size vGrid=50, Size dampingSteps = 0) {
+            boost::shared_ptr<BatesModel> bModel =
+                 boost::dynamic_pointer_cast<BatesModel>(model);
+            QL_REQUIRE(bModel, "Bates model required");
             return new FdBatesVanillaEnginePtr(
-                            new FdBatesVanillaEngine( bProcess,tGrid, xGrid, vGrid, dampingSteps));
+                               new FdBatesVanillaEngine(bModel, tGrid, xGrid,
+                                                        vGrid, dampingSteps));
         }
     }
 };
