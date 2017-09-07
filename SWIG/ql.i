@@ -180,6 +180,7 @@
 %include common.i
 %include vectors.i
 %include basketoptions.i
+%include blackformula.i
 %include bonds.i
 %include bondfunctions.i
 %include calendars.i

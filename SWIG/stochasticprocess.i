@@ -376,6 +376,36 @@ class HullWhiteProcessPtr : public StochasticProcess1DPtr {
 };
 
 %{
+using QuantLib::HullWhiteForwardProcess;
+typedef boost::shared_ptr<StochasticProcess> HullWhiteForwardProcessPtr;
+%}
+
+%rename(HullWhiteForwardProcess) HullWhiteForwardProcessPtr;
+class HullWhiteForwardProcessPtr : public StochasticProcess1DPtr {
+  public:
+    %extend {
+        HullWhiteForwardProcessPtr(const Handle<YieldTermStructure>& riskFreeTS,
+                                 Real a,
+                                 Real sigma){
+            return new HullWhiteForwardProcessPtr(
+                new HullWhiteForwardProcess(riskFreeTS, a, sigma));
+        }
+        Real alpha(Time t) const{
+            return boost::dynamic_pointer_cast<HullWhiteForwardProcess>(*self)      ->alpha(t);
+        }
+        Real M_T(Real s, Real t, Real T) const{
+            return boost::dynamic_pointer_cast<HullWhiteForwardProcess>(*self)      ->M_T(s, t, T);
+        }
+        Real B(Time t, Time T) const{
+            return boost::dynamic_pointer_cast<HullWhiteForwardProcess>(*self)      ->B(t, T);
+        }
+        void setForwardMeasureTime(Time t) {
+            boost::dynamic_pointer_cast<HullWhiteForwardProcess>(*self)             ->setForwardMeasureTime(t);
+        }
+    }
+};
+
+%{
 using QuantLib::GsrProcess;
 typedef boost::shared_ptr<StochasticProcess> GsrProcessPtr;
 %}
