@@ -2208,5 +2208,4 @@ class BinomialDoubleBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
-
 #endif
