@@ -67,5 +67,25 @@ Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
                                 Real discount = 1.0);
 
 
+%{
+using QuantLib::BlackDeltaCalculator;
+%}
+
+class BlackDeltaCalculator{
+  public:
+    BlackDeltaCalculator(
+        Option::Type ot,
+        DeltaVolQuote::DeltaType dt,
+        Real spot,
+        DiscountFactor dDiscount,
+        DiscountFactor fDiscount,
+        Real stDev);
+
+    Real deltaFromStrike(Real strike) const;
+    Real strikeFromDelta(Real delta) const;
+    Real atmStrike(DeltaVolQuote::AtmType atmT) const;
+};
+
+
 #endif
 
