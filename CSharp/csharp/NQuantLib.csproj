@@ -235,6 +235,7 @@
     <Compile Include="BlackCallableFixedRateBondEngine.cs" />
     <Compile Include="BlackCapFloorEngine.cs" />
     <Compile Include="BlackConstantVol.cs" />
+    <Compile Include="BlackDeltaCalculator.cs" />
     <Compile Include="BlackIborCouponPricer.cs" />
     <Compile Include="BlackKarasinski.cs" />
     <Compile Include="BlackProcess.cs" />
@@ -341,6 +342,7 @@
     <Compile Include="DayCounter.cs" />
     <Compile Include="DefaultDensity.cs" />
     <Compile Include="DefaultDensityCurve.cs" />
+    <Compile Include="DefaultLogCubic.cs" />
     <Compile Include="DefaultProbabilityHelper.cs" />
     <Compile Include="DefaultProbabilityHelperVector.cs" />
     <Compile Include="DefaultProbabilityTermStructure.cs" />
@@ -441,6 +443,7 @@
     <Compile Include="ExponentialSplinesFitting.cs" />
     <Compile Include="FalsePosition.cs" />
     <Compile Include="FDAmericanEngine.cs" />
+    <Compile Include="FdBatesVanillaEngine.cs" />
     <Compile Include="FDBermudanEngine.cs" />
     <Compile Include="FdBlackScholesAsianEngine.cs" />
     <Compile Include="FdBlackScholesBarrierEngine.cs" />
@@ -448,6 +451,8 @@
     <Compile Include="FDDividendAmericanEngine.cs" />
     <Compile Include="FDDividendEuropeanEngine.cs" />
     <Compile Include="FDEuropeanEngine.cs" />
+    <Compile Include="FdG2SwaptionEngine.cs" />
+    <Compile Include="FdHullWhiteSwaptionEngine.cs" />
     <Compile Include="FdmSchemeDesc.cs" />
     <Compile Include="FDShoutEngine.cs" />
     <Compile Include="FedFunds.cs" />
@@ -543,6 +548,7 @@
     <Compile Include="HongKong.cs" />
     <Compile Include="HUFCurrency.cs" />
     <Compile Include="HullWhite.cs" />
+    <Compile Include="HullWhiteForwardProcess.cs" />
     <Compile Include="HullWhiteProcess.cs" />
     <Compile Include="Hungary.cs" />
     <Compile Include="IborCoupon.cs" />
@@ -615,7 +621,6 @@
     <Compile Include="LocalVolSurface.cs" />
     <Compile Include="LocalVolTermStructure.cs" />
     <Compile Include="LocalVolTermStructureHandle.cs" />
-    <Compile Include="LogCubic.cs" />
     <Compile Include="LogCubicNaturalSpline.cs" />
     <Compile Include="LogCubicZeroCurve.cs" />
     <Compile Include="LogLinear.cs" />
