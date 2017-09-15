@@ -89,7 +89,6 @@
   <ItemGroup>
     <Compile Include="Actual360.cs" />
     <Compile Include="Actual365Fixed.cs" />
-    <Compile Include="Actual365NoLeap.cs" />
     <Compile Include="ActualActual.cs" />
     <Compile Include="AmericanExercise.cs" />
     <Compile Include="AmortizingPayment.cs" />
