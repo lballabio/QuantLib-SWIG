@@ -29,6 +29,8 @@
 %include types.i
 %include stl.i
 
+%define QL_TYPECHECK_PERIOD                      5220    %enddef
+
 %{
 #ifndef QL_HIGH_RESOLUTION_DATE
     // They are not defined in the library, so we define them here
@@ -245,6 +247,30 @@ class Period {
     %}
     #endif
 };
+
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<Period> %{
+    if($input == Py_None)
+        $1 = boost::none;
+    else
+    {
+        Period *temp;
+        if (!SWIG_IsOK(SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0)))
+            SWIG_exception_fail(SWIG_TypeError, "in method '$symname', expecting type Period");
+        $1 = (boost::optional<Period>) *temp;
+    }
+%}
+%typecheck (QL_TYPECHECK_PERIOD) boost::optional<Period> {
+    if($input == Py_None)
+        $1 = 1;
+    else {
+        Period *temp;
+        int res = SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0);
+        $1 = SWIG_IsOK(res) ? 1 : 0;
+    }
+
+}
+#endif
 
 namespace std {
     %template(PeriodVector) vector<Period>;

@@ -31,30 +31,36 @@ from ratehelpers import FixedRateBondHelperTest
 from cms import CmsTest
 from assetswap import AssetSwapTest
 from capfloor import CapFloorTest
+from blackformula import BlackFormulaTest
+from blackformula import BlackDeltaCalculatorTest
+
 
 def test():
     import QuantLib
-    print('testing QuantLib ' +  QuantLib.__version__)
+    print('testing QuantLib ' + QuantLib.__version__)
 
     suite = unittest.TestSuite()
 
     suite.addTest(DateTest())
     suite.addTest(DayCountersTest())
-    suite.addTest(unittest.makeSuite(InstrumentTest,'test'))
-    suite.addTest(unittest.makeSuite(MarketElementTest,'test'))
-    suite.addTest(unittest.makeSuite(IntegralTest,'test'))
+    suite.addTest(unittest.makeSuite(InstrumentTest, 'test'))
+    suite.addTest(unittest.makeSuite(MarketElementTest, 'test'))
+    suite.addTest(unittest.makeSuite(IntegralTest, 'test'))
     suite.addTest(Solver1DTest())
-    suite.addTest(unittest.makeSuite(TermStructureTest,'test'))
+    suite.addTest(unittest.makeSuite(TermStructureTest, 'test'))
     suite.addTest(unittest.makeSuite(FixedRateBondTest, 'test'))
     suite.addTest(unittest.makeSuite(FixedRateBondHelperTest, 'test'))
     suite.addTest(unittest.makeSuite(CmsTest, 'test'))
     suite.addTest(unittest.makeSuite(AssetSwapTest, 'test'))
     suite.addTest(unittest.makeSuite(CapFloorTest, 'test'))
+    suite.addTest(unittest.makeSuite(BlackFormulaTest, 'test'))
+    suite.addTest(unittest.makeSuite(BlackDeltaCalculatorTest, 'test'))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
     if not result.wasSuccessful:
         sys.exit(1)
+
 
 if __name__ == '__main__':
     test()

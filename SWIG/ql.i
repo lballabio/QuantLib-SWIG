@@ -183,6 +183,7 @@
 %include common.i
 %include vectors.i
 %include basketoptions.i
+%include blackformula.i
 %include bonds.i
 %include bonds_ext.i
 %include bondfunctions.i
