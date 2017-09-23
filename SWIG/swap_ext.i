@@ -23,10 +23,13 @@
 
 %{
 #include <qlext/instruments/shiborswap.hpp>
+#include <qlext/instruments/subperiodsswap.hpp>
 
-using QuantLib::ShiborSwap;    
+using QuantLib::ShiborSwap;
+using QuantLib::SubPeriodsSwap;
 
 typedef boost::shared_ptr<Instrument> ShiborSwapPtr;
+typedef boost::shared_ptr<Instrument> SubPeriodsSwapPtr;
 
 %}
 
@@ -63,4 +66,23 @@ class ShiborSwapPtr : public VanillaSwapPtr {
     }
 };
 
+%rename(SubPeriodsSwap) SubPeriodsSwapPtr;
+class SubPeriodsSwapPtr : public SwapPtr {
+  public:
+    %extend {
+        SubPeriodsSwapPtr(const Date& effectiveDate, Real nominal, const Period& swapTenor, bool isPayer,
+                   const Period& fixedTenor, Rate fixedRate, const Calendar& fixedCalendar,
+                   const DayCounter& fixedDayCount, BusinessDayConvention fixedConvention, const Period& floatPayTenor,
+                   const IborIndexPtr& iborIndex, const DayCounter& floatingDayCount,
+                   DateGeneration::Rule rule = DateGeneration::Backward) {
+                       boost::shared_ptr<IborIndex> ibor =
+                            boost::dynamic_pointer_cast<IborIndex>(iborIndex);
+                       return new SubPeriodsSwapPtr(
+                           new SubPeriodsSwap(effectiveDate, nominal, swapTenor, isPayer, fixedTenor, fixedRate, fixedCalendar,
+                           fixedDayCount, fixedConvention, floatPayTenor, ibor, floatingDayCount, rule)
+                       );
+                   }
+    }
+}; 
+ 
 #endif

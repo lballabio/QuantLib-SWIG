@@ -21,4 +21,11 @@
 
 export_xibor_instance(Shibor);
 
+%{
+    #include <qlext/indexes/repo.hpp>
+    using QuantLib::Repo;
+%}
+
+export_xibor_instance(Repo);
+
 #endif
