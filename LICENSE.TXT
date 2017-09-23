@@ -10,6 +10,7 @@ QuantLib-SWIG is
     Copyright (C) 2007, 2008 Tito Ingargiola
     Copyright (C) 2007 Eric H. Jensen
     Copyright (C) 2008 Florent Grenier
+    Copyright (C) 2008 Allen Kuo
     Copyright (C) 2009 Joseph Malicki
     Copyright (C) 2010 Andrea Odetti
     Copyright (C) 2010, 2011 Lluis Pujol Bajador
@@ -24,7 +25,9 @@ QuantLib-SWIG is
     Copyright (C) 2014 Wondersys srl
     Copyright (C) 2015, 2016 Gouthaman Balaraman
     Copyright (C) 2016 Peter Caspers
-    Copyright (C) 2016 Wojciech Ślusarski
+    Copyright (C) 2016, 2017 Wojciech Ślusarski
+    Copyright (C) 2017 BN Algorithms Ltd
+    Copyright (C) 2017 Matthias Lungwitz
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
