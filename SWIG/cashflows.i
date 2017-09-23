@@ -541,6 +541,7 @@ class LinearTsrPricerPtr : public CmsCouponPricerPtr {
 // cash flow vector builders
 
 %{
+/*
 Leg _FixedRateLeg(const Schedule& schedule,
                   const DayCounter& dayCount,
                   const std::vector<Real>& nominals,
@@ -553,17 +554,42 @@ Leg _FixedRateLeg(const Schedule& schedule,
         .withPaymentAdjustment(paymentAdjustment)
         .withFirstPeriodDayCounter(firstPeriodDayCount);
 }
+*/
+
+Leg _FixedRateLeg(const Schedule& schedule,
+                  const DayCounter& dayCount,
+                  const std::vector<Real>& nominals,
+                  const std::vector<Rate>& couponRates,
+                  BusinessDayConvention paymentAdjustment = Following,
+                  const DayCounter& firstPeriodDayCount = DayCounter(),
+                  Natural paymentLag = 0) {
+    return QuantLib::FixedRateLeg(schedule)
+        .withNotionals(nominals)
+        .withCouponRates(couponRates,dayCount)
+        .withPaymentAdjustment(paymentAdjustment)
+        .withFirstPeriodDayCounter(firstPeriodDayCount)
+        .withPaymentLag(paymentLag);
+}
 %}
 #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
 %feature("kwargs") _FixedRateLeg;
 #endif
 %rename(FixedRateLeg) _FixedRateLeg;
+/*
 Leg _FixedRateLeg(const Schedule& schedule,
                   const DayCounter& dayCount,
                   const std::vector<Real>& nominals,
                   const std::vector<Rate>& couponRates,
                   BusinessDayConvention paymentAdjustment = Following,
                   const DayCounter& firstPeriodDayCount = DayCounter());
+*/
+Leg _FixedRateLeg(const Schedule& schedule,
+                  const DayCounter& dayCount,
+                  const std::vector<Real>& nominals,
+                  const std::vector<Rate>& couponRates,
+                  BusinessDayConvention paymentAdjustment = Following,
+                  const DayCounter& firstPeriodDayCount = DayCounter(),
+                  Natural paymentLag = 0);
 
 %{
 Leg _IborLeg(const std::vector<Real>& nominals,
