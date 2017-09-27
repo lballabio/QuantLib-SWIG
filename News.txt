@@ -6,6 +6,9 @@ The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
 <https://github.com/lballabio/QuantLib-SWIG/milestone/4?closed=1>.
 
+- This is the last release to include bindings (which are probably
+  broken anyway) for the Guile, MzScheme and OCaml languages.
+
 - Upgraded to SWIG 3.0.12.
 
 - Exported BlackDeltaCalculator class, blackFormula and related
