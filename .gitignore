@@ -15,7 +15,6 @@ CSharp/.vs/
 Java/bin/
 Java/quantlib_wrap.cpp
 Java/quantlib_wrap.h
-OCaml/quantlib_wrap.c
 Perl/Makefile.quantlib
 Perl/QuantLib.bs
 Perl/blib/
@@ -81,10 +80,6 @@ CSharp/csharp/*.cs
 CSharp/NQuantLib.dll
 Java/QuantLib.jar
 Java/org/
-OCaml/*.cmi
-OCaml/*.cmo
-OCaml/*.ml
-OCaml/*.mli
 Perl/QuantLib.pm
 Python/QuantLib/QuantLib.py
 Python/build

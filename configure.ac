@@ -79,16 +79,6 @@ AC_ARG_ENABLE([csharp],
               [build_mcs=yes])
 AM_CONDITIONAL(BUILD_MCS, test "$build_mcs" != "no")
 
-AC_PATH_PROG([OCAMLC], [ocamlc])
-AM_CONDITIONAL(HAVE_OCAML, test "x${OCAMLC}" != "x")
-AC_ARG_ENABLE([ocaml],
-              AC_HELP_STRING([--disable-ocaml],
-                             [If disabled, the OCaml module
-                              will not be built]),
-              [build_ocaml=$enableval],
-              [build_ocaml=yes])
-AM_CONDITIONAL(BUILD_OCAML, test "$build_ocaml" != "no")
-
 AC_PATH_PROG([R], [R])
 AM_CONDITIONAL(HAVE_R, test "x${R}" != "x")
 AC_ARG_ENABLE([r],
@@ -153,7 +143,6 @@ AC_CONFIG_FILES([
     Makefile
     CSharp/Makefile
     Java/Makefile
-    OCaml/Makefile
     Perl/Makefile
     Perl/Makefile.PL
     Python/Makefile
