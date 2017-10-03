@@ -391,7 +391,7 @@ class Date {
     #if defined(SWIGRUBY)
     %rename("isLeap?")        isLeap;
     %rename("isEndOfMonth?")         isEndOfMonth;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("day-of-month")   dayOfMonth;
     %rename("day-of-year")    dayOfYear;
     %rename("weekday-number") weekdayNumber;
@@ -599,7 +599,7 @@ class Date {
             return *self + 1;
         }
         #endif
-        #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #if defined(SWIGMZSCHEME)
         Date advance(Integer n, TimeUnit units) {
             return *self + n*units;
         }
@@ -695,7 +695,7 @@ bool operator>=(const Date&, const Date&);
 
 #endif
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("Date=?")  Date_equal;
 %rename("Date<?")  Date_less;
 %rename("Date<=?") Date_less_equal;
@@ -732,7 +732,7 @@ struct IMM {
     #if defined(SWIGRUBY)
     %rename("isIMMdate?")        isIMMdate;
     %rename("isIMMcode?")        isIMMcode;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("is-imm-date?")      isIMMdate;
     %rename("is-imm-code?")      isIMMcode;
     %rename("next-date")         nextDate;
@@ -770,7 +770,7 @@ struct ASX {
     #if defined(SWIGRUBY)
     %rename("isASXdate?")        isASXdate;
     %rename("isASXcode?")        isASXcode;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("is-asx-date?")      isASXdate;
     %rename("is-asx-code?")      isASXcode;
     %rename("next-date")         nextDate;

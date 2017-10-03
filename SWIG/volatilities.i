@@ -50,7 +50,7 @@ using QuantLib::SwaptionVolatilityStructure;
 
 %ignore BlackVolTermStructure;
 class BlackVolTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("reference-date") referenceDate;
     %rename("day-counter")    dayCounter;
     %rename("max-date")       maxDate;
@@ -99,7 +99,7 @@ RelinkableHandle<BlackVolTermStructure>;
 
 %ignore LocalVolTermStructure;
 class LocalVolTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("reference-date") referenceDate;
     %rename("day-counter")    dayCounter;
     %rename("max-date")       maxDate;
@@ -133,7 +133,7 @@ RelinkableHandle<LocalVolTermStructure>;
 
 %ignore OptionletVolatilityStructure;
 class OptionletVolatilityStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("reference-date") referenceDate;
     %rename("day-counter")    dayCounter;
     %rename("max-date")       maxDate;
@@ -178,7 +178,7 @@ using QuantLib::SwaptionVolatilityStructure;
 
 %ignore SwaptionVolatilityStructure;
 class SwaptionVolatilityStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("reference-date")  referenceDate;
     %rename("day-counter")     dayCounter;
     %rename("max-option-date")  maxOptionDate;
@@ -422,7 +422,7 @@ typedef boost::shared_ptr<LocalVolTermStructure> LocalVolSurfacePtr;
 %}
 %rename(LocalVolSurface) LocalVolSurfacePtr;
 class LocalVolSurfacePtr : public boost::shared_ptr<LocalVolTermStructure> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("reference-date")       referenceDate;
     %rename("day-counter") dayCounter;
     %rename("max-date") maxDate;

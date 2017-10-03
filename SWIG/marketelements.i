@@ -52,7 +52,7 @@ typedef boost::shared_ptr<Quote> SimpleQuotePtr;
 class SimpleQuotePtr : public boost::shared_ptr<Quote> {
     #if defined(SWIGRUBY)
     %rename("value=")     setValue;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("value-set!") setValue;
     #endif
   public:

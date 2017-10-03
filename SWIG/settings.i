@@ -31,7 +31,7 @@ class Settings {
     %rename("evaluationDate=") setEvaluationDate;
     %rename("includeReferenceDateCashFlows=") includeReferenceDateCashFlows;
     %rename("includeTodaysCashFlows=") includeTodaysCashFlows;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("evaluation-date-get")  evaluationDate;
     %rename("evaluation-date-set!") setEvaluationDate;
     %rename("include-reference-date-cash-flows!") includeReferenceDateCashFlows;

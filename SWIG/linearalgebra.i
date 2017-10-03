@@ -626,141 +626,6 @@ bool extractArray(PyObject* source, Array* target) {
             1 : 0;
     }
 }
-#elif defined(SWIGGUILE)
-%typemap(in) Array {
-    if (gh_vector_p($input)) {
-        Size size = gh_vector_length($input);
-        $1 = Array(size);
-        double* data = gh_scm2doubles($input,NULL);
-        std::copy(data,data+size,$1.begin());
-        free(data);
-    } else {
-        $1 = *(($&1_type)
-               SWIG_MustGetPtr($input,$&1_descriptor,$argnum,0));
-    }
-}
-%typemap(in) const Array& (Array temp),
-             const Array* (Array temp) {
-    if (gh_vector_p($input)) {
-        Size size = gh_vector_length($input);
-        temp = Array(size);
-        $1 = &temp;
-        double* data = gh_scm2doubles($input,NULL);
-        std::copy(data,data+size,temp.begin());
-        free(data);
-    } else {
-        $1 = ($1_ltype) SWIG_MustGetPtr($input,$1_descriptor,$argnum,0);
-    }
-}
-%typecheck(QL_TYPECHECK_ARRAY) Array {
-    /* native sequence? */
-    if (gh_vector_p($input)) {
-        $1 = 1;
-    /* wrapped Array? */
-    } else {
-        Array* v;
-        $1 = (SWIG_ConvertPtr($input,(void **) &v,
-                              $&1_descriptor, 0) != -1) ? 1 : 0;
-    }
-}
-%typecheck(QL_TYPECHECK_ARRAY) const Array & {
-    /* native sequence? */
-    if (gh_vector_p($input)) {
-        $1 = 1;
-    /* wrapped Array? */
-    } else {
-        Array* v;
-        $1 = (SWIG_ConvertPtr($input,(void **) &v,
-                              $1_descriptor, 0) != -1) ? 1 : 0;
-    }
-}
-
-%typemap(in) Matrix {
-    if (gh_vector_p($input)) {
-        Size rows, cols;
-        rows = gh_vector_length($input);
-        if (rows > 0) {
-            SCM o = gh_vector_ref($input,gh_long2scm(0));
-            if (gh_vector_p(o)) {
-                cols = gh_vector_length($input);
-            } else {
-                scm_wrong_type_arg((char *) FUNC_NAME, $argnum, $input);
-            }
-        } else {
-            cols = 0;
-        }
-        $1 = Matrix(rows,cols);
-        for (Size i=0; i<rows; i++) {
-            SCM o = gh_vector_ref($input,gh_long2scm(i));
-            if (gh_vector_p(o)) {
-                if (gh_vector_length(o) != cols)
-                    scm_wrong_type_arg((char *) FUNC_NAME, $argnum, $input);
-                double* data = gh_scm2doubles(o,NULL);
-                std::copy(data,data+cols,$1.row_begin(i));
-                free(data);
-            } else {
-                scm_wrong_type_arg((char *) FUNC_NAME, $argnum, $input);
-            }
-        }
-    } else {
-        $1 = *(($&1_type) SWIG_MustGetPtr($input,$&1_descriptor,$argnum,0));
-    }
-}
-%typemap(in) const Matrix& (Matrix temp),
-             const Matrix* (Matrix temp) {
-    if (gh_vector_p($input)) {
-        Size rows, cols;
-        rows = gh_vector_length($input);
-        if (rows > 0) {
-            SCM o = gh_vector_ref($input,gh_long2scm(0));
-            if (gh_vector_p(o)) {
-                cols = gh_vector_length($input);
-            } else {
-                scm_wrong_type_arg((char *) FUNC_NAME, $argnum, $input);
-            }
-        } else {
-            cols = 0;
-        }
-        temp = Matrix(rows,cols);
-        $1 = &temp;
-        for (Size i=0; i<rows; i++) {
-            SCM o = gh_vector_ref($input,gh_long2scm(i));
-            if (gh_vector_p(o)) {
-                if (gh_vector_length(o) != cols)
-                    scm_wrong_type_arg((char *) FUNC_NAME, $argnum, $input);
-                double* data = gh_scm2doubles(o,NULL);
-                std::copy(data,data+cols,temp.row_begin(i));
-                free(data);
-            } else {
-                scm_wrong_type_arg((char *) FUNC_NAME, $argnum, $input);
-            }
-        }
-    } else {
-        $1 = ($1_ltype) SWIG_MustGetPtr($input,$1_descriptor,$argnum,0);
-    }
-}
-%typecheck(QL_TYPECHECK_MATRIX) Matrix {
-    /* native sequence? */
-    if (gh_vector_p($input)) {
-        $1 = 1;
-    /* wrapped Matrix? */
-    } else {
-        Matrix* m;
-        $1 = (SWIG_ConvertPtr($input,(void **) &m,
-                              $&1_descriptor, 0) != -1) ? 1 : 0;
-    }
-}
-%typecheck(QL_TYPECHECK_MATRIX) const Matrix & {
-    /* native sequence? */
-    if (gh_vector_p($input)) {
-        $1 = 1;
-    /* wrapped Matrix? */
-    } else {
-        Matrix* m;
-        $1 = (SWIG_ConvertPtr($input,(void **) &m,
-                              $1_descriptor, 0) != -1) ? 1 : 0;
-    }
-}
 #endif
 
 #if defined(SWIGR)
@@ -796,7 +661,7 @@ function(x,y) plot(as.data.frame(x)))
 class Array {
     #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     %rename(__len__)   size;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("length")  size;
     %rename("set!")    set;
     #endif
@@ -907,7 +772,7 @@ class Array {
                 throw std::out_of_range("array index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #elif defined(SWIGMZSCHEME)
         Real ref(Size i) {
             if (i<self->size())
                 return (*self)[i];
@@ -937,7 +802,7 @@ class Array {
     }
 };
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("Array+")  Array_add;
 %rename("Array-")  Array_sub;
 %rename("Array/")  Array_div;
@@ -992,7 +857,7 @@ class DefaultLexicographicalViewColumn {
 
 %rename(LexicographicalView) DefaultLexicographicalView;
 class DefaultLexicographicalView {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("set!")    set;
     #endif
   public:
@@ -1020,7 +885,7 @@ class DefaultLexicographicalView {
         DefaultLexicographicalViewColumn __getitem__(Size i) {
             return (*self)[i];
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #elif defined(SWIGMZSCHEME)
         Real ref(Size i, Size j) {
             return (*self)[i][j];
         }
@@ -1058,7 +923,7 @@ class MatrixRow {
 #endif
 
 class Matrix {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("set!")     setitem;
     #endif
   public:
@@ -1097,7 +962,7 @@ class Matrix {
         MatrixRow __getitem__(Size i) {
             return (*self)[i];
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE) || defined(SWIGR)
+        #elif defined(SWIGMZSCHEME) || defined(SWIGR)
         Real ref(Size i, Size j) {
             return (*self)[i][j];
         }
@@ -1138,7 +1003,7 @@ class Matrix {
     }
 };
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("Matrix+")  Matrix_add;
 %rename("Matrix-")  Matrix_sub;
 %rename("Matrix/")  Matrix_div;
@@ -1166,7 +1031,7 @@ class Matrix {
 #endif
 
 // functions
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("Matrix-transpose")    transpose;
 %rename("Array-outer-product") outerProduct;
 %rename("Matrix-pseudo-sqrt")  pseudoSqrt;

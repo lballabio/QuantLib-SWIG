@@ -68,22 +68,6 @@ const char* __version__;
 %}
 #endif
 
-#if defined(SWIGGUILE)
-// code for loading shared library
-%scheme%{
-    (define (load-quantlibc-in path)
-      (if (null? path)
-          (error "QuantLibc.so not found")
-          (let ((so-name (string-append (car path) "/QuantLibc.so")))
-            (if (file-exists? so-name)
-                (dynamic-call
-                 "scm_init_QuantLib_module"
-                 (dynamic-link so-name))
-                (load-quantlibc-in (cdr path))))))
-    (load-quantlibc-in %load-path)
-%}
-#endif
-
 //#if defined(SWIGPYTHON)
 //%feature("autodoc");
 //#endif

@@ -38,7 +38,7 @@ typedef boost::shared_ptr<Instrument> CollarPtr;
 
 %rename(CapFloor) CapFloorPtr;
 class CapFloorPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("implied-volatility") impliedVolatility;
     %rename("floating-leg") floatingLeg;
     %rename("cap-rates") capRates;

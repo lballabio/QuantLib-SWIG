@@ -40,10 +40,6 @@ using QuantLib::Secant;
 %typecheck(SWIG_TYPECHECK_POINTER) Scheme_Object* {
     $1 = 1;
 }
-#elif defined(SWIGGUILE)
-%typecheck(SWIG_TYPECHECK_POINTER) SCM {
-    $1 = 1;
-}
 #endif
 
 %define DeclareSolver(SolverName)
@@ -52,7 +48,7 @@ class SolverName {
     %rename("maxEvaluations=")      setMaxEvaluations;
     %rename("lowerBound=")          setLowerBound;
     %rename("upperBound=")          setUpperBound;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("max-evaluations-set!") setMaxEvaluations;
     %rename("lower-bound-set!")     setLowerBound;
     %rename("upper-bound-set!")     setUpperBound;
@@ -90,17 +86,6 @@ class SolverName {
             return self->solve(f, xAccuracy, guess, step);
         }
         Real solve(Scheme_Object* function, Real xAccuracy,
-                   Real guess, Real xMin, Real xMax) {
-            UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, xMin, xMax);
-        }
-        #elif defined(SWIGGUILE)
-        Real solve(SCM function, Real xAccuracy,
-                   Real guess, Real step) {
-            UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, step);
-        }
-        Real solve(SCM function, Real xAccuracy,
                    Real guess, Real xMin, Real xMax) {
             UnaryFunction f(function);
             return self->solve(f, xAccuracy, guess, xMin, xMax);
@@ -185,7 +170,7 @@ using QuantLib::EndCriteria;
 class EndCriteria {
     #if defined(SWIGRUBY)
     %rename("setPositiveOptimization!") setPositiveOptimization;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename(call) operator();
     %rename("positive-optimization-set!") setPositiveOptimization;
     #elif defined(SWIGCSHARP) || defined(SWIGPERL)
@@ -398,16 +383,6 @@ using QuantLib::Problem;
                 EndCriteria &e,
                 Array &iv) {
         MzCostFunction f(function);
-        Problem p(f,c,iv);
-        m.minimize(p, e);
-        return p.currentValue();
-    }
-}
-#elif defined(SWIGGUILE)
-%extend Optimizer {
-    Array solve(SCM function, Constraint& c, OptimizationMethod& m,
-                EndCriteria &e, Array &iv) {
-        GuileCostFunction f(function);
         Problem p(f,c,iv);
         m.minimize(p, e);
         return p.currentValue();

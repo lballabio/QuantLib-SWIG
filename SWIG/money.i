@@ -30,7 +30,7 @@ class Money {
     #if defined(SWIGRUBY)
     %rename("conversionType=") setConversionType;
     %rename("baseCurrency=")   setBaseCurrency;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("conversion-type-set!") setConversionType;
     %rename("base-currency-set!")   setBaseCurrency;
     #elif defined(SWIGJAVA)
@@ -96,7 +96,7 @@ class Money {
     }
 };
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("Money+")  Money_plus;
 %rename("Money-")  Money_minus;
 %rename("Money*")  Money_times;

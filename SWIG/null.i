@@ -28,7 +28,7 @@ typedef int intOrNull;
 typedef double doubleOrNull;
 %}
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("null-int")    nullInt;
 %rename("null-double") nullDouble;
 #endif
@@ -157,40 +157,6 @@ double nullDouble() { return Null<double>(); }
         $result = scheme_false;
     else
         $result = scheme_make_double($1);
-}
-
-#elif defined(SWIGGUILE)
-
-%typemap(in) intOrNull {
-    if (SCM_FALSEP($input))
-        $1 = Null<int>();
-    else
-        $1 = gh_scm2int($input);
-}
-%typecheck(SWIG_TYPECHECK_INTEGER) intOrNull {
-    $1 = (SCM_FALSEP($input) || SCM_NFALSEP(scm_integer_p($input)) ? 1 : 0);
-}
-%typemap(out) intOrNull {
-    if ($1 == Null<int>())
-        $result = SCM_BOOL_F;
-    else
-        $result = gh_int2scm($1);
-}
-
-%typemap(in) doubleOrNull {
-    if (SCM_FALSEP($input))
-        $1 = Null<double>();
-    else
-        $1 = gh_scm2double($input);
-}
-%typecheck(SWIG_TYPECHECK_DOUBLE) doubleOrNull {
-    $1 = (SCM_FALSEP($input) || SCM_NFALSEP(scm_real_p($input)) ? 1 : 0);
-}
-%typemap(out) doubleOrNull {
-    if ($1 == Null<double>())
-        $result = SCM_BOOL_F;
-    else
-        $result = gh_double2scm($1);
 }
 
 #elif defined(SWIGJAVA)

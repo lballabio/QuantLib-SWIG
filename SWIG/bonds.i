@@ -50,7 +50,7 @@ typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
 class BondPtr : public boost::shared_ptr<Instrument> {
     #if defined(SWIGPYTHON) || defined (SWIGRUBY)
     %rename(bondYield) yield;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("next-coupon-rate")      nextCouponRate;
     %rename("previous-coupon-rate")  previousCouponRate;
     %rename("settlement-days")       settlementDays;
@@ -181,7 +181,7 @@ class BondPtr : public boost::shared_ptr<Instrument> {
 };
 
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("clean-price-from-z-spread") cleanPriceFromZSpread;
 %rename("dirty-price-from-z-spread") dirtyPriceFromZSpread;
 #endif

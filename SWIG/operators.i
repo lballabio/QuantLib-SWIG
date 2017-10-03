@@ -89,7 +89,7 @@ class TridiagonalOperator {
     %rename("midRow=")        setMidRow;
     %rename("midRows=")       setMidRows;
     %rename("lastRow=")       setLastRow;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("solve-for")      solveFor;
     %rename("apply-to")       applyTo;
     %rename("first-row-set!") setFirstRow;
@@ -147,7 +147,7 @@ class TridiagonalOperator {
     #endif
 };
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("TridiagonalOperator+") TridiagonalOperator_add;
 %rename("TridiagonalOperator-") TridiagonalOperator_sub;
 %rename("TridiagonalOperator*") TridiagonalOperator_mul;
@@ -180,7 +180,7 @@ using QuantLib::DZero;
 using QuantLib::DPlusDMinus;
 %}
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 // TridiagonalOperator doesn't have a virtual destructor:
 // let's make sure users won't deallocate derived classes
 // with the wrong one

@@ -12,7 +12,6 @@ CSharp/csharp/obj
 CSharp/examples/bin
 CSharp/examples/obj
 CSharp/.vs/
-Guile/quantlib_wrap.cpp
 Java/bin/
 Java/quantlib_wrap.cpp
 Java/quantlib_wrap.h
@@ -81,7 +80,6 @@ testCaseCollection.xml
 # Outputs
 CSharp/csharp/*.cs
 CSharp/NQuantLib.dll
-Guile/QuantLib.scm
 Java/QuantLib.jar
 Java/org/
 OCaml/*.cmi

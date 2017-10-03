@@ -38,7 +38,7 @@ using QuantLib::IndexManager;
 class IndexManager {
     #if defined(SWIGRUBY)
     %rename("hasHistory?")  hasHistory;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("has-history?") hasHistory;
     %rename("history-get")  getHistory;
     %rename("history-set!") setHistory;
@@ -67,7 +67,7 @@ class Index {
     #if defined(SWIGRUBY)
     %rename("isValidFixingDate?") isValidFixingDate;
     %rename("addFixing!") addFixing;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("fixing-calendar") addFixing;
     %rename("is-valid-fixing-date?") isValidFixingDate;
     %rename("add-fixing") addFixing;
@@ -85,7 +85,7 @@ class Index {
 %extend boost::shared_ptr<Index> {
     #if defined(SWIGRUBY)
     %rename("addFixings!") addFixings;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("add-fixings") addFixings;
     #endif
     void addFixings(const std::vector<Date>& fixingDates,
@@ -112,7 +112,7 @@ typedef boost::shared_ptr<Index> InterestRateIndexPtr;
 
 %rename(InterestRateIndex) InterestRateIndexPtr;
 class InterestRateIndexPtr : public boost::shared_ptr<Index> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("family-name")     familyName;
     %rename("settlement-days") settlementDays;
     %rename("day-counter")     dayCounter;
@@ -169,7 +169,7 @@ typedef boost::shared_ptr<Index> OvernightIndexPtr;
 class IborIndexPtr : public InterestRateIndexPtr {
     #if defined(SWIGRUBY)
     %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("is-adjusted?")            isAdjusted;
     %rename("business-day-convention") businessDayConvention;
     #endif
@@ -327,7 +327,7 @@ typedef boost::shared_ptr<Index> SwapIndexPtr;
 class SwapIndexPtr : public InterestRateIndexPtr {
     #if defined(SWIGRUBY)
     %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("is-adjusted?")            isAdjusted;
     %rename("business-day-convention") businessDayConvention;
     #endif

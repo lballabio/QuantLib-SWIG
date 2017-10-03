@@ -148,7 +148,7 @@
 #endif
 
 // common name mappings
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename(">string")       __str__;
 #elif defined(SWIGPERL)
 %rename("to_string")     __str__;

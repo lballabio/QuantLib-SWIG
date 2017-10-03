@@ -54,7 +54,7 @@ typedef boost::shared_ptr<CalibrationHelper> HestonModelHelperPtr;
 class CalibrationHelper {
     #if defined(SWIGRUBY)
     %rename("pricingEngine=")      setPricingEngine;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("pricing-engine-set!") setPricingEngine;
     %rename("market-value")        marketValue;
     %rename("model-value")         modelValue;
@@ -262,7 +262,7 @@ using QuantLib::CalibratedModel;
 
 %ignore CalibratedModel;
 class CalibratedModel {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) || defined(SWIGRUBY)
+    #if defined(SWIGMZSCHEME) || defined(SWIGRUBY)
     %rename("calibrate!") calibrate;
     #elif defined(SWIGCSHARP)
     %rename("parameters") params;

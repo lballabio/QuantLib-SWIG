@@ -79,16 +79,6 @@ AC_ARG_ENABLE([mzscheme],
               [build_mzscheme=yes])
 AM_CONDITIONAL(BUILD_MZSCHEME, test "$build_mzscheme" != "no")
 
-AC_PATH_PROG([GUILE], [guile])
-AM_CONDITIONAL(HAVE_GUILE, test "x${GUILE}" != "x")
-AC_ARG_ENABLE([guile],
-              AC_HELP_STRING([--disable-guile],
-                             [If disabled, the Guile module
-                              will not be built]),
-              [build_guile=$enableval],
-              [build_guile=yes])
-AM_CONDITIONAL(BUILD_GUILE, test "$build_guile" != "no")
-
 AC_PATH_PROGS([MCS], [gmcs mcs gmcs2])
 AM_CONDITIONAL(HAVE_MCS, test "x${MCS}" != "x")
 AC_ARG_ENABLE([csharp],
@@ -172,8 +162,6 @@ esac
 AC_CONFIG_FILES([
     Makefile
     CSharp/Makefile
-    Guile/Makefile
-    Guile/setup.scm
     Java/Makefile
     MzScheme/Makefile
     MzScheme/setup.scm

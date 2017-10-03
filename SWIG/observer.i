@@ -30,11 +30,11 @@ using QuantLib::Observable;
 %define IsObservable(Type)
 #if defined(SWIGRUBY)
 %rename("toObservable") Type::asObservable;
-#elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#elif defined(SWIGMZSCHEME)
 %rename(">Observable")  Type::asObservable;
 #endif
 %extend Type {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     boost::shared_ptr<Observable>* asObservable() {
         return new boost::shared_ptr<Observable>(*self);
     }
@@ -188,41 +188,6 @@ class MzObserver {
     %rename("unregister-with") unregisterWith;
   public:
     MzObserver(Scheme_Object* callback);
-    void registerWith(const boost::shared_ptr<Observable>&);
-    void unregisterWith(const boost::shared_ptr<Observable>&);
-};
-
-#elif defined(SWIGGUILE)
-
-%{
-// C++ wrapper for Guile observer
-class GuileObserver : public Observer {
-  public:
-    GuileObserver(SCM callback)
-    : callback_(callback) {
-        scm_protect_object(callback_);
-    }
-    ~GuileObserver() {
-        scm_unprotect_object(callback_);
-    }
-    void update() {
-        gh_call0(callback_);
-    }
-  private:
-    SCM callback_;
-    // inhibit copies
-    GuileObserver(const GuileObserver&) {}
-    GuileObserver& operator=(const GuileObserver&) { return *this; }
-};
-%}
-
-// Guile wrapper
-%rename(Observer) GuileObserver;
-class GuileObserver {
-    %rename("register-with")   registerWith;
-    %rename("unregister-with") unregisterWith;
-  public:
-    GuileObserver(SCM callback);
     void registerWith(const boost::shared_ptr<Observable>&);
     void unregisterWith(const boost::shared_ptr<Observable>&);
 };

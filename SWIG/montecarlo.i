@@ -26,7 +26,7 @@
 %include randomnumbers.i
 %include types.i
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("get-covariance") getCovariance;
 #endif
 %inline %{
@@ -68,7 +68,7 @@ class Path {
                 throw std::out_of_range("path index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #elif defined(SWIGMZSCHEME)
         Real ref(Size i) {
             if (i<self->length()) {
                 return (*self)[i];
@@ -87,13 +87,6 @@ class Path {
             for (Size i=0; i<self->length(); ++i) {
                 Scheme_Object* x = scheme_make_double((*self)[i]);
                 scheme_apply(proc,1,&x);
-            }
-        }
-        #elif defined(SWIGGUILE)
-        void for_each(SCM proc) {
-            for (Size i=0; i<self->length(); ++i) {
-                SCM x = gh_double2scm((*self)[i]);
-                gh_call1(proc,x);
             }
         }
         #endif
@@ -152,7 +145,7 @@ using QuantLib::MultiPath;
 class MultiPath {
     #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     %rename(__len__)        pathSize;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("length")       pathSize;
     %rename("asset-number") assetNumber;
     #endif
@@ -175,7 +168,7 @@ class MultiPath {
                 throw std::out_of_range("multi-path index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #elif defined(SWIGMZSCHEME)
         Real ref(Size i, Size j) {
             if (i<self->assetNumber() && j<self->pathSize()) {
                 return (*self)[i][j];
@@ -214,25 +207,6 @@ class MultiPath {
                 for (Size i=0; i<self->assetNumber(); i++)
                     els[i] = scheme_make_double((*self)[i][j]);
                 scheme_apply(proc,1,&v);
-            }
-        }
-        #elif defined(SWIGGUILE)
-        void for_each_path(SCM proc) {
-            for (Size i=0; i<self->assetNumber(); ++i) {
-                SCM x =
-                    SWIG_NewPointerObj(&((*self)[i]), $descriptor(Path *), 0);
-                gh_call1(proc,x);
-            }
-        }
-        void for_each_step(SCM proc) {
-            for (Size j=0; j<self->pathSize(); ++j) {
-                SCM v = gh_make_vector(gh_long2scm(self->assetNumber()),
-                                       SCM_UNSPECIFIED);
-                for (Size i=0; i<self->assetNumber(); i++) {
-                    gh_vector_set_x(v,gh_long2scm(i),
-                                    gh_double2scm((*self)[i][j]));
-                }
-                gh_call1(proc,v);
             }
         }
         #endif

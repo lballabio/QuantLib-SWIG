@@ -85,7 +85,7 @@ class Calendar {
     %rename("isEndOfMonth?")    isEndOfMonth;
     %rename("addHoliday!")      addHoliday;
     %rename("removeHoliday!")   removeHoliday;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("is-business-day?") isBusinessDay;
     %rename("is-holiday?")      isHoliday;
     %rename("is-end-of-month?") isEndOfMonth;
@@ -140,7 +140,7 @@ class Calendar {
     #endif
 };
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("Calendar=?") Calendar_equal;
 %inline %{
     bool Calendar_equal(const Calendar& c1, const Calendar& c2) {

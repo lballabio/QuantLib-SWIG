@@ -66,7 +66,7 @@ using QuantLib::StrikedTypePayoff;
 
 %ignore Payoff;
 class Payoff {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -146,7 +146,7 @@ typedef boost::shared_ptr<Instrument> MultiAssetOptionPtr;
 
 %rename(VanillaOption) VanillaOptionPtr;
 class VanillaOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("dividend-rho")       dividendRho;
     %rename("implied-volatility") impliedVolatility;
     #endif
@@ -994,7 +994,7 @@ typedef boost::shared_ptr<Instrument> DividendVanillaOptionPtr;
 
 %rename(DividendVanillaOption) DividendVanillaOptionPtr;
 class DividendVanillaOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("dividend-rho")       dividendRho;
     %rename("implied-volatility") impliedVolatility;
     #endif
@@ -1118,7 +1118,7 @@ typedef boost::shared_ptr<Instrument> BarrierOptionPtr;
 
 %rename(BarrierOption) BarrierOptionPtr;
 class BarrierOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("dividend-rho")       dividendRho;
     %rename("implied-volatility") impliedVolatility;
     #endif
@@ -1531,7 +1531,7 @@ struct Average {
 
 %rename(ContinuousAveragingAsianOption) ContinuousAveragingAsianOptionPtr;
 class ContinuousAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("dividend-rho")       dividendRho;
     #endif
   public:
@@ -1555,7 +1555,7 @@ add_greeks_to(ContinuousAveragingAsianOption);
 
 %rename(DiscreteAveragingAsianOption) DiscreteAveragingAsianOptionPtr;
 class DiscreteAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("dividend-rho")       dividendRho;
     #endif
   public:
@@ -1887,7 +1887,7 @@ typedef boost::shared_ptr<Instrument> DoubleBarrierOptionPtr;
 
 %rename(DoubleBarrierOption) DoubleBarrierOptionPtr;
 class DoubleBarrierOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("dividend-rho")       dividendRho;
     %rename("implied-volatility") impliedVolatility;
     #endif

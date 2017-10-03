@@ -37,7 +37,7 @@ using QuantLib::YieldTermStructure;
 
 %ignore YieldTermStructure;
 class YieldTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("day-counter")     dayCounter;
     %rename("reference-date")  referenceDate;
     %rename("max-date")        maxDate;

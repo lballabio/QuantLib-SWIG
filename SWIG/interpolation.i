@@ -34,7 +34,7 @@ class Extrapolator {
     %rename("enableExtrapolation!")  enableExtrapolation;
     %rename("disableExtrapolation!") disableExtrapolation;
     %rename("allowsExtrapolation?")  allowsExtrapolation;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("enable-extrapolation")  enableExtrapolation;
     %rename("disable-extrapolation") disableExtrapolation;
     %rename("allows-extrapolation")  allowsExtrapolation;
@@ -68,7 +68,7 @@ typedef SafeInterpolation<QuantLib::T> Safe##T;
 %}
 %rename(Alias) Safe##T;
 class Safe##T {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -153,7 +153,7 @@ typedef SafeInterpolation2D<QuantLib::T> Safe##T;
 %}
 %rename(Alias) Safe##T;
 class Safe##T {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif

@@ -34,7 +34,7 @@ using QuantLib::GenericSequenceStatistics;
 class Statistics {
     #if defined(SWIGRUBY)
     %rename("reset!")                reset;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("weight-sum")            weightSum;
     %rename("standard-deviation")    standardDeviation;
     %rename("error-estimate")        errorEstimate;
@@ -69,7 +69,7 @@ class Statistics {
 class IncrementalStatistics {
     #if defined(SWIGRUBY)
     %rename("reset!")                reset;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("weight-sum")            weightSum;
     %rename("standard-deviation")    standardDeviation;
     %rename("error-estimate")        errorEstimate;
@@ -102,7 +102,7 @@ class IncrementalStatistics {
 
 
 class RiskStatistics : public Statistics {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("semi-variance")         semiVariance;
     %rename("semi-deviation")        semiDeviation;
     %rename("downside-variance")     downsideVariance;
@@ -129,7 +129,7 @@ template <class S>
 class GenericSequenceStatistics {
     #if defined(SWIGRUBY)
     %rename("reset!")                reset;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("weight-sum")            weightSum;
     %rename("standard-deviation")    standardDeviation;
     %rename("error-estimate")        errorEstimate;

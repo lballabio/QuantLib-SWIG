@@ -82,7 +82,7 @@ class VanillaSwap {
 
 %rename(VanillaSwap) VanillaSwapPtr;
 class VanillaSwapPtr : public SwapPtr {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("fair-rate")        fairRate;
     %rename("fair-spread")      fairSpread;
     %rename("fixed-leg-BPS")    fixedLegBPS;
@@ -194,7 +194,7 @@ class NonstandardSwap {
 
 %rename(NonstandardSwap) NonstandardSwapPtr;
 class NonstandardSwapPtr : public SwapPtr {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename ("floating-leg")       floatingLeg;
     %rename ("fixed-leg")          fixedLeg;
     %rename ("floating-nominals")  floatingNominals;

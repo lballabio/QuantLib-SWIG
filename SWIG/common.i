@@ -73,7 +73,7 @@ namespace boost {
 
     template <class T>
     class shared_ptr {
-        #if defined(SWIGRUBY) || defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #if defined(SWIGRUBY) || defined(SWIGMZSCHEME)
         %rename("null?") isNull;
         #endif
       public:
@@ -101,7 +101,7 @@ class Handle {
     #if defined(SWIGRUBY)
     %rename("null?")   isNull;
     %rename("empty?")  empty;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("null?")    isNull;
     %rename("empty?")  empty;
     #endif
@@ -123,7 +123,7 @@ template <class T>
 class RelinkableHandle : public Handle<T> {
     #if defined(SWIGRUBY)
     %rename("linkTo!")  linkTo;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("link-to!") linkTo;
     #endif
   public:

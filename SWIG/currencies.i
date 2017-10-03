@@ -37,7 +37,7 @@ class Currency {
     %rename(__nonzero__) empty;
     #elif defined(SWIGRUBY)
     %rename("empty?") empty;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("numeric-code")           numericCode;
     %rename("fraction-symbol")        fractionSymbol;
     %rename("fractions-per-unit")     fractionsPerUnit;
@@ -89,7 +89,7 @@ class Currency {
 };
 
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+#if defined(SWIGMZSCHEME)
 %rename("Currency=?") Currency_equal;
 %inline %{
     bool Currency_equal(const Currency& c1, const Currency& c2) {

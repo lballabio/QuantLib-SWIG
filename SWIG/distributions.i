@@ -46,7 +46,7 @@ using QuantLib::InverseCumulativeStudent;
 %}
 
 class NormalDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -57,7 +57,7 @@ class NormalDistribution {
 };
 
 class CumulativeNormalDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -68,7 +68,7 @@ class CumulativeNormalDistribution {
 };
 
 class InverseCumulativeNormal {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -78,7 +78,7 @@ class InverseCumulativeNormal {
 };
 
 class MoroInverseCumulativeNormal {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -89,7 +89,7 @@ class MoroInverseCumulativeNormal {
 
 
 class BivariateCumulativeNormalDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -99,7 +99,7 @@ class BivariateCumulativeNormalDistribution {
 };
 
 class BinomialDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -109,7 +109,7 @@ class BinomialDistribution {
 };
 
 class CumulativeBinomialDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -119,7 +119,7 @@ class CumulativeBinomialDistribution {
 };
 
 class BivariateCumulativeNormalDistributionDr78 {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -129,7 +129,7 @@ class BivariateCumulativeNormalDistributionDr78 {
 };
 
 class BivariateCumulativeNormalDistributionWe04DP {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -139,7 +139,7 @@ class BivariateCumulativeNormalDistributionWe04DP {
 };
 
 class ChiSquareDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -149,7 +149,7 @@ class ChiSquareDistribution {
 };
 
 class NonCentralChiSquareDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -159,7 +159,7 @@ class NonCentralChiSquareDistribution {
 };
 
 class InverseNonCentralChiSquareDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -171,7 +171,7 @@ class InverseNonCentralChiSquareDistribution {
 };
 
 class GammaDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -181,7 +181,7 @@ class GammaDistribution {
 };
 
 class GammaFunction {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -190,7 +190,7 @@ class GammaFunction {
 };
 
 class PoissonDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -200,7 +200,7 @@ class PoissonDistribution {
 };
 
 class CumulativePoissonDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -210,7 +210,7 @@ class CumulativePoissonDistribution {
 };
 
 class InverseCumulativePoisson {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -220,7 +220,7 @@ class InverseCumulativePoisson {
 };
 
 class StudentDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -230,7 +230,7 @@ class StudentDistribution {
 };
 
 class CumulativeStudentDistribution {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
@@ -240,7 +240,7 @@ class CumulativeStudentDistribution {
 };
 
 class InverseCumulativeStudent {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
+    #if defined(SWIGMZSCHEME) \
      || defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif

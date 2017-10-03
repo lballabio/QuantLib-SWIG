@@ -277,63 +277,6 @@ class MzCostFunction : public CostFunction {
 };
 %}
 
-#elif defined(SWIGGUILE)
-
-%{
-class SCM_Holder {
-  public:
-    SCM_Holder(SCM data) : data_(data) {
-        scm_protect_object(data_);
-    }
-    ~SCM_Holder() {
-        scm_unprotect_object(data_);
-    }
-    SCM data() const { return data_; }
-  private:
-    SCM data_;
-    // inhibit copy
-    SCM_Holder(const SCM_Holder&) {}
-    SCM_Holder& operator=(const SCM_Holder&) {
-        return *this;
-    }
-};
-
-class UnaryFunction {
-  private:
-    boost::shared_ptr<SCM_Holder> function_;
-  public:
-    UnaryFunction(SCM function) : function_(new SCM_Holder(function)) {
-        QL_REQUIRE(gh_procedure_p(function), "procedure expected");
-    }
-    Real operator()(Real x) const {
-        SCM arg = gh_double2scm(x);
-        SCM guileResult = gh_call1(function_->data(),arg);
-        Real result = gh_scm2double(guileResult);
-        return result;
-    }
-};
-
-class GuileCostFunction : public CostFunction {
-  private:
-    boost::shared_ptr<SCM_Holder> function_;
-  public:
-    GuileCostFunction(SCM function) : function_(new SCM_Holder(function)) {
-        QL_REQUIRE(gh_procedure_p(function), "procedure expected");
-    }
-    Real value(const Array& x) const {
-        SCM v = gh_make_vector(gh_long2scm(x.size()),SCM_UNSPECIFIED);
-        for (Size i=0; i<x.size(); i++)
-            gh_vector_set_x(v,gh_long2scm(i),gh_double2scm(x[i]));
-        SCM guileResult = gh_apply(function_->data(),gh_vector_to_list(v));
-        Real result = gh_scm2double(guileResult);
-        return result;
-    }
-    Disposable<Array> values(const Array& x) const {
-        QL_FAIL("Not implemented");
-    }
-};
-%}
-
 #elif defined(SWIGJAVA)
 
 %{

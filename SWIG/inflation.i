@@ -29,7 +29,7 @@
 
 %ignore Seasonality;
 class Seasonality {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("correct-zero-rate") correctZeroRate;
     %rename("correct-yoy-rate")  correctYoYRate;
     %rename("is-consistent")     isConsistent;
@@ -73,7 +73,7 @@ class InflationTermStructure : public Extrapolator {
     %rename("indexIsInterpolated?")   indexIsInterpolated;
     %rename("setSeasonality!")        setSeasonality;
     %rename("hasSeasonality?")        hasSeasonality;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #elif defined(SWIGMZSCHEME)
     %rename("day-counter")            dayCounter;
     %rename("reference-date")         referenceDate;
     %rename("max-date")               maxDate;
@@ -108,7 +108,7 @@ class InflationTermStructure : public Extrapolator {
 %ignore YoYInflationTermStructure;
 class YoYInflationTermStructure : public InflationTermStructure {
   public:
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("yoy-rate") yoyRate;
     #endif
     Rate yoyRate(const Date &d, const Period& instObsLag = Period(-1,Days),
@@ -128,7 +128,7 @@ IsObservable(Handle<YoYInflationTermStructure>);
 
 %ignore ZeroInflationTermStructure;
 class ZeroInflationTermStructure : public InflationTermStructure {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("zero-rate") zeroRate;
     #endif
   public:
@@ -405,7 +405,7 @@ class Name##Ptr : public boost::shared_ptr<ZeroInflationTermStructure> {
             typedef PiecewiseZeroInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->times();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR) && !defined(SWIGMZSCHEME)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef PiecewiseZeroInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -454,7 +454,7 @@ class Name##Ptr : public boost::shared_ptr<YoYInflationTermStructure> {
             typedef PiecewiseYoYInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->times();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR) && !defined(SWIGMZSCHEME)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef PiecewiseYoYInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -513,7 +513,7 @@ class ZeroCouponInflationSwap {
 
 %rename(ZeroCouponInflationSwap) ZeroCouponInflationSwapPtr;
 class ZeroCouponInflationSwapPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("fair-rate")        fairRate;
     #endif
   public:
@@ -581,7 +581,7 @@ class YearOnYearInflationSwap {
 
 %rename(YearOnYearInflationSwap) YearOnYearInflationSwapPtr;
 class YearOnYearInflationSwapPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("fair-rate")        fairRate;
     #endif
   public:
@@ -634,7 +634,7 @@ typedef boost::shared_ptr<Instrument> YoYInflationCollarPtr;
 
 %rename(YoYInflationCapFloor) YoYInflationCapFloorPtr;
 class YoYInflationCapFloorPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+    #if defined(SWIGMZSCHEME)
     %rename("implied-volatility") impliedVolatility;
     #endif
   public:
