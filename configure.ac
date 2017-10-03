@@ -69,16 +69,6 @@ AC_ARG_ENABLE([ruby],
               [build_ruby=yes])
 AM_CONDITIONAL(BUILD_RUBY, test "$build_ruby" != "no")
 
-AC_PATH_PROG([MZSCHEME], [mzscheme])
-AM_CONDITIONAL(HAVE_MZSCHEME, test "x${MZSCHEME}" != "x")
-AC_ARG_ENABLE([mzscheme],
-              AC_HELP_STRING([--disable-mzscheme],
-                             [If disabled, the MzScheme module
-                              will not be built]),
-              [build_mzscheme=$enableval],
-              [build_mzscheme=yes])
-AM_CONDITIONAL(BUILD_MZSCHEME, test "$build_mzscheme" != "no")
-
 AC_PATH_PROGS([MCS], [gmcs mcs gmcs2])
 AM_CONDITIONAL(HAVE_MCS, test "x${MCS}" != "x")
 AC_ARG_ENABLE([csharp],
@@ -163,8 +153,6 @@ AC_CONFIG_FILES([
     Makefile
     CSharp/Makefile
     Java/Makefile
-    MzScheme/Makefile
-    MzScheme/setup.scm
     OCaml/Makefile
     Perl/Makefile
     Perl/Makefile.PL

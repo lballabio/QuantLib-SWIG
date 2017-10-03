@@ -15,7 +15,6 @@ CSharp/.vs/
 Java/bin/
 Java/quantlib_wrap.cpp
 Java/quantlib_wrap.h
-MzScheme/quantlib_wrap.cpp
 OCaml/quantlib_wrap.c
 Perl/Makefile.quantlib
 Perl/QuantLib.bs

@@ -26,9 +26,6 @@
 %include randomnumbers.i
 %include types.i
 
-#if defined(SWIGMZSCHEME)
-%rename("get-covariance") getCovariance;
-#endif
 %inline %{
 Matrix getCovariance(const Array& volatilities, const Matrix& correlations) {
     return QuantLib::getCovariance(volatilities.begin(),
@@ -68,26 +65,11 @@ class Path {
                 throw std::out_of_range("path index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME)
-        Real ref(Size i) {
-            if (i<self->length()) {
-                return (*self)[i];
-            } else {
-                throw std::out_of_range("path index out of range");
-            }
-        }
         #endif
         #if defined(SWIGRUBY)
         void each() {
             for (Size i=0; i<self->length(); i++)
                 rb_yield(rb_float_new((*self)[i]));
-        }
-        #elif defined(SWIGMZSCHEME)
-        void for_each(Scheme_Object* proc) {
-            for (Size i=0; i<self->length(); ++i) {
-                Scheme_Object* x = scheme_make_double((*self)[i]);
-                scheme_apply(proc,1,&x);
-            }
         }
         #endif
     }
@@ -145,9 +127,6 @@ using QuantLib::MultiPath;
 class MultiPath {
     #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     %rename(__len__)        pathSize;
-    #elif defined(SWIGMZSCHEME)
-    %rename("length")       pathSize;
-    %rename("asset-number") assetNumber;
     #endif
   private:
     MultiPath();
@@ -168,14 +147,6 @@ class MultiPath {
                 throw std::out_of_range("multi-path index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME)
-        Real ref(Size i, Size j) {
-            if (i<self->assetNumber() && j<self->pathSize()) {
-                return (*self)[i][j];
-            } else {
-                throw std::out_of_range("multi-path index out of range");
-            }
-        }
         #endif
         #if defined(SWIGRUBY)
         void each_path() {
@@ -189,24 +160,6 @@ class MultiPath {
                 for (Size i=0; i<self->assetNumber(); i++)
                     rb_ary_store(v,i,rb_float_new((*self)[i][j]));
                 rb_yield(v);
-            }
-        }
-        #elif defined(SWIGMZSCHEME)
-        void for_each_path(Scheme_Object* proc) {
-            for (Size i=0; i<self->assetNumber(); i++) {
-                Scheme_Object* x =
-                    SWIG_NewPointerObj(&((*self)[i]), $descriptor(Path *), 0);
-                scheme_apply(proc,1,&x);
-            }
-        }
-        void for_each_step(Scheme_Object* proc) {
-            for (Size j=0; j<self->pathSize(); j++) {
-                Scheme_Object* v = scheme_make_vector(self->assetNumber(),
-                                                      scheme_undefined);
-                Scheme_Object** els = SCHEME_VEC_ELS(v);
-                for (Size i=0; i<self->assetNumber(); i++)
-                    els[i] = scheme_make_double((*self)[i][j]);
-                scheme_apply(proc,1,&v);
             }
         }
         #endif

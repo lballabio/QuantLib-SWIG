@@ -64,8 +64,6 @@ class Schedule {
     #endif
     #if defined(SWIGRUBY)
     %rename("isRegular?")  isRegular;
-    #elif defined(SWIGMZSCHEME)
-    %rename("is-regular?") isRegular;
     #endif
   public:
     #if defined(SWIGPYTHON)
@@ -117,15 +115,6 @@ class Schedule {
                 Date* d = new Date(self->date(i));
                 rb_yield(SWIG_NewPointerObj((void *) d,
                                             $descriptor(Date *), 1));
-            }
-        }
-        #elif defined(SWIGMZSCHEME)
-        void for_each(Scheme_Object* proc) {
-            for (Size i=0; i<self->size(); i++) {
-                Date* d = new Date(self->date(i));
-                Scheme_Object* x =
-                    SWIG_NewPointerObj(d, $descriptor(Date *), 1);
-                scheme_apply(proc,1,&x);
             }
         }
         #endif
