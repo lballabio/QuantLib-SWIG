@@ -1,296 +1,430 @@
-commit af0775a8b9f3ed2f00a72101514320797dcf6daf
+commit 34221aab352cb78803d6a6178f9ff70675e2db9d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 27 Apr 2017 15:45:16 +0200
-
-    Use single solution file for all Visual Studio versions.
-
- CSharp/Makefile.am                         |  5 +-
- CSharp/QuantLib.props                      |  2 +
- CSharp/{QuantLib_vc14.sln => QuantLib.sln} |  0
- CSharp/QuantLib_vc10.sln                   | 77 ------------------------------
- CSharp/QuantLib_vc11.sln                   | 77 ------------------------------
- CSharp/QuantLib_vc12.sln                   | 77 ------------------------------
- 6 files changed, 3 insertions(+), 235 deletions(-)
-
-commit 433bf15f36d37f966e4c28aa53c587de68070715
-Merge: 5722643 4559624
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 30 Mar 2017 15:57:52 +0200
-
-    Merge pull request #54.
-
-commit 57226430f6978c9ca913b4e4fc7b426c7bca8643
-Merge: 43bf71b 5c63eab
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 30 Mar 2017 15:33:13 +0200
-
-    Merge pull request #55.
-
-commit 5c63eab589d6f3d755a03e816cd26cf82ae18e49
-Author: ryantaylor <ryan.taylor@overbond.com>
-Date:   Fri, 24 Mar 2017 16:59:56 -0400
-
-    Add schedule to actual/actual constructor.
-
- .gitignore         | 4 ++++
- SWIG/daycounters.i | 2 +-
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-commit 4559624fc9d9b3276387f8036840ca092eced782
-Author: TheSpiritXIII <thespiritxiii@gmail.com>
-Date:   Tue, 14 Mar 2017 08:44:45 -0400
-
-    Pass arbitrary solvers into yield bond functions
-
- SWIG/bondfunctions.i | 47 +++++++++++++++++++++++++++++++++++++++++------
- SWIG/optimizers.i    |  1 +
- 2 files changed, 42 insertions(+), 6 deletions(-)
-
-commit 43bf71b81099832cdb40eca7908e4c6375190d13
-Merge: aa4f231 d8eb0a4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 10 Mar 2017 17:03:35 +0100
-
-    Merge pull request #51.
-
-commit d8eb0a471cd899ee1b0ecb8791d8ef0d4cd9a4e7
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 10 Mar 2017 17:03:07 +0100
+Date:   Fri, 15 Sep 2017 13:20:12 +0200
 
     Update C# projects.
 
- CSharp/csharp/NQuantLib.csproj     | 24 ++++++++++++++++++++++--
- CSharp/csharp/NQuantLib_vc9.csproj | 20 ++++++++++++++++++++
- 2 files changed, 42 insertions(+), 2 deletions(-)
+ CSharp/csharp/NQuantLib.csproj     | 1 -
+ CSharp/csharp/NQuantLib_vc9.csproj | 1 -
+ 2 files changed, 2 deletions(-)
 
-commit 2d8e410ccd5acca45e9756720f02a86d9cfe9f9e
+commit 31d25dc9f12275a93f8c329be6d4e582271fe1cc
+Merge: 1e54970 8bc6b27
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 10 Mar 2017 16:07:56 +0100
+Date:   Fri, 15 Sep 2017 13:10:57 +0200
 
-    Fix alias declaration.
+    Merge pull request #75.
 
- SWIG/gaussian1dmodel.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 4262b38b9d80a03597a88c8f234470987ab2e8aa
+commit 8bc6b27778d2c3cc673173183d5580f827b96eb1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 10 Mar 2017 15:33:48 +0100
+Date:   Fri, 15 Sep 2017 13:09:15 +0200
 
-    Replace hard tabs with spaces.
+    Avoid using deprecated Actual365NoLeap class.
 
- SWIG/cashflows.i       |  16 ++--
- SWIG/gaussian1dmodel.i | 212 ++++++++++++++++++++++++++++---------------------
- SWIG/swap.i            | 164 +++++++++++++++++---------------------
- SWIG/swaption.i        |  10 +--
- 4 files changed, 212 insertions(+), 190 deletions(-)
+ SWIG/daycounters.i | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-commit aa4f23194a2f7f3443a74ce0cc8be901a5e4720e
+commit 1e54970a555c92b6f629e94a73a5975f1fffb047
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 10 Mar 2017 15:12:03 +0100
+Date:   Thu, 14 Sep 2017 17:40:45 +0200
 
-    Export new CDS2015 date-generation rule.
-    
-    Closes #53.
+    Update copyrights.
 
- SWIG/scheduler.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ LICENSE.TXT | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-commit 9903818497cd35a927484f39021a6c8c07e8ee98
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Tue, 7 Mar 2017 23:43:06 +0100
-
-    Add Markov Functional ModelSettings
-
- SWIG/gaussian1dmodel.i | 59 +++++++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 54 insertions(+), 5 deletions(-)
-
-commit 68d9be57fa0f0c3e77263ca10fd8af243c3cfd81
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Mon, 6 Mar 2017 21:39:05 +0100
-
-    Add Markov Functional Model.
-
- SWIG/cashflows.i       |  1 +
- SWIG/gaussian1dmodel.i | 41 +++++++++++++++++++++++++++++++++++++++++
- SWIG/swap.i            |  1 +
- SWIG/swaption.i        |  1 +
- 4 files changed, 44 insertions(+)
-
-commit da37f5e8e68f953ad04e1ad821beeaf445bc8482
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Sun, 5 Mar 2017 22:38:47 +0100
-
-    Add underlyingValue-Method for FloatFloatSwaption.
-
- SWIG/swaption.i | 4 ++++
- 1 file changed, 4 insertions(+)
-
-commit 7b61026a43f9ca723d1695e98c9d79b15c1af9ef
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Sun, 5 Mar 2017 22:20:47 +0100
-
-    Add FloatFloatSwap, FloatFloatSwaption, LinearTsrPricer, Gaussian1dFloatFloatSwaptionEngine.
-
- SWIG/cashflows.i       | 19 +++++++++++++++++
- SWIG/gaussian1dmodel.i | 43 +++++++++++++++++++++++++++++++++++++
- SWIG/swap.i            | 58 ++++++++++++++++++++++++++++++++++++++++++++++++++
- SWIG/swaption.i        | 34 +++++++++++++++++++++++++++++
- 4 files changed, 154 insertions(+)
-
-commit d47e0f8086f7d7abbdfa34170d6c5404f3113a2d
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 2 Mar 2017 23:23:08 +0100
-
-    Add Mean Reversion and Volatility to GSR.
-
- SWIG/gaussian1dmodel.i | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-commit 27d426591733122b26510761c7212817086e5f9d
-Merge: 7bdd1df c36446f
+commit f0f5b6753f29862a25e5c15e257406db4b57de05
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 1 Mar 2017 18:06:50 +0100
-
-    Merge pull request #33.
-
-commit c36446ff2e9f19ec6e5160be28330ae002fc6c12
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 1 Mar 2017 16:53:28 +0100
-
-    Replace hard tabs with spaces.
-
- SWIG/gaussian1dmodel.i | 129 +++++++++++++++++++++++++------------------------
- SWIG/optimizers.i      |  12 ++---
- 2 files changed, 72 insertions(+), 69 deletions(-)
-
-commit 7bdd1dfdfb3894b6e4b5b482a7776e12a7e375d0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 1 Mar 2017 16:47:56 +0100
-
-    Update obsolete README for Python module.
-
- Python/README.txt | 33 ++++++++++++++++-----------------
- 1 file changed, 16 insertions(+), 17 deletions(-)
-
-commit 10171cde6ee7a54dc0078544dc5d47d59c3dddff
-Merge: 6611acc 2819792
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Feb 2017 13:18:38 +0100
-
-    Merge pull request #49.
-
-commit 6611accf907ac297963da69186d045dd06b78778
-Merge: 244940e 9fc5871
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Feb 2017 12:02:30 +0100
-
-    Merge pull request #47.
-
-commit 244940e04fdf1568572fc17ebc174f275b06ec06
-Merge: c894681 cc67f9c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Feb 2017 11:33:47 +0100
-
-    Merge pull request #45.
-
-commit c8946818f85aea93f107b1e62e0b5b527e1bf25a
-Merge: 5644882 691af73
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Feb 2017 11:10:29 +0100
-
-    Merge pull request #42.
-
-commit 691af73a17fb09724291f1dbbfa3567f391ab967
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Feb 2017 11:10:14 +0100
+Date:   Thu, 14 Sep 2017 10:21:06 +0200
 
     Update C# projects.
 
- CSharp/csharp/NQuantLib.csproj     | 5 +++++
- CSharp/csharp/NQuantLib_vc9.csproj | 5 +++++
- 2 files changed, 10 insertions(+)
+ CSharp/csharp/NQuantLib.csproj     | 7 ++++++-
+ CSharp/csharp/NQuantLib_vc9.csproj | 7 ++++++-
+ 2 files changed, 12 insertions(+), 2 deletions(-)
 
-commit 564488225bcd8e892887f86c01d0a5e62c698f20
-Merge: 17a1263 1fc0cce
+commit 49a19c6cf724df0517fa4fcd613d48145f1263e4
+Merge: 5a15b5b 733f47f
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 15 Feb 2017 12:50:07 +0100
+Date:   Thu, 7 Sep 2017 16:03:38 +0200
 
-    Merge pull request #40.
+    Merge pull request #74.
 
-commit 1fc0cce9392dc0929bc669883d33beaf9bd3dd5a
+commit 733f47fb1ec718fa117c16e4c670f142eb069ef7
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 15 Feb 2017 12:49:46 +0100
+Date:   Thu, 7 Sep 2017 16:02:35 +0200
 
-    Update C# projects.
-
- CSharp/csharp/NQuantLib.csproj     | 4 ++++
- CSharp/csharp/NQuantLib_vc9.csproj | 4 ++++
- 2 files changed, 8 insertions(+)
-
-commit 17a1263807ee1a2b48f47011d45e66b99729b6d0
-Merge: 91bc9ef 499b1cb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 15 Feb 2017 12:22:20 +0100
-
-    Merge pull request #38.
-
-commit 91bc9ef49130920dd828fb5de94e70692b84b2a3
-Merge: d40c337 08f31bf
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 15 Feb 2017 11:59:20 +0100
-
-    Merge pull request #37.
-
-commit 2819792da8c1689f534fec98aedef04b1f79e262
-Author: Stanislav Vinokurov <stenri@gmail.com>
-Date:   Thu, 26 Jan 2017 20:56:44 +0300
-
-    Add optional 'Calendar c' parameter to the SWIG signature for Business252() daycounter class.
+    Added back original tests.
 
  Python/test/QuantLibTestSuite.py |  2 ++
- Python/test/daycounters.py       | 21 +++++++++++++++++++++
- SWIG/daycounters.i               |  6 +++++-
- 3 files changed, 28 insertions(+), 1 deletion(-)
+ Python/test/blackformula.py      | 75 ++++++++++++++++++++++++++++++++++++++--
+ SWIG/options.i                   |  1 -
+ 3 files changed, 75 insertions(+), 3 deletions(-)
 
-commit 9fc587140053d73a7e5c80c888372ef4f4fc72ab
-Author: Robert Chu <RobChooses@users.noreply.github.com>
-Date:   Wed, 28 Dec 2016 23:57:56 +0000
-
-    Implement comparison operators __gt__, __le__ and __ge__ in Date, Period and Money classes, as __cmp__ operator is not supported in Python 3.
-
- SWIG/date.i  | 18 ++++++++++++++++++
- SWIG/money.i |  9 +++++++++
- 2 files changed, 27 insertions(+)
-
-commit cc67f9cfb0dcaec7290a2e91730ba781d6d88cfa
-Author: bakera <baker.alexander@gmail.com>
-Date:   Sun, 18 Dec 2016 19:26:06 +0000
-
-    adding vega()
-
- SWIG/swaption.i | 5 +++++
- 1 file changed, 5 insertions(+)
-
-commit cd9c5fec7c4be4a5e5448e8f85e2edb120ef119d
+commit f8cd2b3fdfb780fd135b9607a9a78b8d327eefb5
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 9 Nov 2016 11:17:55 +0100
+Date:   Thu, 7 Sep 2017 15:22:22 +0200
 
-    Increase version number to 1.9.1.
+    Move Black delta calculator with Black formula.
 
- Guile/setup.scm    | 2 +-
- MzScheme/setup.scm | 2 +-
- Perl/Makefile.PL   | 2 +-
- Python/setup.py    | 2 +-
- R/DESCRIPTION      | 2 +-
- Ruby/setup.rb      | 2 +-
- configure.ac       | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+ SWIG/blackformula.i | 20 ++++++++++++++++++++
+ SWIG/options.i      | 18 ------------------
+ 2 files changed, 20 insertions(+), 18 deletions(-)
 
-commit 46235acedef2e5e308a02fd5beb3da7176f8a521
+commit 5a15b5bc14631e962d26f9d395d0946c37e2ed02
+Merge: 5ebd59a fc1cd88
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 9 Nov 2016 10:53:22 +0100
+Date:   Thu, 7 Sep 2017 11:58:42 +0200
 
-    Increase version number to 1.10.
+    Merge pull request #73.
+
+commit fc1cd889bd32a4cec4e998080973b07c33f2cc71
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 7 Sep 2017 11:49:22 +0200
+
+    Specify file encoding.
+
+ Python/test/blackformula.py | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 9d0bcb04d0e29a2f94f81c91a179e95e4405be5f
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Wed, 6 Sep 2017 23:05:51 +0200
+
+    Removed %rename and %inline from declarations
+
+ SWIG/blackformula.i | 118 ++++++++++++++++------------------------------------
+ 1 file changed, 37 insertions(+), 81 deletions(-)
+
+commit 8e1ca142e8abce9bf6b07d86ccbfb470e683173b
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Wed, 6 Sep 2017 22:31:07 +0200
+
+    Removed %extend from declaration of BlackDeltaCalculator
+
+ SWIG/options.i | 23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
+
+commit 5ebd59afcc0ceb32df759335efc48c19ac58a5b9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 17:21:08 +0200
+
+    Propagate changes in setup.py to generating file.
+
+ Python/setup.py.in | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 499e776e1da5d8884c4134c28f0e6ab1877215ec
+Merge: 2978582 6983e7e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 17:16:54 +0200
+
+    Merge pull request #71.
+
+commit 6983e7e718585e3fec410177e96866c7d9734cca
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 17:05:51 +0200
+
+    Replace hard tabs with spaces.
+
+ SWIG/volatilities.i | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+commit 29785822ab18c66c94461406a3197a6424a40f09
+Merge: 0531842 355acd5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 17:02:20 +0200
+
+    Merge pull request #70.
+
+commit 0531842aee90f154fabbd32fd9f2111ddd86b6dc
+Merge: 49128dd b699b7c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 16:52:09 +0200
+
+    Merge pull request #69.
+
+commit 49128ddf8029439eaaf971626a354e0814ad5543
+Merge: 882bd9b def8573
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 16:32:24 +0200
+
+    Merge pull request #68.
+
+commit 882bd9b5ecd1901203b850bca2000e8320242545
+Merge: dbe6477 4234671
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 16:29:31 +0200
+
+    Merge pull request #61.
+
+commit 4234671f06a26fb1b7176e13e0b68122778b05f2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 15:54:49 +0200
+
+    Use API compatible with Python 2.
+
+ SWIG/calendars.i | 6 ++++--
+ SWIG/scheduler.i | 6 ++++--
+ 2 files changed, 8 insertions(+), 4 deletions(-)
+
+commit dbe647797979297aa5e5ca5c9cd6d4f3346aafec
+Merge: 32bb3d7 9e35e29
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 15:33:56 +0200
+
+    Merge pull request #65.
+
+commit afa3bc340893e0e4e6e94c1286d129133668b09e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 13:44:16 +0200
+
+    Convert hard tabs to spaces.
+
+ SWIG/date.i         | 36 ++++++++++++++++++------------------
+ SWIG/scheduler.i    | 44 +++++++++++++++++++++-----------------------
+ SWIG/volatilities.i | 30 +++++++++++++++++-------------
+ 3 files changed, 56 insertions(+), 54 deletions(-)
+
+commit 32bb3d76c88a2557605f139d3ec57765e6ba578b
+Merge: 3896f66 549d653
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 13:38:06 +0200
+
+    Merge pull request #60.
+
+commit 3896f661b7bd945409082afb7fdd5ab38c806598
+Merge: 1de44e5 903fb8c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 13:25:16 +0200
+
+    Merge pull request #48.
+
+commit 903fb8cf83ebd6706b1ff9b47e995065730b470c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Sep 2017 13:01:39 +0200
+
+    Fix constructor argument.
+
+ SWIG/options.i | 15 ++++++++-------
+ 1 file changed, 8 insertions(+), 7 deletions(-)
+
+commit 5691298231e87673e751da3e2bdcab0d748a840a
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Tue, 5 Sep 2017 23:53:44 +0200
+
+    Add atmStrike method to BlackDeltaCalculator and unittests
+
+ Python/test/QuantLibTestSuite.py |  2 +
+ Python/test/blackformula.py      | 95 ++++++++++++++++++++++++++++++++++++++++
+ SWIG/options.i                   |  1 +
+ 3 files changed, 98 insertions(+)
+
+commit 2faf86aa51fe9faf3e979595df838da1f9521422
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Tue, 5 Sep 2017 00:51:01 +0200
+
+    Exposed BlackDeltaCalculator
+
+ SWIG/options.i | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+commit 450f996d240af28cca183e86cd9dd80fc889c7ce
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Mon, 4 Sep 2017 00:18:18 +0200
+
+    Expose blackFormula and bachelierBlackFormula
+
+ .gitignore                       |   3 +
+ Python/test/QuantLibTestSuite.py |   2 +
+ Python/test/blackformula.py      |  66 ++++++++++++++++++++++
+ SWIG/blackformula.i              | 115 +++++++++++++++++++++++++++++++++++++++
+ SWIG/ql.i                        |   1 +
+ 5 files changed, 187 insertions(+)
+
+commit 0409f7cbfa0c5cee08934b80d7478b84877eb974
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Tue, 22 Aug 2017 23:17:29 +0200
+
+    VolType and Shift for ConstantOptionletVolatility
+
+ SWIG/volatilities.i | 24 ++++++++++++++++--------
+ 1 file changed, 16 insertions(+), 8 deletions(-)
+
+commit 355acd588dfda20f29e4f4fdb0c90709cb93d013
+Author: gbalaraman <gouthambs@gmail.com>
+Date:   Sat, 19 Aug 2017 08:57:19 -0700
+
+    Add discountBond method
+
+ SWIG/shortratemodels.i | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+commit b699b7cc2737d0f0c844ed5bdf863612334ffc1f
+Author: orzyx <truifu@gmail.com>
+Date:   Wed, 16 Aug 2017 11:26:18 +0800
+
+    fix LogCubic class name conflict
+
+ SWIG/zerocurve.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit e00d68b0111986116e513aad4a5df3d514ffe95b
+Author: orzyx <truifu@gmail.com>
+Date:   Wed, 16 Aug 2017 11:25:37 +0800
+
+    fix LogCubic class name conflict
+
+ SWIG/interpolation.i | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit def85738c0e7bc46595b7d631acad191a21d6f3b
+Author: fabrice-lecuyer <fabrice.lecuyer@gmail.com>
+Date:   Sat, 12 Aug 2017 20:04:19 +0200
+
+    Update .gitignore
+    
+    Add CSharp.vs/ folder to .gitignore
+
+ .gitignore | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 59db7fadb8ed6eed518048198abb7a321b759780
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Wed, 9 Aug 2017 01:08:16 +0200
+
+    Expose HullWhite::convexityBias
+
+ SWIG/shortratemodels.i | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+commit 9e35e293e0fbde900de7596c50ab1541b5492bb2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 27 Jul 2017 15:40:20 +0200
+
+    Avoid errors reading LICENSE file in Python 3.5.
+
+ Python/setup.py | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit 1de44e560b2029657e593c962e31d1be929965f1
+Merge: 1a34a3b dde2fa1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 27 Jul 2017 14:31:45 +0200
+
+    Merge pull request #62.
+
+commit 1a34a3bce195404b5c3ebc5d6e2d5b803e016662
+Merge: f9c8dc7 035cb34
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 27 Jul 2017 13:26:03 +0200
+
+    Merge pull request #58.
+
+commit f9c8dc7ac836761df7b2aeb6a0ce76c95866c4d1
+Merge: 9813873 aa3814c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 27 Jul 2017 13:23:01 +0200
+
+    Merge pull request #57.
+
+commit aa3814ca6bd6b7beecf409d389eb462c381431ad
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 27 Jul 2017 13:04:45 +0200
+
+    Clean whitespace in new file.
+
+ Java/examples/CallableBonds.java | 251 +++++++++++++++++++--------------------
+ 1 file changed, 125 insertions(+), 126 deletions(-)
+
+commit 98138734552ed0f2ecf45e86ee13336962e48f0f
+Merge: 76d52f1 a82a238
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 27 Jul 2017 12:57:28 +0200
+
+    Merge pull request #56.
+
+commit 5ee2dc1aea2508d501e38a59dcb29b9457ae03a9
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Sun, 23 Jul 2017 02:02:44 +0200
+
+    Expose HullWhiteForwardProcess
+
+ SWIG/stochasticprocess.i | 30 ++++++++++++++++++++++++++++++
+ 1 file changed, 30 insertions(+)
+
+commit 10e9a495e18a628e0259f8f574ac212e97c87d9e
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Sun, 23 Jul 2017 00:59:53 +0200
+
+    Expose discountBond method of HullWhite model
+
+ Python/test/QuantLibTestSuite.py | 12 +++++++-----
+ SWIG/shortratemodels.i           |  4 ++++
+ 2 files changed, 11 insertions(+), 5 deletions(-)
+
+commit dde2fa17214fa162cd5b0a07bb8416ad615f3b74
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 14 Jul 2017 17:02:01 +0200
+
+    Add conversions to and from Python date objects.
+
+ SWIG/date.i | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+commit a06ec6aebe130b88ec74ab275a3fd1b6df152cd0
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Mon, 10 Jul 2017 22:54:11 +0200
+
+    Full schedule interface.
+
+ SWIG/calendars.i | 16 ++++++++++++++++
+ SWIG/common.i    | 20 ++++++++++++++++++-
+ SWIG/date.i      | 26 +++++++++++++++++++++++++
+ SWIG/scheduler.i | 58 +++++++++++++++++++-------------------------------------
+ 4 files changed, 81 insertions(+), 39 deletions(-)
+
+commit 5eb46f052bb3e1c17666253890a9482223200957
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Sun, 9 Jul 2017 23:43:55 +0200
+
+    Working version of boost::optional<Period>
+
+ SWIG/scheduler.i | 49 +++++++++++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 45 insertions(+), 4 deletions(-)
+
+commit 3fa55e0d5171d16ead2bd036f61909cc8d7ce53e
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Thu, 6 Jul 2017 23:23:16 +0200
+
+    Update Schedule constructor from Dates.
+
+ SWIG/scheduler.i | 13 ++++++++++---
+ 1 file changed, 10 insertions(+), 3 deletions(-)
+
+commit 933ae1e084040b24c115fa8f6e949a4a8401e7f8
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Tue, 13 Jun 2017 23:30:26 +0200
+
+    Add SwaptionVolCube1 inspectors.
+
+ SWIG/volatilities.i | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+commit 549d6537c81fa7b3fc79b3f570cb432b9f5d2e5f
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Mon, 12 Jun 2017 23:23:16 +0200
+
+    Add FdG2SwaptionEngine, FdHullWhiteSwaptionEngine Wrappers.
+
+ SWIG/shortratemodels.i | 37 +++++++++++++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
+
+commit 8577bd0ba8a46a1dd5428dc92d722471c5c72798
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 May 2017 11:30:51 +0200
+
+    Bump version number to 1.11.
 
  Guile/setup.scm    | 2 +-
  MzScheme/setup.scm | 2 +-
@@ -302,79 +436,88 @@ Date:   Wed, 9 Nov 2016 10:53:22 +0100
  configure.ac       | 2 +-
  8 files changed, 8 insertions(+), 8 deletions(-)
 
-commit 230b85646d3ea23b3591e354044068b46c0c901f
-Author: Grant Bartel <grant.bartel@risklab.com>
-Date:   Fri, 4 Nov 2016 17:24:55 +0100
+commit dce2b65abd3605cc30fb9dbe1f2124b52f7c5e3a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 May 2017 11:28:40 +0200
 
-    Added support for LogLinearZeroCurve, CubicZeroCurve, LogCubicZeroCurve, ForwardFlatZeroCurve, and BackwardFlatZeroCurve
+    Bump version number to 1.10.1.
 
- SWIG/interpolation.i | 2 +-
- SWIG/zerocurve.i     | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
+ Guile/setup.scm    | 2 +-
+ MzScheme/setup.scm | 2 +-
+ Perl/Makefile.PL   | 2 +-
+ Python/setup.py    | 2 +-
+ R/DESCRIPTION      | 2 +-
+ Ruby/setup.rb      | 2 +-
+ configure.ac       | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-commit f8cf78b534373c5ef1590f3fa1dab299a1eb0e98
-Author: Peter Caspers <peter.caspers@quaternion.com>
-Date:   Sat, 22 Oct 2016 19:55:53 +0200
+commit a82a2389e558ad72debd964faf154acdd4b8005d
+Author: Bojan Nikolic <bnalgorithms@bnikolic.co.uk>
+Date:   Tue, 18 Apr 2017 23:12:48 +0100
 
-    add volytility and volatilityType
+    Configure option to disable java autoloading
+    
+    Disabling the autoloading allows advanced techniques such as unpacking
+    and loading the JNI from the JAR.
 
- SWIG/calibrationhelpers.i | 2 ++
- 1 file changed, 2 insertions(+)
+ Java/Makefile.am | 8 +++++++-
+ SWIG/quantlib.i  | 2 ++
+ configure.ac     | 7 +++++++
+ 3 files changed, 16 insertions(+), 1 deletion(-)
 
-commit 57af258038764973a5bb32758e3f5adff71a705a
-Author: Peter Caspers <peter.caspers@quaternion.com>
-Date:   Sat, 22 Oct 2016 19:43:36 +0200
+commit e354d27308a4121462ed934ef52eec68ec50bd0b
+Author: Bojan Nikolic <bnalgorithms@bnikolic.co.uk>
+Date:   Tue, 18 Apr 2017 22:50:04 +0100
 
-    add a few inspectors for swaption helpers
+    Do not handle exceptions with System.exit
 
- SWIG/calibrationhelpers.i | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ SWIG/quantlib.i | 6 +-----
+ 1 file changed, 1 insertion(+), 5 deletions(-)
 
-commit 14f07b56472b20d33f467cf7ce518e2a8705014b
-Author: Peter Caspers <peter.caspers@quaternion.com>
-Date:   Sat, 22 Oct 2016 19:42:30 +0200
+commit 035cb344ef3fd085cfe69b8795c8d0e1918355cf
+Author: Bojan Nikolic <bnalgorithms@bnikolic.co.uk>
+Date:   Wed, 12 Apr 2017 21:23:37 +0100
 
-    remove leftover
+    Ensure install directory exists
 
- SWIG/swaption.i | 2 --
- 1 file changed, 2 deletions(-)
+ Java/Makefile.am | 1 +
+ 1 file changed, 1 insertion(+)
 
-commit 18df43894ed4474761b994ab4fe9ae776299eeb6
-Author: Peter Caspers <peter.caspers@quaternion.com>
-Date:   Thu, 20 Oct 2016 20:44:43 +0200
+commit 637280e4f6bc6b5e053df1fd6433549b41980b6a
+Author: Bojan Nikolic <bnalgorithms@bnikolic.co.uk>
+Date:   Wed, 12 Apr 2017 10:21:29 +0100
 
-    add a few more g1d related things
+    Add CallableBonds example in Java
 
- SWIG/exercise.i     |  27 ++++++++++++++
- SWIG/swap.i         | 101 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- SWIG/swaption.i     |  40 +++++++++++++++++++++
- SWIG/volatilities.i |   1 +
- 4 files changed, 169 insertions(+)
+ Java/Makefile.am                 |   2 +-
+ Java/examples/CallableBonds.java | 246 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 247 insertions(+), 1 deletion(-)
 
-commit 499b1cb47a3b9bd1902651da8a9fef41df08da0b
-Author: m.ross <m.ross@tmcbonds.com>
-Date:   Tue, 11 Oct 2016 16:18:22 -0400
+commit d134062d9199eaf001eaa2c343c27fb030494c63
+Author: Bojan Nikolic <bnalgorithms@bnikolic.co.uk>
+Date:   Wed, 12 Apr 2017 10:23:09 +0100
 
-    Mapping for CompoundingThenSimple
+    Automatically load the Java shared library
+    
+    Move the loading of the JNI shared library to the static initialisation
+    block of the QuantLibJNI. This should gurantee it is loaded without
+    having to insert this code in the client code
 
- SWIG/interestrate.i | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ Java/examples/Bonds.java           |  7 -------
+ Java/examples/DiscreteHedging.java |  4 ----
+ Java/examples/EquityOptions.java   |  8 --------
+ Java/examples/FRA.java             |  7 -------
+ Java/examples/UnaryFunctions.java  |  8 --------
+ SWIG/quantlib.i                    | 12 ++++++++++++
+ 6 files changed, 12 insertions(+), 34 deletions(-)
 
-commit 08f31bf334f6df925185996755efb733146cf82e
-Author: m.ross <m.ross@tmcbonds.com>
-Date:   Tue, 11 Oct 2016 18:06:44 -0400
+commit 5fb568e429f4b5df7a34cc6d078175b24e4de7e0
+Author: abhilaksh12 <abhilaksh1995@gmail.com>
+Date:   Wed, 28 Dec 2016 01:35:55 +0530
 
-    Add local variable and method paramter name debug to generate class stub files to make IDE introspection more pleasant.
+    Update options.i
+    
+    Added SWIG wrapper for FDBatesVanillaEngine.
 
- Java/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit cb385ba349ea50c33f6f6fa870fdd8e760af8153
-Author: hernandeza <hernandeza@laptop-hernandeza>
-Date:   Mon, 26 Sep 2016 17:58:08 +0200
-
-    Expose some instances of hybrid simulated annealing optimizers and some GSR models
-
- SWIG/gaussian1dmodel.i |  73 ++++++++++++++++++++++++++---------
- SWIG/optimizers.i      | 101 +++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 157 insertions(+), 17 deletions(-)
+ SWIG/options.i | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
