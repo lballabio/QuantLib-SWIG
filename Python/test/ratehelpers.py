@@ -58,7 +58,6 @@ class FixedRateBondHelperTest(unittest.TestCase):
 
 
 class FxSwapRateHelperTest(unittest.TestCase):
-
     def setUp(self):
 
         self.default_quote_date = QuantLib.Date(26, 8, 2016)
@@ -122,12 +121,12 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # looping left if somone wants two add more deposits to tests, e.g. T/N
 
         depositHelpers = [QuantLib.DepositRateHelper(
-                                    QuantLib.QuoteHandle(deposits[(sett_num, n,
-                                                                   unit)]),
-                                    QuantLib.Period(n, unit), sett_num,
-                                    calendar, QuantLib.ModifiedFollowing,
-                                    True, dayCounter)
-                          for sett_num, n, unit in deposits.keys()]
+            QuantLib.QuoteHandle(deposits[(sett_num, n,
+                                           unit)]),
+            QuantLib.Period(n, unit), sett_num,
+            calendar, QuantLib.ModifiedFollowing,
+            True, dayCounter)
+            for sett_num, n, unit in deposits.keys()]
 
         oisHelpers = [QuantLib.OISRateHelper(settlementDays,
                                              QuantLib.Period(n, unit),
@@ -169,28 +168,22 @@ class FxSwapRateHelperTest(unittest.TestCase):
         calendar = QuantLib.JointCalendar(QuantLib.TARGET(), QuantLib.Poland())
         spot_date_lag = 2
 
-        spot_date = calendar.advance(todaysDate, spot_date_lag, QuantLib.Days)
-
-        # market quotes
-        # Update deposit Rates ( usual source will be Euribor Fixings on the
-        # Curve Date
-
         # build rate helpers
 
         spotFx = QuantLib.SimpleQuote(fx_spot)
 
         fxSwapHelpers = [QuantLib.FxSwapRateHelper(
-                                QuantLib.QuoteHandle(
-                                    QuantLib.SimpleQuote(fx_swaps[(n, unit)])),
-                                QuantLib.QuoteHandle(spotFx),
-                                QuantLib.Period(n, unit),
-                                spot_date_lag,
-                                calendar,
-                                QuantLib.ModifiedFollowing,
-                                True, True,
-                                base_ccy_yts,
-                                True)
-                         for n, unit in fx_swaps.keys()]
+            QuantLib.QuoteHandle(
+                QuantLib.SimpleQuote(fx_swaps[(n, unit)])),
+            QuantLib.QuoteHandle(spotFx),
+            QuantLib.Period(n, unit),
+            spot_date_lag,
+            calendar,
+            QuantLib.ModifiedFollowing,
+            True, True,
+            base_ccy_yts,
+            True)
+            for n, unit in fx_swaps.keys()]
 
         # term-structure construction
         fxSwapCurve = QuantLib.PiecewiseFlatForward(todaysDate, fxSwapHelpers,
@@ -214,9 +207,10 @@ class FxSwapRateHelperTest(unittest.TestCase):
         self.pln_eur_implied_curve, self.pln_eur_implied_curve_handle, \
         self.pln_eur_implied_curve_relinkable_handle, \
         self.eur_pln_fx_swap_helpers = self.build_pln_fx_swap_curve(
-                                                        self.eur_ois_rel_handle,
-                                                        self.fx_swap_quotes,
-                                                        self.fx_spot_quote)
+            self.eur_ois_rel_handle,
+            self.fx_swap_quotes,
+            self.fx_spot_quote)
+
     def testQuote(self):
         """ Testing FxSwapRateHelper.quote()  method. """
         self.build_curves(self.default_quote_date)
@@ -237,8 +231,6 @@ class FxSwapRateHelperTest(unittest.TestCase):
         self.assertEquals(self.today, QuantLib.Date(26, 8, 2016))
 
         # Hard coded expected maturities of fx swaps
-
-
         for n in range(len(self.maturities)):
             self.assertEquals(self.maturities[n],
                               self.eur_pln_fx_swap_helpers[n].latestDate())
@@ -268,7 +260,6 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
             self.assertAlmostEqual(original_forward, curve_impl_forward,
                                    places=6)
-
 
     def testFxMarketConventionsUSCalendarNotRequired(self):
         """
@@ -318,8 +309,6 @@ class FxSwapRateHelperTest(unittest.TestCase):
         for n in range(len(maturities)):
             self.assertEquals(maturities[n],
                               self.eur_pln_fx_swap_helpers[n].latestDate())
-
-
 
 
 if __name__ == '__main__':
