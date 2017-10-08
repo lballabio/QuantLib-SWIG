@@ -276,19 +276,14 @@ class FxSwapRateHelperTest(unittest.TestCase):
         conventions
         """
         today = QuantLib.Date(1, 7, 2016)
+        spot_date = QuantLib.Date(5, 7, 2016)
         self.build_curves(today)
-        eurpln_calendar = QuantLib.JointCalendar(QuantLib.TARGET(),
-                                                 QuantLib.Poland())
-        # not sure if that one is precisely the calendar for US settlement dates
-        us_calendar = QuantLib.UnitedStates()
-        spot_date = eurpln_calendar.advance(today, 2, QuantLib.Days)
 
-        if us_calendar.isHoliday(spot_date):
-            spot_date = us_calendar.advance(spot_date, 1, QuantLib.Days)
+        us_calendar = QuantLib.UnitedStates(QuantLib.UnitedStates.Settlement)
 
         joint_calendar = QuantLib.JointCalendar(QuantLib.TARGET(),
                                                 QuantLib.Poland(),
-                                                QuantLib.UnitedStates())
+                                                us_calendar)
 
         # Settlement should be on a day where all three centers are operating
         #  and follow EndOfMonth rule
@@ -298,8 +293,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
                       for n, unit in self.fx_swap_quotes.keys()]
 
         for n in range(len(maturities)):
-            self.assertEquals(maturities[n],
-                              self.eur_pln_fx_swap_helpers[n].latestDate())
+            self.assertEqual(maturities[n],
+                             self.eur_pln_fx_swap_helpers[n].latestDate())
 
     def testFxMarketConventionsUSCalendarRequired(self):
         """
@@ -307,22 +302,12 @@ class FxSwapRateHelperTest(unittest.TestCase):
         conventions
         """
         today = QuantLib.Date(30, 6, 2016)
+        spot_date = QuantLib.Date(5, 7, 2016)
         self.build_curves(today)
-        eurpln_calendar = QuantLib.JointCalendar(QuantLib.TARGET(),
-                                                 QuantLib.Poland())
-        # not sure if that one is precisely the calendar for US settlement dates
-        us_calendar = QuantLib.UnitedStates()
+        us_calendar = QuantLib.UnitedStates(QuantLib.UnitedStates.Settlement)
         joint_calendar = QuantLib.JointCalendar(QuantLib.TARGET(),
                                                 QuantLib.Poland(),
-                                                QuantLib.UnitedStates())
-
-        spot_date = eurpln_calendar.advance(today, 2, QuantLib.Days)
-
-        if us_calendar.isHoliday(spot_date):
-            spot_date = joint_calendar.advance(spot_date, 1, QuantLib.Days)
-
-
-
+                                                us_calendar)
         # Settlement should be on a day where all three centers are operating
         #  and follow EndOfMonth rule
         maturities = [joint_calendar.advance(spot_date, n, unit,
