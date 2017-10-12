@@ -408,12 +408,23 @@ class OISRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 const Handle<Quote>& rate,
                 const OvernightIndexPtr& index,
                 const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>()) {
+                                            = Handle<YieldTermStructure>(),
+                bool telescopicValueDates = false,
+                Natural paymentLag = 0,
+                BusinessDayConvention paymentConvention = Following,
+                Frequency paymentFrequency = Annual,
+                const Calendar& paymentCalendar = Calendar(),
+                const Period& forwardStart = 0 * Days, 
+                const Spread overnightSpread = 0.0) {
             boost::shared_ptr<OvernightIndex> overnight =
                 boost::dynamic_pointer_cast<OvernightIndex>(index);
             return new OISRateHelperPtr(
                 new OISRateHelper(settlementDays,tenor,rate,
-                                  overnight,discountingCurve));
+                                  overnight,discountingCurve,
+                                  telescopicValueDates, paymentLag,
+                                  paymentConvention, paymentFrequency,
+                                  paymentCalendar, forwardStart,
+                                  overnightSpread));
         }
     }
 };
