@@ -36,26 +36,12 @@ using QuantLib::Ridder;
 using QuantLib::Secant;
 %}
 
-#if defined(SWIGMZSCHEME)
-%typecheck(SWIG_TYPECHECK_POINTER) Scheme_Object* {
-    $1 = 1;
-}
-#elif defined(SWIGGUILE)
-%typecheck(SWIG_TYPECHECK_POINTER) SCM {
-    $1 = 1;
-}
-#endif
-
 %define DeclareSolver(SolverName)
 class SolverName {
     #if defined(SWIGRUBY)
     %rename("maxEvaluations=")      setMaxEvaluations;
     %rename("lowerBound=")          setLowerBound;
     %rename("upperBound=")          setUpperBound;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("max-evaluations-set!") setMaxEvaluations;
-    %rename("lower-bound-set!")     setLowerBound;
-    %rename("upper-bound-set!")     setUpperBound;
     #endif
   public:
     void setMaxEvaluations(Size evaluations);
@@ -81,28 +67,6 @@ class SolverName {
         Real solve(Real xAccuracy, Real guess,
                    Real xMin, Real xMax) {
             UnaryFunction f;
-            return self->solve(f, xAccuracy, guess, xMin, xMax);
-        }
-        #elif defined(SWIGMZSCHEME)
-        Real solve(Scheme_Object* function, Real xAccuracy,
-                   Real guess, Real step) {
-            UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, step);
-        }
-        Real solve(Scheme_Object* function, Real xAccuracy,
-                   Real guess, Real xMin, Real xMax) {
-            UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, xMin, xMax);
-        }
-        #elif defined(SWIGGUILE)
-        Real solve(SCM function, Real xAccuracy,
-                   Real guess, Real step) {
-            UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, step);
-        }
-        Real solve(SCM function, Real xAccuracy,
-                   Real guess, Real xMin, Real xMax) {
-            UnaryFunction f(function);
             return self->solve(f, xAccuracy, guess, xMin, xMax);
         }
         #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -185,9 +149,6 @@ using QuantLib::EndCriteria;
 class EndCriteria {
     #if defined(SWIGRUBY)
     %rename("setPositiveOptimization!") setPositiveOptimization;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename(call) operator();
-    %rename("positive-optimization-set!") setPositiveOptimization;
     #elif defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #elif defined(SWIGPYTHON)
@@ -386,28 +347,6 @@ using QuantLib::Problem;
                 EndCriteria &e,
                 Array &iv) {
         RubyCostFunction f;
-        Problem p(f,c,iv);
-        m.minimize(p, e);
-        return p.currentValue();
-    }
-}
-#elif defined(SWIGMZSCHEME)
-%extend Optimizer {
-    Array solve(Scheme_Object* function, Constraint& c,
-                OptimizationMethod& m,
-                EndCriteria &e,
-                Array &iv) {
-        MzCostFunction f(function);
-        Problem p(f,c,iv);
-        m.minimize(p, e);
-        return p.currentValue();
-    }
-}
-#elif defined(SWIGGUILE)
-%extend Optimizer {
-    Array solve(SCM function, Constraint& c, OptimizationMethod& m,
-                EndCriteria &e, Array &iv) {
-        GuileCostFunction f(function);
         Problem p(f,c,iv);
         m.minimize(p, e);
         return p.currentValue();

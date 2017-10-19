@@ -47,13 +47,6 @@ class Instrument {
     %rename("recalculate!")   recalculate;
     %rename("freeze!")        freeze;
     %rename("unfreeze!")      unfreeze;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("error-estimate")      errorEstimate;
-    %rename("expired?")            isExpired;
-    %rename("pricing-engine-set!") setPricingEngine;
-    %rename("recalculate!")        recalculate;
-    %rename("freeze!")             freeze;
-    %rename("unfreeze!")           unfreeze;
     #endif
   public:
     Real NPV() const;

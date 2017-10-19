@@ -85,12 +85,6 @@ class Calendar {
     %rename("isEndOfMonth?")    isEndOfMonth;
     %rename("addHoliday!")      addHoliday;
     %rename("removeHoliday!")   removeHoliday;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-business-day?") isBusinessDay;
-    %rename("is-holiday?")      isHoliday;
-    %rename("is-end-of-month?") isEndOfMonth;
-    %rename("add-holiday")      addHoliday;
-    %rename("remove-holiday")   removeHoliday;
     #endif
   protected:
     Calendar();
@@ -139,15 +133,6 @@ class Calendar {
     %}
     #endif
 };
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Calendar=?") Calendar_equal;
-%inline %{
-    bool Calendar_equal(const Calendar& c1, const Calendar& c2) {
-        return c1 == c2;
-    }
-%}
-#endif
 
 namespace QuantLib {
 

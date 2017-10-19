@@ -57,9 +57,6 @@ struct Pillar {
 
 %ignore RateHelper;
 class RateHelper {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("latest-date") latestDate;
-    #endif
   public:
     Handle<Quote> quote() const;
     Date latestDate() const;
