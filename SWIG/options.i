@@ -132,6 +132,19 @@ ans
 
 %enddef
 
+%define add_price_curve_to(Type)
+
+%extend Type##Ptr {
+    SampledCurve priceCurve() {
+      return boost::dynamic_pointer_cast<Type>(*self)
+	->result<SampledCurve>("priceCurve");
+    }
+    SampledCurve thetaCurve() {
+      return boost::dynamic_pointer_cast<Type>(*self)
+	->result<SampledCurve>("thetaCurve");
+    }
+}
+%enddef
 
 // plain option and engines
 
@@ -155,10 +168,6 @@ class VanillaOptionPtr : public boost::shared_ptr<Instrument> {
             QL_REQUIRE(stPayoff, "wrong payoff given");
             return new VanillaOptionPtr(new VanillaOption(stPayoff,exercise));
         }
-        SampledCurve priceCurve() {
-            return boost::dynamic_pointer_cast<VanillaOption>(*self)
-                ->result<SampledCurve>("priceCurve");
-        }
         Volatility impliedVolatility(
                              Real targetValue,
                              const GeneralizedBlackScholesProcessPtr& process,
@@ -178,7 +187,7 @@ class VanillaOptionPtr : public boost::shared_ptr<Instrument> {
 };
 
 add_greeks_to(VanillaOption);
-
+add_price_curve_to(VanillaOption);
 
 %{
 using QuantLib::EuropeanOption;
@@ -1003,10 +1012,6 @@ class DividendVanillaOptionPtr : public boost::shared_ptr<Instrument> {
                           new DividendVanillaOption(stPayoff,exercise,
                                                     dividendDates,dividends));
         }
-        SampledCurve priceCurve() {
-            return boost::dynamic_pointer_cast<DividendVanillaOption>(*self)
-                ->result<SampledCurve>("priceCurve");
-        }
         Volatility impliedVolatility(
                              Real targetValue,
                              const GeneralizedBlackScholesProcessPtr& process,
@@ -1026,7 +1031,7 @@ class DividendVanillaOptionPtr : public boost::shared_ptr<Instrument> {
 };
 
 add_greeks_to(DividendVanillaOption);
-
+add_price_curve_to(DividendVanillaOption);
 
 %{
 using QuantLib::AnalyticDividendEuropeanEngine;
@@ -1124,10 +1129,6 @@ class BarrierOptionPtr : public boost::shared_ptr<Instrument> {
                                new BarrierOption(barrierType, barrier, rebate,
                                                  stPayoff,exercise));
         }
-        SampledCurve priceCurve() {
-            return boost::dynamic_pointer_cast<BarrierOption>(*self)
-                ->result<SampledCurve>("priceCurve");
-        }
         Volatility impliedVolatility(
                              Real targetValue,
                              const GeneralizedBlackScholesProcessPtr& process,
@@ -1147,6 +1148,7 @@ class BarrierOptionPtr : public boost::shared_ptr<Instrument> {
 };
 
 add_greeks_to(BarrierOption);
+add_price_curve_to(BarrierOption);
 
 
 // Barrier engines
@@ -1535,7 +1537,6 @@ class ContinuousAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
 };
 
 add_greeks_to(ContinuousAveragingAsianOption);
-
 
 %rename(DiscreteAveragingAsianOption) DiscreteAveragingAsianOptionPtr;
 class DiscreteAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
