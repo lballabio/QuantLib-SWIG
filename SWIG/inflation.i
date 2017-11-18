@@ -29,11 +29,6 @@
 
 %ignore Seasonality;
 class Seasonality {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("correct-zero-rate") correctZeroRate;
-    %rename("correct-yoy-rate")  correctYoYRate;
-    %rename("is-consistent")     isConsistent;
-    #endif
   public:
     virtual Rate correctZeroRate(const Date &d, const Rate r,
                                  const InflationTermStructure& iTS) const = 0;
@@ -73,19 +68,6 @@ class InflationTermStructure : public Extrapolator {
     %rename("indexIsInterpolated?")   indexIsInterpolated;
     %rename("setSeasonality!")        setSeasonality;
     %rename("hasSeasonality?")        hasSeasonality;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")            dayCounter;
-    %rename("reference-date")         referenceDate;
-    %rename("max-date")               maxDate;
-    %rename("max-time")               maxTime;
-    %rename("observation-lag")        observationLag;
-    %rename("frequency")              frequency;
-    %rename("index-is-interpolated?") indexIsInterpolated;
-    %rename("base-rate")              baseRate;
-    %rename("nominal-term-structure") nominalTermStructure;
-    %rename("base-date")              baseDate;
-    %rename("seasonality-set!")       setSeasonality;
-    %rename("has-seasonality?")       hasSeasonality;
     #endif
   public:
     DayCounter dayCounter() const;
@@ -108,9 +90,6 @@ class InflationTermStructure : public Extrapolator {
 %ignore YoYInflationTermStructure;
 class YoYInflationTermStructure : public InflationTermStructure {
   public:
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("yoy-rate") yoyRate;
-    #endif
     Rate yoyRate(const Date &d, const Period& instObsLag = Period(-1,Days),
                  bool forceLinearInterpolation = false,
                  bool extrapolate = false) const;
@@ -128,9 +107,6 @@ IsObservable(Handle<YoYInflationTermStructure>);
 
 %ignore ZeroInflationTermStructure;
 class ZeroInflationTermStructure : public InflationTermStructure {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("zero-rate") zeroRate;
-    #endif
   public:
     Rate zeroRate(const Date &d, const Period& instObsLag = Period(-1,Days),
                   bool forceLinearInterpolation = false,
@@ -405,7 +381,7 @@ class Name##Ptr : public boost::shared_ptr<ZeroInflationTermStructure> {
             typedef PiecewiseZeroInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->times();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef PiecewiseZeroInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -454,7 +430,7 @@ class Name##Ptr : public boost::shared_ptr<YoYInflationTermStructure> {
             typedef PiecewiseYoYInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->times();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef PiecewiseYoYInflationCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -513,9 +489,6 @@ class ZeroCouponInflationSwap {
 
 %rename(ZeroCouponInflationSwap) ZeroCouponInflationSwapPtr;
 class ZeroCouponInflationSwapPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("fair-rate")        fairRate;
-    #endif
   public:
     %extend {
         static const ZeroCouponInflationSwap::Type Receiver =
@@ -581,9 +554,6 @@ class YearOnYearInflationSwap {
 
 %rename(YearOnYearInflationSwap) YearOnYearInflationSwapPtr;
 class YearOnYearInflationSwapPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("fair-rate")        fairRate;
-    #endif
   public:
     %extend {
         static const YearOnYearInflationSwap::Type Receiver =
@@ -634,9 +604,6 @@ typedef boost::shared_ptr<Instrument> YoYInflationCollarPtr;
 
 %rename(YoYInflationCapFloor) YoYInflationCapFloorPtr;
 class YoYInflationCapFloorPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("implied-volatility") impliedVolatility;
-    #endif
   public:
      %extend {
          Volatility impliedVolatility(

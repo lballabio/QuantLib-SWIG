@@ -47,15 +47,6 @@ using QuantLib::InterestRate;
 %}
 
 class InterestRate {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")              dayCounter;
-    %rename("discount-factor")          discountFactor;
-    %rename("compound-factor")          compoundFactor;
-    %rename("implied-rate")             impliedRate;
-    %rename("implied-interest-rate")    impliedInterestRate;
-    %rename("equivalent-rate")          equivalentRate;
-    %rename("equivalent-interest-rate") equivalentInterestRate;
-    #endif
   public:
     InterestRate();
     InterestRate(Rate r,

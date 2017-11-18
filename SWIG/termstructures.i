@@ -37,14 +37,6 @@ using QuantLib::YieldTermStructure;
 
 %ignore YieldTermStructure;
 class YieldTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")     dayCounter;
-    %rename("reference-date")  referenceDate;
-    %rename("max-date")        maxDate;
-    %rename("max-time")        maxTime;
-    %rename("zero-rate")       zeroRate;
-    %rename("forward-rate")    forwardRate;
-    #endif
   public:
     DayCounter dayCounter() const;
     Calendar calendar() const;

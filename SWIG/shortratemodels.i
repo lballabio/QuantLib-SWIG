@@ -34,7 +34,7 @@ using QuantLib::ShortRateModel;
 
 %ignore ShortRateModel;
 class ShortRateModel {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) || defined(SWIGRUBY)
+    #if defined(SWIGRUBY)
     %rename("calibrate!") calibrate;
     #elif defined(SWIGCSHARP)
     %rename("parameters") params;
