@@ -60,6 +60,7 @@ class FixedRateBondHelperTest(unittest.TestCase):
 class FxSwapRateHelperTest(unittest.TestCase):
     def setUp(self):
 
+        # Market rates are artificial, just close to real ones.
         self.default_quote_date = QuantLib.Date(26, 8, 2016)
 
         self.fx_swap_quotes = {(1, QuantLib.Months): 20e-4,
@@ -73,7 +74,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
                            QuantLib.Date(28, 2, 2017),
                            QuantLib.Date(30, 8, 2017)]
 
-        self.fx_spot_quote = 4.3
+        self.fx_spot_quote_EURPLN = 4.3
+        self.fx_spot_quote_EURUSD = 1.1
 
     def build_eur_curve(self, quotes_date):
         """
@@ -167,6 +169,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         calendar = QuantLib.JointCalendar(QuantLib.TARGET(), QuantLib.Poland())
         spot_date_lag = 2
+        trading_calendar = QuantLib.UnitedStates()
 
         # build rate helpers
 
@@ -182,7 +185,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
             QuantLib.ModifiedFollowing,
             True, True,
             base_ccy_yts,
-            True)
+            trading_calendar)
             for n, unit in fx_swaps.keys()]
 
         # term-structure construction
@@ -209,7 +212,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         self.eur_pln_fx_swap_helpers = self.build_pln_fx_swap_curve(
             self.eur_ois_rel_handle,
             self.fx_swap_quotes,
-            self.fx_spot_quote)
+            self.fx_spot_quote_EURPLN)
 
     def testQuote(self):
         """ Testing FxSwapRateHelper.quote()  method. """
@@ -252,8 +255,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         for n in range(len(original_quotes)):
             original_quote = original_quotes[n]
             maturity = self.maturities[n]
-            original_forward = self.fx_spot_quote + original_quote
-            curve_impl_forward = self.fx_spot_quote * \
+            original_forward = self.fx_spot_quote_EURPLN + original_quote
+            curve_impl_forward = self.fx_spot_quote_EURPLN * \
                                  self.eur_ois_curve.discount(maturity) / \
                                  self.pln_eur_implied_curve.discount(
                                      maturity) / spot_df
@@ -261,33 +264,76 @@ class FxSwapRateHelperTest(unittest.TestCase):
             self.assertAlmostEqual(original_forward, curve_impl_forward,
                                    places=6)
 
-    def testFxMarketConventionsUSCalendarNotRequired(self):
+    def testFxMarketConventionsForCrossRate(self):
         """
         Testing if QuantLib.FxSwapRateHelper obeys the fx spot market
-        conventions
+        conventions for cross rates.
         """
         today = QuantLib.Date(1, 7, 2016)
         spot_date = QuantLib.Date(5, 7, 2016)
         self.build_curves(today)
 
-        us_calendar = QuantLib.UnitedStates(QuantLib.UnitedStates.Settlement)
+        us_calendar = QuantLib.UnitedStates()
 
         joint_calendar = QuantLib.JointCalendar(QuantLib.TARGET(),
-                                                QuantLib.Poland(),
-                                                us_calendar)
+                                                QuantLib.Poland())
+
+        settlement_calendar = QuantLib.JointCalendar(joint_calendar,
+                                                     us_calendar)
 
         # Settlement should be on a day where all three centers are operating
         #  and follow EndOfMonth rule
-        maturities = [joint_calendar.advance(spot_date, n, unit,
-                                             QuantLib.ModifiedFollowing,
-                                             True)
+        maturities = [settlement_calendar.advance(spot_date, n, unit,
+                                                  QuantLib.ModifiedFollowing,
+                                                  True)
                       for n, unit in self.fx_swap_quotes.keys()]
 
         for n in range(len(maturities)):
             self.assertEqual(maturities[n],
                              self.eur_pln_fx_swap_helpers[n].latestDate())
 
-    def testFxMarketConventionsUSCalendarRequired(self):
+    def testFxMarketConventionsForCrossRateONPeriod(self):
+        """
+        Testing if QuantLib.FxSwapRateHelper obeys the fx spot market
+        conventions for cross rates' ON Period.
+        """
+        today = QuantLib.Date(1, 7, 2016)
+        QuantLib.Settings.instance().evaluationDate = today
+
+        spot_date = QuantLib.Date(5, 7, 2016)
+        fwd_points = 4.0
+        # critical for ON rate helper
+        on_period = QuantLib.Period('1d')
+        fixing_days = 0
+
+        # empty RelinkableYieldTermStructureHandle is sufficient for testing
+        # dates
+        base_ccy_yts = QuantLib.RelinkableYieldTermStructureHandle()
+
+        us_calendar = QuantLib.UnitedStates()
+
+        joint_calendar = QuantLib.JointCalendar(QuantLib.TARGET(),
+                                                QuantLib.Poland())
+
+        # Settlement should be on a day where all three centers are operating
+        #  and follow EndOfMonth rule
+        on_rate_helper = QuantLib.FxSwapRateHelper(
+            QuantLib.QuoteHandle(
+                QuantLib.SimpleQuote(fwd_points)),
+            QuantLib.QuoteHandle(
+                QuantLib.SimpleQuote(self.fx_spot_quote_EURPLN)),
+            on_period,
+            fixing_days,
+            joint_calendar,
+            QuantLib.ModifiedFollowing,
+            False, True,
+            base_ccy_yts,
+            us_calendar)
+
+        self.assertEqual(spot_date,
+                         on_rate_helper.latestDate())
+
+    def testFxMarketConventionsForCrossRateAdjustedSpotDate(self):
         """
         Testing if QuantLib.FxSwapRateHelper obeys the fx spot market
         conventions
@@ -295,10 +341,12 @@ class FxSwapRateHelperTest(unittest.TestCase):
         today = QuantLib.Date(30, 6, 2016)
         spot_date = QuantLib.Date(5, 7, 2016)
         self.build_curves(today)
-        us_calendar = QuantLib.UnitedStates(QuantLib.UnitedStates.Settlement)
+        us_calendar = QuantLib.UnitedStates()
         joint_calendar = QuantLib.JointCalendar(QuantLib.TARGET(),
-                                                QuantLib.Poland(),
-                                                us_calendar)
+                                                QuantLib.Poland())
+
+        settlement_calendar = QuantLib.JointCalendar(joint_calendar,
+                                                     us_calendar)
         # Settlement should be on a day where all three centers are operating
         #  and follow EndOfMonth rule
         maturities = [joint_calendar.advance(spot_date, n, unit,
@@ -306,10 +354,93 @@ class FxSwapRateHelperTest(unittest.TestCase):
                                              True)
                       for n, unit in self.fx_swap_quotes.keys()]
 
+        maturities = [settlement_calendar.adjust(date)
+                      for date in maturities]
+
         for n in range(len(maturities)):
             self.assertEquals(maturities[n],
                               self.eur_pln_fx_swap_helpers[n].latestDate())
 
+    def testFxMarketConventionsForDatesInEURUSD_ON_Period(self):
+        """
+        Testing if QuantLib.FxSwapRateHelper obeys the fx spot market
+        conventions for EURUSD settlement dates on the ON Period.
+        """
+        today = QuantLib.Date(1, 7, 2016)
+        QuantLib.Settings.instance().evaluationDate = today
+
+        spot_date = QuantLib.Date(5, 7, 2016)
+        fwd_points = 4.0
+        # critical for ON rate helper
+        on_period = QuantLib.Period('1d')
+        fixing_days = 0
+
+        # empty RelinkableYieldTermStructureHandle is sufficient for testing
+        # dates
+        base_ccy_yts = QuantLib.RelinkableYieldTermStructureHandle()
+
+        # In EURUSD, there must be two days to spot date in Target calendar
+        # and one day in US, therefore it is sufficient to pass only Target
+        # as a base calendar
+        calendar = QuantLib.TARGET()
+        trading_calendar = QuantLib.UnitedStates()
+
+        on_rate_helper = QuantLib.FxSwapRateHelper(
+            QuantLib.QuoteHandle(
+                QuantLib.SimpleQuote(fwd_points)),
+            QuantLib.QuoteHandle(
+                QuantLib.SimpleQuote(self.fx_spot_quote_EURUSD)),
+            on_period,
+            fixing_days,
+            calendar,
+            QuantLib.ModifiedFollowing,
+            False, True,
+            base_ccy_yts,
+            trading_calendar)
+
+        self.assertEqual(spot_date,
+                         on_rate_helper.latestDate())
+
+    def testFxMarketConventionsForDatesInEURUSD_ShortEnd(self):
+        """
+        Testing if QuantLib.FxSwapRateHelper obeys the fx spot market
+        conventions for EURUSD settlement dates on the 3M tenor.
+        """
+        today = QuantLib.Date(1, 7, 2016)
+        QuantLib.Settings.instance().evaluationDate = today
+
+        expected_3M_date = QuantLib.Date(5, 10, 2016)
+        fwd_points = 4.0
+        # critical for ON rate helper
+        period = QuantLib.Period('3M')
+        fixing_days = 2
+
+        # empty RelinkableYieldTermStructureHandle is sufficient for testing
+        # dates
+        base_ccy_yts = QuantLib.RelinkableYieldTermStructureHandle()
+
+        # In EURUSD, there must be two days to spot date in Target calendar
+        # and one day in US, therefore it is sufficient to pass only Target
+        # as a base calendar. Passing joint calendar would result in wrong
+        # spot date of the trade
+        calendar = QuantLib.TARGET()
+        trading_calendar = QuantLib.UnitedStates()
+
+        rate_helper = QuantLib.FxSwapRateHelper(
+            QuantLib.QuoteHandle(
+                QuantLib.SimpleQuote(fwd_points)),
+            QuantLib.QuoteHandle(
+                QuantLib.SimpleQuote(self.fx_spot_quote_EURUSD)),
+            period,
+            fixing_days,
+            calendar,
+            QuantLib.ModifiedFollowing,
+            True, True,
+            base_ccy_yts,
+            trading_calendar)
+
+        self.assertEqual(expected_3M_date,
+                         rate_helper.latestDate())
 
 if __name__ == '__main__':
     print('testing QuantLib ' + QuantLib.__version__)
