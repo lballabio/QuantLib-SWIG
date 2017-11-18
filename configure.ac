@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib-SWIG], [1.11],
+AC_INIT([QuantLib-SWIG], [1.12],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib-SWIG])
 AC_PREREQ(2.50)
@@ -69,26 +69,6 @@ AC_ARG_ENABLE([ruby],
               [build_ruby=yes])
 AM_CONDITIONAL(BUILD_RUBY, test "$build_ruby" != "no")
 
-AC_PATH_PROG([MZSCHEME], [mzscheme])
-AM_CONDITIONAL(HAVE_MZSCHEME, test "x${MZSCHEME}" != "x")
-AC_ARG_ENABLE([mzscheme],
-              AC_HELP_STRING([--disable-mzscheme],
-                             [If disabled, the MzScheme module
-                              will not be built]),
-              [build_mzscheme=$enableval],
-              [build_mzscheme=yes])
-AM_CONDITIONAL(BUILD_MZSCHEME, test "$build_mzscheme" != "no")
-
-AC_PATH_PROG([GUILE], [guile])
-AM_CONDITIONAL(HAVE_GUILE, test "x${GUILE}" != "x")
-AC_ARG_ENABLE([guile],
-              AC_HELP_STRING([--disable-guile],
-                             [If disabled, the Guile module
-                              will not be built]),
-              [build_guile=$enableval],
-              [build_guile=yes])
-AM_CONDITIONAL(BUILD_GUILE, test "$build_guile" != "no")
-
 AC_PATH_PROGS([MCS], [gmcs mcs gmcs2])
 AM_CONDITIONAL(HAVE_MCS, test "x${MCS}" != "x")
 AC_ARG_ENABLE([csharp],
@@ -98,16 +78,6 @@ AC_ARG_ENABLE([csharp],
               [build_mcs=$enableval],
               [build_mcs=yes])
 AM_CONDITIONAL(BUILD_MCS, test "$build_mcs" != "no")
-
-AC_PATH_PROG([OCAMLC], [ocamlc])
-AM_CONDITIONAL(HAVE_OCAML, test "x${OCAMLC}" != "x")
-AC_ARG_ENABLE([ocaml],
-              AC_HELP_STRING([--disable-ocaml],
-                             [If disabled, the OCaml module
-                              will not be built]),
-              [build_ocaml=$enableval],
-              [build_ocaml=yes])
-AM_CONDITIONAL(BUILD_OCAML, test "$build_ocaml" != "no")
 
 AC_PATH_PROG([R], [R])
 AM_CONDITIONAL(HAVE_R, test "x${R}" != "x")
@@ -172,12 +142,7 @@ esac
 AC_CONFIG_FILES([
     Makefile
     CSharp/Makefile
-    Guile/Makefile
-    Guile/setup.scm
     Java/Makefile
-    MzScheme/Makefile
-    MzScheme/setup.scm
-    OCaml/Makefile
     Perl/Makefile
     Perl/Makefile.PL
     Python/Makefile

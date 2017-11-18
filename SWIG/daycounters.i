@@ -33,10 +33,6 @@ using QuantLib::DayCounter;
 %}
 
 class DayCounter {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-count")     dayCount;
-    %rename("year-fraction") yearFraction;
-    #endif
   protected:
     DayCounter();
   public:
@@ -69,15 +65,6 @@ class DayCounter {
     %}
     #endif
 };
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("DayCounter=?") DayCounter_equal;
-%inline %{
-    bool DayCounter_equal(const DayCounter& d1, const DayCounter& d2) {
-        return d1 == d2;
-    }
-%}
-#endif
 
 namespace QuantLib {
 

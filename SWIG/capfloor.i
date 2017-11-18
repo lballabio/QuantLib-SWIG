@@ -38,15 +38,6 @@ typedef boost::shared_ptr<Instrument> CollarPtr;
 
 %rename(CapFloor) CapFloorPtr;
 class CapFloorPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("implied-volatility") impliedVolatility;
-    %rename("floating-leg") floatingLeg;
-    %rename("cap-rates") capRates;
-    %rename("floor-rates") floorRates;
-    %rename("start-date") startDate;
-    %rename("maturity-date") maturityDate;
-    %rename("atm-rate") atmRate;
-    #endif
   public:
      %extend {
         Volatility impliedVolatility(Real price,

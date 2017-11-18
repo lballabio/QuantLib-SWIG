@@ -37,12 +37,6 @@ class Currency {
     %rename(__nonzero__) empty;
     #elif defined(SWIGRUBY)
     %rename("empty?") empty;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("numeric-code")           numericCode;
-    %rename("fraction-symbol")        fractionSymbol;
-    %rename("fractions-per-unit")     fractionsPerUnit;
-    %rename("empty?")              empty;
-    %rename("triangulation-currency") triangulationCurrency;
     #endif
   public:
     const std::string& name() const;
@@ -88,15 +82,6 @@ class Currency {
     #endif
 };
 
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Currency=?") Currency_equal;
-%inline %{
-    bool Currency_equal(const Currency& c1, const Currency& c2) {
-        return c1 == c2;
-    }
-%}
-#endif
 
 namespace QuantLib {
 class ARSCurrency : public Currency {};

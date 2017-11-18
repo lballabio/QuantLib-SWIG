@@ -52,8 +52,6 @@ typedef boost::shared_ptr<Quote> SimpleQuotePtr;
 class SimpleQuotePtr : public boost::shared_ptr<Quote> {
     #if defined(SWIGRUBY)
     %rename("value=")     setValue;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("value-set!") setValue;
     #endif
   public:
     %extend {
@@ -67,7 +65,7 @@ class SimpleQuotePtr : public boost::shared_ptr<Quote> {
 };
 
 
-#if defined(SWIGPYTHON) || defined(SWIGMZSCHEME)
+#if defined(SWIGPYTHON)
 %{
 using QuantLib::DerivedQuote;
 using QuantLib::CompositeQuote;
@@ -85,12 +83,6 @@ class DerivedQuotePtr : public boost::shared_ptr<Quote> {
             return new DerivedQuotePtr(
                 new DerivedQuote<UnaryFunction>(h,UnaryFunction(function)));
         }
-        #elif defined(SWIGMZSCHEME)
-        DerivedQuotePtr(const Handle<Quote>& h,
-                        Scheme_Object* function) {
-            return new DerivedQuotePtr(
-                new DerivedQuote<UnaryFunction>(h,UnaryFunction(function)));
-        }
         #endif
     }
 };
@@ -104,14 +96,6 @@ class CompositeQuotePtr : public boost::shared_ptr<Quote> {
         CompositeQuotePtr(const Handle<Quote>& h1,
                           const Handle<Quote>& h2,
                           PyObject* function) {
-            return new CompositeQuotePtr(
-                new CompositeQuote<BinaryFunction>(
-                    h1,h2,BinaryFunction(function)));
-        }
-        #elif defined(SWIGMZSCHEME)
-        CompositeQuotePtr(const Handle<Quote>& h1,
-                          const Handle<Quote>& h2,
-                          Scheme_Object* function) {
             return new CompositeQuotePtr(
                 new CompositeQuote<BinaryFunction>(
                     h1,h2,BinaryFunction(function)));
