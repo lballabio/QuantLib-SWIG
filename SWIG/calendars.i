@@ -287,7 +287,8 @@ namespace QuantLib {
 
     class UnitedStates : public Calendar {
       public:
-        enum Market { Settlement, NYSE, GovernmentBond, NERC };
+        enum Market { Settlement, NYSE, GovernmentBond,
+                      NERC, LiborImpact, FederalReserve };
         UnitedStates(Market m = Settlement);
     };
 
