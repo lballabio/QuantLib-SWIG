@@ -1,3 +1,4 @@
+# coding=utf-8-unix
 """
  Copyright (C) 2009 Joseph Malicki
  Copyright (C) 2016 Wojciech Ślusarski
