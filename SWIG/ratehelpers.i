@@ -1,6 +1,6 @@
 
 /*
- Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Coyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2009 Joseph Malicki
 
  This file is part of QuantLib, a free-software/open-source library
@@ -41,6 +41,7 @@ using QuantLib::BondHelper;
 using QuantLib::FixedRateBondHelper;
 using QuantLib::OISRateHelper;
 using QuantLib::DatedOISRateHelper;
+using QuantLib::FxSwapRateHelper;
 typedef boost::shared_ptr<RateHelper> DepositRateHelperPtr;
 typedef boost::shared_ptr<RateHelper> FraRateHelperPtr;
 typedef boost::shared_ptr<RateHelper> FuturesRateHelperPtr;
@@ -49,6 +50,7 @@ typedef boost::shared_ptr<RateHelper> BondHelperPtr;
 typedef boost::shared_ptr<RateHelper> FixedRateBondHelperPtr;
 typedef boost::shared_ptr<RateHelper> OISRateHelperPtr;
 typedef boost::shared_ptr<RateHelper> DatedOISRateHelperPtr;
+typedef boost::shared_ptr<RateHelper> FxSwapRateHelperPtr;
 %}
 
 struct Pillar {
@@ -444,6 +446,32 @@ class DatedOISRateHelperPtr : public boost::shared_ptr<RateHelper> {
                                        overnight,discountingCurve));
         }
     }
+};
+
+%rename(FxSwapRateHelper) FxSwapRateHelperPtr;
+class FxSwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
+  public:
+    %extend {
+        FxSwapRateHelperPtr(
+                const Handle<Quote>& fwdPoint,
+                const Handle<Quote>& spotFx,
+                const Period& tenor,
+                Natural fixingDays,
+                const Calendar& calendar,
+                BusinessDayConvention convention,
+                bool endOfMonth,
+                bool isFxBaseCurrencyCollateralCurrency,
+                const Handle<YieldTermStructure>& coll
+                                = Handle<YieldTermStructure>(),
+                const Calendar& tradingCalendar = Calendar()) {
+            return new FxSwapRateHelperPtr(
+                new FxSwapRateHelper(fwdPoint, spotFx, tenor,
+                                     fixingDays, calendar, convention,
+                                     endOfMonth,
+                                     isFxBaseCurrencyCollateralCurrency,
+                                     coll, tradingCalendar));
+        } 
+   }
 };
 
 
