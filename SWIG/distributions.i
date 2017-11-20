@@ -32,10 +32,10 @@ using QuantLib::BinomialDistribution;
 using QuantLib::CumulativeBinomialDistribution;
 using QuantLib::BivariateCumulativeNormalDistributionDr78;
 using QuantLib::BivariateCumulativeNormalDistributionWe04DP;
-using QuantLib::ChiSquareDistribution;
-using QuantLib::NonCentralChiSquareDistribution;
+using QuantLib::CumulativeChiSquareDistribution;
+using QuantLib::NonCentralCumulativeChiSquareDistribution;
 using QuantLib::InverseNonCentralChiSquareDistribution;
-using QuantLib::GammaDistribution;
+using QuantLib::CumulativeGammaDistribution;
 using QuantLib::GammaFunction;
 using QuantLib::PoissonDistribution;
 using QuantLib::CumulativePoissonDistribution;
@@ -129,21 +129,21 @@ class BivariateCumulativeNormalDistributionWe04DP {
     Real operator()(Real a, Real b);
 };
 
-class ChiSquareDistribution {
+class CumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    ChiSquareDistribution(Real df);
+    CumulativeChiSquareDistribution(Real df);
     Real operator()(Real x);
 };
 
-class NonCentralChiSquareDistribution {
+class NonCentralCumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    NonCentralChiSquareDistribution(Real df, Real ncp);
+    NonCentralCumulativeChiSquareDistribution(Real df, Real ncp);
     Real operator()(Real x);
 };
 
@@ -158,12 +158,12 @@ class InverseNonCentralChiSquareDistribution {
     Real operator()(Real x);
 };
 
-class GammaDistribution {
+class CumulativeGammaDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    GammaDistribution(Real a);
+    CumulativeGammaDistribution(Real a);
     Real operator()(Real x);
 };
 
