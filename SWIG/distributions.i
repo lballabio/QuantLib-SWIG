@@ -34,7 +34,7 @@ using QuantLib::BivariateCumulativeNormalDistributionDr78;
 using QuantLib::BivariateCumulativeNormalDistributionWe04DP;
 using QuantLib::CumulativeChiSquareDistribution;
 using QuantLib::NonCentralCumulativeChiSquareDistribution;
-using QuantLib::InverseNonCentralChiSquareDistribution;
+using QuantLib::InverseNonCentralCumulativeChiSquareDistribution;
 using QuantLib::CumulativeGammaDistribution;
 using QuantLib::GammaFunction;
 using QuantLib::PoissonDistribution;
@@ -147,14 +147,14 @@ class NonCentralCumulativeChiSquareDistribution {
     Real operator()(Real x);
 };
 
-class InverseNonCentralChiSquareDistribution {
+class InverseNonCentralCumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    InverseNonCentralChiSquareDistribution(Real df, Real ncp,
-                                           Size maxEvaluations = 10,
-                                           Real accuracy = 1e-8);
+    InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp,
+                                                     Size maxEvaluations = 10,
+                                                     Real accuracy = 1e-8);
     Real operator()(Real x);
 };
 
