@@ -40,7 +40,12 @@ std::vector<boost::shared_ptr<BondHelper> > convert_bond_helpers(
 class FittingMethod {
   public:
     virtual ~FittingMethod() = 0;
+    Size size() const;
     Array solution() const;
+    Integer numberOfIterations() const;
+    Real minimumCostValue() const;
+    bool constrainAtZero() const;
+    Array weights() const;
 };
 
 %rename(FittedBondDiscountCurve) FittedBondDiscountCurvePtr;
@@ -108,23 +113,26 @@ using QuantLib::SimplePolynomialFitting;
 
 class ExponentialSplinesFitting : public FittingMethod {
   public:
-    ExponentialSplinesFitting(bool constrainAtZero = true);
+    ExponentialSplinesFitting(bool constrainAtZero = true,
+                              const Array& weights = Array());
 };
 
 class NelsonSiegelFitting : public FittingMethod {
   public:
-    NelsonSiegelFitting();
+    NelsonSiegelFitting(const Array& weights = Array());
 };
 
 class SvenssonFitting : public FittingMethod {
   public:
-    SvenssonFitting();
+    SvenssonFitting(const Array& weights = Array());
 };
 
 class CubicBSplinesFitting : public FittingMethod {
   public:
     CubicBSplinesFitting(const std::vector<Time>& knotVector,
-                         bool constrainAtZero = true);
+                         bool constrainAtZero = true,
+                         const Array& weights = Array());
+    Real basisFunction(Integer i, Time t);
 };
 
 class SimplePolynomialFitting : public FittingMethod {
@@ -133,7 +141,8 @@ class SimplePolynomialFitting : public FittingMethod {
     SimplePolynomialFitting(Natural degree);
     #else
     SimplePolynomialFitting(Natural degree,
-                            bool constrainAtZero = true);
+                            bool constrainAtZero = true,
+                            const Array& weights = Array());
     #endif
 };
 
