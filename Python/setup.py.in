@@ -68,6 +68,12 @@ class my_wrap(Command):
     def finalize_options(self): pass
     def run(self):
         print('Generating Python bindings for QuantLib...')
+        swig_version = os.popen("swig -version").read().split()[2]
+        major_swig_version = swig_version[0]
+        if major_swig_version < '3':
+           print('Warning: You have SWIG {} installed, but at least SWIG 3.0.1'
+                 ' is recommended. \nSome features may not work.'
+                 .format(swig_version))
         swig_dir = os.path.join("..","SWIG")
         if sys.version_info.major >= 3:
             os.system('swig -python -py3 -c++ -modern ' +
