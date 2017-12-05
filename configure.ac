@@ -38,6 +38,14 @@ AC_MSG_RESULT([$ql_version])
 
 # check for tools
 AC_PATH_PROG([SWIG], [swig])
+if test "x$SWIG" != x; then
+	SWIG_VERSION=`swig -version 2>&1|grep Version|cut -d" " -f3`
+	SWIG_MAJOR=${SWIG_VERSION%%.*}
+	if test ${SWIG_MAJOR} = "2"; then
+		AC_MSG_WARN([You have SWIG $SWIG_VERSION installed, but at least SWIG 3.0.1 is recommended. Some features may not work. ])
+		#SWIG=
+	fi
+fi
 
 AC_PATH_PROG([PYTHON], [python])
 AM_CONDITIONAL(HAVE_PYTHON, test "x${PYTHON}" != "x")
