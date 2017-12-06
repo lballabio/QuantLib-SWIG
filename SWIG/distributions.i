@@ -22,6 +22,8 @@
 #ifndef quantlib_distributions_i
 #define quantlib_distributions_i
 
+%include common.i
+
 %{
 using QuantLib::NormalDistribution;
 using QuantLib::CumulativeNormalDistribution;
@@ -32,10 +34,10 @@ using QuantLib::BinomialDistribution;
 using QuantLib::CumulativeBinomialDistribution;
 using QuantLib::BivariateCumulativeNormalDistributionDr78;
 using QuantLib::BivariateCumulativeNormalDistributionWe04DP;
-using QuantLib::ChiSquareDistribution;
-using QuantLib::NonCentralChiSquareDistribution;
-using QuantLib::InverseNonCentralChiSquareDistribution;
-using QuantLib::GammaDistribution;
+using QuantLib::CumulativeChiSquareDistribution;
+using QuantLib::NonCentralCumulativeChiSquareDistribution;
+using QuantLib::InverseNonCentralCumulativeChiSquareDistribution;
+using QuantLib::CumulativeGammaDistribution;
 using QuantLib::GammaFunction;
 using QuantLib::PoissonDistribution;
 using QuantLib::CumulativePoissonDistribution;
@@ -129,43 +131,55 @@ class BivariateCumulativeNormalDistributionWe04DP {
     Real operator()(Real a, Real b);
 };
 
-class ChiSquareDistribution {
+class CumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    ChiSquareDistribution(Real df);
+    CumulativeChiSquareDistribution(Real df);
     Real operator()(Real x);
 };
 
-class NonCentralChiSquareDistribution {
+deprecate_feature(ChiSquareDistribution,
+                  CumulativeChiSquareDistribution);
+
+class NonCentralCumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    NonCentralChiSquareDistribution(Real df, Real ncp);
+    NonCentralCumulativeChiSquareDistribution(Real df, Real ncp);
     Real operator()(Real x);
 };
 
-class InverseNonCentralChiSquareDistribution {
+deprecate_feature(NonCentralChiSquareDistribution,
+                  NonCentralCumulativeChiSquareDistribution);
+
+class InverseNonCentralCumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    InverseNonCentralChiSquareDistribution(Real df, Real ncp,
-                                           Size maxEvaluations = 10,
-                                           Real accuracy = 1e-8);
+    InverseNonCentralCumulativeChiSquareDistribution(Real df, Real ncp,
+                                                     Size maxEvaluations = 10,
+                                                     Real accuracy = 1e-8);
     Real operator()(Real x);
 };
 
-class GammaDistribution {
+deprecate_feature(InverseNonCentralChiSquareDistribution,
+                  InverseNonCentralCumulativeChiSquareDistribution);
+
+class CumulativeGammaDistribution {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
-    GammaDistribution(Real a);
+    CumulativeGammaDistribution(Real a);
     Real operator()(Real x);
 };
+
+deprecate_feature(GammaDistribution,
+                  CumulativeGammaDistribution);
 
 class GammaFunction {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
