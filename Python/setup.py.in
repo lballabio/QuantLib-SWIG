@@ -22,7 +22,10 @@ from distutils.cmd import Command
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build
 from distutils.ccompiler import get_default_compiler
-from distutils.core import setup, Extension
+try:
+    from setuptools import setup, Extension
+except:
+    from distutils.core import setup, Extension
 from distutils import sysconfig
 
 class test(Command):
