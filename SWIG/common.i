@@ -148,12 +148,14 @@ a
 
 
 %define deprecate_feature(OldName, NewName)
+#if defined(SWIGPYTHON)
 %pythoncode %{
 def OldName(*args, **kwargs):
     from warnings import warn
     warn('%s is deprecated; use %s' % (OldName.__name__, NewName.__name__))
     return NewName(*args, **kwargs)
 %}
+#endif
 %enddef
 
 
