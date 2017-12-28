@@ -191,5 +191,34 @@ class GaussianMultiPathGenerator {
 	Sample<MultiPath> antithetic() const;
 };
 
+%{
+typedef QuantLib::BrownianBridge
+    BrownianBridge;
+%}
+class BrownianBridge{
+public:
+  BrownianBridge(Size steps);
+  BrownianBridge(const std::vector<Time>& times);
+  BrownianBridge(const TimeGrid& timeGrid);
+
+  Size size() const;
+  std::vector<Time> times() const;
+  std::vector<Real> leftWeight()   const;
+  std::vector<Real> rightWeight()  const;
+  std::vector<Real> stdDeviation() const;
+  std::vector<Size> bridgeIndex()   const;
+  std::vector<Size> leftIndex()  const;
+  std::vector<Size> rightIndex() const;
+
+
+  %extend{
+    std::vector<Real> transform(const std::vector<Real> &input){
+      std::vector<Real> outp(input.size());
+      $self->transform(input.begin(),input.end(),outp.begin());
+      return outp;
+    }
+  }
+};
+
 
 #endif

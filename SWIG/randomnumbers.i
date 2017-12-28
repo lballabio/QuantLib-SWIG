@@ -191,6 +191,18 @@ class SobolRsg {
     const Sample<std::vector<Real> >& nextSequence() const;
     const Sample<std::vector<Real> >& lastSequence() const;
     Size dimension() const;
+    %extend{
+      void skipTo(Size n){
+        $self->skipTo(n);
+      }
+
+      std::vector<Size> nextInt32Sequence(){
+        const std::vector<boost::uint_least32_t> &tmp = $self->nextInt32Sequence();
+        std::vector<Size> outp(tmp.size());
+        std::copy(tmp.begin(),tmp.end(),outp.begin());
+        return outp;
+      }
+    }
 };
 
 

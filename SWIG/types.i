@@ -59,7 +59,7 @@ typedef Real Probability;
 }
 #endif
 
-typedef std::size_t Size;
+typedef size_t Size;
 
 
 #endif
