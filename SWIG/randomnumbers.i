@@ -266,6 +266,8 @@ class InverseCumulativeRsg {
                          MoroInverseCumulativeNormal>;
 %template(MoroInvCumulativeHaltonGaussianRsg)
     InverseCumulativeRsg<HaltonRsg,MoroInverseCumulativeNormal>;
+%template(MoroInvCumulativeSobolGaussianRsg)
+    InverseCumulativeRsg<SobolRsg,MoroInverseCumulativeNormal>;
 
 %template(InvCumulativeLecuyerGaussianRsg)
     InverseCumulativeRsg<RandomSequenceGenerator<LecuyerUniformRng>,
@@ -278,7 +280,9 @@ class InverseCumulativeRsg {
                          InverseCumulativeNormal>;
 %template(InvCumulativeHaltonGaussianRsg)
     InverseCumulativeRsg<HaltonRsg,InverseCumulativeNormal>;
-
+%template(InvCumulativeSobolGaussianRsg)
+    InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal>;
+    
 class GaussianRandomSequenceGenerator {
   public:
     GaussianRandomSequenceGenerator(

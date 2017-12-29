@@ -192,8 +192,7 @@ class GaussianMultiPathGenerator {
 };
 
 %{
-typedef QuantLib::BrownianBridge
-    BrownianBridge;
+using QuantLib::BrownianBridge;
 %}
 class BrownianBridge{
 public:
