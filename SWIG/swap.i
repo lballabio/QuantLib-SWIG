@@ -82,22 +82,6 @@ class VanillaSwap {
 
 %rename(VanillaSwap) VanillaSwapPtr;
 class VanillaSwapPtr : public SwapPtr {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("fair-rate")        fairRate;
-    %rename("fair-spread")      fairSpread;
-    %rename("fixed-leg-BPS")    fixedLegBPS;
-    %rename("floating-leg-BPS") floatingLegBPS;
-    %rename ("fixed-leg-NPV") fixedLegNPV;
-    %rename ("floating-leg-NPV") floatingLegNPV;
-    %rename ("floating-leg") floatingLeg;
-    %rename ("fixed-leg") fixedLeg;
-    %rename ("fixed-schedule") fixedSchedule;
-    %rename ("floating-schedule") floatingSchedule;
-    %rename ("fixed-rate") fixedRate;
-    %rename ("fixed-day-count") fixedDayCount;
-    %rename ("floating-day-count") floatingDayCount;
-    
-    #endif
   public:
     %extend {
         static const VanillaSwap::Type Receiver = VanillaSwap::Receiver;
@@ -194,17 +178,6 @@ class NonstandardSwap {
 
 %rename(NonstandardSwap) NonstandardSwapPtr;
 class NonstandardSwapPtr : public SwapPtr {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename ("floating-leg")       floatingLeg;
-    %rename ("fixed-leg")          fixedLeg;
-    %rename ("floating-nominals")  floatingNominals;
-    %rename ("fixed-nominals")     fixedNominals;
-    %rename ("fixed-schedule")     fixedSchedule;
-    %rename ("floating-schedule")  floatingSchedule;
-    %rename ("fixed-rate")         fixedRate;
-    %rename ("fixed-day-count")    fixedDayCount;
-    %rename ("floating-day-count") floatingDayCount;
-    #endif
   public:
     %extend {
         NonstandardSwapPtr(VanillaSwap::Type type,

@@ -1,54 +1,42 @@
 
-Changes for QuantLib-SWIG 1.9
-=============================
+Changes for QuantLib-SWIG 1.11
+==============================
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/2?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/4?closed=1>.
 
-- dropped support for Visual C++ 8 (2005), which as of April 2016 is
-  unsupported by Microsoft.
+- This is the last release to include bindings (which are probably
+  broken anyway) for the Guile, MzScheme and OCaml languages.
 
-- removed harmful redefinition of `SWIGSTDCALL` preventing debugging
-  of C# module (thanks to Fabrice Lecuyer to the heads-up).
+- Upgraded to SWIG 3.0.12.
 
-- if present in the environment, `LDFLAGS` is now passed to the
-  linker when building the Python wrappers (thanks to Gouthaman
-  Balaraman).
+- Exported BlackDeltaCalculator class, blackFormula and related
+  functions (thanks to Wojciech Ślusarski).
 
-- if present in the environment, `CXXFLAGS` and `LDFLAGS` are now
-  passed to the linker when building the Java wrappers (thanks to
-  Martin Ross).
+- Exported discountBond method for short-rate models (thanks to
+  Goutham Balaraman).
 
-- added a few inspectors to the `CapFloor` class (thanks to Gouthaman
-  Balaraman).
+- Exported Hull-White forward process (thanks to Wojciech Ślusarski).
 
-- exported the `ASX`, `Futures` and `Pillar` structs, used in a few
-  newly-exported rate-helper constructors (thanks to Fabrice Lecuyer).
+- Exported volatility type and displacement to
+  ConstantOptionletVolatility constructors (thanks to Matthias
+  Lungwitz).
 
-- allow the use of normal volatilities for cap, floors and swaptions
-  (thanks to Gouthaman Balaraman, Peter Caspers and Wojciech
-  Slusarski).
+- Exported SwaptionVolCube1 inspectors (thanks to Matthias Lungwitz).
 
-- exported the `LocalVolSurface` class (thanks to Gouthaman Balaraman).
+- Exported full Schedule constructor based on dates (thanks to
+  Matthias Lungwitz).
 
-- exported the `AnalyticPTDHestonEngine` class (thanks to Gouthaman
-  Balaraman).
+- Avoid errors building Python 3.5 wrappers (thanks to Alan Donoghue
+  for the heads-up).
 
-- exported the `BlackCallableFixedRateBondEngine` class (thanks to
-  Gouthaman Balaraman).
+- Exported FD G2 and Hull-White swaption engines (thanks to Matthias
+  Lungwitz).
 
-- exported monotonic-cubic zero curve (thanks to Andres Hernandez).
+- Exported Bates vanilla engine (thanks to GitHub user abhilaksh12).
 
-- exported `ShortRateModel` inspectors (thanks to Andres Hernandez).
+- Added to the Python Date class conversion methods to and from
+  datetime instances.
 
-- added overloaded constructor for `FixedRateBond` taking a vector of
-  `InterestRate` instances (thanks to Gouthaman Balaraman).
-  Unfortunately, this prevents kwargs support in Python.
-
-- swap indexes can now be built with an exogenous discount curve
-  (thanks to Peter Caspers).
-
-- exported BBSW, BKBM, NZOCR and Aonia indexes (thanks to Fabrice Lecuyer).
-
-
+- Added callable-bond example in Java (thanks to Bojan Nikolic).

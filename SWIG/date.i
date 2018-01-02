@@ -29,6 +29,8 @@
 %include types.i
 %include stl.i
 
+%define QL_TYPECHECK_PERIOD                      5220    %enddef
+
 %{
 #ifndef QL_HIGH_RESOLUTION_DATE
     // They are not defined in the library, so we define them here
@@ -246,6 +248,30 @@ class Period {
     #endif
 };
 
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<Period> %{
+    if($input == Py_None)
+        $1 = boost::none;
+    else
+    {
+        Period *temp;
+        if (!SWIG_IsOK(SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0)))
+            SWIG_exception_fail(SWIG_TypeError, "in method '$symname', expecting type Period");
+        $1 = (boost::optional<Period>) *temp;
+    }
+%}
+%typecheck (QL_TYPECHECK_PERIOD) boost::optional<Period> {
+    if($input == Py_None)
+        $1 = 1;
+    else {
+        Period *temp;
+        int res = SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0);
+        $1 = SWIG_IsOK(res) ? 1 : 0;
+    }
+
+}
+#endif
+
 namespace std {
     %template(PeriodVector) vector<Period>;
 }
@@ -256,6 +282,12 @@ namespace std {
 using QuantLib::Date;
 using QuantLib::DateParser;
 %}
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+import datetime
+%}
+#endif
 
 #if defined(SWIGR)
 %Rruntime %{
@@ -359,19 +391,6 @@ class Date {
     #if defined(SWIGRUBY)
     %rename("isLeap?")        isLeap;
     %rename("isEndOfMonth?")         isEndOfMonth;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-of-month")   dayOfMonth;
-    %rename("day-of-year")    dayOfYear;
-    %rename("weekday-number") weekdayNumber;
-    %rename("serial-number")  serialNumber;
-    %rename("is-leap?")       isLeap;
-    %rename("min-date")       minDate;
-    %rename("max-date")       maxDate;
-    %rename("todays-date")    todaysDate;
-    %rename("end-of-month")   endOfMonth;
-    %rename("is-eom?")        isEndOfMonth;
-    %rename("next-weekday")   nextWeekday;
-    %rename("nth-weekday")    nthWeekday;
     #endif
   public:
     Date();
@@ -567,12 +586,17 @@ class Date {
             return *self + 1;
         }
         #endif
-        #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-        Date advance(Integer n, TimeUnit units) {
-            return *self + n*units;
-        }
-        #endif
     }
+    #if defined(SWIGPYTHON)
+    %pythoncode %{
+    def to_date(self):
+        return datetime.date(self.year(), self.month(), self.dayOfMonth())
+
+    @staticmethod
+    def from_date(date):
+        return Date(date.day, date.month, date.year)
+    %}
+    #endif
 };
 
 class DateParser {
@@ -653,35 +677,6 @@ bool operator>=(const Date&, const Date&);
 
 #endif
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Date=?")  Date_equal;
-%rename("Date<?")  Date_less;
-%rename("Date<=?") Date_less_equal;
-%rename("Date>?")  Date_greater;
-%rename("Date>=?") Date_greater_equal;
-%inline %{
-    // difference - comparison
-    BigInteger Date_days_between(const Date& d1, const Date& d2) {
-        return d2-d1;
-    }
-    bool Date_equal(const Date& d1, const Date& d2) {
-        return d1 == d2;
-    }
-    bool Date_less(const Date& d1, const Date& d2) {
-        return d1 < d2;
-    }
-    bool Date_less_equal(const Date& d1, const Date& d2) {
-        return d1 <= d2;
-    }
-    bool Date_greater(const Date& d1, const Date& d2) {
-        return d1 > d2;
-    }
-    bool Date_greater_equal(const Date& d1, const Date& d2) {
-        return d1 >= d2;
-    }
-%}
-#endif
-
 %{
 using QuantLib::IMM;
 %}
@@ -690,11 +685,6 @@ struct IMM {
     #if defined(SWIGRUBY)
     %rename("isIMMdate?")        isIMMdate;
     %rename("isIMMcode?")        isIMMcode;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-imm-date?")      isIMMdate;
-    %rename("is-imm-code?")      isIMMcode;
-    %rename("next-date")         nextDate;
-    %rename("next-code")         nextCode;
     #endif
     enum Month { F =  1, G =  2, H =  3,
                  J =  4, K =  5, M =  6,
@@ -728,11 +718,6 @@ struct ASX {
     #if defined(SWIGRUBY)
     %rename("isASXdate?")        isASXdate;
     %rename("isASXcode?")        isASXcode;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-asx-date?")      isASXdate;
-    %rename("is-asx-code?")      isASXcode;
-    %rename("next-date")         nextDate;
-    %rename("next-code")         nextCode;
     #endif
     enum Month { F =  1, G =  2, H =  3,
                  J =  4, K =  5, M =  6,

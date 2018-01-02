@@ -38,10 +38,6 @@ using QuantLib::IndexManager;
 class IndexManager {
     #if defined(SWIGRUBY)
     %rename("hasHistory?")  hasHistory;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("has-history?") hasHistory;
-    %rename("history-get")  getHistory;
-    %rename("history-set!") setHistory;
     #endif
   private:
     IndexManager();
@@ -67,10 +63,6 @@ class Index {
     #if defined(SWIGRUBY)
     %rename("isValidFixingDate?") isValidFixingDate;
     %rename("addFixing!") addFixing;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("fixing-calendar") addFixing;
-    %rename("is-valid-fixing-date?") isValidFixingDate;
-    %rename("add-fixing") addFixing;
     #endif
   public:
     std::string name() const;
@@ -85,8 +77,6 @@ class Index {
 %extend boost::shared_ptr<Index> {
     #if defined(SWIGRUBY)
     %rename("addFixings!") addFixings;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("add-fixings") addFixings;
     #endif
     void addFixings(const std::vector<Date>& fixingDates,
                     const std::vector<Rate>& fixings) {
@@ -112,11 +102,6 @@ typedef boost::shared_ptr<Index> InterestRateIndexPtr;
 
 %rename(InterestRateIndex) InterestRateIndexPtr;
 class InterestRateIndexPtr : public boost::shared_ptr<Index> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("family-name")     familyName;
-    %rename("settlement-days") settlementDays;
-    %rename("day-counter")     dayCounter;
-    #endif
   protected:
     InterestRateIndexPtr();
   public:
@@ -169,9 +154,6 @@ typedef boost::shared_ptr<Index> OvernightIndexPtr;
 class IborIndexPtr : public InterestRateIndexPtr {
     #if defined(SWIGRUBY)
     %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-adjusted?")            isAdjusted;
-    %rename("business-day-convention") businessDayConvention;
     #endif
   public:
     %extend {
@@ -327,9 +309,6 @@ typedef boost::shared_ptr<Index> SwapIndexPtr;
 class SwapIndexPtr : public InterestRateIndexPtr {
     #if defined(SWIGRUBY)
     %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-adjusted?")            isAdjusted;
-    %rename("business-day-convention") businessDayConvention;
     #endif
   public:
     %extend {

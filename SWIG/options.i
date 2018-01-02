@@ -66,8 +66,7 @@ using QuantLib::StrikedTypePayoff;
 
 %ignore Payoff;
 class Payoff {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
-     || defined(SWIGCSHARP) || defined(SWIGPERL)
+    #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
@@ -146,10 +145,6 @@ typedef boost::shared_ptr<Instrument> MultiAssetOptionPtr;
 
 %rename(VanillaOption) VanillaOptionPtr;
 class VanillaOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("dividend-rho")       dividendRho;
-    %rename("implied-volatility") impliedVolatility;
-    #endif
   public:
     %extend {
         VanillaOptionPtr(
@@ -806,6 +801,28 @@ class FdBlackScholesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+%{
+using QuantLib::FdBatesVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
+%}
+
+%rename(FdBatesVanillaEngine) FdBatesVanillaEnginePtr;
+class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdBatesVanillaEnginePtr(const BatesModelPtr& model,
+                                Size tGrid = 100, Size xGrid = 100,
+                                Size vGrid=50, Size dampingSteps = 0) {
+            boost::shared_ptr<BatesModel> bModel =
+                 boost::dynamic_pointer_cast<BatesModel>(model);
+            QL_REQUIRE(bModel, "Bates model required");
+            return new FdBatesVanillaEnginePtr(
+                               new FdBatesVanillaEngine(bModel, tGrid, xGrid,
+                                                        vGrid, dampingSteps));
+        }
+    }
+};
+
 
 %{
 using QuantLib::ContinuousArithmeticAsianLevyEngine;
@@ -972,10 +989,6 @@ typedef boost::shared_ptr<Instrument> DividendVanillaOptionPtr;
 
 %rename(DividendVanillaOption) DividendVanillaOptionPtr;
 class DividendVanillaOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("dividend-rho")       dividendRho;
-    %rename("implied-volatility") impliedVolatility;
-    #endif
   public:
     %extend {
         DividendVanillaOptionPtr(
@@ -1096,10 +1109,6 @@ typedef boost::shared_ptr<Instrument> BarrierOptionPtr;
 
 %rename(BarrierOption) BarrierOptionPtr;
 class BarrierOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("dividend-rho")       dividendRho;
-    %rename("implied-volatility") impliedVolatility;
-    #endif
   public:
     %extend {
         BarrierOptionPtr(
@@ -1509,9 +1518,6 @@ struct Average {
 
 %rename(ContinuousAveragingAsianOption) ContinuousAveragingAsianOptionPtr;
 class ContinuousAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("dividend-rho")       dividendRho;
-    #endif
   public:
     %extend {
         ContinuousAveragingAsianOptionPtr(
@@ -1533,9 +1539,6 @@ add_greeks_to(ContinuousAveragingAsianOption);
 
 %rename(DiscreteAveragingAsianOption) DiscreteAveragingAsianOptionPtr;
 class DiscreteAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("dividend-rho")       dividendRho;
-    #endif
   public:
     %extend {
         DiscreteAveragingAsianOptionPtr(
@@ -1865,10 +1868,6 @@ typedef boost::shared_ptr<Instrument> DoubleBarrierOptionPtr;
 
 %rename(DoubleBarrierOption) DoubleBarrierOptionPtr;
 class DoubleBarrierOptionPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("dividend-rho")       dividendRho;
-    %rename("implied-volatility") impliedVolatility;
-    #endif
   public:
     %extend {
         DoubleBarrierOptionPtr(

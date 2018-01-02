@@ -50,18 +50,6 @@ using QuantLib::SwaptionVolatilityStructure;
 
 %ignore BlackVolTermStructure;
 class BlackVolTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date") referenceDate;
-    %rename("day-counter")    dayCounter;
-    %rename("max-date")       maxDate;
-    %rename("max-time")       maxTime;
-    %rename("min-strike")     minStrike;
-    %rename("max-strike")     maxStrike;
-    %rename("black-vol")      blackVol;
-    %rename("black-variance") blackVariance;
-    %rename("black-forward-vol")      blackVol;
-    %rename("black-forward-variance") blackVariance;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -99,15 +87,6 @@ RelinkableHandle<BlackVolTermStructure>;
 
 %ignore LocalVolTermStructure;
 class LocalVolTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date") referenceDate;
-    %rename("day-counter")    dayCounter;
-    %rename("max-date")       maxDate;
-    %rename("max-time")       maxTime;
-    %rename("min-strike")     minStrike;
-    %rename("max-strike")     maxStrike;
-    %rename("local-vol")      localVol;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -133,15 +112,6 @@ RelinkableHandle<LocalVolTermStructure>;
 
 %ignore OptionletVolatilityStructure;
 class OptionletVolatilityStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date") referenceDate;
-    %rename("day-counter")    dayCounter;
-    %rename("max-date")       maxDate;
-    %rename("max-time")       maxTime;
-    %rename("min-strike")     minStrike;
-    %rename("max-strike")     maxStrike;
-    %rename("black-variance") blackVariance;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -178,17 +148,6 @@ using QuantLib::SwaptionVolatilityStructure;
 
 %ignore SwaptionVolatilityStructure;
 class SwaptionVolatilityStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date")  referenceDate;
-    %rename("day-counter")     dayCounter;
-    %rename("max-option-date")  maxOptionDate;
-    %rename("max-option-time")  maxOptionTime;
-    %rename("max-swap-tenor")      maxSwapTenor;
-    %rename("max-swap-length") maxSwapLength;
-    %rename("min-strike")      minStrike;
-    %rename("max-strike")      maxStrike;
-    %rename("black-variance")  blackVariance;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -422,14 +381,6 @@ typedef boost::shared_ptr<LocalVolTermStructure> LocalVolSurfacePtr;
 %}
 %rename(LocalVolSurface) LocalVolSurfacePtr;
 class LocalVolSurfacePtr : public boost::shared_ptr<LocalVolTermStructure> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date")       referenceDate;
-    %rename("day-counter") dayCounter;
-    %rename("max-date") maxDate;
-    %rename("min-strike") minStrike;
-    %rename("max-strike") maxStrike;    
-    #endif
-
     public:
      %extend {
         LocalVolSurfacePtr(const Handle<BlackVolTermStructure>& blackTS,
@@ -469,41 +420,49 @@ class ConstantOptionletVolatilityPtr
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(referenceDate,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
         ConstantOptionletVolatilityPtr(const Date& referenceDate,
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(referenceDate,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
         ConstantOptionletVolatilityPtr(Natural settlementDays,
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        Volatility volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(settlementDays,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
         ConstantOptionletVolatilityPtr(Natural settlementDays,
                                        const Calendar &cal,
                                        BusinessDayConvention bdc,
                                        const Handle<Quote>& volatility,
-                                       const DayCounter& dayCounter) {
+                                       const DayCounter& dayCounter,
+                                       const VolatilityType type = ShiftedLognormal,
+                                       const Real shift = 0.0) {
             return new ConstantOptionletVolatilityPtr(
                 new ConstantOptionletVolatility(settlementDays,
                                                 cal, bdc, volatility,
-                                                dayCounter));
+                                                dayCounter, type, shift));
         }
     }
 };
@@ -664,6 +623,26 @@ class SwaptionVolCube1Ptr
                     volSpreads, swi, shortSwi, vegaWeightedSmileFit,
                     parametersGuess,isParameterFixed,isAtmCalibrated,
                     endCriteria,maxErrorTolerance,optMethod));
+        }
+
+        Matrix sparseSabrParameters() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->sparseSabrParameters();
+        }
+
+        Matrix denseSabrParameters() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->denseSabrParameters();
+        }
+
+        Matrix marketVolCube() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->marketVolCube();
+        }
+
+        Matrix volCubeAtmCalibrated() const {
+            return boost::dynamic_pointer_cast<SwaptionVolCube1>(*self)
+                ->volCubeAtmCalibrated();
         }
     }
 };

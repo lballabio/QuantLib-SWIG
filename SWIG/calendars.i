@@ -25,6 +25,8 @@
 %include date.i
 %include stl.i
 
+%define QL_TYPECHECK_BUSINESSDAYCONVENTION       6210    %enddef
+
 %{
 using QuantLib::Calendar;
 %}
@@ -56,6 +58,22 @@ using QuantLib::JoinBusinessDays;
 
 enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
 
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<BusinessDayConvention> %{
+	if($input == Py_None)
+		$1 = boost::none;
+    else if (PyInt_Check($input))
+        $1 = (BusinessDayConvention) PyInt_AsLong($input);
+	else
+		$1 = (BusinessDayConvention) PyLong_AsLong($input);
+%}
+%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) boost::optional<BusinessDayConvention> {
+if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
+	$1 = 1;
+else
+	$1 = 0;
+}
+#endif
 
 #if defined(SWIGRUBY)
 %mixin Calendar "Comparable";
@@ -67,12 +85,6 @@ class Calendar {
     %rename("isEndOfMonth?")    isEndOfMonth;
     %rename("addHoliday!")      addHoliday;
     %rename("removeHoliday!")   removeHoliday;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-business-day?") isBusinessDay;
-    %rename("is-holiday?")      isHoliday;
-    %rename("is-end-of-month?") isEndOfMonth;
-    %rename("add-holiday")      addHoliday;
-    %rename("remove-holiday")   removeHoliday;
     #endif
   protected:
     Calendar();
@@ -121,15 +133,6 @@ class Calendar {
     %}
     #endif
 };
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Calendar=?") Calendar_equal;
-%inline %{
-    bool Calendar_equal(const Calendar& c1, const Calendar& c2) {
-        return c1 == c2;
-    }
-%}
-#endif
 
 namespace QuantLib {
 
@@ -284,7 +287,8 @@ namespace QuantLib {
 
     class UnitedStates : public Calendar {
       public:
-        enum Market { Settlement, NYSE, GovernmentBond, NERC };
+        enum Market { Settlement, NYSE, GovernmentBond,
+                      NERC, LiborImpact, FederalReserve };
         UnitedStates(Market m = Settlement);
     };
 

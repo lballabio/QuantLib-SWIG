@@ -22,6 +22,8 @@
 %include stl.i
 %include exception.i
 
+%define QL_TYPECHECK_BOOL       7210    %enddef
+
 %{
 // This is necessary to avoid compile failures on 
 // GCC 4
@@ -31,9 +33,25 @@
 #define BOOST_DISABLE_ASSERTS 1
 #endif
 
-
 #include <boost/algorithm/string/case_conv.hpp>
 %}
+
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<bool> %{
+	if($input == Py_None)
+		$1 = boost::none;
+	else if ($input == Py_True)
+		$1 = true;
+	else
+		$1 = false;
+%}
+%typecheck (QL_TYPECHECK_BOOL) boost::optional<bool> {
+if (PyBool_Check($input) || Py_None == $input) 
+	$1 = 1;
+else
+	$1 = 0;
+}
+#endif
 
 #if defined(SWIGRUBY)
 %{
@@ -55,7 +73,7 @@ namespace boost {
 
     template <class T>
     class shared_ptr {
-        #if defined(SWIGRUBY) || defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #if defined(SWIGRUBY)
         %rename("null?") isNull;
         #endif
       public:
@@ -83,9 +101,6 @@ class Handle {
     #if defined(SWIGRUBY)
     %rename("null?")   isNull;
     %rename("empty?")  empty;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("null?")    isNull;
-    %rename("empty?")  empty;
     #endif
   public:
     Handle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
@@ -105,8 +120,6 @@ template <class T>
 class RelinkableHandle : public Handle<T> {
     #if defined(SWIGRUBY)
     %rename("linkTo!")  linkTo;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("link-to!") linkTo;
     #endif
   public:
     RelinkableHandle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
@@ -129,6 +142,18 @@ sapply(1:length(from), function(n) {
 a[n] <- from[n] } )
 a
 })
+%}
+#endif
+%enddef
+
+
+%define deprecate_feature(OldName, NewName)
+#if defined(SWIGPYTHON)
+%pythoncode %{
+def OldName(*args, **kwargs):
+    from warnings import warn
+    warn('%s is deprecated; use %s' % (OldName.__name__, NewName.__name__))
+    return NewName(*args, **kwargs)
 %}
 #endif
 %enddef

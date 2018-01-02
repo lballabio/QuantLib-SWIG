@@ -33,10 +33,6 @@ using QuantLib::DayCounter;
 %}
 
 class DayCounter {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-count")     dayCount;
-    %rename("year-fraction") yearFraction;
-    #endif
   protected:
     DayCounter();
   public:
@@ -70,20 +66,14 @@ class DayCounter {
     #endif
 };
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("DayCounter=?") DayCounter_equal;
-%inline %{
-    bool DayCounter_equal(const DayCounter& d1, const DayCounter& d2) {
-        return d1 == d2;
-    }
-%}
-#endif
-
 namespace QuantLib {
 
     class Actual360 : public DayCounter {};
-    class Actual365Fixed : public DayCounter {};
-    class Actual365NoLeap : public DayCounter {};
+    class Actual365Fixed : public DayCounter {
+      public:
+        enum Convention { Standard, Canadian, NoLeap };
+        Actual365Fixed(Convention c = Standard);
+    };
     class Thirty360 : public DayCounter {
       public:
         enum Convention { USA, BondBasis, European, EurobondBasis, Italian };
@@ -101,6 +91,13 @@ namespace QuantLib {
         Business252(Calendar c = Brazil());
     };
 }
+
+%inline %{
+    /* avoid deprecation warnings */
+    DayCounter Actual365NoLeap() {
+        return QuantLib::Actual365Fixed(QuantLib::Actual365Fixed::NoLeap);
+    }
+%}
 
 
 #endif
