@@ -443,6 +443,9 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         self.assertEqual(expected_3M_date,
                          rate_helper.latestDate())
+    
+    def tearDown(self):
+        QuantLib.Settings.instance().setEvaluationDate(QuantLib.Date())
 
 if __name__ == '__main__':
     print('testing QuantLib ' + QuantLib.__version__)
