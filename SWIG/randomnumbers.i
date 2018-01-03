@@ -191,6 +191,15 @@ class SobolRsg {
     const Sample<std::vector<Real> >& nextSequence() const;
     const Sample<std::vector<Real> >& lastSequence() const;
     Size dimension() const;
+    void skipTo(Size n);
+    %extend{
+      std::vector<unsigned int> nextInt32Sequence(){
+        const std::vector<boost::uint_least32_t> &tmp = $self->nextInt32Sequence();
+        std::vector<unsigned int> outp(tmp.size());
+        std::copy(tmp.begin(),tmp.end(),outp.begin());
+        return outp;
+      }
+    }
 };
 
 
@@ -254,6 +263,8 @@ class InverseCumulativeRsg {
                          MoroInverseCumulativeNormal>;
 %template(MoroInvCumulativeHaltonGaussianRsg)
     InverseCumulativeRsg<HaltonRsg,MoroInverseCumulativeNormal>;
+%template(MoroInvCumulativeSobolGaussianRsg)
+    InverseCumulativeRsg<SobolRsg,MoroInverseCumulativeNormal>;
 
 %template(InvCumulativeLecuyerGaussianRsg)
     InverseCumulativeRsg<RandomSequenceGenerator<LecuyerUniformRng>,
@@ -266,7 +277,9 @@ class InverseCumulativeRsg {
                          InverseCumulativeNormal>;
 %template(InvCumulativeHaltonGaussianRsg)
     InverseCumulativeRsg<HaltonRsg,InverseCumulativeNormal>;
-
+%template(InvCumulativeSobolGaussianRsg)
+    InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal>;
+    
 class GaussianRandomSequenceGenerator {
   public:
     GaussianRandomSequenceGenerator(
