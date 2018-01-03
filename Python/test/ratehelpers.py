@@ -24,6 +24,7 @@ import unittest
 
 class FixedRateBondHelperTest(unittest.TestCase):
     def setUp(self):
+        QuantLib.Settings.instance().setEvaluationDate(QuantLib.Date(2,1,2010))
         self.settlement_days = 3
         self.face_amount = 100.0
         self.redemption = 100.0
@@ -442,6 +443,9 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         self.assertEqual(expected_3M_date,
                          rate_helper.latestDate())
+    
+    def tearDown(self):
+        QuantLib.Settings.instance().setEvaluationDate(QuantLib.Date())
 
 if __name__ == '__main__':
     print('testing QuantLib ' + QuantLib.__version__)
