@@ -25,7 +25,7 @@ QuantLib-SWIG is
     Copyright (C) 2014 Wondersys srl
     Copyright (C) 2015, 2016 Gouthaman Balaraman
     Copyright (C) 2016 Peter Caspers
-    Copyright (C) 2016, 2017 Wojciech Ślusarski
+    Copyright (C) 2016, 2017 Wojciech Slusarski
     Copyright (C) 2017 BN Algorithms Ltd
     Copyright (C) 2017 Matthias Lungwitz
 
