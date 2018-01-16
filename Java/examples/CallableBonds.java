@@ -33,7 +33,6 @@ import org.quantlib.Quote;
 import org.quantlib.SimpleQuote;
 import org.quantlib.YieldTermStructure;
 import org.quantlib.YieldTermStructureHandle;
-import org.quantlib.RelinkableYieldTermStructureHandle;
 import org.quantlib.InterestRate;
 import org.quantlib.Month;
 import org.quantlib.Date;
