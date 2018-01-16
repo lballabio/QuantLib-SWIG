@@ -3,7 +3,7 @@ CLEANFILES = quantlib_wrap.cpp libQuantLibJNI.@JNILIB_EXTENSION@ QuantLib.jar
 
 BUILT_SOURCES = quantlib_wrap.cpp quantlib_wrap.h
 
-EXAMPLES = Bonds CallableBonds DiscreteHedging EquityOptions FRA UnaryFunctions
+EXAMPLES = Bonds CallableBonds CallableBondsOAS DiscreteHedging EquityOptions FRA UnaryFunctions
 
 SWIGFLAGS =
 
@@ -15,7 +15,7 @@ if HAVE_JAVA
 if BUILD_JAVA
 
 examples/%.class: examples/%.java QuantLib.jar
-	$(JAVAC) -source 1.5 -cp QuantLib.jar examples/$*.java
+	$(JAVAC)  -cp QuantLib.jar examples/$*.java
 
 .PHONY: $(EXAMPLES)
 

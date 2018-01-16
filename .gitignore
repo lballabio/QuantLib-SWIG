@@ -81,6 +81,7 @@ testCaseCollection.xml
 CSharp/csharp/*.cs
 CSharp/NQuantLib.dll
 Java/QuantLib.jar
+Java/*.jnilib
 Java/org/
 Perl/QuantLib.pm
 Python/QuantLib/QuantLib.py
