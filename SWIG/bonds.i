@@ -412,72 +412,72 @@ class CallableFixedRateBondPtr : public BondPtr {
                                           issueDate, putCallSchedule));
         }
 
-	Real OAS(Real cleanPrice,
-		 RelinkableHandle<YieldTermStructure>& engineTS,
-		 const DayCounter& dc,
-		 Compounding compounding,
-		 Frequency freq,
-		 const Date& settlementDate = Date(),
-		 Real accuracy =1e-10,
-		 Size maxIterations = 100,
-		 Spread guess = 0.0)
-	{
-	  return boost::dynamic_pointer_cast<CallableBond>(*self)
-	    ->OAS(cleanPrice,
-		  engineTS,
-		  dc, compounding, freq, settlementDate,
-		  accuracy,
-		  maxIterations,
-		  guess);
-	}
+        Real OAS(Real cleanPrice,
+                 const Handle<YieldTermStructure>& engineTS,
+                 const DayCounter& dc,
+                 Compounding compounding,
+                 Frequency freq,
+                 const Date& settlementDate = Date(),
+                 Real accuracy =1e-10,
+                 Size maxIterations = 100,
+                 Spread guess = 0.0)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->OAS(cleanPrice,
+                      engineTS,
+                      dc, compounding, freq, settlementDate,
+                      accuracy,
+                      maxIterations,
+                      guess);
+        }
 
-	Real cleanPriceOAS(Real oas,
-                           RelinkableHandle<YieldTermStructure>& engineTS,
+        Real cleanPriceOAS(Real oas,
+                           const Handle<YieldTermStructure>& engineTS,
                            const DayCounter& dayCounter,
                            Compounding compounding,
                            Frequency frequency,
                            Date settlementDate = Date())
-	{
-	  return boost::dynamic_pointer_cast<CallableBond>(*self)
-	    ->cleanPriceOAS(oas,
-			    engineTS,
-			    dayCounter,
-			    compounding,
-			    frequency,
-			    settlementDate);
-	}
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->cleanPriceOAS(oas,
+                                engineTS,
+                                dayCounter,
+                                compounding,
+                                frequency,
+                                settlementDate);
+        }
 
         Real effectiveDuration(Real oas,
-                               RelinkableHandle<YieldTermStructure>& engineTS,
+                               const Handle<YieldTermStructure>& engineTS,
                                const DayCounter& dayCounter,
                                Compounding compounding,
                                Frequency frequency,
-			       Real bump=2e-4)
-	{
-	  return boost::dynamic_pointer_cast<CallableBond>(*self)
-	    ->effectiveDuration(oas,
-				engineTS,
-				dayCounter,
-                                compounding,
-                                frequency,
-				bump);
-	}
+                               Real bump=2e-4)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->effectiveDuration(oas,
+                                    engineTS,
+                                    dayCounter,
+                                    compounding,
+                                    frequency,
+                                    bump);
+        }
 
         Real effectiveConvexity(Real oas,
-                                RelinkableHandle<YieldTermStructure>& engineTS,
+                                const Handle<YieldTermStructure>& engineTS,
                                 const DayCounter& dayCounter,
                                 Compounding compounding,
                                 Frequency frequency,
                                 Real bump=2e-4)
-	{
-	  return boost::dynamic_pointer_cast<CallableBond>(*self)
-	    ->effectiveConvexity(oas,
-				 engineTS,
-				 dayCounter,
-				 compounding,
-                                 frequency,
-				 bump);
-	}
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->effectiveConvexity(oas,
+                                     engineTS,
+                                     dayCounter,
+                                     compounding,
+                                     frequency,
+                                     bump);
+        }
     }
 };
 
