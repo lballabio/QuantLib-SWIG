@@ -565,6 +565,9 @@ class Date {
         bool __nonzero__() {
             return (*self != Date());
         }
+        bool __bool__() {
+            return (*self != Date());
+        }
         int __hash__() {
             return self->serialNumber();
         }

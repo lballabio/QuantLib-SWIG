@@ -83,6 +83,9 @@ namespace boost {
             bool __nonzero__() {
                 return !!(*self);
             }
+            bool __bool__() {
+                return !!(*self);
+            }
         }
         #else
         %extend {
@@ -108,6 +111,9 @@ class Handle {
     #if defined(SWIGPYTHON)
     %extend {
         bool __nonzero__() {
+            return !self->empty();
+        }
+        bool __bool__() {
             return !self->empty();
         }
     }
