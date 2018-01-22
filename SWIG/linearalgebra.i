@@ -561,6 +561,9 @@ class Array {
         bool __nonzero__() {
             return (self->size() != 0);
         }
+        bool __bool__() {
+            return (self->size() != 0);
+        }
         #endif
         #if defined(SWIGRUBY)
         void each() {

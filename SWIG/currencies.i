@@ -33,9 +33,7 @@ using QuantLib::Money;
 %}
 
 class Currency {
-    #if defined(SWIGPYTHON)
-    %rename(__nonzero__) empty;
-    #elif defined(SWIGRUBY)
+    #if defined(SWIGRUBY)
     %rename("empty?") empty;
     #endif
   public:
@@ -71,6 +69,12 @@ class Currency {
         }
         Money __rmul__(Decimal x) {
             return *self*x;
+        }
+        bool __nonzero__() {
+            return !self->empty();
+        }
+        bool __bool__() {
+            return !self->empty();
         }
         #endif
     }
