@@ -417,7 +417,7 @@ class OvernightIndexedSwapPtr : public SwapPtr {
 				boost::shared_ptr<OvernightIndex> index =
 					boost::dynamic_pointer_cast<OvernightIndex>(overnightIndex);
 				return new OvernightIndexedSwapPtr(
-				 new OvernightIndexedSwap(type, nominal, schedule, fixedRate, fixedDC,
+				 new OvernightIndexedSwap(type, nominals, schedule, fixedRate, fixedDC,
 				index, spread, paymentLag, paymentAdjustment, paymentCalendar, telescopicValueDates));
 		}
 
