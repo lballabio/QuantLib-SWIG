@@ -67,6 +67,8 @@ class RateHelper {
 	Date maturityDate() const;
 	Date latestRelevantDate() const;
 	Date pillarDate() const;
+	Real impliedQuote() const;
+	Real quoteError() const;
 };
 
 // rate helpers for curve bootstrapping
@@ -116,9 +118,6 @@ class DepositRateHelperPtr : public boost::shared_ptr<RateHelper> {
             return new DepositRateHelperPtr(
                 new DepositRateHelper(rate, libor));
         }
-		Real impliedQuote() {
-			return boost::dynamic_pointer_cast<DepositRateHelper>(*self)->impliedQuote();
-		}
     }
 };
 
@@ -178,9 +177,6 @@ class FraRateHelperPtr : public boost::shared_ptr<RateHelper> {
             return new FraRateHelperPtr(
                 new FraRateHelper(rate,monthsToStart,libor, pillar, customPillarDate));
         }
-		Real impliedQuote() {
-			return boost::dynamic_pointer_cast<FraRateHelper>(*self)->impliedQuote();
-		}
     }
 };
 
@@ -355,9 +351,6 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                                    discountingCurve,
                                    pillar, customPillarDate));
         }
-		Real impliedQuote() {
-			return boost::dynamic_pointer_cast<SwapRateHelper>(*self)->impliedQuote();
-		}
 		Spread spread() {
 			return boost::dynamic_pointer_cast<SwapRateHelper>(*self)->spread();
 		}
