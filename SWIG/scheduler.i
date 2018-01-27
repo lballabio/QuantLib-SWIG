@@ -29,6 +29,7 @@
 %{
 using QuantLib::Schedule;
 using QuantLib::DateGeneration;
+using QuantLib::MakeSchedule;
 %}
 
 struct DateGeneration {
@@ -121,5 +122,35 @@ class Schedule {
     }
 };
 
+/*! This class provides a more comfortable interface to the
+    argument list of Schedule's constructor.
+*/
+class MakeSchedule {
+  public:
+    MakeSchedule();
+#if defined(SWIGPYTHON)
+    // 'from' can't be overridden in python
+    %rename("fromDate") from;
+#endif
+    MakeSchedule& from(const Date& effectiveDate);
+    MakeSchedule& to(const Date& terminationDate);
+    MakeSchedule& withTenor(const Period&);
+    MakeSchedule& withFrequency(Frequency);
+    MakeSchedule& withCalendar(const Calendar&);
+    MakeSchedule& withConvention(BusinessDayConvention);
+    MakeSchedule& withTerminationDateConvention(BusinessDayConvention);
+    MakeSchedule& withRule(DateGeneration::Rule);
+    MakeSchedule& forwards();
+    MakeSchedule& backwards();
+    MakeSchedule& endOfMonth(bool flag=true);
+    MakeSchedule& withFirstDate(const Date& d);
+    MakeSchedule& withNextToLastDate(const Date& d);
+
+    %extend{
+      Schedule schedule(){
+        return (Schedule)(* $self);
+      }
+    }
+};
 
 #endif
