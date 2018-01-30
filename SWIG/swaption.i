@@ -94,7 +94,7 @@ class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
                 calibrationBasket(swapIndex, swaptionVolatility, type);
         }
 
-		const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const {
+		const NonstandardSwapPtr underlyingSwap() const {
 			return boost::dynamic_pointer_cast<NonstandardSwaption>(*self)->
                 underlyingSwap();
 		}
@@ -138,6 +138,12 @@ class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
         Real underlyingValue() {
             return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->result<Real>("underlyingValue");
         }
+
+		const FloatFloatSwapPtr underlyingSwap() const {
+			return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->
+                underlyingSwap();
+		}
+
 		std::vector<Real> probabilities() {
             return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->result<std::vector<Real>>("probabilities");
         }
