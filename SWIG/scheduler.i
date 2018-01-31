@@ -64,8 +64,6 @@ class Schedule {
     #endif
     #if defined(SWIGRUBY)
     %rename("isRegular?")  isRegular;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-regular?") isRegular;
     #endif
   public:
     #if defined(SWIGPYTHON)
@@ -119,31 +117,6 @@ class Schedule {
                                             $descriptor(Date *), 1));
             }
         }
-        #elif defined(SWIGMZSCHEME)
-        void for_each(Scheme_Object* proc) {
-            for (Size i=0; i<self->size(); i++) {
-                Date* d = new Date(self->date(i));
-                Scheme_Object* x =
-                    SWIG_NewPointerObj(d, $descriptor(Date *), 1);
-                scheme_apply(proc,1,&x);
-            }
-        }
-        #elif defined(SWIGGUILE)
-        void for_each(SCM proc) {
-            for (Size i=0; i<self->size(); i++) {
-                Date* d = new Date(self->date(i));
-                SCM x = SWIG_NewPointerObj(d, $descriptor(Date *), 1);
-                gh_call1(proc,x);
-            }
-        }
-        %scheme%{
-            (define (Schedule-map s f)
-              (let ((results '()))
-                (Schedule-for-each s (lambda (d)
-                                      (set! results (cons (f d) results))))
-                (reverse results)))
-            (export Schedule-map)
-        %}
         #endif
     }
 };

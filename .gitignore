@@ -12,12 +12,9 @@ CSharp/csharp/obj
 CSharp/examples/bin
 CSharp/examples/obj
 CSharp/.vs/
-Guile/quantlib_wrap.cpp
 Java/bin/
 Java/quantlib_wrap.cpp
 Java/quantlib_wrap.h
-MzScheme/quantlib_wrap.cpp
-OCaml/quantlib_wrap.c
 Perl/Makefile.quantlib
 Perl/QuantLib.bs
 Perl/blib/
@@ -26,6 +23,8 @@ Perl/quantlib_wrap.cpp
 Perl/MYMETA.yml
 Perl/MYMETA.json
 Python/QuantLib/quantlib_wrap.cpp
+Python/QuantLib_Python.egg-info
+Python/dist
 R/src/QuantLib.cpp
 R/makeRData.Rout
 R/src/symbols.rds
@@ -81,13 +80,9 @@ testCaseCollection.xml
 # Outputs
 CSharp/csharp/*.cs
 CSharp/NQuantLib.dll
-Guile/QuantLib.scm
 Java/QuantLib.jar
+Java/*.jnilib
 Java/org/
-OCaml/*.cmi
-OCaml/*.cmo
-OCaml/*.ml
-OCaml/*.mli
 Perl/QuantLib.pm
 Python/QuantLib/QuantLib.py
 Python/build

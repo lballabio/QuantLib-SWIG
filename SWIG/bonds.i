@@ -4,6 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2014 Simon Mazzucca
  Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2017 BN Algorithms Ltd
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,18 +51,6 @@ typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
 class BondPtr : public boost::shared_ptr<Instrument> {
     #if defined(SWIGPYTHON) || defined (SWIGRUBY)
     %rename(bondYield) yield;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("next-coupon-rate")      nextCouponRate;
-    %rename("previous-coupon-rate")  previousCouponRate;
-    %rename("settlement-days")       settlementDays;
-    %rename("settlement-date")       settlementDate;
-    %rename("start-date")            startDate;
-    %rename("maturity-date")         maturityDate;
-    %rename("issue-date")            issueDate;
-    %rename("clean-price")           cleanPrice;
-    %rename("dirty-price")           dirtyPrice;
-    %rename("settlement-value")      settlementValue;
-    %rename("accrued-amount")        accruedAmount;
     #endif
   public:
     %extend {
@@ -180,11 +169,6 @@ class BondPtr : public boost::shared_ptr<Instrument> {
     }
 };
 
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("clean-price-from-z-spread") cleanPriceFromZSpread;
-%rename("dirty-price-from-z-spread") dirtyPriceFromZSpread;
-#endif
 
 %inline %{
 
@@ -395,6 +379,7 @@ class DiscountingBondEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 
 %{
+using QuantLib::CallableBond;
 using QuantLib::CallableFixedRateBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
@@ -425,6 +410,73 @@ class CallableFixedRateBondPtr : public BondPtr {
                                           schedule, coupons, accrualDayCounter,
                                           paymentConvention, redemption,
                                           issueDate, putCallSchedule));
+        }
+
+        Real OAS(Real cleanPrice,
+                 const Handle<YieldTermStructure>& engineTS,
+                 const DayCounter& dc,
+                 Compounding compounding,
+                 Frequency freq,
+                 const Date& settlementDate = Date(),
+                 Real accuracy =1e-10,
+                 Size maxIterations = 100,
+                 Spread guess = 0.0)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->OAS(cleanPrice,
+                      engineTS,
+                      dc, compounding, freq, settlementDate,
+                      accuracy,
+                      maxIterations,
+                      guess);
+        }
+
+        Real cleanPriceOAS(Real oas,
+                           const Handle<YieldTermStructure>& engineTS,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date())
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->cleanPriceOAS(oas,
+                                engineTS,
+                                dayCounter,
+                                compounding,
+                                frequency,
+                                settlementDate);
+        }
+
+        Real effectiveDuration(Real oas,
+                               const Handle<YieldTermStructure>& engineTS,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Real bump=2e-4)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->effectiveDuration(oas,
+                                    engineTS,
+                                    dayCounter,
+                                    compounding,
+                                    frequency,
+                                    bump);
+        }
+
+        Real effectiveConvexity(Real oas,
+                                const Handle<YieldTermStructure>& engineTS,
+                                const DayCounter& dayCounter,
+                                Compounding compounding,
+                                Frequency frequency,
+                                Real bump=2e-4)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->effectiveConvexity(oas,
+                                     engineTS,
+                                     dayCounter,
+                                     compounding,
+                                     frequency,
+                                     bump);
         }
     }
 };

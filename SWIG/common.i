@@ -73,7 +73,7 @@ namespace boost {
 
     template <class T>
     class shared_ptr {
-        #if defined(SWIGRUBY) || defined(SWIGMZSCHEME) || defined(SWIGGUILE)
+        #if defined(SWIGRUBY)
         %rename("null?") isNull;
         #endif
       public:
@@ -81,6 +81,9 @@ namespace boost {
         #if defined(SWIGPYTHON)
         %extend {
             bool __nonzero__() {
+                return !!(*self);
+            }
+            bool __bool__() {
                 return !!(*self);
             }
         }
@@ -101,9 +104,6 @@ class Handle {
     #if defined(SWIGRUBY)
     %rename("null?")   isNull;
     %rename("empty?")  empty;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("null?")    isNull;
-    %rename("empty?")  empty;
     #endif
   public:
     Handle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
@@ -111,6 +111,9 @@ class Handle {
     #if defined(SWIGPYTHON)
     %extend {
         bool __nonzero__() {
+            return !self->empty();
+        }
+        bool __bool__() {
             return !self->empty();
         }
     }
@@ -123,8 +126,6 @@ template <class T>
 class RelinkableHandle : public Handle<T> {
     #if defined(SWIGRUBY)
     %rename("linkTo!")  linkTo;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("link-to!") linkTo;
     #endif
   public:
     RelinkableHandle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
@@ -147,6 +148,18 @@ sapply(1:length(from), function(n) {
 a[n] <- from[n] } )
 a
 })
+%}
+#endif
+%enddef
+
+
+%define deprecate_feature(OldName, NewName)
+#if defined(SWIGPYTHON)
+%pythoncode %{
+def OldName(*args, **kwargs):
+    from warnings import warn
+    warn('%s is deprecated; use %s' % (OldName.__name__, NewName.__name__))
+    return NewName(*args, **kwargs)
 %}
 #endif
 %enddef

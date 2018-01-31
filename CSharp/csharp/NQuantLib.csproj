@@ -257,6 +257,7 @@
     <Compile Include="Brazil.cs" />
     <Compile Include="Brent.cs" />
     <Compile Include="BRLCurrency.cs" />
+    <Compile Include="BrownianBridge.cs" />
     <Compile Include="Business252.cs" />
     <Compile Include="BusinessDayConvention.cs" />
     <Compile Include="BYRCurrency.cs" />
@@ -292,7 +293,6 @@
     <Compile Include="CHFCurrency.cs" />
     <Compile Include="CHFLibor.cs" />
     <Compile Include="China.cs" />
-    <Compile Include="ChiSquareDistribution.cs" />
     <Compile Include="ClosestRounding.cs" />
     <Compile Include="CLPCurrency.cs" />
     <Compile Include="CmsCoupon.cs" />
@@ -325,6 +325,8 @@
     <Compile Include="CubicNaturalSpline.cs" />
     <Compile Include="CubicZeroCurve.cs" />
     <Compile Include="CumulativeBinomialDistribution.cs" />
+    <Compile Include="CumulativeChiSquareDistribution.cs" />
+    <Compile Include="CumulativeGammaDistribution.cs" />
     <Compile Include="CumulativeNormalDistribution.cs" />
     <Compile Include="CumulativePoissonDistribution.cs" />
     <Compile Include="CumulativeStudentDistribution.cs" />
@@ -493,9 +495,9 @@
     <Compile Include="FritschButlandLogCubic.cs" />
     <Compile Include="Futures.cs" />
     <Compile Include="FuturesRateHelper.cs" />
+    <Compile Include="FxSwapRateHelper.cs" />
     <Compile Include="G2.cs" />
     <Compile Include="G2SwaptionEngine.cs" />
-    <Compile Include="GammaDistribution.cs" />
     <Compile Include="GammaFunction.cs" />
     <Compile Include="GapPayoff.cs" />
     <Compile Include="GarmanKlassSigma1.cs" />
@@ -584,10 +586,11 @@
     <Compile Include="InvCumulativeLecuyerGaussianRsg.cs" />
     <Compile Include="InvCumulativeMersenneTwisterGaussianRng.cs" />
     <Compile Include="InvCumulativeMersenneTwisterGaussianRsg.cs" />
+    <Compile Include="InvCumulativeSobolGaussianRsg.cs" />
     <Compile Include="InverseCumulativeNormal.cs" />
     <Compile Include="InverseCumulativePoisson.cs" />
     <Compile Include="InverseCumulativeStudent.cs" />
-    <Compile Include="InverseNonCentralChiSquareDistribution.cs" />
+    <Compile Include="InverseNonCentralCumulativeChiSquareDistribution.cs" />
     <Compile Include="IQDCurrency.cs" />
     <Compile Include="IRRCurrency.cs" />
     <Compile Include="ISKCurrency.cs" />
@@ -666,6 +669,7 @@
     <Compile Include="MoroInvCumulativeLecuyerGaussianRsg.cs" />
     <Compile Include="MoroInvCumulativeMersenneTwisterGaussianRng.cs" />
     <Compile Include="MoroInvCumulativeMersenneTwisterGaussianRsg.cs" />
+    <Compile Include="MoroInvCumulativeSobolGaussianRsg.cs" />
     <Compile Include="MoroInverseCumulativeNormal.cs" />
     <Compile Include="MTLCurrency.cs" />
     <Compile Include="MultiAssetOption.cs" />
@@ -683,7 +687,7 @@
     <Compile Include="NodePair.cs" />
     <Compile Include="NodeVector.cs" />
     <Compile Include="NOKCurrency.cs" />
-    <Compile Include="NonCentralChiSquareDistribution.cs" />
+    <Compile Include="NonCentralCumulativeChiSquareDistribution.cs" />
     <Compile Include="NonhomogeneousBoundaryConstraint.cs" />
     <Compile Include="NonstandardSwap.cs" />
     <Compile Include="NonstandardSwaption.cs" />

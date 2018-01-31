@@ -1,41 +1,42 @@
 
-Changes for QuantLib-SWIG 1.10
+Changes for QuantLib-SWIG 1.11
 ==============================
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/3?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/4?closed=1>.
 
-- Unified Visual Studio solution file for the C# module. The provided
-  file works for all versions from 2010 to 2017.
+- This is the last release to include bindings (which are probably
+  broken anyway) for the Guile, MzScheme and OCaml languages.
 
-- Exported newly added CDS2015 date-generation rule.
+- Upgraded to SWIG 3.0.12.
 
-- Exported GSR model (thanks to Andres Hernandez).
+- Exported BlackDeltaCalculator class, blackFormula and related
+  functions (thanks to Wojciech Ślusarski).
 
-- Exported Markov functional model (thanks to Matthias Lungwitz).
+- Exported discountBond method for short-rate models (thanks to
+  Goutham Balaraman).
 
-- Exported hybrid simulated annealing optimizer (thanks to Andres
-  Hernandez).
+- Exported Hull-White forward process (thanks to Wojciech Ślusarski).
 
-- Exported vega method for swaptions (thanks to Alexander Baker).
+- Exported volatility type and displacement to
+  ConstantOptionletVolatility constructors (thanks to Matthias
+  Lungwitz).
 
-- Exported more instantiations of piecewise yield curve (thanks to
-  Grant Bartel).
+- Exported SwaptionVolCube1 inspectors (thanks to Matthias Lungwitz).
 
-- Exported non-standard swap and swaption (thanks to Peter Caspers).
+- Exported full Schedule constructor based on dates (thanks to
+  Matthias Lungwitz).
 
-- Exported newly added CompoundingThenSimple convention (thanks to
-  Martin Ross).
+- Avoid errors building Python 3.5 wrappers (thanks to Alan Donoghue
+  for the heads-up).
 
-- Allow using an arbitrary solver to calculate yields (thanks to
-  Daniel Hrabovcak).
+- Exported FD G2 and Hull-White swaption engines (thanks to Matthias
+  Lungwitz).
 
-- Allow passing a schedule to Actual/Actual day counter for correct
-  calculation of reference dates (thanks to Ryan Taylor).
+- Exported Bates vanilla engine (thanks to GitHub user abhilaksh12).
 
-- Allow passing an arbitrary calendar to business/252 calendar (thanks
-  to Stanislav Vinokurov).
+- Added to the Python Date class conversion methods to and from
+  datetime instances.
 
-- Fixed comparison operators in Python 3.x (thanks to Rob Chu).
-
+- Added callable-bond example in Java (thanks to Bojan Nikolic).
