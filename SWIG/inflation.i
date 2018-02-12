@@ -1,7 +1,8 @@
 /*
  Copyright (C) 2010 Joseph Wang
  Copyright (C) 2010, 2011, 2014 StatPro Italia srl
-
+ Copyright (C) 2018 Matthias Lungwitz
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -469,8 +470,10 @@ export_piecewise_yoy_inflation_curve(PiecewiseYoYInflation,Linear);
 %{
 using QuantLib::ZeroCouponInflationSwap;
 using QuantLib::YearOnYearInflationSwap;
+using QuantLib::CPISwap;
 typedef boost::shared_ptr<Instrument> ZeroCouponInflationSwapPtr;
 typedef boost::shared_ptr<Instrument> YearOnYearInflationSwapPtr;
+typedef boost::shared_ptr<Instrument> CPISwapPtr;
 %}
 
 #if defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -521,6 +524,14 @@ class ZeroCouponInflationSwapPtr : public boost::shared_ptr<Instrument> {
         Rate fairRate() {
             return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
                 ->fairRate();
+        }
+        Real fixedLegNPV() {
+            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
+                ->fixedLegNPV();
+        }
+        Real inflationLegNPV() {
+            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
+                ->inflationLegNPV();
         }
         std::vector<boost::shared_ptr<CashFlow> > fixedLeg() {
             return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
@@ -586,6 +597,108 @@ class YearOnYearInflationSwapPtr : public boost::shared_ptr<Instrument> {
             return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
                 ->fairRate();
         }
+        Real fixedLegNPV() {
+            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
+                ->fixedLegNPV();
+        }
+        Real yoyLegNPV() {
+            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
+                ->yoyLegNPV();
+        }
+		Spread fairSpread() {
+            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
+                ->fairSpread();
+        }
+		const Leg& fixedLeg() {
+            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
+                ->fixedLeg();
+        }
+		const Leg& yoyLeg() {
+            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
+                ->yoyLeg();
+        }
+    }
+};
+
+
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_CPISwap) CPISwap;
+#else
+%ignore CPISwap;
+#endif
+class CPISwap {
+  public:
+    enum Type { Receiver = -1, Payer = 1 };
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    CPISwap();
+#endif
+};
+
+%rename(CPISwap) CPISwapPtr;
+class CPISwapPtr : public boost::shared_ptr<Instrument> {
+  public:
+    %extend {
+        static const CPISwap::Type Receiver =
+            CPISwap::Receiver;
+        static const CPISwap::Type Payer =
+            CPISwap::Payer;
+        CPISwapPtr(
+				CPISwap::Type type,
+				Real nominal,
+				bool subtractInflationNominal,
+				Spread spread,
+				const DayCounter& floatDayCount,
+				const Schedule& floatSchedule,
+				const BusinessDayConvention& floatRoll,
+				Natural fixingDays,
+				const IborIndexPtr& floatIndexPtr,
+				Rate fixedRate,
+				Real baseCPI,
+				const DayCounter& fixedDayCount,
+				const Schedule& fixedSchedule,
+				const BusinessDayConvention& fixedRoll,
+				const Period& observationLag,
+				const ZeroInflationIndexPtr& fixedIndexPtr,
+				CPI::InterpolationType observationInterpolation = CPI::AsIndex,
+				Real inflationNominal = Null<Real>() ) {
+		
+            boost::shared_ptr<IborIndex> floatIndex =
+                boost::dynamic_pointer_cast<IborIndex>(floatIndexPtr);				
+            boost::shared_ptr<ZeroInflationIndex> fixedIndex =
+                boost::dynamic_pointer_cast<ZeroInflationIndex>(fixedIndexPtr);
+            return new CPISwapPtr(
+                new CPISwap(type, nominal, subtractInflationNominal,
+                                            spread, floatDayCount,
+                                            floatSchedule, floatRoll, fixingDays, floatIndex,
+                                            fixedRate, baseCPI, fixedDayCount, fixedSchedule, 
+											fixedRoll, observationLag, fixedIndex, observationInterpolation,
+                                            inflationNominal));
+        }
+        Rate fairRate() {
+            return boost::dynamic_pointer_cast<CPISwap>(*self)
+                ->fairRate();
+        }
+		Real floatLegNPV() {
+			return boost::dynamic_pointer_cast<CPISwap>(*self)
+                ->floatLegNPV();
+		}
+		Spread fairSpread() {
+			return boost::dynamic_pointer_cast<CPISwap>(*self)
+                ->fairSpread();
+		}
+		Real fixedLegNPV() {
+			return boost::dynamic_pointer_cast<CPISwap>(*self)
+                ->fixedLegNPV();
+		}
+		const Leg& cpiLeg() {
+			return boost::dynamic_pointer_cast<CPISwap>(*self)
+                ->cpiLeg();
+		}
+		const Leg& floatLeg() {
+			return boost::dynamic_pointer_cast<CPISwap>(*self)
+                ->floatLeg();
+		}
     }
 };
 
