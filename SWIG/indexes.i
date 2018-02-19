@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -188,7 +189,7 @@ class IborIndexPtr : public InterestRateIndexPtr {
         IborIndexPtr clone(const Handle<YieldTermStructure>& h){
             return boost::dynamic_pointer_cast<IborIndex>(*self)
                 ->clone(h);
-    }
+		}
     }
 };
 
@@ -367,6 +368,23 @@ class SwapIndexPtr : public InterestRateIndexPtr {
             return boost::dynamic_pointer_cast<SwapIndex>(*self)
                 ->forwardingTermStructure();
         }
+		Handle<YieldTermStructure> discountingTermStructure() {
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->discountingTermStructure();
+        }
+		SwapIndexPtr clone(const Handle<YieldTermStructure>& h){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(h);
+		}
+		SwapIndexPtr clone(const Handle<YieldTermStructure>& forwarding,
+                        const Handle<YieldTermStructure>& discounting){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(forwarding, discounting);
+		}
+		SwapIndexPtr clone(const Period& tenor){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(tenor);
+		}
     }
 };
 
@@ -512,5 +530,11 @@ export_swap_instance(EurLiborSwapIsdaFixA);
 export_swap_instance(EurLiborSwapIsdaFixB);
 export_swap_instance(EurLiborSwapIfrFix);
 
+export_swap_instance(ChfLiborSwapIsdaFix);
+export_swap_instance(GbpLiborSwapIsdaFix);
+export_swap_instance(JpyLiborSwapIsdaFixAm);
+export_swap_instance(JpyLiborSwapIsdaFixPm);
+export_swap_instance(UsdLiborSwapIsdaFixAm);
+export_swap_instance(UsdLiborSwapIsdaFixPm);
 
 #endif
