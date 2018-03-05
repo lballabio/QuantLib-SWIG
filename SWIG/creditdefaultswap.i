@@ -177,15 +177,20 @@ class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
 %rename(IsdaCdsEngine) IsdaCdsEnginePtr;
 class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
+
+    enum NumericalFix { None, Taylor };
+    enum AccrualBias { HalfDayBias, NoBias };
+    enum ForwardsInCouponPeriod { Flat, Piecewise };
+    
     %extend {
         IsdaCdsEnginePtr(
                    const Handle<DefaultProbabilityTermStructure>& probability,
                    Real recoveryRate,
                    const Handle<YieldTermStructure>& discountCurve,
                    bool includeSettlementDateFlows = false,
-                   const IsdaCdsEngine::NumericalFix numericalFix = Taylor,
-                   const IsdaCdsEngine::AccrualBias accrualBias = HalfDayBias,
-                   const IsdaCdsEngine::ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise) {
+                   const NumericalFix numericalFix = Taylor,
+                   const AccrualBias accrualBias = HalfDayBias,
+                   const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise) {
             return new IsdaCdsEnginePtr(
                               new IsdaCdsEngine(probability, recoveryRate,
                                                 discountCurve, includeSettlementDateFlows,
