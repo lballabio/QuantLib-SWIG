@@ -174,6 +174,8 @@ class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+enum NumericalFix { None, Taylor };
+
 %rename(IsdaCdsEngine) IsdaCdsEnginePtr;
 class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
