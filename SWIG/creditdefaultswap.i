@@ -174,8 +174,6 @@ class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
-enum NumericalFix { None, Taylor };
-
 %rename(IsdaCdsEngine) IsdaCdsEnginePtr;
 class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
@@ -185,9 +183,9 @@ class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
                    Real recoveryRate,
                    const Handle<YieldTermStructure>& discountCurve,
                    bool includeSettlementDateFlows = false,
-                   const NumericalFix numericalFix = Taylor,
-                   const AccrualBias accrualBias = HalfDayBias,
-                   const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise) {
+                   const IsdaCdsEngine::NumericalFix numericalFix = Taylor,
+                   const IsdaCdsEngine::AccrualBias accrualBias = HalfDayBias,
+                   const IsdaCdsEngine::ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise) {
             return new IsdaCdsEnginePtr(
                               new IsdaCdsEngine(probability, recoveryRate,
                                                 discountCurve, includeSettlementDateFlows,
