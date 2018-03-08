@@ -91,8 +91,22 @@ class FlatHazardRatePtr
                            new FlatHazardRate(settlementDays,calendar,
                                               hazardRate,dayCounter));
         }
+        FlatHazardRatePtr(Integer settlementDays,
+                          const Calendar& calendar,
+                          const Rate hazardRate,
+                          const DayCounter& dayCounter) {
+            return new FlatHazardRatePtr(
+                           new FlatHazardRate(settlementDays,calendar,
+                                              hazardRate,dayCounter));
+        }
         FlatHazardRatePtr(const Date& todaysDate,
                           const Handle<Quote>& hazardRate,
+                          const DayCounter& dayCounter) {
+            return new FlatHazardRatePtr(
+                        new FlatHazardRate(todaysDate,hazardRate,dayCounter));
+        }
+        FlatHazardRatePtr(const Date& todaysDate,
+                          const Rate hazardRate,
                           const DayCounter& dayCounter) {
             return new FlatHazardRatePtr(
                         new FlatHazardRate(todaysDate,hazardRate,dayCounter));
