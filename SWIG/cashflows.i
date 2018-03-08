@@ -711,6 +711,15 @@ class CashFlows {
   public:
     static Date startDate(const Leg &);
     static Date maturityDate(const Leg &);
+    static Date
+        previousCashFlowDate(const Leg& leg,
+                             bool includeSettlementDateFlows,
+                             Date settlementDate = Date());
+    static Date
+        nextCashFlowDate(const Leg& leg,
+                         bool includeSettlementDateFlows,
+                         Date settlementDate = Date());
+
     %extend {
         static Real npv(
                    const Leg& leg,
