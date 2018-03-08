@@ -35,10 +35,28 @@ typedef boost::shared_ptr<PricingEngine> IntegralCdsEnginePtr;
 typedef boost::shared_ptr<PricingEngine> IsdaCdsEnginePtr;
 %}
 
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_CreditDefaultSwap) CreditDefaultSwap;
+#else
+%ignore CreditDefaultSwap;
+#endif
+class CreditDefaultSwap {
+  public:
+    enum PricingModel { Midpoint, ISDA };
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    CreditDefaultSwap();
+#endif
+};
+
 %rename(CreditDefaultSwap) CreditDefaultSwapPtr;
 class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
   public:
     %extend {
+
+        static const CreditDefaultSwap::PricingModel None = CreditDefaultSwap::Midpoint;
+        static const CreditDefaultSwap::PricingModel Taylor = CreditDefaultSwap::ISDA;
+
         CreditDefaultSwapPtr(Protection::Side side,
                              Real notional,
                              Rate spread,
@@ -128,10 +146,11 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6) const {
+                               Real accuracy = 1.0e-6,
+                               CreditDefaultSwap::PricingModel model = CreditDefaultSwap::ISDA) const {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
                 ->impliedHazardRate(targetNPV, discountCurve, dayCounter,
-                                    recoveryRate, accuracy);
+                                    recoveryRate, accuracy, model);
         }
         std::vector<boost::shared_ptr<CashFlow> > coupons() {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
