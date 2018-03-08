@@ -4,7 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Gouthaman Balaraman
  Copyright (C) 2016 Peter Caspers
- Copyright (C) 2017 Matthias Lungwitz
+ Copyright (C) 2017, 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -27,6 +27,7 @@
 %include termstructures.i
 %include cashflows.i
 %include timebasket.i
+%include indexes.i
 
 %{
 using QuantLib::Swap;
@@ -34,12 +35,14 @@ using QuantLib::VanillaSwap;
 using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
 using QuantLib::FloatFloatSwap;
+using QuantLib::OvernightIndexedSwap;
 
 typedef boost::shared_ptr<Instrument> SwapPtr;
 typedef boost::shared_ptr<Instrument> VanillaSwapPtr;
 typedef boost::shared_ptr<Instrument> NonstandardSwapPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingSwapEnginePtr;
 typedef boost::shared_ptr<Instrument> FloatFloatSwapPtr;
+typedef boost::shared_ptr<Instrument> OvernightIndexedSwapPtr;
 %}
 
 %rename(Swap) SwapPtr;
@@ -356,6 +359,128 @@ class FloatFloatSwapPtr : public SwapPtr {
                                     paymentConvention1, paymentConvention2));
         }
 
+    }
+};
+
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_OvernightIndexedSwap) OvernightIndexedSwap;
+#else
+%ignore OvernightIndexedSwap;
+#endif
+class OvernightIndexedSwap {
+  public:
+    enum Type { Receiver = -1, Payer = 1 };
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    OvernightIndexedSwap();
+#endif
+};
+
+%rename(OvernightIndexedSwap) OvernightIndexedSwapPtr;
+class OvernightIndexedSwapPtr : public SwapPtr {
+  public:
+    %extend {
+        static const OvernightIndexedSwap::Type Receiver = OvernightIndexedSwap::Receiver;
+        static const OvernightIndexedSwap::Type Payer = OvernightIndexedSwap::Payer;
+		
+		OvernightIndexedSwapPtr(
+				OvernightIndexedSwap::Type type,
+				Real nominal,
+				const Schedule& schedule,
+				Rate fixedRate,
+				const DayCounter& fixedDC,
+				const OvernightIndexPtr& overnightIndex,
+				Spread spread = 0.0,
+				Natural paymentLag = 0,
+				BusinessDayConvention paymentAdjustment = Following,
+				Calendar paymentCalendar = Calendar(),
+				bool telescopicValueDates = false) {
+				boost::shared_ptr<OvernightIndex> index =
+					boost::dynamic_pointer_cast<OvernightIndex>(overnightIndex);
+				return new OvernightIndexedSwapPtr(
+				 new OvernightIndexedSwap(type, nominal, schedule, fixedRate, fixedDC,
+				index, spread, paymentLag, paymentAdjustment, paymentCalendar, telescopicValueDates));
+		}
+		
+		OvernightIndexedSwapPtr(
+				OvernightIndexedSwap::Type type,
+				std::vector<Real> nominals,
+				const Schedule& schedule,
+				Rate fixedRate,
+				const DayCounter& fixedDC,
+				const OvernightIndexPtr& overnightIndex,
+				Spread spread = 0.0,
+				Natural paymentLag = 0,
+				BusinessDayConvention paymentAdjustment = Following,
+				Calendar paymentCalendar = Calendar(),
+				bool telescopicValueDates = false) {
+				boost::shared_ptr<OvernightIndex> index =
+					boost::dynamic_pointer_cast<OvernightIndex>(overnightIndex);
+				return new OvernightIndexedSwapPtr(
+				 new OvernightIndexedSwap(type, nominals, schedule, fixedRate, fixedDC,
+				index, spread, paymentLag, paymentAdjustment, paymentCalendar, telescopicValueDates));
+		}
+
+
+        Rate fixedLegBPS() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)->fixedLegBPS();
+        }
+        Real fixedLegNPV() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)
+                 ->fixedLegNPV();
+        }
+        Real fairRate() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)
+                 ->fairRate();
+        }
+        Real overnightLegBPS() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)
+                 ->overnightLegBPS();
+        }
+        Real overnightLegNPV() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->overnightLegNPV();
+        }
+        Spread fairSpread() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->fairSpread();
+        }
+        // Inspectors
+		OvernightIndexedSwap::Type type() {
+			return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)->type();
+		}
+        Real nominal() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->nominal();
+        }
+		std::vector<Real> nominals() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->nominals();
+        }
+		Frequency paymentFrequency() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->paymentFrequency();
+        }
+		Rate fixedRate() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->fixedRate();
+        }
+		const DayCounter& fixedDayCount() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->fixedDayCount();
+        }
+		Spread spread() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->spread();
+        }
+        const Leg& fixedLeg() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->fixedLeg();
+        }
+        const Leg& overnightLeg() {
+            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
+                ->overnightLeg();
+        }
     }
 };
 
