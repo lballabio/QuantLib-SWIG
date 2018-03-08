@@ -100,7 +100,8 @@ class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
 		}
 
 		std::vector<Real> probabilities() {
-            return boost::dynamic_pointer_cast<NonstandardSwaption>(*self)->result<std::vector<Real>>("probabilities");
+            return boost::dynamic_pointer_cast<NonstandardSwaption>(*self)
+                ->result<std::vector<Real> >("probabilities");
         }
     }
 };
@@ -136,7 +137,8 @@ class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
         }
 
         Real underlyingValue() {
-            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->result<Real>("underlyingValue");
+            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)
+                ->result<Real>("underlyingValue");
         }
 
 		const FloatFloatSwapPtr underlyingSwap() const {
@@ -145,7 +147,8 @@ class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
 		}
 
 		std::vector<Real> probabilities() {
-            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->result<std::vector<Real>>("probabilities");
+            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)
+                ->result<std::vector<Real> >("probabilities");
         }
     }
 };
