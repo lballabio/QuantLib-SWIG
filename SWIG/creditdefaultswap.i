@@ -54,8 +54,8 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
   public:
     %extend {
 
-        static const CreditDefaultSwap::PricingModel None = CreditDefaultSwap::Midpoint;
-        static const CreditDefaultSwap::PricingModel Taylor = CreditDefaultSwap::ISDA;
+        static const CreditDefaultSwap::PricingModel Midpoint = CreditDefaultSwap::Midpoint;
+        static const CreditDefaultSwap::PricingModel ISDA = CreditDefaultSwap::ISDA;
 
         CreditDefaultSwapPtr(Protection::Side side,
                              Real notional,
