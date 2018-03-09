@@ -67,14 +67,13 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              bool settlesAccrual = true,
                              bool paysAtDefaultTime = true,
                              const Date& protectionStart = Date(),
-                             const boost::shared_ptr<Claim>& claim = boost::shared_ptr<Claim>(),
                              const DayCounter& lastPeriodDayCounter = DayCounter(),
                              const bool rebatesAccrual = true) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, spread, schedule,
                                           paymentConvention, dayCounter,
                                           settlesAccrual, paysAtDefaultTime,
-                                          protectionStart, claim,
+                                          protectionStart, boost::shared_ptr<Claim>(),
                                           lastPeriodDayCounter, rebatesAccrual));
         }
         CreditDefaultSwapPtr(Protection::Side side,
@@ -88,7 +87,6 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              bool paysAtDefaultTime = true,
                              const Date& protectionStart = Date(),
                              const Date& upfrontDate = Date(),
-                             const boost::shared_ptr<Claim>& claim = boost::shared_ptr<Claim>(),
                              const DayCounter& lastPeriodDayCounter = DayCounter(),
                              const bool rebatesAccrual = true) {
             return new CreditDefaultSwapPtr(
@@ -96,7 +94,7 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                                           schedule, paymentConvention,
                                           dayCounter, settlesAccrual,
                                           paysAtDefaultTime, protectionStart,
-                                          upfrontDate, claim,
+                                          upfrontDate, boost::shared_ptr<Claim>(),
                                           lastPeriodDayCounter, rebatesAccrual));
         }
         Protection::Side side() const {
