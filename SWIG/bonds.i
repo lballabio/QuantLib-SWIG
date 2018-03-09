@@ -37,13 +37,17 @@
 using QuantLib::Bond;
 using QuantLib::ZeroCouponBond;
 using QuantLib::FixedRateBond;
+using QuantLib::AmortizingFixedRateBond;
 using QuantLib::FloatingRateBond;
+using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
 
 typedef boost::shared_ptr<Instrument> BondPtr;
 typedef boost::shared_ptr<Instrument> ZeroCouponBondPtr;
 typedef boost::shared_ptr<Instrument> FixedRateBondPtr;
+typedef boost::shared_ptr<Instrument> AmortizingFixedRateBondPtr;
 typedef boost::shared_ptr<Instrument> FloatingRateBondPtr;
+typedef boost::shared_ptr<Instrument> AmortizingFloatingRateBondPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
 %}
 
@@ -272,6 +276,90 @@ class FixedRateBondPtr : public BondPtr {
         }
     }
 };
+
+
+%rename(AmortizingFixedRateBond) AmortizingFixedRateBondPtr;
+class AmortizingFixedRateBondPtr : public BondPtr {
+  public:
+    %extend {
+        AmortizingFixedRateBondPtr(
+                Integer settlementDays,
+                const std::vector<Real>& notionals,
+                const Schedule& schedule,
+                const std::vector<Rate>& coupons,
+                const DayCounter& accrualDayCounter,
+                BusinessDayConvention paymentConvention = QuantLib::Following,
+                Date issueDate = Date()) {
+            return new AmortizingFixedRateBondPtr(
+                new AmortizingFixedRateBond(settlementDays, notionals,
+                                  schedule, coupons, accrualDayCounter,
+                                  paymentConvention, issueDate));
+        }
+        AmortizingFixedRateBondPtr(
+                Integer settlementDays,
+                const Calendar& paymentCalendar,
+                Real faceAmount,
+                Date startDate,
+                const Period& bondTenor,
+                const Frequency& sinkingFrequency,
+                Real coupon,
+                const DayCounter& accrualDayCounter,
+                BusinessDayConvention paymentConvention = QuantLib::Following,
+                Date issueDate = Date()) {
+            return new AmortizingFixedRateBondPtr(
+                new AmortizingFixedRateBond(settlementDays, paymentCalendar,
+                                  faceAmount, startDate, bondTenor,
+                                  sinkingFrequency,
+                                  coupon, accrualDayCounter,
+                                  paymentConvention, issueDate));
+        }
+        Frequency frequency() const {
+            return boost::dynamic_pointer_cast<AmortizingFixedRateBond>(*self)
+                ->frequency();
+        }
+        DayCounter dayCounter() const {
+            return boost::dynamic_pointer_cast<AmortizingFixedRateBond>(*self)
+                ->dayCounter();
+        }
+    }
+};
+
+
+%rename(AmortizingFloatingRateBond) AmortizingFloatingRateBondPtr;
+class AmortizingFloatingRateBondPtr : public BondPtr {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") AmortizingFloatingRateBondPtr;
+    #endif
+  public:
+    %extend {
+        AmortizingFloatingRateBondPtr(
+            Size settlementDays,
+            const std::vector<Real>& notional,
+            const Schedule& schedule,
+            const IborIndexPtr& index,
+            const DayCounter& accrualDayCounter,
+            BusinessDayConvention paymentConvention = Following,
+            Size fixingDays = Null<Size>(),
+            const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
+            const std::vector<Spread>& spreads = std::vector<Spread>(1, 1.0),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            bool inArrears = false,
+            const Date& issueDate = Date()) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new AmortizingFloatingRateBondPtr(
+                new AmortizingFloatingRateBond(settlementDays, notional,
+                                                schedule, libor,
+                                                accrualDayCounter,
+                                                paymentConvention,
+                                                fixingDays, gearings,
+                                                spreads, caps, floors,
+                                                inArrears, issueDate));
+        }
+    }
+};
+
 
 %rename(FloatingRateBond) FloatingRateBondPtr;
 class FloatingRateBondPtr : public BondPtr {
