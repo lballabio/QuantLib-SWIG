@@ -64,11 +64,13 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              BusinessDayConvention paymentConvention,
                              const DayCounter& dayCounter,
                              bool settlesAccrual = true,
-                             bool paysAtDefaultTime = true) {
+                             bool paysAtDefaultTime = true,
+                             const Date& protectionStart = Date()) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, spread, schedule,
                                           paymentConvention, dayCounter,
-                                          settlesAccrual, paysAtDefaultTime));
+                                          settlesAccrual, paysAtDefaultTime,
+                                          protectionStart));
         }
         CreditDefaultSwapPtr(Protection::Side side,
                              Real notional,
@@ -78,12 +80,15 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              BusinessDayConvention paymentConvention,
                              const DayCounter& dayCounter,
                              bool settlesAccrual = true,
-                             bool paysAtDefaultTime = true) {
+                             bool paysAtDefaultTime = true,
+                             const Date& protectionStart = Date(),
+                             const Date& upfrontDate = Date()) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, upfront, spread,
                                           schedule, paymentConvention,
                                           dayCounter, settlesAccrual,
-                                          paysAtDefaultTime));
+                                          paysAtDefaultTime, protectionStart,
+                                          upfrontDate));
         }
         Protection::Side side() const {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
