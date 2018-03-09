@@ -28,6 +28,7 @@ using QuantLib::CreditDefaultSwap;
 using QuantLib::MidPointCdsEngine;
 using QuantLib::IntegralCdsEngine;
 using QuantLib::IsdaCdsEngine;
+using QuantLib::Claim;
 
 typedef boost::shared_ptr<Instrument> CreditDefaultSwapPtr;
 typedef boost::shared_ptr<PricingEngine> MidPointCdsEnginePtr;
@@ -65,12 +66,16 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              const DayCounter& dayCounter,
                              bool settlesAccrual = true,
                              bool paysAtDefaultTime = true,
-                             const Date& protectionStart = Date()) {
+                             const Date& protectionStart = Date(),
+                             const boost::shared_ptr<Claim>& claim = boost::shared_ptr<Claim>(),
+                             const DayCounter& lastPeriodDayCounter = DayCounter(),
+                             const bool rebatesAccrual = true) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, spread, schedule,
                                           paymentConvention, dayCounter,
                                           settlesAccrual, paysAtDefaultTime,
-                                          protectionStart));
+                                          protectionStart, claim,
+                                          lastPeriodDayCounter, rebatesAccrual));
         }
         CreditDefaultSwapPtr(Protection::Side side,
                              Real notional,
@@ -82,13 +87,17 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              bool settlesAccrual = true,
                              bool paysAtDefaultTime = true,
                              const Date& protectionStart = Date(),
-                             const Date& upfrontDate = Date()) {
+                             const Date& upfrontDate = Date(),
+                             const boost::shared_ptr<Claim>& claim = boost::shared_ptr<Claim>(),
+                             const DayCounter& lastPeriodDayCounter = DayCounter(),
+                             const bool rebatesAccrual = true) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, upfront, spread,
                                           schedule, paymentConvention,
                                           dayCounter, settlesAccrual,
                                           paysAtDefaultTime, protectionStart,
-                                          upfrontDate));
+                                          upfrontDate, claim,
+                                          lastPeriodDayCounter, rebatesAccrual));
         }
         Protection::Side side() const {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
