@@ -223,6 +223,7 @@ using QuantLib::SpreadCdsHelper;
 typedef boost::shared_ptr<DefaultProbabilityHelper> SpreadCdsHelperPtr;
 using QuantLib::UpfrontCdsHelper;
 typedef boost::shared_ptr<DefaultProbabilityHelper> UpfrontCdsHelperPtr;
+using QuantLib::CreditDefaultSwap;
 %}
 
 // rate helpers for curve bootstrapping
@@ -253,12 +254,18 @@ class SpreadCdsHelperPtr : public boost::shared_ptr<DefaultProbabilityHelper> {
                 Real recoveryRate,
                 const Handle<YieldTermStructure>& discountCurve,
                 bool settlesAccrual = true,
-                bool paysAtDefaultTime = true) {
+                bool paysAtDefaultTime = true,
+                const Date& startDate = Date(),
+                const DayCounter& lastPeriodDayCounter = DayCounter(),
+                bool rebatesAccrual = true,
+                const CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) {
             return new SpreadCdsHelperPtr(
                 new SpreadCdsHelper(spread,tenor,settlementDays,calendar,
                                     frequency,convention,rule,dayCounter,
                                     recoveryRate,discountCurve,
-                                    settlesAccrual,paysAtDefaultTime));
+                                    settlesAccrual,paysAtDefaultTime,
+                                    startDate, lastPeriodDayCounter,
+                                    rebatesAccrual, model));
         }
         SpreadCdsHelperPtr(
                 Rate spread,
@@ -272,12 +279,18 @@ class SpreadCdsHelperPtr : public boost::shared_ptr<DefaultProbabilityHelper> {
                 Real recoveryRate,
                 const Handle<YieldTermStructure>& discountCurve,
                 bool settlesAccrual = true,
-                bool paysAtDefaultTime = true) {
+                bool paysAtDefaultTime = true,
+                const Date& startDate = Date(),
+                const DayCounter& lastPeriodDayCounter = DayCounter(), // ISDA: Actual/360(inc)
+                const bool rebatesAccrual = true,
+                const CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) {
             return new SpreadCdsHelperPtr(
                 new SpreadCdsHelper(spread,tenor,settlementDays,calendar,
                                     frequency,convention,rule,dayCounter,
                                     recoveryRate,discountCurve,
-                                    settlesAccrual,paysAtDefaultTime));
+                                    settlesAccrual,paysAtDefaultTime,
+                                    startDate,lastPeriodDayCounter,
+                                    rebatesAccrual, model));
         }
     }
 };
