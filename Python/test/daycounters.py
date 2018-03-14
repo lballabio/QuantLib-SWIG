@@ -14,6 +14,11 @@ class DayCountersTest(unittest.TestCase):
         #
         day_counter = QuantLib.Business252(calendar)
 
+        #
+        # Check that SWIG signature for Actual360 allows to pass in includeLastDay = True
+        #
+        day_counter = QuantLib.Actual360(True)
+
 if __name__ == '__main__':
     print('testing QuantLib ' + QuantLib.__version__) 
     suite = unittest.TestSuite()
