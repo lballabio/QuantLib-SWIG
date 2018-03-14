@@ -123,7 +123,7 @@ class Schedule {
 };
 
 #if defined(SWIGPYTHON)
-%rename (MakeScheduleObject) MakeSchedule;
+%rename (_MakeSchedule) MakeSchedule;
 #endif
 
 /*! This class provides a more comfortable interface to the
@@ -163,7 +163,7 @@ def MakeSchedule(effectiveDate=None,terminationDate=None,tenor=None,
     frequency=None,calendar=None,convention=None,terminalDateConvention=None,
     rule=None,forwards=False,backwards=False,
     endOfMonth=None,firstDate=None,nextToLastDate=None):
-    ms = MakeScheduleObject()
+    ms = _MakeSchedule()
     if effectiveDate is not None:
         ms.fromDate(effectiveDate)
     if terminationDate is not None:
