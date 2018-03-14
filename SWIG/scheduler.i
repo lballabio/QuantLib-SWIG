@@ -29,6 +29,7 @@
 %{
 using QuantLib::Schedule;
 using QuantLib::DateGeneration;
+using QuantLib::MakeSchedule;
 %}
 
 struct DateGeneration {
@@ -121,5 +122,76 @@ class Schedule {
     }
 };
 
+#if defined(SWIGPYTHON)
+%rename (_MakeSchedule) MakeSchedule;
+#endif
+
+/*! This class provides a more comfortable interface to the
+    argument list of Schedule's constructor.
+*/
+class MakeSchedule {
+  public:
+    MakeSchedule();
+#if defined(SWIGPYTHON)
+    // 'from' can't be overridden in python
+    %rename("fromDate") from;
+#endif
+    MakeSchedule& from(const Date& effectiveDate);
+    MakeSchedule& to(const Date& terminationDate);
+    MakeSchedule& withTenor(const Period&);
+    MakeSchedule& withFrequency(Frequency);
+    MakeSchedule& withCalendar(const Calendar&);
+    MakeSchedule& withConvention(BusinessDayConvention);
+    MakeSchedule& withTerminationDateConvention(BusinessDayConvention);
+    MakeSchedule& withRule(DateGeneration::Rule);
+    MakeSchedule& forwards();
+    MakeSchedule& backwards();
+    MakeSchedule& endOfMonth(bool flag=true);
+    MakeSchedule& withFirstDate(const Date& d);
+    MakeSchedule& withNextToLastDate(const Date& d);
+
+    %extend{
+      Schedule schedule(){
+        return (Schedule)(* $self);
+      }
+    }
+};
+
+#if defined(SWIGPYTHON)
+%pythoncode{
+def MakeSchedule(effectiveDate=None,terminationDate=None,tenor=None,
+    frequency=None,calendar=None,convention=None,terminalDateConvention=None,
+    rule=None,forwards=False,backwards=False,
+    endOfMonth=None,firstDate=None,nextToLastDate=None):
+    ms = _MakeSchedule()
+    if effectiveDate is not None:
+        ms.fromDate(effectiveDate)
+    if terminationDate is not None:
+        ms.to(terminationDate)
+    if tenor is not None:
+        ms.withTenor(tenor)
+    if frequency is not None:
+        ms.withFrequency(frequency)
+    if calendar is not None:
+        ms.withCalendar(calendar)
+    if convention is not None:
+        ms.withConvention(convention)
+    if terminalDateConvention is not None:
+        ms.withTerminationDateConvention(terminalDateConvention)
+    if rule is not None:
+        ms.withRule(rule)
+    if forwards:
+        ms.forwards()
+    if backwards:
+        ms.backwards()
+    if endOfMonth is not None:
+        ms.endOfMonth(endOfMonth)
+    if firstDate is not None:
+        ms.withFirstDate(firstDate)
+    if nextToLastDate is not None:
+        ms.withNextToLastDate(nextToLastDate)
+    return ms.schedule()
+}
+#endif
 
 #endif
