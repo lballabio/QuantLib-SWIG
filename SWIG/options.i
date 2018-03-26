@@ -2062,8 +2062,10 @@ class WulinYongDoubleBarrierEnginePtr
 
 %{
 using QuantLib::VannaVolgaDoubleBarrierEngine;
+using QuantLib::VannaVolgaBarrierEngine;
 using QuantLib::DeltaVolQuote;
 typedef boost::shared_ptr<PricingEngine> VannaVolgaDoubleBarrierEnginePtr;
+typedef boost::shared_ptr<PricingEngine> VannaVolgaBarrierEnginePtr;
 %}
 
 #if defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -2164,6 +2166,29 @@ class VannaVolgaDoubleBarrierEnginePtr
                                         bsPriceWithSmile, series));
             else
                 QL_FAIL("unknown binomial engine type: "+s);
+        }
+    }
+};
+
+%rename(VannaVolgaBarrierEngine) VannaVolgaBarrierEnginePtr;
+class VannaVolgaBarrierEnginePtr
+    : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        VannaVolgaBarrierEnginePtr(
+                const Handle<DeltaVolQuote>& atmVol,
+                const Handle<DeltaVolQuote>& vol25Put,
+                const Handle<DeltaVolQuote>& vol25Call,
+                const Handle<Quote>& spotFX,
+                const Handle<YieldTermStructure>& domesticTS,
+                const Handle<YieldTermStructure>& foreignTS,
+                const bool adaptVanDelta = false,
+                const Real bsPriceWithSmile = 0.0) {
+                return new VannaVolgaBarrierEnginePtr(
+                   new VannaVolgaBarrierEngine(
+                                        atmVol, vol25Put, vol25Call, spotFX, 
+                                        domesticTS, foreignTS, adaptVanDelta, 
+                                        bsPriceWithSmile));
         }
     }
 };
