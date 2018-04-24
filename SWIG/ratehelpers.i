@@ -1,7 +1,8 @@
 
 /*
- Coyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2009 Joseph Malicki
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -59,12 +60,15 @@ struct Pillar {
 
 %ignore RateHelper;
 class RateHelper {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("latest-date") latestDate;
-    #endif
   public:
     Handle<Quote> quote() const;
     Date latestDate() const;
+	Date earliestDate() const;
+	Date maturityDate() const;
+	Date latestRelevantDate() const;
+	Date pillarDate() const;
+	Real impliedQuote() const;
+	Real quoteError() const;
 };
 
 // rate helpers for curve bootstrapping
@@ -129,11 +133,13 @@ class FraRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 const Calendar& calendar,
                 BusinessDayConvention convention,
                 bool endOfMonth,
-                const DayCounter& dayCounter) {
+                const DayCounter& dayCounter,
+				Pillar::Choice pillar = Pillar::LastRelevantDate,
+                Date customPillarDate = Date()) {
             return new FraRateHelperPtr(
                 new FraRateHelper(rate,monthsToStart,monthsToEnd,
                                   fixingDays,calendar,convention,
-                                  endOfMonth,dayCounter));
+                                  endOfMonth,dayCounter, pillar, customPillarDate));
         }
         FraRateHelperPtr(
                 Rate rate,
@@ -143,27 +149,33 @@ class FraRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 const Calendar& calendar,
                 BusinessDayConvention convention,
                 bool endOfMonth,
-                const DayCounter& dayCounter) {
+                const DayCounter& dayCounter,
+				Pillar::Choice pillar = Pillar::LastRelevantDate,
+                Date customPillarDate = Date()) {
             return new FraRateHelperPtr(
                 new FraRateHelper(rate,monthsToStart,monthsToEnd,
                                   fixingDays,calendar,convention,
-                                  endOfMonth,dayCounter));
+                                  endOfMonth,dayCounter, pillar, customPillarDate));
         }
         FraRateHelperPtr(const Handle<Quote>& rate,
                          Natural monthsToStart,
-                         const IborIndexPtr& index) {
+                         const IborIndexPtr& index,
+						 Pillar::Choice pillar = Pillar::LastRelevantDate,
+						 Date customPillarDate = Date()) {
             boost::shared_ptr<IborIndex> libor =
                 boost::dynamic_pointer_cast<IborIndex>(index);
             return new FraRateHelperPtr(
-                new FraRateHelper(rate,monthsToStart,libor));
+                new FraRateHelper(rate,monthsToStart,libor, pillar, customPillarDate));
         }
         FraRateHelperPtr(Rate rate,
                          Natural monthsToStart,
-                         const IborIndexPtr& index) {
+                         const IborIndexPtr& index,
+						 Pillar::Choice pillar = Pillar::LastRelevantDate,
+						 Date customPillarDate = Date()) {
             boost::shared_ptr<IborIndex> libor =
                 boost::dynamic_pointer_cast<IborIndex>(index);
             return new FraRateHelperPtr(
-                new FraRateHelper(rate,monthsToStart,libor));
+                new FraRateHelper(rate,monthsToStart,libor, pillar, customPillarDate));
         }
     }
 };
@@ -339,6 +351,9 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                                    discountingCurve,
                                    pillar, customPillarDate));
         }
+		Spread spread() {
+			return boost::dynamic_pointer_cast<SwapRateHelper>(*self)->spread();
+		}
         VanillaSwapPtr swap() {
             return boost::dynamic_pointer_cast<SwapRateHelper>(*self)->swap();
         }
@@ -410,12 +425,29 @@ class OISRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 const Handle<Quote>& rate,
                 const OvernightIndexPtr& index,
                 const Handle<YieldTermStructure>& discountingCurve
-                                            = Handle<YieldTermStructure>()) {
+                                            = Handle<YieldTermStructure>(),
+                bool telescopicValueDates = false,
+                Natural paymentLag = 0,
+                BusinessDayConvention paymentConvention = Following,
+                Frequency paymentFrequency = Annual,
+                const Calendar& paymentCalendar = Calendar(),
+                const Period& forwardStart = 0 * Days, 
+                const Spread overnightSpread = 0.0) {
             boost::shared_ptr<OvernightIndex> overnight =
                 boost::dynamic_pointer_cast<OvernightIndex>(index);
             return new OISRateHelperPtr(
                 new OISRateHelper(settlementDays,tenor,rate,
-                                  overnight,discountingCurve));
+                                  overnight,discountingCurve,
+                                  telescopicValueDates, paymentLag,
+                                  paymentConvention, paymentFrequency,
+                                  paymentCalendar, forwardStart,
+                                  overnightSpread));
+        }
+		Real impliedQuote() {
+			return boost::dynamic_pointer_cast<OISRateHelper>(*self)->impliedQuote();
+		}
+		OvernightIndexedSwapPtr swap() {
+            return boost::dynamic_pointer_cast<OISRateHelper>(*self)->swap();
         }
     }
 };
@@ -455,13 +487,13 @@ class FxSwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 bool isFxBaseCurrencyCollateralCurrency,
                 const Handle<YieldTermStructure>& coll
                                 = Handle<YieldTermStructure>(),
-                bool requireUSCalendar = false) {
+                const Calendar& tradingCalendar = Calendar()) {
             return new FxSwapRateHelperPtr(
                 new FxSwapRateHelper(fwdPoint, spotFx, tenor,
                                      fixingDays, calendar, convention,
                                      endOfMonth,
                                      isFxBaseCurrencyCollateralCurrency,
-                                     coll, requireUSCalendar));
+                                     coll, tradingCalendar));
         } 
    }
 };
@@ -475,5 +507,19 @@ namespace std {
     %template(RateHelperVector) vector<boost::shared_ptr<RateHelper> >;
 }
 
+%inline %{
+    DepositRateHelperPtr as_depositratehelper(const boost::shared_ptr<RateHelper> helper) {
+        return boost::dynamic_pointer_cast<DepositRateHelper>(helper);
+    }
+	FraRateHelperPtr as_fraratehelper(const boost::shared_ptr<RateHelper> helper) {
+        return boost::dynamic_pointer_cast<FraRateHelper>(helper);
+    }
+    SwapRateHelperPtr as_swapratehelper(const boost::shared_ptr<RateHelper> helper) {
+        return boost::dynamic_pointer_cast<SwapRateHelper>(helper);
+    }
+    OISRateHelperPtr as_oisratehelper(const boost::shared_ptr<RateHelper> helper) {
+        return boost::dynamic_pointer_cast<OISRateHelper>(helper);
+    }
+%}
 
 #endif

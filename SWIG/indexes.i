@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -38,10 +39,6 @@ using QuantLib::IndexManager;
 class IndexManager {
     #if defined(SWIGRUBY)
     %rename("hasHistory?")  hasHistory;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("has-history?") hasHistory;
-    %rename("history-get")  getHistory;
-    %rename("history-set!") setHistory;
     #endif
   private:
     IndexManager();
@@ -67,10 +64,6 @@ class Index {
     #if defined(SWIGRUBY)
     %rename("isValidFixingDate?") isValidFixingDate;
     %rename("addFixing!") addFixing;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("fixing-calendar") addFixing;
-    %rename("is-valid-fixing-date?") isValidFixingDate;
-    %rename("add-fixing") addFixing;
     #endif
   public:
     std::string name() const;
@@ -85,8 +78,6 @@ class Index {
 %extend boost::shared_ptr<Index> {
     #if defined(SWIGRUBY)
     %rename("addFixings!") addFixings;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("add-fixings") addFixings;
     #endif
     void addFixings(const std::vector<Date>& fixingDates,
                     const std::vector<Rate>& fixings) {
@@ -112,11 +103,6 @@ typedef boost::shared_ptr<Index> InterestRateIndexPtr;
 
 %rename(InterestRateIndex) InterestRateIndexPtr;
 class InterestRateIndexPtr : public boost::shared_ptr<Index> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("family-name")     familyName;
-    %rename("settlement-days") settlementDays;
-    %rename("day-counter")     dayCounter;
-    #endif
   protected:
     InterestRateIndexPtr();
   public:
@@ -169,9 +155,6 @@ typedef boost::shared_ptr<Index> OvernightIndexPtr;
 class IborIndexPtr : public InterestRateIndexPtr {
     #if defined(SWIGRUBY)
     %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-adjusted?")            isAdjusted;
-    %rename("business-day-convention") businessDayConvention;
     #endif
   public:
     %extend {
@@ -206,7 +189,7 @@ class IborIndexPtr : public InterestRateIndexPtr {
         IborIndexPtr clone(const Handle<YieldTermStructure>& h){
             return boost::dynamic_pointer_cast<IborIndex>(*self)
                 ->clone(h);
-    }
+		}
     }
 };
 
@@ -327,9 +310,6 @@ typedef boost::shared_ptr<Index> SwapIndexPtr;
 class SwapIndexPtr : public InterestRateIndexPtr {
     #if defined(SWIGRUBY)
     %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-adjusted?")            isAdjusted;
-    %rename("business-day-convention") businessDayConvention;
     #endif
   public:
     %extend {
@@ -388,6 +368,23 @@ class SwapIndexPtr : public InterestRateIndexPtr {
             return boost::dynamic_pointer_cast<SwapIndex>(*self)
                 ->forwardingTermStructure();
         }
+		Handle<YieldTermStructure> discountingTermStructure() {
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->discountingTermStructure();
+        }
+		SwapIndexPtr clone(const Handle<YieldTermStructure>& h){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(h);
+		}
+		SwapIndexPtr clone(const Handle<YieldTermStructure>& forwarding,
+                        const Handle<YieldTermStructure>& discounting){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(forwarding, discounting);
+		}
+		SwapIndexPtr clone(const Period& tenor){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(tenor);
+		}
     }
 };
 
@@ -533,5 +530,11 @@ export_swap_instance(EurLiborSwapIsdaFixA);
 export_swap_instance(EurLiborSwapIsdaFixB);
 export_swap_instance(EurLiborSwapIfrFix);
 
+export_swap_instance(ChfLiborSwapIsdaFix);
+export_swap_instance(GbpLiborSwapIsdaFix);
+export_swap_instance(JpyLiborSwapIsdaFixAm);
+export_swap_instance(JpyLiborSwapIsdaFixPm);
+export_swap_instance(UsdLiborSwapIsdaFixAm);
+export_swap_instance(UsdLiborSwapIsdaFixPm);
 
 #endif

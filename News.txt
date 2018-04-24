@@ -1,42 +1,31 @@
 
-Changes for QuantLib-SWIG 1.11
+Changes for QuantLib-SWIG 1.12
 ==============================
 
 The most notable changes are included below.
 A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/4?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/5?closed=1>.
 
-- This is the last release to include bindings (which are probably
-  broken anyway) for the Guile, MzScheme and OCaml languages.
+- As announced in last release, obsolete bindings for the Guile,
+  MzScheme and OCaml languages were removed.
 
-- Upgraded to SWIG 3.0.12.
+- When available, setuptools is now used to build the Python
+  wrappers. This enables additional functionality, such as building
+  binary wheels of the module.
 
-- Exported BlackDeltaCalculator class, blackFormula and related
-  functions (thanks to Wojciech Ślusarski).
+- Add __bool__ method to classes for which __nonzero__ was defined,
+  for compatibility with Python 3 (thanks to Anthony Calleja for the
+  report).
 
-- Exported discountBond method for short-rate models (thanks to
-  Goutham Balaraman).
+- Exported FX-swap rate helper and an extended constructor for the OIS
+  rate helper (thanks to Wojciech Slusarski).
 
-- Exported Hull-White forward process (thanks to Wojciech Ślusarski).
+- Exported Brownian bridge class and a few more methods for the Sobol
+  random-number generator (thanks to Roy Zywina).
 
-- Exported volatility type and displacement to
-  ConstantOptionletVolatility constructors (thanks to Matthias
-  Lungwitz).
+- Exported OAS calculation, including a Java example (thanks to Bojan
+  Nikolic).
 
-- Exported SwaptionVolCube1 inspectors (thanks to Matthias Lungwitz).
+- Exported more functionality for fitting methods (thanks to Robin
+  Northcott).
 
-- Exported full Schedule constructor based on dates (thanks to
-  Matthias Lungwitz).
-
-- Avoid errors building Python 3.5 wrappers (thanks to Alan Donoghue
-  for the heads-up).
-
-- Exported FD G2 and Hull-White swaption engines (thanks to Matthias
-  Lungwitz).
-
-- Exported Bates vanilla engine (thanks to GitHub user abhilaksh12).
-
-- Added to the Python Date class conversion methods to and from
-  datetime instances.
-
-- Added callable-bond example in Java (thanks to Bojan Nikolic).

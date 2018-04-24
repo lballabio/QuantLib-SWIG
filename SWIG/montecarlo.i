@@ -26,9 +26,6 @@
 %include randomnumbers.i
 %include types.i
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("get-covariance") getCovariance;
-#endif
 %inline %{
 Matrix getCovariance(const Array& volatilities, const Matrix& correlations) {
     return QuantLib::getCovariance(volatilities.begin(),
@@ -68,33 +65,11 @@ class Path {
                 throw std::out_of_range("path index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-        Real ref(Size i) {
-            if (i<self->length()) {
-                return (*self)[i];
-            } else {
-                throw std::out_of_range("path index out of range");
-            }
-        }
         #endif
         #if defined(SWIGRUBY)
         void each() {
             for (Size i=0; i<self->length(); i++)
                 rb_yield(rb_float_new((*self)[i]));
-        }
-        #elif defined(SWIGMZSCHEME)
-        void for_each(Scheme_Object* proc) {
-            for (Size i=0; i<self->length(); ++i) {
-                Scheme_Object* x = scheme_make_double((*self)[i]);
-                scheme_apply(proc,1,&x);
-            }
-        }
-        #elif defined(SWIGGUILE)
-        void for_each(SCM proc) {
-            for (Size i=0; i<self->length(); ++i) {
-                SCM x = gh_double2scm((*self)[i]);
-                gh_call1(proc,x);
-            }
         }
         #endif
     }
@@ -152,9 +127,6 @@ using QuantLib::MultiPath;
 class MultiPath {
     #if defined(SWIGPYTHON) || defined(SWIGRUBY)
     %rename(__len__)        pathSize;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("length")       pathSize;
-    %rename("asset-number") assetNumber;
     #endif
   private:
     MultiPath();
@@ -175,14 +147,6 @@ class MultiPath {
                 throw std::out_of_range("multi-path index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-        Real ref(Size i, Size j) {
-            if (i<self->assetNumber() && j<self->pathSize()) {
-                return (*self)[i][j];
-            } else {
-                throw std::out_of_range("multi-path index out of range");
-            }
-        }
         #endif
         #if defined(SWIGRUBY)
         void each_path() {
@@ -196,43 +160,6 @@ class MultiPath {
                 for (Size i=0; i<self->assetNumber(); i++)
                     rb_ary_store(v,i,rb_float_new((*self)[i][j]));
                 rb_yield(v);
-            }
-        }
-        #elif defined(SWIGMZSCHEME)
-        void for_each_path(Scheme_Object* proc) {
-            for (Size i=0; i<self->assetNumber(); i++) {
-                Scheme_Object* x =
-                    SWIG_NewPointerObj(&((*self)[i]), $descriptor(Path *), 0);
-                scheme_apply(proc,1,&x);
-            }
-        }
-        void for_each_step(Scheme_Object* proc) {
-            for (Size j=0; j<self->pathSize(); j++) {
-                Scheme_Object* v = scheme_make_vector(self->assetNumber(),
-                                                      scheme_undefined);
-                Scheme_Object** els = SCHEME_VEC_ELS(v);
-                for (Size i=0; i<self->assetNumber(); i++)
-                    els[i] = scheme_make_double((*self)[i][j]);
-                scheme_apply(proc,1,&v);
-            }
-        }
-        #elif defined(SWIGGUILE)
-        void for_each_path(SCM proc) {
-            for (Size i=0; i<self->assetNumber(); ++i) {
-                SCM x =
-                    SWIG_NewPointerObj(&((*self)[i]), $descriptor(Path *), 0);
-                gh_call1(proc,x);
-            }
-        }
-        void for_each_step(SCM proc) {
-            for (Size j=0; j<self->pathSize(); ++j) {
-                SCM v = gh_make_vector(gh_long2scm(self->assetNumber()),
-                                       SCM_UNSPECIFIED);
-                for (Size i=0; i<self->assetNumber(); i++) {
-                    gh_vector_set_x(v,gh_long2scm(i),
-                                    gh_double2scm((*self)[i][j]));
-                }
-                gh_call1(proc,v);
             }
         }
         #endif
@@ -262,6 +189,47 @@ class GaussianMultiPathGenerator {
     }
     Sample<MultiPath> next() const;
 	Sample<MultiPath> antithetic() const;
+};
+
+%{
+using QuantLib::BrownianBridge;
+%}
+class BrownianBridge{
+public:
+  BrownianBridge(Size steps);
+  BrownianBridge(const std::vector<Time>& times);
+  BrownianBridge(const TimeGrid& timeGrid);
+
+  Size size() const;
+  std::vector<Time> times() const;
+  std::vector<Real> leftWeight()   const;
+  std::vector<Real> rightWeight()  const;
+  std::vector<Real> stdDeviation() const;
+  %extend{
+    std::vector<Real> transform(const std::vector<Real> &input){
+      std::vector<Real> outp(input.size());
+      $self->transform(input.begin(),input.end(),outp.begin());
+      return outp;
+    }
+    std::vector<unsigned int> bridgeIndex() const{
+    	const std::vector<Size> &tmp = $self->bridgeIndex();
+    	std::vector<unsigned int> outp(tmp.size());
+    	std::copy(tmp.begin(), tmp.end(), outp.begin());
+    	return outp;
+    }
+    std::vector<unsigned int> leftIndex() const{
+    	const std::vector<Size> &tmp = $self->leftIndex();
+    	std::vector<unsigned int> outp(tmp.size());
+    	std::copy(tmp.begin(), tmp.end(), outp.begin());
+    	return outp;
+    }
+    std::vector<unsigned int> rightIndex() const{
+    	const std::vector<Size> &tmp = $self->rightIndex();
+    	std::vector<unsigned int> outp(tmp.size());
+    	std::copy(tmp.begin(), tmp.end(), outp.begin());
+    	return outp;
+    }
+  }
 };
 
 

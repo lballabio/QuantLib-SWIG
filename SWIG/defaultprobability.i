@@ -34,16 +34,6 @@ using QuantLib::DefaultProbabilityTermStructure;
 
 %ignore DefaultProbabilityTermStructure;
 class DefaultProbabilityTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")     dayCounter;
-    %rename("reference-date")  referenceDate;
-    %rename("max-date")        maxDate;
-    %rename("max-time")        maxTime;
-    %rename("default-probability")  defaultProbability;
-    %rename("survival-probability") survivalProbability;
-    %rename("hazard-rate")          hazardRate;
-    %rename("default-density")      defaultDensity;
-    #endif
   public:
     DayCounter dayCounter() const;
     Calendar calendar() const;
@@ -144,7 +134,7 @@ class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
             typedef InterpolatedHazardRateCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->hazardRates();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef InterpolatedHazardRateCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -195,7 +185,7 @@ class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
             typedef InterpolatedDefaultDensityCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->defaultDensities();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef InterpolatedDefaultDensityCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -390,7 +380,7 @@ class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
             typedef PiecewiseDefaultCurve<Base,Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->times();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef PiecewiseDefaultCurve<Base,Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();

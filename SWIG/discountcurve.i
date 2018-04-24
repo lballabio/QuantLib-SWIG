@@ -64,7 +64,7 @@ class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
             typedef InterpolatedDiscountCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->discounts();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,DiscountFactor> > nodes() {
             typedef InterpolatedDiscountCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
