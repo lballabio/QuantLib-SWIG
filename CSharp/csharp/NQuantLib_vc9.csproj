@@ -228,6 +228,7 @@
     <Compile Include="CentralLimitMersenneTwisterGaussianRng.cs" />
     <Compile Include="CHFCurrency.cs" />
     <Compile Include="CHFLibor.cs" />
+    <Compile Include="ChfLiborSwapIsdaFix.cs" />
     <Compile Include="China.cs" />
     <Compile Include="ClosestRounding.cs" />
     <Compile Include="CLPCurrency.cs" />
@@ -255,6 +256,7 @@
     <Compile Include="Coupon.cs" />
     <Compile Include="CPI.cs" />
     <Compile Include="CPIBond.cs" />
+    <Compile Include="CPISwap.cs" />
     <Compile Include="CreditDefaultSwap.cs" />
     <Compile Include="Cubic.cs" />
     <Compile Include="CubicBSplinesFitting.cs" />
@@ -467,6 +469,7 @@
     <Compile Include="GaussLobattoIntegral.cs" />
     <Compile Include="GBPCurrency.cs" />
     <Compile Include="GBPLibor.cs" />
+    <Compile Include="GbpLiborSwapIsdaFix.cs" />
     <Compile Include="GeneralizedBlackScholesProcess.cs" />
     <Compile Include="GeometricBrownianMotionProcess.cs" />
     <Compile Include="Germany.cs" />
@@ -540,6 +543,8 @@
     <Compile Include="JointCalendarRule.cs" />
     <Compile Include="JPYCurrency.cs" />
     <Compile Include="JPYLibor.cs" />
+    <Compile Include="JpyLiborSwapIsdaFixAm.cs" />
+    <Compile Include="JpyLiborSwapIsdaFixPm.cs" />
     <Compile Include="KnuthUniformRng.cs" />
     <Compile Include="KnuthUniformRsg.cs" />
     <Compile Include="KrugerCubic.cs" />
@@ -570,6 +575,7 @@
     <Compile Include="LTLCurrency.cs" />
     <Compile Include="LUFCurrency.cs" />
     <Compile Include="LVLCurrency.cs" />
+    <Compile Include="MakeSchedule.cs" />
     <Compile Include="MarkovFunctional.cs" />
     <Compile Include="MarkovFunctionalSettings.cs" />
     <Compile Include="Matrix.cs" />
@@ -871,8 +877,11 @@
     <Compile Include="USCPI.cs" />
     <Compile Include="USDCurrency.cs" />
     <Compile Include="USDLibor.cs" />
+    <Compile Include="UsdLiborSwapIsdaFixAm.cs" />
+    <Compile Include="UsdLiborSwapIsdaFixPm.cs" />
     <Compile Include="VanillaOption.cs" />
     <Compile Include="VanillaSwap.cs" />
+    <Compile Include="VannaVolgaBarrierEngine.cs" />
     <Compile Include="VannaVolgaDoubleBarrierEngine.cs" />
     <Compile Include="VarianceGammaEngine.cs" />
     <Compile Include="VarianceGammaProcess.cs" />
@@ -920,6 +929,7 @@
     <Compile Include="_BoundaryCondition.cs" />
     <Compile Include="_CalibrationHelper.cs" />
     <Compile Include="_Callability.cs" />
+    <Compile Include="_CPISwap.cs" />
     <Compile Include="_DeltaVolQuote.cs" />
     <Compile Include="_Exercise.cs" />
     <Compile Include="_Gaussian1dFloatFloatSwaptionEngine.cs" />
