@@ -56,7 +56,6 @@ dist-hook: $(BUILT_SOURCES)
 	cp ./examples/*.cs $(distdir)/examples
 
 EXTRA_DIST = \
-    QuantLib_vc9.sln \
     QuantLib.sln \
     QuantLib.props \
     swig.cmd \
