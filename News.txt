@@ -1,31 +1,35 @@
 
-Changes for QuantLib-SWIG 1.12
+Changes for QuantLib-SWIG 1.13
 ==============================
 
-The most notable changes are included below.
-A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/5?closed=1>.
+More details on the changes are available in ChangeLog.txt and at
+<https://github.com/lballabio/QuantLib-SWIG/milestone/6?closed=1>.
 
-- As announced in last release, obsolete bindings for the Guile,
-  MzScheme and OCaml languages were removed.
+- Exported amortizing bonds (thanks to Anthony Calleja).
 
-- When available, setuptools is now used to build the Python
-  wrappers. This enables additional functionality, such as building
-  binary wheels of the module.
+- Exported vanna-volga barrier-option engine (thanks to Matthias
+  Lungwitz).
 
-- Add __bool__ method to classes for which __nonzero__ was defined,
-  for compatibility with Python 3 (thanks to Anthony Calleja for the
-  report).
+- Exported the MakeSchedule helper class (thanks to Roy Zywina).
 
-- Exported FX-swap rate helper and an extended constructor for the OIS
-  rate helper (thanks to Wojciech Slusarski).
+- Exported the Cashflows::previousCashFlowDate and
+  Cashflows::nextCashFlowDate methods (thanks to Weston Steimel).
 
-- Exported Brownian bridge class and a few more methods for the Sobol
-  random-number generator (thanks to Roy Zywina).
+- Exported more methods from the SwapIndex class, as well as a few
+  derived classes (thanks to Matthias Lungwitz).
 
-- Exported OAS calculation, including a Java example (thanks to Bojan
-  Nikolic).
+- Exported CPISwap (thanks to Matthias Lungwitz).
 
-- Exported more functionality for fitting methods (thanks to Robin
-  Northcott).
+- Exported more methods from the ZeroCouponInflationSwap and
+  YearOnYearInflationSwap classes (thanks to Matthias Lungwitz).
+
+- Exported MC American option engine (thanks to Matthias Lungwitz).
+
+- Exported more methods from the NonStandardSwaption class and its
+  Gaussian engines (thanks to Matthias Lungwitz).
+
+- Exported overnight-indexes swaps (thanks to Matthias Lungwitz).
+
+- Exported more methods from the RateHelper class and a few of its
+  derived classes (thanks to Matthias Lungwitz).
 
