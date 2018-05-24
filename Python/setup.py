@@ -238,7 +238,7 @@ classifiers = [
 ]
 
 setup(name             = "QuantLib-Python",
-      version          = "1.13",
+      version          = "1.14",
       description      = "Python bindings for the QuantLib library",
       long_description = """
 QuantLib (http://quantlib.org/) is a C++ library for financial quantitative
