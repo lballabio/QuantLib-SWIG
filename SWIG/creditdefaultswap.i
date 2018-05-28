@@ -27,10 +27,12 @@
 using QuantLib::CreditDefaultSwap;
 using QuantLib::MidPointCdsEngine;
 using QuantLib::IntegralCdsEngine;
+using QuantLib::IsdaCdsEngine;
 
 typedef boost::shared_ptr<Instrument> CreditDefaultSwapPtr;
 typedef boost::shared_ptr<PricingEngine> MidPointCdsEnginePtr;
 typedef boost::shared_ptr<PricingEngine> IntegralCdsEnginePtr;
+typedef boost::shared_ptr<PricingEngine> IsdaCdsEnginePtr;
 %}
 
 %rename(CreditDefaultSwap) CreditDefaultSwapPtr;
@@ -168,6 +170,40 @@ class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
                               new IntegralCdsEngine(integrationStep, probability,
                                                     recoveryRate, discountCurve,
 													includeSettlementDateFlows));
+        }
+    }
+};
+
+%rename(IsdaCdsEngine) IsdaCdsEnginePtr;
+class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+        enum NumericalFix {
+           None,
+           Taylor
+        };         
+        
+        enum AccrualBias {
+            HalfDayBias,
+            NoBias
+        };  
+        
+        enum ForwardsInCouponPeriod {
+            Flat,
+            Piecewise
+        };            
+
+    %extend {
+        IsdaCdsEnginePtr(
+            const Handle<DefaultProbabilityTermStructure> &probability,
+            Real recoveryRate,
+            const Handle<YieldTermStructure> &discountCurve,
+            bool includeSettlementDateFlows = false,
+            const NumericalFix numericalFix = Taylor,
+            const AccrualBias accrualBias = HalfDayBias,
+            const ForwardsInCouponPeriod forwardsInCouponPeriod = Piecewise) {
+            return new IsdaCdsEnginePtr(
+                new IsdaCdsEngine(
+                    probability,recoveryRate,discountCurve,includeSettlementDateFlows,numericalFix,accrualBias,forwardsInCouponPeriod));
         }
     }
 };
