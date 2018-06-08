@@ -108,6 +108,10 @@ class Calendar {
                                    const Date& to,
                                    bool includeFirst = true,
                                    bool includeLast = false);
+    static std::vector<Date> holidayList(const Calendar& calendar,
+                                   const Date& from,
+                                   const Date& to,
+                                   bool includeWeekEnds = false);
     std::string name();
     %extend {
         #if !defined(SWIGPERL)
