@@ -42,7 +42,6 @@ $(BUILT_SOURCES): ../SWIG/*.i
 
 dist-hook: $(BUILT_SOURCES)
 	mkdir -p $(distdir)/cpp
-	cp ./cpp/*.vcproj $(distdir)/cpp
 	cp ./cpp/*.vcxproj $(distdir)/cpp
 	cp ./cpp/quantlib_wrap.cpp $(distdir)/cpp
 	cp ./cpp/quantlib_wrap.h $(distdir)/cpp
