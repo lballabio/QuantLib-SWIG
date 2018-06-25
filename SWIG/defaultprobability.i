@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -201,6 +202,56 @@ export_default_density_curve(DefaultDensityCurve,Linear);
 // add interpolations as you wish, e.g.,
 // export_default_density_curve(CubicDefaultDensityCurve,Cubic);
 
+
+
+%{
+using QuantLib::InterpolatedSurvivalProbabilityCurve;
+%}
+
+%define export_survival_probability_curve(Name,Interpolator)
+
+%{
+typedef boost::shared_ptr<DefaultProbabilityTermStructure> Name##Ptr;
+%}
+
+%rename(Name) Name##Ptr;
+class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
+  public:
+    %extend {
+        Name##Ptr(const std::vector<Date>& dates,
+                  const std::vector<Probability>& probabilities,
+                  const DayCounter& dayCounter,
+                  const Calendar& calendar = Calendar(),
+                  const Interpolator& i = Interpolator()) {
+            return new Name##Ptr(
+                new InterpolatedSurvivalProbabilityCurve<Interpolator>(dates,
+                                                                  probabilities,
+                                                                  dayCounter,
+                                                                  calendar,i));
+        }
+        const std::vector<Date>& dates() {
+            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
+            return boost::dynamic_pointer_cast<Name>(*self)->dates();
+        }
+        const std::vector<Probability>& survivalProbabilities() {
+            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
+            return boost::dynamic_pointer_cast<Name>(*self)->survivalProbabilities();
+        }
+        #if !defined(SWIGR)
+        std::vector<std::pair<Date,Real> > nodes() {
+            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
+            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
+        }
+        #endif
+    }
+};
+
+%enddef
+
+export_survival_probability_curve(SurvivalProbabilityCurve,Linear);
+
+// add interpolations as you wish, e.g.,
+// export_survival_probability_curve(CubicSurvivalProbabilityCurve,Cubic);
 
 
 %{
