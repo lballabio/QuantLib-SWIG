@@ -28,6 +28,7 @@
 %include cashflows.i
 %include timebasket.i
 %include indexes.i
+%include bonds.i
 
 %{
 using QuantLib::Swap;
