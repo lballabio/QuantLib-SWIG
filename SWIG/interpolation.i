@@ -4,7 +4,8 @@
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2003, 2004, 2008 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
-
+ Copyright (C) 2018 Matthias Lungwitz
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -178,6 +179,14 @@ class MonotonicCubic : public Cubic {
             QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
+class SplineCubic : public Cubic {
+  public:
+    SplineCubic()
+    : Cubic(QuantLib::CubicInterpolation::Spline, false,
+            QuantLib::CubicInterpolation::SecondDerivative, 0.0,
+            QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
 class DefaultLogCubic : public QuantLib::LogCubic {
   public:
     DefaultLogCubic()
@@ -201,6 +210,6 @@ struct Cubic {};
 struct MonotonicCubic {};
 struct DefaultLogCubic {};
 struct MonotonicLogCubic {};
-
+struct SplineCubic {};
 
 #endif
