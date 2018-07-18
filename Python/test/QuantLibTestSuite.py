@@ -33,6 +33,7 @@ from assetswap import AssetSwapTest
 from capfloor import CapFloorTest
 from blackformula import BlackFormulaTest
 from blackformula import BlackDeltaCalculatorTest
+from iborindex import IborIndexTest
 
 
 def test():
@@ -56,6 +57,7 @@ def test():
     suite.addTest(unittest.makeSuite(CapFloorTest, 'test'))
     suite.addTest(unittest.makeSuite(BlackFormulaTest, 'test'))
     suite.addTest(unittest.makeSuite(BlackDeltaCalculatorTest, 'test'))
+    suite.addTest(unittest.makeSuite(IborIndexTest, 'test'))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
