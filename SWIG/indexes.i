@@ -71,7 +71,8 @@ class Index {
     bool isValidFixingDate(const Date& fixingDate) const;
     Real fixing(const Date& fixingDate,
                 bool forecastTodaysFixing = false) const;
-    void addFixing(const Date& fixingDate, Rate fixing);
+    void addFixing(const Date& fixingDate, Rate fixing,
+                   bool forceOverwrite = false);
 };
 
 %template(Index) boost::shared_ptr<Index>;
@@ -80,9 +81,11 @@ class Index {
     %rename("addFixings!") addFixings;
     #endif
     void addFixings(const std::vector<Date>& fixingDates,
-                    const std::vector<Rate>& fixings) {
+                    const std::vector<Rate>& fixings,
+                    bool forceOverwrite = false) {
         (*self)->addFixings(fixingDates.begin(),fixingDates.end(),
-                            fixings.begin());
+                            fixings.begin(),
+                            forceOverwrite);
     }
     #if !defined(SWIGPERL)
     std::string __str__() {
