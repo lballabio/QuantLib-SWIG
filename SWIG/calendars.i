@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2005 Johan Witters
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -271,6 +272,9 @@ namespace QuantLib {
     };
 
     class TARGET : public Calendar {};
+
+    class Thailand : public Calendar {};
+
     class Turkey : public Calendar {};
 
     class Ukraine : public Calendar {
