@@ -5,6 +5,7 @@
  Copyright (C) 2014 Simon Mazzucca
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2017 BN Algorithms Ltd
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -266,6 +267,38 @@ class FixedRateBondPtr : public BondPtr {
 		                  exCouponPeriod, exCouponCalendar,
 		                  exCouponConvention, exCouponEndOfMonth));
 		}
+        //! simple annual compounding coupon rates with internal schedule calculation 
+        FixedRateBondPtr(
+              Integer settlementDays,
+              const Calendar& couponCalendar,
+              Real faceAmount,
+              const Date& startDate,
+              const Date& maturityDate,
+              const Period& tenor,
+              const std::vector<Rate>& coupons,
+              const DayCounter& accrualDayCounter,
+              BusinessDayConvention accrualConvention = QuantLib::Following,
+              BusinessDayConvention paymentConvention = QuantLib::Following,
+              Real redemption = 100.0,
+              const Date& issueDate = Date(),
+              const Date& stubDate = Date(),
+              DateGeneration::Rule rule = QuantLib::DateGeneration::Backward,
+              bool endOfMonth = false,
+              const Calendar& paymentCalendar = Calendar(),
+              const Period& exCouponPeriod = Period(),
+              const Calendar& exCouponCalendar = Calendar(),
+              const BusinessDayConvention exCouponConvention = Unadjusted,
+              bool exCouponEndOfMonth = false) {
+	       return new FixedRateBondPtr(
+		      new FixedRateBond(settlementDays, couponCalendar, faceAmount,
+                          startDate, maturityDate, tenor, coupons, accrualDayCounter,
+                          accrualConvention, paymentConvention, 
+		                  redemption, issueDate, stubDate, rule, endOfMonth, paymentCalendar,
+		                  exCouponPeriod, exCouponCalendar,
+		                  exCouponConvention, exCouponEndOfMonth));
+		}
+
+
         Frequency frequency() const {
             return boost::dynamic_pointer_cast<FixedRateBond>(*self)
                 ->frequency();

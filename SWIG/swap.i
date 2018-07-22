@@ -5,6 +5,7 @@
  Copyright (C) 2015 Gouthaman Balaraman
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2017, 2018 Matthias Lungwitz
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,6 +33,7 @@
 %{
 using QuantLib::Swap;
 using QuantLib::VanillaSwap;
+using QuantLib::MakeVanillaSwap;
 using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
 using QuantLib::FloatFloatSwap;
@@ -165,6 +167,69 @@ class VanillaSwapPtr : public SwapPtr {
         }
     }
 };
+
+%{
+class _MakeVanillaSwap {
+    public:
+    _MakeVanillaSwap(const Period& swapTenor,
+                    const IborIndexPtr& index,
+                    Rate fixedRate,
+                    const Period& forwardStart,
+                    const VanillaSwap::Type type,
+                    const Period & fixedLegTenor,
+                    const Real notional=1,
+                    const Rate spread=0.0):
+        factory_(swapTenor, boost::dynamic_pointer_cast<IborIndex>(index), fixedRate, forwardStart){
+            factory_ = factory_.withType(type)
+                               .withFixedLegTenor(fixedLegTenor)
+                               .withNominal(notional)
+                               .withFloatingLegSpread(spread);
+    }
+
+    VanillaSwapPtr make(){
+        boost::shared_ptr<QuantLib::VanillaSwap> swap = factory_;
+        return swap;
+    }
+
+    void withSettlementDays(Natural settlementDays) {
+        factory_ = factory_.withSettlementDays(settlementDays);
+    }
+    
+    void withFixedLegTenor(const Period& t){
+        factory_ = factory_.withFixedLegTenor(t);
+    }
+
+    void withFixedLegCalendar(const Calendar& cal){
+        factory_ = factory_.withFixedLegCalendar(cal);
+    }
+
+    void withFixedLegConvention(BusinessDayConvention bdc){
+        factory_ = factory_.withFixedLegConvention(bdc);
+    }
+
+    protected:
+    MakeVanillaSwap factory_;
+}; 
+%}
+
+%rename(MakeVanillaSwap) _MakeVanillaSwap;
+class _MakeVanillaSwap {
+    public:
+    _MakeVanillaSwap(const Period& swapTenor,
+                    const IborIndexPtr& index,
+                    Rate fixedRate,
+                    const Period& forwardStart,
+                    const VanillaSwap::Type type,
+                    const Period & fixedLegTenor,
+                    const Real notional=1,
+                    const Rate spread=0.0);
+    VanillaSwapPtr make();
+    void withSettlementDays(Natural settlementDays);
+    void withFixedLegTenor(const Period& t);
+    void withFixedLegConvention(BusinessDayConvention bdc);
+    void withFixedLegCalendar(const Calendar& cal);
+};
+
 
 #if defined(SWIGJAVA) || defined(SWIGCSHARP)
 %rename(_NonstandardSwap) NonstandardSwap;
