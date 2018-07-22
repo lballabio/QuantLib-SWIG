@@ -512,6 +512,7 @@ export_xibor_instance(JPYLibor);
 export_xibor_instance(NZDLibor);
 export_xibor_instance(SEKLibor);
 export_xibor_instance(Tibor);
+export_xibor_instance(THBFIX);
 export_xibor_instance(TRLibor);
 export_xibor_instance(USDLibor);
 export_xibor_instance(Zibor);
