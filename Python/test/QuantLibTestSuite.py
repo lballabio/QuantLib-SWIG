@@ -41,7 +41,7 @@ def test():
 
     suite = unittest.TestSuite()
 
-    suite.addTest(DateTest())
+    suite.addTest(unittest.makeSuite(DateTest, 'test'))
     suite.addTest(DayCountersTest())
     suite.addTest(unittest.makeSuite(InstrumentTest, 'test'))
     suite.addTest(unittest.makeSuite(MarketElementTest, 'test'))
