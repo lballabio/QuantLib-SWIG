@@ -20,15 +20,17 @@ import unittest
 
 
 class IborIndexTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.euribor3m = Euribor3M()
     
     def setUp(self):
-        self.euribor3m = Euribor3M()
+        self.euribor3m.clearFixings()
         # values are not real due to copyrights of the fixing
-        force_overwrite = True
-        self.euribor3m.addFixing(Date(17, 7, 2018), -0.3, force_overwrite)
+        self.euribor3m.addFixing(Date(17, 7, 2018), -0.3)
         self.euribor3m.addFixings([Date(12, 7, 2018), Date(13, 7, 2018)],
-                                  [-0.3, - 0.3],
-                                  force_overwrite)
+                                  [-0.3, - 0.3])
 
     def testAddFixingFail(self):
         """Testing for RuntimeError while trying to overwrite fixing value"""
@@ -36,6 +38,9 @@ class IborIndexTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             # attempt to overwrite value that is already set at different level
             self.euribor3m.addFixing(Date(17, 7, 2018), -0.4)
+        
+        with self.assertRaises(RuntimeError):
+            # attempt to overwrite value that is already set at different level
             self.euribor3m.addFixings([Date(12, 7, 2018), Date(13, 7, 2018)],
                                       [-0.4, - 0.4])
                                       
@@ -50,10 +55,26 @@ class IborIndexTest(unittest.TestCase):
             self.euribor3m.addFixings([Date(12, 7, 2018), Date(13, 7, 2018)],
                                       [-0.4, - 0.4],
                                       force_overwrite)
+            # try clearFixings and repeat with original levels
+            self.euribor3m.clearFixings()
+            self.euribor3m.addFixing(Date(17, 7, 2018), -0.3)
+            self.euribor3m.addFixings([Date(12, 7, 2018), Date(13, 7, 2018)],
+                                      [-0.3, - 0.3])
+
         except RuntimeError as err:
             raise AssertionError("Failed to overwrite index fixixng "
                                  + "{}".format(err))
-            
+    
+    def testTimeSeries(self):
+        """Testing for getting time series of the fixing"""
+
+        dates = (Date(12, 7, 2018), Date(13, 7, 2018), Date(17, 7, 2018))
+        values = (-0.3, -0.3, -0.3)
+        for expected, actual in zip(dates, self.euribor3m.timeSeries().dates()):
+            self.assertTrue(expected == actual)
+        for expected, actual in zip(values,
+                                    self.euribor3m.timeSeries().values()):
+            self.assertTrue(expected == actual)
         
 
 if __name__ == '__main__':

@@ -73,6 +73,8 @@ class Index {
                 bool forecastTodaysFixing = false) const;
     void addFixing(const Date& fixingDate, Rate fixing,
                    bool forceOverwrite = false);
+    const TimeSeries<Real>& timeSeries() const;
+    void clearFixings();
 };
 
 %template(Index) boost::shared_ptr<Index>;
