@@ -272,9 +272,7 @@ namespace QuantLib {
     };
 
     class TARGET : public Calendar {};
-
     class Thailand : public Calendar {};
-
     class Turkey : public Calendar {};
 
     class Ukraine : public Calendar {

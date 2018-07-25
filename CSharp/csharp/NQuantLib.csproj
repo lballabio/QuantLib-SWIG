@@ -213,6 +213,14 @@
     <Compile Include="BespokeCalendar.cs" />
     <Compile Include="BFGS.cs" />
     <Compile Include="BGLCurrency.cs" />
+    <Compile Include="Bibor.cs" />
+    <Compile Include="BiborSW.cs" />
+    <Compile Include="Bibor1M.cs" />
+    <Compile Include="Bibor2M.cs" />
+    <Compile Include="Bibor3M.cs" />
+    <Compile Include="Bibor6M.cs" />
+    <Compile Include="Bibor9M.cs" />
+    <Compile Include="Bibor1Y.cs" />
     <Compile Include="BicubicSpline.cs" />
     <Compile Include="BilinearInterpolation.cs" />
     <Compile Include="BinomialBarrierEngine.cs" />
@@ -910,6 +918,7 @@
     <Compile Include="Taiwan.cs" />
     <Compile Include="TARGET.cs" />
     <Compile Include="TemperatureExponential.cs" />
+    <Compile Include="Thailand.cs" />
     <Compile Include="THBCurrency.cs" />
     <Compile Include="Thirty360.cs" />
     <Compile Include="Tibor.cs" />
