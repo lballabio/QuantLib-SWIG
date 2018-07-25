@@ -2,7 +2,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
- Copyright (C) 2015 Matthias Groncki
+ Copyright (C) 2015, 2018 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2018 Matthias Lungwitz
 
@@ -536,5 +536,14 @@ export_swap_instance(JpyLiborSwapIsdaFixAm);
 export_swap_instance(JpyLiborSwapIsdaFixPm);
 export_swap_instance(UsdLiborSwapIsdaFixAm);
 export_swap_instance(UsdLiborSwapIsdaFixPm);
+
+export_xibor_instance(Bibor);
+export_quoted_xibor_instance(BiborSW,Bibor);
+export_quoted_xibor_instance(Bibor1M,Bibor);
+export_quoted_xibor_instance(Bibor2M,Bibor);
+export_quoted_xibor_instance(Bibor3M,Bibor);
+export_quoted_xibor_instance(Bibor6M,Bibor);
+export_quoted_xibor_instance(Bibor9M,Bibor);
+export_quoted_xibor_instance(Bibor1Y,Bibor);
 
 #endif
