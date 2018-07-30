@@ -854,6 +854,7 @@
     <Compile Include="StudentDistribution.cs" />
     <Compile Include="StulzEngine.cs" />
     <Compile Include="SuperSharePayoff.cs" />
+    <Compile Include="SurvivalProbabilityCurve.cs" />
     <Compile Include="SVD.cs" />
     <Compile Include="SvenssonFitting.cs" />
     <Compile Include="Swap.cs" />
