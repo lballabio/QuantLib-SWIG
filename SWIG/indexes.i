@@ -433,7 +433,7 @@ class Name##Ptr : public Base##Ptr {
 %enddef
 
 %inline %{
-    SwapIndexPtr as_swapIndex(const InterestRateIndexPtr& index) {
+    SwapIndexPtr as_swap_index(const InterestRateIndexPtr& index) {
         return boost::dynamic_pointer_cast<SwapIndex>(index);
     }
 %}
