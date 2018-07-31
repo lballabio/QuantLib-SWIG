@@ -911,6 +911,7 @@
     <Compile Include="TARGET.cs" />
     <Compile Include="TemperatureExponential.cs" />
     <Compile Include="THBCurrency.cs" />
+    <Compile Include="THBFIX.cs" />
     <Compile Include="Thirty360.cs" />
     <Compile Include="Tibor.cs" />
     <Compile Include="TimeBasket.cs" />
