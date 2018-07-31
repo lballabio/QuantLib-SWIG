@@ -931,6 +931,7 @@
     <Compile Include="TemperatureExponential.cs" />
     <Compile Include="Thailand.cs" />
     <Compile Include="THBCurrency.cs" />
+    <Compile Include="THBFIX.cs" />
     <Compile Include="Thirty360.cs" />
     <Compile Include="Tibor.cs" />
     <Compile Include="TimeBasket.cs" />
