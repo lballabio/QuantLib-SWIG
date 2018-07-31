@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2010, 2011 Lluis Pujol Bajador
- Copyright (C) 2017, 2018 Matthias Lungwitz
+ Copyright (C) 2017 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -215,32 +215,6 @@ class FloatingRateCouponPtr : public CouponPtr {
     FloatingRateCouponPtr();
   public:
     %extend {
-        FloatingRateCouponPtr(const Date& paymentDate,
-                           Real nominal,
-                           const Date& startDate,
-                           const Date& endDate,
-                           Natural fixingDays,
-                           const boost::shared_ptr<InterestRateIndex>& index,
-                           Real gearing = 1.0,
-                           Spread spread = 0.0,
-                           const Date& refPeriodStart = Date(),
-                           const Date& refPeriodEnd = Date(),
-                           const DayCounter& dayCounter = DayCounter(),
-                           bool isInArrears = false){
-            return new FloatingRateCouponPtr(
-                new FloatingRateCoupon(paymentDate,
-                                          nominal,
-                                          startDate,
-                                          endDate,
-                                          fixingDays,
-                                          index,
-                                          gearing,
-                                          spread,
-                                          refPeriodStart,
-                                          refPeriodEnd,
-                                          dayCounter,
-                                          isInArrears));
-		}
         Date fixingDate() {
             return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
                 ->fixingDate();
