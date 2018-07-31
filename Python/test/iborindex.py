@@ -1,3 +1,4 @@
+# coding=utf-8-unix
 """
  Copyright (C) 2018 Wojciech Ślusarski
 
