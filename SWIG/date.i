@@ -6,7 +6,7 @@
  Copyright (C) 2013 Simon Shakeshaft
  Copyright (C) 2014 Bitquant Research Laboratories (Asia) Ltd.
  Copyright (C) 2015 Klaus Spanderen
- 
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -582,6 +582,9 @@ class Date {
         }
         bool __ge__(const Date& other) {
             return !(*self < other);
+        }
+        bool __ne__(const Date& other) {
+            return *self != other;
         }
         #endif
         #if defined(SWIGRUBY)

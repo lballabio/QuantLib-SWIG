@@ -5,6 +5,7 @@
  Copyright (C) 2014 Simon Mazzucca
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2017 BN Algorithms Ltd
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -70,6 +71,15 @@ class BondPtr : public boost::shared_ptr<Instrument> {
                                         maturityDate,
                                         issueDate,
                                         cashflows));
+        }
+        BondPtr(Natural settlementDays,
+                const Calendar& calendar,
+                const Date& issueDate = Date(),
+                const Leg& coupons = Leg()) {
+            return new BondPtr(new Bond(settlementDays,
+                                        calendar,
+                                        issueDate,
+                                        coupons));
         }
         // public functions
         Rate nextCouponRate(const Date& d = Date()) {
