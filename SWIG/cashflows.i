@@ -458,10 +458,14 @@ using QuantLib::AnalyticHaganPricer;
 using QuantLib::NumericHaganPricer;
 using QuantLib::GFunctionFactory;
 using QuantLib::LinearTsrPricer;
+using QuantLib::CmsSpreadCouponPricer;
+using QuantLib::LognormalCmsSpreadPricer;
 typedef boost::shared_ptr<FloatingRateCouponPricer> CmsCouponPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> AnalyticHaganPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> NumericHaganPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> LinearTsrPricerPtr;
+typedef boost::shared_ptr<FloatingRateCouponPricer> CmsSpreadCouponPricerPtr;
+typedef boost::shared_ptr<FloatingRateCouponPricer> LognormalCmsSpreadPricerPtr;
 %}
 
 %rename(CmsCouponPricer) CmsCouponPricerPtr;
@@ -595,6 +599,69 @@ class LinearTsrPricerPtr : public CmsCouponPricerPtr {
             return new LinearTsrPricerPtr(
                           new LinearTsrPricer(swaptionVol, meanReversion,
                                               couponDiscountCurve, settings));
+        }
+    }
+};
+
+%rename(CmsSpreadCouponPricer) CmsSpreadCouponPricerPtr;
+class CmsSpreadCouponPricerPtr : public boost::shared_ptr<FloatingRateCouponPricer> {
+  private:
+    CmsSpreadCouponPricerPtr();
+  public:
+    %extend {
+        Handle<Quote> correlation() {
+            return boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(*self)
+                ->correlation();
+        }
+        void setCorrelation(
+                                const Handle<Quote> &correlation = Handle<Quote>()) {
+            boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(*self)
+                ->setCorrelation(correlation);
+        }
+    }
+};
+
+%rename(LognormalCmsSpreadPricer) LognormalCmsSpreadPricerPtr;
+class LognormalCmsSpreadPricerPtr : public CmsSpreadCouponPricerPtr {
+  public:
+    %extend {
+        LognormalCmsSpreadPricerPtr(
+            const CmsCouponPricerPtr cmsPricer,
+            const Handle<Quote> &correlation,
+            const Handle<YieldTermStructure> &couponDiscountCurve =
+                Handle<YieldTermStructure>(),
+            const Size IntegrationPoints = 16,
+            const boost::optional<VolatilityType> volatilityType = boost::none,
+            const Real shift1 = Null<Real>(), const Real shift2 = Null<Real>()) {
+            const boost::shared_ptr<CmsCouponPricer> pricer =
+                boost::dynamic_pointer_cast<CmsCouponPricer>(cmsPricer);
+            return new LognormalCmsSpreadPricerPtr(
+                          new LognormalCmsSpreadPricer(pricer, correlation,
+                                              couponDiscountCurve, IntegrationPoints, volatilityType, shift1, shift2));
+        }
+        Real swapletPrice() {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->swapletPrice();
+        }
+        Rate swapletRate() {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->swapletRate();
+        }
+        Real capletPrice(Rate effectiveCap) {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->capletPrice(effectiveCap);
+        }
+        Rate capletRate(Rate effectiveCap){
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->capletRate(effectiveCap);
+        }
+        Real floorletPrice(Rate effectiveFloor) {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->floorletPrice(effectiveFloor);
+        }
+        Rate floorletRate(Rate effectiveFloor) {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->floorletRate(effectiveFloor);
         }
     }
 };
