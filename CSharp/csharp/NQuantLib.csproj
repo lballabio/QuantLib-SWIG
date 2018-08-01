@@ -741,6 +741,7 @@
     <Compile Include="PiecewiseFlatHazardRate.cs" />
     <Compile Include="PiecewiseLinearForward.cs" />
     <Compile Include="PiecewiseLinearZero.cs" />
+    <Compile Include="PiecewiseLogLinearDiscount.cs" />
     <Compile Include="PiecewiseLogCubicDiscount.cs" />
     <Compile Include="PiecewiseTimeDependentHestonModel.cs" />
     <Compile Include="PiecewiseYoYInflation.cs" />
@@ -840,6 +841,7 @@
     <Compile Include="SouthAfrica.cs" />
     <Compile Include="SouthKorea.cs" />
     <Compile Include="SpreadCdsHelper.cs" />
+    <Compile Include="SpreadedBackwardFlatZeroInterpolatedTermStructure.cs" />
     <Compile Include="SpreadedLinearZeroInterpolatedTermStructure.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="SteepestDescent.cs" />
