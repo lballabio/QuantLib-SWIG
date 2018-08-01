@@ -72,15 +72,15 @@ class BondPtr : public boost::shared_ptr<Instrument> {
                                         issueDate,
                                         cashflows));
         }
-		BondPtr(Natural settlementDays,
+        BondPtr(Natural settlementDays,
                 const Calendar& calendar,
                 const Date& issueDate = Date(),
                 const Leg& coupons = Leg()) {
-			return new BondPtr(new Bond(settlementDays,
-			                            calendar,
-										issueDate,
-										coupons));
-		}
+            return new BondPtr(new Bond(settlementDays,
+                                        calendar,
+                                        issueDate,
+                                        coupons));
+        }
         // public functions
         Rate nextCouponRate(const Date& d = Date()) {
             return boost::dynamic_pointer_cast<Bond>(*self)
