@@ -924,4 +924,59 @@ class KahaleSmileSectionPtr
     }
 };
 
+%{
+using QuantLib::ZabrShortMaturityLognormal;
+using QuantLib::ZabrShortMaturityNormal;
+using QuantLib::ZabrLocalVolatility;
+using QuantLib::ZabrFullFd;
+using QuantLib::ZabrSmileSection;
+%}
+
+struct ZabrShortMaturityLognormal {};
+struct ZabrShortMaturityNormal {};
+struct ZabrLocalVolatility {};
+struct ZabrFullFd {};
+
+%define export_zabrsmileinterpolation_curve(Name,Evaluation)
+
+%{
+typedef boost::shared_ptr<SmileSection> Name##Ptr;
+%}
+
+%rename(Name) Name##Ptr;
+class Name##Ptr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        Name##Ptr(
+               Time timeToExpiry, 
+               Rate forward,
+               const std::vector<Real> &zabrParameters,
+               const std::vector<Real> &moneyness = std::vector<Real>(),
+               const Size fdRefinement = 5) {
+            return new Name##Ptr(
+                new ZabrSmileSection<Evaluation>(
+                          timeToExpiry,forward,zabrParameters,moneyness,fdRefinement));
+        }
+        Name##Ptr(
+               const Date &d, 
+               Rate forward,
+               const std::vector<Real> &zabrParameters,
+               const DayCounter &dc = Actual365Fixed(),
+               const std::vector<Real> &moneyness = std::vector<Real>(),
+               const Size fdRefinement = 5) {
+            return new Name##Ptr(
+                new ZabrSmileSection<Evaluation>(
+                          d,forward,zabrParameters,dc,moneyness,fdRefinement));
+        }        
+    }
+};
+
+%enddef
+
+export_zabrsmileinterpolation_curve(ZabrShortMaturityLognormalSmileSection, ZabrShortMaturityLognormal);
+export_zabrsmileinterpolation_curve(ZabrShortMaturityNormalSmileSection, ZabrShortMaturityNormal);
+export_zabrsmileinterpolation_curve(ZabrLocalVolatilitySmileSection, ZabrLocalVolatility);
+export_zabrsmileinterpolation_curve(ZabrFullFdSmileSection, ZabrFullFd);
+
+
 #endif
