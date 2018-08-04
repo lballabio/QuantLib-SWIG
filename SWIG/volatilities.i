@@ -33,6 +33,7 @@
 %include interpolation.i
 %include indexes.i
 %include optimizers.i
+%include options.i
 
 %{
 using QuantLib::VolatilityType;
@@ -930,6 +931,7 @@ using QuantLib::ZabrShortMaturityNormal;
 using QuantLib::ZabrLocalVolatility;
 using QuantLib::ZabrFullFd;
 using QuantLib::ZabrSmileSection;
+using QuantLib::Option;
 %}
 
 struct ZabrShortMaturityLognormal {};
@@ -967,7 +969,13 @@ class Name##Ptr : public boost::shared_ptr<SmileSection> {
             return new Name##Ptr(
                 new ZabrSmileSection<Evaluation>(
                           d,forward,zabrParameters,dc,moneyness,fdRefinement));
-        }        
+        }
+        Real optionPrice(Rate strike,
+                             Option::Type type = Option::Call,
+                             Real discount=1.0) const {
+            return boost::dynamic_pointer_cast<ZabrSmileSection<Evaluation> >(*self)
+                ->optionPrice(strike, type, discount);
+        }
     }
 };
 
