@@ -1040,11 +1040,33 @@ class Name##Ptr : public boost::shared_ptr<SmileSection> {
                           isBetaFixed, isNuFixed, isRhoFixed, isGammaFixed, vegaWeighted,
                           endCriteria, method, dc));
         }
-        Real optionPrice(Rate strike,
-                             Option::Type type = Option::Call,
-                             Real discount=1.0) const {
+        Real alpha() const {
             return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
-                ->optionPrice(strike, type, discount);
+                ->alpha();
+        }
+        Real beta() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->beta();
+        }
+        Real nu() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->nu();
+        }
+        Real rho() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->rho();
+        }
+        Real rmsError() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->rmsError();
+        }
+        Real maxError() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->maxError();
+        }
+        EndCriteria::Type endCriteria() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->endCriteria();
         }
     }
 };
@@ -1090,6 +1112,17 @@ class NoArbSabrSmileSectionPtr : public boost::shared_ptr<SmileSection> {
             return boost::dynamic_pointer_cast<NoArbSabrSmileSection>(*self)
                 ->optionPrice(strike, type, discount);
         }
+        Real digitalOptionPrice(Rate strike,
+                             Option::Type type = Option::Call,
+                             Real discount=1.0, Real gap = 1.0e-5) const {
+            return boost::dynamic_pointer_cast<NoArbSabrSmileSection>(*self)
+                ->digitalOptionPrice(strike, type, discount, gap);
+        }
+        Real density(Rate strike,
+                             Real discount=1.0, Real gap = 1.0e-5) const {
+            return boost::dynamic_pointer_cast<NoArbSabrSmileSection>(*self)
+                ->density(strike, discount, gap);
+        }        
     }
 };
 
@@ -1138,11 +1171,33 @@ class NoArbSabrInterpolatedSmileSectionPtr : public boost::shared_ptr<SmileSecti
                           isBetaFixed, isNuFixed, isRhoFixed, vegaWeighted,
                           endCriteria, method, dc));
         }
-        Real optionPrice(Rate strike,
-                             Option::Type type = Option::Call,
-                             Real discount=1.0) const {
+        Real alpha() const {
             return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
-                ->optionPrice(strike, type, discount);
+                ->alpha();
+        }
+        Real beta() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->beta();
+        }
+        Real nu() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->nu();
+        }
+        Real rho() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->rho();
+        }
+        Real rmsError() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->rmsError();
+        }
+        Real maxError() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->maxError();
+        }
+        EndCriteria::Type endCriteria() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->endCriteria();
         }
     }
 };
