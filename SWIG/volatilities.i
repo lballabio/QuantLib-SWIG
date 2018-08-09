@@ -931,6 +931,7 @@ using QuantLib::ZabrShortMaturityNormal;
 using QuantLib::ZabrLocalVolatility;
 using QuantLib::ZabrFullFd;
 using QuantLib::ZabrSmileSection;
+using QuantLib::ZabrInterpolatedSmileSection;
 using QuantLib::Option;
 %}
 
@@ -939,7 +940,7 @@ struct ZabrShortMaturityNormal {};
 struct ZabrLocalVolatility {};
 struct ZabrFullFd {};
 
-%define export_zabrsmileinterpolation_curve(Name,Evaluation)
+%define export_zabrsmilesection_curve(Name,Evaluation)
 
 %{
 typedef boost::shared_ptr<SmileSection> Name##Ptr;
@@ -981,10 +982,77 @@ class Name##Ptr : public boost::shared_ptr<SmileSection> {
 
 %enddef
 
-export_zabrsmileinterpolation_curve(ZabrShortMaturityLognormalSmileSection, ZabrShortMaturityLognormal);
-export_zabrsmileinterpolation_curve(ZabrShortMaturityNormalSmileSection, ZabrShortMaturityNormal);
-export_zabrsmileinterpolation_curve(ZabrLocalVolatilitySmileSection, ZabrLocalVolatility);
-export_zabrsmileinterpolation_curve(ZabrFullFdSmileSection, ZabrFullFd);
+export_zabrsmilesection_curve(ZabrShortMaturityLognormalSmileSection, ZabrShortMaturityLognormal);
+export_zabrsmilesection_curve(ZabrShortMaturityNormalSmileSection, ZabrShortMaturityNormal);
+export_zabrsmilesection_curve(ZabrLocalVolatilitySmileSection, ZabrLocalVolatility);
+export_zabrsmilesection_curve(ZabrFullFdSmileSection, ZabrFullFd);
+
+%define export_zabrinterpolatedsmilesection_curve(Name,Evaluation)
+
+%{
+typedef boost::shared_ptr<SmileSection> Name##Ptr;
+%}
+
+%rename(Name) Name##Ptr;
+class Name##Ptr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        Name##Ptr(
+               const Date &optionDate, const Handle<Quote> &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Handle<Quote> &atmVolatility,
+               const std::vector<Handle<Quote> > &volHandles, Real alpha, Real beta,
+               Real nu, Real rho, Real gamma, bool isAlphaFixed = false,
+               bool isBetaFixed = false, bool isNuFixed = false,
+               bool isRhoFixed = false, bool isGammaFixed = false,
+               bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new Name##Ptr(
+                new ZabrInterpolatedSmileSection<Evaluation>(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          volHandles, alpha, beta, nu, rho, gamma, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, isGammaFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        Name##Ptr(
+               const Date &optionDate, const Rate &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Volatility &atmVolatility, const std::vector<Volatility> &vols,
+               Real alpha, Real beta, Real nu, Real rho, Real gamma,
+               bool isAlphaFixed = false, bool isBetaFixed = false,
+               bool isNuFixed = false, bool isRhoFixed = false,
+               bool isGammaFixed = false, bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new Name##Ptr(
+                new ZabrInterpolatedSmileSection<Evaluation>(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          vols, alpha, beta, nu, rho, gamma, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, isGammaFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        Real optionPrice(Rate strike,
+                             Option::Type type = Option::Call,
+                             Real discount=1.0) const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->optionPrice(strike, type, discount);
+        }
+    }
+};
+
+%enddef
+
+export_zabrinterpolatedsmilesection_curve(ZabrShortMaturityLognormalInterpolatedSmileSection, ZabrShortMaturityLognormal);
+export_zabrinterpolatedsmilesection_curve(ZabrShortMaturityNormalInterpolatedSmileSection, ZabrShortMaturityNormal);
+export_zabrinterpolatedsmilesection_curve(ZabrLocalVolatilityInterpolatedSmileSection, ZabrLocalVolatility);
+export_zabrinterpolatedsmilesection_curve(ZabrFullFdInterpolatedSmileSection, ZabrFullFd);
 
 
 #endif
