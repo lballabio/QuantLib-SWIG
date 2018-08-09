@@ -932,6 +932,8 @@ using QuantLib::ZabrLocalVolatility;
 using QuantLib::ZabrFullFd;
 using QuantLib::ZabrSmileSection;
 using QuantLib::ZabrInterpolatedSmileSection;
+using QuantLib::NoArbSabrSmileSection;
+using QuantLib::NoArbSabrInterpolatedSmileSection;
 using QuantLib::Option;
 %}
 
@@ -1054,5 +1056,95 @@ export_zabrinterpolatedsmilesection_curve(ZabrShortMaturityNormalInterpolatedSmi
 export_zabrinterpolatedsmilesection_curve(ZabrLocalVolatilityInterpolatedSmileSection, ZabrLocalVolatility);
 export_zabrinterpolatedsmilesection_curve(ZabrFullFdInterpolatedSmileSection, ZabrFullFd);
 
+%{
+typedef boost::shared_ptr<SmileSection> NoArbSabrSmileSectionPtr;
+typedef boost::shared_ptr<SmileSection> NoArbSabrInterpolatedSmileSectionPtr;
+%}
+
+%rename(NoArbSabrSmileSection) NoArbSabrSmileSectionPtr;
+class NoArbSabrSmileSectionPtr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        NoArbSabrSmileSectionPtr(
+               Time timeToExpiry, 
+               Rate forward,
+               const std::vector<Real> &sabrParameters,
+               const Real shift = 0.0) {
+            return new NoArbSabrSmileSectionPtr(
+                new NoArbSabrSmileSection(
+                          timeToExpiry,forward,sabrParameters,shift));
+        }
+        NoArbSabrSmileSectionPtr(
+               const Date &d, 
+               Rate forward,
+               const std::vector<Real> &sabrParameters,
+               const DayCounter &dc = Actual365Fixed(),
+               const Real shift = 0.0) {
+            return new NoArbSabrSmileSectionPtr(
+                new NoArbSabrSmileSection(
+                          d,forward,sabrParameters,dc,shift));
+        }
+        Real optionPrice(Rate strike,
+                             Option::Type type = Option::Call,
+                             Real discount=1.0) const {
+            return boost::dynamic_pointer_cast<NoArbSabrSmileSection>(*self)
+                ->optionPrice(strike, type, discount);
+        }
+    }
+};
+
+%rename(NoArbSabrInterpolatedSmileSection) NoArbSabrInterpolatedSmileSectionPtr;
+class NoArbSabrInterpolatedSmileSectionPtr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        NoArbSabrInterpolatedSmileSectionPtr(
+               const Date &optionDate, const Handle<Quote> &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Handle<Quote> &atmVolatility,
+               const std::vector<Handle<Quote> > &volHandles, Real alpha, Real beta,
+               Real nu, Real rho, bool isAlphaFixed = false,
+               bool isBetaFixed = false, bool isNuFixed = false,
+               bool isRhoFixed = false,
+               bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new NoArbSabrInterpolatedSmileSectionPtr(
+                new NoArbSabrInterpolatedSmileSection(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          volHandles, alpha, beta, nu, rho, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        NoArbSabrInterpolatedSmileSectionPtr(
+               const Date &optionDate, const Rate &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Volatility &atmVolatility, const std::vector<Volatility> &vols,
+               Real alpha, Real beta, Real nu, Real rho,
+               bool isAlphaFixed = false, bool isBetaFixed = false,
+               bool isNuFixed = false, bool isRhoFixed = false,
+               bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new NoArbSabrInterpolatedSmileSectionPtr(
+                new NoArbSabrInterpolatedSmileSection(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          vols, alpha, beta, nu, rho, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        Real optionPrice(Rate strike,
+                             Option::Type type = Option::Call,
+                             Real discount=1.0) const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->optionPrice(strike, type, discount);
+        }
+    }
+};
 
 #endif
