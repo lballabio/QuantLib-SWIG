@@ -19,7 +19,10 @@ import QuantLib
 import unittest
 
 class DateTest(unittest.TestCase):
-    def runTest(self):
+    def setUp(self):
+        pass
+
+    def testArithmetics(self):
         "Testing date arithmetics"
         date = QuantLib.Date_minDate()
 
@@ -47,10 +50,20 @@ wrong day, month, year increment
             dold = d
             mold = m
             yold = y
+            
+    def testHolidayList(self):
+        """ Testing Calendar testHolidayList() method. """
+        holidayLstFunction = QuantLib.Calendar.holidayList(QuantLib.Poland(),QuantLib.Date(31, 12, 2014),QuantLib.Date(3, 4, 2015),False)
+        holidayLstManual = (QuantLib.Date(1,1,2015), QuantLib.Date(6,1,2015))
+        # check if dates both from function and from manual imput are the same
+        self.assertTrue(all([(a == b) for a, b in zip (holidayLstFunction, holidayLstManual)]))
+        
+    def tearDown(self):
+        pass
 
 
 if __name__ == '__main__':
     print('testing QuantLib ' + QuantLib.__version__) 
     suite = unittest.TestSuite()
-    suite.addTest(DateTest())
+    suite.addTest(unittest.makeSuite(DateTest,'test'))
     unittest.TextTestRunner(verbosity=2).run(suite)

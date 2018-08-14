@@ -1,42 +1,35 @@
 
-Changes for QuantLib-SWIG 1.11
+Changes for QuantLib-SWIG 1.13
 ==============================
 
-The most notable changes are included below.
-A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/4?closed=1>.
+More details on the changes are available in ChangeLog.txt and at
+<https://github.com/lballabio/QuantLib-SWIG/milestone/6?closed=1>.
 
-- This is the last release to include bindings (which are probably
-  broken anyway) for the Guile, MzScheme and OCaml languages.
+- Exported amortizing bonds (thanks to Anthony Calleja).
 
-- Upgraded to SWIG 3.0.12.
-
-- Exported BlackDeltaCalculator class, blackFormula and related
-  functions (thanks to Wojciech Ślusarski).
-
-- Exported discountBond method for short-rate models (thanks to
-  Goutham Balaraman).
-
-- Exported Hull-White forward process (thanks to Wojciech Ślusarski).
-
-- Exported volatility type and displacement to
-  ConstantOptionletVolatility constructors (thanks to Matthias
+- Exported vanna-volga barrier-option engine (thanks to Matthias
   Lungwitz).
 
-- Exported SwaptionVolCube1 inspectors (thanks to Matthias Lungwitz).
+- Exported the MakeSchedule helper class (thanks to Roy Zywina).
 
-- Exported full Schedule constructor based on dates (thanks to
-  Matthias Lungwitz).
+- Exported the Cashflows::previousCashFlowDate and
+  Cashflows::nextCashFlowDate methods (thanks to Weston Steimel).
 
-- Avoid errors building Python 3.5 wrappers (thanks to Alan Donoghue
-  for the heads-up).
+- Exported more methods from the SwapIndex class, as well as a few
+  derived classes (thanks to Matthias Lungwitz).
 
-- Exported FD G2 and Hull-White swaption engines (thanks to Matthias
-  Lungwitz).
+- Exported CPISwap (thanks to Matthias Lungwitz).
 
-- Exported Bates vanilla engine (thanks to GitHub user abhilaksh12).
+- Exported more methods from the ZeroCouponInflationSwap and
+  YearOnYearInflationSwap classes (thanks to Matthias Lungwitz).
 
-- Added to the Python Date class conversion methods to and from
-  datetime instances.
+- Exported MC American option engine (thanks to Matthias Lungwitz).
 
-- Added callable-bond example in Java (thanks to Bojan Nikolic).
+- Exported more methods from the NonStandardSwaption class and its
+  Gaussian engines (thanks to Matthias Lungwitz).
+
+- Exported overnight-indexes swaps (thanks to Matthias Lungwitz).
+
+- Exported more methods from the RateHelper class and a few of its
+  derived classes (thanks to Matthias Lungwitz).
+

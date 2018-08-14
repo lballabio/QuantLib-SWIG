@@ -2,8 +2,9 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
- Copyright (C) 2015 Matthias Groncki
+ Copyright (C) 2015, 2018 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -70,7 +71,10 @@ class Index {
     bool isValidFixingDate(const Date& fixingDate) const;
     Real fixing(const Date& fixingDate,
                 bool forecastTodaysFixing = false) const;
-    void addFixing(const Date& fixingDate, Rate fixing);
+    void addFixing(const Date& fixingDate, Rate fixing,
+                   bool forceOverwrite = false);
+    const TimeSeries<Real>& timeSeries() const;
+    void clearFixings();
 };
 
 %template(Index) boost::shared_ptr<Index>;
@@ -79,9 +83,11 @@ class Index {
     %rename("addFixings!") addFixings;
     #endif
     void addFixings(const std::vector<Date>& fixingDates,
-                    const std::vector<Rate>& fixings) {
+                    const std::vector<Rate>& fixings,
+                    bool forceOverwrite = false) {
         (*self)->addFixings(fixingDates.begin(),fixingDates.end(),
-                            fixings.begin());
+                            fixings.begin(),
+                            forceOverwrite);
     }
     #if !defined(SWIGPERL)
     std::string __str__() {
@@ -188,7 +194,7 @@ class IborIndexPtr : public InterestRateIndexPtr {
         IborIndexPtr clone(const Handle<YieldTermStructure>& h){
             return boost::dynamic_pointer_cast<IborIndex>(*self)
                 ->clone(h);
-    }
+		}
     }
 };
 
@@ -367,6 +373,23 @@ class SwapIndexPtr : public InterestRateIndexPtr {
             return boost::dynamic_pointer_cast<SwapIndex>(*self)
                 ->forwardingTermStructure();
         }
+		Handle<YieldTermStructure> discountingTermStructure() {
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->discountingTermStructure();
+        }
+		SwapIndexPtr clone(const Handle<YieldTermStructure>& h){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(h);
+		}
+		SwapIndexPtr clone(const Handle<YieldTermStructure>& forwarding,
+                        const Handle<YieldTermStructure>& discounting){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(forwarding, discounting);
+		}
+		SwapIndexPtr clone(const Period& tenor){
+            return boost::dynamic_pointer_cast<SwapIndex>(*self)
+                ->clone(tenor);
+		}
     }
 };
 
@@ -414,6 +437,11 @@ class Name##Ptr : public Base##Ptr {
 };
 %enddef
 
+%inline %{
+    SwapIndexPtr as_swap_index(const InterestRateIndexPtr& index) {
+        return boost::dynamic_pointer_cast<SwapIndex>(index);
+    }
+%}
 
 
 export_xibor_instance(AUDLibor);
@@ -494,6 +522,7 @@ export_xibor_instance(JPYLibor);
 export_xibor_instance(NZDLibor);
 export_xibor_instance(SEKLibor);
 export_xibor_instance(Tibor);
+export_xibor_instance(THBFIX);
 export_xibor_instance(TRLibor);
 export_xibor_instance(USDLibor);
 export_xibor_instance(Zibor);
@@ -512,5 +541,20 @@ export_swap_instance(EurLiborSwapIsdaFixA);
 export_swap_instance(EurLiborSwapIsdaFixB);
 export_swap_instance(EurLiborSwapIfrFix);
 
+export_swap_instance(ChfLiborSwapIsdaFix);
+export_swap_instance(GbpLiborSwapIsdaFix);
+export_swap_instance(JpyLiborSwapIsdaFixAm);
+export_swap_instance(JpyLiborSwapIsdaFixPm);
+export_swap_instance(UsdLiborSwapIsdaFixAm);
+export_swap_instance(UsdLiborSwapIsdaFixPm);
+
+export_xibor_instance(Bibor);
+export_quoted_xibor_instance(BiborSW,Bibor);
+export_quoted_xibor_instance(Bibor1M,Bibor);
+export_quoted_xibor_instance(Bibor2M,Bibor);
+export_quoted_xibor_instance(Bibor3M,Bibor);
+export_quoted_xibor_instance(Bibor6M,Bibor);
+export_quoted_xibor_instance(Bibor9M,Bibor);
+export_quoted_xibor_instance(Bibor1Y,Bibor);
 
 #endif

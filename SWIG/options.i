@@ -7,6 +7,7 @@
  Copyright (C) 2010, 2012 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -694,10 +695,18 @@ class BinomialVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 %{
 using QuantLib::MCEuropeanEngine;
+using QuantLib::MCAmericanEngine;
 using QuantLib::PseudoRandom;
 using QuantLib::LowDiscrepancy;
+using QuantLib::LsmBasisSystem;
 typedef boost::shared_ptr<PricingEngine> MCEuropeanEnginePtr;
+typedef boost::shared_ptr<PricingEngine> MCAmericanEnginePtr;
 %}
+
+struct LsmBasisSystem {
+    enum PolynomType  {Monomial, Laguerre, Hermite, Hyperbolic,
+                           Legendre, Chebyshev, Chebyshev2nd };
+};
 
 %rename(MCEuropeanEngine) MCEuropeanEnginePtr;
 class MCEuropeanEnginePtr : public boost::shared_ptr<PricingEngine> {
@@ -752,6 +761,76 @@ class MCEuropeanEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+%rename(MCAmericanEngine) MCAmericanEnginePtr;
+class MCAmericanEnginePtr : public boost::shared_ptr<PricingEngine> {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCAmericanEnginePtr;
+    #endif
+  public:
+    %extend {
+		static const VanillaSwap::Type Receiver = VanillaSwap::Receiver;
+        static const VanillaSwap::Type Payer = VanillaSwap::Payer;
+		
+        MCAmericanEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
+                            const std::string& traits,
+                            intOrNull timeSteps = Null<Size>(),
+                            intOrNull timeStepsPerYear = Null<Size>(),
+                            bool antitheticVariate = false,
+                            bool controlVariate = false,							
+                            intOrNull requiredSamples = Null<Size>(),
+                            doubleOrNull requiredTolerance = Null<Real>(),
+                            intOrNull maxSamples = Null<Size>(),
+                            BigInteger seed = 0,
+							intOrNull polynomOrder = 2, 
+							LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial,
+							int nCalibrationSamples = 2048,
+							boost::optional<bool> antitheticVariateCalibration = boost::none,
+							BigNatural seedCalibration = Null<Size>()) {
+            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                                                                     process);
+            QL_REQUIRE(bsProcess, "Black-Scholes process required");
+            std::string s = boost::algorithm::to_lower_copy(traits);
+            QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
+                       Size(timeStepsPerYear) != Null<Size>(),
+                       "number of steps not specified");
+            if (s == "pseudorandom" || s == "pr")
+                return new MCAmericanEnginePtr(
+                         new MCAmericanEngine<PseudoRandom>(bsProcess,
+                                                            timeSteps,
+                                                            timeStepsPerYear,
+                                                            antitheticVariate,
+															controlVariate,
+                                                            requiredSamples,
+                                                            requiredTolerance,
+                                                            maxSamples,
+                                                            seed,
+															polynomOrder,
+															polynomType,
+															nCalibrationSamples,
+															antitheticVariateCalibration,
+															seedCalibration));
+            else if (s == "lowdiscrepancy" || s == "ld")
+                return new MCAmericanEnginePtr(
+                       new MCAmericanEngine<LowDiscrepancy>(bsProcess,
+                                                            timeSteps,
+                                                            timeStepsPerYear,
+                                                            antitheticVariate,
+															controlVariate,
+                                                            requiredSamples,
+                                                            requiredTolerance,
+                                                            maxSamples,
+                                                            seed,
+															polynomOrder,
+															polynomType,
+															nCalibrationSamples,
+															antitheticVariateCalibration,
+															seedCalibration));
+            else
+                QL_FAIL("unknown Monte Carlo engine type: "+s);
+        }
+    }
+};
 
 // American engines
 
@@ -1983,8 +2062,10 @@ class WulinYongDoubleBarrierEnginePtr
 
 %{
 using QuantLib::VannaVolgaDoubleBarrierEngine;
+using QuantLib::VannaVolgaBarrierEngine;
 using QuantLib::DeltaVolQuote;
 typedef boost::shared_ptr<PricingEngine> VannaVolgaDoubleBarrierEnginePtr;
+typedef boost::shared_ptr<PricingEngine> VannaVolgaBarrierEnginePtr;
 %}
 
 #if defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -2085,6 +2166,29 @@ class VannaVolgaDoubleBarrierEnginePtr
                                         bsPriceWithSmile, series));
             else
                 QL_FAIL("unknown binomial engine type: "+s);
+        }
+    }
+};
+
+%rename(VannaVolgaBarrierEngine) VannaVolgaBarrierEnginePtr;
+class VannaVolgaBarrierEnginePtr
+    : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        VannaVolgaBarrierEnginePtr(
+                const Handle<DeltaVolQuote>& atmVol,
+                const Handle<DeltaVolQuote>& vol25Put,
+                const Handle<DeltaVolQuote>& vol25Call,
+                const Handle<Quote>& spotFX,
+                const Handle<YieldTermStructure>& domesticTS,
+                const Handle<YieldTermStructure>& foreignTS,
+                const bool adaptVanDelta = false,
+                const Real bsPriceWithSmile = 0.0) {
+                return new VannaVolgaBarrierEnginePtr(
+                   new VannaVolgaBarrierEngine(
+                                        atmVol, vol25Put, vol25Call, spotFX, 
+                                        domesticTS, foreignTS, adaptVanDelta, 
+                                        bsPriceWithSmile));
         }
     }
 };
