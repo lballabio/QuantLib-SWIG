@@ -443,6 +443,56 @@ class Name##Ptr : public Base##Ptr {
     }
 %}
 
+%{
+using QuantLib::SwapSpreadIndex;
+typedef boost::shared_ptr<Index> SwapSpreadIndexPtr;
+%}
+
+%rename(SwapSpreadIndex) SwapSpreadIndexPtr;
+class SwapSpreadIndexPtr : public InterestRateIndexPtr {
+  public:
+    %extend {
+        SwapSpreadIndexPtr(const std::string& familyName,
+                        const SwapIndexPtr& swapIndex1,
+                        const SwapIndexPtr& swapIndex2,
+                        const Real gearing1 = 1.0,
+                        const Real gearing2 = -1.0) {
+            boost::shared_ptr<SwapIndex> index1 =
+                boost::dynamic_pointer_cast<SwapIndex>(swapIndex1);
+            boost::shared_ptr<SwapIndex> index2 =
+                boost::dynamic_pointer_cast<SwapIndex>(swapIndex2);
+            return new SwapSpreadIndexPtr(new SwapSpreadIndex(familyName,
+                                                  index1,
+                                                  index2,
+                                                  gearing1,
+                                                  gearing2));
+        }
+        Rate forecastFixing(const Date& fixingDate) {
+            return boost::dynamic_pointer_cast<SwapSpreadIndex>(*self)
+                ->forecastFixing(fixingDate);
+        }
+        Rate pastFixing(const Date& fixingDate) {
+            return boost::dynamic_pointer_cast<SwapSpreadIndex>(*self)
+                ->pastFixing(fixingDate);
+        }
+        SwapIndexPtr swapIndex1() {
+            return boost::dynamic_pointer_cast<SwapSpreadIndex>(*self)
+                ->swapIndex1();
+        }
+        SwapIndexPtr swapIndex2() {
+            return boost::dynamic_pointer_cast<SwapSpreadIndex>(*self)
+                ->swapIndex2();
+        }
+        Real gearing1() {
+            return boost::dynamic_pointer_cast<SwapSpreadIndex>(*self)
+                ->gearing1();
+        }
+        Real gearing2() {
+            return boost::dynamic_pointer_cast<SwapSpreadIndex>(*self)
+                ->gearing2();
+        }        
+    }
+};
 
 export_xibor_instance(AUDLibor);
 export_xibor_instance(CADLibor);

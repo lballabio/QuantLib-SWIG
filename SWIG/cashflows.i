@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2010, 2011 Lluis Pujol Bajador
- Copyright (C) 2017 Matthias Lungwitz
+ Copyright (C) 2017, 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -388,8 +388,12 @@ class BlackIborCouponPricerPtr : public IborCouponPricerPtr {
 %{
 using QuantLib::CmsCoupon;
 using QuantLib::CappedFlooredCmsCoupon;
+using QuantLib::CmsSpreadCoupon;
+using QuantLib::CappedFlooredCmsSpreadCoupon;
 typedef boost::shared_ptr<CashFlow> CmsCouponPtr;
 typedef boost::shared_ptr<CashFlow> CappedFlooredCmsCouponPtr;
+typedef boost::shared_ptr<CashFlow> CmsSpreadCouponPtr;
+typedef boost::shared_ptr<CashFlow> CappedFlooredCmsSpreadCouponPtr;
 %}
 
 %rename(CmsCoupon) CmsCouponPtr;
@@ -418,16 +422,50 @@ class CmsCouponPtr : public FloatingRateCouponPtr {
     }
 };
 
+%rename(CmsSpreadCoupon) CmsSpreadCouponPtr;
+class CmsSpreadCouponPtr : public FloatingRateCouponPtr {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CmsSpreadCouponPtr;
+    #endif
+  public:
+    %extend {
+        CmsSpreadCouponPtr(const Date& paymentDate,
+                  Real nominal,
+                  const Date& startDate,
+                  const Date& endDate,
+                  Natural fixingDays,
+                  const SwapSpreadIndexPtr& index,
+                  Real gearing = 1.0,
+                  Spread spread = 0.0,
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
+                  bool isInArrears = false) {
+            const boost::shared_ptr<SwapSpreadIndex> swi =
+                boost::dynamic_pointer_cast<SwapSpreadIndex>(index);
+            return new CmsSpreadCouponPtr(
+                new CmsSpreadCoupon(paymentDate,nominal,startDate,endDate,
+                              fixingDays,swi,gearing,spread,
+                              refPeriodStart,refPeriodEnd,
+                              dayCounter,isInArrears));
+        }
+    }
+};
+
 %{
 using QuantLib::CmsCouponPricer;
 using QuantLib::AnalyticHaganPricer;
 using QuantLib::NumericHaganPricer;
 using QuantLib::GFunctionFactory;
 using QuantLib::LinearTsrPricer;
+using QuantLib::CmsSpreadCouponPricer;
+using QuantLib::LognormalCmsSpreadPricer;
 typedef boost::shared_ptr<FloatingRateCouponPricer> CmsCouponPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> AnalyticHaganPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> NumericHaganPricerPtr;
 typedef boost::shared_ptr<FloatingRateCouponPricer> LinearTsrPricerPtr;
+typedef boost::shared_ptr<FloatingRateCouponPricer> CmsSpreadCouponPricerPtr;
+typedef boost::shared_ptr<FloatingRateCouponPricer> LognormalCmsSpreadPricerPtr;
 %}
 
 %rename(CmsCouponPricer) CmsCouponPricerPtr;
@@ -518,7 +556,34 @@ class CappedFlooredCmsCouponPtr: public CappedFlooredCouponPtr {
     }
 };
 
-
+%rename(CappedFlooredCmsSpreadCoupon) CappedFlooredCmsSpreadCouponPtr;
+class CappedFlooredCmsSpreadCouponPtr: public CappedFlooredCouponPtr {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CappedFlooredCouponPtr;
+    #endif
+  public:
+    %extend {
+        CappedFlooredCmsSpreadCouponPtr(
+                  const Date& paymentDate, Real nominal,
+                  const Date& startDate, const Date& endDate,
+                  Natural fixingDays, const SwapSpreadIndexPtr& index,
+                  Real gearing = 1.0, Spread spread = 0.0,
+                  const Rate cap = Null<Rate>(),
+                  const Rate floor = Null<Rate>(),
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
+                  bool isInArrears = false) {
+            const boost::shared_ptr<SwapSpreadIndex> swi =
+                boost::dynamic_pointer_cast<SwapSpreadIndex>(index);
+            return new CappedFlooredCmsSpreadCouponPtr(
+                new CappedFlooredCmsSpreadCoupon(
+                      paymentDate, nominal, startDate, endDate, fixingDays,
+                      swi, gearing, spread, cap, floor, refPeriodStart,
+                      refPeriodEnd, dayCounter, isInArrears));
+        }
+    }
+};
 
 %rename(LinearTsrPricer) LinearTsrPricerPtr;
 class LinearTsrPricerPtr : public CmsCouponPricerPtr {
@@ -534,6 +599,69 @@ class LinearTsrPricerPtr : public CmsCouponPricerPtr {
             return new LinearTsrPricerPtr(
                           new LinearTsrPricer(swaptionVol, meanReversion,
                                               couponDiscountCurve, settings));
+        }
+    }
+};
+
+%rename(CmsSpreadCouponPricer) CmsSpreadCouponPricerPtr;
+class CmsSpreadCouponPricerPtr : public boost::shared_ptr<FloatingRateCouponPricer> {
+  private:
+    CmsSpreadCouponPricerPtr();
+  public:
+    %extend {
+        Handle<Quote> correlation() {
+            return boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(*self)
+                ->correlation();
+        }
+        void setCorrelation(
+                                const Handle<Quote> &correlation = Handle<Quote>()) {
+            boost::dynamic_pointer_cast<CmsSpreadCouponPricer>(*self)
+                ->setCorrelation(correlation);
+        }
+    }
+};
+
+%rename(LognormalCmsSpreadPricer) LognormalCmsSpreadPricerPtr;
+class LognormalCmsSpreadPricerPtr : public CmsSpreadCouponPricerPtr {
+  public:
+    %extend {
+        LognormalCmsSpreadPricerPtr(
+            const CmsCouponPricerPtr cmsPricer,
+            const Handle<Quote> &correlation,
+            const Handle<YieldTermStructure> &couponDiscountCurve =
+                Handle<YieldTermStructure>(),
+            const Size IntegrationPoints = 16,
+            const boost::optional<VolatilityType> volatilityType = boost::none,
+            const Real shift1 = Null<Real>(), const Real shift2 = Null<Real>()) {
+            const boost::shared_ptr<CmsCouponPricer> pricer =
+                boost::dynamic_pointer_cast<CmsCouponPricer>(cmsPricer);
+            return new LognormalCmsSpreadPricerPtr(
+                          new LognormalCmsSpreadPricer(pricer, correlation,
+                                              couponDiscountCurve, IntegrationPoints, volatilityType, shift1, shift2));
+        }
+        Real swapletPrice() {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->swapletPrice();
+        }
+        Rate swapletRate() {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->swapletRate();
+        }
+        Real capletPrice(Rate effectiveCap) {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->capletPrice(effectiveCap);
+        }
+        Rate capletRate(Rate effectiveCap){
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->capletRate(effectiveCap);
+        }
+        Real floorletPrice(Rate effectiveFloor) {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->floorletPrice(effectiveFloor);
+        }
+        Rate floorletRate(Rate effectiveFloor) {
+           return boost::dynamic_pointer_cast<LognormalCmsSpreadPricer>(*self)
+                ->floorletRate(effectiveFloor);
         }
     }
 };
@@ -689,7 +817,48 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const std::vector<Rate>& caps = std::vector<Rate>(),
                 const std::vector<Rate>& floors = std::vector<Rate>());
 
-
+%{
+Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
+            const Schedule& schedule,
+            const boost::shared_ptr<Index>& index,
+            const DayCounter& paymentDayCounter = DayCounter(),
+            const BusinessDayConvention paymentConvention = Following,
+            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+            const std::vector<Real>& gearings = std::vector<Real>(),
+            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            bool isInArrears = false) {
+    boost::shared_ptr<SwapSpreadIndex> swapSpreadIndex =
+        boost::dynamic_pointer_cast<SwapSpreadIndex>(index);
+    return QuantLib::CmsSpreadLeg(schedule, swapSpreadIndex)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(paymentDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withFixingDays(fixingDays)
+        .withGearings(gearings)
+        .withSpreads(spreads)
+        .withCaps(caps)
+        .withFloors(floors)
+        .inArrears(isInArrears);
+}
+%}
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+%feature("kwargs") _CmsSpreadLeg;
+#endif
+%rename(CmsSpreadLeg) _CmsSpreadLeg;
+Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
+            const Schedule& schedule,
+            const SwapSpreadIndexPtr& index,
+            const DayCounter& paymentDayCounter = DayCounter(),
+            const BusinessDayConvention paymentConvention = Following,
+            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+            const std::vector<Real>& gearings = std::vector<Real>(),
+            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            bool isInArrears = false);
+                
 // cash-flow analysis
 
 %{

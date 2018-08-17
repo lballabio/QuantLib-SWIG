@@ -34,6 +34,8 @@
 %include indexes.i
 %include optimizers.i
 
+%define QL_TYPECHECK_VOLATILITYTYPE       8210    %enddef
+
 %{
 using QuantLib::VolatilityType;
 using QuantLib::ShiftedLognormal;
@@ -41,6 +43,23 @@ using QuantLib::Normal;
 %}
 
 enum VolatilityType { ShiftedLognormal, Normal};
+
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<VolatilityType> %{
+    if($input == Py_None)
+        $1 = boost::none;
+    else if (PyInt_Check($input))
+        $1 = (VolatilityType) PyInt_AsLong($input);
+    else
+        $1 = (VolatilityType) PyLong_AsLong($input);
+%}
+%typecheck (QL_TYPECHECK_VOLATILITYTYPE) boost::optional<VolatilityType> {
+if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
+    $1 = 1;
+else
+    $1 = 0;
+}
+#endif
 
 %{
 using QuantLib::BlackVolTermStructure;
