@@ -29,7 +29,7 @@ using QuantLib::TimeSeries;
 using QuantLib::IntervalPrice;
 %}
 
-#if defined(JAVA_CLOSEABLE)
+#if defined (SWIGJAVA) && defined(JAVA_CLOSEABLE)
 // close() method naming conflict
 %rename(closePrice) IntervalPrice::close();
 #endif

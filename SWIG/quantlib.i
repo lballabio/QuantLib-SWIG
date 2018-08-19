@@ -66,15 +66,14 @@ const char* __version__;
 #endif
 
 
-#if defined(JAVA_CLOSEABLE)
+#if defined(JAVA_AUTOCLOSEABLE)
 %typemap(javaimports) SWIGTYPE %{
-import java.io.Closeable;
-import java.io.IOException;
+import java.lang.AutoCloseable;
 %}
-%typemap(javainterfaces) SWIGTYPE "Closeable";
+%typemap(javainterfaces) SWIGTYPE "AutoCloseable";
 %typemap(javacode) SWIGTYPE %{
   @Override
-  public void close() throws IOException {
+  public void close() {
    this.delete();
   }
 %}

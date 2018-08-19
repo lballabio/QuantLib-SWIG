@@ -124,12 +124,12 @@ AC_ARG_ENABLE([java-finalizer],
               [java_finalizer=yes])
 AM_CONDITIONAL(JAVA_FINALIZER, test "$java_finalizer" != "no")
 
-AC_ARG_ENABLE([java-closeable],
-              AC_HELP_STRING([--enable-java-closeable],
-                             [If enabled, the java Objects will implement Closeable]),
-              [java_closeable=$enableval],
-              [java_closeable=no])
-AM_CONDITIONAL(JAVA_CLOSEABLE, test "$java_closable" != "no")
+AC_ARG_ENABLE([java-autocloseable],
+              AC_HELP_STRING([--enable-java-autocloseable],
+                             [If enabled, the java Objects will implement AutoCloseable]),
+              [java_autocloseable=$enableval],
+              [java_autocloseable=no])
+AM_CONDITIONAL(JAVA_AUTOCLOSEABLE, test "$java_autocloseable" != "no")
 
 
 AC_ARG_WITH([jdk-include],
