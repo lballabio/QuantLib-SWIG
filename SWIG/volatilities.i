@@ -973,12 +973,6 @@ class Name##Ptr : public boost::shared_ptr<SmileSection> {
                 new ZabrSmileSection<Evaluation>(
                           d,forward,zabrParameters,dc,moneyness,fdRefinement));
         }
-        Real optionPrice(Rate strike,
-                             Option::Type type = Option::Call,
-                             Real discount=1.0) const {
-            return boost::dynamic_pointer_cast<ZabrSmileSection<Evaluation> >(*self)
-                ->optionPrice(strike, type, discount);
-        }
     }
 };
 
@@ -1105,24 +1099,7 @@ class NoArbSabrSmileSectionPtr : public boost::shared_ptr<SmileSection> {
             return new NoArbSabrSmileSectionPtr(
                 new NoArbSabrSmileSection(
                           d,forward,sabrParameters,dc,shift));
-        }
-        Real optionPrice(Rate strike,
-                             Option::Type type = Option::Call,
-                             Real discount=1.0) const {
-            return boost::dynamic_pointer_cast<NoArbSabrSmileSection>(*self)
-                ->optionPrice(strike, type, discount);
-        }
-        Real digitalOptionPrice(Rate strike,
-                             Option::Type type = Option::Call,
-                             Real discount=1.0, Real gap = 1.0e-5) const {
-            return boost::dynamic_pointer_cast<NoArbSabrSmileSection>(*self)
-                ->digitalOptionPrice(strike, type, discount, gap);
-        }
-        Real density(Rate strike,
-                             Real discount=1.0, Real gap = 1.0e-5) const {
-            return boost::dynamic_pointer_cast<NoArbSabrSmileSection>(*self)
-                ->density(strike, discount, gap);
-        }        
+        }       
     }
 };
 
