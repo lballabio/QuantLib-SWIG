@@ -291,6 +291,7 @@
     <Compile Include="CapFloorTermVolSurface.cs" />
     <Compile Include="CapHelper.cs" />
     <Compile Include="CappedFlooredCmsCoupon.cs" />
+    <Compile Include="CappedFlooredCmsSpreadCoupon.cs" />
     <Compile Include="CappedFlooredCoupon.cs" />
     <Compile Include="CashFlow.cs" />
     <Compile Include="CashFlows.cs" />
@@ -309,6 +310,8 @@
     <Compile Include="CmsCoupon.cs" />
     <Compile Include="CmsCouponPricer.cs" />
     <Compile Include="CmsRateBond.cs" />
+    <Compile Include="CmsSpreadCoupon.cs" />
+    <Compile Include="CmsSpreadCouponPricer.cs" />
     <Compile Include="CNYCurrency.cs" />
     <Compile Include="Collar.cs" />
     <Compile Include="CompositeConstraint.cs" />
@@ -647,6 +650,7 @@
     <Compile Include="LogLinear.cs" />
     <Compile Include="LogLinearInterpolation.cs" />
     <Compile Include="LogLinearZeroCurve.cs" />
+    <Compile Include="LognormalCmsSpreadPricer.cs" />
     <Compile Include="LogNormalSimulatedAnnealing.cs" />
     <Compile Include="LogParabolic.cs" />
     <Compile Include="LsmBasisSystem.cs" />
@@ -654,6 +658,7 @@
     <Compile Include="LUFCurrency.cs" />
     <Compile Include="LVLCurrency.cs" />
     <Compile Include="MakeSchedule.cs" />
+    <Compile Include="MakeVanillaSwap.cs" />
     <Compile Include="MarkovFunctional.cs" />
     <Compile Include="MarkovFunctionalSettings.cs" />
     <Compile Include="Matrix.cs" />
@@ -879,6 +884,7 @@
     <Compile Include="Swap.cs" />
     <Compile Include="SwapIndex.cs" />
     <Compile Include="SwapRateHelper.cs" />
+    <Compile Include="SwapSpreadIndex.cs" />
     <Compile Include="Swaption.cs" />
     <Compile Include="SwaptionHelper.cs" />
     <Compile Include="SwaptionVolatilityMatrix.cs" />
@@ -889,6 +895,7 @@
     <Compile Include="Sweden.cs" />
     <Compile Include="SWIGTYPE_p_BlackVolTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_bool_t.cs" />
+    <Compile Include="SWIGTYPE_p_boost__optionalT_VolatilityType_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_EndCriteria_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_IborIndex_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_OptimizationMethod_t.cs" />

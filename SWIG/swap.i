@@ -5,6 +5,7 @@
  Copyright (C) 2015 Gouthaman Balaraman
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2017, 2018 Matthias Lungwitz
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +34,7 @@
 %{
 using QuantLib::Swap;
 using QuantLib::VanillaSwap;
+using QuantLib::MakeVanillaSwap;
 using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
 using QuantLib::FloatFloatSwap;
@@ -166,6 +168,138 @@ class VanillaSwapPtr : public SwapPtr {
         }
     }
 };
+
+
+#if defined(SWIGPYTHON)
+%rename (_MakeVanillaSwap) MakeVanillaSwap;
+#endif
+class MakeVanillaSwap {
+      public:
+        MakeVanillaSwap& receiveFixed(bool flag = true);
+        MakeVanillaSwap& withType(VanillaSwap::Type type);
+        MakeVanillaSwap& withNominal(Real n);
+
+        MakeVanillaSwap& withSettlementDays(Natural settlementDays);
+        MakeVanillaSwap& withEffectiveDate(const Date&);
+        MakeVanillaSwap& withTerminationDate(const Date&);
+        MakeVanillaSwap& withRule(DateGeneration::Rule r);
+
+        MakeVanillaSwap& withFixedLegTenor(const Period& t);
+        MakeVanillaSwap& withFixedLegCalendar(const Calendar& cal);
+        MakeVanillaSwap& withFixedLegConvention(BusinessDayConvention bdc);
+        MakeVanillaSwap& withFixedLegTerminationDateConvention(
+                                                   BusinessDayConvention bdc);
+        MakeVanillaSwap& withFixedLegRule(DateGeneration::Rule r);
+        MakeVanillaSwap& withFixedLegEndOfMonth(bool flag = true);
+        MakeVanillaSwap& withFixedLegFirstDate(const Date& d);
+        MakeVanillaSwap& withFixedLegNextToLastDate(const Date& d);
+        MakeVanillaSwap& withFixedLegDayCount(const DayCounter& dc);
+
+        MakeVanillaSwap& withFloatingLegTenor(const Period& t);
+        MakeVanillaSwap& withFloatingLegCalendar(const Calendar& cal);
+        MakeVanillaSwap& withFloatingLegConvention(BusinessDayConvention bdc);
+        MakeVanillaSwap& withFloatingLegTerminationDateConvention(
+                                                   BusinessDayConvention bdc);
+        MakeVanillaSwap& withFloatingLegRule(DateGeneration::Rule r);
+        MakeVanillaSwap& withFloatingLegEndOfMonth(bool flag = true);
+        MakeVanillaSwap& withFloatingLegFirstDate(const Date& d);
+        MakeVanillaSwap& withFloatingLegNextToLastDate(const Date& d);
+        MakeVanillaSwap& withFloatingLegDayCount(const DayCounter& dc);
+        MakeVanillaSwap& withFloatingLegSpread(Spread sp);
+
+        MakeVanillaSwap& withDiscountingTermStructure(
+                              const Handle<YieldTermStructure>& discountCurve);
+        MakeVanillaSwap& withPricingEngine(
+                              const boost::shared_ptr<PricingEngine>& engine);
+        %extend{
+            SwapPtr makeVanillaSwap(){
+                return (boost::shared_ptr<VanillaSwap>)(* $self);
+            }
+            MakeVanillaSwap(const Period& swapTenor,
+                        const IborIndexPtr& iborIndex,
+                        Rate fixedRate,
+                        const Period& forwardStart){
+                boost::shared_ptr<IborIndex> index = boost::dynamic_pointer_cast<IborIndex>(iborIndex);
+                return new MakeVanillaSwap(swapTenor, index, fixedRate, forwardStart);
+            };
+        }
+};
+
+
+#if defined(SWIGPYTHON)
+%pythoncode{
+def MakeVanillaSwap(swapTenor,iborIndex,fixedRate,forwardStart,
+    receiveFixed=None, swapType=None, Nominal=None, settlementDays=None,
+    effectiveDate=None, terminationDate=None, dateGenerationRule=None,
+    fixedLegTenor=None, fixedLegCalendar=None, fixedLegConvention=None,
+    fixedLegDayCount=None, floatingLegTenor=None, floatingLegCalendar=None,
+    floatingLegConvention=None, floatingLegDayCount=None, floatingLegSpread=None,
+    discountingTermStructure=None, pricingEngine=None,
+    fixedLegTerminationDateConvention=None,  fixedLegDateGenRule=None,
+    fixedLegEndOfMonth=None, fixedLegFirstDate=None, fixedLegNextToLastDate=None,
+    floatingLegTerminationDateConvention=None,  floatingLegDateGenRule=None,
+    floatingLegEndOfMonth=None, floatingLegFirstDate=None, floatingLegNextToLastDate=None):
+    mv = _MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart)
+    if receiveFixed is not None:
+        mv.receiveFixed(receiveFixed)
+    if swapType is not None:
+        mv.withType(swapType)
+    if Nominal is not None:
+        mv.withNominal(Nominal)
+    if settlementDays is not None:
+        mv.withSettlementDays(settlementDays)
+    if effectiveDate is not None:
+        mv.withEffectiveDate(effectiveDate)
+    if terminationDate is not None:
+        mv.withTerminationDate(terminationDate)
+    if dateGenerationRule is not None:
+        mv.withRule(dateGenerationRule)
+    if fixedLegTenor is not None:
+        mv.withFixedLegTenor(fixedLegTenor)
+    if fixedLegCalendar is not None:
+        mv.withFixedLegCalendar(fixedLegCalendar)
+    if fixedLegConvention is not None:
+        mv.withFixedLegConvention(fixedLegConvention)
+    if fixedLegDayCount is not None:
+        mv.withFixedLegDayCount(fixedLegDayCount)
+    if floatingLegTenor is not None:
+        mv.withFloatingLegTenor(floatingLegTenor)
+    if floatingLegCalendar is not None:
+        mv.withFloatingLegCalendar(floatingLegCalendar)
+    if floatingLegConvention is not None:
+        mv.withFloatingLegConvention(floatingLegConvention)
+    if floatingLegDayCount is not None:
+        mv.withFloatingLegDayCount(floatingLegDayCount)
+    if floatingLegSpread is not None:
+        mv.withFloatingLegSpread(floatingLegSpread)
+    if discountingTermStructure is not None:
+        mv.withDiscountingTermStructure(discountingTermStructure)
+    if pricingEngine is not None:
+        mv.withPricingEngine(pricingEngine)
+    if fixedLegTerminationDateConvention is not None:
+        mv.withFixedLegTerminationDateConvention(fixedLegTerminationDateConvention)
+    if fixedLegDateGenRule is not None:
+        mv.withFixedLegRule(fixedLegDateGenRule)
+    if fixedLegEndOfMonth is not None:
+        mv.withFixedLegEndOfMonth(fixedLegEndOfMonth)
+    if fixedLegFirstDate is not None:
+        mv.withFixedLegFirstDate(fixedLegFirstDate)
+    if fixedLegNextToLastDate is not None:
+        mv.withFixedLegNextToLastDate(fixedLegNextToLastDate)
+    if floatingLegTerminationDateConvention is not None:
+        mv.withFloatingLegTerminationDateConvention(floatingLegTerminationDateConvention)
+    if floatingLegDateGenRule is not None:
+        mv.withFloatingLegRule(floatingLegDateGenRule)
+    if floatingLegEndOfMonth is not None:
+        mv.withFloatingLegEndOfMonth(floatingLegEndOfMonth)
+    if floatingLegFirstDate is not None:
+        mv.withFloatingLegFirstDate(floatingLegFirstDate)
+    if floatingLegNextToLastDate is not None:
+        mv.withFloatingLegNextToLastDate(floatingLegNextToLastDate)
+    return mv.makeVanillaSwap()
+}
+#endif
+
 
 #if defined(SWIGJAVA) || defined(SWIGCSHARP)
 %rename(_NonstandardSwap) NonstandardSwap;
