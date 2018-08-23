@@ -213,6 +213,14 @@
     <Compile Include="BespokeCalendar.cs" />
     <Compile Include="BFGS.cs" />
     <Compile Include="BGLCurrency.cs" />
+    <Compile Include="Bibor.cs" />
+    <Compile Include="BiborSW.cs" />
+    <Compile Include="Bibor1M.cs" />
+    <Compile Include="Bibor2M.cs" />
+    <Compile Include="Bibor3M.cs" />
+    <Compile Include="Bibor6M.cs" />
+    <Compile Include="Bibor9M.cs" />
+    <Compile Include="Bibor1Y.cs" />
     <Compile Include="BicubicSpline.cs" />
     <Compile Include="BilinearInterpolation.cs" />
     <Compile Include="BinomialBarrierEngine.cs" />
@@ -326,6 +334,7 @@
     <Compile Include="CreditDefaultSwap.cs" />
     <Compile Include="Cubic.cs" />
     <Compile Include="CubicBSplinesFitting.cs" />
+    <Compile Include="CubicInterpolatedSmileSection.cs" />
     <Compile Include="CubicNaturalSpline.cs" />
     <Compile Include="CubicZeroCurve.cs" />
     <Compile Include="CumulativeBinomialDistribution.cs" />
@@ -473,6 +482,7 @@
     <Compile Include="FixedRateCoupon.cs" />
     <Compile Include="FlatForward.cs" />
     <Compile Include="FlatHazardRate.cs" />
+    <Compile Include="FlatSmileSection.cs" />
     <Compile Include="FloatingRateBond.cs" />
     <Compile Include="FloatingRateCoupon.cs" />
     <Compile Include="FloatingRateCouponPricer.cs" />
@@ -611,6 +621,7 @@
     <Compile Include="JPYLibor.cs" />
     <Compile Include="JpyLiborSwapIsdaFixAm.cs" />
     <Compile Include="JpyLiborSwapIsdaFixPm.cs" />
+    <Compile Include="KahaleSmileSection.cs" />
     <Compile Include="KnuthUniformRng.cs" />
     <Compile Include="KnuthUniformRsg.cs" />
     <Compile Include="KrugerCubic.cs" />
@@ -624,6 +635,7 @@
     <Compile Include="LexicographicalView.cs" />
     <Compile Include="Libor.cs" />
     <Compile Include="Linear.cs" />
+    <Compile Include="LinearInterpolatedSmileSection.cs" />
     <Compile Include="LinearInterpolation.cs" />
     <Compile Include="LinearTsrPricer.cs" />
     <Compile Include="LocalConstantVol.cs" />
@@ -665,6 +677,7 @@
     <Compile Include="MirrorGaussianSimulatedAnnealing.cs" />
     <Compile Include="Money.cs" />
     <Compile Include="MonotonicCubic.cs" />
+    <Compile Include="MonotonicCubicInterpolatedSmileSection.cs" />
     <Compile Include="MonotonicCubicNaturalSpline.cs" />
     <Compile Include="MonotonicCubicZeroCurve.cs" />
     <Compile Include="MonotonicLogCubic.cs" />
@@ -741,6 +754,7 @@
     <Compile Include="PiecewiseFlatHazardRate.cs" />
     <Compile Include="PiecewiseLinearForward.cs" />
     <Compile Include="PiecewiseLinearZero.cs" />
+    <Compile Include="PiecewiseLogLinearDiscount.cs" />
     <Compile Include="PiecewiseLogCubicDiscount.cs" />
     <Compile Include="PiecewiseTimeDependentHestonModel.cs" />
     <Compile Include="PiecewiseYoYInflation.cs" />
@@ -799,6 +813,7 @@
     <Compile Include="Rounding.cs" />
     <Compile Include="RUBCurrency.cs" />
     <Compile Include="Russia.cs" />
+    <Compile Include="SabrSmileSection.cs" />
     <Compile Include="SalvagingAlgorithm.cs" />
     <Compile Include="SampleArray.cs" />
     <Compile Include="SampledCurve.cs" />
@@ -833,13 +848,17 @@
     <Compile Include="SITCurrency.cs" />
     <Compile Include="SKKCurrency.cs" />
     <Compile Include="Slovakia.cs" />
+    <Compile Include="SmileSection.cs" />
     <Compile Include="SobolBrownianBridgeRsg.cs" />
     <Compile Include="SobolRsg.cs" />
     <Compile Include="SoftCallability.cs" />
     <Compile Include="Sonia.cs" />
     <Compile Include="SouthAfrica.cs" />
     <Compile Include="SouthKorea.cs" />
+    <Compile Include="SplineCubic.cs" />
+    <Compile Include="SplineCubicInterpolatedSmileSection.cs" />
     <Compile Include="SpreadCdsHelper.cs" />
+    <Compile Include="SpreadedBackwardFlatZeroInterpolatedTermStructure.cs" />
     <Compile Include="SpreadedLinearZeroInterpolatedTermStructure.cs" />
     <Compile Include="Statistics.cs" />
     <Compile Include="SteepestDescent.cs" />
@@ -854,6 +873,7 @@
     <Compile Include="StudentDistribution.cs" />
     <Compile Include="StulzEngine.cs" />
     <Compile Include="SuperSharePayoff.cs" />
+    <Compile Include="SurvivalProbabilityCurve.cs" />
     <Compile Include="SVD.cs" />
     <Compile Include="SvenssonFitting.cs" />
     <Compile Include="Swap.cs" />
@@ -896,6 +916,7 @@
     <Compile Include="SWIGTYPE_p_RateHelper.cs" />
     <Compile Include="SWIGTYPE_p_Seasonality.cs" />
     <Compile Include="SWIGTYPE_p_ShortRateModel.cs" />
+    <Compile Include="SWIGTYPE_p_SmileSection.cs" />
     <Compile Include="SWIGTYPE_p_std__size_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_std__vectorT_double_t_t.cs" />
     <Compile Include="SWIGTYPE_p_StochasticProcess.cs" />
@@ -910,7 +931,9 @@
     <Compile Include="Taiwan.cs" />
     <Compile Include="TARGET.cs" />
     <Compile Include="TemperatureExponential.cs" />
+    <Compile Include="Thailand.cs" />
     <Compile Include="THBCurrency.cs" />
+    <Compile Include="THBFIX.cs" />
     <Compile Include="Thirty360.cs" />
     <Compile Include="Tibor.cs" />
     <Compile Include="TimeBasket.cs" />
