@@ -174,6 +174,33 @@ class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_IsdaCdsEngine) IsdaCdsEngine;
+#else
+%ignore IsdaCdsEngine;
+#endif
+class IsdaCdsEngine {
+  public:
+    enum NumericalFix {
+        None,
+        Taylor
+    };         
+        
+    enum AccrualBias {
+        HalfDayBias,
+        NoBias
+    };  
+        
+    enum ForwardsInCouponPeriod {
+        Flat,
+        Piecewise
+    };           
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    IsdaCdsEngine();
+#endif
+};
+
 %rename(IsdaCdsEngine) IsdaCdsEnginePtr;
 class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
