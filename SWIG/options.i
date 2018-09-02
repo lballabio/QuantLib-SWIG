@@ -4,7 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2008 Tito Ingargiola
- Copyright (C) 2010, 2012 Klaus Spanderen
+ Copyright (C) 2010, 2012, 2018 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2018 Matthias Lungwitz
@@ -428,7 +428,7 @@ class PiecewiseTimeDependentHestonModelPtr : public boost::shared_ptr<Calibrated
         }
         const Handle<YieldTermStructure>& dividendYield() const {
             return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->dividendYield();
-        }
+        }./configure --with-jdk-include=/usr/lib/jvm/java-11-openjdk-amd64/include/ --with-jdk-system-include=/usr/lib/jvm/java-11-openjdk-amd64/include/linux
         const Handle<YieldTermStructure>& riskFreeRate() const {
             return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->riskFreeRate();
         }
@@ -469,6 +469,28 @@ class AnalyticHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
         }
     }
 };
+
+%{
+using QuantLib::COSHestonEngine;
+typedef boost::shared_ptr<PricingEngine> COSHestonEnginePtr;
+%}
+
+%rename(COSHestonEngine) COSHestonEnginePtr;
+class COSHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        COSHestonEnginePtr(const HestonModelPtr& model, 
+                           Real L = 16, Size N=200) {
+            boost::shared_ptr<HestonModel> hModel =
+                 boost::dynamic_pointer_cast<HestonModel>(model);
+            QL_REQUIRE(hModel, "Heston model required");
+
+            return new COSHestonEnginePtr(
+                new COSHestonEngine(hModel, L, N));
+        }
+    }
+};
+
 
 %{
 using QuantLib::AnalyticPTDHestonEngine;

@@ -83,12 +83,12 @@ object SimpleFactory {
 
     def hestonProcess() : HestonProcess = {
         new HestonProcess(rTS, divYield, spot, volatility*volatility,
-                          1.0, volatility*volatility, 0.001, 0.0)
+                          1.0, volatility*volatility, 0.0001, 0.0)
     }
 
     def batesProcess() : BatesProcess = {
         new BatesProcess(rTS, divYield, spot, volatility*volatility,
-                         1.0, volatility*volatility, 0.001, 0.0,
+                         1.0, volatility*volatility, 0.0001, 0.0,
                          1e-14, 1e-14, 1e-14)
     }
     private def rTS : YieldTermStructureHandle = {
@@ -150,6 +150,11 @@ object EquityOptions {
             new VanillaPricingService(payoff, europeanExercise) !!
                 new AnalyticHestonEngine(new HestonModel(
                                         SimpleFactory.hestonProcess()))
+
+        val cosHestonNpv = 
+            new VanillaPricingService(payoff, europeanExercise) !!
+                new COSHestonEngine(new HestonModel(
+                                    SimpleFactory.hestonProcess()))
 
         // Bates for European
         val analyticBatesNpv =
@@ -302,6 +307,8 @@ object EquityOptions {
         printf(fmt, "Black-Scholes", analyticEuropeanNpv(), 
                                      Double.NaN, Double.NaN)
         printf(fmt, "Heston Semi-Analytic", analyticHestonNpv(), 
+                                            Double.NaN, Double.NaN)
+        printf(fmt, "COS Heston Method", cosHestonNpv(), 
                                             Double.NaN, Double.NaN)
         printf(fmt, "Bates Semi-Analytic", analyticBatesNpv(), 
                                             Double.NaN, Double.NaN)
