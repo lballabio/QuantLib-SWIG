@@ -428,7 +428,7 @@ class PiecewiseTimeDependentHestonModelPtr : public boost::shared_ptr<Calibrated
         }
         const Handle<YieldTermStructure>& dividendYield() const {
             return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->dividendYield();
-        }./configure --with-jdk-include=/usr/lib/jvm/java-11-openjdk-amd64/include/ --with-jdk-system-include=/usr/lib/jvm/java-11-openjdk-amd64/include/linux
+        }
         const Handle<YieldTermStructure>& riskFreeRate() const {
             return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->riskFreeRate();
         }
@@ -482,7 +482,7 @@ class COSHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
         COSHestonEnginePtr(const HestonModelPtr& model, 
                            Real L = 16, Size N=200) {
             boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
+                boost::dynamic_pointer_cast<HestonModel>(model);
             QL_REQUIRE(hModel, "Heston model required");
 
             return new COSHestonEnginePtr(
