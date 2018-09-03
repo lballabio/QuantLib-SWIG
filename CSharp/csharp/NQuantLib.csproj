@@ -598,6 +598,7 @@
     <Compile Include="InverseNonCentralCumulativeChiSquareDistribution.cs" />
     <Compile Include="IQDCurrency.cs" />
     <Compile Include="IRRCurrency.cs" />
+    <Compile Include="IsdaCdsEngine.cs" />
     <Compile Include="ISKCurrency.cs" />
     <Compile Include="Israel.cs" />
     <Compile Include="Italy.cs" />
@@ -1001,6 +1002,7 @@
     <Compile Include="_Gaussian1dFloatFloatSwaptionEngine.cs" />
     <Compile Include="_Gaussian1dNonstandardSwaptionEngine.cs" />
     <Compile Include="_Gaussian1dSwaptionEngine.cs" />
+    <Compile Include="_IsdaCdsEngine.cs" />
     <Compile Include="_MarkovFunctional.cs" />
     <Compile Include="_NonstandardSwap.cs" />
     <Compile Include="_OvernightIndexedSwap.cs" />
