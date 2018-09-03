@@ -29,6 +29,12 @@ using QuantLib::TimeSeries;
 using QuantLib::IntervalPrice;
 %}
 
+#if defined (SWIGJAVA) && defined(JAVA_CLOSEABLE)
+// close() method naming conflict
+%rename(closePrice) IntervalPrice::close();
+#endif
+
+
 template <class T, class Container = std::map<Date, T> >
 class TimeSeries {
     #if defined (SWIGPYTHON) || defined(SWIGRUBY)
@@ -81,7 +87,6 @@ class IntervalPrice {
     static TimeSeries<Real> extractComponent(TimeSeries<IntervalPrice>,
                                              IntervalPrice::Type t);
 };
-
 
 
 typedef RealTimeSeries VolatilityTimeSeries;
