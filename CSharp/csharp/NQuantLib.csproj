@@ -706,6 +706,8 @@
     <Compile Include="NeumannBC.cs" />
     <Compile Include="NewZealand.cs" />
     <Compile Include="NLGCurrency.cs" />
+    <Compile Include="NoArbSabrInterpolatedSmileSection.cs" />
+    <Compile Include="NoArbSabrSmileSection.cs" />
     <Compile Include="NoConstraint.cs" />
     <Compile Include="NodePair.cs" />
     <Compile Include="NodeVector.cs" />
@@ -1000,6 +1002,18 @@
     <Compile Include="YYUKRPI.cs" />
     <Compile Include="YYUSCPI.cs" />
     <Compile Include="YYZACPI.cs" />
+    <Compile Include="ZabrFullFd.cs" />
+    <Compile Include="ZabrFullFdInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrFullFdSmileSection.cs" />
+    <Compile Include="ZabrLocalVolatility.cs" />
+    <Compile Include="ZabrLocalVolatilityInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrLocalVolatilitySmileSection.cs" />
+    <Compile Include="ZabrShortMaturityLognormal.cs" />
+    <Compile Include="ZabrShortMaturityLognormalInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityLognormalSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityNormal.cs" />
+    <Compile Include="ZabrShortMaturityNormalInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityNormalSmileSection.cs" />
     <Compile Include="ZACPI.cs" />
     <Compile Include="ZARCurrency.cs" />
     <Compile Include="ZeroCouponBond.cs" />
