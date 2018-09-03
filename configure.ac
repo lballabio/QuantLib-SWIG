@@ -116,6 +116,22 @@ AC_ARG_ENABLE([java-autoload],
               [java_autoload=yes])
 AM_CONDITIONAL(JAVA_AUTOLOAD, test "$java_autoload" != "no")
 
+AC_ARG_ENABLE([java-finalizer],
+              AC_HELP_STRING([--disable-java-finalizer],
+                             [If disabled, the finalizers
+			     will not be generated.  Be careful.]),
+              [java_finalizer=$enableval],
+              [java_finalizer=yes])
+AM_CONDITIONAL(JAVA_FINALIZER, test "$java_finalizer" != "no")
+
+AC_ARG_ENABLE([java-autocloseable],
+              AC_HELP_STRING([--enable-java-autocloseable],
+                             [If enabled, the java Objects will implement AutoCloseable]),
+              [java_autocloseable=$enableval],
+              [java_autocloseable=no])
+AM_CONDITIONAL(JAVA_AUTOCLOSEABLE, test "$java_autocloseable" != "no")
+
+
 AC_ARG_WITH([jdk-include],
             AC_HELP_STRING([--with-jdk-include=INCLUDE_PATH],
                            [Supply the location of JDK header files]),

@@ -33,6 +33,7 @@
 %include interpolation.i
 %include indexes.i
 %include optimizers.i
+%include options.i
 
 %define QL_TYPECHECK_VOLATILITYTYPE       8210    %enddef
 
@@ -939,6 +940,260 @@ class KahaleSmileSectionPtr
                     QL_MAX_INTEGER
                 )
             );
+        }
+    }
+};
+
+%{
+using QuantLib::ZabrShortMaturityLognormal;
+using QuantLib::ZabrShortMaturityNormal;
+using QuantLib::ZabrLocalVolatility;
+using QuantLib::ZabrFullFd;
+using QuantLib::ZabrSmileSection;
+using QuantLib::ZabrInterpolatedSmileSection;
+using QuantLib::NoArbSabrSmileSection;
+using QuantLib::NoArbSabrInterpolatedSmileSection;
+using QuantLib::Option;
+%}
+
+struct ZabrShortMaturityLognormal {};
+struct ZabrShortMaturityNormal {};
+struct ZabrLocalVolatility {};
+struct ZabrFullFd {};
+
+%define export_zabrsmilesection_curve(Name,Evaluation)
+
+%{
+typedef boost::shared_ptr<SmileSection> Name##Ptr;
+%}
+
+%rename(Name) Name##Ptr;
+class Name##Ptr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        Name##Ptr(
+               Time timeToExpiry, 
+               Rate forward,
+               const std::vector<Real> &zabrParameters,
+               const std::vector<Real> &moneyness = std::vector<Real>(),
+               const Size fdRefinement = 5) {
+            return new Name##Ptr(
+                new ZabrSmileSection<Evaluation>(
+                          timeToExpiry,forward,zabrParameters,moneyness,fdRefinement));
+        }
+        Name##Ptr(
+               const Date &d, 
+               Rate forward,
+               const std::vector<Real> &zabrParameters,
+               const DayCounter &dc = Actual365Fixed(),
+               const std::vector<Real> &moneyness = std::vector<Real>(),
+               const Size fdRefinement = 5) {
+            return new Name##Ptr(
+                new ZabrSmileSection<Evaluation>(
+                          d,forward,zabrParameters,dc,moneyness,fdRefinement));
+        }
+    }
+};
+
+%enddef
+
+export_zabrsmilesection_curve(ZabrShortMaturityLognormalSmileSection, ZabrShortMaturityLognormal);
+export_zabrsmilesection_curve(ZabrShortMaturityNormalSmileSection, ZabrShortMaturityNormal);
+export_zabrsmilesection_curve(ZabrLocalVolatilitySmileSection, ZabrLocalVolatility);
+export_zabrsmilesection_curve(ZabrFullFdSmileSection, ZabrFullFd);
+
+%define export_zabrinterpolatedsmilesection_curve(Name,Evaluation)
+
+%{
+typedef boost::shared_ptr<SmileSection> Name##Ptr;
+%}
+
+%rename(Name) Name##Ptr;
+class Name##Ptr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        Name##Ptr(
+               const Date &optionDate, const Handle<Quote> &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Handle<Quote> &atmVolatility,
+               const std::vector<Handle<Quote> > &volHandles, Real alpha, Real beta,
+               Real nu, Real rho, Real gamma, bool isAlphaFixed = false,
+               bool isBetaFixed = false, bool isNuFixed = false,
+               bool isRhoFixed = false, bool isGammaFixed = false,
+               bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new Name##Ptr(
+                new ZabrInterpolatedSmileSection<Evaluation>(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          volHandles, alpha, beta, nu, rho, gamma, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, isGammaFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        Name##Ptr(
+               const Date &optionDate, const Rate &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Volatility &atmVolatility, const std::vector<Volatility> &vols,
+               Real alpha, Real beta, Real nu, Real rho, Real gamma,
+               bool isAlphaFixed = false, bool isBetaFixed = false,
+               bool isNuFixed = false, bool isRhoFixed = false,
+               bool isGammaFixed = false, bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new Name##Ptr(
+                new ZabrInterpolatedSmileSection<Evaluation>(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          vols, alpha, beta, nu, rho, gamma, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, isGammaFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        Real alpha() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->alpha();
+        }
+        Real beta() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->beta();
+        }
+        Real nu() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->nu();
+        }
+        Real rho() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->rho();
+        }
+        Real rmsError() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->rmsError();
+        }
+        Real maxError() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->maxError();
+        }
+        EndCriteria::Type endCriteria() const {
+            return boost::dynamic_pointer_cast<ZabrInterpolatedSmileSection<Evaluation> >(*self)
+                ->endCriteria();
+        }
+    }
+};
+
+%enddef
+
+export_zabrinterpolatedsmilesection_curve(ZabrShortMaturityLognormalInterpolatedSmileSection, ZabrShortMaturityLognormal);
+export_zabrinterpolatedsmilesection_curve(ZabrShortMaturityNormalInterpolatedSmileSection, ZabrShortMaturityNormal);
+export_zabrinterpolatedsmilesection_curve(ZabrLocalVolatilityInterpolatedSmileSection, ZabrLocalVolatility);
+export_zabrinterpolatedsmilesection_curve(ZabrFullFdInterpolatedSmileSection, ZabrFullFd);
+
+%{
+typedef boost::shared_ptr<SmileSection> NoArbSabrSmileSectionPtr;
+typedef boost::shared_ptr<SmileSection> NoArbSabrInterpolatedSmileSectionPtr;
+%}
+
+%rename(NoArbSabrSmileSection) NoArbSabrSmileSectionPtr;
+class NoArbSabrSmileSectionPtr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        NoArbSabrSmileSectionPtr(
+               Time timeToExpiry, 
+               Rate forward,
+               const std::vector<Real> &sabrParameters,
+               const Real shift = 0.0) {
+            return new NoArbSabrSmileSectionPtr(
+                new NoArbSabrSmileSection(
+                          timeToExpiry,forward,sabrParameters,shift));
+        }
+        NoArbSabrSmileSectionPtr(
+               const Date &d, 
+               Rate forward,
+               const std::vector<Real> &sabrParameters,
+               const DayCounter &dc = Actual365Fixed(),
+               const Real shift = 0.0) {
+            return new NoArbSabrSmileSectionPtr(
+                new NoArbSabrSmileSection(
+                          d,forward,sabrParameters,dc,shift));
+        }       
+    }
+};
+
+%rename(NoArbSabrInterpolatedSmileSection) NoArbSabrInterpolatedSmileSectionPtr;
+class NoArbSabrInterpolatedSmileSectionPtr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        NoArbSabrInterpolatedSmileSectionPtr(
+               const Date &optionDate, const Handle<Quote> &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Handle<Quote> &atmVolatility,
+               const std::vector<Handle<Quote> > &volHandles, Real alpha, Real beta,
+               Real nu, Real rho, bool isAlphaFixed = false,
+               bool isBetaFixed = false, bool isNuFixed = false,
+               bool isRhoFixed = false,
+               bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new NoArbSabrInterpolatedSmileSectionPtr(
+                new NoArbSabrInterpolatedSmileSection(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          volHandles, alpha, beta, nu, rho, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        NoArbSabrInterpolatedSmileSectionPtr(
+               const Date &optionDate, const Rate &forward,
+               const std::vector<Rate> &strikes, bool hasFloatingStrikes,
+               const Volatility &atmVolatility, const std::vector<Volatility> &vols,
+               Real alpha, Real beta, Real nu, Real rho,
+               bool isAlphaFixed = false, bool isBetaFixed = false,
+               bool isNuFixed = false, bool isRhoFixed = false,
+               bool vegaWeighted = true,
+               const boost::shared_ptr<EndCriteria> &endCriteria =
+               boost::shared_ptr<EndCriteria>(),
+               const boost::shared_ptr<OptimizationMethod> &method =
+               boost::shared_ptr<OptimizationMethod>(),
+               const DayCounter &dc = Actual365Fixed()) {
+            return new NoArbSabrInterpolatedSmileSectionPtr(
+                new NoArbSabrInterpolatedSmileSection(
+                          optionDate, forward, strikes, hasFloatingStrikes, atmVolatility,
+                          vols, alpha, beta, nu, rho, isAlphaFixed,
+                          isBetaFixed, isNuFixed, isRhoFixed, vegaWeighted,
+                          endCriteria, method, dc));
+        }
+        Real alpha() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->alpha();
+        }
+        Real beta() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->beta();
+        }
+        Real nu() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->nu();
+        }
+        Real rho() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->rho();
+        }
+        Real rmsError() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->rmsError();
+        }
+        Real maxError() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->maxError();
+        }
+        EndCriteria::Type endCriteria() const {
+            return boost::dynamic_pointer_cast<NoArbSabrInterpolatedSmileSection>(*self)
+                ->endCriteria();
         }
     }
 };

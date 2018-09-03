@@ -291,6 +291,7 @@
     <Compile Include="CapFloorTermVolSurface.cs" />
     <Compile Include="CapHelper.cs" />
     <Compile Include="CappedFlooredCmsCoupon.cs" />
+    <Compile Include="CappedFlooredCmsSpreadCoupon.cs" />
     <Compile Include="CappedFlooredCoupon.cs" />
     <Compile Include="CashFlow.cs" />
     <Compile Include="CashFlows.cs" />
@@ -309,6 +310,8 @@
     <Compile Include="CmsCoupon.cs" />
     <Compile Include="CmsCouponPricer.cs" />
     <Compile Include="CmsRateBond.cs" />
+    <Compile Include="CmsSpreadCoupon.cs" />
+    <Compile Include="CmsSpreadCouponPricer.cs" />
     <Compile Include="CNYCurrency.cs" />
     <Compile Include="Collar.cs" />
     <Compile Include="CompositeConstraint.cs" />
@@ -608,6 +611,7 @@
     <Compile Include="InverseNonCentralCumulativeChiSquareDistribution.cs" />
     <Compile Include="IQDCurrency.cs" />
     <Compile Include="IRRCurrency.cs" />
+    <Compile Include="IsdaCdsEngine.cs" />
     <Compile Include="ISKCurrency.cs" />
     <Compile Include="Israel.cs" />
     <Compile Include="Italy.cs" />
@@ -647,6 +651,7 @@
     <Compile Include="LogLinear.cs" />
     <Compile Include="LogLinearInterpolation.cs" />
     <Compile Include="LogLinearZeroCurve.cs" />
+    <Compile Include="LognormalCmsSpreadPricer.cs" />
     <Compile Include="LogNormalSimulatedAnnealing.cs" />
     <Compile Include="LogParabolic.cs" />
     <Compile Include="LsmBasisSystem.cs" />
@@ -654,6 +659,7 @@
     <Compile Include="LUFCurrency.cs" />
     <Compile Include="LVLCurrency.cs" />
     <Compile Include="MakeSchedule.cs" />
+    <Compile Include="MakeVanillaSwap.cs" />
     <Compile Include="MarkovFunctional.cs" />
     <Compile Include="MarkovFunctionalSettings.cs" />
     <Compile Include="Matrix.cs" />
@@ -706,6 +712,8 @@
     <Compile Include="NeumannBC.cs" />
     <Compile Include="NewZealand.cs" />
     <Compile Include="NLGCurrency.cs" />
+    <Compile Include="NoArbSabrInterpolatedSmileSection.cs" />
+    <Compile Include="NoArbSabrSmileSection.cs" />
     <Compile Include="NoConstraint.cs" />
     <Compile Include="NodePair.cs" />
     <Compile Include="NodeVector.cs" />
@@ -879,6 +887,7 @@
     <Compile Include="Swap.cs" />
     <Compile Include="SwapIndex.cs" />
     <Compile Include="SwapRateHelper.cs" />
+    <Compile Include="SwapSpreadIndex.cs" />
     <Compile Include="Swaption.cs" />
     <Compile Include="SwaptionHelper.cs" />
     <Compile Include="SwaptionVolatilityMatrix.cs" />
@@ -889,6 +898,7 @@
     <Compile Include="Sweden.cs" />
     <Compile Include="SWIGTYPE_p_BlackVolTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_bool_t.cs" />
+    <Compile Include="SWIGTYPE_p_boost__optionalT_VolatilityType_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_EndCriteria_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_IborIndex_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_OptimizationMethod_t.cs" />
@@ -1000,6 +1010,18 @@
     <Compile Include="YYUKRPI.cs" />
     <Compile Include="YYUSCPI.cs" />
     <Compile Include="YYZACPI.cs" />
+    <Compile Include="ZabrFullFd.cs" />
+    <Compile Include="ZabrFullFdInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrFullFdSmileSection.cs" />
+    <Compile Include="ZabrLocalVolatility.cs" />
+    <Compile Include="ZabrLocalVolatilityInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrLocalVolatilitySmileSection.cs" />
+    <Compile Include="ZabrShortMaturityLognormal.cs" />
+    <Compile Include="ZabrShortMaturityLognormalInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityLognormalSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityNormal.cs" />
+    <Compile Include="ZabrShortMaturityNormalInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityNormalSmileSection.cs" />
     <Compile Include="ZACPI.cs" />
     <Compile Include="ZARCurrency.cs" />
     <Compile Include="ZeroCouponBond.cs" />
@@ -1024,6 +1046,7 @@
     <Compile Include="_Gaussian1dFloatFloatSwaptionEngine.cs" />
     <Compile Include="_Gaussian1dNonstandardSwaptionEngine.cs" />
     <Compile Include="_Gaussian1dSwaptionEngine.cs" />
+    <Compile Include="_IsdaCdsEngine.cs" />
     <Compile Include="_MarkovFunctional.cs" />
     <Compile Include="_NonstandardSwap.cs" />
     <Compile Include="_OvernightIndexedSwap.cs" />
