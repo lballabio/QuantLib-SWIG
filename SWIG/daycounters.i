@@ -92,12 +92,4 @@ namespace QuantLib {
     };
 }
 
-%inline %{
-    /* avoid deprecation warnings */
-    DayCounter Actual365NoLeap() {
-        return QuantLib::Actual365Fixed(QuantLib::Actual365Fixed::NoLeap);
-    }
-%}
-
-
 #endif
