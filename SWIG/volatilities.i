@@ -63,6 +63,8 @@ else
 
 %{
 using QuantLib::BlackVolTermStructure;
+//using QuantLib::BlackVolatilityTermStructure;
+using QuantExt::FxBlackVolatilitySurface;
 using QuantLib::LocalVolTermStructure;
 using QuantLib::OptionletVolatilityStructure;
 using QuantLib::SwaptionVolatilityStructure;
@@ -421,6 +423,34 @@ class LocalVolSurfacePtr : public boost::shared_ptr<LocalVolTermStructure> {
                     dividendTS, underlying));
         }
     }
+};
+
+// fx vol surface
+%{
+using QuantExt::FxBlackVannaVolgaVolatilitySurface;
+using QuantExt::VannaVolgaSmileSection;
+typedef boost::shared_ptr<BlackVolTermStructure> FxBlackVannaVolgaVolatilitySurfacePtr;
+%}
+%rename(FxBlackVannaVolgaVolatilitySurface) FxBlackVannaVolgaVolatilitySurfacePtr; 
+// class FxBlackVannaVolgaVolatilitySurfacePtr : public boost::shared_ptr<FxBlackVolatilitySurface>  {
+class FxBlackVannaVolgaVolatilitySurfacePtr : public boost::shared_ptr<BlackVolTermStructure>  {
+    public:
+        %extend {
+            FxBlackVannaVolgaVolatilitySurfacePtr(const Date& refDate, 
+                                    const std::vector<Date>& dates,
+                                    const std::vector<Volatility>& atmVols, 
+                                    const std::vector<Volatility>& rr25d,
+                                    const std::vector<Volatility>& bf25d, 
+                                    const DayCounter& dc, const Calendar& cal,
+                                    const Handle<Quote>& fx, 
+                                    const Handle<YieldTermStructure>& dom,
+                                    const Handle<YieldTermStructure>& fore) { 
+                return new FxBlackVannaVolgaVolatilitySurfacePtr(
+                    new FxBlackVannaVolgaVolatilitySurface(refDate, dates,
+                            atmVols, rr25d, bf25d, dc, cal, fx, dom, fore)
+                    );
+                }
+        }   
 };
 
 
