@@ -21,12 +21,11 @@ def printBasket(basket):
     print ("==================================================================================================================")
 
     for i in range(0, len(basket)):
-        expiryDate = basket[i].swaptionExpiryDate()
-        endDate = basket[i].swaptionMaturityDate()
-        nominal = basket[i].swaptionNominal()
-        vol     = basket[i].volatility().value()
-        rate    = basket[i].swaptionStrike()
-        #type    = basket[i].swaption.type()
+        expiryDate = ql.as_black_helper(basket[i]).swaptionExpiryDate()
+        endDate = ql.as_black_helper(basket[i]).swaptionMaturityDate()
+        nominal = ql.as_black_helper(basket[i]).swaptionNominal()
+        vol     = ql.as_black_helper(basket[i]).volatility().value()
+        rate    = ql.as_black_helper(basket[i]).swaptionStrike()
         print ("%-20s %-20s %-20f %-20f %-20f" % (str(expiryDate), str(endDate), nominal, rate, vol))
 
     print("==================================================================================================================")
@@ -36,11 +35,11 @@ def printModelCalibration(basket, volatility):
     print ("=================================================================================================================")
 
     for i in range(0, len(basket)):
-        expiryDate = basket[i].swaptionExpiryDate()
-        modelValue = basket[i].modelValue()
-        marketValue= basket[i].marketValue()
-        impVol     = basket[i].impliedVolatility(modelValue, 1e-6, 1000, 0.0, 2.0)
-        vol    = basket[i].volatility().value()
+        expiryDate = ql.as_black_helper(basket[i]).swaptionExpiryDate()
+        modelValue = ql.as_black_helper(basket[i]).modelValue()
+        marketValue= ql.as_black_helper(basket[i]).marketValue()
+        impVol     = ql.as_black_helper(basket[i]).impliedVolatility(modelValue, 1e-6, 1000, 0.0, 2.0)
+        vol    = ql.as_black_helper(basket[i]).volatility().value()
         print ("%-20s %-20f %-20f %-20f %-20f %-20f" % (str(expiryDate), volatility[i], modelValue, marketValue, impVol, vol))
 
     print("==================================================================================================================")
@@ -134,7 +133,7 @@ swapBase = ql.EuriborSwapIsdaFixA(ql.Period('10Y'), t0_curve, t0_Ois)
 basket = swaption.calibrationBasket(swapBase, swaptionVol, 'Naive')
 
 for basket_i in basket:
-    basket_i.setPricingEngine(swaptionEngine)
+    ql.as_black_helper(basket_i).setPricingEngine(swaptionEngine)
 
 method = ql.LevenbergMarquardt()
 ec = ql.EndCriteria(1000, 10, 1e-8, 1e-8, 1e-8)
@@ -168,7 +167,7 @@ basket = swaption.calibrationBasket(swapBase, swaptionVol, 'MaturityStrikeByDelt
 printBasket(basket)
 
 for basket_i in basket:
-    basket_i.setPricingEngine(swaptionEngine)
+    ql.as_black_helper(basket_i).setPricingEngine(swaptionEngine)
 
 print( "\nThe calibrated nominal is close to the exotics nominal."
        "\nThe expiries and maturity dates of the vanillas are the same"
@@ -248,7 +247,7 @@ print( "\nNote that nominals are not exactly 1.0 here. This is"
         "\nThe npv of the call right is (after recalibrating the model)")
 
 for basket_i in basket:
-    basket_i.setPricingEngine(swaptionEngine)
+    ql.as_black_helper(basket_i).setPricingEngine(swaptionEngine)
 
 gsr.calibrateVolatilitiesIterative(basket, method, ec)
 
@@ -268,7 +267,7 @@ print("The adjusted basket takes the credit spread into account"
       "\nmargin on the float leg around 100bp,too.")
 
 for basket_i in basket:
-    basket_i.setPricingEngine(swaptionEngine)
+    ql.as_black_helper(basket_i).setPricingEngine(swaptionEngine)
 
 gsr.calibrateVolatilitiesIterative(basket, method, ec)
 
@@ -328,7 +327,7 @@ print("\nWe generate a naive calibration basket and calibrate "
 basket = swaption4.calibrationBasket(swapBase, swaptionVol, 'Naive')
 
 for basket_i in basket:
-    basket_i.setPricingEngine(swaptionEngine)
+    ql.as_black_helper(basket_i).setPricingEngine(swaptionEngine)
 
 gsr.calibrateVolatilitiesIterative(basket, method, ec)
 printBasket(basket)
@@ -391,7 +390,7 @@ print("\nThis is closer to our terminal swap rate model price."
      "\nwhile now...")
 
 for basket_i in basket:
-    basket_i.setPricingEngine(swaptionEngineMarkov)
+    ql.as_black_helper(basket_i).setPricingEngine(swaptionEngineMarkov)
 
 markov.calibrate(basket, method, ec)
 printModelCalibration(basket, markov.volatility())
