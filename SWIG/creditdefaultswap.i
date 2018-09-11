@@ -21,8 +21,8 @@
 %include instruments.i
 %include credit.i
 %include termstructures.i
+%include bonds.i
 %include null.i
-
 
 %{
 using QuantLib::CreditDefaultSwap;
@@ -30,12 +30,15 @@ using QuantLib::MidPointCdsEngine;
 using QuantLib::IntegralCdsEngine;
 using QuantLib::IsdaCdsEngine;
 using QuantLib::Claim;
+using QuantLib::FaceValueClaim;
+using QuantLib::FaceValueAccrualClaim;
 
 typedef boost::shared_ptr<Instrument> CreditDefaultSwapPtr;
 typedef boost::shared_ptr<PricingEngine> MidPointCdsEnginePtr;
 typedef boost::shared_ptr<PricingEngine> IntegralCdsEnginePtr;
 typedef boost::shared_ptr<PricingEngine> IsdaCdsEnginePtr;
-typedef boost::shared_ptr<Claim> ClaimPtr;
+typedef boost::shared_ptr<Claim> FaceValueClaimPtr;
+typedef boost::shared_ptr<Claim> FaceValueAccrualClaimPtr;
 %}
 
 #if defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -52,6 +55,38 @@ class CreditDefaultSwap {
 #endif
 };
 
+%ignore Claim;
+class Claim {
+  public:
+    Real amount(const Date& defaultDate,
+                Real notional,
+                Real recoveryRate) const;
+};
+%template(Claim) boost::shared_ptr<Claim>;
+
+%rename(FaceValueClaim) FaceValueClaimPtr;
+class FaceValueClaimPtr : public boost::shared_ptr<Claim> {
+  public:
+    %extend {
+        FaceValueClaimPtr() {
+            return new FaceValueClaimPtr(new FaceValueClaim);
+        }
+    }
+};
+
+%rename(FaceValueAccrualClaim) FaceValueAccrualClaimPtr;
+class FaceValueAccrualClaimPtr : public boost::shared_ptr<Claim> {
+  public:
+    %extend {
+        FaceValueAccrualClaimPtr(const BondPtr& referenceSecurity) {
+            boost::shared_ptr<Bond> bond =
+                boost::dynamic_pointer_cast<Bond>(referenceSecurity);
+            return new FaceValueAccrualClaimPtr(new FaceValueAccrualClaim(bond));
+        }
+    }
+};
+
+
 %rename(CreditDefaultSwap) CreditDefaultSwapPtr;
 class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
   public:
@@ -67,12 +102,12 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              const DayCounter& dayCounter,
                              bool settlesAccrual = true,
                              bool paysAtDefaultTime = true,
-			     const Date& protectionStart = Date()) {
+                             const Date& protectionStart = Date()) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, spread, schedule,
                                           paymentConvention, dayCounter,
                                           settlesAccrual, paysAtDefaultTime,
-					  protectionStart));
+                                          protectionStart));
         }
         CreditDefaultSwapPtr(Protection::Side side,
                              Real notional,
@@ -85,17 +120,18 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              bool paysAtDefaultTime = true,
                              const Date& protectionStart = Date(),
                              const Date& upfrontDate = Date(),
+                             const boost::shared_ptr<Claim>& claim =
+                                                        boost::shared_ptr<Claim>(),
                              const DayCounter& lastPeriodDayCounter = DayCounter(),
-                             const bool rebatesAccrual = true,
-                             const ClaimPtr& claim = ClaimPtr()) {
-            boost::shared_ptr<Claim> cdsClaim = boost::dynamic_pointer_cast<Claim>(claim);
+                             const bool rebatesAccrual = true) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, upfront, spread,
                                           schedule, paymentConvention,
                                           dayCounter, settlesAccrual,
                                           paysAtDefaultTime,
                                           protectionStart,
-                                          upfrontDate,cdsClaim,lastPeriodDayCounter,rebatesAccrual));
+                                          upfrontDate,claim,
+                                          lastPeriodDayCounter,rebatesAccrual));
         }
         Protection::Side side() const {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)

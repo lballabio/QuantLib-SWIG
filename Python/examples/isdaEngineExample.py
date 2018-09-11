@@ -46,7 +46,7 @@ isdaRateHelpers = isdaRateHelpers + [ql.SwapRateHelper(swap_quotes[i],swap_tenor
                                                        ql.Thirty360(),isda_ibor) for i in range(len(swap_tenors))]
 
 discountCurve = ql.RelinkableYieldTermStructureHandle()
-discountCurve.linkTo(ql.PiecewiseLogLinear(0,ql.WeekendsOnly(),isdaRateHelpers,ql.Actual365Fixed()))
+discountCurve.linkTo(ql.PiecewiseLogLinearDiscount(0,ql.WeekendsOnly(),isdaRateHelpers,ql.Actual365Fixed()))
 
 #print(discountCurve.discount(1),discountCurve.discount(2),discountCurve.discount(3),discountCurve.discount(5))
 
@@ -111,7 +111,7 @@ for i in range(0,len(termDates)):
             quotedTrade = ql.CreditDefaultSwap(ql.Protection.Buyer,10000000,0,spreads[j],cdsSchedule,
                                                ql.Following,ql.Actual360(),True,True,tradeDate+1,
                                                ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
-                                               ql.Actual360(True))
+                                               ql.Claim(), ql.Actual360(True))
             
             #Print Cashflows
             #for c in quotedTrade.coupons():
@@ -127,7 +127,7 @@ for i in range(0,len(termDates)):
             conventionalTrade = ql.CreditDefaultSwap(ql.Protection.Buyer,10000000,0,0.01,cdsSchedule,
                                                ql.Following,ql.Actual360(),True,True,tradeDate+1,
                                                ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
-                                               ql.Actual360(True))
+                                               ql.Claim(), ql.Actual360(True))
             conventionalTrade.setPricingEngine(engine)
             
             upfront = conventionalTrade.notional() * conventionalTrade.fairUpfront()
