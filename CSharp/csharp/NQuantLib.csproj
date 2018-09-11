@@ -305,6 +305,7 @@
     <Compile Include="CHFLibor.cs" />
     <Compile Include="ChfLiborSwapIsdaFix.cs" />
     <Compile Include="China.cs" />
+    <Compile Include="Claim.cs" />
     <Compile Include="ClosestRounding.cs" />
     <Compile Include="CLPCurrency.cs" />
     <Compile Include="CmsCoupon.cs" />
@@ -458,6 +459,8 @@
     <Compile Include="ExchangeRateManager.cs" />
     <Compile Include="Exercise.cs" />
     <Compile Include="ExponentialSplinesFitting.cs" />
+    <Compile Include="FaceValueAccrualClaim.cs" />
+    <Compile Include="FaceValueClaim.cs" />
     <Compile Include="FalsePosition.cs" />
     <Compile Include="FDAmericanEngine.cs" />
     <Compile Include="FdBatesVanillaEngine.cs" />
@@ -906,6 +909,7 @@
     <Compile Include="SWIGTYPE_p_CalibratedModel.cs" />
     <Compile Include="SWIGTYPE_p_CapFloorTermVolatilityStructure.cs" />
     <Compile Include="SWIGTYPE_p_CashFlow.cs" />
+    <Compile Include="SWIGTYPE_p_Claim.cs" />
     <Compile Include="SWIGTYPE_p_DefaultProbabilityHelper.cs" />
     <Compile Include="SWIGTYPE_p_DefaultProbabilityTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_DisposableT_Array_t.cs" />
@@ -1041,6 +1045,7 @@
     <Compile Include="_CalibrationHelper.cs" />
     <Compile Include="_Callability.cs" />
     <Compile Include="_CPISwap.cs" />
+    <Compile Include="_CreditDefaultSwap.cs" />
     <Compile Include="_DeltaVolQuote.cs" />
     <Compile Include="_Exercise.cs" />
     <Compile Include="_Gaussian1dFloatFloatSwaptionEngine.cs" />
