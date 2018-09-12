@@ -35,6 +35,9 @@ namespace std {
     %template(StrVector) vector<std::string>;
     %template(BoolVector) vector<bool>;
 
+    %template(DoublePair) pair<double,double>;
+    %template(DoublePairVector) vector<pair<double,double> >;
+
 #if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;
     %template(NodeVector) vector<pair<Date,double> >;

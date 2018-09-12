@@ -59,14 +59,14 @@ object Swing {
         val speed = 1d
         val volatility = 0.1
         
-        val curveShape = new CurveShape()
+        val curveShape = new DoublePairVector()
         (0 until exerciseDates.size.toInt).foreach{i =>  
             val t = dc.yearFraction(todaysDate, exerciseDates.get(i))
             val gs = math.log(underlying.value) -                                  
                 volatility*volatility/(4*speed)*(1-math.exp(-2*speed*t)) -
                 jumpIntensity/beta*math.log((eta-math.exp(-beta*t))/(eta-1.0))
                 
-            curveShape.add(t, gs)
+            curveShape.add(DoublePair(t, gs))
         }
         
         val ouProcess = new ExtendedOrnsteinUhlenbeckProcess(

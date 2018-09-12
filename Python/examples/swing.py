@@ -1,4 +1,3 @@
-
 # Copyright (C) 2018 Klaus Spanderen
 #
 # This file is part of QuantLib, a free-software/open-source library
@@ -26,12 +25,11 @@ underlying = SimpleQuote(30.0)
 volatility = BlackConstantVol(todaysDate, TARGET(), 0.20, Actual365Fixed())
 
 
-exerciseDates = DateVector()
-for i in range(0, 31): 
-    exerciseDates.push_back(Date(1, January, 2019) + i) 
+exerciseDates = [ Date(1, January, 2019) + i
+                  for i in range(31) ]
 
-swingOption = VanillaSwingOption(VanillaForwardPayoff(Option.Call, underlying.value()), 
-                                 SwingExercise(exerciseDates), 0, exerciseDates.size())
+swingOption = VanillaSwingOption(VanillaForwardPayoff(Option.Call, underlying.value()),
+                                 SwingExercise(exerciseDates), 0, len(exerciseDates))
 
 bsProcess = BlackScholesMertonProcess(
     QuoteHandle(underlying),
@@ -52,13 +50,13 @@ jumpIntensity = 1.0
 speed = 1.0
 volatility = 0.1
 
-curveShape = CurveShape()
-for i in range(0, exerciseDates.size()): 
-    t = Actual365Fixed().yearFraction(todaysDate, exerciseDates[i])
+curveShape = []
+for d in exerciseDates:
+    t = Actual365Fixed().yearFraction(todaysDate, d)
     gs = math.log(underlying.value())                                   \
         - volatility*volatility/(4*speed)*(1-math.exp(-2*speed*t))      \
         - jumpIntensity/beta*math.log((eta-math.exp(-beta*t))/(eta-1.0))
-    curveShape.add(t, gs)
+    curveShape.append((t, gs))
 
 ouProcess = ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0, lambda x: x0)
 jProcess = ExtOUWithJumpsProcess(ouProcess, x1, beta, jumpIntensity, eta)

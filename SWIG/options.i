@@ -35,6 +35,7 @@
 %include calibrationhelpers.i
 %include grid.i
 %include parameter.i
+%include vectors.i
 
 // option and barrier types
 %{
@@ -2324,7 +2325,6 @@ using QuantLib::FdSimpleBSSwingEngine;
 using QuantLib::FdSimpleExtOUJumpSwingEngine;
 typedef boost::shared_ptr<PricingEngine> FdSimpleExtOUJumpSwingEnginePtr;
 typedef boost::shared_ptr<PricingEngine> FdSimpleBSSwingEnginePtr;
-typedef boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> CurveShapePtr;
 %}
 
 %rename(FdSimpleBSSwingEngine) FdSimpleBSSwingEnginePtr;
@@ -2346,21 +2346,6 @@ class FdSimpleBSSwingEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
-%rename(CurveShape) CurveShapePtr;
-%template(Shape) boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape>;
-class CurveShapePtr : public boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> {
-  public:
-    %extend {
-        CurveShapePtr() {
-            return new CurveShapePtr(            	
-            	new FdSimpleExtOUJumpSwingEngine::Shape());
-        }
-        void add(Time t, Real value) const {
-            (*self)->push_back(std::pair<Time, Real>(t, value));
-        }
-    }
-};
-
 %rename(FdSimpleExtOUJumpSwingEngine) FdSimpleExtOUJumpSwingEnginePtr;
 class FdSimpleExtOUJumpSwingEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
@@ -2369,19 +2354,23 @@ class FdSimpleExtOUJumpSwingEnginePtr : public boost::shared_ptr<PricingEngine> 
         	const ExtOUWithJumpsProcessPtr& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
-            const CurveShapePtr& shape = CurveShapePtr(),
+            const std::vector<std::pair<Time,Real> >& shape =
+                                         std::vector<std::pair<Time,Real> >(),
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
             
             const boost::shared_ptr<ExtOUWithJumpsProcess> jProcess =
                 boost::dynamic_pointer_cast<ExtOUWithJumpsProcess>(process);
-                 
+
+            boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> curve(
+                              new FdSimpleExtOUJumpSwingEngine::Shape(shape));
+
             QL_REQUIRE(jProcess, 
             	"Extended Ornstein-Uhlenbeck with jumps process required");
             
             return new FdSimpleExtOUJumpSwingEnginePtr(
                 new FdSimpleExtOUJumpSwingEngine(
                     jProcess, rTS, tGrid, xGrid, yGrid, 
-                    shape, schemeDesc));
+                    curve, schemeDesc));
         }
     }
 };
