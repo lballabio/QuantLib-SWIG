@@ -28,7 +28,7 @@ payoff = PlainVanillaPayoff(Option.Call, 8.0)
 
 # market data
 underlying = SimpleQuote(7.0)
-volatility = BlackConstantVol(todaysDate, TARGET(), 0.10, Actual365Fixed())
+volatility = BlackConstantVol(settlementDate, TARGET(), 0.10, Actual365Fixed())
 dividendYield = FlatForward(settlementDate, 0.05, Actual365Fixed())
 
 # report
@@ -57,6 +57,12 @@ process = BlackScholesMertonProcess(QuoteHandle(underlying),
                                     YieldTermStructureHandle(riskFreeRate),
                                     BlackVolTermStructureHandle(volatility))
 
+hestonProcess = HestonProcess(YieldTermStructureHandle(riskFreeRate),
+                              YieldTermStructureHandle(dividendYield),
+                              QuoteHandle(underlying),
+                              0.1*0.1, 1.0, 0.1*0.1, 0.0001, 0.0)
+hestonModel = HestonModel(hestonProcess)
+                              
 option = VanillaOption(payoff, exercise)
 
 # method: analytic
@@ -64,6 +70,14 @@ option.setPricingEngine(AnalyticEuropeanEngine(process))
 value = option.NPV()
 refValue = value
 report('analytic',value)
+
+#method: Heston semi-analytic
+option.setPricingEngine(AnalyticHestonEngine(hestonModel))
+report('Heston analytic',option.NPV())
+
+#method: Heston COS method
+option.setPricingEngine(COSHestonEngine(hestonModel))
+report('Heston COS Method',option.NPV())
 
 # method: integral
 option.setPricingEngine(IntegralEngine(process))
