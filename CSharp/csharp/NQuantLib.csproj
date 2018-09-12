@@ -385,6 +385,8 @@
     <Compile Include="DotNetCostFunction.cs" />
     <Compile Include="DoubleBarrier.cs" />
     <Compile Include="DoubleBarrierOption.cs" />
+    <Compile Include="DoublePair.cs" />
+    <Compile Include="DoublePairVector.cs" />
     <Compile Include="DoubleVector.cs" />
     <Compile Include="DownRounding.cs" />
     <Compile Include="DPlus.cs" />
@@ -458,6 +460,8 @@
     <Compile Include="ExchangeRateManager.cs" />
     <Compile Include="Exercise.cs" />
     <Compile Include="ExponentialSplinesFitting.cs" />
+    <Compile Include="ExtOUWithJumpsProcess.cs" />
+    <Compile Include="ExtendedOrnsteinUhlenbeckProcess.cs" />
     <Compile Include="FalsePosition.cs" />
     <Compile Include="FDAmericanEngine.cs" />
     <Compile Include="FdBatesVanillaEngine.cs" />
@@ -472,6 +476,8 @@
     <Compile Include="FdHullWhiteSwaptionEngine.cs" />
     <Compile Include="FdmSchemeDesc.cs" />
     <Compile Include="FDShoutEngine.cs" />
+    <Compile Include="FdSimpleBSSwingEngine.cs" />
+    <Compile Include="FdSimpleExtOUJumpSwingEngine.cs" />
     <Compile Include="FedFunds.cs" />
     <Compile Include="FFTVarianceGammaEngine.cs" />
     <Compile Include="FIMCurrency.cs" />
@@ -625,6 +631,7 @@
     <Compile Include="JpyLiborSwapIsdaFixAm.cs" />
     <Compile Include="JpyLiborSwapIsdaFixPm.cs" />
     <Compile Include="KahaleSmileSection.cs" />
+    <Compile Include="KlugeExtOUProcess.cs" />
     <Compile Include="KnuthUniformRng.cs" />
     <Compile Include="KnuthUniformRsg.cs" />
     <Compile Include="KrugerCubic.cs" />
@@ -934,6 +941,7 @@
     <Compile Include="SWIGTYPE_p_YoYInflationTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_ZeroHelper.cs" />
     <Compile Include="SWIGTYPE_p_ZeroInflationTermStructure.cs" />
+    <Compile Include="SwingExercise.cs" />
     <Compile Include="Switzerland.cs" />
     <Compile Include="Taiwan.cs" />
     <Compile Include="TARGET.cs" />
@@ -975,8 +983,10 @@
     <Compile Include="USDLibor.cs" />
     <Compile Include="UsdLiborSwapIsdaFixAm.cs" />
     <Compile Include="UsdLiborSwapIsdaFixPm.cs" />
+    <Compile Include="VanillaForwardPayoff.cs" />
     <Compile Include="VanillaOption.cs" />
     <Compile Include="VanillaSwap.cs" />
+    <Compile Include="VanillaSwingOption.cs" />
     <Compile Include="VannaVolgaBarrierEngine.cs" />
     <Compile Include="VannaVolgaDoubleBarrierEngine.cs" />
     <Compile Include="VarianceGammaEngine.cs" />
