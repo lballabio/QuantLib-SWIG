@@ -34,7 +34,7 @@ swingOption = VanillaSwingOption(VanillaForwardPayoff(Option.Call, underlying.va
                                  SwingExercise(exerciseDates), 0, exerciseDates.size())
 
 bsProcess = BlackScholesMertonProcess(
-	QuoteHandle(underlying),
+    QuoteHandle(underlying),
     YieldTermStructureHandle(dividendYield),
     YieldTermStructureHandle(riskFreeRate),
     BlackVolTermStructureHandle(volatility))
