@@ -241,6 +241,7 @@
     <Compile Include="Bkbm5M.cs" />
     <Compile Include="Bkbm6M.cs" />
     <Compile Include="BlackCalculator.cs" />
+    <Compile Include="BlackCalibrationHelper.cs" />
     <Compile Include="BlackCallableFixedRateBondEngine.cs" />
     <Compile Include="BlackCapFloorEngine.cs" />
     <Compile Include="BlackConstantVol.cs" />
@@ -276,7 +277,7 @@
     <Compile Include="Calendar.cs" />
     <Compile Include="CalibratedModel.cs" />
     <Compile Include="CalibratedModelHandle.cs" />
-    <Compile Include="CalibrationHelper.cs" />
+    <Compile Include="CalibrationHelperBase.cs" />
     <Compile Include="CalibrationHelperVector.cs" />
     <Compile Include="Callability.cs" />
     <Compile Include="CallabilityPrice.cs" />
@@ -330,6 +331,7 @@
     <Compile Include="ConvertibleFloatingRateBond.cs" />
     <Compile Include="ConvertibleZeroCouponBond.cs" />
     <Compile Include="COPCurrency.cs" />
+    <Compile Include="COSHestonEngine.cs" />
     <Compile Include="CostFunctionDelegate.cs" />
     <Compile Include="Coupon.cs" />
     <Compile Include="CPI.cs" />
@@ -907,6 +909,7 @@
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_OptimizationMethod_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SwapIndex_t.cs" />
     <Compile Include="SWIGTYPE_p_CalibratedModel.cs" />
+    <Compile Include="SWIGTYPE_p_CalibrationHelperBase.cs" />
     <Compile Include="SWIGTYPE_p_CapFloorTermVolatilityStructure.cs" />
     <Compile Include="SWIGTYPE_p_CashFlow.cs" />
     <Compile Include="SWIGTYPE_p_Claim.cs" />
@@ -1040,9 +1043,9 @@
     <Compile Include="ZeroSpreadedTermStructure.cs" />
     <Compile Include="ZeroYield.cs" />
     <Compile Include="Zibor.cs" />
+    <Compile Include="_BlackCalibrationHelper.cs" />
     <Compile Include="_BlackVarianceSurface.cs" />
     <Compile Include="_BoundaryCondition.cs" />
-    <Compile Include="_CalibrationHelper.cs" />
     <Compile Include="_Callability.cs" />
     <Compile Include="_CPISwap.cs" />
     <Compile Include="_CreditDefaultSwap.cs" />
