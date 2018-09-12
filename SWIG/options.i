@@ -2289,4 +2289,102 @@ class BinomialDoubleBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
     }
 };
 
+
+// Swing option
+
+%{
+using QuantLib::VanillaSwingOption;
+typedef boost::shared_ptr<Instrument> VanillaSwingOptionPtr;
+%}
+
+%rename(VanillaSwingOption) VanillaSwingOptionPtr;
+class VanillaSwingOptionPtr : public boost::shared_ptr<Instrument> {
+  public:
+    %extend {
+        VanillaSwingOptionPtr(
+            const boost::shared_ptr<Payoff>& payoff,
+            const boost::shared_ptr<Exercise>& ex,
+            Size minExerciseRights, Size maxExerciseRights) {
+            
+            const boost::shared_ptr<SwingExercise> swingExercise =
+                 boost::dynamic_pointer_cast<SwingExercise>(ex);
+            QL_REQUIRE(swingExercise, "Swing exercise required");            
+            
+            return new VanillaSwingOptionPtr(
+                new VanillaSwingOption(payoff, swingExercise, 
+                    minExerciseRights, maxExerciseRights));
+        }
+    }
+};
+
+// Swing engines
+
+%{
+using QuantLib::FdSimpleBSSwingEngine;
+using QuantLib::FdSimpleExtOUJumpSwingEngine;
+typedef boost::shared_ptr<PricingEngine> FdSimpleExtOUJumpSwingEnginePtr;
+typedef boost::shared_ptr<PricingEngine> FdSimpleBSSwingEnginePtr;
+typedef boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> CurveShapePtr;
+%}
+
+%rename(FdSimpleBSSwingEngine) FdSimpleBSSwingEnginePtr;
+class FdSimpleBSSwingEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdSimpleBSSwingEnginePtr(
+            const GeneralizedBlackScholesProcessPtr& process,
+            Size tGrid = 50, Size xGrid = 100,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas()) {
+            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                                                                     process);
+            QL_REQUIRE(bsProcess, "Black-Scholes process required");
+            
+            return new FdSimpleBSSwingEnginePtr(
+                new FdSimpleBSSwingEngine(bsProcess,tGrid, xGrid, schemeDesc));
+        }
+    }
+};
+
+%rename(CurveShape) CurveShapePtr;
+%template(Shape) boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape>;
+class CurveShapePtr : public boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> {
+  public:
+    %extend {
+        CurveShapePtr() {
+            return new CurveShapePtr(            	
+            	new FdSimpleExtOUJumpSwingEngine::Shape());
+        }
+        void add(Time t, Real value) const {
+            (*self)->push_back(std::pair<Time, Real>(t, value));
+        }
+    }
+};
+
+%rename(FdSimpleExtOUJumpSwingEngine) FdSimpleExtOUJumpSwingEnginePtr;
+class FdSimpleExtOUJumpSwingEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdSimpleExtOUJumpSwingEnginePtr(            
+        	const ExtOUWithJumpsProcessPtr& process,
+            const boost::shared_ptr<YieldTermStructure>& rTS,
+            Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
+            const CurveShapePtr& shape = CurveShapePtr(),
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            
+            const boost::shared_ptr<ExtOUWithJumpsProcess> jProcess =
+                boost::dynamic_pointer_cast<ExtOUWithJumpsProcess>(process);
+                 
+            QL_REQUIRE(jProcess, 
+            	"Extended Ornstein-Uhlenbeck with jumps process required");
+            
+            return new FdSimpleExtOUJumpSwingEnginePtr(
+                new FdSimpleExtOUJumpSwingEngine(
+                    jProcess, rTS, tGrid, xGrid, yGrid, 
+                    shape, schemeDesc));
+        }
+    }
+};
+
+
 #endif
