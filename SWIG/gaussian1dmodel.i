@@ -29,7 +29,6 @@
 
 %{
 using QuantLib::Gaussian1dModel;
-
 %}
 
 %ignore Gaussian1dModel;
@@ -110,21 +109,29 @@ class GsrPtr : public boost::shared_ptr<Gaussian1dModel> {
         }
         
         void calibrateVolatilitiesIterative(
-                const std::vector<boost::shared_ptr<CalibrationHelper> > &helpers,
+                const std::vector<boost::shared_ptr<CalibrationHelperBase> > &hs,
                 OptimizationMethod &method, const EndCriteria &endCriteria,
                 const Constraint &constraint = Constraint(),
                 const std::vector<Real> &weights = std::vector<Real>()) {
+            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+            for (Size i=0; i<hs.size(); ++i)
+                helpers[i] =
+                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
             boost::dynamic_pointer_cast<Gsr>(*self)
                 ->calibrateVolatilitiesIterative(helpers, method, endCriteria,
                                                  constraint, weights);
         }
         
         void calibrate(
-            const std::vector<boost::shared_ptr<CalibrationHelper> >& helpers,
-            OptimizationMethod& method, const EndCriteria & endCriteria,
-            const Constraint& constraint = Constraint(),
-            const std::vector<Real>& weights = std::vector<Real>(),
-            const std::vector<bool> & fixParameters = std::vector<bool>()){
+                const std::vector<boost::shared_ptr<CalibrationHelperBase> >& hs,
+                OptimizationMethod& method, const EndCriteria & endCriteria,
+                const Constraint& constraint = Constraint(),
+                const std::vector<Real>& weights = std::vector<Real>(),
+                const std::vector<bool> & fixParameters = std::vector<bool>()) {
+            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+            for (Size i=0; i<hs.size(); ++i)
+                helpers[i] =
+                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
             boost::dynamic_pointer_cast<Gsr>(*self)
                 ->calibrate(helpers, method, endCriteria,
                             constraint, weights, fixParameters);
@@ -134,7 +141,11 @@ class GsrPtr : public boost::shared_ptr<Gaussian1dModel> {
             return boost::dynamic_pointer_cast<Gsr>(*self)->params();
         }
         Real value(const Array& params,
-                   const std::vector<boost::shared_ptr<CalibrationHelper> >& helpers){
+                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >& hs) {
+            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+            for (Size i=0; i<hs.size(); ++i)
+                helpers[i] =
+                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
             return boost::dynamic_pointer_cast<Gsr>(*self)->value(params, helpers);
         }
         EndCriteria::Type endCriteria() const{
@@ -251,13 +262,18 @@ class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
         }
 
         void calibrate(
-              const std::vector<boost::shared_ptr<CalibrationHelper> > &helper,
+              const std::vector<boost::shared_ptr<CalibrationHelperBase> > &hs,
               OptimizationMethod &method, const EndCriteria &endCriteria,
               const Constraint &constraint = Constraint(),
               const std::vector<Real> &weights = std::vector<Real>(),
               const std::vector<bool> &fixParameters = std::vector<bool>()) {
-            boost::dynamic_pointer_cast<MarkovFunctional>(*self)->calibrate(helper, method, 
-                                                                            endCriteria, constraint, weights, fixParameters);
+            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+            for (Size i=0; i<hs.size(); ++i)
+                helpers[i] =
+                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
+            boost::dynamic_pointer_cast<MarkovFunctional>(*self)->calibrate(helpers, method, 
+                                                                            endCriteria, constraint,
+                                                                            weights, fixParameters);
         }
 
         const Array& volatility() const {
