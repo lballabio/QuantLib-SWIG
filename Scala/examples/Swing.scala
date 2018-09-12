@@ -66,7 +66,7 @@ object Swing {
                 volatility*volatility/(4*speed)*(1-math.exp(-2*speed*t)) -
                 jumpIntensity/beta*math.log((eta-math.exp(-beta*t))/(eta-1.0))
                 
-            curveShape.add(DoublePair(t, gs))
+            curveShape.add(new DoublePair(t, gs))
         }
         
         val ouProcess = new ExtendedOrnsteinUhlenbeckProcess(
