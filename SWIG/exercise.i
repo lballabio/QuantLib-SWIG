@@ -62,10 +62,12 @@ using QuantLib::EuropeanExercise;
 using QuantLib::AmericanExercise;
 using QuantLib::BermudanExercise;
 using QuantLib::RebatedExercise;
+using QuantLib::SwingExercise;
 typedef boost::shared_ptr<Exercise> EuropeanExercisePtr;
 typedef boost::shared_ptr<Exercise> AmericanExercisePtr;
 typedef boost::shared_ptr<Exercise> BermudanExercisePtr;
 typedef boost::shared_ptr<Exercise> RebatedExercisePtr;
+typedef boost::shared_ptr<Exercise> SwingExercisePtr;
 %}
 
 %rename(EuropeanExercise) EuropeanExercisePtr;
@@ -131,5 +133,15 @@ class RebatedExercisePtr : public boost::shared_ptr<Exercise> {
     }
 };
 
+
+%rename(SwingExercise) SwingExercisePtr;
+class SwingExercisePtr : public boost::shared_ptr<Exercise> {
+  public:
+    %extend {
+        SwingExercisePtr(const std::vector<Date>& dates) {
+            return new SwingExercisePtr(new SwingExercise(dates));
+        }
+    }
+};
 
 #endif
