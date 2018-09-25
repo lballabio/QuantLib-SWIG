@@ -1,35 +1,46 @@
 
-Changes for QuantLib-SWIG 1.13
-==============================
+Main changes for QuantLib-SWIG 1.14
+===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/6?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/7?closed=1>.
 
-- Exported amortizing bonds (thanks to Anthony Calleja).
+- Dropped support for Visual Studio 2008.
 
-- Exported vanna-volga barrier-option engine (thanks to Matthias
-  Lungwitz).
+- Exported the Calendar::holidayList method (thanks to Piotr Siejda).
 
-- Exported the MakeSchedule helper class (thanks to Roy Zywina).
+- Exported Thailand calendar (thanks to Matthias Groncki).
 
-- Exported the Cashflows::previousCashFlowDate and
-  Cashflows::nextCashFlowDate methods (thanks to Weston Steimel).
+- Exported the InterpolatedSurvivalProbabilityCurve class (thanks to
+  Matthias Lungwitz).
 
-- Exported more methods from the SwapIndex class, as well as a few
-  derived classes (thanks to Matthias Lungwitz).
+- Exported the SmileSection base class and a few derived classes
+  (thanks to Matthias Lungwitz).
 
-- Exported CPISwap (thanks to Matthias Lungwitz).
+- Exported Bibor and THBFIX indices (thanks to Matthias Groncki).
 
-- Exported more methods from the ZeroCouponInflationSwap and
-  YearOnYearInflationSwap classes (thanks to Matthias Lungwitz).
+- Exported the force_overwrite parameter from the Index::addFixing
+  method (thanks to Wojciech Slusarski).
 
-- Exported MC American option engine (thanks to Matthias Lungwitz).
+- Exported CMS-spread coupons and leg (thanks to Matthias Lungwitz).
 
-- Exported more methods from the NonStandardSwaption class and its
-  Gaussian engines (thanks to Matthias Lungwitz).
+- Added protection start date argument to CreditDefaultSwap
+  constructor (thanks to GitHub user pschaefers).
 
-- Exported overnight-indexes swaps (thanks to Matthias Lungwitz).
+- Exported the MakeVanillaSwap class (thanks to Matthias Groncki).
 
-- Exported more methods from the RateHelper class and a few of its
-  derived classes (thanks to Matthias Lungwitz).
+- Exported the IsdaCdsEngine class and added Python example (thanks to
+  Weston Steimel and GitHub user aliallday).
 
+- Exported the COSHestonEngine class (thanks to Klaus Spanderen).
+
+- Exported the SwingOption class and related classes and added Python
+  and Scala examples (thanks to Klaus Spanderen).
+
+- Added Python example for Gaussian 1D model (thanks to Angus Lee).
+
+- Added option to use the AutoCloseable interface in the Java wrappers
+  instead of finalizers.  Use the `--enable-java-autocloseable`
+  configure switch to enable the interface.  The separate switch
+  `--disable-java-finalizer` disables finalizers entirely, and should
+  be used with caution.
