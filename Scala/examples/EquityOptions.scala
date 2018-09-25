@@ -145,16 +145,43 @@ object EquityOptions {
                  new VanillaPricingService(payoff, europeanExercise) !! 
                         new AnalyticEuropeanEngine(SimpleFactory.bsProcess())
 
-        // Heston for European        
+        val hestonModel = new HestonModel(SimpleFactory.hestonProcess())
+             
+        // Heston for European                            
         val analyticHestonNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                new AnalyticHestonEngine(new HestonModel(
-                                        SimpleFactory.hestonProcess()))
+                new AnalyticHestonEngine(hestonModel)
+                
+        val fdEuropeanHestonNpv =
+            new VanillaPricingService(payoff, europeanExercise) !!
+                new FdHestonVanillaEngine(hestonModel, 50, 150) 
 
+        val fdAmericanHestonNpv =
+            new VanillaPricingService(payoff, americanExercise) !!
+                new FdHestonVanillaEngine(hestonModel, 100, 150) 
+
+        val fdBermudanHestonNpv =
+            new VanillaPricingService(payoff, bermudanExercise) !!
+                new FdHestonVanillaEngine(hestonModel, 100, 150) 
+
+        val batesModel = new BatesModel(SimpleFactory.batesProcess())
+        
         // Bates for European
         val analyticBatesNpv =
             new VanillaPricingService(payoff, europeanExercise) !!
-                new BatesEngine(new BatesModel(SimpleFactory.batesProcess()))
+                new BatesEngine(batesModel)
+
+        val fdEuropeanBatesNpv =
+            new VanillaPricingService(payoff, europeanExercise) !!
+                new FdBatesVanillaEngine(batesModel)
+
+        val fdAmericanBatesNpv =
+            new VanillaPricingService(payoff, americanExercise) !!
+                new FdBatesVanillaEngine(batesModel)
+
+        val fdBermudanBatesNpv =
+            new VanillaPricingService(payoff, bermudanExercise) !!
+                new FdBatesVanillaEngine(batesModel)
 
         // Barone-Adesi and Whaley approximation for American
         val baroneAdesiWhaleyNpv = 
@@ -303,8 +330,12 @@ object EquityOptions {
                                      Double.NaN, Double.NaN)
         printf(fmt, "Heston Semi-Analytic", analyticHestonNpv(), 
                                             Double.NaN, Double.NaN)
+        printf(fmt, "Heston Finite-Difference", 
+        	fdEuropeanHestonNpv(), fdBermudanHestonNpv(), fdAmericanHestonNpv())
         printf(fmt, "Bates Semi-Analytic", analyticBatesNpv(), 
                                             Double.NaN, Double.NaN)
+        printf(fmt, "Bates Finite-Difference", 
+        	fdEuropeanBatesNpv(), fdBermudanBatesNpv(), fdAmericanBatesNpv())
         printf(fmt, "Barone-Adesi/Whaley", Double.NaN, Double.NaN,
                                            baroneAdesiWhaleyNpv());
         printf(fmt, "Bjerksund/Stensland", Double.NaN, Double.NaN,

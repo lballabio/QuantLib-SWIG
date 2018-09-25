@@ -860,50 +860,6 @@ class FDAmericanEnginePtr : public boost::shared_ptr<PricingEngine> {
 };
 
 %{
-using QuantLib::FdBlackScholesVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdBlackScholesVanillaEnginePtr;
-%}
-
-%rename(FdBlackScholesVanillaEngine) FdBlackScholesVanillaEnginePtr;
-class FdBlackScholesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-        FdBlackScholesVanillaEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FdBlackScholesVanillaEnginePtr(
-                            new FdBlackScholesVanillaEngine( bsProcess,tGrid, xGrid, dampingSteps));
-        }
-    }
-};
-
-%{
-using QuantLib::FdBatesVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
-%}
-
-%rename(FdBatesVanillaEngine) FdBatesVanillaEnginePtr;
-class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-        FdBatesVanillaEnginePtr(const BatesModelPtr& model,
-                                Size tGrid = 100, Size xGrid = 100,
-                                Size vGrid=50, Size dampingSteps = 0) {
-            boost::shared_ptr<BatesModel> bModel =
-                 boost::dynamic_pointer_cast<BatesModel>(model);
-            QL_REQUIRE(bModel, "Bates model required");
-            return new FdBatesVanillaEnginePtr(
-                               new FdBatesVanillaEngine(bModel, tGrid, xGrid,
-                                                        vGrid, dampingSteps));
-        }
-    }
-};
-
-
-%{
 using QuantLib::ContinuousArithmeticAsianLevyEngine;
 typedef boost::shared_ptr<PricingEngine> ContinuousArithmeticAsianLevyEnginePtr;
 %}
@@ -1332,6 +1288,83 @@ struct FdmSchemeDesc {
   static FdmSchemeDesc ModifiedCraigSneyd(); 
   static FdmSchemeDesc Hundsdorfer();
   static FdmSchemeDesc ModifiedHundsdorfer();
+};
+
+%{
+using QuantLib::FdBlackScholesVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdBlackScholesVanillaEnginePtr;
+%}
+
+%rename(FdBlackScholesVanillaEngine) FdBlackScholesVanillaEnginePtr;
+class FdBlackScholesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdBlackScholesVanillaEnginePtr(
+        	const GeneralizedBlackScholesProcessPtr& process,
+            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+            bool localVol = false,
+            Real illegalLocalVolOverwrite = -Null<Real>()) {
+            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
+                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
+                                                                     process);
+            QL_REQUIRE(bsProcess, "Black-Scholes process required");
+            return new FdBlackScholesVanillaEnginePtr(
+                new FdBlackScholesVanillaEngine( 
+                    bsProcess,tGrid, xGrid, dampingSteps, 
+                    schemeDesc, localVol, illegalLocalVolOverwrite));
+        }
+    }
+};
+
+%{
+using QuantLib::FdBatesVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
+%}
+
+%rename(FdBatesVanillaEngine) FdBatesVanillaEnginePtr;
+class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdBatesVanillaEnginePtr(
+            const BatesModelPtr& model,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid=50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            
+            boost::shared_ptr<BatesModel> bModel =
+                 boost::dynamic_pointer_cast<BatesModel>(model);
+            QL_REQUIRE(bModel, "Bates model required");
+            return new FdBatesVanillaEnginePtr(
+                new FdBatesVanillaEngine(
+                    bModel, tGrid, xGrid, vGrid, dampingSteps, schemeDesc));
+        }
+    }
+};
+
+%{
+using QuantLib::FdHestonVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdHestonVanillaEnginePtr;
+%}
+
+%rename(FdHestonVanillaEngine) FdHestonVanillaEnginePtr;
+class FdHestonVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdHestonVanillaEnginePtr(
+        	const HestonModelPtr& model,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            
+            boost::shared_ptr<HestonModel> hModel =
+                 boost::dynamic_pointer_cast<HestonModel>(model);
+            QL_REQUIRE(hModel, "Heston model required");
+            return new FdHestonVanillaEnginePtr(
+                new FdHestonVanillaEngine(hModel, tGrid, xGrid,
+                                          vGrid, dampingSteps, schemeDesc));
+        }
+    }
 };
 
 %{
