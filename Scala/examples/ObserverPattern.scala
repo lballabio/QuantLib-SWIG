@@ -22,8 +22,8 @@ import org.quantlib.{Array => QArray, _}
 
 
 /**
- * Tests the thread- and gc safeness of QL's observer pattern.
- * The test is likely to fail if QL was compiled with 
+ * Check the thread- and gc safeness of QL's observer pattern.
+ * This program is likely to fail if QL was compiled with 
  * QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN not being set.
  *
  * You need to run this using the Java Jar file and JNI library
@@ -46,7 +46,6 @@ object ObserverPattern {
         
         val quote = new SimpleQuote(100d)
         while (true) {
-            println("po")
             (0 until 10000).par.foreach{i =>
                 val underlying = new QuoteHandle(quote)
                 quote.setValue(quote.value())
