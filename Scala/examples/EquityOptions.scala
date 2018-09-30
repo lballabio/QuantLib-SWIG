@@ -83,12 +83,12 @@ object SimpleFactory {
 
     def hestonProcess() : HestonProcess = {
         new HestonProcess(rTS, divYield, spot, volatility*volatility,
-                          1.0, volatility*volatility, 0.001, 0.0)
+                          1.0, volatility*volatility, 0.0001, 0.0)
     }
 
     def batesProcess() : BatesProcess = {
         new BatesProcess(rTS, divYield, spot, volatility*volatility,
-                         1.0, volatility*volatility, 0.001, 0.0,
+                         1.0, volatility*volatility, 0.0001, 0.0,
                          1e-14, 1e-14, 1e-14)
     }
     private def rTS : YieldTermStructureHandle = {
@@ -145,43 +145,21 @@ object EquityOptions {
                  new VanillaPricingService(payoff, europeanExercise) !! 
                         new AnalyticEuropeanEngine(SimpleFactory.bsProcess())
 
-        val hestonModel = new HestonModel(SimpleFactory.hestonProcess())
-             
-        // Heston for European                            
+        // Heston for European        
         val analyticHestonNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                new AnalyticHestonEngine(hestonModel)
-                
-        val fdEuropeanHestonNpv =
+                new AnalyticHestonEngine(new HestonModel(
+                                        SimpleFactory.hestonProcess()))
+
+        val cosHestonNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                new FdHestonVanillaEngine(hestonModel, 50, 150) 
+                new COSHestonEngine(new HestonModel(
+                                    SimpleFactory.hestonProcess()))
 
-        val fdAmericanHestonNpv =
-            new VanillaPricingService(payoff, americanExercise) !!
-                new FdHestonVanillaEngine(hestonModel, 100, 150) 
-
-        val fdBermudanHestonNpv =
-            new VanillaPricingService(payoff, bermudanExercise) !!
-                new FdHestonVanillaEngine(hestonModel, 100, 150) 
-
-        val batesModel = new BatesModel(SimpleFactory.batesProcess())
-        
         // Bates for European
         val analyticBatesNpv =
             new VanillaPricingService(payoff, europeanExercise) !!
-                new BatesEngine(batesModel)
-
-        val fdEuropeanBatesNpv =
-            new VanillaPricingService(payoff, europeanExercise) !!
-                new FdBatesVanillaEngine(batesModel)
-
-        val fdAmericanBatesNpv =
-            new VanillaPricingService(payoff, americanExercise) !!
-                new FdBatesVanillaEngine(batesModel)
-
-        val fdBermudanBatesNpv =
-            new VanillaPricingService(payoff, bermudanExercise) !!
-                new FdBatesVanillaEngine(batesModel)
+                new BatesEngine(new BatesModel(SimpleFactory.batesProcess()))
 
         // Barone-Adesi and Whaley approximation for American
         val baroneAdesiWhaleyNpv = 
@@ -330,12 +308,10 @@ object EquityOptions {
                                      Double.NaN, Double.NaN)
         printf(fmt, "Heston Semi-Analytic", analyticHestonNpv(), 
                                             Double.NaN, Double.NaN)
-        printf(fmt, "Heston Finite-Difference", 
-        	fdEuropeanHestonNpv(), fdBermudanHestonNpv(), fdAmericanHestonNpv())
+        printf(fmt, "COS Heston Method", cosHestonNpv(), 
+                                            Double.NaN, Double.NaN)
         printf(fmt, "Bates Semi-Analytic", analyticBatesNpv(), 
                                             Double.NaN, Double.NaN)
-        printf(fmt, "Bates Finite-Difference", 
-        	fdEuropeanBatesNpv(), fdBermudanBatesNpv(), fdAmericanBatesNpv())
         printf(fmt, "Barone-Adesi/Whaley", Double.NaN, Double.NaN,
                                            baroneAdesiWhaleyNpv());
         printf(fmt, "Bjerksund/Stensland", Double.NaN, Double.NaN,

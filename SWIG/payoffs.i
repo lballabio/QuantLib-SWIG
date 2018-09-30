@@ -30,12 +30,14 @@ using QuantLib::CashOrNothingPayoff;
 using QuantLib::AssetOrNothingPayoff;
 using QuantLib::SuperSharePayoff;
 using QuantLib::GapPayoff;
+using QuantLib::VanillaForwardPayoff;
 typedef boost::shared_ptr<Payoff> PlainVanillaPayoffPtr;
 typedef boost::shared_ptr<Payoff> PercentageStrikePayoffPtr;
 typedef boost::shared_ptr<Payoff> CashOrNothingPayoffPtr;
 typedef boost::shared_ptr<Payoff> AssetOrNothingPayoffPtr;
 typedef boost::shared_ptr<Payoff> SuperSharePayoffPtr;
 typedef boost::shared_ptr<Payoff> GapPayoffPtr;
+typedef boost::shared_ptr<Payoff> VanillaForwardPayoffPtr;
 %}
 
 %rename(PlainVanillaPayoff) PlainVanillaPayoffPtr;
@@ -119,6 +121,17 @@ class GapPayoffPtr : public boost::shared_ptr<Payoff> {
                             Real strikePayoff) {
             return new GapPayoffPtr(
                                new GapPayoff(type, strike, strikePayoff));
+        }
+    }
+};
+
+%rename(VanillaForwardPayoff) VanillaForwardPayoffPtr;
+class VanillaForwardPayoffPtr : public boost::shared_ptr<Payoff> {
+  public:
+    %extend {
+        VanillaForwardPayoffPtr(Option::Type type, Real strike) {
+            return new VanillaForwardPayoffPtr(
+                new VanillaForwardPayoff(type, strike));
         }
     }
 };

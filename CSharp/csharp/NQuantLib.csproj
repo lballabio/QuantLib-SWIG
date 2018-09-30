@@ -241,6 +241,7 @@
     <Compile Include="Bkbm5M.cs" />
     <Compile Include="Bkbm6M.cs" />
     <Compile Include="BlackCalculator.cs" />
+    <Compile Include="BlackCalibrationHelper.cs" />
     <Compile Include="BlackCallableFixedRateBondEngine.cs" />
     <Compile Include="BlackCapFloorEngine.cs" />
     <Compile Include="BlackConstantVol.cs" />
@@ -276,7 +277,7 @@
     <Compile Include="Calendar.cs" />
     <Compile Include="CalibratedModel.cs" />
     <Compile Include="CalibratedModelHandle.cs" />
-    <Compile Include="CalibrationHelper.cs" />
+    <Compile Include="CalibrationHelperBase.cs" />
     <Compile Include="CalibrationHelperVector.cs" />
     <Compile Include="Callability.cs" />
     <Compile Include="CallabilityPrice.cs" />
@@ -305,6 +306,7 @@
     <Compile Include="CHFLibor.cs" />
     <Compile Include="ChfLiborSwapIsdaFix.cs" />
     <Compile Include="China.cs" />
+    <Compile Include="Claim.cs" />
     <Compile Include="ClosestRounding.cs" />
     <Compile Include="CLPCurrency.cs" />
     <Compile Include="CmsCoupon.cs" />
@@ -329,6 +331,7 @@
     <Compile Include="ConvertibleFloatingRateBond.cs" />
     <Compile Include="ConvertibleZeroCouponBond.cs" />
     <Compile Include="COPCurrency.cs" />
+    <Compile Include="COSHestonEngine.cs" />
     <Compile Include="CostFunctionDelegate.cs" />
     <Compile Include="Coupon.cs" />
     <Compile Include="CPI.cs" />
@@ -385,6 +388,8 @@
     <Compile Include="DotNetCostFunction.cs" />
     <Compile Include="DoubleBarrier.cs" />
     <Compile Include="DoubleBarrierOption.cs" />
+    <Compile Include="DoublePair.cs" />
+    <Compile Include="DoublePairVector.cs" />
     <Compile Include="DoubleVector.cs" />
     <Compile Include="DownRounding.cs" />
     <Compile Include="DPlus.cs" />
@@ -458,6 +463,10 @@
     <Compile Include="ExchangeRateManager.cs" />
     <Compile Include="Exercise.cs" />
     <Compile Include="ExponentialSplinesFitting.cs" />
+    <Compile Include="ExtOUWithJumpsProcess.cs" />
+    <Compile Include="ExtendedOrnsteinUhlenbeckProcess.cs" />
+    <Compile Include="FaceValueAccrualClaim.cs" />
+    <Compile Include="FaceValueClaim.cs" />
     <Compile Include="FalsePosition.cs" />
     <Compile Include="FDAmericanEngine.cs" />
     <Compile Include="FdBatesVanillaEngine.cs" />
@@ -472,6 +481,8 @@
     <Compile Include="FdHullWhiteSwaptionEngine.cs" />
     <Compile Include="FdmSchemeDesc.cs" />
     <Compile Include="FDShoutEngine.cs" />
+    <Compile Include="FdSimpleBSSwingEngine.cs" />
+    <Compile Include="FdSimpleExtOUJumpSwingEngine.cs" />
     <Compile Include="FedFunds.cs" />
     <Compile Include="FFTVarianceGammaEngine.cs" />
     <Compile Include="FIMCurrency.cs" />
@@ -611,6 +622,7 @@
     <Compile Include="InverseNonCentralCumulativeChiSquareDistribution.cs" />
     <Compile Include="IQDCurrency.cs" />
     <Compile Include="IRRCurrency.cs" />
+    <Compile Include="IsdaCdsEngine.cs" />
     <Compile Include="ISKCurrency.cs" />
     <Compile Include="Israel.cs" />
     <Compile Include="Italy.cs" />
@@ -625,6 +637,7 @@
     <Compile Include="JpyLiborSwapIsdaFixAm.cs" />
     <Compile Include="JpyLiborSwapIsdaFixPm.cs" />
     <Compile Include="KahaleSmileSection.cs" />
+    <Compile Include="KlugeExtOUProcess.cs" />
     <Compile Include="KnuthUniformRng.cs" />
     <Compile Include="KnuthUniformRsg.cs" />
     <Compile Include="KrugerCubic.cs" />
@@ -711,6 +724,8 @@
     <Compile Include="NeumannBC.cs" />
     <Compile Include="NewZealand.cs" />
     <Compile Include="NLGCurrency.cs" />
+    <Compile Include="NoArbSabrInterpolatedSmileSection.cs" />
+    <Compile Include="NoArbSabrSmileSection.cs" />
     <Compile Include="NoConstraint.cs" />
     <Compile Include="NodePair.cs" />
     <Compile Include="NodeVector.cs" />
@@ -901,8 +916,10 @@
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_OptimizationMethod_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SwapIndex_t.cs" />
     <Compile Include="SWIGTYPE_p_CalibratedModel.cs" />
+    <Compile Include="SWIGTYPE_p_CalibrationHelperBase.cs" />
     <Compile Include="SWIGTYPE_p_CapFloorTermVolatilityStructure.cs" />
     <Compile Include="SWIGTYPE_p_CashFlow.cs" />
+    <Compile Include="SWIGTYPE_p_Claim.cs" />
     <Compile Include="SWIGTYPE_p_DefaultProbabilityHelper.cs" />
     <Compile Include="SWIGTYPE_p_DefaultProbabilityTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_DisposableT_Array_t.cs" />
@@ -934,6 +951,7 @@
     <Compile Include="SWIGTYPE_p_YoYInflationTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_ZeroHelper.cs" />
     <Compile Include="SWIGTYPE_p_ZeroInflationTermStructure.cs" />
+    <Compile Include="SwingExercise.cs" />
     <Compile Include="Switzerland.cs" />
     <Compile Include="Taiwan.cs" />
     <Compile Include="TARGET.cs" />
@@ -975,8 +993,10 @@
     <Compile Include="USDLibor.cs" />
     <Compile Include="UsdLiborSwapIsdaFixAm.cs" />
     <Compile Include="UsdLiborSwapIsdaFixPm.cs" />
+    <Compile Include="VanillaForwardPayoff.cs" />
     <Compile Include="VanillaOption.cs" />
     <Compile Include="VanillaSwap.cs" />
+    <Compile Include="VanillaSwingOption.cs" />
     <Compile Include="VannaVolgaBarrierEngine.cs" />
     <Compile Include="VannaVolgaDoubleBarrierEngine.cs" />
     <Compile Include="VarianceGammaEngine.cs" />
@@ -1007,6 +1027,18 @@
     <Compile Include="YYUKRPI.cs" />
     <Compile Include="YYUSCPI.cs" />
     <Compile Include="YYZACPI.cs" />
+    <Compile Include="ZabrFullFd.cs" />
+    <Compile Include="ZabrFullFdInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrFullFdSmileSection.cs" />
+    <Compile Include="ZabrLocalVolatility.cs" />
+    <Compile Include="ZabrLocalVolatilityInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrLocalVolatilitySmileSection.cs" />
+    <Compile Include="ZabrShortMaturityLognormal.cs" />
+    <Compile Include="ZabrShortMaturityLognormalInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityLognormalSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityNormal.cs" />
+    <Compile Include="ZabrShortMaturityNormalInterpolatedSmileSection.cs" />
+    <Compile Include="ZabrShortMaturityNormalSmileSection.cs" />
     <Compile Include="ZACPI.cs" />
     <Compile Include="ZARCurrency.cs" />
     <Compile Include="ZeroCouponBond.cs" />
@@ -1021,16 +1053,18 @@
     <Compile Include="ZeroSpreadedTermStructure.cs" />
     <Compile Include="ZeroYield.cs" />
     <Compile Include="Zibor.cs" />
+    <Compile Include="_BlackCalibrationHelper.cs" />
     <Compile Include="_BlackVarianceSurface.cs" />
     <Compile Include="_BoundaryCondition.cs" />
-    <Compile Include="_CalibrationHelper.cs" />
     <Compile Include="_Callability.cs" />
     <Compile Include="_CPISwap.cs" />
+    <Compile Include="_CreditDefaultSwap.cs" />
     <Compile Include="_DeltaVolQuote.cs" />
     <Compile Include="_Exercise.cs" />
     <Compile Include="_Gaussian1dFloatFloatSwaptionEngine.cs" />
     <Compile Include="_Gaussian1dNonstandardSwaptionEngine.cs" />
     <Compile Include="_Gaussian1dSwaptionEngine.cs" />
+    <Compile Include="_IsdaCdsEngine.cs" />
     <Compile Include="_MarkovFunctional.cs" />
     <Compile Include="_NonstandardSwap.cs" />
     <Compile Include="_OvernightIndexedSwap.cs" />

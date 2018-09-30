@@ -35,6 +35,7 @@ import org.quantlib.BlackConstantVol;
 import org.quantlib.BlackScholesMertonProcess;
 import org.quantlib.BlackVolTermStructureHandle;
 import org.quantlib.Calendar;
+import org.quantlib.COSHestonEngine;
 import org.quantlib.Date;
 import org.quantlib.DateVector;
 import org.quantlib.DayCounter;
@@ -162,10 +163,17 @@ public class EquityOptions {
 							  volatility*volatility,
 							  1.0,
 							  volatility*volatility,
-							  0.001,
+							  0.0001,
 							  0.0);
 		HestonModel hestonModel = new HestonModel(hestonProcess);
 		europeanOption.setPricingEngine(new AnalyticHestonEngine(hestonModel));
+        System.out.printf(fmt, new Object[] { method,
+                                              europeanOption.NPV(),
+                                              Double.NaN,
+                                              Double.NaN } );
+                                              
+        method = "Heston COS Method";                                      	
+		europeanOption.setPricingEngine(new COSHestonEngine(hestonModel));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               Double.NaN,
@@ -180,7 +188,7 @@ public class EquityOptions {
 							 volatility*volatility,
 							 1.0,
 							 volatility*volatility,
-							 0.001,
+							 0.0001,
 							 0.0,
 							 1e-14, 1e-14, 1e-14);
 		BatesModel batesModel = new BatesModel(batesProcess);

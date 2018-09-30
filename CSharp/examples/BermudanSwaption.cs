@@ -47,13 +47,15 @@ namespace BermudanSwaption
             {
                 int j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1
                 int k = i*numCols + j;
-                double npv = helpers[i].modelValue();
-                double implied = helpers[i].impliedVolatility(
-                    npv,
-                    1e-4,
-                    1000,
-                    0.05,
-                    0.50 );
+                double npv =
+                    NQuantLibc.as_black_helper(helpers[i]).modelValue();
+                double implied =
+                    NQuantLibc.as_black_helper(helpers[i]).impliedVolatility(
+                        npv,
+                        1e-4,
+                        1000,
+                        0.05,
+                        0.50 );
                 double diff = implied - swaptionVols[k];
 
                 Console.WriteLine( "{0}x{1}: model {2}, market {3} ({4})",
@@ -180,7 +182,8 @@ namespace BermudanSwaption
 
 //          Console.WriteLine( "G2 (analytic formulae) calibration" );
 //          for (int i=0; i<swaptions.Count; i++)
-//              swaptions[i].setPricingEngine( new G2SwaptionEngine( modelG2, 6.0, 16 ) );
+//              NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
+//                  new G2SwaptionEngine( modelG2, 6.0, 16 ) );
 //
 //          calibrateModel( modelG2, swaptions, 0.05);
 //          Console.WriteLine( "calibrated to:" );
@@ -192,7 +195,7 @@ namespace BermudanSwaption
 
             Console.WriteLine( "Hull-White (analytic formulae) calibration" );
             for (int i=0; i<swaptions.Count; i++)
-                swaptions[i].setPricingEngine(
+                NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
                                        new JamshidianSwaptionEngine(modelHW));
 
             calibrateModel( modelHW, swaptions, 0.05);
@@ -203,7 +206,7 @@ namespace BermudanSwaption
 
             Console.WriteLine( "Hull-White (numerical) calibration" );
             for (int i=0; i<swaptions.Count; i++)
-                swaptions[i].setPricingEngine(
+                NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
                                        new TreeSwaptionEngine(modelHW2,grid));
 
             calibrateModel(modelHW2, swaptions, 0.05);
@@ -215,7 +218,7 @@ namespace BermudanSwaption
 
             Console.WriteLine( "Black-Karasinski (numerical) calibration" );
             for (int i=0; i<swaptions.Count; i++)
-                swaptions[i].setPricingEngine(
+                NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
                                         new TreeSwaptionEngine(modelBK,grid));
 
             calibrateModel(modelBK, swaptions, 0.05);

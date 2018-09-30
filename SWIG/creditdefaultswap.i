@@ -21,22 +21,79 @@
 %include instruments.i
 %include credit.i
 %include termstructures.i
+%include bonds.i
 %include null.i
 
 %{
 using QuantLib::CreditDefaultSwap;
 using QuantLib::MidPointCdsEngine;
 using QuantLib::IntegralCdsEngine;
+using QuantLib::IsdaCdsEngine;
+using QuantLib::Claim;
+using QuantLib::FaceValueClaim;
+using QuantLib::FaceValueAccrualClaim;
 
 typedef boost::shared_ptr<Instrument> CreditDefaultSwapPtr;
 typedef boost::shared_ptr<PricingEngine> MidPointCdsEnginePtr;
 typedef boost::shared_ptr<PricingEngine> IntegralCdsEnginePtr;
+typedef boost::shared_ptr<PricingEngine> IsdaCdsEnginePtr;
+typedef boost::shared_ptr<Claim> FaceValueClaimPtr;
+typedef boost::shared_ptr<Claim> FaceValueAccrualClaimPtr;
 %}
+
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_CreditDefaultSwap) CreditDefaultSwap;
+#else
+%ignore CreditDefaultSwap;
+#endif
+class CreditDefaultSwap {
+  public:
+    enum PricingModel {Midpoint, ISDA};
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    CreditDefaultSwap();
+#endif
+};
+
+%ignore Claim;
+class Claim {
+  public:
+    Real amount(const Date& defaultDate,
+                Real notional,
+                Real recoveryRate) const;
+};
+%template(Claim) boost::shared_ptr<Claim>;
+
+%rename(FaceValueClaim) FaceValueClaimPtr;
+class FaceValueClaimPtr : public boost::shared_ptr<Claim> {
+  public:
+    %extend {
+        FaceValueClaimPtr() {
+            return new FaceValueClaimPtr(new FaceValueClaim);
+        }
+    }
+};
+
+%rename(FaceValueAccrualClaim) FaceValueAccrualClaimPtr;
+class FaceValueAccrualClaimPtr : public boost::shared_ptr<Claim> {
+  public:
+    %extend {
+        FaceValueAccrualClaimPtr(const BondPtr& referenceSecurity) {
+            boost::shared_ptr<Bond> bond =
+                boost::dynamic_pointer_cast<Bond>(referenceSecurity);
+            return new FaceValueAccrualClaimPtr(new FaceValueAccrualClaim(bond));
+        }
+    }
+};
+
 
 %rename(CreditDefaultSwap) CreditDefaultSwapPtr;
 class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
   public:
     %extend {
+        static const CreditDefaultSwap::PricingModel Midpoint = CreditDefaultSwap::Midpoint;
+        static const CreditDefaultSwap::PricingModel ISDA = CreditDefaultSwap::ISDA;
+
         CreditDefaultSwapPtr(Protection::Side side,
                              Real notional,
                              Rate spread,
@@ -45,12 +102,12 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              const DayCounter& dayCounter,
                              bool settlesAccrual = true,
                              bool paysAtDefaultTime = true,
-			     const Date& protectionStart = Date()) {
+                             const Date& protectionStart = Date()) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, spread, schedule,
                                           paymentConvention, dayCounter,
                                           settlesAccrual, paysAtDefaultTime,
-					  protectionStart));
+                                          protectionStart));
         }
         CreditDefaultSwapPtr(Protection::Side side,
                              Real notional,
@@ -61,13 +118,20 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                              const DayCounter& dayCounter,
                              bool settlesAccrual = true,
                              bool paysAtDefaultTime = true,
-			     const Date& protectionStart = Date()) {
+                             const Date& protectionStart = Date(),
+                             const Date& upfrontDate = Date(),
+                             const boost::shared_ptr<Claim>& claim =
+                                                        boost::shared_ptr<Claim>(),
+                             const DayCounter& lastPeriodDayCounter = DayCounter(),
+                             const bool rebatesAccrual = true) {
             return new CreditDefaultSwapPtr(
                     new CreditDefaultSwap(side, notional, upfront, spread,
                                           schedule, paymentConvention,
                                           dayCounter, settlesAccrual,
                                           paysAtDefaultTime,
-					  protectionStart));
+                                          protectionStart,
+                                          upfrontDate,claim,
+                                          lastPeriodDayCounter,rebatesAccrual));
         }
         Protection::Side side() const {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
@@ -130,10 +194,18 @@ class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
                                const Handle<YieldTermStructure>& discountCurve,
                                const DayCounter& dayCounter,
                                Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6) const {
+                               Real accuracy = 1.0e-6,
+			       CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
                 ->impliedHazardRate(targetNPV, discountCurve, dayCounter,
-                                    recoveryRate, accuracy);
+                                    recoveryRate, accuracy, model);
+        }
+        Rate conventionalSpread(Real conventionalRecovery,
+                const Handle<YieldTermStructure>& discountCurve,
+                const DayCounter& dayCounter) const{
+            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
+                ->conventionalSpread(conventionalRecovery,discountCurve,
+                dayCounter) ;
         }
         std::vector<boost::shared_ptr<CashFlow> > coupons() {
             return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
@@ -172,6 +244,50 @@ class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
                               new IntegralCdsEngine(integrationStep, probability,
                                                     recoveryRate, discountCurve,
 													includeSettlementDateFlows));
+        }
+    }
+};
+
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+%rename(_IsdaCdsEngine) IsdaCdsEngine;
+#else
+%ignore IsdaCdsEngine;
+#endif
+class IsdaCdsEngine {
+  public:
+    enum NumericalFix {None, Taylor};
+    enum AccrualBias {HalfDayBias, NoBias};
+    enum ForwardsInCouponPeriod {Flat, Piecewise};
+#if defined(SWIGJAVA) || defined(SWIGCSHARP)
+  private:
+    IsdaCdsEngine();
+#endif
+};
+
+%rename(IsdaCdsEngine) IsdaCdsEnginePtr;
+class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
+    #if defined(SWIGPYTHON)
+    %rename(NoFix) None;
+    #endif
+  public:
+    %extend {
+        static const IsdaCdsEngine::NumericalFix None = IsdaCdsEngine::None;
+        static const IsdaCdsEngine::NumericalFix Taylor = IsdaCdsEngine::Taylor;
+        static const IsdaCdsEngine::AccrualBias HalfDayBias = IsdaCdsEngine::HalfDayBias;
+        static const IsdaCdsEngine::AccrualBias NoBias = IsdaCdsEngine::NoBias;
+        static const IsdaCdsEngine::ForwardsInCouponPeriod Flat = IsdaCdsEngine::Flat;
+        static const IsdaCdsEngine::ForwardsInCouponPeriod Piecewise = IsdaCdsEngine::Piecewise;
+        IsdaCdsEnginePtr(
+            const Handle<DefaultProbabilityTermStructure> &probability,
+            Real recoveryRate,
+            const Handle<YieldTermStructure> &discountCurve,
+            bool includeSettlementDateFlows = false,
+            const IsdaCdsEngine::NumericalFix numericalFix = IsdaCdsEngine::Taylor,
+            const IsdaCdsEngine::AccrualBias accrualBias = IsdaCdsEngine::HalfDayBias,
+            const IsdaCdsEngine::ForwardsInCouponPeriod forwardsInCouponPeriod = IsdaCdsEngine::Piecewise) {
+            return new IsdaCdsEnginePtr(
+                new IsdaCdsEngine(
+                    probability,recoveryRate,discountCurve,includeSettlementDateFlows,numericalFix,accrualBias,forwardsInCouponPeriod));
         }
     }
 };
