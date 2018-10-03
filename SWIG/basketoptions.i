@@ -169,7 +169,11 @@ class MCAmericanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
                                   intOrNull requiredSamples = Null<Size>(),
                                   doubleOrNull requiredTolerance = Null<Real>(),
                                   intOrNull maxSamples = Null<Size>(),
-                                  BigInteger seed = 0) {
+                                  BigInteger seed = 0,
+                                  Size polynomOrder = 2,
+                                  LsmBasisSystem::PolynomType polynomType 
+                                  	= LsmBasisSystem::Monomial,
+                                  Size nCalibrationSamples = Null<Size>()) {
             boost::shared_ptr<StochasticProcessArray> processes =
                  boost::dynamic_pointer_cast<StochasticProcessArray>(process);
             QL_REQUIRE(processes, "stochastic-process array required");
@@ -184,7 +188,10 @@ class MCAmericanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
                                                            requiredSamples,
                                                            requiredTolerance,
                                                            maxSamples,
-                                                           seed));
+                                                           seed,
+                                                           nCalibrationSamples,
+                                                           polynomOrder,
+                                                           polynomType));
             else if (s == "lowdiscrepancy" || s == "ld")
                 return new MCAmericanBasketEnginePtr(
                 new MCAmericanBasketEngine<LowDiscrepancy>(processes,
@@ -195,7 +202,10 @@ class MCAmericanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
                                                            requiredSamples,
                                                            requiredTolerance,
                                                            maxSamples,
-                                                           seed));
+                                                           seed,
+                                                           nCalibrationSamples,
+                                                           polynomOrder,
+                                                           polynomType));
             else
                 QL_FAIL("unknown Monte Carlo engine type: "+s);
         }
