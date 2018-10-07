@@ -22,6 +22,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 import matplotlib
 matplotlib.style.use('ggplot')
+
 ref_date = ql.Date(3, 9,  2018)
 dates = [ql.Date(3, 10, 2018),
          ql.Date(3, 12, 2018),
