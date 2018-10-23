@@ -64,7 +64,7 @@ else
 %{
 using QuantLib::BlackVolTermStructure;
 //using QuantLib::BlackVolatilityTermStructure;
-using QuantExt::FxBlackVolatilitySurface;
+using QuantLib::FxBlackVolatilitySurface;
 using QuantLib::LocalVolTermStructure;
 using QuantLib::OptionletVolatilityStructure;
 using QuantLib::SwaptionVolatilityStructure;
@@ -427,8 +427,8 @@ class LocalVolSurfacePtr : public boost::shared_ptr<LocalVolTermStructure> {
 
 // fx vol surface
 %{
-using QuantExt::FxBlackVannaVolgaVolatilitySurface;
-using QuantExt::VannaVolgaSmileSection;
+using QuantLib::FxBlackVannaVolgaVolatilitySurface;
+using QuantLib::VannaVolgaSmileSection;
 typedef boost::shared_ptr<BlackVolTermStructure> FxBlackVannaVolgaVolatilitySurfacePtr;
 %}
 %rename(FxBlackVannaVolgaVolatilitySurface) FxBlackVannaVolgaVolatilitySurfacePtr; 
