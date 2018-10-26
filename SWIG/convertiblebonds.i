@@ -102,20 +102,18 @@ class ConvertibleFloatingRateBondPtr : public BondPtr {
               const Handle<Quote>& creditSpread,
               const Date& issueDate,
               Integer settlementDays,
-              const IborIndexPtr& index,
+              const boost::shared_ptr<IborIndex>& index,
               Integer fixingDays,
               const std::vector<Spread>& spreads,
               const DayCounter& dayCounter,
               const Schedule& schedule,
               Real redemption = 100.0) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new ConvertibleFloatingRateBondPtr(
                    new ConvertibleFloatingRateBond(exercise, conversionRatio,
                                                    dividends, callability,
                                                    creditSpread,
                                                    issueDate, settlementDays,
-                                                   libor, fixingDays, spreads,
+                                                   index, fixingDays, spreads,
                                                    dayCounter, schedule,
                                                    redemption));
         }

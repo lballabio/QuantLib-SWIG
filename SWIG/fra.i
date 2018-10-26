@@ -43,17 +43,13 @@ class ForwardRateAgreementPtr : public boost::shared_ptr<Instrument> {
                         Position::Type type,
                         Rate strikeForwardRate,
                         Real notionalAmount,
-                        const IborIndexPtr& index,
+                        const boost::shared_ptr<IborIndex>& index,
                         const Handle<YieldTermStructure>& discountCurve =
                                                Handle<YieldTermStructure>()) {
-             
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-
             return new ForwardRateAgreementPtr(
                    new ForwardRateAgreement(valueDate, maturityDate, type,
                                             strikeForwardRate, notionalAmount,
-                                            libor, discountCurve));
+                                            index, discountCurve));
         }
         Real spotIncome(const Handle<YieldTermStructure>& discount) const {
             return boost::dynamic_pointer_cast<ForwardRateAgreement>(*self)

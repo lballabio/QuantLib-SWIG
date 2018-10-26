@@ -202,7 +202,7 @@ class OptionletStripper1Ptr : public boost::shared_ptr<StrippedOptionletBase> {
 public:
     %extend{
         OptionletStripper1Ptr(const CapFloorTermVolSurfacePtr & parVolSurface,
-                              const IborIndexPtr &index,
+                              const boost::shared_ptr<IborIndex> &index,
                               Rate switchStrikes = Null<Rate>(),
                               Real accuracy = 1.0e-6, Natural maxIter = 100,
                               const Handle<YieldTermStructure> &discount =
@@ -212,10 +212,8 @@ public:
                               bool dontThrow = false){
             boost::shared_ptr<CapFloorTermVolSurface> surface = 
                 boost::dynamic_pointer_cast<CapFloorTermVolSurface>(parVolSurface);
-            boost::shared_ptr<IborIndex> idx =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new OptionletStripper1Ptr(new OptionletStripper1(surface,
-                                                                    idx,
+                                                                    index,
                                                                     switchStrikes,
                                                                     accuracy,
                                                                     maxIter,

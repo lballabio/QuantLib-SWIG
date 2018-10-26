@@ -135,9 +135,6 @@ using QuantLib::CustomRegion;
 using QuantLib::InflationIndex;
 using QuantLib::ZeroInflationIndex;
 using QuantLib::YoYInflationIndex;
-typedef boost::shared_ptr<Index> InflationIndexPtr;
-typedef boost::shared_ptr<Index> ZeroInflationIndexPtr;
-typedef boost::shared_ptr<Index> YoYInflationIndexPtr;
 }
 %fragment("zeroinflationindex");
 
@@ -155,91 +152,64 @@ class CustomRegion : public Region {
                  const std::string& code);
 };
 
-%rename(InflationIndex) InflationIndexPtr;
-class InflationIndexPtr : public boost::shared_ptr<Index> {
+%shared_ptr(InflationIndex)
+
+class InflationIndex : public Index {
   protected:
-    InflationIndexPtr();
+    InflationIndex();
   public:
-    %extend {
-        bool interpolated() const {
-            return boost::dynamic_pointer_cast<InflationIndex>(*self)
-                ->interpolated();
-        }
-        Frequency frequency() const {
-            return boost::dynamic_pointer_cast<InflationIndex>(*self)
-                ->frequency();
-        }
-        Period availabilityLag() const {
-            return boost::dynamic_pointer_cast<InflationIndex>(*self)
-                ->availabilityLag();
-        }
-        Currency currency() const {
-            return boost::dynamic_pointer_cast<InflationIndex>(*self)
-                ->currency();
-        }
-    }
+    bool interpolated() const;
+    Frequency frequency() const;
+    Period availabilityLag() const;
+    Currency currency() const;
 };
 
-%rename(ZeroInflationIndex) ZeroInflationIndexPtr;
-class ZeroInflationIndexPtr : public InflationIndexPtr {
+%shared_ptr(ZeroInflationIndex)
+
+class ZeroInflationIndex : public InflationIndex {
   public:
-    %extend {
-      ZeroInflationIndexPtr(const std::string& familyName,
-                            const Region& region,
-                            bool revised,
-                            bool interpolated,
-                            Frequency frequency,
-                            const Period& availabilityLag,
-                            const Currency& currency,
-                            const Handle<ZeroInflationTermStructure>& h =
-                                       Handle<ZeroInflationTermStructure>()) {
-          return new ZeroInflationIndexPtr(
-              new ZeroInflationIndex(familyName, region, revised, interpolated,
-                                     frequency, availabilityLag, currency, h));
-      }
-    }
+      ZeroInflationIndex(const std::string& familyName,
+                         const Region& region,
+                         bool revised,
+                         bool interpolated,
+                         Frequency frequency,
+                         const Period& availabilityLag,
+                         const Currency& currency,
+                         const Handle<ZeroInflationTermStructure>& h =
+                                       Handle<ZeroInflationTermStructure>());
 };
 
-%rename(YoYInflationIndex) YoYInflationIndexPtr;
-class YoYInflationIndexPtr : public InflationIndexPtr {
+%shared_ptr(YoYInflationIndex)
+
+class YoYInflationIndex : public InflationIndex {
   protected:
-    YoYInflationIndexPtr();
+    YoYInflationIndex();
 };
 
 %define export_zii_instance(Name)
 %{
 using QuantLib::Name;
-typedef boost::shared_ptr<Index> Name##Ptr;
 %}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public ZeroInflationIndexPtr {
+%shared_ptr(Name)
+class Name : public ZeroInflationIndex {
   public:
-    %extend {
-      Name##Ptr(bool interpolated,
-                const Handle<ZeroInflationTermStructure>& h =
-                                    Handle<ZeroInflationTermStructure>()) {
-          return new Name##Ptr(new Name(interpolated,h));
-      }
-    }
+    Name(bool interpolated,
+         const Handle<ZeroInflationTermStructure>& h =
+                                    Handle<ZeroInflationTermStructure>());
 };
 %enddef
 
 %define export_yii_instance(Name)
 %fragment("Name","header") {
 using QuantLib::Name;
-typedef boost::shared_ptr<Index> Name##Ptr;
 }
 %fragment("Name");
-%rename(Name) Name##Ptr;
-class Name##Ptr : public YoYInflationIndexPtr {
+%shared_ptr(Name)
+class Name : public YoYInflationIndex {
   public:
-    %extend {
-      Name##Ptr(bool interpolated,
-                const Handle<YoYInflationTermStructure>& h =
-                                    Handle<YoYInflationTermStructure>()) {
-          return new Name##Ptr(new Name(interpolated,h));
-      }
-    }
+    Name(bool interpolated,
+         const Handle<YoYInflationTermStructure>& h =
+                                    Handle<YoYInflationTermStructure>());
 };
 %enddef
 
@@ -302,15 +272,13 @@ class ZeroCouponInflationSwapHelperPtr : public boost::shared_ptr<ZeroHelper> {
                                          const Calendar& calendar,
                                          BusinessDayConvention bdc,
                                          const DayCounter& dayCounter,
-                                         const ZeroInflationIndexPtr& index) {
+                                         const boost::shared_ptr<ZeroInflationIndex>& index) {
             Handle<Quote> quote(
                 boost::shared_ptr<Quote>(new SimpleQuote(rate)));
-            boost::shared_ptr<ZeroInflationIndex> zeroIndex =
-                boost::dynamic_pointer_cast<ZeroInflationIndex>(index);
             return new ZeroCouponInflationSwapHelperPtr(
                 new ZeroCouponInflationSwapHelper(quote,lag,maturity,
                                                   calendar,bdc,
-                                                  dayCounter,zeroIndex));
+                                                  dayCounter,index));
         }
     }
 };
@@ -325,15 +293,13 @@ class YearOnYearInflationSwapHelperPtr : public boost::shared_ptr<YoYHelper> {
                                          const Calendar& calendar,
                                          BusinessDayConvention bdc,
                                          const DayCounter& dayCounter,
-                                         const YoYInflationIndexPtr& index) {
+                                         const boost::shared_ptr<YoYInflationIndex>& index) {
             Handle<Quote> quote(
                 boost::shared_ptr<Quote>(new SimpleQuote(rate)));
-            boost::shared_ptr<YoYInflationIndex> yoyIndex =
-                boost::dynamic_pointer_cast<YoYInflationIndex>(index);
             return new YearOnYearInflationSwapHelperPtr(
                 new YearOnYearInflationSwapHelper(quote,lag,maturity,
                                                   calendar,bdc,
-                                                  dayCounter,yoyIndex));
+                                                  dayCounter,index));
         }
     }
 };
@@ -507,17 +473,15 @@ class ZeroCouponInflationSwapPtr : public boost::shared_ptr<Instrument> {
                        BusinessDayConvention convention,
                        const DayCounter& dayCounter,
                        Rate fixedRate,
-                       const ZeroInflationIndexPtr& index,
+                       const boost::shared_ptr<ZeroInflationIndex>& index,
                        const Period& lag,
                        bool adjustInfObsDates = false,
                        Calendar infCalendar = Calendar(),
                        BusinessDayConvention infConvention = Following) {
-            boost::shared_ptr<ZeroInflationIndex> zeroIndex =
-                boost::dynamic_pointer_cast<ZeroInflationIndex>(index);
             return new ZeroCouponInflationSwapPtr(
                 new ZeroCouponInflationSwap(type, nominal, start, maturity,
                                             calendar, convention, dayCounter,
-                                            fixedRate, zeroIndex, lag,
+                                            fixedRate, index, lag,
                                             adjustInfObsDates,
                                             infCalendar, infConvention));
         }
@@ -578,18 +542,16 @@ class YearOnYearInflationSwapPtr : public boost::shared_ptr<Instrument> {
                    Rate fixedRate,
                    const DayCounter& fixedDayCounter,
                    const Schedule& yoySchedule,
-                   const YoYInflationIndexPtr& index,
+                   const boost::shared_ptr<YoYInflationIndex>& index,
                    const Period& lag,
                    Spread spread,
                    const DayCounter& yoyDayCounter,
                    const Calendar& paymentCalendar,
                    BusinessDayConvention paymentConvention = Following) {
-            boost::shared_ptr<YoYInflationIndex> yoyIndex =
-                boost::dynamic_pointer_cast<YoYInflationIndex>(index);
             return new YearOnYearInflationSwapPtr(
                 new YearOnYearInflationSwap(type, nominal, fixedSchedule,
                                             fixedRate, fixedDayCounter,
-                                            yoySchedule, yoyIndex, lag, spread,
+                                            yoySchedule, index, lag, spread,
                                             yoyDayCounter, paymentCalendar,
                                             paymentConvention));
         }
@@ -652,21 +614,17 @@ class CPISwapPtr : public boost::shared_ptr<Instrument> {
 				const Schedule& floatSchedule,
 				const BusinessDayConvention& floatRoll,
 				Natural fixingDays,
-				const IborIndexPtr& floatIndexPtr,
+				const boost::shared_ptr<IborIndex>& floatIndex,
 				Rate fixedRate,
 				Real baseCPI,
 				const DayCounter& fixedDayCount,
 				const Schedule& fixedSchedule,
 				const BusinessDayConvention& fixedRoll,
 				const Period& observationLag,
-				const ZeroInflationIndexPtr& fixedIndexPtr,
+				const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
 				CPI::InterpolationType observationInterpolation = CPI::AsIndex,
 				Real inflationNominal = Null<Real>() ) {
 		
-            boost::shared_ptr<IborIndex> floatIndex =
-                boost::dynamic_pointer_cast<IborIndex>(floatIndexPtr);				
-            boost::shared_ptr<ZeroInflationIndex> fixedIndex =
-                boost::dynamic_pointer_cast<ZeroInflationIndex>(fixedIndexPtr);
             return new CPISwapPtr(
                 new CPISwap(type, nominal, subtractInflationNominal,
                                             spread, floatDayCount,

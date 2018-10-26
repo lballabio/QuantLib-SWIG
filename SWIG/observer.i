@@ -20,13 +20,16 @@
 #define quantlib_observer_i
 
 %include common.i
+%include boost_shared_ptr.i
 
 %{
 using QuantLib::Observer;
 using QuantLib::Observable;
 %}
 
-%template(Observable) boost::shared_ptr<Observable>;
+%shared_ptr(Observable);
+class Observable {};
+
 %define IsObservable(Type)
 #if defined(SWIGRUBY)
 %rename("toObservable") Type::asObservable;

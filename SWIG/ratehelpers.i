@@ -105,18 +105,14 @@ class DepositRateHelperPtr : public boost::shared_ptr<RateHelper> {
                                       endOfMonth, dayCounter));
         }
         DepositRateHelperPtr(const Handle<Quote>& rate,
-                             const IborIndexPtr& index) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
+                             const boost::shared_ptr<IborIndex>& index) {
             return new DepositRateHelperPtr(
-                new DepositRateHelper(rate, libor));
+                new DepositRateHelper(rate, index));
         }
         DepositRateHelperPtr(Rate rate,
-                             const IborIndexPtr& index) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
+                             const boost::shared_ptr<IborIndex>& index) {
             return new DepositRateHelperPtr(
-                new DepositRateHelper(rate, libor));
+                new DepositRateHelper(rate, index));
         }
     }
 };
@@ -159,23 +155,19 @@ class FraRateHelperPtr : public boost::shared_ptr<RateHelper> {
         }
         FraRateHelperPtr(const Handle<Quote>& rate,
                          Natural monthsToStart,
-                         const IborIndexPtr& index,
+                         const boost::shared_ptr<IborIndex>& index,
 						 Pillar::Choice pillar = Pillar::LastRelevantDate,
 						 Date customPillarDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new FraRateHelperPtr(
-                new FraRateHelper(rate,monthsToStart,libor, pillar, customPillarDate));
+                new FraRateHelper(rate, monthsToStart, index, pillar, customPillarDate));
         }
         FraRateHelperPtr(Rate rate,
                          Natural monthsToStart,
-                         const IborIndexPtr& index,
+                         const boost::shared_ptr<IborIndex>& index,
 						 Pillar::Choice pillar = Pillar::LastRelevantDate,
 						 Date customPillarDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new FraRateHelperPtr(
-                new FraRateHelper(rate,monthsToStart,libor, pillar, customPillarDate));
+                new FraRateHelper(rate, monthsToStart, index, pillar, customPillarDate));
         }
     }
 };
@@ -239,25 +231,21 @@ class FuturesRateHelperPtr : public boost::shared_ptr<RateHelper> {
         FuturesRateHelperPtr(
                 const Handle<Quote>& price,
                 const Date& iborStartDate,
-                const IborIndexPtr& index,
+                const boost::shared_ptr<IborIndex>& index,
                 const Handle<Quote>& convexityAdjustment,
                 Futures::Type type = Futures::IMM) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new FuturesRateHelperPtr(
-                new FuturesRateHelper(price,iborStartDate,libor,
+                new FuturesRateHelper(price,iborStartDate,index,
                                       convexityAdjustment,type));
         }
         FuturesRateHelperPtr(
                 Real price,
                 const Date& iborStartDate,
-                const IborIndexPtr& index,
+                const boost::shared_ptr<IborIndex>& index,
                 Real convexityAdjustment = 0.0,
                 Futures::Type type = Futures::IMM) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new FuturesRateHelperPtr(
-                new FuturesRateHelper(price,iborStartDate,libor,
+                new FuturesRateHelper(price,iborStartDate,index,
                                       convexityAdjustment,type));
         }
     }
@@ -274,7 +262,7 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 Frequency fixedFrequency,
                 BusinessDayConvention fixedConvention,
                 const DayCounter& fixedDayCount,
-                const IborIndexPtr& index,
+                const boost::shared_ptr<IborIndex>& index,
                 const Handle<Quote>& spread = Handle<Quote>(),
                 const Period& fwdStart = 0*Days,
                 const Handle<YieldTermStructure>& discountingCurve
@@ -282,12 +270,10 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 Natural settlementDays = Null<Natural>(),
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new SwapRateHelperPtr(
                 new SwapRateHelper(rate, tenor, calendar,
                                    fixedFrequency, fixedConvention,
-                                   fixedDayCount, libor,
+                                   fixedDayCount, index,
                                    spread, fwdStart,
                                    discountingCurve, settlementDays,
                                    pillar, customPillarDate));
@@ -299,7 +285,7 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 Frequency fixedFrequency,
                 BusinessDayConvention fixedConvention,
                 const DayCounter& fixedDayCount,
-                const IborIndexPtr& index,
+                const boost::shared_ptr<IborIndex>& index,
                 const Handle<Quote>& spread = Handle<Quote>(),
                 const Period& fwdStart = 0*Days,
                 const Handle<YieldTermStructure>& discountingCurve
@@ -307,46 +293,40 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 Natural settlementDays = Null<Natural>(),
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new SwapRateHelperPtr(
                 new SwapRateHelper(rate, tenor, calendar,
                                    fixedFrequency, fixedConvention,
-                                   fixedDayCount, libor,
+                                   fixedDayCount, index,
                                    spread, fwdStart,
                                    discountingCurve, settlementDays,
                                    pillar, customPillarDate));
         }
         SwapRateHelperPtr(
                 const Handle<Quote>& rate,
-                const SwapIndexPtr& index,
+                const boost::shared_ptr<SwapIndex>& index,
                 const Handle<Quote>& spread = Handle<Quote>(),
                 const Period& fwdStart = 0*Days,
                 const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>(),
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date()) {
-            boost::shared_ptr<SwapIndex> swapIndex =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
             return new SwapRateHelperPtr(
-                new SwapRateHelper(rate, swapIndex,
+                new SwapRateHelper(rate, index,
                                    spread, fwdStart,
                                    discountingCurve,
                                    pillar, customPillarDate));
         }
         SwapRateHelperPtr(
                 Rate rate,
-                const SwapIndexPtr& index,
+                const boost::shared_ptr<SwapIndex>& index,
                 const Handle<Quote>& spread = Handle<Quote>(),
                 const Period& fwdStart = 0*Days,
                 const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>(),
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date()) {
-            boost::shared_ptr<SwapIndex> swapIndex =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
             return new SwapRateHelperPtr(
-                new SwapRateHelper(rate, swapIndex,
+                new SwapRateHelper(rate, index,
                                    spread, fwdStart,
                                    discountingCurve,
                                    pillar, customPillarDate));
@@ -423,7 +403,7 @@ class OISRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 Natural settlementDays,
                 const Period& tenor,
                 const Handle<Quote>& rate,
-                const OvernightIndexPtr& index,
+                const boost::shared_ptr<OvernightIndex>& index,
                 const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>(),
                 bool telescopicValueDates = false,
@@ -433,11 +413,9 @@ class OISRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 const Calendar& paymentCalendar = Calendar(),
                 const Period& forwardStart = 0 * Days, 
                 const Spread overnightSpread = 0.0) {
-            boost::shared_ptr<OvernightIndex> overnight =
-                boost::dynamic_pointer_cast<OvernightIndex>(index);
             return new OISRateHelperPtr(
                 new OISRateHelper(settlementDays,tenor,rate,
-                                  overnight,discountingCurve,
+                                  index,discountingCurve,
                                   telescopicValueDates, paymentLag,
                                   paymentConvention, paymentFrequency,
                                   paymentCalendar, forwardStart,
@@ -460,14 +438,12 @@ class DatedOISRateHelperPtr : public boost::shared_ptr<RateHelper> {
                 const Date& startDate,
                 const Date& endDate,
                 const Handle<Quote>& rate,
-                const OvernightIndexPtr& index,
+                const boost::shared_ptr<OvernightIndex>& index,
                 const Handle<YieldTermStructure>& discountingCurve
                                             = Handle<YieldTermStructure>()) {
-            boost::shared_ptr<OvernightIndex> overnight =
-                boost::dynamic_pointer_cast<OvernightIndex>(index);
             return new DatedOISRateHelperPtr(
                 new DatedOISRateHelper(startDate,endDate,rate,
-                                       overnight,discountingCurve));
+                                       index,discountingCurve));
         }
     }
 };

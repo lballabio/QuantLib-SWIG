@@ -623,8 +623,8 @@ class SwaptionVolCube1Ptr
              const std::vector<Period>& swapTenors,
              const std::vector<Spread>& strikeSpreads,
              const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-             const SwapIndexPtr& swapIndexBase,
-             const SwapIndexPtr& shortSwapIndexBase,
+             const boost::shared_ptr<SwapIndex>& swapIndex,
+             const boost::shared_ptr<SwapIndex>& shortSwapIndex,
              bool vegaWeightedSmileFit,
              const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
              const std::vector<bool>& isParameterFixed,
@@ -634,14 +634,10 @@ class SwaptionVolCube1Ptr
              Real maxErrorTolerance = Null<Real>(),
              const boost::shared_ptr<OptimizationMethod>& optMethod
                                   = boost::shared_ptr<OptimizationMethod>()) {
-            const boost::shared_ptr<SwapIndex> swi =
-                boost::dynamic_pointer_cast<SwapIndex>(swapIndexBase);
-            const boost::shared_ptr<SwapIndex> shortSwi =
-                boost::dynamic_pointer_cast<SwapIndex>(shortSwapIndexBase);
             return new SwaptionVolCube1Ptr(
                 new SwaptionVolCube1(
                     atmVolStructure,optionTenors,swapTenors, strikeSpreads,
-                    volSpreads, swi, shortSwi, vegaWeightedSmileFit,
+                    volSpreads, swapIndex, shortSwapIndex, vegaWeightedSmileFit,
                     parametersGuess,isParameterFixed,isAtmCalibrated,
                     endCriteria,maxErrorTolerance,optMethod));
         }
@@ -679,17 +675,13 @@ class SwaptionVolCube2Ptr
                    const std::vector<Period>& swapTenors,
                    const std::vector<Spread>& strikeSpreads,
                    const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-                   const SwapIndexPtr& swapIndexBase,
-                   const SwapIndexPtr& shortSwapIndexBase,
+                   const boost::shared_ptr<SwapIndex>& swapIndex,
+                   const boost::shared_ptr<SwapIndex>& shortSwapIndex,
                    bool vegaWeightedSmileFit) {
-            const boost::shared_ptr<SwapIndex> swi =
-                boost::dynamic_pointer_cast<SwapIndex>(swapIndexBase);
-            const boost::shared_ptr<SwapIndex> shortSwi =
-                boost::dynamic_pointer_cast<SwapIndex>(shortSwapIndexBase);
             return new SwaptionVolCube2Ptr(
                 new SwaptionVolCube2(
                     atmVolStructure,optionTenors,swapTenors,strikeSpreads,
-                    volSpreads, swi, shortSwi, vegaWeightedSmileFit));
+                    volSpreads, swapIndex, shortSwapIndex, vegaWeightedSmileFit));
         }
     }
 };

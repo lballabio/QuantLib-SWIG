@@ -154,7 +154,7 @@ class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
     %extend {
         SwaptionHelperPtr(const Period& maturity, const Period& length,
                           const Handle<Quote>& volatility,
-                          const IborIndexPtr& index,
+                          const boost::shared_ptr<IborIndex>& index,
                           const Period& fixedLegTenor,
                           const DayCounter& fixedLegDayCounter,
                           const DayCounter& floatingLegDayCounter,
@@ -165,11 +165,9 @@ class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
                           const Real nominal = 1.0,
                           const VolatilityType type = ShiftedLognormal,
                           const Real shift = 0.0) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new SwaptionHelperPtr(
                 new SwaptionHelper(maturity,length,volatility,
-                                   libor,fixedLegTenor,
+                                   index,fixedLegTenor,
                                    fixedLegDayCounter,
                                    floatingLegDayCounter,
                                    termStructure,
@@ -180,7 +178,7 @@ class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
         
         SwaptionHelperPtr(const Date& exerciseDate, const Period& length,
                           const Handle<Quote>& volatility,
-                          const IborIndexPtr& index,
+                          const boost::shared_ptr<IborIndex>& index,
                           const Period& fixedLegTenor,
                           const DayCounter& fixedLegDayCounter,
                           const DayCounter& floatingLegDayCounter,
@@ -191,11 +189,9 @@ class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
                           const Real nominal = 1.0,
                           const VolatilityType type = ShiftedLognormal,
                           const Real shift = 0.0) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new SwaptionHelperPtr(
                 new SwaptionHelper(exerciseDate,length,volatility,
-                                   libor,fixedLegTenor,
+                                   index,fixedLegTenor,
                                    fixedLegDayCounter,
                                    floatingLegDayCounter,
                                    termStructure,
@@ -206,7 +202,7 @@ class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
         
         SwaptionHelperPtr(const Date& exerciseDate, const Date& endDate,
                           const Handle<Quote>& volatility,
-                          const IborIndexPtr& index,
+                          const boost::shared_ptr<IborIndex>& index,
                           const Period& fixedLegTenor,
                           const DayCounter& fixedLegDayCounter,
                           const DayCounter& floatingLegDayCounter,
@@ -217,11 +213,9 @@ class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
                           const Real nominal = 1.0,
                           const VolatilityType type = ShiftedLognormal,
                           const Real shift = 0.0) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new SwaptionHelperPtr(
                 new SwaptionHelper(exerciseDate,endDate,volatility,
-                                   libor,fixedLegTenor,
+                                   index,fixedLegTenor,
                                    fixedLegDayCounter,
                                    floatingLegDayCounter,
                                    termStructure,
@@ -246,17 +240,15 @@ class CapHelperPtr : public BlackCalibrationHelperPtr {
     %extend {
         CapHelperPtr(const Period& length,
                      const Handle<Quote>& volatility,
-                     const IborIndexPtr& index,
+                     const boost::shared_ptr<IborIndex>& index,
                      Frequency fixedLegFrequency,
                      const DayCounter& fixedLegDayCounter,
                      bool includeFirstSwaplet,
                      const Handle<YieldTermStructure>& termStructure,
                      BlackCalibrationHelper::CalibrationErrorType errorType
                                     = BlackCalibrationHelper::RelativePriceError) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new CapHelperPtr(
-                new CapHelper(length,volatility,libor,fixedLegFrequency,
+                new CapHelper(length,volatility,index,fixedLegFrequency,
                               fixedLegDayCounter,includeFirstSwaplet,
                               termStructure));
         }

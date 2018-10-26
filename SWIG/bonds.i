@@ -379,7 +379,7 @@ class AmortizingFloatingRateBondPtr : public BondPtr {
             Size settlementDays,
             const std::vector<Real>& notional,
             const Schedule& schedule,
-            const IborIndexPtr& index,
+            const boost::shared_ptr<IborIndex>& index,
             const DayCounter& accrualDayCounter,
             BusinessDayConvention paymentConvention = Following,
             Size fixingDays = Null<Size>(),
@@ -389,11 +389,9 @@ class AmortizingFloatingRateBondPtr : public BondPtr {
             const std::vector<Rate>& floors = std::vector<Rate>(),
             bool inArrears = false,
             const Date& issueDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new AmortizingFloatingRateBondPtr(
                 new AmortizingFloatingRateBond(settlementDays, notional,
-                                                schedule, libor,
+                                                schedule, index,
                                                 accrualDayCounter,
                                                 paymentConvention,
                                                 fixingDays, gearings,
@@ -415,7 +413,7 @@ class FloatingRateBondPtr : public BondPtr {
             Size settlementDays,
             Real faceAmount,
             const Schedule& schedule,
-            const IborIndexPtr& index,
+            const boost::shared_ptr<IborIndex>& index,
             const DayCounter& paymentDayCounter,
             BusinessDayConvention paymentConvention = Following,
             Size fixingDays = Null<Size>(),
@@ -426,13 +424,11 @@ class FloatingRateBondPtr : public BondPtr {
             bool inArrears = false,
             Real redemption = 100.0,
             const Date& issueDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new FloatingRateBondPtr(
                 new FloatingRateBond(settlementDays,
                                      faceAmount,
                                      schedule,
-                                     libor,
+                                     index,
                                      paymentDayCounter,
                                      paymentConvention,
                                      fixingDays,
@@ -463,7 +459,7 @@ class CmsRateBondPtr : public BondPtr {
         CmsRateBondPtr(Size settlementDays,
                        Real faceAmount,
                        const Schedule& schedule,
-                       const SwapIndexPtr& index,
+                       const boost::shared_ptr<SwapIndex>& index,
                        const DayCounter& paymentDayCounter,
                        BusinessDayConvention paymentConvention,
                        Natural fixingDays,
@@ -474,13 +470,11 @@ class CmsRateBondPtr : public BondPtr {
                        bool inArrears = false,
                        Real redemption = 100.0,
                        const Date& issueDate = Date()) {
-            boost::shared_ptr<SwapIndex> swap =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
             return new CmsRateBondPtr(
                 new CmsRateBond(settlementDays,
                                 faceAmount,
                                 schedule,
-                                swap,
+                                index,
                                 paymentDayCounter,
                                 paymentConvention,
                                 fixingDays,
@@ -671,7 +665,7 @@ class CPIBondPtr : public BondPtr {
                 bool growthOnly,
                 Real baseCPI,
                 const Period& observationLag,
-                const ZeroInflationIndexPtr& cpiIndex,
+                const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
                 CPI::InterpolationType observationInterpolation,
                 const Schedule& schedule,
                 const std::vector<Rate>& coupons,
@@ -683,11 +677,9 @@ class CPIBondPtr : public BondPtr {
                 const Calendar& exCouponCalendar = Calendar(),
                 BusinessDayConvention exCouponConvention = Unadjusted,
                 bool exCouponEndOfMonth = false) {
-            boost::shared_ptr<ZeroInflationIndex> zeroIndex =
-                boost::dynamic_pointer_cast<ZeroInflationIndex>(cpiIndex);
             return new CPIBondPtr(
                 new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI,
-                            observationLag, zeroIndex, observationInterpolation,
+                            observationLag, cpiIndex, observationInterpolation,
                             schedule, coupons, accrualDayCounter,
                             paymentConvention, issueDate, paymentCalendar,
                             exCouponPeriod, exCouponCalendar,

@@ -232,7 +232,7 @@ class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
             const Handle<SwaptionVolatilityStructure> &swaptionVol,
             const std::vector<Date> &swaptionExpiries,
             const std::vector<Period> &swaptionTenors,
-            const SwapIndexPtr& swapIndexBase,
+            const boost::shared_ptr<SwapIndex>& swapIndex,
             const Size yGridPoints = 64,
             const Real yStdDevs = 7.0,
             const Size gaussHermitePoints = 32,
@@ -243,8 +243,6 @@ class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
             const int adjustments =
                 MarkovFunctional::ModelSettings::KahaleSmile | MarkovFunctional::ModelSettings::SmileExponentialExtrapolation,
             const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>()) {
-            const boost::shared_ptr<SwapIndex> swapIndex =
-                boost::dynamic_pointer_cast<SwapIndex>(swapIndexBase);
             MarkovFunctional::ModelSettings modelSettings =
                 MarkovFunctional::ModelSettings(yGridPoints, yStdDevs,
                                                 gaussHermitePoints, digitalGap,

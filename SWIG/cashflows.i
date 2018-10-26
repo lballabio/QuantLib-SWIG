@@ -251,7 +251,7 @@ class FloatingRateCouponPtr : public CouponPtr {
             return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
                 ->price(discountCurve);
         }
-        InterestRateIndexPtr index() const {
+        boost::shared_ptr<InterestRateIndex> index() const {
             return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
                 ->index();
         }
@@ -333,16 +333,15 @@ class IborCouponPtr : public FloatingRateCouponPtr {
     %extend {
         IborCouponPtr(const Date& paymentDate, Real nominal,
                       const Date& startDate, const Date& endDate,
-                      Integer fixingDays, InterestRateIndexPtr& index,
+                      Integer fixingDays,
+                      boost::shared_ptr<IborIndex>& index,
                       Real gearing = 1.0, Spread spread = 0.0,
                       const Date& refPeriodStart = Date(),
                       const Date& refPeriodEnd = Date(),
                       const DayCounter& dayCounter = DayCounter()) {
-            const boost::shared_ptr<IborIndex> iri =
-                boost::dynamic_pointer_cast<IborIndex>(index);
             return new IborCouponPtr(
                 new IborCoupon(paymentDate, nominal, startDate, endDate,
-                               fixingDays, iri, gearing, spread,
+                               fixingDays, index, gearing, spread,
                                refPeriodStart, refPeriodEnd, dayCounter));
         }
     }
@@ -405,17 +404,15 @@ class CmsCouponPtr : public FloatingRateCouponPtr {
     %extend {
         CmsCouponPtr(const Date& paymentDate, Real nominal,
                      const Date& startDate, const Date& endDate,
-                     Integer fixingDays, const SwapIndexPtr& index,
+                     Integer fixingDays, const boost::shared_ptr<SwapIndex>& index,
                      Real gearing = 1.0, Spread spread = 0.0,
                      const Date& refPeriodStart = Date(),
                      const Date& refPeriodEnd = Date(),
                      const DayCounter& dayCounter = DayCounter(),
                      bool isInArrears = false) {
-            const boost::shared_ptr<SwapIndex> swi =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
             return new CmsCouponPtr(
                 new CmsCoupon(paymentDate,nominal,startDate,endDate,
-                              fixingDays,swi,gearing,spread,
+                              fixingDays,index,gearing,spread,
                               refPeriodStart,refPeriodEnd,
                               dayCounter,isInArrears));
         }
@@ -434,18 +431,16 @@ class CmsSpreadCouponPtr : public FloatingRateCouponPtr {
                   const Date& startDate,
                   const Date& endDate,
                   Natural fixingDays,
-                  const SwapSpreadIndexPtr& index,
+                  const boost::shared_ptr<SwapSpreadIndex>& index,
                   Real gearing = 1.0,
                   Spread spread = 0.0,
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false) {
-            const boost::shared_ptr<SwapSpreadIndex> swi =
-                boost::dynamic_pointer_cast<SwapSpreadIndex>(index);
             return new CmsSpreadCouponPtr(
                 new CmsSpreadCoupon(paymentDate,nominal,startDate,endDate,
-                              fixingDays,swi,gearing,spread,
+                              fixingDays,index,gearing,spread,
                               refPeriodStart,refPeriodEnd,
                               dayCounter,isInArrears));
         }
@@ -537,7 +532,7 @@ class CappedFlooredCmsCouponPtr: public CappedFlooredCouponPtr {
         CappedFlooredCmsCouponPtr(
                   const Date& paymentDate, Real nominal,
                   const Date& startDate, const Date& endDate,
-                  Natural fixingDays, const SwapIndexPtr& index,
+                  Natural fixingDays, const boost::shared_ptr<SwapIndex>& index,
                   Real gearing = 1.0, Spread spread = 0.0,
                   const Rate cap = Null<Rate>(),
                   const Rate floor = Null<Rate>(),
@@ -545,12 +540,10 @@ class CappedFlooredCmsCouponPtr: public CappedFlooredCouponPtr {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false) {
-            const boost::shared_ptr<SwapIndex> swi =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
             return new CappedFlooredCmsCouponPtr(
                 new CappedFlooredCmsCoupon(
                       paymentDate, nominal, startDate, endDate, fixingDays,
-                      swi, gearing, spread, cap, floor, refPeriodStart,
+                      index, gearing, spread, cap, floor, refPeriodStart,
                       refPeriodEnd, dayCounter, isInArrears));
         }
     }
@@ -566,7 +559,8 @@ class CappedFlooredCmsSpreadCouponPtr: public CappedFlooredCouponPtr {
         CappedFlooredCmsSpreadCouponPtr(
                   const Date& paymentDate, Real nominal,
                   const Date& startDate, const Date& endDate,
-                  Natural fixingDays, const SwapSpreadIndexPtr& index,
+                  Natural fixingDays,
+                  const boost::shared_ptr<SwapSpreadIndex>& index,
                   Real gearing = 1.0, Spread spread = 0.0,
                   const Rate cap = Null<Rate>(),
                   const Rate floor = Null<Rate>(),
@@ -574,12 +568,10 @@ class CappedFlooredCmsSpreadCouponPtr: public CappedFlooredCouponPtr {
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
                   bool isInArrears = false) {
-            const boost::shared_ptr<SwapSpreadIndex> swi =
-                boost::dynamic_pointer_cast<SwapSpreadIndex>(index);
             return new CappedFlooredCmsSpreadCouponPtr(
                 new CappedFlooredCmsSpreadCoupon(
                       paymentDate, nominal, startDate, endDate, fixingDays,
-                      swi, gearing, spread, cap, floor, refPeriodStart,
+                      index, gearing, spread, cap, floor, refPeriodStart,
                       refPeriodEnd, dayCounter, isInArrears));
         }
     }
@@ -725,7 +717,7 @@ Leg _IborLeg(const std::vector<Real>& nominals,
 %rename(IborLeg) _IborLeg;
 Leg _IborLeg(const std::vector<Real>& nominals,
              const Schedule& schedule,
-             const IborIndexPtr& index,
+             const boost::shared_ptr<IborIndex>& index,
              const DayCounter& paymentDayCounter = DayCounter(),
              const BusinessDayConvention paymentConvention = Following,
              const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -767,7 +759,7 @@ Leg _CmsLeg(const std::vector<Real>& nominals,
 %rename(CmsLeg) _CmsLeg;
 Leg _CmsLeg(const std::vector<Real>& nominals,
             const Schedule& schedule,
-            const SwapIndexPtr& index,
+            const boost::shared_ptr<SwapIndex>& index,
             const DayCounter& paymentDayCounter = DayCounter(),
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -808,7 +800,7 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
 %rename(CmsZeroLeg) _CmsZeroLeg;
 Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const Schedule& schedule,
-                const SwapIndexPtr& index,
+                const boost::shared_ptr<SwapIndex>& index,
                 const DayCounter& paymentDayCounter = DayCounter(),
                 const BusinessDayConvention paymentConvention = Following,
                 const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -849,7 +841,7 @@ Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
 %rename(CmsSpreadLeg) _CmsSpreadLeg;
 Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
             const Schedule& schedule,
-            const SwapSpreadIndexPtr& index,
+            const boost::shared_ptr<SwapSpreadIndex>& index,
             const DayCounter& paymentDayCounter = DayCounter(),
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Natural>& fixingDays = std::vector<Natural>(),
