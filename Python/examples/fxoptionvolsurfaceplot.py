@@ -23,15 +23,17 @@ from mpl_toolkits.mplot3d import Axes3D
 import matplotlib
 matplotlib.style.use('ggplot')
 
+"""
+This is a simple example how to build and interpolate 
+"""
+
 ref_date = ql.Date(3, 9,  2018)
 dates = [ql.Date(3, 10, 2018),
          ql.Date(3, 12, 2018),
          ql.Date(3, 2, 2019)]
 t_nodes = [ql.Actual365Fixed().dayCount(ref_date, t) / 365
            for t in dates]
-atm_vols = [0.05 * t_nodes[0] ** 0.5,
-            0.06 * t_nodes[1] ** 0.5,
-            0.1  * t_nodes[2] ** 0.5]
+atm_vols = [0.05, 0.06, 0.1]
 rr25d = [0.02, 0.015, 0.01]
 bf25d = [0.02, 0.01, 0.005]
 day_counter = ql.Actual365Fixed()
