@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Joseph Wang
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -32,49 +33,34 @@ using QuantLib::MinBasketPayoff;
 using QuantLib::MaxBasketPayoff;
 using QuantLib::AverageBasketPayoff;
 typedef boost::shared_ptr<Instrument> BasketOptionPtr;
-typedef boost::shared_ptr<Payoff> BasketPayoffPtr;
-typedef boost::shared_ptr<Payoff> MinBasketPayoffPtr;
-typedef boost::shared_ptr<Payoff> MaxBasketPayoffPtr;
-typedef boost::shared_ptr<Payoff> AverageBasketPayoffPtr;
 %}
 
-%rename(BasketPayoff) BasketPayoffPtr;
-class BasketPayoffPtr : public boost::shared_ptr<Payoff> {};
-
-%rename(MinBasketPayoff) MinBasketPayoffPtr;
-class MinBasketPayoffPtr : public BasketPayoffPtr  {
-  public:
-    %extend {
-        MinBasketPayoffPtr(const boost::shared_ptr<Payoff> p) {
-            return new MinBasketPayoffPtr(new MinBasketPayoff(p));
-        }
-    }
+%shared_ptr(BasketPayoff)
+class BasketPayoff : public Payoff {
+  private:
+    BasketPayoff();
 };
 
-%rename(MaxBasketPayoff) MaxBasketPayoffPtr;
-class MaxBasketPayoffPtr : public BasketPayoffPtr  {
+%shared_ptr(MinBasketPayoff)
+class MinBasketPayoff : public BasketPayoff  {
   public:
-    %extend {
-        MaxBasketPayoffPtr(const boost::shared_ptr<Payoff> p) {
-            return new MaxBasketPayoffPtr(new MaxBasketPayoff(p));
-        }
-    }
+    MinBasketPayoff(const boost::shared_ptr<Payoff> p);
 };
 
-%rename(AverageBasketPayoff) AverageBasketPayoffPtr;
-class AverageBasketPayoffPtr :
-      public BasketPayoffPtr  {
+%shared_ptr(MaxBasketPayoff)
+class MaxBasketPayoff : public BasketPayoff  {
   public:
-    %extend {
-        AverageBasketPayoffPtr(const boost::shared_ptr<Payoff> p,
-                               const Array &a) {
-            return new AverageBasketPayoffPtr(new AverageBasketPayoff(p, a));
-        }
-        AverageBasketPayoffPtr(const boost::shared_ptr<Payoff> p,
-                               Size n) {
-            return new AverageBasketPayoffPtr(new AverageBasketPayoff(p, n));
-        }
-    }
+    MaxBasketPayoff(const boost::shared_ptr<Payoff> p);
+};
+
+%shared_ptr(AverageBasketPayoff)
+class AverageBasketPayoff :
+      public BasketPayoff  {
+  public:
+    AverageBasketPayoff(const boost::shared_ptr<Payoff> p,
+                           const Array &a);
+    AverageBasketPayoff(const boost::shared_ptr<Payoff> p,
+                           Size n);
 };
 
 
