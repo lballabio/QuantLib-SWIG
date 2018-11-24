@@ -30,6 +30,7 @@ using QuantLib::Observable;
 %shared_ptr(Observable);
 class Observable {};
 
+
 %define IsObservable(Type)
 #if defined(SWIGRUBY)
 %rename("toObservable") Type::asObservable;

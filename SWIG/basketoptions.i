@@ -32,7 +32,6 @@ using QuantLib::BasketPayoff;
 using QuantLib::MinBasketPayoff;
 using QuantLib::MaxBasketPayoff;
 using QuantLib::AverageBasketPayoff;
-typedef boost::shared_ptr<Instrument> BasketOptionPtr;
 %}
 
 %shared_ptr(BasketPayoff)
@@ -64,19 +63,12 @@ class AverageBasketPayoff :
 };
 
 
-%rename(BasketOption) BasketOptionPtr;
-class BasketOptionPtr : public MultiAssetOptionPtr {
+%shared_ptr(BasketOption)
+class BasketOption : public MultiAssetOption {
   public:
-    %extend {
-        BasketOptionPtr(
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<BasketPayoff> stPayoff =
-                 boost::dynamic_pointer_cast<BasketPayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new BasketOptionPtr(new BasketOption(stPayoff,exercise));
-        }
-    }
+    BasketOption(
+            const boost::shared_ptr<BasketPayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
 };
 
 
@@ -92,7 +84,7 @@ class MCEuropeanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
     #endif
   public:
     %extend {
-        MCEuropeanBasketEnginePtr(const StochasticProcessArrayPtr& process,
+        MCEuropeanBasketEnginePtr(const boost::shared_ptr<StochasticProcessArray>& process,
                                   const std::string& traits,
                                   Size timeSteps = Null<Size>(),
                                   Size timeStepsPerYear = Null<Size>(),
@@ -102,13 +94,11 @@ class MCEuropeanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
                                   doubleOrNull requiredTolerance = Null<Real>(),
                                   intOrNull maxSamples = Null<Size>(),
                                   BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
+
             std::string s = boost::algorithm::to_lower_copy(traits);
             if (s == "pseudorandom" || s == "pr")
                 return new MCEuropeanBasketEnginePtr(
-                   new MCEuropeanBasketEngine<PseudoRandom>(processes,
+                   new MCEuropeanBasketEngine<PseudoRandom>(process,
                                                             timeSteps,
                                                             timeStepsPerYear,
                                                             brownianBridge,
@@ -119,7 +109,7 @@ class MCEuropeanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
                                                             seed));
             else if (s == "lowdiscrepancy" || s == "ld")
                 return new MCEuropeanBasketEnginePtr(
-                   new MCEuropeanBasketEngine<LowDiscrepancy>(processes,
+                   new MCEuropeanBasketEngine<LowDiscrepancy>(process,
                                                               timeSteps,
                                                               timeStepsPerYear,
                                                               brownianBridge,
@@ -146,7 +136,7 @@ class MCAmericanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
     #endif
   public:
     %extend {
-        MCAmericanBasketEnginePtr(const StochasticProcessArrayPtr& process,
+        MCAmericanBasketEnginePtr(const boost::shared_ptr<StochasticProcessArray>& process,
                                   const std::string& traits,
                                   Size timeSteps = Null<Size>(),
                                   Size timeStepsPerYear = Null<Size>(),
@@ -156,13 +146,11 @@ class MCAmericanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
                                   doubleOrNull requiredTolerance = Null<Real>(),
                                   intOrNull maxSamples = Null<Size>(),
                                   BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
+
             std::string s = boost::algorithm::to_lower_copy(traits);
             if (s == "pseudorandom" || s == "pr")
                   return new MCAmericanBasketEnginePtr(
-                  new MCAmericanBasketEngine<PseudoRandom>(processes,
+                  new MCAmericanBasketEngine<PseudoRandom>(process,
                                                            timeSteps,
                                                            timeStepsPerYear,
                                                            brownianBridge,
@@ -173,7 +161,7 @@ class MCAmericanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
                                                            seed));
             else if (s == "lowdiscrepancy" || s == "ld")
                 return new MCAmericanBasketEnginePtr(
-                new MCAmericanBasketEngine<LowDiscrepancy>(processes,
+                new MCAmericanBasketEngine<LowDiscrepancy>(process,
                                                            timeSteps,
                                                            timeStepsPerYear,
                                                            brownianBridge,
@@ -199,19 +187,11 @@ class StulzEnginePtr
     : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
-        StulzEnginePtr(const GeneralizedBlackScholesProcessPtr& process1,
-                       const GeneralizedBlackScholesProcessPtr& process2,
+        StulzEnginePtr(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
+                       const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
                        Real correlation) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess1 =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                    process1);
-            QL_REQUIRE(bsProcess1, "Black-Scholes process required");
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess2 =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                    process2);
-            QL_REQUIRE(bsProcess2, "Black-Scholes process required");
             return new StulzEnginePtr(
-                          new StulzEngine(bsProcess1,bsProcess2,correlation));
+                          new StulzEngine(process1,process2,correlation));
         }
     }
 };
@@ -219,22 +199,16 @@ class StulzEnginePtr
 
 %{
 using QuantLib::EverestOption;
-typedef boost::shared_ptr<Instrument> EverestOptionPtr;
 using QuantLib::MCEverestEngine;
 typedef boost::shared_ptr<PricingEngine> MCEverestEnginePtr;
 %}
 
-%rename(EverestOption) EverestOptionPtr;
-class EverestOptionPtr : public MultiAssetOptionPtr {
+%shared_ptr(EverestOption)
+class EverestOption : public MultiAssetOption {
   public:
-    %extend {
-        EverestOptionPtr(Real notional,
-                         Rate guarantee,
-                         const boost::shared_ptr<Exercise>& exercise) {
-            return new EverestOptionPtr(new EverestOption(notional,guarantee,
-                                                          exercise));
-        }
-    }
+    EverestOption(Real notional,
+                     Rate guarantee,
+                     const boost::shared_ptr<Exercise>& exercise);
 };
 
 %rename(MCEverestEngine) MCEverestEnginePtr;
@@ -244,7 +218,7 @@ class MCEverestEnginePtr : public boost::shared_ptr<PricingEngine> {
     #endif
   public:
     %extend {
-        MCEverestEnginePtr(const StochasticProcessArrayPtr& process,
+        MCEverestEnginePtr(const boost::shared_ptr<StochasticProcessArray>& process,
                            const std::string& traits,
                            Size timeSteps = Null<Size>(),
                            Size timeStepsPerYear = Null<Size>(),
@@ -254,13 +228,10 @@ class MCEverestEnginePtr : public boost::shared_ptr<PricingEngine> {
                            doubleOrNull requiredTolerance = Null<Real>(),
                            intOrNull maxSamples = Null<Size>(),
                            BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
             std::string s = boost::algorithm::to_lower_copy(traits);
             if (s == "pseudorandom" || s == "pr")
                 return new MCEverestEnginePtr(
-                        new MCEverestEngine<PseudoRandom>(processes,
+                        new MCEverestEngine<PseudoRandom>(process,
                                                           timeSteps,
                                                           timeStepsPerYear,
                                                           brownianBridge,
@@ -271,7 +242,7 @@ class MCEverestEnginePtr : public boost::shared_ptr<PricingEngine> {
                                                           seed));
             else if (s == "lowdiscrepancy" || s == "ld")
                 return new MCEverestEnginePtr(
-                      new MCEverestEngine<LowDiscrepancy>(processes,
+                      new MCEverestEngine<LowDiscrepancy>(process,
                                                           timeSteps,
                                                           timeStepsPerYear,
                                                           brownianBridge,
@@ -289,21 +260,15 @@ class MCEverestEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 %{
 using QuantLib::HimalayaOption;
-typedef boost::shared_ptr<Instrument> HimalayaOptionPtr;
 using QuantLib::MCHimalayaEngine;
 typedef boost::shared_ptr<PricingEngine> MCHimalayaEnginePtr;
 %}
 
-%rename(HimalayaOption) HimalayaOptionPtr;
-class HimalayaOptionPtr : public MultiAssetOptionPtr {
+%shared_ptr(HimalayaOption)
+class HimalayaOption : public MultiAssetOption {
   public:
-    %extend {
-        HimalayaOptionPtr(const std::vector<Date>& fixingDates,
-                          Real strike) {
-            return new HimalayaOptionPtr(new HimalayaOption(fixingDates,
-                                                            strike));
-        }
-    }
+    HimalayaOption(const std::vector<Date>& fixingDates,
+                      Real strike);
 };
 
 %rename(MCHimalayaEngine) MCHimalayaEnginePtr;
@@ -313,7 +278,7 @@ class MCHimalayaEnginePtr : public boost::shared_ptr<PricingEngine> {
     #endif
   public:
     %extend {
-        MCHimalayaEnginePtr(const StochasticProcessArrayPtr& process,
+        MCHimalayaEnginePtr(const boost::shared_ptr<StochasticProcessArray>& process,
                             const std::string& traits,
                             bool brownianBridge = false,
                             bool antitheticVariate = false,
@@ -321,13 +286,10 @@ class MCHimalayaEnginePtr : public boost::shared_ptr<PricingEngine> {
                             doubleOrNull requiredTolerance = Null<Real>(),
                             intOrNull maxSamples = Null<Size>(),
                             BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
             std::string s = boost::algorithm::to_lower_copy(traits);
             if (s == "pseudorandom" || s == "pr")
                 return new MCHimalayaEnginePtr(
-                       new MCHimalayaEngine<PseudoRandom>(processes,
+                       new MCHimalayaEngine<PseudoRandom>(process,
                                                           brownianBridge,
                                                           antitheticVariate,
                                                           requiredSamples,
@@ -336,7 +298,7 @@ class MCHimalayaEnginePtr : public boost::shared_ptr<PricingEngine> {
                                                           seed));
             else if (s == "lowdiscrepancy" || s == "ld")
                 return new MCHimalayaEnginePtr(
-                     new MCHimalayaEngine<LowDiscrepancy>(processes,
+                     new MCHimalayaEngine<LowDiscrepancy>(process,
                                                           brownianBridge,
                                                           antitheticVariate,
                                                           requiredSamples,

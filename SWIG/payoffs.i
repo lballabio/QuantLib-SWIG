@@ -25,6 +25,8 @@
 // payoffs
 
 %{
+using QuantLib::TypePayoff;
+using QuantLib::StrikedTypePayoff;
 using QuantLib::PlainVanillaPayoff;
 using QuantLib::PercentageStrikePayoff;
 using QuantLib::CashOrNothingPayoff;
@@ -34,26 +36,39 @@ using QuantLib::GapPayoff;
 using QuantLib::VanillaForwardPayoff;
 %}
 
+%shared_ptr(TypePayoff)
+class TypePayoff : public Payoff {
+  public:
+    Option::Type optionType();
+  private:
+    TypePayoff();
+};
+
+%shared_ptr(StrikedTypePayoff)
+class StrikedTypePayoff : public TypePayoff
+{
+  public:
+    Real strike();
+  private:
+    StrikedTypePayoff();
+};
+
 %shared_ptr(PlainVanillaPayoff)
-class PlainVanillaPayoff : public Payoff {
+class PlainVanillaPayoff : public StrikedTypePayoff {
   public:
     PlainVanillaPayoff(Option::Type type,
                           Real strike);
-
-    Option::Type optionType();
-
-    Real strike();
 };
 
 %shared_ptr(PercentageStrikePayoff)
-class PercentageStrikePayoff : public Payoff {
+class PercentageStrikePayoff : public StrikedTypePayoff {
   public:
     PercentageStrikePayoff(Option::Type type,
                               Real moneyness);
 };
 
 %shared_ptr(CashOrNothingPayoff)
-class CashOrNothingPayoff : public Payoff {
+class CashOrNothingPayoff : public StrikedTypePayoff {
   public:
     CashOrNothingPayoff(Option::Type type,
                            Real strike,
@@ -61,14 +76,14 @@ class CashOrNothingPayoff : public Payoff {
 };
 
 %shared_ptr(AssetOrNothingPayoff)
-class AssetOrNothingPayoff : public Payoff {
+class AssetOrNothingPayoff : public StrikedTypePayoff {
   public:
     AssetOrNothingPayoff(Option::Type type,
                             Real strike);
 };
 
 %shared_ptr(SuperSharePayoff)
-class SuperSharePayoff : public Payoff {
+class SuperSharePayoff : public StrikedTypePayoff {
   public:
     SuperSharePayoff(Option::Type type,
                         Real strike,
@@ -76,7 +91,7 @@ class SuperSharePayoff : public Payoff {
 };
 
 %shared_ptr(GapPayoff)
-class GapPayoff : public Payoff {
+class GapPayoff : public StrikedTypePayoff {
   public:
     GapPayoff(Option::Type type,
                         Real strike,
@@ -84,7 +99,7 @@ class GapPayoff : public Payoff {
 };
 
 %shared_ptr(VanillaForwardPayoff)
-class VanillaForwardPayoff : public Payoff {
+class VanillaForwardPayoff : public StrikedTypePayoff {
   public:
     VanillaForwardPayoff(Option::Type type, Real strike);
 };
