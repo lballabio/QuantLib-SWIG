@@ -76,18 +76,16 @@ class FixedRateBondForwardPtr : public ForwardPtr {
                     const DayCounter& dayCounter,
                     const Calendar& calendar,
                     BusinessDayConvention businessDayConvention,
-                    const FixedRateBondPtr& fixedBond,
+                    const boost::shared_ptr<FixedRateBond>& fixedBond,
                     const Handle<YieldTermStructure>& discountCurve =
                                                 Handle<YieldTermStructure>(),
                     const Handle<YieldTermStructure>& incomeDiscountCurve =
                                                 Handle<YieldTermStructure>()) {
-                const boost::shared_ptr<FixedRateBond>& fixedCouponBond = 
-                    boost::dynamic_pointer_cast<FixedRateBond>(fixedBond);
                 return new FixedRateBondForwardPtr(
                        new FixedRateBondForward(
                             valueDate, maturityDate, type, strike,
                             settlementDays, dayCounter, calendar,
-                            businessDayConvention, fixedCouponBond,
+                            businessDayConvention, fixedBond,
                             discountCurve,  incomeDiscountCurve));
             }
             

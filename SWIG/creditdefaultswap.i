@@ -78,9 +78,7 @@ class FaceValueClaimPtr : public boost::shared_ptr<Claim> {
 class FaceValueAccrualClaimPtr : public boost::shared_ptr<Claim> {
   public:
     %extend {
-        FaceValueAccrualClaimPtr(const BondPtr& referenceSecurity) {
-            boost::shared_ptr<Bond> bond =
-                boost::dynamic_pointer_cast<Bond>(referenceSecurity);
+        FaceValueAccrualClaimPtr(const boost::shared_ptr<Bond>& bond) {
             return new FaceValueAccrualClaimPtr(new FaceValueAccrualClaim(bond));
         }
     }

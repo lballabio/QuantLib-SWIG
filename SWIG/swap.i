@@ -425,17 +425,15 @@ class AssetSwapPtr : public SwapPtr {
   public:
     %extend {
         AssetSwapPtr(bool payFixedRate,
-                     const BondPtr& bond,
+                     const boost::shared_ptr<Bond>& bond,
                      Real bondCleanPrice,
                      const boost::shared_ptr<IborIndex>& index,
                      Spread spread,
                      const Schedule& floatSchedule = Schedule(),
                      const DayCounter& floatingDayCount = DayCounter(),
                      bool parAssetSwap = true) {
-            const boost::shared_ptr<Bond> b =
-                boost::dynamic_pointer_cast<Bond>(bond);
             return new AssetSwapPtr(
-                new AssetSwap(payFixedRate,b,bondCleanPrice,index,spread,
+                new AssetSwap(payFixedRate,bond,bondCleanPrice,index,spread,
                               floatSchedule,floatingDayCount,parAssetSwap));
         }
         Real fairCleanPrice() {

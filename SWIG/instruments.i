@@ -38,11 +38,10 @@ using QuantLib::PricingEngine;
 
 %{
 using QuantLib::Instrument;
-using QuantLib::LazyObject;
 %}
     
 %shared_ptr(Instrument)
-class Instrument {
+class Instrument : public Observable {
     #if defined(SWIGRUBY)
     %rename("isExpired?")     isExpired;
     %rename("pricingEngine=") setPricingEngine;
@@ -58,6 +57,8 @@ class Instrument {
     void recalculate();
     void freeze();
     void unfreeze();
+  private:
+    Instrument();
 };
 
 #if defined(SWIGR)
@@ -70,7 +71,7 @@ function(x) print(summary(x)))
 %}
 #endif
 
-%template(Instrument) boost::shared_ptr<Instrument>;
+IsObservable(boost::shared_ptr<Instrument>);
 
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<Instrument> )

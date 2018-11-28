@@ -345,15 +345,14 @@ class BondHelperPtr : public boost::shared_ptr<RateHelper> {
   public:
     %extend {
         BondHelperPtr(const Handle<Quote>& cleanPrice,
-                      const BondPtr& bond,
+                      const boost::shared_ptr<Bond>& bond,
                       bool useCleanPrice = true) {
-            boost::shared_ptr<Bond> b = boost::dynamic_pointer_cast<Bond>(bond);
             return new BondHelperPtr(
-                new BondHelper(cleanPrice, b, useCleanPrice));
+                new BondHelper(cleanPrice, bond, useCleanPrice));
         }
 
-        BondPtr bond() {
-            return BondPtr(boost::dynamic_pointer_cast<BondHelper>(*self)->bond());
+        boost::shared_ptr<Bond> bond() {
+            return boost::dynamic_pointer_cast<BondHelper>(*self)->bond();
         }
     }
 };
@@ -388,8 +387,8 @@ class FixedRateBondHelperPtr : public BondHelperPtr {
                                         useCleanPrice));
         }
 
-        FixedRateBondPtr bond() {
-            return FixedRateBondPtr(boost::dynamic_pointer_cast<FixedRateBondHelper>(*self)->bond());
+        boost::shared_ptr<Bond> bond() {
+            return boost::dynamic_pointer_cast<FixedRateBondHelper>(*self)->bond();
         }
     }
 };
