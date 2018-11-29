@@ -30,95 +30,61 @@ using QuantLib::ConvertibleZeroCouponBond;
 using QuantLib::ConvertibleFixedCouponBond;
 using QuantLib::ConvertibleFloatingRateBond;
 using QuantLib::BinomialConvertibleEngine;
-typedef boost::shared_ptr<Instrument> ConvertibleZeroCouponBondPtr;
-typedef boost::shared_ptr<Instrument> ConvertibleFixedCouponBondPtr;
-typedef boost::shared_ptr<Instrument> ConvertibleFloatingRateBondPtr;
 typedef boost::shared_ptr<PricingEngine> BinomialConvertibleEnginePtr;
 %}
 
-%rename(ConvertibleZeroCouponBond) ConvertibleZeroCouponBondPtr;
-class ConvertibleZeroCouponBondPtr : public BondPtr {
+%shared_ptr(ConvertibleZeroCouponBond)
+class ConvertibleZeroCouponBond : public Bond {
   public:
-    %extend {
-        ConvertibleZeroCouponBondPtr(
-              const boost::shared_ptr<Exercise>& exercise,
-              Real conversionRatio,
-              const std::vector<boost::shared_ptr<Dividend> >& dividends,
-              const std::vector<boost::shared_ptr<Callability> >& callability,
-              const Handle<Quote>& creditSpread,
-              const Date& issueDate,
-              Integer settlementDays,
-              const DayCounter& dayCounter,
-              const Schedule& schedule,
-              Real redemption = 100.0) {
-            return new ConvertibleZeroCouponBondPtr(
-                     new ConvertibleZeroCouponBond(exercise, conversionRatio,
-                                                   dividends, callability,
-                                                   creditSpread,
-                                                   issueDate, settlementDays,
-                                                   dayCounter, schedule,
-                                                   redemption));
-        }
-    }
+    ConvertibleZeroCouponBond(
+          const boost::shared_ptr<Exercise>& exercise,
+          Real conversionRatio,
+          const std::vector<boost::shared_ptr<Dividend> >& dividends,
+          const std::vector<boost::shared_ptr<Callability> >& callability,
+          const Handle<Quote>& creditSpread,
+          const Date& issueDate,
+          Integer settlementDays,
+          const DayCounter& dayCounter,
+          const Schedule& schedule,
+          Real redemption = 100.0);
 };
 
 
-%rename(ConvertibleFixedCouponBond) ConvertibleFixedCouponBondPtr;
-class ConvertibleFixedCouponBondPtr : public BondPtr {
+%shared_ptr(ConvertibleFixedCouponBond)
+class ConvertibleFixedCouponBond : public Bond {
   public:
-    %extend {
-        ConvertibleFixedCouponBondPtr(
-              const boost::shared_ptr<Exercise>& exercise,
-              Real conversionRatio,
-              const std::vector<boost::shared_ptr<Dividend> >& dividends,
-              const std::vector<boost::shared_ptr<Callability> >& callability,
-              const Handle<Quote>& creditSpread,
-              const Date& issueDate,
-              Integer settlementDays,
-              const std::vector<Rate>& coupons,
-              const DayCounter& dayCounter,
-              const Schedule& schedule,
-              Real redemption = 100.0) {
-            return new ConvertibleFixedCouponBondPtr(
-                    new ConvertibleFixedCouponBond(exercise, conversionRatio,
-                                                   dividends, callability,
-                                                   creditSpread,
-                                                   issueDate, settlementDays,
-                                                   coupons, dayCounter,
-                                                   schedule, redemption));
-        }
-    }
+    ConvertibleFixedCouponBond(
+          const boost::shared_ptr<Exercise>& exercise,
+          Real conversionRatio,
+          const std::vector<boost::shared_ptr<Dividend> >& dividends,
+          const std::vector<boost::shared_ptr<Callability> >& callability,
+          const Handle<Quote>& creditSpread,
+          const Date& issueDate,
+          Integer settlementDays,
+          const std::vector<Rate>& coupons,
+          const DayCounter& dayCounter,
+          const Schedule& schedule,
+          Real redemption = 100.0);
 };
 
 
-%rename(ConvertibleFloatingRateBond) ConvertibleFloatingRateBondPtr;
-class ConvertibleFloatingRateBondPtr : public BondPtr {
+%shared_ptr(ConvertibleFloatingRateBond)
+class ConvertibleFloatingRateBond : public Bond {
   public:
-    %extend {
-        ConvertibleFloatingRateBondPtr(
-              const boost::shared_ptr<Exercise>& exercise,
-              Real conversionRatio,
-              const std::vector<boost::shared_ptr<Dividend> >& dividends,
-              const std::vector<boost::shared_ptr<Callability> >& callability,
-              const Handle<Quote>& creditSpread,
-              const Date& issueDate,
-              Integer settlementDays,
-              const boost::shared_ptr<IborIndex>& index,
-              Integer fixingDays,
-              const std::vector<Spread>& spreads,
-              const DayCounter& dayCounter,
-              const Schedule& schedule,
-              Real redemption = 100.0) {
-            return new ConvertibleFloatingRateBondPtr(
-                   new ConvertibleFloatingRateBond(exercise, conversionRatio,
-                                                   dividends, callability,
-                                                   creditSpread,
-                                                   issueDate, settlementDays,
-                                                   index, fixingDays, spreads,
-                                                   dayCounter, schedule,
-                                                   redemption));
-        }
-    }
+    ConvertibleFloatingRateBond(
+          const boost::shared_ptr<Exercise>& exercise,
+          Real conversionRatio,
+          const std::vector<boost::shared_ptr<Dividend> >& dividends,
+          const std::vector<boost::shared_ptr<Callability> >& callability,
+          const Handle<Quote>& creditSpread,
+          const Date& issueDate,
+          Integer settlementDays,
+          const boost::shared_ptr<IborIndex>& index,
+          Integer fixingDays,
+          const std::vector<Spread>& spreads,
+          const DayCounter& dayCounter,
+          const Schedule& schedule,
+          Real redemption = 100.0);
 };
 
 
