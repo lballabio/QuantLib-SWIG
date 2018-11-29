@@ -51,7 +51,7 @@ class CapFloor : public Instrument {
     Date startDate() const;
     Date maturityDate() const;
 
-    Rate atmRate(const boost::shared_ptr<YieldTermStructure>& discountCurve);
+    Rate atmRate(const YieldTermStructure& discountCurve) const;
 };
 
 
