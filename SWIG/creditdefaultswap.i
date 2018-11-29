@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,27 +34,12 @@ using QuantLib::Claim;
 using QuantLib::FaceValueClaim;
 using QuantLib::FaceValueAccrualClaim;
 
-typedef boost::shared_ptr<Instrument> CreditDefaultSwapPtr;
 typedef boost::shared_ptr<PricingEngine> MidPointCdsEnginePtr;
 typedef boost::shared_ptr<PricingEngine> IntegralCdsEnginePtr;
 typedef boost::shared_ptr<PricingEngine> IsdaCdsEnginePtr;
 typedef boost::shared_ptr<Claim> FaceValueClaimPtr;
 typedef boost::shared_ptr<Claim> FaceValueAccrualClaimPtr;
 %}
-
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_CreditDefaultSwap) CreditDefaultSwap;
-#else
-%ignore CreditDefaultSwap;
-#endif
-class CreditDefaultSwap {
-  public:
-    enum PricingModel {Midpoint, ISDA};
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    CreditDefaultSwap();
-#endif
-};
 
 %ignore Claim;
 class Claim {
@@ -84,132 +70,70 @@ class FaceValueAccrualClaimPtr : public boost::shared_ptr<Claim> {
     }
 };
 
-
-%rename(CreditDefaultSwap) CreditDefaultSwapPtr;
-class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(CreditDefaultSwap)
+class CreditDefaultSwap : public Instrument {
   public:
-    %extend {
-        static const CreditDefaultSwap::PricingModel Midpoint = CreditDefaultSwap::Midpoint;
-        static const CreditDefaultSwap::PricingModel ISDA = CreditDefaultSwap::ISDA;
+    enum PricingModel {
+        Midpoint,
+        ISDA
+    };
 
-        CreditDefaultSwapPtr(Protection::Side side,
-                             Real notional,
-                             Rate spread,
-                             const Schedule& schedule,
-                             BusinessDayConvention paymentConvention,
-                             const DayCounter& dayCounter,
-                             bool settlesAccrual = true,
-                             bool paysAtDefaultTime = true,
-                             const Date& protectionStart = Date()) {
-            return new CreditDefaultSwapPtr(
-                    new CreditDefaultSwap(side, notional, spread, schedule,
-                                          paymentConvention, dayCounter,
-                                          settlesAccrual, paysAtDefaultTime,
-                                          protectionStart));
-        }
-        CreditDefaultSwapPtr(Protection::Side side,
-                             Real notional,
-                             Rate upfront,
-                             Rate spread,
-                             const Schedule& schedule,
-                             BusinessDayConvention paymentConvention,
-                             const DayCounter& dayCounter,
-                             bool settlesAccrual = true,
-                             bool paysAtDefaultTime = true,
-                             const Date& protectionStart = Date(),
-                             const Date& upfrontDate = Date(),
-                             const boost::shared_ptr<Claim>& claim =
-                                                        boost::shared_ptr<Claim>(),
-                             const DayCounter& lastPeriodDayCounter = DayCounter(),
-                             const bool rebatesAccrual = true) {
-            return new CreditDefaultSwapPtr(
-                    new CreditDefaultSwap(side, notional, upfront, spread,
-                                          schedule, paymentConvention,
-                                          dayCounter, settlesAccrual,
-                                          paysAtDefaultTime,
-                                          protectionStart,
-                                          upfrontDate,claim,
-                                          lastPeriodDayCounter,rebatesAccrual));
-        }
-        Protection::Side side() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->side();
-        }
-        Real notional() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->notional();
-        }
-        Rate runningSpread() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->runningSpread();
-        }
-        doubleOrNull upfront() const {
+    CreditDefaultSwap(Protection::Side side,
+                         Real notional,
+                         Rate spread,
+                         const Schedule& schedule,
+                         BusinessDayConvention paymentConvention,
+                         const DayCounter& dayCounter,
+                         bool settlesAccrual = true,
+                         bool paysAtDefaultTime = true,
+                         const Date& protectionStart = Date());
+    CreditDefaultSwap(Protection::Side side,
+                         Real notional,
+                         Rate upfront,
+                         Rate spread,
+                         const Schedule& schedule,
+                         BusinessDayConvention paymentConvention,
+                         const DayCounter& dayCounter,
+                         bool settlesAccrual = true,
+                         bool paysAtDefaultTime = true,
+                         const Date& protectionStart = Date(),
+                         const Date& upfrontDate = Date(),
+                         const boost::shared_ptr<Claim>& claim =
+                                                    boost::shared_ptr<Claim>(),
+                         const DayCounter& lastPeriodDayCounter = DayCounter(),
+                         const bool rebatesAccrual = true);
+    Protection::Side side() const;
+    Real notional() const;
+    Rate runningSpread() const;
+    %extend {
+    doubleOrNull upfront() const {
             boost::optional<Rate> result =
-                boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->upfront();
+                self->upfront();
             if (result)
                 return *result;
             else
                 return Null<double>();
         }
-        bool settlesAccrual() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->settlesAccrual();
-        }
-        bool paysAtDefaultTime() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->paysAtDefaultTime();
-        }
-        Rate fairSpread() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->fairSpread();
-        }
-        Rate fairUpfront() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->fairUpfront();
-        }
-        Real couponLegBPS() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->couponLegBPS();
-        }
-        Real couponLegNPV() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->couponLegNPV();
-        }
-        Real defaultLegNPV() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->defaultLegNPV();
-        }
-        Real upfrontBPS() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->upfrontBPS();
-        }
-        Real upfrontNPV() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->upfrontNPV();
-        }
-        Rate impliedHazardRate(Real targetNPV,
-                               const Handle<YieldTermStructure>& discountCurve,
-                               const DayCounter& dayCounter,
-                               Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6,
-			       CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->impliedHazardRate(targetNPV, discountCurve, dayCounter,
-                                    recoveryRate, accuracy, model);
-        }
-        Rate conventionalSpread(Real conventionalRecovery,
-                const Handle<YieldTermStructure>& discountCurve,
-                const DayCounter& dayCounter) const{
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->conventionalSpread(conventionalRecovery,discountCurve,
-                dayCounter) ;
-        }
-        std::vector<boost::shared_ptr<CashFlow> > coupons() {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->coupons();
-        }
     }
+    bool settlesAccrual() const;
+    bool paysAtDefaultTime() const;
+    Rate fairSpread() const;
+    Rate fairUpfront() const;
+    Real couponLegBPS() const;
+    Real couponLegNPV() const;
+    Real defaultLegNPV() const;
+    Real upfrontBPS() const;
+    Real upfrontNPV() const;
+    Rate impliedHazardRate(Real targetNPV,
+                           const Handle<YieldTermStructure>& discountCurve,
+                           const DayCounter& dayCounter,
+                           Real recoveryRate = 0.4,
+                           Real accuracy = 1.0e-6,
+               CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const;
+    Rate conventionalSpread(Real conventionalRecovery,
+            const Handle<YieldTermStructure>& discountCurve,
+            const DayCounter& dayCounter) const;
+    std::vector<boost::shared_ptr<CashFlow> > coupons();
 };
 
 
