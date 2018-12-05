@@ -35,43 +35,61 @@ using QuantLib::Swaption;
 using QuantLib::NonstandardSwaption;
 using QuantLib::Settlement;
 using QuantLib::FloatFloatSwaption;
-typedef boost::shared_ptr<Instrument> SwaptionPtr;
-typedef boost::shared_ptr<Instrument> NonstandardSwaptionPtr;
-typedef boost::shared_ptr<Instrument> FloatFloatSwaptionPtr;
 %}
 
 struct Settlement {
    enum Type { Physical, Cash };
+   enum Method {
+        PhysicalOTC,
+        PhysicalCleared,
+        CollateralizedCashPrice,
+        ParYieldCurve
+   };
 };
-
-%rename(Swaption) SwaptionPtr;
-class SwaptionPtr : public boost::shared_ptr<Instrument> {
+    
+%shared_ptr(Swaption)
+class Swaption : public Instrument {
   public:
-    %extend {
-        SwaptionPtr(const boost::shared_ptr<VanillaSwap>& swap,
-                    const boost::shared_ptr<Exercise>& exercise,
-                    Settlement::Type type = Settlement::Physical) {
-            return new SwaptionPtr(new Swaption(swap,exercise,type));
-        }
-    }
+    Swaption(const boost::shared_ptr<VanillaSwap>& swap,
+                const boost::shared_ptr<Exercise>& exercise,
+                Settlement::Type type = Settlement::Physical,
+                Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+    
+    Settlement::Type settlementType() const;       
+    Settlement::Method settlementMethod() const;
+    VanillaSwap::Type type() const;
+    const boost::shared_ptr<VanillaSwap>& underlyingSwap() const;
+    
+    //! implied volatility
+    Volatility impliedVolatility(
+                          Real price,
+                          const Handle<YieldTermStructure>& discountCurve,
+                          Volatility guess,
+                          Real accuracy = 1.0e-4,
+                          Natural maxEvaluations = 100,
+                          Volatility minVol = 1.0e-7,
+                          Volatility maxVol = 4.0,
+                          VolatilityType type = ShiftedLognormal,
+                          Real displacement = 0.0) const;
 };
 
 %{
 using QuantLib::BasketGeneratingEngine;
 %}
 
-%rename(NonstandardSwaption) NonstandardSwaptionPtr;
-class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(NonstandardSwaption)
+class NonstandardSwaption : public Instrument {
   public:
-    %extend {
-        NonstandardSwaptionPtr(const boost::shared_ptr<NonstandardSwap>& swap,
-                    const boost::shared_ptr<Exercise>& exercise,
-                    Settlement::Type type = Settlement::Physical) {
-            return new NonstandardSwaptionPtr(new NonstandardSwaption(swap,exercise,type));
-        }
+    NonstandardSwaption(const boost::shared_ptr<NonstandardSwap>& swap,
+                const boost::shared_ptr<Exercise>& exercise,
+                Settlement::Type type = Settlement::Physical,
+                Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+                
+    const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const;
 
-        std::vector<boost::shared_ptr<CalibrationHelperBase> > calibrationBasket(
-            boost::shared_ptr<Index> standardSwapBase,
+    %extend {                
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+            boost::shared_ptr<SwapIndex> swapIndex,
             boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
             std::string typeStr) {
 
@@ -82,74 +100,61 @@ class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
                 type = BasketGeneratingEngine::MaturityStrikeByDeltaGamma;
             else
                 QL_FAIL("type " << typeStr << "unknown.");
-            boost::shared_ptr<SwapIndex> swapIndex =
-                boost::dynamic_pointer_cast<SwapIndex>(standardSwapBase);
+
             std::vector<boost::shared_ptr<BlackCalibrationHelper> > hs =
-                boost::dynamic_pointer_cast<NonstandardSwaption>(*self)->
-                calibrationBasket(swapIndex, swaptionVolatility, type);
-            std::vector<boost::shared_ptr<CalibrationHelperBase> > helpers(hs.size());
+                self->calibrationBasket(swapIndex, swaptionVolatility, type);
+            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
             for (Size i=0; i<hs.size(); ++i)
                 helpers[i] = hs[i];
             return helpers;
         }
 
-		const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const {
-			return boost::dynamic_pointer_cast<NonstandardSwaption>(*self)->
-                underlyingSwap();
-		}
 
-		std::vector<Real> probabilities() {
-            return boost::dynamic_pointer_cast<NonstandardSwaption>(*self)
-                ->result<std::vector<Real> >("probabilities");
+        std::vector<Real> probabilities() {
+            return self->result<std::vector<Real> >("probabilities");
         }
     }
 };
 
-%rename(FloatFloatSwaption) FloatFloatSwaptionPtr;
-class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
-  public:
+%shared_ptr(FloatFloatSwaption)
+class FloatFloatSwaption : public Instrument {
+public:
+    FloatFloatSwaption(const boost::shared_ptr<FloatFloatSwap>& swap,
+                const boost::shared_ptr<Exercise>& exercise,
+                Settlement::Type delivery = Settlement::Physical,
+                Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+
+    const boost::shared_ptr<FloatFloatSwap> &underlyingSwap();
+    
     %extend {
-        FloatFloatSwaptionPtr(const boost::shared_ptr<FloatFloatSwap>& swap,
-                    const boost::shared_ptr<Exercise>& exercise) {
-            return new FloatFloatSwaptionPtr(new FloatFloatSwaption(swap,exercise));
-        }
 
-        std::vector<boost::shared_ptr<CalibrationHelperBase> > calibrationBasket(
-            boost::shared_ptr<Index> standardSwapBase,
-            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
-            std::string typeStr) {
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+        boost::shared_ptr<SwapIndex> swapIndex,
+        boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        std::string typeStr) {
 
-            BasketGeneratingEngine::CalibrationBasketType type;
-            if(typeStr == "Naive")
-                type = BasketGeneratingEngine::Naive;
-            else if(typeStr == "MaturityStrikeByDeltaGamma")
-                type = BasketGeneratingEngine::MaturityStrikeByDeltaGamma;
-            else
-                QL_FAIL("type " << typeStr << "unknown.");
-            boost::shared_ptr<SwapIndex> swapIndex =
-                boost::dynamic_pointer_cast<SwapIndex>(standardSwapBase);
-            std::vector<boost::shared_ptr<BlackCalibrationHelper> > hs =
-                boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->
-                calibrationBasket(swapIndex, swaptionVolatility, type);
-            std::vector<boost::shared_ptr<CalibrationHelperBase> > helpers(hs.size());
-            for (Size i=0; i<hs.size(); ++i)
-                helpers[i] = hs[i];
-            return helpers;
+        BasketGeneratingEngine::CalibrationBasketType type;
+        if(typeStr == "Naive")
+            type = BasketGeneratingEngine::Naive;
+        else if(typeStr == "MaturityStrikeByDeltaGamma")
+            type = BasketGeneratingEngine::MaturityStrikeByDeltaGamma;
+        else
+            QL_FAIL("type " << typeStr << "unknown.");
+
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > hs =
+            self->calibrationBasket(swapIndex, swaptionVolatility, type);
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+        for (Size i=0; i<hs.size(); ++i)
+            helpers[i] = hs[i];
+        return helpers;
         }
 
         Real underlyingValue() {
-            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)
-                ->result<Real>("underlyingValue");
+            return self->result<Real>("underlyingValue");
         }
 
-		const boost::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
-			return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->
-                underlyingSwap();
-		}
-
-		std::vector<Real> probabilities() {
-            return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)
-                ->result<std::vector<Real> >("probabilities");
+        std::vector<Real> probabilities() {
+            return self->result<std::vector<Real> >("probabilities");
         }
     }
 };
