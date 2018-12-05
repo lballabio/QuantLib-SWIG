@@ -334,7 +334,7 @@ class SwapRateHelperPtr : public boost::shared_ptr<RateHelper> {
 		Spread spread() {
 			return boost::dynamic_pointer_cast<SwapRateHelper>(*self)->spread();
 		}
-        VanillaSwapPtr swap() {
+        boost::shared_ptr<VanillaSwap> swap() {
             return boost::dynamic_pointer_cast<SwapRateHelper>(*self)->swap();
         }
     }
@@ -423,7 +423,7 @@ class OISRateHelperPtr : public boost::shared_ptr<RateHelper> {
 		Real impliedQuote() {
 			return boost::dynamic_pointer_cast<OISRateHelper>(*self)->impliedQuote();
 		}
-		OvernightIndexedSwapPtr swap() {
+		boost::shared_ptr<OvernightIndexedSwap> swap() {
             return boost::dynamic_pointer_cast<OISRateHelper>(*self)->swap();
         }
     }

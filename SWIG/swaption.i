@@ -48,12 +48,9 @@ struct Settlement {
 class SwaptionPtr : public boost::shared_ptr<Instrument> {
   public:
     %extend {
-        SwaptionPtr(const VanillaSwapPtr& simpleSwap,
+        SwaptionPtr(const boost::shared_ptr<VanillaSwap>& swap,
                     const boost::shared_ptr<Exercise>& exercise,
                     Settlement::Type type = Settlement::Physical) {
-            boost::shared_ptr<VanillaSwap> swap =
-                 boost::dynamic_pointer_cast<VanillaSwap>(simpleSwap);
-            QL_REQUIRE(swap, "simple swap required");
             return new SwaptionPtr(new Swaption(swap,exercise,type));
         }
     }
@@ -67,12 +64,9 @@ using QuantLib::BasketGeneratingEngine;
 class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
   public:
     %extend {
-        NonstandardSwaptionPtr(const NonstandardSwapPtr& nonstandardSwap,
+        NonstandardSwaptionPtr(const boost::shared_ptr<NonstandardSwap>& swap,
                     const boost::shared_ptr<Exercise>& exercise,
                     Settlement::Type type = Settlement::Physical) {
-            boost::shared_ptr<NonstandardSwap> swap =
-                 boost::dynamic_pointer_cast<NonstandardSwap>(nonstandardSwap);
-            QL_REQUIRE(swap, "nonstandard swap required");
             return new NonstandardSwaptionPtr(new NonstandardSwaption(swap,exercise,type));
         }
 
@@ -99,7 +93,7 @@ class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
             return helpers;
         }
 
-		const NonstandardSwapPtr underlyingSwap() const {
+		const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const {
 			return boost::dynamic_pointer_cast<NonstandardSwaption>(*self)->
                 underlyingSwap();
 		}
@@ -115,11 +109,8 @@ class NonstandardSwaptionPtr : public boost::shared_ptr<Instrument> {
 class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
   public:
     %extend {
-        FloatFloatSwaptionPtr(const FloatFloatSwapPtr& simpleSwap,
+        FloatFloatSwaptionPtr(const boost::shared_ptr<FloatFloatSwap>& swap,
                     const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<FloatFloatSwap> swap =
-                 boost::dynamic_pointer_cast<FloatFloatSwap>(simpleSwap);
-            QL_REQUIRE(swap, "floatfloat swap required");
             return new FloatFloatSwaptionPtr(new FloatFloatSwaption(swap,exercise));
         }
 
@@ -151,7 +142,7 @@ class FloatFloatSwaptionPtr : public boost::shared_ptr<Instrument> {
                 ->result<Real>("underlyingValue");
         }
 
-		const FloatFloatSwapPtr underlyingSwap() const {
+		const boost::shared_ptr<FloatFloatSwap> &underlyingSwap() const {
 			return boost::dynamic_pointer_cast<FloatFloatSwaption>(*self)->
                 underlyingSwap();
 		}

@@ -40,133 +40,48 @@ using QuantLib::DiscountingSwapEngine;
 using QuantLib::FloatFloatSwap;
 using QuantLib::OvernightIndexedSwap;
 
-typedef boost::shared_ptr<Instrument> SwapPtr;
-typedef boost::shared_ptr<Instrument> VanillaSwapPtr;
-typedef boost::shared_ptr<Instrument> NonstandardSwapPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingSwapEnginePtr;
-typedef boost::shared_ptr<Instrument> FloatFloatSwapPtr;
-typedef boost::shared_ptr<Instrument> OvernightIndexedSwapPtr;
 %}
 
-%rename(Swap) SwapPtr;
-class SwapPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(Swap)
+class Swap : public Instrument {
   public:
-    %extend {
-        SwapPtr(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
-                const std::vector<boost::shared_ptr<CashFlow> >& secondLeg) {
-            return new SwapPtr(new Swap(firstLeg, secondLeg));
-        }
-        Date startDate() {
-            return boost::dynamic_pointer_cast<Swap>(*self)->startDate();
-        }
-        Date maturityDate() {
-            return boost::dynamic_pointer_cast<Swap>(*self)->maturityDate();
-        }
-        const Leg & leg(Size i){
-            return boost::dynamic_pointer_cast<Swap>(*self)->leg(i);
-        }
-        Real legNPV(Size j) const {
-            return boost::dynamic_pointer_cast<Swap>(*self)->legNPV(j);
-        }
-    }
+    Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
+         const std::vector<boost::shared_ptr<CashFlow> >& secondLeg);
+    Date startDate();
+    Date maturityDate();
+    const Leg & leg(Size i);
+    Real legNPV(Size j) const;
 };
 
-
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_VanillaSwap) VanillaSwap;
-#else
-%ignore VanillaSwap;
-#endif
-class VanillaSwap {
+%shared_ptr(VanillaSwap)
+class VanillaSwap : public Swap {
   public:
     enum Type { Receiver = -1, Payer = 1 };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    VanillaSwap();
-#endif
+    VanillaSwap(VanillaSwap::Type type, Real nominal,
+                   const Schedule& fixedSchedule, Rate fixedRate,
+                   const DayCounter& fixedDayCount,
+                   const Schedule& floatSchedule,
+                   const boost::shared_ptr<IborIndex>& index,
+                   Spread spread,
+                   const DayCounter& floatingDayCount);
+    Rate fairRate();
+    Spread fairSpread();
+    Real fixedLegBPS();
+    Real floatingLegBPS();
+    Real fixedLegNPV();
+    Real floatingLegNPV();
+    // Inspectors 
+    const Leg& fixedLeg();
+    const Leg& floatingLeg();
+    Real nominal();
+    const Schedule& fixedSchedule();
+    const Schedule& floatingSchedule();
+    Rate fixedRate();
+    Spread spread();
+    const DayCounter& floatingDayCount();
+    const DayCounter& fixedDayCount();
 };
-
-%rename(VanillaSwap) VanillaSwapPtr;
-class VanillaSwapPtr : public SwapPtr {
-  public:
-    %extend {
-        static const VanillaSwap::Type Receiver = VanillaSwap::Receiver;
-        static const VanillaSwap::Type Payer = VanillaSwap::Payer;
-        VanillaSwapPtr(VanillaSwap::Type type, Real nominal,
-                       const Schedule& fixedSchedule, Rate fixedRate,
-                       const DayCounter& fixedDayCount,
-                       const Schedule& floatSchedule,
-                       const boost::shared_ptr<IborIndex>& index,
-                       Spread spread,
-                       const DayCounter& floatingDayCount) {
-            return new VanillaSwapPtr(
-                    new VanillaSwap(type, nominal,fixedSchedule,fixedRate,
-                                    fixedDayCount,floatSchedule,index,
-                                    spread, floatingDayCount));
-        }
-        Rate fairRate() {
-            return boost::dynamic_pointer_cast<VanillaSwap>(*self)->fairRate();
-        }
-        Spread fairSpread() {
-            return boost::dynamic_pointer_cast<VanillaSwap>(*self)
-                 ->fairSpread();
-        }
-        Real fixedLegBPS() {
-            return boost::dynamic_pointer_cast<VanillaSwap>(*self)
-                 ->fixedLegBPS();
-        }
-        Real floatingLegBPS() {
-            return boost::dynamic_pointer_cast<VanillaSwap>(*self)
-                 ->floatingLegBPS();
-        }   
-        Real fixedLegNPV() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->fixedLegNPV();
-        }
-        Real floatingLegNPV() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->floatingLegNPV();
-        }
-        // Inspectors 
-        const Leg& fixedLeg() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->fixedLeg();
-        }
-        const Leg& floatingLeg() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->floatingLeg();
-        }
-        Real nominal() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->nominal();
-        }
-        const Schedule& fixedSchedule() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->fixedSchedule();
-        }
-        const Schedule& floatingSchedule() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->floatingSchedule();
-        }
-        Rate fixedRate() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->fixedRate();
-        }
-        Spread spread() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->spread();
-        }
-        const DayCounter& floatingDayCount() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->floatingDayCount();
-        }
-        const DayCounter& fixedDayCount() {
-            return boost::dynamic_pointer_cast<VanillaSwap> (*self)
-                ->fixedDayCount();
-        }
-    }
-};
-
 
 #if defined(SWIGPYTHON)
 %rename (_MakeVanillaSwap) MakeVanillaSwap;
@@ -209,19 +124,18 @@ class MakeVanillaSwap {
                               const Handle<YieldTermStructure>& discountCurve);
         MakeVanillaSwap& withPricingEngine(
                               const boost::shared_ptr<PricingEngine>& engine);
+
+        MakeVanillaSwap(const Period& swapTenor,
+                        const boost::shared_ptr<IborIndex>& index,
+                        Rate fixedRate,
+                        const Period& forwardStart);
+        
         %extend{
-            SwapPtr makeVanillaSwap(){
+            boost::shared_ptr<VanillaSwap> makeVanillaSwap(){
                 return (boost::shared_ptr<VanillaSwap>)(* $self);
             }
-            MakeVanillaSwap(const Period& swapTenor,
-                            const boost::shared_ptr<IborIndex>& index,
-                            Rate fixedRate,
-                            const Period& forwardStart){
-                return new MakeVanillaSwap(swapTenor, index, fixedRate, forwardStart);
-            };
         }
 };
-
 
 #if defined(SWIGPYTHON)
 %pythoncode{
@@ -297,90 +211,44 @@ def MakeVanillaSwap(swapTenor,iborIndex,fixedRate,forwardStart,
 }
 #endif
 
-
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_NonstandardSwap) NonstandardSwap;
-#else
-%ignore NonstandardSwap;
-#endif
-class NonstandardSwap {
+%shared_ptr(NonstandardSwap)
+class NonstandardSwap : public Swap {
   public:
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    NonstandardSwap();
-#endif
-};
+    NonstandardSwap(VanillaSwap::Type type,
+                       const std::vector<Real> &fixedNominal,
+                       const std::vector<Real> &floatingNominal,
+                       const Schedule &fixedSchedule,
+                       const std::vector<Real> &fixedRate,
+                       const DayCounter &fixedDayCount,
+                       const Schedule &floatSchedule,
+                       const boost::shared_ptr<IborIndex> &index,
+                       const std::vector<Real> &gearing,
+                       const std::vector<Spread> &spread,
+                       const DayCounter &floatDayCount,
+                       const bool intermediateCapitalExchange = false,
+                       const bool finalCapitalExchange = false,
+                       BusinessDayConvention paymentConvention = Following);
+    // Inspectors
+    VanillaSwap::Type type() const;
+    const std::vector<Real> &fixedNominal() const;
+    const std::vector<Real> &floatingNominal() const;
 
-%rename(NonstandardSwap) NonstandardSwapPtr;
-class NonstandardSwapPtr : public SwapPtr {
-  public:
-    %extend {
-        NonstandardSwapPtr(VanillaSwap::Type type,
-                           const std::vector<Real> &fixedNominal,
-                           const std::vector<Real> &floatingNominal,
-                           const Schedule &fixedSchedule,
-                           const std::vector<Real> &fixedRate,
-                           const DayCounter &fixedDayCount,
-                           const Schedule &floatSchedule,
-                           const boost::shared_ptr<IborIndex> &index,
-                           const std::vector<Real> &gearing,
-                           const std::vector<Spread> &spread,
-                           const DayCounter &floatDayCount,
-                           const bool intermediateCapitalExchange = false,
-                           const bool finalCapitalExchange = false,
-                           BusinessDayConvention paymentConvention = Following) {
-            return new NonstandardSwapPtr(
-                new NonstandardSwap(type,fixedNominal,floatingNominal,fixedSchedule,fixedRate,
-                                    fixedDayCount,floatSchedule,index,gearing,
-                                    spread,floatDayCount,intermediateCapitalExchange,
-                                    finalCapitalExchange, paymentConvention));
-        }
-        // Inspectors
-        const Leg& fixedLeg() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->fixedLeg();
-        }
-        const Leg& floatingLeg() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->floatingLeg();
-        }
-        std::vector<Real> fixedNominals() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->fixedNominal();
-        }
-        std::vector<Real> floatingNominals() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->floatingNominal();
-        }
-        const Schedule& fixedSchedule() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->fixedSchedule();
-        }
-        const Schedule& floatingSchedule() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->floatingSchedule();
-        }
-        std::vector<Rate> fixedRate() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->fixedRate();
-        }
-        std::vector<Spread> spreads() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->spreads();
-        }
-        std::vector<Spread> gearings() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->gearings();
-        }
-        const DayCounter& floatingDayCount() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->floatingDayCount();
-        }
-        const DayCounter& fixedDayCount() {
-            return boost::dynamic_pointer_cast<NonstandardSwap> (*self)
-                ->fixedDayCount();
-        }
-    }
+    const Schedule &fixedSchedule() const;
+    const std::vector<Real> &fixedRate() const;
+    const DayCounter &fixedDayCount() const;
+
+    const Schedule &floatingSchedule() const;
+    const boost::shared_ptr<IborIndex> &iborIndex() const;
+    Spread spread() const;
+    Real gearing() const;
+    const std::vector<Spread>& spreads() const;
+    const std::vector<Real>& gearings() const;
+    const DayCounter &floatingDayCount() const;
+
+    BusinessDayConvention paymentConvention() const;
+
+    const Leg &fixedLeg() const;
+    const Leg &floatingLeg() const;
 };
 
 %rename(DiscountingSwapEngine) DiscountingSwapEnginePtr;
@@ -414,192 +282,97 @@ class DiscountingSwapEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 %{
 using QuantLib::AssetSwap;
-typedef boost::shared_ptr<Instrument> AssetSwapPtr;
 %}
 
-%rename(AssetSwap) AssetSwapPtr;
-class AssetSwapPtr : public SwapPtr {
+%shared_ptr(AssetSwap)
+class AssetSwap : public Swap {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") AssetSwapPtr;
+    %feature("kwargs") AssetSwap;
     #endif
   public:
-    %extend {
-        AssetSwapPtr(bool payFixedRate,
-                     const boost::shared_ptr<Bond>& bond,
-                     Real bondCleanPrice,
-                     const boost::shared_ptr<IborIndex>& index,
-                     Spread spread,
-                     const Schedule& floatSchedule = Schedule(),
-                     const DayCounter& floatingDayCount = DayCounter(),
-                     bool parAssetSwap = true) {
-            return new AssetSwapPtr(
-                new AssetSwap(payFixedRate,bond,bondCleanPrice,index,spread,
-                              floatSchedule,floatingDayCount,parAssetSwap));
-        }
-        Real fairCleanPrice() {
-            return boost::dynamic_pointer_cast<AssetSwap>(*self)
-                ->fairCleanPrice();
-        }
-        Spread fairSpread() {
-            return boost::dynamic_pointer_cast<AssetSwap>(*self)
-                ->fairSpread();
-        }
-    }
+    AssetSwap(bool payFixedRate,
+                 const boost::shared_ptr<Bond>& bond,
+                 Real bondCleanPrice,
+                 const boost::shared_ptr<IborIndex>& index,
+                 Spread spread,
+                 const Schedule& floatSchedule = Schedule(),
+                 const DayCounter& floatingDayCount = DayCounter(),
+                 bool parAssetSwap = true);
+    Real fairCleanPrice();
+    Spread fairSpread();
 };
 
-%rename(FloatFloatSwap) FloatFloatSwapPtr;
-class FloatFloatSwapPtr : public SwapPtr {
-
+%shared_ptr(FloatFloatSwap)
+class FloatFloatSwap : public Swap {
   public:
-    %extend {
-        FloatFloatSwapPtr(VanillaSwap::Type type, const std::vector<Real> &nominal1,
-            const std::vector<Real> &nominal2, const Schedule &schedule1,
-            const boost::shared_ptr<InterestRateIndex> &index1,
-            const DayCounter &dayCount1, const Schedule &schedule2,
-            const boost::shared_ptr<InterestRateIndex> &index2,
-            const DayCounter &dayCount2,
-            const bool intermediateCapitalExchange = false,
-            const bool finalCapitalExchange = false,
-            const std::vector<Real> &gearing1 = std::vector<Real>(),
-            const std::vector<Real> &spread1 = std::vector<Real>(),
-            const std::vector<Real> &cappedRate1 = std::vector<Real>(),
-            const std::vector<Real> &flooredRate1 = std::vector<Real>(),
-            const std::vector<Real> &gearing2 = std::vector<Real>(),
-            const std::vector<Real> &spread2 = std::vector<Real>(),
-            const std::vector<Real> &cappedRate2 = std::vector<Real>(),
-            const std::vector<Real> &flooredRate2 = std::vector<Real>(),
-            BusinessDayConvention paymentConvention1 = Following,
-            BusinessDayConvention paymentConvention2 = Following) {
-            return new FloatFloatSwapPtr(
-                    new FloatFloatSwap(type, nominal1,nominal2,schedule1,
-                                    index1,dayCount1,schedule2,
-                                    index2, dayCount2,
-                                    intermediateCapitalExchange, finalCapitalExchange,
-                                    gearing1, spread1, cappedRate1,
-                                    flooredRate1, gearing2, spread2,
-                                    cappedRate2, flooredRate2,
-                                    paymentConvention1, paymentConvention2));
-        }
-
-    }
+    FloatFloatSwap(VanillaSwap::Type type, const std::vector<Real> &nominal1,
+        const std::vector<Real> &nominal2, const Schedule &schedule1,
+        const boost::shared_ptr<InterestRateIndex> &index1,
+        const DayCounter &dayCount1, const Schedule &schedule2,
+        const boost::shared_ptr<InterestRateIndex> &index2,
+        const DayCounter &dayCount2,
+        const bool intermediateCapitalExchange = false,
+        const bool finalCapitalExchange = false,
+        const std::vector<Real> &gearing1 = std::vector<Real>(),
+        const std::vector<Real> &spread1 = std::vector<Real>(),
+        const std::vector<Real> &cappedRate1 = std::vector<Real>(),
+        const std::vector<Real> &flooredRate1 = std::vector<Real>(),
+        const std::vector<Real> &gearing2 = std::vector<Real>(),
+        const std::vector<Real> &spread2 = std::vector<Real>(),
+        const std::vector<Real> &cappedRate2 = std::vector<Real>(),
+        const std::vector<Real> &flooredRate2 = std::vector<Real>(),
+        BusinessDayConvention paymentConvention1 = Following,
+        BusinessDayConvention paymentConvention2 = Following);
 };
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_OvernightIndexedSwap) OvernightIndexedSwap;
-#else
-%ignore OvernightIndexedSwap;
-#endif
-class OvernightIndexedSwap {
+%shared_ptr(OvernightIndexedSwap)
+class OvernightIndexedSwap : public Swap {
   public:
     enum Type { Receiver = -1, Payer = 1 };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    OvernightIndexedSwap();
-#endif
-};
-
-%rename(OvernightIndexedSwap) OvernightIndexedSwapPtr;
-class OvernightIndexedSwapPtr : public SwapPtr {
-  public:
-    %extend {
-        static const OvernightIndexedSwap::Type Receiver = OvernightIndexedSwap::Receiver;
-        static const OvernightIndexedSwap::Type Payer = OvernightIndexedSwap::Payer;
-		
-		OvernightIndexedSwapPtr(
-				OvernightIndexedSwap::Type type,
-				Real nominal,
-				const Schedule& schedule,
-				Rate fixedRate,
-				const DayCounter& fixedDC,
-				const boost::shared_ptr<OvernightIndex>& index,
-				Spread spread = 0.0,
-				Natural paymentLag = 0,
-				BusinessDayConvention paymentAdjustment = Following,
-				Calendar paymentCalendar = Calendar(),
-				bool telescopicValueDates = false) {
-				return new OvernightIndexedSwapPtr(
-				 new OvernightIndexedSwap(type, nominal, schedule, fixedRate, fixedDC,
-				index, spread, paymentLag, paymentAdjustment, paymentCalendar, telescopicValueDates));
-		}
-		
-		OvernightIndexedSwapPtr(
-				OvernightIndexedSwap::Type type,
-				std::vector<Real> nominals,
-				const Schedule& schedule,
-				Rate fixedRate,
-				const DayCounter& fixedDC,
-				const boost::shared_ptr<OvernightIndex>& index,
-				Spread spread = 0.0,
-				Natural paymentLag = 0,
-				BusinessDayConvention paymentAdjustment = Following,
-				Calendar paymentCalendar = Calendar(),
-				bool telescopicValueDates = false) {
-				return new OvernightIndexedSwapPtr(
-				 new OvernightIndexedSwap(type, nominals, schedule, fixedRate, fixedDC,
-				index, spread, paymentLag, paymentAdjustment, paymentCalendar, telescopicValueDates));
-		}
+    
+    OvernightIndexedSwap(
+            OvernightIndexedSwap::Type type,
+            Real nominal,
+            const Schedule& schedule,
+            Rate fixedRate,
+            const DayCounter& fixedDC,
+            const boost::shared_ptr<OvernightIndex>& index,
+            Spread spread = 0.0,
+            Natural paymentLag = 0,
+            BusinessDayConvention paymentAdjustment = Following,
+            Calendar paymentCalendar = Calendar(),
+            bool telescopicValueDates = false);
+    
+    OvernightIndexedSwap(
+            OvernightIndexedSwap::Type type,
+            std::vector<Real> nominals,
+            const Schedule& schedule,
+            Rate fixedRate,
+            const DayCounter& fixedDC,
+            const boost::shared_ptr<OvernightIndex>& index,
+            Spread spread = 0.0,
+            Natural paymentLag = 0,
+            BusinessDayConvention paymentAdjustment = Following,
+            Calendar paymentCalendar = Calendar(),
+            bool telescopicValueDates = false);
 
 
-        Rate fixedLegBPS() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)->fixedLegBPS();
-        }
-        Real fixedLegNPV() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)
-                 ->fixedLegNPV();
-        }
-        Real fairRate() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)
-                 ->fairRate();
-        }
-        Real overnightLegBPS() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)
-                 ->overnightLegBPS();
-        }
-        Real overnightLegNPV() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->overnightLegNPV();
-        }
-        Spread fairSpread() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->fairSpread();
-        }
-        // Inspectors
-		OvernightIndexedSwap::Type type() {
-			return boost::dynamic_pointer_cast<OvernightIndexedSwap>(*self)->type();
-		}
-        Real nominal() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->nominal();
-        }
-		std::vector<Real> nominals() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->nominals();
-        }
-		Frequency paymentFrequency() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->paymentFrequency();
-        }
-		Rate fixedRate() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->fixedRate();
-        }
-		const DayCounter& fixedDayCount() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->fixedDayCount();
-        }
-		Spread spread() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->spread();
-        }
-        const Leg& fixedLeg() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->fixedLeg();
-        }
-        const Leg& overnightLeg() {
-            return boost::dynamic_pointer_cast<OvernightIndexedSwap> (*self)
-                ->overnightLeg();
-        }
-    }
+    Rate fixedLegBPS();
+    Real fixedLegNPV();
+    Real fairRate();
+    Real overnightLegBPS();
+    Real overnightLegNPV();
+    Spread fairSpread();
+    // Inspectors
+    OvernightIndexedSwap::Type type();
+    Real nominal();
+    std::vector<Real> nominals();
+    Frequency paymentFrequency();
+    Rate fixedRate();
+    const DayCounter& fixedDayCount();
+    Spread spread();
+    const Leg& fixedLeg();
+    const Leg& overnightLeg();
 };
 
 #endif
