@@ -21,6 +21,7 @@
 #define quantlib_inflation_i
 
 %include termstructures.i
+%include swap.i
 
 %{
   using QuantLib::Seasonality;
@@ -437,227 +438,88 @@ export_piecewise_yoy_inflation_curve(PiecewiseYoYInflation,Linear);
 using QuantLib::ZeroCouponInflationSwap;
 using QuantLib::YearOnYearInflationSwap;
 using QuantLib::CPISwap;
-typedef boost::shared_ptr<Instrument> ZeroCouponInflationSwapPtr;
-typedef boost::shared_ptr<Instrument> YearOnYearInflationSwapPtr;
-typedef boost::shared_ptr<Instrument> CPISwapPtr;
 %}
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_ZeroCouponInflationSwap) ZeroCouponInflationSwap;
-#else
-%ignore ZeroCouponInflationSwap;
-#endif
-class ZeroCouponInflationSwap {
+%shared_ptr(ZeroCouponInflationSwap)
+class ZeroCouponInflationSwap : public Swap {
   public:
     enum Type { Receiver = -1, Payer = 1 };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    ZeroCouponInflationSwap();
-#endif
-};
-
-%rename(ZeroCouponInflationSwap) ZeroCouponInflationSwapPtr;
-class ZeroCouponInflationSwapPtr : public boost::shared_ptr<Instrument> {
-  public:
-    %extend {
-        static const ZeroCouponInflationSwap::Type Receiver =
-            ZeroCouponInflationSwap::Receiver;
-        static const ZeroCouponInflationSwap::Type Payer =
-            ZeroCouponInflationSwap::Payer;
-        ZeroCouponInflationSwapPtr(
-                       ZeroCouponInflationSwap::Type type,
-                       Real nominal,
-                       const Date& start,
-                       const Date& maturity,
-                       const Calendar& calendar,
-                       BusinessDayConvention convention,
-                       const DayCounter& dayCounter,
-                       Rate fixedRate,
-                       const boost::shared_ptr<ZeroInflationIndex>& index,
-                       const Period& lag,
-                       bool adjustInfObsDates = false,
-                       Calendar infCalendar = Calendar(),
-                       BusinessDayConvention infConvention = Following) {
-            return new ZeroCouponInflationSwapPtr(
-                new ZeroCouponInflationSwap(type, nominal, start, maturity,
-                                            calendar, convention, dayCounter,
-                                            fixedRate, index, lag,
-                                            adjustInfObsDates,
-                                            infCalendar, infConvention));
-        }
-        Rate fairRate() {
-            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
-                ->fairRate();
-        }
-        Real fixedLegNPV() {
-            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
-                ->fixedLegNPV();
-        }
-        Real inflationLegNPV() {
-            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
-                ->inflationLegNPV();
-        }
-        std::vector<boost::shared_ptr<CashFlow> > fixedLeg() {
-            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
-                ->fixedLeg();
-        }
-        std::vector<boost::shared_ptr<CashFlow> > inflationLeg() {
-            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
-                ->inflationLeg();
-        }
-        ZeroCouponInflationSwap::Type type() {
-            return boost::dynamic_pointer_cast<ZeroCouponInflationSwap>(*self)
-                ->type();
-        }
-    }
-};
-
-
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_YearOnYearInflationSwap) YearOnYearInflationSwap;
-#else
-%ignore YearOnYearInflationSwap;
-#endif
-class YearOnYearInflationSwap {
-  public:
-    enum Type { Receiver = -1, Payer = 1 };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    YearOnYearInflationSwap();
-#endif
-};
-
-%rename(YearOnYearInflationSwap) YearOnYearInflationSwapPtr;
-class YearOnYearInflationSwapPtr : public boost::shared_ptr<Instrument> {
-  public:
-    %extend {
-        static const YearOnYearInflationSwap::Type Receiver =
-            YearOnYearInflationSwap::Receiver;
-        static const YearOnYearInflationSwap::Type Payer =
-            YearOnYearInflationSwap::Payer;
-        YearOnYearInflationSwapPtr(
-                   YearOnYearInflationSwap::Type type,
+    ZeroCouponInflationSwap(
+                   ZeroCouponInflationSwap::Type type,
                    Real nominal,
-                   const Schedule& fixedSchedule,
+                   const Date& start,
+                   const Date& maturity,
+                   const Calendar& calendar,
+                   BusinessDayConvention convention,
+                   const DayCounter& dayCounter,
                    Rate fixedRate,
-                   const DayCounter& fixedDayCounter,
-                   const Schedule& yoySchedule,
-                   const boost::shared_ptr<YoYInflationIndex>& index,
+                   const boost::shared_ptr<ZeroInflationIndex>& index,
                    const Period& lag,
-                   Spread spread,
-                   const DayCounter& yoyDayCounter,
-                   const Calendar& paymentCalendar,
-                   BusinessDayConvention paymentConvention = Following) {
-            return new YearOnYearInflationSwapPtr(
-                new YearOnYearInflationSwap(type, nominal, fixedSchedule,
-                                            fixedRate, fixedDayCounter,
-                                            yoySchedule, index, lag, spread,
-                                            yoyDayCounter, paymentCalendar,
-                                            paymentConvention));
-        }
-        Rate fairRate() {
-            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
-                ->fairRate();
-        }
-        Real fixedLegNPV() {
-            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
-                ->fixedLegNPV();
-        }
-        Real yoyLegNPV() {
-            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
-                ->yoyLegNPV();
-        }
-		Spread fairSpread() {
-            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
-                ->fairSpread();
-        }
-		const Leg& fixedLeg() {
-            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
-                ->fixedLeg();
-        }
-		const Leg& yoyLeg() {
-            return boost::dynamic_pointer_cast<YearOnYearInflationSwap>(*self)
-                ->yoyLeg();
-        }
-    }
+                   bool adjustInfObsDates = false,
+                   Calendar infCalendar = Calendar(),
+                   BusinessDayConvention infConvention = Following);
+    Rate fairRate();
+    Real fixedLegNPV();
+    Real inflationLegNPV();
+    std::vector<boost::shared_ptr<CashFlow> > fixedLeg();
+    std::vector<boost::shared_ptr<CashFlow> > inflationLeg();
+    ZeroCouponInflationSwap::Type type();
 };
 
-
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_CPISwap) CPISwap;
-#else
-%ignore CPISwap;
-#endif
-class CPISwap {
+%shared_ptr(YearOnYearInflationSwap)
+class YearOnYearInflationSwap : public Swap {
   public:
     enum Type { Receiver = -1, Payer = 1 };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    CPISwap();
-#endif
+    YearOnYearInflationSwap(
+               YearOnYearInflationSwap::Type type,
+               Real nominal,
+               const Schedule& fixedSchedule,
+               Rate fixedRate,
+               const DayCounter& fixedDayCounter,
+               const Schedule& yoySchedule,
+               const boost::shared_ptr<YoYInflationIndex>& index,
+               const Period& lag,
+               Spread spread,
+               const DayCounter& yoyDayCounter,
+               const Calendar& paymentCalendar,
+               BusinessDayConvention paymentConvention = Following);
+    Rate fairRate();
+    Real fixedLegNPV();
+    Real yoyLegNPV();
+    Spread fairSpread();
+    const Leg& fixedLeg();
+    const Leg& yoyLeg();
 };
 
-%rename(CPISwap) CPISwapPtr;
-class CPISwapPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(CPISwap)
+class CPISwap : public Swap {
   public:
-    %extend {
-        static const CPISwap::Type Receiver =
-            CPISwap::Receiver;
-        static const CPISwap::Type Payer =
-            CPISwap::Payer;
-        CPISwapPtr(
-				CPISwap::Type type,
-				Real nominal,
-				bool subtractInflationNominal,
-				Spread spread,
-				const DayCounter& floatDayCount,
-				const Schedule& floatSchedule,
-				const BusinessDayConvention& floatRoll,
-				Natural fixingDays,
-				const boost::shared_ptr<IborIndex>& floatIndex,
-				Rate fixedRate,
-				Real baseCPI,
-				const DayCounter& fixedDayCount,
-				const Schedule& fixedSchedule,
-				const BusinessDayConvention& fixedRoll,
-				const Period& observationLag,
-				const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
-				CPI::InterpolationType observationInterpolation = CPI::AsIndex,
-				Real inflationNominal = Null<Real>() ) {
-		
-            return new CPISwapPtr(
-                new CPISwap(type, nominal, subtractInflationNominal,
-                                            spread, floatDayCount,
-                                            floatSchedule, floatRoll, fixingDays, floatIndex,
-                                            fixedRate, baseCPI, fixedDayCount, fixedSchedule, 
-											fixedRoll, observationLag, fixedIndex, observationInterpolation,
-                                            inflationNominal));
-        }
-        Rate fairRate() {
-            return boost::dynamic_pointer_cast<CPISwap>(*self)
-                ->fairRate();
-        }
-		Real floatLegNPV() {
-			return boost::dynamic_pointer_cast<CPISwap>(*self)
-                ->floatLegNPV();
-		}
-		Spread fairSpread() {
-			return boost::dynamic_pointer_cast<CPISwap>(*self)
-                ->fairSpread();
-		}
-		Real fixedLegNPV() {
-			return boost::dynamic_pointer_cast<CPISwap>(*self)
-                ->fixedLegNPV();
-		}
-		const Leg& cpiLeg() {
-			return boost::dynamic_pointer_cast<CPISwap>(*self)
-                ->cpiLeg();
-		}
-		const Leg& floatLeg() {
-			return boost::dynamic_pointer_cast<CPISwap>(*self)
-                ->floatLeg();
-		}
-    }
+    enum Type { Receiver = -1, Payer = 1 };
+    CPISwap(
+            CPISwap::Type type,
+            Real nominal,
+            bool subtractInflationNominal,
+            Spread spread,
+            const DayCounter& floatDayCount,
+            const Schedule& floatSchedule,
+            const BusinessDayConvention& floatRoll,
+            Natural fixingDays,
+            const boost::shared_ptr<IborIndex>& floatIndex,
+            Rate fixedRate,
+            Real baseCPI,
+            const DayCounter& fixedDayCount,
+            const Schedule& fixedSchedule,
+            const BusinessDayConvention& fixedRoll,
+            const Period& observationLag,
+            const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
+            CPI::InterpolationType observationInterpolation = CPI::AsIndex,
+            Real inflationNominal = Null<Real>() );
+    Rate fairRate();
+    Real floatLegNPV();
+    Spread fairSpread();
+    Real fixedLegNPV();
+    const Leg& cpiLeg();
+    const Leg& floatLeg();
 };
 
 
@@ -666,69 +528,46 @@ using QuantLib::YoYInflationCapFloor;
 using QuantLib::YoYInflationCap;
 using QuantLib::YoYInflationFloor;
 using QuantLib::YoYInflationCollar;
-
-typedef boost::shared_ptr<Instrument> YoYInflationCapFloorPtr;
-typedef boost::shared_ptr<Instrument> YoYInflationCapPtr;
-typedef boost::shared_ptr<Instrument> YoYInflationFloorPtr;
-typedef boost::shared_ptr<Instrument> YoYInflationCollarPtr;
 %}
 
-%rename(YoYInflationCapFloor) YoYInflationCapFloorPtr;
-class YoYInflationCapFloorPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(YoYInflationCapFloor)
+class YoYInflationCapFloor : public Instrument {
   public:
-     %extend {
-         Volatility impliedVolatility(
-                               Real price,
-                               const Handle<YoYInflationTermStructure>& curve,
-                               Volatility guess,
-                               Real accuracy = 1.0e-4,
-                               Size maxEvaluations = 100,
-                               Volatility minVol = 1.0e-7,
-                               Volatility maxVol = 4.0) const {
-             return boost::dynamic_pointer_cast<YoYInflationCapFloor>(*self)->
-                 impliedVolatility(price, curve, guess, accuracy,
-                                   maxEvaluations, minVol, maxVol);
-         }
-     }
+     Volatility impliedVolatility(
+                           Real price,
+                           const Handle<YoYInflationTermStructure>& curve,
+                           Volatility guess,
+                           Real accuracy = 1.0e-4,
+                           Size maxEvaluations = 100,
+                           Volatility minVol = 1.0e-7,
+                           Volatility maxVol = 4.0) const;
+  private:
+    YoYInflationCapFloor();
 };
 
-%rename(YoYInflationCap) YoYInflationCapPtr;
-class YoYInflationCapPtr : public YoYInflationCapFloorPtr {
+%shared_ptr(YoYInflationCap)
+class YoYInflationCap : public YoYInflationCapFloor {
   public:
-    %extend {
-        YoYInflationCapPtr(
-                const std::vector<boost::shared_ptr<CashFlow> >& leg,
-                const std::vector<Rate>& capRates) {
-            return new YoYInflationCapPtr(new YoYInflationCap(leg,capRates));
-        }
-    }
+    YoYInflationCap(
+            const std::vector<boost::shared_ptr<CashFlow> >& leg,
+            const std::vector<Rate>& capRates);
 };
 
-%rename(YoYInflationFloor) YoYInflationFloorPtr;
-class YoYInflationFloorPtr : public YoYInflationCapFloorPtr {
+%shared_ptr(YoYInflationFloor)
+class YoYInflationFloor : public YoYInflationCapFloor {
   public:
-    %extend {
-        YoYInflationFloorPtr(
-                const std::vector<boost::shared_ptr<CashFlow> >& leg,
-                const std::vector<Rate>& floorRates) {
-            return new YoYInflationFloorPtr(
-                                       new YoYInflationFloor(leg,floorRates));
-        }
-    }
+    YoYInflationFloor(
+            const std::vector<boost::shared_ptr<CashFlow> >& leg,
+            const std::vector<Rate>& floorRates);
 };
 
-%rename(YoYInflationCollar) YoYInflationCollarPtr;
-class YoYInflationCollarPtr : public YoYInflationCapFloorPtr {
+%shared_ptr(YoYInflationCollar)
+class YoYInflationCollar : public YoYInflationCapFloor {
   public:
-    %extend {
-        YoYInflationCollarPtr(
-                const std::vector<boost::shared_ptr<CashFlow> >& leg,
-                const std::vector<Rate>& capRates,
-                const std::vector<Rate>& floorRates) {
-            return new YoYInflationCollarPtr(
-                             new YoYInflationCollar(leg,capRates,floorRates));
-        }
-    }
+    YoYInflationCollar(
+            const std::vector<boost::shared_ptr<CashFlow> >& leg,
+            const std::vector<Rate>& capRates,
+            const std::vector<Rate>& floorRates);
 };
 
 #endif
