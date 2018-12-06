@@ -251,47 +251,29 @@ class AnalyticEuropeanEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 %{
 using QuantLib::HestonModel;
-typedef boost::shared_ptr<CalibratedModel> HestonModelPtr;
 %}
 
-%rename(HestonModel) HestonModelPtr;
-class HestonModelPtr : public boost::shared_ptr<CalibratedModel> {
+%shared_ptr(HestonModel)
+class HestonModel : public CalibratedModel {
   public:
-    %extend {
-        HestonModelPtr(const boost::shared_ptr<HestonProcess>&  process) {
-
-            return new HestonModelPtr(new HestonModel(process));
-        }
-        Real theta() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->theta();
-        }
-        Real kappa() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->kappa();
-        }
-        Real sigma() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->sigma();
-        }
-        Real rho() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->rho();
-        }
-        Real v0() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->v0();
-        }
-    }
+    HestonModel(const boost::shared_ptr<HestonProcess>&  process);
+    Real theta() const;
+    Real kappa() const;
+    Real sigma() const;
+    Real rho() const;
+    Real v0() const;
 };
 
 
 
 %{
 using QuantLib::PiecewiseTimeDependentHestonModel;
-typedef boost::shared_ptr<CalibratedModel> PiecewiseTimeDependentHestonModelPtr;
 %}
 
-%rename(PiecewiseTimeDependentHestonModel) PiecewiseTimeDependentHestonModelPtr;
-class PiecewiseTimeDependentHestonModelPtr : public boost::shared_ptr<CalibratedModel> {
+%shared_ptr(PiecewiseTimeDependentHestonModel)
+class PiecewiseTimeDependentHestonModel : public CalibratedModel {
     public:
-      %extend {
-         PiecewiseTimeDependentHestonModelPtr(
+         PiecewiseTimeDependentHestonModel(
               const Handle<YieldTermStructure>& riskFreeRate,
               const Handle<YieldTermStructure>& dividendYield,
               const Handle<Quote>& s0,
@@ -300,42 +282,18 @@ class PiecewiseTimeDependentHestonModelPtr : public boost::shared_ptr<Calibrated
               const Parameter& kappa,
               const Parameter& sigma,
               const Parameter& rho,
-              const TimeGrid& timeGrid) {
-            return new PiecewiseTimeDependentHestonModelPtr (
-                new PiecewiseTimeDependentHestonModel(riskFreeRate,
-                    dividendYield, s0, v0, theta, kappa, 
-                    sigma, rho, timeGrid));
-        }
+              const TimeGrid& timeGrid);
     
-        Real theta(Time t) const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->theta(t);
-        }
-        Real kappa(Time t) const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->kappa(t);
-        }
-        Real sigma(Time t) const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->sigma(t);
-        }
-        Real rho(Time t)   const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->rho(t);
-        }
-        Real v0()          const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->v0();
-        }
-        Real s0()          const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->s0();
-        }
-        const TimeGrid& timeGrid() const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->timeGrid();
-        }
-        const Handle<YieldTermStructure>& dividendYield() const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->dividendYield();
-        }
-        const Handle<YieldTermStructure>& riskFreeRate() const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->riskFreeRate();
-        }
-    
-    }
+        Real theta(Time t) const;
+        Real kappa(Time t) const;
+        Real sigma(Time t) const;
+        Real rho(Time t)   const;
+        Real v0()          const;
+        Real s0()          const;
+        const TimeGrid& timeGrid() const;
+        const Handle<YieldTermStructure>& dividendYield() const;
+        const Handle<YieldTermStructure>& riskFreeRate() const;
+
 };
 
 
@@ -349,25 +307,19 @@ typedef boost::shared_ptr<PricingEngine> AnalyticHestonEnginePtr;
 class AnalyticHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
-        AnalyticHestonEnginePtr(const HestonModelPtr& model, 
+        AnalyticHestonEnginePtr(const boost::shared_ptr<HestonModel>& model, 
                                 Size integrationOrder = 144) {
-            boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
 
             return new AnalyticHestonEnginePtr(
-                new AnalyticHestonEngine(hModel, integrationOrder));
+                new AnalyticHestonEngine(model, integrationOrder));
         }
 
-        AnalyticHestonEnginePtr(const HestonModelPtr& model, 
+        AnalyticHestonEnginePtr(const boost::shared_ptr<HestonModel>& model, 
                                 Real relTolerance,
                                 Size maxEvaluations) {
-            boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
 
             return new AnalyticHestonEnginePtr(
-                new AnalyticHestonEngine(hModel, relTolerance,maxEvaluations));
+                new AnalyticHestonEngine(model, relTolerance,maxEvaluations));
         }
     }
 };
@@ -381,14 +333,11 @@ typedef boost::shared_ptr<PricingEngine> COSHestonEnginePtr;
 class COSHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
-        COSHestonEnginePtr(const HestonModelPtr& model, 
+        COSHestonEnginePtr(const boost::shared_ptr<HestonModel>& model, 
                            Real L = 16, Size N=200) {
-            boost::shared_ptr<HestonModel> hModel =
-                boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
 
             return new COSHestonEnginePtr(
-                new COSHestonEngine(hModel, L, N));
+                new COSHestonEngine(model, L, N));
         }
     }
 };
@@ -404,24 +353,20 @@ class AnalyticPTDHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
         AnalyticPTDHestonEnginePtr(
-            const PiecewiseTimeDependentHestonModelPtr & model,
+            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Real relTolerance, Size maxEvaluations) {
-                const boost::shared_ptr<PiecewiseTimeDependentHestonModel> hmodel = 
-                    boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(model);
                 return new AnalyticPTDHestonEnginePtr(
-                    new AnalyticPTDHestonEngine(hmodel, relTolerance, maxEvaluations)
+                    new AnalyticPTDHestonEngine(model, relTolerance, maxEvaluations)
             );
         }
 
         // Constructor using Laguerre integration
         // and Gatheral's version of complex log.
         AnalyticPTDHestonEnginePtr(
-            const PiecewiseTimeDependentHestonModelPtr & model,
+            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Size integrationOrder = 144) {
-                const boost::shared_ptr<PiecewiseTimeDependentHestonModel> hmodel = 
-                    boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(model);
                 return new AnalyticPTDHestonEnginePtr(
-                    new AnalyticPTDHestonEngine(hmodel, integrationOrder)
+                    new AnalyticPTDHestonEngine(model, integrationOrder)
             );
         }
     
@@ -435,26 +380,15 @@ class AnalyticPTDHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 %{
 using QuantLib::BatesModel;
-typedef boost::shared_ptr<CalibratedModel> BatesModelPtr;
 %}
 
-%rename(BatesModel) BatesModelPtr;
-class BatesModelPtr : public HestonModelPtr {
+%shared_ptr(BatesModel)
+class BatesModel : public HestonModel {
   public:
-    %extend {
-        BatesModelPtr(const boost::shared_ptr<BatesProcess>&  process) {
-            return new BatesModelPtr(new BatesModel(process));
-        }
-        Real nu() const {
-            return boost::dynamic_pointer_cast<BatesModel>(*self)->nu();
-        }
-        Real delta() const {
-            return boost::dynamic_pointer_cast<BatesModel>(*self)->delta();
-        }
-        Real lambda() const {
-            return boost::dynamic_pointer_cast<BatesModel>(*self)->lambda();
-        }
-    }
+    BatesModel(const boost::shared_ptr<BatesProcess>&  process);
+    Real nu() const;
+    Real delta() const;
+    Real lambda() const;
 };
 
 
@@ -467,25 +401,19 @@ typedef boost::shared_ptr<PricingEngine> BatesEnginePtr;
 class BatesEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
-        BatesEnginePtr(const BatesModelPtr& model, 
+        BatesEnginePtr(const boost::shared_ptr<BatesModel>& model,
                        Size integrationOrder = 144) {
-            boost::shared_ptr<BatesModel> bModel =
-                 boost::dynamic_pointer_cast<BatesModel>(model);
-            QL_REQUIRE(bModel, "Bates model required");
 
             return new BatesEnginePtr(
-                new BatesEngine(bModel, integrationOrder));
+                new BatesEngine(model, integrationOrder));
         }
 
-        BatesEnginePtr(const BatesModelPtr& model, 
+        BatesEnginePtr(const boost::shared_ptr<BatesModel>& model, 
                        Real relTolerance,
                        Size maxEvaluations) {
-            boost::shared_ptr<BatesModel> bModel =
-                 boost::dynamic_pointer_cast<BatesModel>(model);
-            QL_REQUIRE(bModel, "Bates model required");
 
             return new BatesEnginePtr(
-                new BatesEngine(bModel, relTolerance,maxEvaluations));
+                new BatesEngine(model, relTolerance,maxEvaluations));
         }
     }
 };
@@ -776,14 +704,11 @@ typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
 class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
-        FdBatesVanillaEnginePtr(const BatesModelPtr& model,
+        FdBatesVanillaEnginePtr(const boost::shared_ptr<BatesModel>& model,
                                 Size tGrid = 100, Size xGrid = 100,
                                 Size vGrid=50, Size dampingSteps = 0) {
-            boost::shared_ptr<BatesModel> bModel =
-                 boost::dynamic_pointer_cast<BatesModel>(model);
-            QL_REQUIRE(bModel, "Bates model required");
             return new FdBatesVanillaEnginePtr(
-                               new FdBatesVanillaEngine(bModel, tGrid, xGrid,
+                               new FdBatesVanillaEngine(model, tGrid, xGrid,
                                                         vGrid, dampingSteps));
         }
     }
