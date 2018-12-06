@@ -211,10 +211,11 @@ namespace std {
 // the base class for calibrated models
 %{
 using QuantLib::CalibratedModel;
+using QuantLib::TermStructureConsistentModel;
 %}
 
-%ignore CalibratedModel;
-class CalibratedModel {
+%shared_ptr(CalibratedModel)
+class CalibratedModel : public virtual Observable{
     #if defined(SWIGRUBY)
     %rename("calibrate!") calibrate;
     #elif defined(SWIGCSHARP)
@@ -222,18 +223,32 @@ class CalibratedModel {
     #endif
   public:
     Array params() const;
-    void calibrate(
+    virtual void calibrate(
         const std::vector<boost::shared_ptr<CalibrationHelperBase> >&,
         OptimizationMethod&, const EndCriteria &,
         const Constraint& constraint = Constraint(),
-        const std::vector<Real>& weights = std::vector<Real>());
+        const std::vector<Real>& weights = std::vector<Real>(),
+        const std::vector<bool>& fixParameters = std::vector<bool>());
+     
     void setParams(const Array& params);
     Real value(const Array& params,
                const std::vector<boost::shared_ptr<CalibrationHelperBase> >&);
+    const boost::shared_ptr<Constraint>& constraint() const;
+    EndCriteria::Type endCriteria() const;
+    const Array& problemValues() const;
+    Integer functionEvaluation() const;
+  private:
+    CalibratedModel();
 };
 
+%shared_ptr(TermStructureConsistentModel)
+class TermStructureConsistentModel : public virtual Observable{
+  public:
+    const Handle<YieldTermStructure>& termStructure() const;
+  private:
+    TermStructureConsistentModel();
+};
 
-%template(CalibratedModel) boost::shared_ptr<CalibratedModel>;
 IsObservable(boost::shared_ptr<CalibratedModel>);
 
 %template(CalibratedModelHandle) Handle<CalibratedModel>;

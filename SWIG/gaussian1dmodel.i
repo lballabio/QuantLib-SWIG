@@ -26,13 +26,14 @@
 %include indexes.i
 %include optimizers.i
 %include calibrationhelpers.i
+%include observer.i
 
 %{
 using QuantLib::Gaussian1dModel;
 %}
 
-%ignore Gaussian1dModel;
-class Gaussian1dModel {
+%shared_ptr(Gaussian1dModel)
+class Gaussian1dModel : public TermStructureConsistentModel, public Observable {
     public:
         const boost::shared_ptr<StochasticProcess1D> stateProcess() const;
 
@@ -84,100 +85,39 @@ class Gaussian1dModel {
                                    boost::shared_ptr<SwapIndex>()) const;
 };
 
-%template(Gaussian1dModel) boost::shared_ptr<Gaussian1dModel>;
-
 %{
 using QuantLib::Gsr;
 using QuantLib::MarkovFunctional;
-
-typedef boost::shared_ptr<Gaussian1dModel> GsrPtr;
-typedef boost::shared_ptr<Gaussian1dModel> MarkovFunctionalPtr;
 %}
 
 
-%rename(Gsr) GsrPtr;
-class GsrPtr : public boost::shared_ptr<Gaussian1dModel> {
+%shared_ptr(Gsr)
+class Gsr : public Gaussian1dModel, public CalibratedModel {
   public:
-    %extend {
+    Gsr(const Handle<YieldTermStructure> &termStructure,
+           const std::vector<Date> &volstepdates,
+           const std::vector<Handle<Quote> > &volatilities,
+           const std::vector<Handle<Quote> > &reversions, const Real T = 60.0);
+    
+    void calibrateVolatilitiesIterative(
+            const std::vector<boost::shared_ptr<BlackCalibrationHelper> > &helpers,
+            OptimizationMethod &method, const EndCriteria &endCriteria,
+            const Constraint &constraint = Constraint(),
+            const std::vector<Real> &weights = std::vector<Real>());
 
-        GsrPtr(const Handle<YieldTermStructure> &termStructure,
-               const std::vector<Date> &volstepdates,
-               const std::vector<Handle<Quote> > &volatilities,
-               const std::vector<Handle<Quote> > &reversions, const Real T = 60.0) {
-            return new GsrPtr(new Gsr(termStructure, volstepdates,
-                                      volatilities, reversions, T));
-        }
-        
-        void calibrateVolatilitiesIterative(
-                const std::vector<boost::shared_ptr<CalibrationHelperBase> > &hs,
-                OptimizationMethod &method, const EndCriteria &endCriteria,
-                const Constraint &constraint = Constraint(),
-                const std::vector<Real> &weights = std::vector<Real>()) {
-            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
-            for (Size i=0; i<hs.size(); ++i)
-                helpers[i] =
-                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
-            boost::dynamic_pointer_cast<Gsr>(*self)
-                ->calibrateVolatilitiesIterative(helpers, method, endCriteria,
-                                                 constraint, weights);
-        }
-        
-        void calibrate(
-                const std::vector<boost::shared_ptr<CalibrationHelperBase> >& hs,
-                OptimizationMethod& method, const EndCriteria & endCriteria,
-                const Constraint& constraint = Constraint(),
-                const std::vector<Real>& weights = std::vector<Real>(),
-                const std::vector<bool> & fixParameters = std::vector<bool>()) {
-            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
-            for (Size i=0; i<hs.size(); ++i)
-                helpers[i] =
-                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
-            boost::dynamic_pointer_cast<Gsr>(*self)
-                ->calibrate(helpers, method, endCriteria,
-                            constraint, weights, fixParameters);
-        }
-        
-        Array params() const{
-            return boost::dynamic_pointer_cast<Gsr>(*self)->params();
-        }
-        Real value(const Array& params,
-                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >& hs) {
-            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
-            for (Size i=0; i<hs.size(); ++i)
-                helpers[i] =
-                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
-            return boost::dynamic_pointer_cast<Gsr>(*self)->value(params, helpers);
-        }
-        EndCriteria::Type endCriteria() const{
-            return boost::dynamic_pointer_cast<Gsr>(*self)->endCriteria();
-        }
-        void setParams(const Array& params){
-            boost::dynamic_pointer_cast<Gsr>(*self)->setParams(params);
-        }
-        Integer functionEvaluation() const{
-            return boost::dynamic_pointer_cast<Gsr>(*self)->functionEvaluation();
-        }
-        const Array &reversion() const {
-            return boost::dynamic_pointer_cast<Gsr>(*self)->reversion();
-        }
+    const Array &reversion() const;
 
-        const Array &volatility() const {
-            return boost::dynamic_pointer_cast<Gsr>(*self)->volatility();
-        }
-
-    }
+    const Array &volatility() const;
 };
 
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_MarkovFunctional) MarkovFunctional;
-#else
-%ignore MarkovFunctional;
-#endif
 %rename (MarkovFunctionalSettings) MarkovFunctional::ModelSettings;
 %feature ("flatnested") ModelSettings;
-class MarkovFunctional {
+
+%shared_ptr(MarkovFunctional)
+class MarkovFunctional : public Gaussian1dModel, public CalibratedModel {
   public:
+  
     struct ModelSettings {
        enum Adjustments {
             AdjustNone = 0,
@@ -191,95 +131,51 @@ class MarkovFunctional {
             SmileDeleteArbitragePoints = 1 << 7,
             SabrSmile = 1 << 8
         };
+
+        ModelSettings();
+        
+        ModelSettings(Size yGridPoints, Real yStdDevs, Size gaussHermitePoints,
+                      Real digitalGap, Real marketRateAccuracy,
+                      Real lowerRateBound, Real upperRateBound,
+                      int adjustments,
+                      const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>());
+        void validate();
     };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    MarkovFunctional();
-#endif
-};
 
+    // Constructor for a swaption smile calibrated model
+    MarkovFunctional(const Handle<YieldTermStructure> &termStructure,
+                     const Real reversion,
+                     const std::vector<Date> &volstepdates,
+                     const std::vector<Real> &volatilities,
+                     const Handle<SwaptionVolatilityStructure> &swaptionVol,
+                     const std::vector<Date> &swaptionExpiries,
+                     const std::vector<Period> &swaptionTenors,
+                     const boost::shared_ptr<SwapIndex> &swapIndexBase,
+                     const MarkovFunctional::ModelSettings &modelSettings =
+                         ModelSettings());
+    
+    // Constructor for a caplet smile calibrated model
+    MarkovFunctional(const Handle<YieldTermStructure> &termStructure,
+                     const Real reversion,
+                     const std::vector<Date> &volstepdates,
+                     const std::vector<Real> &volatilities,
+                     const Handle<OptionletVolatilityStructure> &capletVol,
+                     const std::vector<Date> &capletExpiries,
+                     const boost::shared_ptr<IborIndex> &iborIndex,
+                     const MarkovFunctional::ModelSettings &modelSettings =
+                         ModelSettings());
+                         
+    const Array &volatility();
 
-%rename(MarkovFunctional) MarkovFunctionalPtr;
-class MarkovFunctionalPtr : public boost::shared_ptr<Gaussian1dModel> {
-  public:
-    %extend {
-        static const MarkovFunctional::ModelSettings::Adjustments AdjustNone
-            = MarkovFunctional::ModelSettings::AdjustNone;
-        static const MarkovFunctional::ModelSettings::Adjustments AdjustDigitals
-            = MarkovFunctional::ModelSettings::AdjustDigitals;
-        static const MarkovFunctional::ModelSettings::Adjustments AdjustYts
-            = MarkovFunctional::ModelSettings::AdjustYts;
-        static const MarkovFunctional::ModelSettings::Adjustments ExtrapolatePayoffFlat
-            = MarkovFunctional::ModelSettings::ExtrapolatePayoffFlat;
-        static const MarkovFunctional::ModelSettings::Adjustments NoPayoffExtrapolation
-            = MarkovFunctional::ModelSettings::NoPayoffExtrapolation;
-        static const MarkovFunctional::ModelSettings::Adjustments KahaleSmile
-            = MarkovFunctional::ModelSettings::KahaleSmile;
-        static const MarkovFunctional::ModelSettings::Adjustments SmileExponentialExtrapolation
-            = MarkovFunctional::ModelSettings::SmileExponentialExtrapolation;
-        static const MarkovFunctional::ModelSettings::Adjustments KahaleInterpolation
-            = MarkovFunctional::ModelSettings::KahaleInterpolation;
-        static const MarkovFunctional::ModelSettings::Adjustments SmileDeleteArbitragePoints
-            = MarkovFunctional::ModelSettings::SmileDeleteArbitragePoints;
-        static const MarkovFunctional::ModelSettings::Adjustments SabrSmile
-            = MarkovFunctional::ModelSettings::SabrSmile;
-
-        MarkovFunctionalPtr(
-            const Handle<YieldTermStructure> &termStructure,
-            const Real reversion,
-            const std::vector<Date> &volstepdates,
-            const std::vector<Real> &volatilities,
-            const Handle<SwaptionVolatilityStructure> &swaptionVol,
-            const std::vector<Date> &swaptionExpiries,
-            const std::vector<Period> &swaptionTenors,
-            const boost::shared_ptr<SwapIndex>& swapIndex,
-            const Size yGridPoints = 64,
-            const Real yStdDevs = 7.0,
-            const Size gaussHermitePoints = 32,
-            const Real digitalGap = 1E-5,
-            const Real marketRateAccuracy = 1E-7,
-            const Real lowerRateBound = 0.0,
-            const Real upperRateBound = 2.0,
-            const int adjustments =
-                MarkovFunctional::ModelSettings::KahaleSmile | MarkovFunctional::ModelSettings::SmileExponentialExtrapolation,
-            const std::vector<Real>& smileMoneyCheckpoints = std::vector<Real>()) {
-            MarkovFunctional::ModelSettings modelSettings =
-                MarkovFunctional::ModelSettings(yGridPoints, yStdDevs,
-                                                gaussHermitePoints, digitalGap,
-                                                marketRateAccuracy,
-                                                lowerRateBound,
-                                                upperRateBound,
-                                                adjustments,
-                                                smileMoneyCheckpoints);
-            return new MarkovFunctionalPtr(
-                new MarkovFunctional(termStructure, reversion,
-                                     volstepdates, volatilities,
-                                     swaptionVol, swaptionExpiries,
-                                     swaptionTenors, swapIndex,
-                                     modelSettings));
-        }
-
-        void calibrate(
-              const std::vector<boost::shared_ptr<CalibrationHelperBase> > &hs,
-              OptimizationMethod &method, const EndCriteria &endCriteria,
-              const Constraint &constraint = Constraint(),
-              const std::vector<Real> &weights = std::vector<Real>(),
-              const std::vector<bool> &fixParameters = std::vector<bool>()) {
-            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
-            for (Size i=0; i<hs.size(); ++i)
-                helpers[i] =
-                    boost::dynamic_pointer_cast<BlackCalibrationHelper>(hs[i]);
-            boost::dynamic_pointer_cast<MarkovFunctional>(*self)->calibrate(helpers, method, 
-                                                                            endCriteria, constraint,
-                                                                            weights, fixParameters);
-        }
-
-        const Array& volatility() const {
-            return boost::dynamic_pointer_cast<MarkovFunctional>(*self)
-                ->volatility();
-        }
-
-    }
+    void calibrate(
+        const std::vector<boost::shared_ptr<BlackCalibrationHelper> > &helper,
+        OptimizationMethod &method, const EndCriteria &endCriteria,
+        const Constraint &constraint = Constraint(),
+        const std::vector<Real> &weights = std::vector<Real>(),
+        const std::vector<bool> &fixParameters = std::vector<bool>());  
+;
+    
+    
 };
 
 // Pricing Engines

@@ -3,6 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2018 Matthias Lungwitz 
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -111,32 +112,38 @@ using QuantLib::CompositeConstraint;
 using QuantLib::NonhomogeneousBoundaryConstraint;
 %}
 
+%shared_ptr(Constraint)
 class Constraint {
     // prevent direct instantiation
   private:
     Constraint();
 };
 
+%shared_ptr(BoundaryConstraint)
 class BoundaryConstraint : public Constraint {
   public:
     BoundaryConstraint(Real lower, Real upper);
 };
 
+%shared_ptr(NoConstraint)
 class NoConstraint : public Constraint {
   public:
     NoConstraint();
 };
 
+%shared_ptr(PositiveConstraint)
 class PositiveConstraint : public Constraint {
   public:
     PositiveConstraint();
 };
 
+%shared_ptr(CompositeConstraint)
 class CompositeConstraint : public Constraint {
   public:
     CompositeConstraint(const Constraint& c1, const Constraint& c2);
 };
 
+%shared_ptr(NonhomogeneousBoundaryConstraint)
 class NonhomogeneousBoundaryConstraint : public Constraint {
   public:
     NonhomogeneousBoundaryConstraint(const Array& l, const Array& u);
