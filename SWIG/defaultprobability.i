@@ -257,13 +257,25 @@ export_survival_probability_curve(SurvivalProbabilityCurve,Linear);
 %{
 using QuantLib::DefaultProbabilityHelper;
 using QuantLib::SpreadCdsHelper;
-typedef boost::shared_ptr<DefaultProbabilityHelper> SpreadCdsHelperPtr;
 using QuantLib::UpfrontCdsHelper;
-typedef boost::shared_ptr<DefaultProbabilityHelper> UpfrontCdsHelperPtr;
 %}
 
 // rate helpers for curve bootstrapping
-%template(DefaultProbabilityHelper) boost::shared_ptr<DefaultProbabilityHelper>;
+
+%shared_ptr(DefaultProbabilityHelper)
+class DefaultProbabilityHelper : public Observable {
+  public:
+    Handle<Quote> quote() const;
+    Date latestDate() const;
+	Date earliestDate() const;
+	Date maturityDate() const;
+	Date latestRelevantDate() const;
+	Date pillarDate() const;
+	Real impliedQuote() const;
+	Real quoteError() const;
+  private:
+    DefaultProbabilityHelper();
+};
 
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<DefaultProbabilityHelper> )
@@ -274,101 +286,71 @@ namespace std {
 }
 
 
-%rename(SpreadCdsHelper) SpreadCdsHelperPtr;
-class SpreadCdsHelperPtr : public boost::shared_ptr<DefaultProbabilityHelper> {
+%shared_ptr(SpreadCdsHelper)
+class SpreadCdsHelper : public DefaultProbabilityHelper {
   public:
-    %extend {
-        SpreadCdsHelperPtr(
-                const Handle<Quote>& spread,
-                const Period& tenor,
-                Integer settlementDays,
-                const Calendar& calendar,
-                Frequency frequency,
-                BusinessDayConvention convention,
-                DateGeneration::Rule rule,
-                const DayCounter& dayCounter,
-                Real recoveryRate,
-                const Handle<YieldTermStructure>& discountCurve,
-                bool settlesAccrual = true,
-                bool paysAtDefaultTime = true) {
-            return new SpreadCdsHelperPtr(
-                new SpreadCdsHelper(spread,tenor,settlementDays,calendar,
-                                    frequency,convention,rule,dayCounter,
-                                    recoveryRate,discountCurve,
-                                    settlesAccrual,paysAtDefaultTime));
-        }
-        SpreadCdsHelperPtr(
-                Rate spread,
-                const Period& tenor,
-                Integer settlementDays,
-                const Calendar& calendar,
-                Frequency frequency,
-                BusinessDayConvention convention,
-                DateGeneration::Rule rule,
-                const DayCounter& dayCounter,
-                Real recoveryRate,
-                const Handle<YieldTermStructure>& discountCurve,
-                bool settlesAccrual = true,
-                bool paysAtDefaultTime = true) {
-            return new SpreadCdsHelperPtr(
-                new SpreadCdsHelper(spread,tenor,settlementDays,calendar,
-                                    frequency,convention,rule,dayCounter,
-                                    recoveryRate,discountCurve,
-                                    settlesAccrual,paysAtDefaultTime));
-        }
-    }
+    SpreadCdsHelper(
+            const Handle<Quote>& spread,
+            const Period& tenor,
+            Integer settlementDays,
+            const Calendar& calendar,
+            Frequency frequency,
+            BusinessDayConvention convention,
+            DateGeneration::Rule rule,
+            const DayCounter& dayCounter,
+            Real recoveryRate,
+            const Handle<YieldTermStructure>& discountCurve,
+            bool settlesAccrual = true,
+            bool paysAtDefaultTime = true);
+    SpreadCdsHelper(
+            Rate spread,
+            const Period& tenor,
+            Integer settlementDays,
+            const Calendar& calendar,
+            Frequency frequency,
+            BusinessDayConvention convention,
+            DateGeneration::Rule rule,
+            const DayCounter& dayCounter,
+            Real recoveryRate,
+            const Handle<YieldTermStructure>& discountCurve,
+            bool settlesAccrual = true,
+            bool paysAtDefaultTime = true);
 };
 
 
-%rename(UpfrontCdsHelper) UpfrontCdsHelperPtr;
-class UpfrontCdsHelperPtr : public boost::shared_ptr<DefaultProbabilityHelper> {
+%shared_ptr(UpfrontCdsHelper)
+class UpfrontCdsHelper : public DefaultProbabilityHelper {
   public:
-    %extend {
-        UpfrontCdsHelperPtr(
-                const Handle<Quote>& upfront,
-                Rate spread,
-                const Period& tenor,
-                Integer settlementDays,
-                const Calendar& calendar,
-                Frequency frequency,
-                BusinessDayConvention convention,
-                DateGeneration::Rule rule,
-                const DayCounter& dayCounter,
-                Real recoveryRate,
-                const Handle<YieldTermStructure>& discountCurve,
-                Natural upfrontSettlementDays=0,
-                bool settlesAccrual = true,
-                bool paysAtDefaultTime = true) {
-            return new UpfrontCdsHelperPtr(
-                new UpfrontCdsHelper(upfront,spread,tenor,
-                                     settlementDays,calendar,
-                                     frequency,convention,rule,dayCounter,
-                                     recoveryRate,discountCurve,upfrontSettlementDays,
-                                     settlesAccrual,paysAtDefaultTime));
-        }
-        UpfrontCdsHelperPtr(
-                Rate upfront,
-                Rate spread,
-                const Period& tenor,
-                Integer settlementDays,
-                const Calendar& calendar,
-                Frequency frequency,
-                BusinessDayConvention convention,
-                DateGeneration::Rule rule,
-                const DayCounter& dayCounter,
-                Real recoveryRate,
-                const Handle<YieldTermStructure>& discountCurve,
-                Natural upfrontSettlementDays=0,
-                bool settlesAccrual = true,
-                bool paysAtDefaultTime = true) {
-            return new UpfrontCdsHelperPtr(
-                new UpfrontCdsHelper(upfront,spread,tenor,
-                                     settlementDays,calendar,
-                                     frequency,convention,rule,dayCounter,
-                                     recoveryRate,discountCurve,upfrontSettlementDays,
-                                     settlesAccrual,paysAtDefaultTime));
-        }
-    }
+    UpfrontCdsHelper(
+            const Handle<Quote>& upfront,
+            Rate spread,
+            const Period& tenor,
+            Integer settlementDays,
+            const Calendar& calendar,
+            Frequency frequency,
+            BusinessDayConvention convention,
+            DateGeneration::Rule rule,
+            const DayCounter& dayCounter,
+            Real recoveryRate,
+            const Handle<YieldTermStructure>& discountCurve,
+            Natural upfrontSettlementDays=0,
+            bool settlesAccrual = true,
+            bool paysAtDefaultTime = true);
+    UpfrontCdsHelper(
+            Rate upfront,
+            Rate spread,
+            const Period& tenor,
+            Integer settlementDays,
+            const Calendar& calendar,
+            Frequency frequency,
+            BusinessDayConvention convention,
+            DateGeneration::Rule rule,
+            const DayCounter& dayCounter,
+            Real recoveryRate,
+            const Handle<YieldTermStructure>& discountCurve,
+            Natural upfrontSettlementDays=0,
+            bool settlesAccrual = true,
+            bool paysAtDefaultTime = true);
 };
 
 
