@@ -22,6 +22,7 @@
 
 %include termstructures.i
 %include swap.i
+%include ratehelpers.i
 
 %{
   using QuantLib::Seasonality;
@@ -240,34 +241,59 @@ struct CPI {
 
 // bootstrapped curves
 
+
 %{
-typedef QuantLib::BootstrapHelper<ZeroInflationTermStructure> ZeroHelper;
-typedef QuantLib::BootstrapHelper<YoYInflationTermStructure> YoYHelper;
 
+using QuantLib::BootstrapHelper;
 using QuantLib::ZeroCouponInflationSwapHelper;
-typedef boost::shared_ptr<ZeroHelper> ZeroCouponInflationSwapHelperPtr;
-
 using QuantLib::YearOnYearInflationSwapHelper;
-typedef boost::shared_ptr<YoYHelper> YearOnYearInflationSwapHelperPtr;
 %}
 
-%template(ZeroHelper) boost::shared_ptr<ZeroHelper>;
-%template(YoYHelper) boost::shared_ptr<YoYHelper>;
+%shared_ptr(BootstrapHelper<ZeroInflationTermStructure>)
+%shared_ptr(BootstrapHelper<YoYInflationTermStructure>)
 
+template <class TS>
+class BootstrapHelper : public Observable {
+  public:
+    Handle<Quote> quote() const;
+    Date latestDate() const;
+	Date earliestDate() const;
+	Date maturityDate() const;
+	Date latestRelevantDate() const;
+	Date pillarDate() const;
+	Real impliedQuote() const;
+	Real quoteError() const;
+  private:
+    BootstrapHelper();
+};
+
+%template(ZeroHelper) BootstrapHelper<ZeroInflationTermStructure>;
+%template(YoYHelper) BootstrapHelper<YoYInflationTermStructure>;
+
+ 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<ZeroHelper> )
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<YoYHelper> )
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > )
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > )
 #endif
 namespace std {
-    %template(ZeroHelperVector) vector<boost::shared_ptr<ZeroHelper> >;
-    %template(YoYHelperVector) vector<boost::shared_ptr<YoYHelper> >;
+    %template(ZeroHelperVector) vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >;
+    %template(YoYHelperVector) vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >;
 }
 
-%rename(ZeroCouponInflationSwapHelper) ZeroCouponInflationSwapHelperPtr;
-class ZeroCouponInflationSwapHelperPtr : public boost::shared_ptr<ZeroHelper> {
+%shared_ptr(ZeroCouponInflationSwapHelper)
+class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermStructure> {
   public:
-    %extend {
-        ZeroCouponInflationSwapHelperPtr(Rate rate,
+    ZeroCouponInflationSwapHelper(
+        const Handle<Quote>& quote,
+        const Period& swapObsLag,   // lag on swap observation of index
+        const Date& maturity,
+        const Calendar& calendar,   // index may have null calendar as valid on every day
+        BusinessDayConvention paymentConvention,
+        const DayCounter& dayCounter,
+        const boost::shared_ptr<ZeroInflationIndex>& zii);
+  %extend{
+        //backward compatibility
+        ZeroCouponInflationSwapHelper(Rate rate,
                                          const Period& lag,
                                          const Date& maturity,
                                          const Calendar& calendar,
@@ -276,19 +302,26 @@ class ZeroCouponInflationSwapHelperPtr : public boost::shared_ptr<ZeroHelper> {
                                          const boost::shared_ptr<ZeroInflationIndex>& index) {
             Handle<Quote> quote(
                 boost::shared_ptr<Quote>(new SimpleQuote(rate)));
-            return new ZeroCouponInflationSwapHelperPtr(
-                new ZeroCouponInflationSwapHelper(quote,lag,maturity,
+            return new ZeroCouponInflationSwapHelper(quote,lag,maturity,
                                                   calendar,bdc,
-                                                  dayCounter,index));
+                                                  dayCounter,index);
         }
     }
 };
 
-%rename(YearOnYearInflationSwapHelper) YearOnYearInflationSwapHelperPtr;
-class YearOnYearInflationSwapHelperPtr : public boost::shared_ptr<YoYHelper> {
+%shared_ptr(YearOnYearInflationSwapHelper)
+class YearOnYearInflationSwapHelper : public BootstrapHelper<YoYInflationTermStructure> {
   public:
+      YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
+                                  const Period& swapObsLag_,
+                                  const Date& maturity,
+                                  const Calendar& calendar,
+                                  BusinessDayConvention paymentConvention,
+                                  const DayCounter& dayCounter,
+                                  const boost::shared_ptr<YoYInflationIndex>& yii);
     %extend {
-        YearOnYearInflationSwapHelperPtr(Rate rate,
+      //backward compatibility
+        YearOnYearInflationSwapHelper(Rate rate,
                                          const Period& lag,
                                          const Date& maturity,
                                          const Calendar& calendar,
@@ -297,10 +330,9 @@ class YearOnYearInflationSwapHelperPtr : public boost::shared_ptr<YoYHelper> {
                                          const boost::shared_ptr<YoYInflationIndex>& index) {
             Handle<Quote> quote(
                 boost::shared_ptr<Quote>(new SimpleQuote(rate)));
-            return new YearOnYearInflationSwapHelperPtr(
-                new YearOnYearInflationSwapHelper(quote,lag,maturity,
+            return new YearOnYearInflationSwapHelper(quote,lag,maturity,
                                                   calendar,bdc,
-                                                  dayCounter,index));
+                                                  dayCounter,index);
         }
     }
 };
@@ -331,7 +363,7 @@ class Name##Ptr : public boost::shared_ptr<ZeroInflationTermStructure> {
               bool indexIsInterpolated,
               Rate baseRate,
               const Handle<YieldTermStructure>& nominalTS,
-              const std::vector<boost::shared_ptr<ZeroHelper> >& instruments,
+              const std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator()) {
             return new Name##Ptr(
@@ -380,7 +412,7 @@ class Name##Ptr : public boost::shared_ptr<YoYInflationTermStructure> {
               bool indexIsInterpolated,
               Rate baseRate,
               const Handle<YieldTermStructure>& nominalTS,
-              const std::vector<boost::shared_ptr<YoYHelper> >& instruments,
+              const std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator()) {
             return new Name##Ptr(

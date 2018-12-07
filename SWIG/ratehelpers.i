@@ -52,7 +52,7 @@ struct Pillar {
 %shared_ptr(RateHelper)
 class RateHelper : public Observable {
   public:
-    Handle<Quote> quote() const;
+    const Handle<Quote>& quote() const;
     Date latestDate() const;
 	Date earliestDate() const;
 	Date maturityDate() const;
