@@ -4,7 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2008 Tito Ingargiola
- Copyright (C) 2010, 2012, 2018 Klaus Spanderen
+ Copyright (C) 2010, 2012, 2018, 2019 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2018 Matthias Lungwitz
@@ -1386,6 +1386,76 @@ class FdHestonVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
             return new FdHestonVanillaEnginePtr(
                 new FdHestonVanillaEngine(hModel, tGrid, xGrid,
                                           vGrid, dampingSteps, schemeDesc));
+        }
+    }
+};
+
+
+%{
+using QuantLib::AnalyticCEVEngine;
+typedef boost::shared_ptr<PricingEngine> AnalyticCEVEnginePtr;
+%}
+
+%rename(AnalyticCEVEngine) AnalyticCEVEnginePtr;
+class AnalyticCEVEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        AnalyticCEVEnginePtr(
+            Real f0, Real alpha, Real beta,
+            const Handle<YieldTermStructure>& rTS) {
+            
+            return new AnalyticCEVEnginePtr(
+                new AnalyticCEVEngine(f0, alpha, beta, rTS));
+        }
+    }
+};
+
+%{
+using QuantLib::FdCEVVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdCEVVanillaEnginePtr;
+%}
+
+%rename(FdCEVVanillaEngine) FdCEVVanillaEnginePtr;
+class FdCEVVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdCEVVanillaEnginePtr(
+            Real f0, Real alpha, Real beta,
+            const Handle<YieldTermStructure>& rTS,
+            Size tGrid = 50, Size xGrid = 400,
+            Size dampingSteps = 0,
+            Real scalingFactor = 1.0, Real eps = 1e-4,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas()) {
+            
+            return new FdCEVVanillaEnginePtr(
+                new FdCEVVanillaEngine(f0, alpha, beta, rTS, 
+                	tGrid, xGrid, dampingSteps, scalingFactor, eps, 
+                	schemeDesc));
+        }
+    }
+};
+
+%{
+using QuantLib::FdSabrVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdSabrVanillaEnginePtr;
+%}
+
+%rename(FdSabrVanillaEngine) FdSabrVanillaEnginePtr;
+class FdSabrVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdSabrVanillaEnginePtr(
+            Real f0, Real alpha, Real beta, Real nu, Real rho,
+            const Handle<YieldTermStructure>& rTS,
+            Size tGrid = 50, Size fGrid = 400, Size xGrid = 50,
+            Size dampingSteps = 0,
+            Real scalingFactor = 1.0, Real eps = 1e-4,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            
+            return new FdSabrVanillaEnginePtr(
+                new FdSabrVanillaEngine(f0, alpha, beta, nu, rho, rTS, 
+                	tGrid, fGrid, xGrid, dampingSteps, scalingFactor, eps, 
+                	schemeDesc));
         }
     }
 };
