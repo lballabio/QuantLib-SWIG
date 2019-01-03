@@ -55,7 +55,6 @@ IsObservable(boost::shared_ptr<CapFloorTermVolatilityStructure>);
 
 %template(CapFloorTermVolatilityStructureHandle)
 Handle<CapFloorTermVolatilityStructure>;
-IsObservable(Handle<CapFloorTermVolatilityStructure>);
 
 %template(RelinkableCapFloorTermVolatilityStructureHandle)
 RelinkableHandle<CapFloorTermVolatilityStructure>;

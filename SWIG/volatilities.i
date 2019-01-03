@@ -101,7 +101,6 @@ class BlackVolTermStructure : public Extrapolator {
 IsObservable(boost::shared_ptr<BlackVolTermStructure>);
 
 %template(BlackVolTermStructureHandle) Handle<BlackVolTermStructure>;
-IsObservable(Handle<BlackVolTermStructure>);
 %template(RelinkableBlackVolTermStructureHandle)
 RelinkableHandle<BlackVolTermStructure>;
 
@@ -126,7 +125,6 @@ class LocalVolTermStructure : public Extrapolator {
 IsObservable(boost::shared_ptr<LocalVolTermStructure>);
 
 %template(LocalVolTermStructureHandle) Handle<LocalVolTermStructure>;
-IsObservable(Handle<LocalVolTermStructure>);
 %template(RelinkableLocalVolTermStructureHandle)
 RelinkableHandle<LocalVolTermStructure>;
 
@@ -157,7 +155,6 @@ IsObservable(boost::shared_ptr<OptionletVolatilityStructure>);
 
 %template(OptionletVolatilityStructureHandle)
 Handle<OptionletVolatilityStructure>;
-IsObservable(Handle<OptionletVolatilityStructure>);
 
 %template(RelinkableOptionletVolatilityStructureHandle)
 RelinkableHandle<OptionletVolatilityStructure>;
@@ -194,7 +191,6 @@ IsObservable(boost::shared_ptr<SwaptionVolatilityStructure>);
 
 %template(SwaptionVolatilityStructureHandle)
 Handle<SwaptionVolatilityStructure>;
-IsObservable(Handle<SwaptionVolatilityStructure>);
 %template(RelinkableSwaptionVolatilityStructureHandle)
 RelinkableHandle<SwaptionVolatilityStructure>;
 

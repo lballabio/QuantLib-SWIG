@@ -64,7 +64,6 @@ IsObservable(boost::shared_ptr<DefaultProbabilityTermStructure>);
 
 %template(DefaultProbabilityTermStructureHandle)
 Handle<DefaultProbabilityTermStructure>;
-IsObservable(Handle<DefaultProbabilityTermStructure>);
 %template(RelinkableDefaultProbabilityTermStructureHandle)
 RelinkableHandle<DefaultProbabilityTermStructure>;
 

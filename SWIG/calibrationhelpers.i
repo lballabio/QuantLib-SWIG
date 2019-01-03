@@ -250,7 +250,6 @@ class TermStructureConsistentModel : public virtual Observable{
 };
 
 %template(CalibratedModelHandle) Handle<CalibratedModel>;
-IsObservable(Handle<CalibratedModel>);
 %template(RelinkableCalibratedModelHandle)
 RelinkableHandle<CalibratedModel>;
 

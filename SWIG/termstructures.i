@@ -65,7 +65,6 @@ class YieldTermStructure : public Extrapolator {
 IsObservable(boost::shared_ptr<YieldTermStructure>);
 
 %template(YieldTermStructureHandle) Handle<YieldTermStructure>;
-IsObservable(Handle<YieldTermStructure>);
 %template(RelinkableYieldTermStructureHandle)
 RelinkableHandle<YieldTermStructure>;
 

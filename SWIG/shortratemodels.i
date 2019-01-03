@@ -40,7 +40,6 @@ class ShortRateModel : public CalibratedModel {
 };
 
 %template(ShortRateModelHandle) Handle<ShortRateModel>;
-IsObservable(Handle<ShortRateModel>);
 %template(RelinkableShortRateModelHandle)
 RelinkableHandle<ShortRateModel>;
 

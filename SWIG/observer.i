@@ -31,6 +31,15 @@ using QuantLib::Observable;
 class Observable {};
 
 
+%extend Handle {
+    #if defined(SWIGRUBY)
+    %rename("toObservable") asObservable;
+    #endif
+    boost::shared_ptr<Observable> asObservable() {
+        return boost::shared_ptr<Observable>(*self);
+    }
+}
+
 %define IsObservable(Type)
 #if defined(SWIGRUBY)
 %rename("toObservable") Type::asObservable;

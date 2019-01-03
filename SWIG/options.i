@@ -1742,7 +1742,6 @@ IsObservable(boost::shared_ptr<DeltaVolQuote>);
 }
 
 %template(DeltaVolQuoteHandle) Handle<DeltaVolQuote>;
-IsObservable(Handle<DeltaVolQuote>);
 %template(RelinkableDeltaVolQuoteHandle)
 RelinkableHandle<DeltaVolQuote>;
 

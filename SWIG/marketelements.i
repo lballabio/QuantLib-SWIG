@@ -39,7 +39,6 @@ class Quote {
 IsObservable(boost::shared_ptr<Quote>);
 
 %template(QuoteHandle) Handle<Quote>;
-IsObservable(Handle<Quote>);
 %template(RelinkableQuoteHandle) RelinkableHandle<Quote>;
 
 // actual market elements

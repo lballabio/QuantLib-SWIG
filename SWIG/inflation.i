@@ -103,7 +103,6 @@ class YoYInflationTermStructure : public InflationTermStructure {
 IsObservable(boost::shared_ptr<YoYInflationTermStructure>);
 
 %template(YoYInflationTermStructureHandle) Handle<YoYInflationTermStructure>;
-IsObservable(Handle<YoYInflationTermStructure>);
 %template(RelinkableYoYInflationTermStructureHandle)
     RelinkableHandle<YoYInflationTermStructure>;
 
@@ -121,7 +120,6 @@ class ZeroInflationTermStructure : public InflationTermStructure {
 IsObservable(boost::shared_ptr<ZeroInflationTermStructure>);
 
 %template(ZeroInflationTermStructureHandle) Handle<ZeroInflationTermStructure>;
-IsObservable(Handle<ZeroInflationTermStructure>);
 %template(RelinkableZeroInflationTermStructureHandle)
     RelinkableHandle<ZeroInflationTermStructure>;
 
