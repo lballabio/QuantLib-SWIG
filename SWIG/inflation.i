@@ -22,7 +22,6 @@
 
 %include termstructures.i
 %include swap.i
-%include ratehelpers.i
 
 %{
   using QuantLib::Seasonality;
