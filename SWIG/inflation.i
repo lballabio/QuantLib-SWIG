@@ -302,7 +302,9 @@ class ZeroCouponInflationSwapHelperPtr : public boost::shared_ptr<ZeroHelper> {
                                          const Calendar& calendar,
                                          BusinessDayConvention bdc,
                                          const DayCounter& dayCounter,
-                                         const ZeroInflationIndexPtr& index) {
+                                         const ZeroInflationIndexPtr& index,
+                                         const Handle<YieldTermStructure>& nominalTS =
+                                                        Handle<YieldTermStructure>()) {
             Handle<Quote> quote(
                 boost::shared_ptr<Quote>(new SimpleQuote(rate)));
             boost::shared_ptr<ZeroInflationIndex> zeroIndex =
@@ -310,7 +312,8 @@ class ZeroCouponInflationSwapHelperPtr : public boost::shared_ptr<ZeroHelper> {
             return new ZeroCouponInflationSwapHelperPtr(
                 new ZeroCouponInflationSwapHelper(quote,lag,maturity,
                                                   calendar,bdc,
-                                                  dayCounter,zeroIndex));
+                                                  dayCounter,zeroIndex,
+                                                  nominalTS));
         }
     }
 };
@@ -325,7 +328,9 @@ class YearOnYearInflationSwapHelperPtr : public boost::shared_ptr<YoYHelper> {
                                          const Calendar& calendar,
                                          BusinessDayConvention bdc,
                                          const DayCounter& dayCounter,
-                                         const YoYInflationIndexPtr& index) {
+                                         const YoYInflationIndexPtr& index,
+                                         const Handle<YieldTermStructure>& nominalTS =
+                                                        Handle<YieldTermStructure>()) {
             Handle<Quote> quote(
                 boost::shared_ptr<Quote>(new SimpleQuote(rate)));
             boost::shared_ptr<YoYInflationIndex> yoyIndex =
@@ -333,7 +338,8 @@ class YearOnYearInflationSwapHelperPtr : public boost::shared_ptr<YoYHelper> {
             return new YearOnYearInflationSwapHelperPtr(
                 new YearOnYearInflationSwapHelper(quote,lag,maturity,
                                                   calendar,bdc,
-                                                  dayCounter,yoyIndex));
+                                                  dayCounter,yoyIndex,
+                                                  nominalTS));
         }
     }
 };
