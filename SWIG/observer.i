@@ -94,9 +94,15 @@ class PyObserver {
     void unregisterWith(const boost::shared_ptr<Observable>&);
     %pythoncode %{
         def registerWith(self,x):
-            self._registerWith(x.asObservable())
+            if hasattr(x, "asObservable"):
+                self._registerWith(x.asObservable())
+            else:
+                self._registerWith(x)
         def unregisterWith(self,x):
-            self._unregisterWith(x.asObservable())
+            if hasattr(x, "asObservable"):
+                self._unregisterWith(x.asObservable())
+            else:
+                self._unregisterWith(x)
     %}
 };
 

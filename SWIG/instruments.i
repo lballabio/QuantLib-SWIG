@@ -71,8 +71,6 @@ function(x) print(summary(x)))
 %}
 #endif
 
-IsObservable(boost::shared_ptr<Instrument>);
-
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<Instrument> )
 #endif

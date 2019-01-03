@@ -34,12 +34,10 @@ using QuantLib::ShortRateModel;
 %}
 
 %shared_ptr(ShortRateModel)
-class ShortRateModel : public CalibratedModel{
+class ShortRateModel : public CalibratedModel {
   private:
     ShortRateModel();
 };
-
-IsObservable(boost::shared_ptr<ShortRateModel>);
 
 %template(ShortRateModelHandle) Handle<ShortRateModel>;
 IsObservable(Handle<ShortRateModel>);

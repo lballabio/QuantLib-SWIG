@@ -215,7 +215,7 @@ using QuantLib::TermStructureConsistentModel;
 %}
 
 %shared_ptr(CalibratedModel)
-class CalibratedModel : public virtual Observable{
+class CalibratedModel : public virtual Observable {
     #if defined(SWIGRUBY)
     %rename("calibrate!") calibrate;
     #elif defined(SWIGCSHARP)
@@ -248,8 +248,6 @@ class TermStructureConsistentModel : public virtual Observable{
   private:
     TermStructureConsistentModel();
 };
-
-IsObservable(boost::shared_ptr<CalibratedModel>);
 
 %template(CalibratedModelHandle) Handle<CalibratedModel>;
 IsObservable(Handle<CalibratedModel>);
