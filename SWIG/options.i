@@ -70,16 +70,16 @@ using QuantLib::Payoff;
 using QuantLib::StrikedTypePayoff;
 %}
 
-%ignore Payoff;
+%shared_ptr(Payoff);
 class Payoff {
     #if defined(SWIGCSHARP) || defined(SWIGPERL)
     %rename(call) operator();
     #endif
   public:
     Real operator()(Real price) const;
+  private:
+    Payoff();
 };
-
-%template(Payoff) boost::shared_ptr<Payoff>;
 
 #if defined(SWIGR)
 %Rruntime %{
