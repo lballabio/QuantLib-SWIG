@@ -145,12 +145,31 @@ object EquityOptions {
                  new VanillaPricingService(payoff, europeanExercise) !! 
                         new AnalyticEuropeanEngine(SimpleFactory.bsProcess())
 
-        // Heston for European        
+        val hestonModel = new HestonModel(SimpleFactory.hestonProcess())
+             
+        // Heston for European                            
         val analyticHestonNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
                 new AnalyticHestonEngine(new HestonModel(
-                                        SimpleFactory.hestonProcess()))
+                    SimpleFactory.hestonProcess()))
+                
+        val fdEuropeanHestonNpv =
+            new VanillaPricingService(payoff, europeanExercise) !!
+                new FdHestonVanillaEngine(new HestonModel(
+                    SimpleFactory.hestonProcess()), 50, 150) 
 
+        val fdAmericanHestonNpv =
+            new VanillaPricingService(payoff, americanExercise) !!
+                new FdHestonVanillaEngine(new HestonModel(
+                    SimpleFactory.hestonProcess()), 100, 150) 
+
+        val fdBermudanHestonNpv =
+            new VanillaPricingService(payoff, bermudanExercise) !!
+                new FdHestonVanillaEngine(new HestonModel(
+                    SimpleFactory.hestonProcess()), 100, 150) 
+
+        val batesModel = new BatesModel(SimpleFactory.batesProcess())
+        
         val cosHestonNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
                 new COSHestonEngine(new HestonModel(
@@ -159,7 +178,23 @@ object EquityOptions {
         // Bates for European
         val analyticBatesNpv =
             new VanillaPricingService(payoff, europeanExercise) !!
-                new BatesEngine(new BatesModel(SimpleFactory.batesProcess()))
+                new BatesEngine(new BatesModel(
+                	SimpleFactory.batesProcess()))
+
+        val fdEuropeanBatesNpv =
+            new VanillaPricingService(payoff, europeanExercise) !!
+                new FdBatesVanillaEngine(new BatesModel(
+                    SimpleFactory.batesProcess()), 50, 150)
+
+        val fdAmericanBatesNpv =
+            new VanillaPricingService(payoff, americanExercise) !!
+                new FdBatesVanillaEngine(new BatesModel(
+                    SimpleFactory.batesProcess()))
+
+        val fdBermudanBatesNpv =
+            new VanillaPricingService(payoff, bermudanExercise) !!
+                new FdBatesVanillaEngine(new BatesModel(
+                    SimpleFactory.batesProcess()))
 
         // Barone-Adesi and Whaley approximation for American
         val baroneAdesiWhaleyNpv = 
@@ -278,18 +313,26 @@ object EquityOptions {
 
         // Monte-Carlo methods
         timeSteps = 1;
+        val americanTimeSteps = 25
         val mcSeed = 42;
         val nSamples = 32768; // 2^15
         val maxSamples = 1048576; // 2^20
 
         val pseudoMcEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                    new MCEuropeanEngine(SimpleFactory.bsProcess(),
-                                         "PseudoRandom", timeSteps,
-                                         QuantLib.nullInt(),
-                                         false, false,
-                                         nSamples, 0.02, maxSamples, mcSeed)
+                new MCEuropeanEngine(SimpleFactory.bsProcess(),
+                                     "PseudoRandom", timeSteps,
+                                     QuantLib.nullInt(),
+                                     true, false,
+                                     nSamples, 0.02, maxSamples, mcSeed)
 
+        val pseudoMcAmericanNpv = 
+            new VanillaPricingService(payoff, americanExercise) !!
+                new MCAmericanEngine(SimpleFactory.bsProcess(),
+                                     "PseudoRandom", americanTimeSteps,
+                                     QuantLib.nullInt(),
+                                     true, false, 
+                                     nSamples, 0.02, maxSamples, mcSeed)
 
         val quasiMcEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
@@ -298,6 +341,15 @@ object EquityOptions {
                                          QuantLib.nullInt(),
                                          false, false,
                                          nSamples, 0.02, maxSamples, mcSeed)
+
+        val quasiMcAmericanNpv = 
+            new VanillaPricingService(payoff, americanExercise) !!
+                new MCAmericanEngine(SimpleFactory.bsProcess(),
+                                     "LowDiscrepancy", americanTimeSteps,
+                                     QuantLib.nullInt(),
+                                     true, false, 
+                                     nSamples, 0.02, maxSamples, mcSeed)
+
 
         // write column headings
         printf("\n%-35s %-14s %-14s %-14s\n" + "="*76+ "\n", 
@@ -308,10 +360,14 @@ object EquityOptions {
                                      Double.NaN, Double.NaN)
         printf(fmt, "Heston Semi-Analytic", analyticHestonNpv(), 
                                             Double.NaN, Double.NaN)
+        printf(fmt, "Heston Finite-Difference", 
+        	fdEuropeanHestonNpv(), fdBermudanHestonNpv(), fdAmericanHestonNpv())
         printf(fmt, "COS Heston Method", cosHestonNpv(), 
                                             Double.NaN, Double.NaN)
         printf(fmt, "Bates Semi-Analytic", analyticBatesNpv(), 
                                             Double.NaN, Double.NaN)
+        printf(fmt, "Bates Finite-Difference", 
+        	fdEuropeanBatesNpv(), fdBermudanBatesNpv(), fdAmericanBatesNpv())
         printf(fmt, "Barone-Adesi/Whaley", Double.NaN, Double.NaN,
                                            baroneAdesiWhaleyNpv());
         printf(fmt, "Bjerksund/Stensland", Double.NaN, Double.NaN,
@@ -337,9 +393,9 @@ object EquityOptions {
         printf(fmt, "Binomial Joshi", joshiEuropeanNpv(), 
                                       joshiBermudanNpv(), joshiAmericanNpv())
         printf(fmt, "MC (crude)", pseudoMcEuropeanNpv(), 
-                                  Double.NaN, Double.NaN)
+                                  Double.NaN, pseudoMcAmericanNpv())
         printf(fmt, "MC (Sobol)", quasiMcEuropeanNpv(), 
-                                  Double.NaN, Double.NaN)
+                                  Double.NaN, quasiMcAmericanNpv())
 
         val msecs = (System.currentTimeMillis()-beginTime)
         println("Run completed in "+msecs+" ms.")
