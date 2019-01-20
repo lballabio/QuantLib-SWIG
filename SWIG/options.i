@@ -37,6 +37,42 @@
 %include parameter.i
 %include vectors.i
 
+// payoff
+
+%{
+using QuantLib::Payoff;
+using QuantLib::TypePayoff;
+using QuantLib::StrikedTypePayoff;
+%}
+
+%shared_ptr(Payoff);
+class Payoff {
+    #if defined(SWIGCSHARP) || defined(SWIGPERL)
+    %rename(call) operator();
+    #endif
+  public:
+    Real operator()(Real price) const;
+  private:
+    Payoff();
+};
+
+%shared_ptr(TypePayoff)
+class TypePayoff : public Payoff {
+  public:
+    Option::Type optionType();
+  private:
+    TypePayoff();
+};
+
+%shared_ptr(StrikedTypePayoff)
+class StrikedTypePayoff : public TypePayoff
+{
+  public:
+    Real strike();
+  private:
+    StrikedTypePayoff();
+};
+
 // option and barrier types
 %{
 using QuantLib::Option;
@@ -63,23 +99,6 @@ struct DoubleBarrier {
     enum Type { KnockIn, KnockOut, KIKO, KOKI };
 };
 
-// payoff
-
-%{
-using QuantLib::Payoff;
-using QuantLib::StrikedTypePayoff;
-%}
-
-%shared_ptr(Payoff);
-class Payoff {
-    #if defined(SWIGCSHARP) || defined(SWIGPERL)
-    %rename(call) operator();
-    #endif
-  public:
-    Real operator()(Real price) const;
-  private:
-    Payoff();
-};
 
 #if defined(SWIGR)
 %Rruntime %{

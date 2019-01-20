@@ -25,8 +25,6 @@
 // payoffs
 
 %{
-using QuantLib::TypePayoff;
-using QuantLib::StrikedTypePayoff;
 using QuantLib::PlainVanillaPayoff;
 using QuantLib::PercentageStrikePayoff;
 using QuantLib::CashOrNothingPayoff;
@@ -36,22 +34,6 @@ using QuantLib::GapPayoff;
 using QuantLib::VanillaForwardPayoff;
 %}
 
-%shared_ptr(TypePayoff)
-class TypePayoff : public Payoff {
-  public:
-    Option::Type optionType();
-  private:
-    TypePayoff();
-};
-
-%shared_ptr(StrikedTypePayoff)
-class StrikedTypePayoff : public TypePayoff
-{
-  public:
-    Real strike();
-  private:
-    StrikedTypePayoff();
-};
 
 %shared_ptr(PlainVanillaPayoff)
 class PlainVanillaPayoff : public StrikedTypePayoff {
