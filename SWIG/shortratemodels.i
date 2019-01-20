@@ -76,28 +76,43 @@ class Vasicek : public OneFactorAffineModel {
 
 
 %shared_ptr(HullWhite)
-class HullWhite : public Vasicek, public TermStructureConsistentModel {
+class HullWhite : public Vasicek {
   public:
     HullWhite(const Handle<YieldTermStructure>& termStructure,
                  Real a = 0.1, Real sigma = 0.01);
                  
     static Rate convexityBias(Real futurePrice, Time t, Time T, 
                               Real sigma, Real a);
+
+    // TermStructureConsistentModel
+    %extend{
+        const Handle<YieldTermStructure>& termStructure() const {return self->termStructure();}
+    }
 };
 
 %shared_ptr(BlackKarasinski)
-class BlackKarasinski : public ShortRateModel, public TermStructureConsistentModel {
+class BlackKarasinski : public ShortRateModel {
   public:
     BlackKarasinski(const Handle<YieldTermStructure>& termStructure,
                        Real a = 0.1, Real sigma = 0.1);
+
+    // TermStructureConsistentModel
+    %extend{
+        const Handle<YieldTermStructure>& termStructure() const {return self->termStructure();}
+    }
 };
 
 %shared_ptr(G2)
-class G2 : public ShortRateModel, public TermStructureConsistentModel {
+class G2 : public ShortRateModel {
   public:
     G2(const Handle<YieldTermStructure>& termStructure,
           Real a = 0.1, Real sigma = 0.01, Real b = 0.1,
           Real eta = 0.01, Real rho = -0.75);
+
+    // TermStructureConsistentModel
+    %extend{
+        const Handle<YieldTermStructure>& termStructure() const {return self->termStructure();}
+    }
 };
 
 

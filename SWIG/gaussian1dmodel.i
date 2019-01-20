@@ -33,7 +33,7 @@ using QuantLib::Gaussian1dModel;
 %}
 
 %shared_ptr(Gaussian1dModel)
-class Gaussian1dModel : public TermStructureConsistentModel, public Observable {
+class Gaussian1dModel : public TermStructureConsistentModel {
     public:
         const boost::shared_ptr<StochasticProcess1D> stateProcess() const;
 
@@ -92,7 +92,7 @@ using QuantLib::MarkovFunctional;
 
 
 %shared_ptr(Gsr)
-class Gsr : public Gaussian1dModel, public CalibratedModel {
+class Gsr : public Gaussian1dModel {
   public:
     Gsr(const Handle<YieldTermStructure> &termStructure,
            const std::vector<Date> &volstepdates,
@@ -108,6 +108,25 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
     const Array &reversion() const;
 
     const Array &volatility() const;
+
+    // Calibrated Model functions
+    %extend{
+        Array params() const { return self->params();}
+        void calibrate(
+            const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments,
+            OptimizationMethod& method, const EndCriteria& endCriteria,
+            const Constraint& constraint = Constraint(),
+            const std::vector<Real>& weights = std::vector<Real>(),
+            const std::vector<bool>& fixParameters = std::vector<bool>()) { self->calibrate(instruments, method, endCriteria, constraint, weights, fixParameters);}
+
+        void setParams(const Array& params) {self->setParams(params);}
+        Real value(const Array& params,
+                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments) {return self->value(params, instruments);}
+        const boost::shared_ptr<Constraint>& constraint() const {return self->constraint();}
+        EndCriteria::Type endCriteria() const {return self->endCriteria();}
+        const Array& problemValues() const {return self->problemValues();}
+        Integer functionEvaluation() const {return self->functionEvaluation();}
+    }
 };
 
 
@@ -115,7 +134,7 @@ class Gsr : public Gaussian1dModel, public CalibratedModel {
 %feature ("flatnested") ModelSettings;
 
 %shared_ptr(MarkovFunctional)
-class MarkovFunctional : public Gaussian1dModel, public CalibratedModel {
+class MarkovFunctional : public Gaussian1dModel {
   public:
   
     struct ModelSettings {
@@ -173,8 +192,18 @@ class MarkovFunctional : public Gaussian1dModel, public CalibratedModel {
         const Constraint &constraint = Constraint(),
         const std::vector<Real> &weights = std::vector<Real>(),
         const std::vector<bool> &fixParameters = std::vector<bool>());  
-;
-    
+
+    //  Calibrated Model functions
+    %extend{
+        Array params() const { return self->params();}
+        void setParams(const Array& params) {self->setParams(params);}
+        Real value(const Array& params,
+                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments) {return self->value(params, instruments);}
+        const boost::shared_ptr<Constraint>& constraint() const {return self->constraint();}
+        EndCriteria::Type endCriteria() const {return self->endCriteria();}
+        const Array& problemValues() const {return self->problemValues();}
+        Integer functionEvaluation() const {return self->functionEvaluation();}
+    }
     
 };
 
