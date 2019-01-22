@@ -131,7 +131,7 @@ public class EquityOptions {
                                           flatVolatility);
 
         // options
-        Payoff payoff = new PlainVanillaPayoff(type, strike);
+        PlainVanillaPayoff payoff = new PlainVanillaPayoff(type, strike);
 
         VanillaOption europeanOption =
             new VanillaOption(payoff, europeanExercise);
