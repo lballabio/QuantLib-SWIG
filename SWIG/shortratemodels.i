@@ -85,9 +85,7 @@ class HullWhite : public Vasicek {
                               Real sigma, Real a);
 
     // TermStructureConsistentModel
-    %extend{
-        const Handle<YieldTermStructure>& termStructure() const {return self->termStructure();}
-    }
+    const Handle<YieldTermStructure>& termStructure() const;
 };
 
 %shared_ptr(BlackKarasinski)
@@ -97,9 +95,7 @@ class BlackKarasinski : public ShortRateModel {
                        Real a = 0.1, Real sigma = 0.1);
 
     // TermStructureConsistentModel
-    %extend{
-        const Handle<YieldTermStructure>& termStructure() const {return self->termStructure();}
-    }
+    const Handle<YieldTermStructure>& termStructure() const;
 };
 
 %shared_ptr(G2)
@@ -110,9 +106,7 @@ class G2 : public ShortRateModel {
           Real eta = 0.01, Real rho = -0.75);
 
     // TermStructureConsistentModel
-    %extend{
-        const Handle<YieldTermStructure>& termStructure() const {return self->termStructure();}
-    }
+    const Handle<YieldTermStructure>& termStructure() const;
 };
 
 

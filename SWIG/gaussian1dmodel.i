@@ -110,23 +110,20 @@ class Gsr : public Gaussian1dModel {
     const Array &volatility() const;
 
     // Calibrated Model functions
-    %extend{
-        Array params() const { return self->params();}
-        void calibrate(
+    Array params() const;
+    void calibrate(
             const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments,
             OptimizationMethod& method, const EndCriteria& endCriteria,
             const Constraint& constraint = Constraint(),
             const std::vector<Real>& weights = std::vector<Real>(),
-            const std::vector<bool>& fixParameters = std::vector<bool>()) { self->calibrate(instruments, method, endCriteria, constraint, weights, fixParameters);}
-
-        void setParams(const Array& params) {self->setParams(params);}
-        Real value(const Array& params,
-                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments) {return self->value(params, instruments);}
-        const boost::shared_ptr<Constraint>& constraint() const {return self->constraint();}
-        EndCriteria::Type endCriteria() const {return self->endCriteria();}
-        const Array& problemValues() const {return self->problemValues();}
-        Integer functionEvaluation() const {return self->functionEvaluation();}
-    }
+            const std::vector<bool>& fixParameters = std::vector<bool>());
+    void setParams(const Array& params);
+    Real value(const Array& params,
+               const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments);
+    const boost::shared_ptr<Constraint>& constraint() const;
+    EndCriteria::Type endCriteria() const;
+    const Array& problemValues() const;
+    Integer functionEvaluation() const;
 };
 
 
@@ -194,17 +191,14 @@ class MarkovFunctional : public Gaussian1dModel {
         const std::vector<bool> &fixParameters = std::vector<bool>());  
 
     //  Calibrated Model functions
-    %extend{
-        Array params() const { return self->params();}
-        void setParams(const Array& params) {self->setParams(params);}
-        Real value(const Array& params,
-                   const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments) {return self->value(params, instruments);}
-        const boost::shared_ptr<Constraint>& constraint() const {return self->constraint();}
-        EndCriteria::Type endCriteria() const {return self->endCriteria();}
-        const Array& problemValues() const {return self->problemValues();}
-        Integer functionEvaluation() const {return self->functionEvaluation();}
-    }
-    
+    Array params() const;
+    void setParams(const Array& params);
+    Real value(const Array& params,
+               const std::vector<boost::shared_ptr<CalibrationHelperBase> >& instruments);
+    const boost::shared_ptr<Constraint>& constraint() const;
+    EndCriteria::Type endCriteria() const;
+    const Array& problemValues() const;
+    Integer functionEvaluation() const;
 };
 
 // Pricing Engines
