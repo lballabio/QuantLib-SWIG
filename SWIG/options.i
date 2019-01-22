@@ -56,23 +56,6 @@ class Payoff {
     Payoff();
 };
 
-%shared_ptr(TypePayoff)
-class TypePayoff : public Payoff {
-  public:
-    Option::Type optionType();
-  private:
-    TypePayoff();
-};
-
-%shared_ptr(StrikedTypePayoff)
-class StrikedTypePayoff : public TypePayoff
-{
-  public:
-    Real strike();
-  private:
-    StrikedTypePayoff();
-};
-
 // option and barrier types
 %{
 using QuantLib::Option;
@@ -124,6 +107,24 @@ ans
 
 %}
 #endif
+
+
+%shared_ptr(TypePayoff)
+class TypePayoff : public Payoff {
+  public:
+    Option::Type optionType();
+  private:
+    TypePayoff();
+};
+
+%shared_ptr(StrikedTypePayoff)
+class StrikedTypePayoff : public TypePayoff
+{
+  public:
+    Real strike();
+  private:
+    StrikedTypePayoff();
+};
 
 
 // plain option and engines
