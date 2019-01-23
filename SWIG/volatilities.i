@@ -689,7 +689,7 @@ using QuantLib::SmileSection;
 
 %shared_ptr(SmileSection);
 
-class SmileSection{
+class SmileSection : public Observable {
   private:
     SmileSection();
   public:

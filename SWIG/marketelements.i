@@ -29,77 +29,64 @@
 using QuantLib::Quote;
 %}
 
-%ignore Quote;
-class Quote {
+%shared_ptr(Quote)
+
+class Quote : public Observable {
+  private:
+    Quote();
   public:
     Real value() const;
+    bool isValid() const;
 };
-
-%template(Quote) boost::shared_ptr<Quote>;
-IsObservable(boost::shared_ptr<Quote>);
 
 %template(QuoteHandle) Handle<Quote>;
 %template(RelinkableQuoteHandle) RelinkableHandle<Quote>;
 
-// actual market elements
+// actual quotes
 %{
 using QuantLib::SimpleQuote;
-typedef boost::shared_ptr<Quote> SimpleQuotePtr;
 %}
 
-%rename(SimpleQuote) SimpleQuotePtr;
-class SimpleQuotePtr : public boost::shared_ptr<Quote> {
+%shared_ptr(SimpleQuote)
+
+class SimpleQuote : public Quote {
     #if defined(SWIGRUBY)
     %rename("value=")     setValue;
     #endif
   public:
-    %extend {
-        SimpleQuotePtr(Real value) {
-            return new SimpleQuotePtr(new SimpleQuote(value));
-        }
-        void setValue(Real value) {
-            boost::dynamic_pointer_cast<SimpleQuote>(*self)->setValue(value);
-        }
-    }
+    SimpleQuote(Real value);
+    void setValue(Real value);
 };
 
 
 #if defined(SWIGPYTHON)
 %{
-using QuantLib::DerivedQuote;
-using QuantLib::CompositeQuote;
-typedef boost::shared_ptr<Quote> DerivedQuotePtr;
-typedef boost::shared_ptr<Quote> CompositeQuotePtr;
+typedef QuantLib::DerivedQuote<UnaryFunction> DerivedQuote;
+typedef QuantLib::CompositeQuote<BinaryFunction> CompositeQuote;
 %}
 
-%rename(DerivedQuote) DerivedQuotePtr;
-class DerivedQuotePtr : public boost::shared_ptr<Quote> {
+%shared_ptr(DerivedQuote)
+
+class DerivedQuote : public Quote {
   public:
     %extend {
-        #if defined(SWIGPYTHON)
-        DerivedQuotePtr(const Handle<Quote>& h,
-                        PyObject* function) {
-            return new DerivedQuotePtr(
-                new DerivedQuote<UnaryFunction>(h,UnaryFunction(function)));
+        DerivedQuote(const Handle<Quote>& h,
+                     PyObject* function) {
+            return new DerivedQuote(h,UnaryFunction(function));
         }
-        #endif
     }
 };
 
+%shared_ptr(CompositeQuote)
 
-%rename(CompositeQuote) CompositeQuotePtr;
-class CompositeQuotePtr : public boost::shared_ptr<Quote> {
+class CompositeQuote : public Quote {
   public:
     %extend {
-        #if defined(SWIGPYTHON)
-        CompositeQuotePtr(const Handle<Quote>& h1,
-                          const Handle<Quote>& h2,
-                          PyObject* function) {
-            return new CompositeQuotePtr(
-                new CompositeQuote<BinaryFunction>(
-                    h1,h2,BinaryFunction(function)));
+        CompositeQuote(const Handle<Quote>& h1,
+                       const Handle<Quote>& h2,
+                       PyObject* function) {
+            return new CompositeQuote(h1,h2,BinaryFunction(function));
         }
-        #endif
     }
 };
 

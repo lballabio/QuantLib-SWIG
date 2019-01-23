@@ -1738,58 +1738,22 @@ typedef boost::shared_ptr<PricingEngine> VannaVolgaDoubleBarrierEnginePtr;
 typedef boost::shared_ptr<PricingEngine> VannaVolgaBarrierEnginePtr;
 %}
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_DeltaVolQuote) DeltaVolQuote;
-#else
-%ignore DeltaVolQuote;
-#endif
+%shared_ptr(DeltaVolQuote)
+
 class DeltaVolQuote : public Quote {
   public:
     enum DeltaType { Spot, Fwd, PaSpot, PaFwd };
     enum AtmType { AtmNull, AtmSpot, AtmFwd, AtmDeltaNeutral,
                    AtmVegaMax, AtmGammaMax, AtmPutCall50 };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    DeltaVolQuote();
-#endif
+    DeltaVolQuote(Real delta,
+                  const Handle<Quote>& vol,
+                  Time maturity,
+                  DeltaVolQuote::DeltaType deltaType);
+    DeltaVolQuote(const Handle<Quote>& vol,
+                  DeltaVolQuote::DeltaType deltaType,
+                  Time maturity,
+                  DeltaVolQuote::AtmType atmType);
 };
-
-%template(DeltaVolQuote) boost::shared_ptr<DeltaVolQuote>;
-IsObservable(boost::shared_ptr<DeltaVolQuote>);
-
-%extend boost::shared_ptr<DeltaVolQuote> {
-    static const DeltaVolQuote::DeltaType Spot = DeltaVolQuote::Spot;
-    static const DeltaVolQuote::DeltaType Fwd = DeltaVolQuote::Fwd;
-    static const DeltaVolQuote::DeltaType PaSpot = DeltaVolQuote::PaSpot;
-    static const DeltaVolQuote::DeltaType PaFwd = DeltaVolQuote::PaFwd;
-
-    static const DeltaVolQuote::AtmType AtmNull = DeltaVolQuote::AtmNull;
-    static const DeltaVolQuote::AtmType AtmSpot = DeltaVolQuote::AtmSpot;
-    static const DeltaVolQuote::AtmType AtmFwd = DeltaVolQuote::AtmFwd;
-    static const DeltaVolQuote::AtmType AtmDeltaNeutral =
-                                               DeltaVolQuote::AtmDeltaNeutral;
-    static const DeltaVolQuote::AtmType AtmVegaMax =
-                                               DeltaVolQuote::AtmVegaMax;
-    static const DeltaVolQuote::AtmType AtmGammaMax =
-                                               DeltaVolQuote::AtmGammaMax;
-    static const DeltaVolQuote::AtmType AtmPutCall50 =
-                                               DeltaVolQuote::AtmPutCall50;
-
-    shared_ptr<DeltaVolQuote>(Real delta,
-                              const Handle<Quote>& vol,
-                              Time maturity,
-                              DeltaVolQuote::DeltaType deltaType) {
-        return new boost::shared_ptr<DeltaVolQuote>(
-                          new DeltaVolQuote(delta, vol, maturity, deltaType));
-    }
-    shared_ptr<DeltaVolQuote>(const Handle<Quote>& vol,
-                              DeltaVolQuote::DeltaType deltaType,
-                              Time maturity,
-                              DeltaVolQuote::AtmType atmType) {
-        return new boost::shared_ptr<DeltaVolQuote>(
-                        new DeltaVolQuote(vol, deltaType, maturity, atmType));
-    }
-}
 
 %template(DeltaVolQuoteHandle) Handle<DeltaVolQuote>;
 %template(RelinkableDeltaVolQuoteHandle)
