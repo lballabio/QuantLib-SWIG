@@ -699,43 +699,6 @@ class FDAmericanEnginePtr : public boost::shared_ptr<PricingEngine> {
 };
 
 %{
-using QuantLib::FdBlackScholesVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdBlackScholesVanillaEnginePtr;
-%}
-
-%rename(FdBlackScholesVanillaEngine) FdBlackScholesVanillaEnginePtr;
-class FdBlackScholesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-        FdBlackScholesVanillaEnginePtr(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0) {
-            return new FdBlackScholesVanillaEnginePtr(
-                            new FdBlackScholesVanillaEngine( process,tGrid, xGrid, dampingSteps));
-        }
-    }
-};
-
-%{
-using QuantLib::FdBatesVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
-%}
-
-%rename(FdBatesVanillaEngine) FdBatesVanillaEnginePtr;
-class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-        FdBatesVanillaEnginePtr(const boost::shared_ptr<BatesModel>& model,
-                                Size tGrid = 100, Size xGrid = 100,
-                                Size vGrid=50, Size dampingSteps = 0) {
-            return new FdBatesVanillaEnginePtr(
-                               new FdBatesVanillaEngine(model, tGrid, xGrid,
-                                                        vGrid, dampingSteps));
-        }
-    }
-};
-
-
-%{
 using QuantLib::ContinuousArithmeticAsianLevyEngine;
 typedef boost::shared_ptr<PricingEngine> ContinuousArithmeticAsianLevyEnginePtr;
 %}
@@ -1076,6 +1039,73 @@ struct FdmSchemeDesc {
   static FdmSchemeDesc ModifiedCraigSneyd(); 
   static FdmSchemeDesc Hundsdorfer();
   static FdmSchemeDesc ModifiedHundsdorfer();
+};
+
+%{
+using QuantLib::FdBlackScholesVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdBlackScholesVanillaEnginePtr;
+%}
+
+%rename(FdBlackScholesVanillaEngine) FdBlackScholesVanillaEnginePtr;
+class FdBlackScholesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdBlackScholesVanillaEnginePtr(
+        	const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+            bool localVol = false,
+            Real illegalLocalVolOverwrite = -Null<Real>()) {
+            return new FdBlackScholesVanillaEnginePtr(
+                new FdBlackScholesVanillaEngine( 
+                    process,tGrid, xGrid, dampingSteps, 
+                    schemeDesc, localVol, illegalLocalVolOverwrite));
+        }
+    }
+};
+
+%{
+using QuantLib::FdBatesVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
+%}
+
+%rename(FdBatesVanillaEngine) FdBatesVanillaEnginePtr;
+class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdBatesVanillaEnginePtr(
+            const boost::shared_ptr<BatesModel>& model,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid=50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            
+            return new FdBatesVanillaEnginePtr(
+                new FdBatesVanillaEngine(
+                    model, tGrid, xGrid, vGrid, dampingSteps, schemeDesc));
+        }
+    }
+};
+
+%{
+using QuantLib::FdHestonVanillaEngine;
+typedef boost::shared_ptr<PricingEngine> FdHestonVanillaEnginePtr;
+%}
+
+%rename(FdHestonVanillaEngine) FdHestonVanillaEnginePtr;
+class FdHestonVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+  public:
+    %extend {
+        FdHestonVanillaEnginePtr(
+            const boost::shared_ptr<HestonModel>& model,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            
+            return new FdHestonVanillaEnginePtr(
+                new FdHestonVanillaEngine(model, tGrid, xGrid,
+                                          vGrid, dampingSteps, schemeDesc));
+        }
+    }
 };
 
 %{

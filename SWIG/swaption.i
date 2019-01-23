@@ -38,22 +38,17 @@ using QuantLib::FloatFloatSwaption;
 %}
 
 struct Settlement {
-   enum Type { Physical, Cash };
-   enum Method {
-        PhysicalOTC,
-        PhysicalCleared,
-        CollateralizedCashPrice,
-        ParYieldCurve
-   };
+    enum Type { Physical, Cash };
+    enum Method { PhysicalOTC, PhysicalCleared, CollateralizedCashPrice, ParYieldCurve };
 };
     
 %shared_ptr(Swaption)
 class Swaption : public Instrument {
   public:
     Swaption(const boost::shared_ptr<VanillaSwap>& swap,
-                const boost::shared_ptr<Exercise>& exercise,
-                Settlement::Type type = Settlement::Physical,
-                Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+             const boost::shared_ptr<Exercise>& exercise,
+             Settlement::Type type = Settlement::Physical,
+             Settlement::Method settlementMethod = Settlement::PhysicalOTC);
     
     Settlement::Type settlementType() const;       
     Settlement::Method settlementMethod() const;

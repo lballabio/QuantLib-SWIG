@@ -280,28 +280,22 @@ namespace std {
 %shared_ptr(ZeroCouponInflationSwapHelper)
 class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermStructure> {
   public:
-    ZeroCouponInflationSwapHelper(
-        const Handle<Quote>& quote,
-        const Period& swapObsLag,   // lag on swap observation of index
-        const Date& maturity,
-        const Calendar& calendar,   // index may have null calendar as valid on every day
-        BusinessDayConvention paymentConvention,
-        const DayCounter& dayCounter,
-        const boost::shared_ptr<ZeroInflationIndex>& zii);
-  %extend{
-        //backward compatibility
-        ZeroCouponInflationSwapHelper(Rate rate,
-                                         const Period& lag,
-                                         const Date& maturity,
-                                         const Calendar& calendar,
-                                         BusinessDayConvention bdc,
-                                         const DayCounter& dayCounter,
-                                         const boost::shared_ptr<ZeroInflationIndex>& index) {
-            Handle<Quote> quote(
-                boost::shared_ptr<Quote>(new SimpleQuote(rate)));
+    // using extend to prevent deprecation warning
+    %extend {
+        ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& lag,   // lag on swap observation of index
+            const Date& maturity,
+            const Calendar& calendar,
+            BusinessDayConvention bcd,
+            const DayCounter& dayCounter,
+            const boost::shared_ptr<ZeroInflationIndex>& index,
+            const Handle<YieldTermStructure>& nominalTS = Handle<YieldTermStructure>()) {
+
             return new ZeroCouponInflationSwapHelper(quote,lag,maturity,
-                                                  calendar,bdc,
-                                                  dayCounter,index);
+                                                     calendar,bcd,
+                                                     dayCounter,index,
+                                                     nominalTS);
         }
     }
 };
@@ -309,27 +303,21 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
 %shared_ptr(YearOnYearInflationSwapHelper)
 class YearOnYearInflationSwapHelper : public BootstrapHelper<YoYInflationTermStructure> {
   public:
-      YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
-                                  const Period& swapObsLag_,
-                                  const Date& maturity,
-                                  const Calendar& calendar,
-                                  BusinessDayConvention paymentConvention,
-                                  const DayCounter& dayCounter,
-                                  const boost::shared_ptr<YoYInflationIndex>& yii);
+    // using extend to prevent deprecation warning
     %extend {
-      //backward compatibility
-        YearOnYearInflationSwapHelper(Rate rate,
-                                         const Period& lag,
-                                         const Date& maturity,
-                                         const Calendar& calendar,
-                                         BusinessDayConvention bdc,
-                                         const DayCounter& dayCounter,
-                                         const boost::shared_ptr<YoYInflationIndex>& index) {
-            Handle<Quote> quote(
-                boost::shared_ptr<Quote>(new SimpleQuote(rate)));
+        YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
+                                      const Period& lag,
+                                      const Date& maturity,
+                                      const Calendar& calendar,
+                                      BusinessDayConvention bdc,
+                                      const DayCounter& dayCounter,
+                                      const boost::shared_ptr<YoYInflationIndex>& index,
+                                      const Handle<YieldTermStructure>& nominalTS =
+                                                        Handle<YieldTermStructure>()) {
             return new YearOnYearInflationSwapHelper(quote,lag,maturity,
-                                                  calendar,bdc,
-                                                  dayCounter,index);
+                                                     calendar,bdc,
+                                                     dayCounter,index,
+                                                     nominalTS);
         }
     }
 };

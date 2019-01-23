@@ -80,3 +80,10 @@ basketoption.setPricingEngine(MCEuropeanBasketEngine(process,
                                                      seed = 42))
 print(basketoption.NPV())
 
+americanExercise = AmericanExercise(settlementDate, Date(17,May,1999))
+americanbasketoption = BasketOption(MaxBasketPayoff(payoff), americanExercise)
+americanbasketoption.setPricingEngine(MCAmericanBasketEngine(
+	process, 'pseudorandom', timeSteps = 10, requiredTolerance = 0.02,
+    seed = 42, polynomOrder = 5, polynomType = LsmBasisSystem.Hermite))
+print(americanbasketoption.NPV())
+                                                     
