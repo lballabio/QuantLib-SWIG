@@ -26,8 +26,6 @@
 %{
 using QuantLib::Callability;
 using QuantLib::SoftCallability;
-typedef boost::shared_ptr<Callability> CallabilityPtr;
-typedef boost::shared_ptr<Callability> SoftCallabilityPtr;
 typedef Callability::Price CallabilityPrice;
 using QuantLib::CallabilitySchedule;
 %}
@@ -40,50 +38,26 @@ class CallabilityPrice {
     Type type() const;
 };
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_Callability) Callability;
-#else
-%ignore Callability;
-#endif
+%shared_ptr(Callability)
+
 class Callability {
   public:
     enum Type { Call, Put };
+    Callability(const CallabilityPrice& price,
+                Type type,
+                const Date& date);
     const CallabilityPrice& price() const;
     Type type() const;
     Date date() const;
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    Callability();
-#endif
 };
 
-%template(Callability) boost::shared_ptr<Callability>;
-%extend boost::shared_ptr<Callability> {
-    shared_ptr<Callability>(const CallabilityPrice& price,
-                            Callability::Type type,
-                            const Date& date) {
-        return new boost::shared_ptr<Callability>(
-                                            new Callability(price,type,date));
-    }
-    static const Callability::Type Call = Callability::Call;
-    static const Callability::Type Put = Callability::Put;
-}
+%shared_ptr(SoftCallability)
 
-%{
-using QuantLib::SoftCallability;
-typedef boost::shared_ptr<Callability> SoftCallabilityPtr;
-%}
-
-%rename(SoftCallability) SoftCallabilityPtr;
-class SoftCallabilityPtr : public boost::shared_ptr<Callability> {
+class SoftCallability : public Callability {
   public:
-    %extend {
-        SoftCallabilityPtr(const CallabilityPrice& price, const Date& date,
-                           Real trigger) {
-            return new SoftCallabilityPtr(new SoftCallability(price,date,
-                                                              trigger));
-        }
-    }
+    SoftCallability(const CallabilityPrice& price,
+                    const Date& date,
+                    Real trigger);
 };
 
 
