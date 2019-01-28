@@ -478,6 +478,7 @@
     <Compile Include="FDDividendEuropeanEngine.cs" />
     <Compile Include="FDEuropeanEngine.cs" />
     <Compile Include="FdG2SwaptionEngine.cs" />
+    <Compile Include="FdHestonVanillaEngine.cs" />
     <Compile Include="FdHullWhiteSwaptionEngine.cs" />
     <Compile Include="FdmSchemeDesc.cs" />
     <Compile Include="FDShoutEngine.cs" />
