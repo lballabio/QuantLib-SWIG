@@ -718,12 +718,14 @@ class BinomialVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 %{
 using QuantLib::MCEuropeanEngine;
+using QuantLib::MCEuropeanHestonEngine;
 using QuantLib::MCAmericanEngine;
 using QuantLib::PseudoRandom;
 using QuantLib::LowDiscrepancy;
 using QuantLib::LsmBasisSystem;
 typedef boost::shared_ptr<PricingEngine> MCEuropeanEnginePtr;
 typedef boost::shared_ptr<PricingEngine> MCAmericanEnginePtr;
+typedef boost::shared_ptr<PricingEngine> MCEuropeanHestonEnginePtr;
 %}
 
 struct LsmBasisSystem {
@@ -854,6 +856,57 @@ class MCAmericanEnginePtr : public boost::shared_ptr<PricingEngine> {
         }
     }
 };
+
+
+%rename(MCEuropeanHestonEngine) MCEuropeanHestonEnginePtr;
+class MCEuropeanHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCEuropeanHestonEnginePtr;
+    #endif
+  public:
+    %extend {
+        MCEuropeanHestonEnginePtr(const HestonProcessPtr& process,
+                            const std::string& traits,
+                            intOrNull timeSteps = Null<Size>(),
+                            intOrNull timeStepsPerYear = Null<Size>(),
+                            bool antitheticVariate = false,
+                            intOrNull requiredSamples = Null<Size>(),
+                            doubleOrNull requiredTolerance = Null<Real>(),
+                            intOrNull maxSamples = Null<Size>(),
+                            BigInteger seed = 0) {
+            boost::shared_ptr<HestonProcess> hestonProcess =
+                 boost::dynamic_pointer_cast<HestonProcess>(process);
+            QL_REQUIRE(hestonProcess, "Heston process required");
+            std::string s = boost::algorithm::to_lower_copy(traits);
+            QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
+                       Size(timeStepsPerYear) != Null<Size>(),
+                       "number of steps not specified");
+            if (s == "pseudorandom" || s == "pr")
+                return new MCEuropeanHestonEnginePtr(
+                         new MCEuropeanHestonEngine<PseudoRandom>(hestonProcess,
+                                                                  timeSteps,
+                                                                  timeStepsPerYear,
+                                                                  antitheticVariate,
+                                                                  requiredSamples,
+                                                                  requiredTolerance,
+                                                                  maxSamples,
+                                                                  seed));
+            else if (s == "lowdiscrepancy" || s == "ld")
+                return new MCEuropeanHestonEnginePtr(
+                       new MCEuropeanHestonEngine<LowDiscrepancy>(hestonProcess,
+                                                                  timeSteps,
+                                                                  timeStepsPerYear,
+                                                                  antitheticVariate,
+                                                                  requiredSamples,
+                                                                  requiredTolerance,
+                                                                  maxSamples,
+                                                                  seed));
+            else
+                QL_FAIL("unknown Monte Carlo engine type: "+s);
+        }
+    }
+};
+
 
 // American engines
 
@@ -1375,17 +1428,19 @@ class FdHestonVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
   public:
     %extend {
         FdHestonVanillaEnginePtr(
-        	const HestonModelPtr& model,
+            const HestonModelPtr& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>()) {
             
             boost::shared_ptr<HestonModel> hModel =
                  boost::dynamic_pointer_cast<HestonModel>(model);
             QL_REQUIRE(hModel, "Heston model required");
             return new FdHestonVanillaEnginePtr(
                 new FdHestonVanillaEngine(hModel, tGrid, xGrid,
-                                          vGrid, dampingSteps, schemeDesc));
+                                          vGrid, dampingSteps, schemeDesc, leverageFct));
         }
     }
 };

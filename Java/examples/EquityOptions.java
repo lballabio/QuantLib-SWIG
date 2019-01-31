@@ -49,6 +49,7 @@ import org.quantlib.HestonProcess;
 import org.quantlib.FlatForward;
 import org.quantlib.IntegralEngine;
 import org.quantlib.MCEuropeanEngine;
+import org.quantlib.MCEuropeanHestonEngine;
 import org.quantlib.Month;
 import org.quantlib.Option;
 import org.quantlib.Payoff;
@@ -171,7 +172,7 @@ public class EquityOptions {
                                               europeanOption.NPV(),
                                               Double.NaN,
                                               Double.NaN } );
-                                              
+
         method = "Heston COS Method";                                      	
 		europeanOption.setPricingEngine(new COSHestonEngine(hestonModel));
         System.out.printf(fmt, new Object[] { method,
@@ -376,7 +377,16 @@ public class EquityOptions {
                                               Double.NaN,
                                               Double.NaN } );
 
-
+		method = "Heston Monte-Carlo";
+		europeanOption.setPricingEngine(
+			new MCEuropeanHestonEngine(hestonProcess, 
+									   "PseudoRandom", 25, QuantLib.nullInt(), true, nSamples));
+									   
+        System.out.printf(fmt, new Object[] { method,
+                                              europeanOption.NPV(),
+                                              Double.NaN,
+                                              Double.NaN } );
+                                              
         /*
         method = "MC (Longstaff Schwartz)";
         // This is the original C++ code:

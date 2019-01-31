@@ -80,6 +80,41 @@ class SabrTest(unittest.TestCase):
         self.assertAlmostEqual(calculated, expected, 4, 
                                msg="Unable to reproduce Le Floc'h-Kennedy SABR volalatility")
         
+
+    def testSabrPdeVsCevPdeVsAnalyticCev(self):
+        """ Testing SABR PDE vs CEV PDE vs Analytic CEV """
+		
+        today = ql.Date(1, 3, 2019)
+        dc = ql.Actual365Fixed()
+        
+        maturityDate = today + ql.Period(12, ql.Months)
+        f0 = 1.2
+        alpha = 0.35
+        beta = 0.9
+        nu = 1e-3
+        rho = 0.25
+        strike = 1.1
+        
+        rTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.05, dc))
+        
+        option = ql.VanillaOption(
+            ql.PlainVanillaPayoff(ql.Option.Call, strike),
+            ql.EuropeanExercise(maturityDate))
+        
+        option.setPricingEngine(ql.FdSabrVanillaEngine(f0, alpha, beta, nu, rho, rTS, 30, 400, 3))        
+        fdSabrNPV = option.NPV()
+        
+        option.setPricingEngine(ql.FdCEVVanillaEngine(f0, alpha, beta, rTS, 30, 400))
+        fdCevNPV = option.NPV()
+        
+        option.setPricingEngine(ql.AnalyticCEVEngine(f0, alpha, beta, rTS))
+        analyticCevNPV = option.NPV()
+        
+        self.assertAlmostEqual(fdSabrNPV, analyticCevNPV, 4, 
+                               msg="Unable to match PDE SABR value with analytic CEV value")
+
+        self.assertAlmostEqual(fdCevNPV, analyticCevNPV, 4, 
+                               msg="Unable to match PDE CEV value with analytic CEV value")                    
         
 if __name__ == '__main__':
     print('testing QuantLib ' + ql.__version__)

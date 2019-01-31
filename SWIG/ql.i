@@ -230,6 +230,7 @@
 %include scheduler.i
 %include settings.i
 %include shortratemodels.i
+%include slv.i
 %include statistics.i
 %include stochasticprocess.i
 %include swap.i
