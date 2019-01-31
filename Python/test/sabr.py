@@ -1,4 +1,3 @@
-# coding=utf-8-unix
 """
  Copyright (C) 2019 Klaus Spanderen
 
