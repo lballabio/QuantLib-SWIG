@@ -1,3 +1,24 @@
+commit ab61d8579ee9c4ddcf7f54ad012c94537cabc1c3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 Feb 2019 09:15:08 +0100
+
+    Deprecate Perl support.
+
+ News.md | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+commit 796c334ef0ded4ba72d8e3f4d438a68cae319981
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 5 Feb 2019 16:39:20 +0100
+
+    Update changelog and news.
+
+ ChangeLog.txt | 836 ++++------------------------------------------------------
+ Makefile.am   |   2 +-
+ News.md       |  11 +
+ News.txt      |  46 ----
+ 4 files changed, 67 insertions(+), 828 deletions(-)
+
 commit b4b4a19dafc165e177efa5a3a672c4121bc0a29f
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 28 Jan 2019 10:59:09 +0100
