@@ -119,7 +119,6 @@ enum Month {
     December  = 12
 };
 
-
 %{
 using QuantLib::TimeUnit;
 using QuantLib::Days;
@@ -528,7 +527,11 @@ class Date {
         }
         std::string __str__() {
             std::ostringstream out;
+        %#ifdef QL_HIGH_RESOLUTION_DATE
+            out << QuantLib::io::iso_datetime(*self);
+        %#else
             out << *self;
+        %#endif
             return out.str();
         }
         std::string __repr__() {
@@ -536,8 +539,16 @@ class Date {
             if (*self == Date())
                 out << "Date()";
             else
+        %#ifdef QL_HIGH_RESOLUTION_DATE
+                out << "Date(" << self->dayOfMonth() << ","
+                    << int(self->month()) << "," << self->year() << ","
+                    << self->hours() << "," << self->minutes() << ","
+                    << self->seconds() << "," << self->milliseconds() << ","
+                    << self->microseconds() << ")";
+        %#else
                 out << "Date(" << self->dayOfMonth() << ","
                     << int(self->month()) << "," << self->year() << ")";
+        %#endif
             return out.str();
         }
         std::string ISO() {
@@ -654,6 +665,8 @@ namespace std {
     %template(DateVector) vector<Date>;
 }
 
+Time daysBetween(const Date&, const Date&);
+
 #if defined(SWIGR)
 
 
@@ -673,7 +686,6 @@ a
 %}
 
 
-Time daysBetween(const Date&, const Date&);
 bool operator==(const Date&, const Date&);
 bool operator!=(const Date&, const Date&);
 bool operator<(const Date&, const Date&);
