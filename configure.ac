@@ -57,16 +57,6 @@ AC_ARG_ENABLE([python],
               [build_python=yes])
 AM_CONDITIONAL(BUILD_PYTHON, test "$build_python" != "no")
 
-AC_PATH_PROG([PERL], [perl])
-AM_CONDITIONAL(HAVE_PERL, test "x${PERL}" != "x")
-AC_ARG_ENABLE([perl],
-              AC_HELP_STRING([--disable-perl],
-                             [If disabled, the Perl module
-                              will not be built]),
-              [build_perl=$enableval],
-              [build_perl=yes])
-AM_CONDITIONAL(BUILD_PERL, test "$build_perl" != "no")
-
 AC_PATH_PROG([RUBY], [ruby])
 AM_CONDITIONAL(HAVE_RUBY, test "x${RUBY}" != "x")
 AC_ARG_ENABLE([ruby],
@@ -167,8 +157,6 @@ AC_CONFIG_FILES([
     Makefile
     CSharp/Makefile
     Java/Makefile
-    Perl/Makefile
-    Perl/Makefile.PL
     Python/Makefile
     Python/setup.py
     R/Makefile

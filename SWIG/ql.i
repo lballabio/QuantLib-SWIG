@@ -50,33 +50,6 @@
 %}
 #endif
 
-#if defined(SWIGPERL)
-%{
-#ifdef accept
-#undef accept
-#endif
-#ifdef Null
-#undef Null
-#endif
-#ifdef Nullch
-#undef Nullch
-#define Nullch ((char*) NULL)
-#endif
-#ifdef Stat
-#undef Stat
-#endif
-#ifdef seed
-#undef seed
-#endif
-#ifdef setbuf
-#undef setbuf
-#endif
-#ifdef times
-#undef times
-#endif
-%}
-#endif
-
 %{
 #include <ql/quantlib.hpp>
 
@@ -148,9 +121,7 @@
 #endif
 
 // common name mappings
-#if defined(SWIGPERL)
-%rename("to_string")     __str__;
-#elif defined(SWIGJAVA)
+#if defined(SWIGJAVA)
 %rename(add)           operator+;
 %rename(add)           __add__;
 %rename(subtract)      operator-;

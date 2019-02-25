@@ -33,7 +33,7 @@ using QuantLib::FloorTruncation;
 %}
 
 class Rounding {
-    #if defined(SWIGCSHARP) || defined(SWIGPERL)
+    #if defined(SWIGCSHARP)
     %rename(apply) operator();
     #endif
   public:

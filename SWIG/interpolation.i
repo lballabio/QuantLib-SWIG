@@ -65,7 +65,7 @@ typedef SafeInterpolation<QuantLib::T> Safe##T;
 %}
 %rename(Alias) Safe##T;
 class Safe##T {
-    #if defined(SWIGCSHARP) || defined(SWIGPERL)
+    #if defined(SWIGCSHARP)
     %rename(call) operator();
     #endif
   public:
@@ -149,7 +149,7 @@ typedef SafeInterpolation2D<QuantLib::T> Safe##T;
 %}
 %rename(Alias) Safe##T;
 class Safe##T {
-    #if defined(SWIGCSHARP) || defined(SWIGPERL)
+    #if defined(SWIGCSHARP)
     %rename(call) operator();
     #endif
   public:

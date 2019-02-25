@@ -47,7 +47,7 @@ using QuantLib::StrikedTypePayoff;
 
 %shared_ptr(Payoff);
 class Payoff {
-    #if defined(SWIGCSHARP) || defined(SWIGPERL)
+    #if defined(SWIGCSHARP)
     %rename(call) operator();
     #endif
   public:

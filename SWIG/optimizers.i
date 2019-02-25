@@ -156,7 +156,7 @@ using QuantLib::EndCriteria;
 class EndCriteria {
     #if defined(SWIGRUBY)
     %rename("setPositiveOptimization!") setPositiveOptimization;
-    #elif defined(SWIGCSHARP) || defined(SWIGPERL)
+    #elif defined(SWIGCSHARP)
     %rename(call) operator();
     #elif defined(SWIGPYTHON)
     %rename(NoCriteria) None;

@@ -90,11 +90,9 @@ class Index : public Observable {
                              fixings.begin(),
                              forceOverwrite);
         }
-        #if !defined(SWIGPERL)
         std::string __str__() {
             return self->name()+" index";
         }
-        #endif
     }
 };
 
