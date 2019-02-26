@@ -41,34 +41,28 @@ typedef boost::shared_ptr<Claim> FaceValueClaimPtr;
 typedef boost::shared_ptr<Claim> FaceValueAccrualClaimPtr;
 %}
 
-%ignore Claim;
+%shared_ptr(Claim);
 class Claim {
+  private:
+    Claim();
   public:
     Real amount(const Date& defaultDate,
                 Real notional,
                 Real recoveryRate) const;
 };
-%template(Claim) boost::shared_ptr<Claim>;
 
-%rename(FaceValueClaim) FaceValueClaimPtr;
-class FaceValueClaimPtr : public boost::shared_ptr<Claim> {
+%shared_ptr(FaceValueClaim)
+class FaceValueClaim : public Claim {
   public:
-    %extend {
-        FaceValueClaimPtr() {
-            return new FaceValueClaimPtr(new FaceValueClaim);
-        }
-    }
+    FaceValueClaim();
 };
 
-%rename(FaceValueAccrualClaim) FaceValueAccrualClaimPtr;
-class FaceValueAccrualClaimPtr : public boost::shared_ptr<Claim> {
+%shared_ptr(FaceValueAccrualClaim)
+class FaceValueAccrualClaim : public Claim {
   public:
-    %extend {
-        FaceValueAccrualClaimPtr(const boost::shared_ptr<Bond>& bond) {
-            return new FaceValueAccrualClaimPtr(new FaceValueAccrualClaim(bond));
-        }
-    }
+    FaceValueAccrualClaim(const boost::shared_ptr<Bond>& bond);
 };
+
 
 %shared_ptr(CreditDefaultSwap)
 class CreditDefaultSwap : public Instrument {
