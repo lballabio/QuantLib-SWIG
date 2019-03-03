@@ -33,12 +33,6 @@ using QuantLib::IsdaCdsEngine;
 using QuantLib::Claim;
 using QuantLib::FaceValueClaim;
 using QuantLib::FaceValueAccrualClaim;
-
-typedef boost::shared_ptr<PricingEngine> MidPointCdsEnginePtr;
-typedef boost::shared_ptr<PricingEngine> IntegralCdsEnginePtr;
-typedef boost::shared_ptr<PricingEngine> IsdaCdsEnginePtr;
-typedef boost::shared_ptr<Claim> FaceValueClaimPtr;
-typedef boost::shared_ptr<Claim> FaceValueAccrualClaimPtr;
 %}
 
 %shared_ptr(Claim);
@@ -131,81 +125,41 @@ class CreditDefaultSwap : public Instrument {
 };
 
 
-%rename(MidPointCdsEngine) MidPointCdsEnginePtr;
-class MidPointCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MidPointCdsEngine)
+class MidPointCdsEngine : public PricingEngine {
   public:
-    %extend {
-        MidPointCdsEnginePtr(
-                   const Handle<DefaultProbabilityTermStructure>& probability,
-                   Real recoveryRate,
-                   const Handle<YieldTermStructure>& discountCurve) {
-            return new MidPointCdsEnginePtr(
-                              new MidPointCdsEngine(probability, recoveryRate,
-                                                    discountCurve));
-        }
-    }
+    MidPointCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+                      Real recoveryRate,
+                      const Handle<YieldTermStructure>& discountCurve);
 };
 
-%rename(IntegralCdsEngine) IntegralCdsEnginePtr;
-class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(IntegralCdsEngine)
+class IntegralCdsEngine : public PricingEngine {
   public:
-    %extend {
-        IntegralCdsEnginePtr(
-				   const Period &integrationStep,
-                   const Handle<DefaultProbabilityTermStructure>& probability,
-                   Real recoveryRate,
-                   const Handle<YieldTermStructure>& discountCurve,
-				   bool includeSettlementDateFlows = false) {
-            return new IntegralCdsEnginePtr(
-                              new IntegralCdsEngine(integrationStep, probability,
-                                                    recoveryRate, discountCurve,
-													includeSettlementDateFlows));
-        }
-    }
+    IntegralCdsEngine(const Period &integrationStep,
+                      const Handle<DefaultProbabilityTermStructure>& probability,
+                      Real recoveryRate,
+                      const Handle<YieldTermStructure>& discountCurve,
+                      bool includeSettlementDateFlows = false);
 };
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_IsdaCdsEngine) IsdaCdsEngine;
-#else
-%ignore IsdaCdsEngine;
-#endif
-class IsdaCdsEngine {
-  public:
-    enum NumericalFix {None, Taylor};
-    enum AccrualBias {HalfDayBias, NoBias};
-    enum ForwardsInCouponPeriod {Flat, Piecewise};
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    IsdaCdsEngine();
-#endif
-};
-
-%rename(IsdaCdsEngine) IsdaCdsEnginePtr;
-class IsdaCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(IsdaCdsEngine)
+class IsdaCdsEngine : public PricingEngine {
     #if defined(SWIGPYTHON)
     %rename(NoFix) None;
     #endif
   public:
-    %extend {
-        static const IsdaCdsEngine::NumericalFix None = IsdaCdsEngine::None;
-        static const IsdaCdsEngine::NumericalFix Taylor = IsdaCdsEngine::Taylor;
-        static const IsdaCdsEngine::AccrualBias HalfDayBias = IsdaCdsEngine::HalfDayBias;
-        static const IsdaCdsEngine::AccrualBias NoBias = IsdaCdsEngine::NoBias;
-        static const IsdaCdsEngine::ForwardsInCouponPeriod Flat = IsdaCdsEngine::Flat;
-        static const IsdaCdsEngine::ForwardsInCouponPeriod Piecewise = IsdaCdsEngine::Piecewise;
-        IsdaCdsEnginePtr(
+    enum NumericalFix {None, Taylor};
+    enum AccrualBias {HalfDayBias, NoBias};
+    enum ForwardsInCouponPeriod {Flat, Piecewise};
+    IsdaCdsEngine(
             const Handle<DefaultProbabilityTermStructure> &probability,
             Real recoveryRate,
             const Handle<YieldTermStructure> &discountCurve,
             bool includeSettlementDateFlows = false,
             const IsdaCdsEngine::NumericalFix numericalFix = IsdaCdsEngine::Taylor,
             const IsdaCdsEngine::AccrualBias accrualBias = IsdaCdsEngine::HalfDayBias,
-            const IsdaCdsEngine::ForwardsInCouponPeriod forwardsInCouponPeriod = IsdaCdsEngine::Piecewise) {
-            return new IsdaCdsEnginePtr(
-                new IsdaCdsEngine(
-                    probability,recoveryRate,discountCurve,includeSettlementDateFlows,numericalFix,accrualBias,forwardsInCouponPeriod));
-        }
-    }
+            const IsdaCdsEngine::ForwardsInCouponPeriod forwardsInCouponPeriod = IsdaCdsEngine::Piecewise);
 };
 
 

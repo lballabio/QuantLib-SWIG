@@ -43,8 +43,6 @@ using QuantLib::AmortizingFixedRateBond;
 using QuantLib::FloatingRateBond;
 using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
-
-typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
 %}
 
 %shared_ptr(Bond)
@@ -305,16 +303,10 @@ class CmsRateBond : public Bond {
 };
 
 
-%rename(DiscountingBondEngine) DiscountingBondEnginePtr;
-class DiscountingBondEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(DiscountingBondEngine)
+class DiscountingBondEngine : public PricingEngine {
   public:
-    %extend {
-        DiscountingBondEnginePtr(
-                            const Handle<YieldTermStructure>& discountCurve) {
-            return new DiscountingBondEnginePtr(
-                                    new DiscountingBondEngine(discountCurve));
-        }
-    }
+    DiscountingBondEngine(const Handle<YieldTermStructure>& discountCurve);
 };
 
 
@@ -323,8 +315,6 @@ using QuantLib::CallableBond;
 using QuantLib::CallableFixedRateBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
-typedef boost::shared_ptr<PricingEngine> TreeCallableFixedRateBondEnginePtr;
-typedef boost::shared_ptr<PricingEngine> BlackCallableFixedRateBondEnginePtr;
 %}
 
 %shared_ptr(CallableFixedRateBond)
@@ -376,45 +366,27 @@ class CallableFixedRateBond : public Bond {
                             Real bump=2e-4);
 };
 
-%rename(TreeCallableFixedRateBondEngine) TreeCallableFixedRateBondEnginePtr;
-class TreeCallableFixedRateBondEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(TreeCallableFixedRateBondEngine)
+class TreeCallableFixedRateBondEngine : public PricingEngine {
   public:
-    %extend {
-        TreeCallableFixedRateBondEnginePtr(
+    TreeCallableFixedRateBondEngine(
                          const boost::shared_ptr<ShortRateModel>& model,
                          Size timeSteps,
                          const Handle<YieldTermStructure>& termStructure =
-                                                Handle<YieldTermStructure>()) {
-            return new TreeCallableFixedRateBondEnginePtr(
-                new TreeCallableFixedRateBondEngine(model, timeSteps,
-                                                    termStructure));
-        }
-        TreeCallableFixedRateBondEnginePtr(
+                                                Handle<YieldTermStructure>());
+    TreeCallableFixedRateBondEngine(
                          const boost::shared_ptr<ShortRateModel>& model,
                          const TimeGrid& grid,
                          const Handle<YieldTermStructure>& termStructure =
-                                                Handle<YieldTermStructure>()) {
-            return new TreeCallableFixedRateBondEnginePtr(
-                new TreeCallableFixedRateBondEngine(model, grid,
-                                                    termStructure));
-        }
-    }
+                                                Handle<YieldTermStructure>());
 };
 
-%rename(BlackCallableFixedRateBondEngine) BlackCallableFixedRateBondEnginePtr;
-class BlackCallableFixedRateBondEnginePtr 
-    : public boost::shared_ptr<PricingEngine> {
-    public:
-    %extend {
-        BlackCallableFixedRateBondEnginePtr(
+%shared_ptr(BlackCallableFixedRateBondEngine)
+class BlackCallableFixedRateBondEngine : public PricingEngine {
+  public:
+    BlackCallableFixedRateBondEngine(
                 const Handle<Quote>& fwdYieldVol,
-                const Handle<YieldTermStructure>& discountCurve) {
-            return new BlackCallableFixedRateBondEnginePtr(
-                new BlackCallableFixedRateBondEngine(fwdYieldVol, discountCurve));
-        }
-        
-    }    
+                const Handle<YieldTermStructure>& discountCurve);
 };
 
 %{

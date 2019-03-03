@@ -30,7 +30,6 @@ using QuantLib::ConvertibleZeroCouponBond;
 using QuantLib::ConvertibleFixedCouponBond;
 using QuantLib::ConvertibleFloatingRateBond;
 using QuantLib::BinomialConvertibleEngine;
-typedef boost::shared_ptr<PricingEngine> BinomialConvertibleEnginePtr;
 %}
 
 %shared_ptr(ConvertibleZeroCouponBond)
@@ -88,47 +87,28 @@ class ConvertibleFloatingRateBond : public Bond {
 };
 
 
+%shared_ptr(BinomialConvertibleEngine<CoxRossRubinstein>)
+%shared_ptr(BinomialConvertibleEngine<JarrowRudd>)
+%shared_ptr(BinomialConvertibleEngine<AdditiveEQPBinomialTree>)
+%shared_ptr(BinomialConvertibleEngine<Trigeorgis>)
+%shared_ptr(BinomialConvertibleEngine<Tian>)
+%shared_ptr(BinomialConvertibleEngine<LeisenReimer>)
+%shared_ptr(BinomialConvertibleEngine<Joshi4>)
 
-%rename(BinomialConvertibleEngine) BinomialConvertibleEnginePtr;
-class BinomialConvertibleEnginePtr : public boost::shared_ptr<PricingEngine> {
+template <class T>
+class BinomialConvertibleEngine : public PricingEngine {
   public:
-    %extend {
-        BinomialConvertibleEnginePtr(
-                             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                             const std::string& type,
-                             Size steps) {
-            std::string s = boost::algorithm::to_lower_copy(type);
-            if (s == "crr" || s == "coxrossrubinstein")
-                return new BinomialConvertibleEnginePtr(
-                    new BinomialConvertibleEngine<CoxRossRubinstein>(
-                                                            process,steps));
-            else if (s == "jr" || s == "jarrowrudd")
-                return new BinomialConvertibleEnginePtr(
-                    new BinomialConvertibleEngine<JarrowRudd>(
-                                                            process,steps));
-            else if (s == "eqp")
-                return new BinomialConvertibleEnginePtr(
-                    new BinomialConvertibleEngine<AdditiveEQPBinomialTree>(
-                                                            process,steps));
-            else if (s == "trigeorgis")
-                return new BinomialConvertibleEnginePtr(
-                    new BinomialConvertibleEngine<Trigeorgis>(
-                                                            process,steps));
-            else if (s == "tian")
-                return new BinomialConvertibleEnginePtr(
-                    new BinomialConvertibleEngine<Tian>(process,steps));
-            else if (s == "lr" || s == "leisenreimer")
-                return new BinomialConvertibleEnginePtr(
-                    new BinomialConvertibleEngine<LeisenReimer>(
-                                                            process,steps));
-            else if (s == "j4" || s == "joshi4")
-                return new BinomialConvertibleEnginePtr(
-                    new BinomialConvertibleEngine<Joshi4>(process,steps));
-            else
-                QL_FAIL("unknown binomial engine type: "+s);
-        }
-    }
+    BinomialConvertibleEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                              Size steps);
 };
+
+%template(BinomialCRRConvertibleEngine) BinomialConvertibleEngine<CoxRossRubinstein>;
+%template(BinomialJRConvertibleEngine) BinomialConvertibleEngine<JarrowRudd>;
+%template(BinomialEQPConvertibleEngine) BinomialConvertibleEngine<AdditiveEQPBinomialTree>;
+%template(BinomialTrigeorgisConvertibleEngine) BinomialConvertibleEngine<Trigeorgis>;
+%template(BinomialTianConvertibleEngine) BinomialConvertibleEngine<Tian>;
+%template(BinomialLRConvertibleEngine) BinomialConvertibleEngine<LeisenReimer>;
+%template(BinomialJ4ConvertibleEngine) BinomialConvertibleEngine<Joshi4>;
 
 
 #endif

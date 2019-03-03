@@ -81,20 +81,20 @@ report('finite differences',option.NPV())
 # method: binomial
 timeSteps = 801
 
-option.setPricingEngine(BinomialVanillaEngine(process,'jr',timeSteps))
+option.setPricingEngine(BinomialJRVanillaEngine(process,timeSteps))
 report('binomial (JR)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'crr',timeSteps))
+option.setPricingEngine(BinomialCRRVanillaEngine(process,timeSteps))
 report('binomial (CRR)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'eqp',timeSteps))
+option.setPricingEngine(BinomialEQPVanillaEngine(process,timeSteps))
 report('binomial (EQP)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'trigeorgis',timeSteps))
+option.setPricingEngine(BinomialTrigeorgisVanillaEngine(process,timeSteps))
 report('bin. (Trigeorgis)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'tian',timeSteps))
+option.setPricingEngine(BinomialTianVanillaEngine(process,timeSteps))
 report('binomial (Tian)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'lr',timeSteps))
+option.setPricingEngine(BinomialLRVanillaEngine(process,timeSteps))
 report('binomial (LR)',option.NPV())

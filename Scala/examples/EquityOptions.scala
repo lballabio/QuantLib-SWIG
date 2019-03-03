@@ -228,88 +228,67 @@ object EquityOptions {
         // Binomial method      
         val jarrowRuddEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                       new BinomialVanillaEngine(SimpleFactory.bsProcess(), 
-                                              "JarrowRudd", timeSteps)
+                       new BinomialJRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val jarrowRuddBermudanNpv = 
             new VanillaPricingService(payoff, bermudanExercise) !! 
-                    new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                              "JarrowRudd", timeSteps)
+                    new BinomialJRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val jarrowRuddAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                    new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                              "JarrowRudd", timeSteps)
+                    new BinomialJRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val coxRossRubinsteinEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                   new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                             "CoxRossRubinstein", timeSteps)
+                   new BinomialCRRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val coxRossRubinsteinBermudanNpv = 
             new VanillaPricingService(payoff, bermudanExercise) !!
-                   new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                             "CoxRossRubinstein", timeSteps)
+                   new BinomialCRRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val coxRossRubinsteinAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                   new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                             "CoxRossRubinstein", timeSteps)
+                   new BinomialCRRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val additiveEqpEuropeanNpv =                                          
             new VanillaPricingService(payoff, europeanExercise) !!
-             new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                       "AdditiveEQPBinomialTree", timeSteps)
+             new BinomialEQPVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val additiveEqpBermudanNpv = 
             new VanillaPricingService(payoff, bermudanExercise) !!
-                 new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                          "AdditiveEQPBinomialTree", timeSteps)
+                 new BinomialEQPVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val additiveEqpAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                 new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                             "AdditiveEQPBinomialTree", timeSteps)
+                 new BinomialEQPVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val trigeirgisEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                        new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Trigeorgis", timeSteps)
+                        new BinomialTrigeorgisVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val trigeirgisBermudanNpv = 
             new VanillaPricingService(payoff, bermudanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Trigeorgis", timeSteps) 
+                          new BinomialTrigeorgisVanillaEngine(SimpleFactory.bsProcess(), timeSteps) 
         val trigeirgisAmericanNpv =      
             new VanillaPricingService(payoff, americanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Trigeorgis", timeSteps)
+                          new BinomialTrigeorgisVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val tianEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                         "Tian", timeSteps)
+                          new BinomialTianVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val tianBermudanNpv = 
             new VanillaPricingService(payoff, bermudanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Tian", timeSteps)
+                          new BinomialTianVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val tianAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Tian", timeSteps)
+                          new BinomialTianVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val leisenReimerEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "LeisenReimer", timeSteps)
+                          new BinomialTianVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val leisenReimerBermudanNpv = 
             new VanillaPricingService(payoff, bermudanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "LeisenReimer", timeSteps)
+                          new BinomialLRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val leisenReimerAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "LeisenReimer", timeSteps)
+                          new BinomialLRVanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val joshiEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Joshi4", timeSteps)
+                          new BinomialJ4VanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val joshiBermudanNpv = 
             new VanillaPricingService(payoff, bermudanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Joshi4", timeSteps)
+                          new BinomialJ4VanillaEngine(SimpleFactory.bsProcess(), timeSteps)
         val joshiAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                          new BinomialVanillaEngine(SimpleFactory.bsProcess(),
-                                                    "Joshi4", timeSteps)
+                          new BinomialJ4VanillaEngine(SimpleFactory.bsProcess(), timeSteps)
 
         // Monte-Carlo methods
         timeSteps = 1;
@@ -320,35 +299,35 @@ object EquityOptions {
 
         val pseudoMcEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                new MCEuropeanEngine(SimpleFactory.bsProcess(),
-                                     "PseudoRandom", timeSteps,
-                                     QuantLib.nullInt(),
-                                     true, false,
-                                     nSamples, 0.02, maxSamples, mcSeed)
+                new MCPREuropeanEngine(SimpleFactory.bsProcess(),
+                                       timeSteps,
+                                       QuantLib.nullInt(),
+                                       true, false,
+                                       nSamples, 0.02, maxSamples, mcSeed)
 
         val pseudoMcAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                new MCAmericanEngine(SimpleFactory.bsProcess(),
-                                     "PseudoRandom", americanTimeSteps,
-                                     QuantLib.nullInt(),
-                                     true, false, 
-                                     nSamples, 0.02, maxSamples, mcSeed)
+                new MCPRAmericanEngine(SimpleFactory.bsProcess(),
+                                       americanTimeSteps,
+                                       QuantLib.nullInt(),
+                                       true, false, 
+                                       nSamples, 0.02, maxSamples, mcSeed)
 
         val quasiMcEuropeanNpv = 
             new VanillaPricingService(payoff, europeanExercise) !!
-                    new MCEuropeanEngine(SimpleFactory.bsProcess(),
-                                         "LowDiscrepancy", timeSteps,
-                                         QuantLib.nullInt(),
-                                         false, false,
-                                         nSamples, 0.02, maxSamples, mcSeed)
+                new MCLDEuropeanEngine(SimpleFactory.bsProcess(),
+                                       timeSteps,
+                                       QuantLib.nullInt(),
+                                       false, false,
+                                       nSamples, 0.02, maxSamples, mcSeed)
 
         val quasiMcAmericanNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                new MCAmericanEngine(SimpleFactory.bsProcess(),
-                                     "LowDiscrepancy", americanTimeSteps,
-                                     QuantLib.nullInt(),
-                                     true, false, 
-                                     nSamples, 0.02, maxSamples, mcSeed)
+                new MCLDAmericanEngine(SimpleFactory.bsProcess(),
+                                       americanTimeSteps,
+                                       QuantLib.nullInt(),
+                                       true, false, 
+                                       nSamples, 0.02, maxSamples, mcSeed)
 
 
         // write column headings

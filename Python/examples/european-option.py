@@ -93,38 +93,36 @@ report('finite diff.',option.NPV())
 # method: binomial
 timeSteps = 801
 
-option.setPricingEngine(BinomialVanillaEngine(process,'jr',timeSteps))
+option.setPricingEngine(BinomialJRVanillaEngine(process,timeSteps))
 report('binomial (JR)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'crr',timeSteps))
+option.setPricingEngine(BinomialCRRVanillaEngine(process,timeSteps))
 report('binomial (CRR)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'eqp',timeSteps))
+option.setPricingEngine(BinomialEQPVanillaEngine(process,timeSteps))
 report('binomial (EQP)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'trigeorgis',timeSteps))
+option.setPricingEngine(BinomialTrigeorgisVanillaEngine(process,timeSteps))
 report('bin. (Trigeorgis)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'tian',timeSteps))
+option.setPricingEngine(BinomialTianVanillaEngine(process,timeSteps))
 report('binomial (Tian)',option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process,'lr',timeSteps))
+option.setPricingEngine(BinomialLRVanillaEngine(process,timeSteps))
 report('binomial (LR)',option.NPV())
 
 # method: finite differences
 # not yet implemented
 
 # method: Monte Carlo
-option.setPricingEngine(MCEuropeanEngine(process,
-                                         'pseudorandom',
-                                         timeSteps = 1,
-                                         requiredTolerance = 0.02,
-                                         seed = 42))
+option.setPricingEngine(MCPREuropeanEngine(process,
+                                           timeSteps = 1,
+                                           requiredTolerance = 0.02,
+                                           seed = 42))
 report('MC (crude)', option.NPV(), option.errorEstimate())
 
-option.setPricingEngine(MCEuropeanEngine(process,
-                                         'lowdiscrepancy',
-                                         timeSteps = 1,
-                                         requiredSamples = 32768))
+option.setPricingEngine(MCLDEuropeanEngine(process,
+                                           timeSteps = 1,
+                                           requiredSamples = 32768))
 report('MC (Sobol)', option.NPV())
 

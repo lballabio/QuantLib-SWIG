@@ -39,8 +39,6 @@ using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
 using QuantLib::FloatFloatSwap;
 using QuantLib::OvernightIndexedSwap;
-
-typedef boost::shared_ptr<PricingEngine> DiscountingSwapEnginePtr;
 %}
 
 %shared_ptr(Swap)
@@ -251,30 +249,21 @@ class NonstandardSwap : public Swap {
     const Leg &floatingLeg() const;
 };
 
-%rename(DiscountingSwapEngine) DiscountingSwapEnginePtr;
-class DiscountingSwapEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(DiscountingSwapEngine)
+class DiscountingSwapEngine : public PricingEngine {
   public:
+    DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve,
+                          bool includeSettlementDateFlows,
+                          const Date& settlementDate = Date(),
+                          const Date& npvDate = Date());
     %extend {
-        DiscountingSwapEnginePtr(
-                            const Handle<YieldTermStructure>& discountCurve,
-                            const Date& settlementDate = Date(),
-                            const Date& npvDate = Date()) {
-            return new DiscountingSwapEnginePtr(
-                                    new DiscountingSwapEngine(discountCurve,
-                                                              boost::none,
-                                                              settlementDate,
-                                                              npvDate));
-        }
-        DiscountingSwapEnginePtr(
-                            const Handle<YieldTermStructure>& discountCurve,
-                            bool includeSettlementDateFlows,
-                            const Date& settlementDate = Date(),
-                            const Date& npvDate = Date()) {
-            return new DiscountingSwapEnginePtr(
-                         new DiscountingSwapEngine(discountCurve,
-                                                   includeSettlementDateFlows,
-                                                   settlementDate,
-                                                   npvDate));
+        DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve,
+                              const Date& settlementDate = Date(),
+                              const Date& npvDate = Date()) {
+            return new DiscountingSwapEngine(discountCurve,
+                                             boost::none,
+                                             settlementDate,
+                                             npvDate);
         }
     }
 };

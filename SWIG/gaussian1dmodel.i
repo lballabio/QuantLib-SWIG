@@ -208,85 +208,39 @@ using QuantLib::Gaussian1dSwaptionEngine;
 using QuantLib::Gaussian1dJamshidianSwaptionEngine;
 using QuantLib::Gaussian1dNonstandardSwaptionEngine;
 using QuantLib::Gaussian1dFloatFloatSwaptionEngine;
- 
-typedef boost::shared_ptr<PricingEngine> Gaussian1dSwaptionEnginePtr;
-typedef boost::shared_ptr<PricingEngine> Gaussian1dJamshidianSwaptionEnginePtr;
-typedef boost::shared_ptr<PricingEngine> Gaussian1dNonstandardSwaptionEnginePtr;
-typedef boost::shared_ptr<PricingEngine> Gaussian1dFloatFloatSwaptionEnginePtr;
 %}
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_Gaussian1dSwaptionEngine) Gaussian1dSwaptionEngine;
-#else
-%ignore Gaussian1dSwaptionEngine;
-#endif
-class Gaussian1dSwaptionEngine {
+%shared_ptr(Gaussian1dSwaptionEngine)
+class Gaussian1dSwaptionEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %rename(NoProb) None;
+    #endif
   public:
     enum Probabilities { None, Naive, Digital };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    Gaussian1dSwaptionEngine();
-#endif
+    Gaussian1dSwaptionEngine(const boost::shared_ptr<Gaussian1dModel> &model,
+                             const int integrationPoints = 64, const Real stddevs = 7.0,
+                             const bool extrapolatePayoff = true,
+                             const bool flatPayoffExtrapolation = false,
+                             const Handle<YieldTermStructure> &discountCurve =
+                                                           Handle<YieldTermStructure>(),
+                             const Gaussian1dSwaptionEngine::Probabilities probabilities =
+                                                        Gaussian1dSwaptionEngine::None);
 };
 
-%rename(Gaussian1dSwaptionEngine) Gaussian1dSwaptionEnginePtr;
-class Gaussian1dSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(Gaussian1dJamshidianSwaptionEngine)
+class Gaussian1dJamshidianSwaptionEngine : public PricingEngine {
   public:
-    %extend {
-	static const Gaussian1dSwaptionEngine::Probabilities None = Gaussian1dSwaptionEngine::None;
-	static const Gaussian1dSwaptionEngine::Probabilities Naive = Gaussian1dSwaptionEngine::Naive;
-	static const Gaussian1dSwaptionEngine::Probabilities Digital = Gaussian1dSwaptionEngine::Digital;
-
-    Gaussian1dSwaptionEnginePtr(const boost::shared_ptr<Gaussian1dModel> &model,
-            const int integrationPoints = 64, const Real stddevs = 7.0,
-            const bool extrapolatePayoff = true,
-            const bool flatPayoffExtrapolation = false,
-            const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
-			const Gaussian1dSwaptionEngine::Probabilities probabilities = Gaussian1dSwaptionEngine::None) {
-            return new Gaussian1dSwaptionEnginePtr(new Gaussian1dSwaptionEngine(model, integrationPoints, 
-                    stddevs, extrapolatePayoff, flatPayoffExtrapolation, discountCurve, probabilities));
-        }
-    
-    }
+    Gaussian1dJamshidianSwaptionEngine(const boost::shared_ptr<Gaussian1dModel>& model);
 };
 
-%rename(Gaussian1dJamshidianSwaptionEngine) Gaussian1dJamshidianSwaptionEnginePtr;
-class Gaussian1dJamshidianSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-
-    Gaussian1dJamshidianSwaptionEnginePtr(const boost::shared_ptr<Gaussian1dModel> &model) {
-            return new Gaussian1dJamshidianSwaptionEnginePtr(new Gaussian1dJamshidianSwaptionEngine(model));
-        }
-    
-    }
-};
-
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_Gaussian1dNonstandardSwaptionEngine) Gaussian1dNonstandardSwaptionEngine;
-#else
-%ignore Gaussian1dNonstandardSwaptionEngine;
-#endif
-class Gaussian1dNonstandardSwaptionEngine {
+%shared_ptr(Gaussian1dNonstandardSwaptionEngine)
+class Gaussian1dNonstandardSwaptionEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %rename(NoProb) None;
+    #endif
   public:
     enum Probabilities { None, Naive, Digital };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    Gaussian1dNonstandardSwaptionEngine();
-#endif
-};
-
-%rename(Gaussian1dNonstandardSwaptionEngine) Gaussian1dNonstandardSwaptionEnginePtr;
-class Gaussian1dNonstandardSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-
-	static const Gaussian1dNonstandardSwaptionEngine::Probabilities None = Gaussian1dNonstandardSwaptionEngine::None;
-	static const Gaussian1dNonstandardSwaptionEngine::Probabilities Naive = Gaussian1dNonstandardSwaptionEngine::Naive;
-	static const Gaussian1dNonstandardSwaptionEngine::Probabilities Digital = Gaussian1dNonstandardSwaptionEngine::Digital;
-
-    Gaussian1dNonstandardSwaptionEnginePtr(
+    Gaussian1dNonstandardSwaptionEngine(
             const boost::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
@@ -295,45 +249,21 @@ class Gaussian1dNonstandardSwaptionEnginePtr : public boost::shared_ptr<PricingE
                                                         // compounded w.r.t. yts
                                                         // daycounter
             const Handle<YieldTermStructure> &discountCurve =
-                Handle<YieldTermStructure>(),
-				const Gaussian1dNonstandardSwaptionEngine::Probabilities probabilities = Gaussian1dNonstandardSwaptionEngine::None) {
-            return new Gaussian1dNonstandardSwaptionEnginePtr(new Gaussian1dNonstandardSwaptionEngine(model, integrationPoints, 
-                    stddevs, extrapolatePayoff, flatPayoffExtrapolation, oas, discountCurve, probabilities));
-        }
-    
-    }
-
+                                                 Handle<YieldTermStructure>(),
+            const Gaussian1dNonstandardSwaptionEngine::Probabilities probabilities =
+                                   Gaussian1dNonstandardSwaptionEngine::None);
 };
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_Gaussian1dFloatFloatSwaptionEngine) Gaussian1dFloatFloatSwaptionEngine;
-#else
-%ignore Gaussian1dFloatFloatSwaptionEngine;
-#endif
-class Gaussian1dFloatFloatSwaptionEngine {
+%shared_ptr(Gaussian1dFloatFloatSwaptionEngine)
+class Gaussian1dFloatFloatSwaptionEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %rename(NoProb) None;
+    #endif
   public:
     enum Probabilities {  None,
                           Naive,
                           Digital };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    Gaussian1dFloatFloatSwaptionEngine();
-#endif
-};
-
-%rename(Gaussian1dFloatFloatSwaptionEngine) Gaussian1dFloatFloatSwaptionEnginePtr;
-class Gaussian1dFloatFloatSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-
-        static const Gaussian1dFloatFloatSwaptionEngine::Probabilities None
-            = Gaussian1dFloatFloatSwaptionEngine::None;
-        static const Gaussian1dFloatFloatSwaptionEngine::Probabilities Naive
-            = Gaussian1dFloatFloatSwaptionEngine::Naive;
-        static const Gaussian1dFloatFloatSwaptionEngine::Probabilities Digital
-            = Gaussian1dFloatFloatSwaptionEngine::Digital;
-
-        Gaussian1dFloatFloatSwaptionEnginePtr(
+    Gaussian1dFloatFloatSwaptionEngine(
                 const boost::shared_ptr<Gaussian1dModel> &model,
                 const int integrationPoints = 64, const Real stddevs = 7.0,
                 const bool extrapolatePayoff = true,
@@ -342,21 +272,8 @@ class Gaussian1dFloatFloatSwaptionEnginePtr : public boost::shared_ptr<PricingEn
                 const Handle<YieldTermStructure> &discountCurve =
                                                  Handle<YieldTermStructure>(),
                 const bool includeTodaysExercise = false,
-                const Gaussian1dFloatFloatSwaptionEngine::Probabilities probabilities = Gaussian1dFloatFloatSwaptionEngine::None) {
-            return new Gaussian1dFloatFloatSwaptionEnginePtr(
-                new Gaussian1dFloatFloatSwaptionEngine(model,
-                                                       integrationPoints,
-                                                       stddevs,
-                                                       extrapolatePayoff,
-                                                       flatPayoffExtrapolation,
-                                                       oas,
-                                                       discountCurve,
-                                                       includeTodaysExercise,
-                                                       probabilities));
-        }
-
-    }
-
+                const Gaussian1dFloatFloatSwaptionEngine::Probabilities probabilities =
+                                    Gaussian1dFloatFloatSwaptionEngine::None);
 };
 
 #endif

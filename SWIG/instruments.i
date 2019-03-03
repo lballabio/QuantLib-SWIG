@@ -32,7 +32,11 @@
 using QuantLib::PricingEngine;
 %}
 
-%template(PricingEngine) boost::shared_ptr<PricingEngine>;
+%shared_ptr(PricingEngine)
+class PricingEngine : public Observable {
+  private:
+    PricingEngine();
+};
 
 // instrument
 

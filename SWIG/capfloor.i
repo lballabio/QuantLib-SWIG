@@ -79,50 +79,28 @@ class Collar : public CapFloor {
 
 %{
 using QuantLib::BlackCapFloorEngine;
-typedef boost::shared_ptr<PricingEngine> BlackCapFloorEnginePtr;
 %}
 
-%rename(BlackCapFloorEngine) BlackCapFloorEnginePtr;
-class BlackCapFloorEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BlackCapFloorEngine)
+class BlackCapFloorEngine : public PricingEngine {
   public:
-    %extend {
-        BlackCapFloorEnginePtr(
-                           const Handle<YieldTermStructure>& termStructure,
-                           const Handle<Quote>& vol) {
-            return new BlackCapFloorEnginePtr(
-                                  new BlackCapFloorEngine(termStructure,vol));
-        }
-        BlackCapFloorEnginePtr(
-                           const Handle<YieldTermStructure>& termStructure,
-                           const Handle<OptionletVolatilityStructure>& vol) {
-            return new BlackCapFloorEnginePtr(
-                                  new BlackCapFloorEngine(termStructure,vol));
-        }
-    }
+    BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                        const Handle<Quote>& vol);
+    BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                        const Handle<OptionletVolatilityStructure>& vol);
 };
 
 %{
 using QuantLib::BachelierCapFloorEngine;
-typedef boost::shared_ptr<PricingEngine> BachelierCapFloorEnginePtr;
 %}
 
-%rename(BachelierCapFloorEngine) BachelierCapFloorEnginePtr;
-class BachelierCapFloorEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BachelierCapFloorEngine)
+class BachelierCapFloorEngine : public PricingEngine {
   public:
-    %extend {
-        BachelierCapFloorEnginePtr(
-                           const Handle<YieldTermStructure>& termStructure,
-                           const Handle<Quote>& vol) {
-            return new BachelierCapFloorEnginePtr(
-                                new BachelierCapFloorEngine(termStructure,vol));
-        }
-        BachelierCapFloorEnginePtr(
-                           const Handle<YieldTermStructure>& termStructure,
-                           const Handle<OptionletVolatilityStructure>& vol) {
-            return new BachelierCapFloorEnginePtr(
-                                new BachelierCapFloorEngine(termStructure,vol));
-        }
-    }
+    BachelierCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                            const Handle<Quote>& vol);
+    BachelierCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                            const Handle<OptionletVolatilityStructure>& vol);
 };
 
 #endif

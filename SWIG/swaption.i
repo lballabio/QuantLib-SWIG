@@ -66,6 +66,11 @@ class Swaption : public Instrument {
                           Volatility maxVol = 4.0,
                           VolatilityType type = ShiftedLognormal,
                           Real displacement = 0.0) const;
+    %extend {
+        Real vega() {
+            return self->result<Real>("vega");
+        }
+    }
 };
 
 %{
@@ -159,54 +164,27 @@ public:
 %{
 using QuantLib::BlackSwaptionEngine;
 using QuantLib::BachelierSwaptionEngine;
-typedef boost::shared_ptr<PricingEngine> BlackSwaptionEnginePtr;
-typedef boost::shared_ptr<PricingEngine> BachelierSwaptionEnginePtr;
 %}
 
-%rename(BlackSwaptionEngine) BlackSwaptionEnginePtr;
-class BlackSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BlackSwaptionEngine)
+class BlackSwaptionEngine : public PricingEngine {
   public:
-    %extend {
-        BlackSwaptionEnginePtr(
-                           const Handle<YieldTermStructure> & discountCurve,
-                           const Handle<Quote>& vol,
-                           const DayCounter& dc = Actual365Fixed(),
-                           Real displacement = 0.0) {
-            return new BlackSwaptionEnginePtr(
-                          new BlackSwaptionEngine(discountCurve, vol, dc, displacement));
-        }
-        BlackSwaptionEnginePtr(
-                           const Handle<YieldTermStructure> & discountCurve,
-                           const Handle<SwaptionVolatilityStructure>& v) {
-            return new BlackSwaptionEnginePtr(
-                                   new BlackSwaptionEngine(discountCurve, v));
-        }
-
-    Real vega() {
-                return boost::dynamic_pointer_cast<Swaption>(*self)->result<Real>("vega");
-        }
-
-    }
+    BlackSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                        const Handle<Quote>& vol,
+                        const DayCounter& dc = Actual365Fixed(),
+                        Real displacement = 0.0);
+    BlackSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                        const Handle<SwaptionVolatilityStructure>& v);
 };
 
-%rename(BachelierSwaptionEngine) BachelierSwaptionEnginePtr;
-class BachelierSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BachelierSwaptionEngine)
+class BachelierSwaptionEngine : public PricingEngine {
   public:
-    %extend {
-        BachelierSwaptionEnginePtr(
-                           const Handle<YieldTermStructure> & discountCurve,
-                           const Handle<Quote>& vol,
-                           const DayCounter& dc = Actual365Fixed()) {
-            return new BlackSwaptionEnginePtr(
-                          new BachelierSwaptionEngine(discountCurve, vol, dc));
-        }
-        BachelierSwaptionEnginePtr(
-                           const Handle<YieldTermStructure> & discountCurve,
-                           const Handle<SwaptionVolatilityStructure>& v) {
-            return new BlackSwaptionEnginePtr(
-                                   new BachelierSwaptionEngine(discountCurve, v));
-        }
-    }
+    BachelierSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                            const Handle<Quote>& vol,
+                            const DayCounter& dc = Actual365Fixed());
+    BachelierSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                            const Handle<SwaptionVolatilityStructure>& v);
 };
 
 #endif

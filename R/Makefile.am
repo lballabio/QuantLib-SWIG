@@ -21,10 +21,6 @@ check-local: .build-stamp
 install-exec-local: .build-stamp
 	R CMD INSTALL .
 
-clean-local:
-	rm -rf $(BUILT_SOURCES) ../$(QUANTLIB_R_ROOT).Rcheck \
-           src/symbols.rds src/$(QUANTLIB_R_ROOT).o src/$(QUANTLIB_R_ROOT).so
-
 endif
 endif
 
@@ -36,6 +32,10 @@ dist-hook:
 	mkdir -p $(distdir)/demo
 	cp ./demo/00Index $(distdir)/demo
 	cp ./demo/*.R $(distdir)/demo
+
+clean-local:
+	rm -rf $(BUILT_SOURCES) ../R.Rcheck \
+           src/symbols.rds src/$(QUANTLIB_R_ROOT).o src/$(QUANTLIB_R_ROOT).so
 
 EXTRA_DIST = DESCRIPTION NAMESPACE README.txt cleanup \
              $(BUILT_SOURCES) \
