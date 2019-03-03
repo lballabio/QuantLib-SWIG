@@ -62,6 +62,12 @@ class StochasticProcess1D
       Real apply(Real x0, Real dx);
 };
 
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<StochasticProcess1D> )
+#endif
+%template(StochasticProcess1DVector)
+std::vector<boost::shared_ptr<StochasticProcess1D> >;
+
 
 %{
 using QuantLib::GeneralizedBlackScholesProcess;
