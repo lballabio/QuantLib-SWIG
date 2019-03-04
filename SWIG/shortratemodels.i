@@ -55,6 +55,8 @@ using QuantLib::G2;
 
 %shared_ptr(OneFactorAffineModel)
 class OneFactorAffineModel : public ShortRateModel {
+  private:
+    OneFactorAffineModel();
   public:
     virtual Real discountBond(Time now,
                           Time maturity,

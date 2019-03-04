@@ -136,9 +136,9 @@ using QuantLib::ForwardVanillaOption;
 
 %shared_ptr(OneAssetOption)
 class OneAssetOption : public Option {
+  private:
+    OneAssetOption();
   public:
-    OneAssetOption(const boost::shared_ptr<Payoff>&,
-                   const boost::shared_ptr<Exercise>&);
     Real delta() const;
     Real deltaForward() const;
     Real elasticity() const;
