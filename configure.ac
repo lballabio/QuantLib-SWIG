@@ -78,7 +78,8 @@ AC_ARG_ENABLE([ruby],
 AM_CONDITIONAL(BUILD_RUBY, test "$build_ruby" != "no")
 
 AC_PATH_PROGS([MCS], [gmcs mcs gmcs2])
-AM_CONDITIONAL(HAVE_MCS, test "x${MCS}" != "x")
+AC_PATH_PROGS([MONO], [mono])
+AM_CONDITIONAL(HAVE_MCS, test "x${MCS}" != "x" && test "x${MONO}" != "x")
 AC_ARG_ENABLE([csharp],
               AC_HELP_STRING([--disable-csharp],
                              [If disabled, the C# module
