@@ -800,6 +800,10 @@ class MCBarrierEngine : public PricingEngine {
     }
 };
 
+%template(MCPRBarrierEngine) MCBarrierEngine<PseudoRandom>;
+%template(MCLDBarrierEngine) MCBarrierEngine<LowDiscrepancy>;
+
+
 %{
 using QuantLib::FdmSchemeDesc;
 %}
