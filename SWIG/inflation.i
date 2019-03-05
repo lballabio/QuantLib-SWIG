@@ -64,19 +64,32 @@ class MultiplicativePriceSeasonalityPtr
 %}
 
 
-%ignore InflationTermStructure;
-class InflationTermStructure : public Extrapolator {
+%shared_ptr(InflationTermStructure);
+class InflationTermStructure : public Observable {
     #if defined(SWIGRUBY)
     %rename("indexIsInterpolated?")   indexIsInterpolated;
     %rename("setSeasonality!")        setSeasonality;
     %rename("hasSeasonality?")        hasSeasonality;
+    %rename("enableExtrapolation!")  enableExtrapolation;
+    %rename("disableExtrapolation!") disableExtrapolation;
+    %rename("allowsExtrapolation?")  allowsExtrapolation;
     #endif
+  private:
+    InflationTermStructure();
   public:
+    // from TermStructure, to be defined later
     DayCounter dayCounter() const;
     Calendar calendar() const;
     Date referenceDate() const;
     Date maxDate() const;
     Time maxTime() const;
+
+    // from Extrapolator, since we can't use multiple inheritance
+    void enableExtrapolation();
+    void disableExtrapolation();
+    bool allowsExtrapolation();
+
+    // own methods
     virtual Period observationLag() const;
     virtual Frequency frequency() const;
     virtual bool indexIsInterpolated() const;
@@ -89,34 +102,30 @@ class InflationTermStructure : public Extrapolator {
     bool hasSeasonality() const;
 };
 
-%ignore YoYInflationTermStructure;
+%shared_ptr(YoYInflationTermStructure);
 class YoYInflationTermStructure : public InflationTermStructure {
+  private:
+    YoYInflationTermStructure();
   public:
     Rate yoyRate(const Date &d, const Period& instObsLag = Period(-1,Days),
                  bool forceLinearInterpolation = false,
                  bool extrapolate = false) const;
 };
 
-%template(YoYInflationTermStructure)
-    boost::shared_ptr<YoYInflationTermStructure>;
-IsObservable(boost::shared_ptr<YoYInflationTermStructure>);
-
 %template(YoYInflationTermStructureHandle) Handle<YoYInflationTermStructure>;
 %template(RelinkableYoYInflationTermStructureHandle)
     RelinkableHandle<YoYInflationTermStructure>;
 
 
-%ignore ZeroInflationTermStructure;
+%shared_ptr(ZeroInflationTermStructure);
 class ZeroInflationTermStructure : public InflationTermStructure {
+  private:
+    ZeroInflationTermStructure();
   public:
     Rate zeroRate(const Date &d, const Period& instObsLag = Period(-1,Days),
                   bool forceLinearInterpolation = false,
                   bool extrapolate = false) const;
 };
-
-%template(ZeroInflationTermStructure)
-    boost::shared_ptr<ZeroInflationTermStructure>;
-IsObservable(boost::shared_ptr<ZeroInflationTermStructure>);
 
 %template(ZeroInflationTermStructureHandle) Handle<ZeroInflationTermStructure>;
 %template(RelinkableZeroInflationTermStructureHandle)
@@ -328,18 +337,15 @@ using QuantLib::PiecewiseZeroInflationCurve;
 using QuantLib::PiecewiseYoYInflationCurve;
 %}
 
-%define export_piecewise_zero_inflation_curve(Name,Interpolator)
-%{
-typedef boost::shared_ptr<ZeroInflationTermStructure> Name##Ptr;
-%}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<ZeroInflationTermStructure> {
+%shared_ptr(PiecewiseZeroInflationCurve<Linear>);
+
+template <class Interpolator>
+class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") Name##Ptr;
+    %feature("kwargs") PiecewiseZeroInflationCurve;
     #endif
   public:
-    %extend {
-        Name##Ptr(
+    PiecewiseZeroInflationCurve(
               const Date& referenceDate,
               const Calendar& calendar,
               const DayCounter& dayCounter,
@@ -350,45 +356,26 @@ class Name##Ptr : public boost::shared_ptr<ZeroInflationTermStructure> {
               const Handle<YieldTermStructure>& nominalTS,
               const std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new PiecewiseZeroInflationCurve<Interpolator>(
-                                        referenceDate, calendar, dayCounter,
-                                        lag, frequency, indexIsInterpolated,
-                                        baseRate, nominalTS, instruments,
-                                        accuracy, i));
-        }
-        const std::vector<Date>& dates() {
-            typedef PiecewiseZeroInflationCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Time>& times() {
-            typedef PiecewiseZeroInflationCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->times();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Real> > nodes() {
-            typedef PiecewiseZeroInflationCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+              const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
-%enddef
+
+%template(PiecewiseZeroInflation) PiecewiseZeroInflationCurve<Linear>;
 
 
-%define export_piecewise_yoy_inflation_curve(Name,Interpolator)
-%{
-typedef boost::shared_ptr<YoYInflationTermStructure> Name##Ptr;
-%}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<YoYInflationTermStructure> {
+%shared_ptr(PiecewiseYoYInflationCurve<Linear>);
+
+template <class Interpolator>
+class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") Name##Ptr;
+    %feature("kwargs") PiecewiseYoYInflationCurve;
     #endif
   public:
-    %extend {
-        Name##Ptr(
+    PiecewiseYoYInflationCurve(
               const Date& referenceDate,
               const Calendar& calendar,
               const DayCounter& dayCounter,
@@ -399,35 +386,15 @@ class Name##Ptr : public boost::shared_ptr<YoYInflationTermStructure> {
               const Handle<YieldTermStructure>& nominalTS,
               const std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new PiecewiseYoYInflationCurve<Interpolator>(
-                                        referenceDate, calendar, dayCounter,
-                                        lag, frequency, indexIsInterpolated,
-                                        baseRate, nominalTS, instruments,
-                                        accuracy, i));
-        }
-        const std::vector<Date>& dates() {
-            typedef PiecewiseYoYInflationCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Time>& times() {
-            typedef PiecewiseYoYInflationCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->times();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Real> > nodes() {
-            typedef PiecewiseYoYInflationCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+              const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
-%enddef
 
-export_piecewise_zero_inflation_curve(PiecewiseZeroInflation,Linear);
-
-export_piecewise_yoy_inflation_curve(PiecewiseYoYInflation,Linear);
+%template(PiecewiseYoYInflation) PiecewiseYoYInflationCurve<Linear>;
 
 
 // utilities
