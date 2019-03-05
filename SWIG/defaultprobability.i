@@ -33,15 +33,29 @@
 using QuantLib::DefaultProbabilityTermStructure;
 %}
 
-%ignore DefaultProbabilityTermStructure;
-class DefaultProbabilityTermStructure : public Extrapolator {
+%shared_ptr(DefaultProbabilityTermStructure);
+class DefaultProbabilityTermStructure : public Observable {
+    #if defined(SWIGRUBY)
+    %rename("enableExtrapolation!")  enableExtrapolation;
+    %rename("disableExtrapolation!") disableExtrapolation;
+    %rename("allowsExtrapolation?")  allowsExtrapolation;
+    #endif
+  private:
+    DefaultProbabilityTermStructure();
   public:
+    // from TermStructure, to be defined later
     DayCounter dayCounter() const;
     Calendar calendar() const;
     Date referenceDate() const;
     Date maxDate() const;
     Time maxTime() const;
 
+    // from Extrapolator, since we can't use multiple inheritance
+    void enableExtrapolation();
+    void disableExtrapolation();
+    bool allowsExtrapolation();
+
+    // own methods
     Probability defaultProbability(const Date&, bool extrapolate = false);
     Probability defaultProbability(Time, bool extrapolate = false);
     Probability defaultProbability(const Date&, const Date&,
@@ -58,9 +72,6 @@ class DefaultProbabilityTermStructure : public Extrapolator {
     Real hazardRate(Time, bool extrapolate = false);
 };
 
-%template(DefaultProbabilityTermStructure)
-boost::shared_ptr<DefaultProbabilityTermStructure>;
-IsObservable(boost::shared_ptr<DefaultProbabilityTermStructure>);
 
 %template(DefaultProbabilityTermStructureHandle)
 Handle<DefaultProbabilityTermStructure>;
@@ -75,182 +86,94 @@ RelinkableHandle<DefaultProbabilityTermStructure>;
 
 %{
 using QuantLib::FlatHazardRate;
-typedef boost::shared_ptr<DefaultProbabilityTermStructure> FlatHazardRatePtr;
 %}
 
-%rename(FlatHazardRate) FlatHazardRatePtr;
-class FlatHazardRatePtr
-    : public boost::shared_ptr<DefaultProbabilityTermStructure> {
+%shared_ptr(FlatHazardRate);
+class FlatHazardRate : public DefaultProbabilityTermStructure {
   public:
-    %extend {
-        FlatHazardRatePtr(Integer settlementDays,
-                          const Calendar& calendar,
-                          const Handle<Quote>& hazardRate,
-                          const DayCounter& dayCounter) {
-            return new FlatHazardRatePtr(
-                           new FlatHazardRate(settlementDays,calendar,
-                                              hazardRate,dayCounter));
-        }
-        FlatHazardRatePtr(const Date& todaysDate,
-                          const Handle<Quote>& hazardRate,
-                          const DayCounter& dayCounter) {
-            return new FlatHazardRatePtr(
-                        new FlatHazardRate(todaysDate,hazardRate,dayCounter));
-        }
-    }
+    FlatHazardRate(Integer settlementDays,
+                   const Calendar& calendar,
+                   const Handle<Quote>& hazardRate,
+                   const DayCounter& dayCounter);
+    FlatHazardRate(const Date& todaysDate,
+                   const Handle<Quote>& hazardRate,
+                   const DayCounter& dayCounter);
 };
-
 
 
 %{
 using QuantLib::InterpolatedHazardRateCurve;
 %}
 
-%define export_hazard_curve(Name,Interpolator)
+// add other instantiations both here and below the class
+%shared_ptr(InterpolatedHazardRateCurve<BackwardFlat>);
 
-%{
-typedef boost::shared_ptr<DefaultProbabilityTermStructure> Name##Ptr;
-%}
-
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
+template <class Interpolator>
+class InterpolatedHazardRateCurve : public DefaultProbabilityTermStructure {
   public:
-    %extend {
-        Name##Ptr(const std::vector<Date>& dates,
-                  const std::vector<Real>& hazardRates,
-                  const DayCounter& dayCounter,
-                  const Calendar& calendar = Calendar(),
-                  const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new InterpolatedHazardRateCurve<Interpolator>(dates,hazardRates,
-                                                              dayCounter,
-                                                              calendar,i));
-        }
-        const std::vector<Date>& dates() {
-            typedef InterpolatedHazardRateCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Real>& hazardRates() {
-            typedef InterpolatedHazardRateCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->hazardRates();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Real> > nodes() {
-            typedef InterpolatedHazardRateCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+    InterpolatedHazardRateCurve(const std::vector<Date>& dates,
+                                const std::vector<Real>& hazardRates,
+                                const DayCounter& dayCounter,
+                                const Calendar& calendar = Calendar(),
+                                const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Real>& hazardRates() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
 
-%enddef
-
-export_hazard_curve(HazardRateCurve,BackwardFlat);
-
-// add interpolations as you wish, e.g.,
-// export_hazard_curve(LinearHazardRateCurve,Linear);
-
+%template(HazardRateCurve) InterpolatedHazardRateCurve<BackwardFlat>;
 
 
 %{
 using QuantLib::InterpolatedDefaultDensityCurve;
 %}
 
-%define export_default_density_curve(Name,Interpolator)
+// add other instantiations both here and below the class
+%shared_ptr(InterpolatedDefaultDensityCurve<Linear>);
 
-%{
-typedef boost::shared_ptr<DefaultProbabilityTermStructure> Name##Ptr;
-%}
-
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
+template <class Interpolator>
+class InterpolatedDefaultDensityCurve : public DefaultProbabilityTermStructure {
   public:
-    %extend {
-        Name##Ptr(const std::vector<Date>& dates,
-                  const std::vector<Real>& densities,
-                  const DayCounter& dayCounter,
-                  const Calendar& calendar = Calendar(),
-                  const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new InterpolatedDefaultDensityCurve<Interpolator>(dates,
-                                                                  densities,
-                                                                  dayCounter,
-                                                                  calendar,i));
-        }
-        const std::vector<Date>& dates() {
-            typedef InterpolatedDefaultDensityCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Real>& defaultDensities() {
-            typedef InterpolatedDefaultDensityCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->defaultDensities();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Real> > nodes() {
-            typedef InterpolatedDefaultDensityCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+    InterpolatedDefaultDensityCurve(const std::vector<Date>& dates,
+                                    const std::vector<Real>& densities,
+                                    const DayCounter& dayCounter,
+                                    const Calendar& calendar = Calendar(),
+                                    const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Real>& defaultDensities() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
 
-%enddef
-
-export_default_density_curve(DefaultDensityCurve,Linear);
-
-// add interpolations as you wish, e.g.,
-// export_default_density_curve(CubicDefaultDensityCurve,Cubic);
-
+%template(DefaultDensityCurve) InterpolatedDefaultDensityCurve<Linear>;
 
 
 %{
 using QuantLib::InterpolatedSurvivalProbabilityCurve;
 %}
 
-%define export_survival_probability_curve(Name,Interpolator)
+// add other instantiations both here and below the class
+%shared_ptr(InterpolatedSurvivalProbabilityCurve<Linear>);
 
-%{
-typedef boost::shared_ptr<DefaultProbabilityTermStructure> Name##Ptr;
-%}
-
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
+template <class Interpolator>
+class InterpolatedSurvivalProbabilityCurve : public DefaultProbabilityTermStructure {
   public:
-    %extend {
-        Name##Ptr(const std::vector<Date>& dates,
-                  const std::vector<Probability>& probabilities,
-                  const DayCounter& dayCounter,
-                  const Calendar& calendar = Calendar(),
-                  const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new InterpolatedSurvivalProbabilityCurve<Interpolator>(dates,
-                                                                  probabilities,
-                                                                  dayCounter,
-                                                                  calendar,i));
-        }
-        const std::vector<Date>& dates() {
-            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Probability>& survivalProbabilities() {
-            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->survivalProbabilities();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Real> > nodes() {
-            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+    InterpolatedSurvivalProbabilityCurve(const std::vector<Date>& dates,
+                                         const std::vector<Probability>& probabilities,
+                                         const DayCounter& dayCounter,
+                                         const Calendar& calendar = Calendar(),
+                                         const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Probability>& survivalProbabilities() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
 
-%enddef
-
-export_survival_probability_curve(SurvivalProbabilityCurve,Linear);
-
-// add interpolations as you wish, e.g.,
-// export_survival_probability_curve(CubicSurvivalProbabilityCurve,Cubic);
+%template(SurvivalProbabilityCurve) InterpolatedSurvivalProbabilityCurve<Linear>;
 
 
 %{
@@ -266,12 +189,12 @@ class DefaultProbabilityHelper : public Observable {
   public:
     Handle<Quote> quote() const;
     Date latestDate() const;
-	Date earliestDate() const;
-	Date maturityDate() const;
-	Date latestRelevantDate() const;
-	Date pillarDate() const;
-	Real impliedQuote() const;
-	Real quoteError() const;
+    Date earliestDate() const;
+    Date maturityDate() const;
+    Date latestRelevantDate() const;
+    Date pillarDate() const;
+    Real impliedQuote() const;
+    Real quoteError() const;
   private:
     DefaultProbabilityHelper();
 };
@@ -370,64 +293,41 @@ struct DefaultDensity {};
 using QuantLib::PiecewiseDefaultCurve;
 %}
 
-%define export_piecewise_default_curve(Name,Base,Interpolator)
+/* We have to resort to a macro, because the R implementation of shared_ptr
+   can't take class templates with two or more template arguments. */
+
+%define export_piecewise_default_curve(Name,Traits,Interpolator)
 
 %{
-typedef boost::shared_ptr<DefaultProbabilityTermStructure> Name##Ptr;
+typedef PiecewiseDefaultCurve<Traits, Interpolator> Name;
 %}
 
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
+%shared_ptr(Name);
+class Name : public DefaultProbabilityTermStructure {
   public:
-    %extend {
-        Name##Ptr(
-              const Date& referenceDate,
-              const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >&
+    Name(const Date& referenceDate,
+         const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >&
                                                                   instruments,
-              const DayCounter& dayCounter,
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new PiecewiseDefaultCurve<Base,Interpolator>(
-                                                 referenceDate,instruments,
-                                                 dayCounter, accuracy, i));
-        }
-        Name##Ptr(
-              Integer settlementDays, const Calendar& calendar,
-              const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >&
+         const DayCounter& dayCounter,
+         Real accuracy = 1.0e-12,
+         const Interpolator& i = Interpolator());
+    Name(Integer settlementDays, const Calendar& calendar,
+         const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >&
                                                                   instruments,
-              const DayCounter& dayCounter,
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new PiecewiseDefaultCurve<Base,Interpolator>(
-                                        settlementDays, calendar, instruments,
-                                        dayCounter, accuracy, i));
-        }
-        const std::vector<Date>& dates() {
-            typedef PiecewiseDefaultCurve<Base,Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Time>& times() {
-            typedef PiecewiseDefaultCurve<Base,Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->times();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Real> > nodes() {
-            typedef PiecewiseDefaultCurve<Base,Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+         const DayCounter& dayCounter,
+         Real accuracy = 1.0e-12,
+         const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
 
 %enddef
 
-
+// add other instantiations if you need them
 export_piecewise_default_curve(PiecewiseFlatHazardRate,HazardRate,BackwardFlat);
-
-// combine traits as you wish, e.g.,
-// export_piecewise_default_curve(PiecewiseLinearDensity,DefaultDensity,Linear);
 
 
 #endif
