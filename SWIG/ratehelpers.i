@@ -323,6 +323,14 @@ namespace std {
     %template(RateHelperVector) vector<boost::shared_ptr<RateHelper> >;
 }
 
+// allow use of RateHelper vectors
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BondHelper> )
+#endif
+namespace std {
+    %template(BondHelperVector) vector<boost::shared_ptr<BondHelper> >;
+}
+
 %inline %{
     const boost::shared_ptr<DepositRateHelper> as_depositratehelper(const boost::shared_ptr<RateHelper> helper) {
         return boost::dynamic_pointer_cast<DepositRateHelper>(helper);

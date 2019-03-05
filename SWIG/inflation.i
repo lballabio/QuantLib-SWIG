@@ -26,11 +26,12 @@
 %{
   using QuantLib::Seasonality;
   using QuantLib::MultiplicativePriceSeasonality;
-  typedef boost::shared_ptr<Seasonality> MultiplicativePriceSeasonalityPtr;
 %}
 
-%ignore Seasonality;
+%shared_ptr(Seasonality);
 class Seasonality {
+  private:
+    Seasonality();
   public:
     virtual Rate correctZeroRate(const Date &d, const Rate r,
                                  const InflationTermStructure& iTS) const = 0;
@@ -39,30 +40,20 @@ class Seasonality {
     virtual bool isConsistent(const InflationTermStructure& iTS);
 };
 
-%template(Seasonality) boost::shared_ptr<Seasonality>;
-
-class MultiplicativePriceSeasonalityPtr
-    : public boost::shared_ptr<Seasonality> {
+%shared_ptr(MultiplicativePriceSeasonality)
+class MultiplicativePriceSeasonality : public Seasonality {
   public:
-    %extend {
-        MultiplicativePriceSeasonalityPtr(
-                                const Date& seasonalityBaseDate,
-                                Frequency frequency,
-                                const std::vector<Rate>& seasonalityFactors) {
-            return new MultiplicativePriceSeasonalityPtr(
-                       new MultiplicativePriceSeasonality(seasonalityBaseDate,
-                                                          frequency,
-                                                          seasonalityFactors));
-        }
-    }
+    MultiplicativePriceSeasonality(const Date& seasonalityBaseDate,
+                                   Frequency frequency,
+                                   const std::vector<Rate>& seasonalityFactors);
 };
+
 
 %{
   using QuantLib::InflationTermStructure;
   using QuantLib::YoYInflationTermStructure;
   using QuantLib::ZeroInflationTermStructure;
 %}
-
 
 %shared_ptr(InflationTermStructure);
 class InflationTermStructure : public Observable {
