@@ -1,6 +1,6 @@
 #!/bin/bash
 
 ./autogen.sh \
-&& ./configure CXXFLAGS='-O2' \
+&& ./configure CXXFLAGS='-O1' \
 && make -C R \
 && make -C R check
