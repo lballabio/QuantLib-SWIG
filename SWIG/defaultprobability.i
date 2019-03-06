@@ -28,34 +28,17 @@
 %include observer.i
 %include marketelements.i
 %include interpolation.i
+%include termstructures.i
 
 %{
 using QuantLib::DefaultProbabilityTermStructure;
 %}
 
 %shared_ptr(DefaultProbabilityTermStructure);
-class DefaultProbabilityTermStructure : public Observable {
-    #if defined(SWIGRUBY)
-    %rename("enableExtrapolation!")  enableExtrapolation;
-    %rename("disableExtrapolation!") disableExtrapolation;
-    %rename("allowsExtrapolation?")  allowsExtrapolation;
-    #endif
+class DefaultProbabilityTermStructure : public TermStructure {
   private:
     DefaultProbabilityTermStructure();
   public:
-    // from TermStructure, to be defined later
-    DayCounter dayCounter() const;
-    Calendar calendar() const;
-    Date referenceDate() const;
-    Date maxDate() const;
-    Time maxTime() const;
-
-    // from Extrapolator, since we can't use multiple inheritance
-    void enableExtrapolation();
-    void disableExtrapolation();
-    bool allowsExtrapolation();
-
-    // own methods
     Probability defaultProbability(const Date&, bool extrapolate = false);
     Probability defaultProbability(Time, bool extrapolate = false);
     Probability defaultProbability(const Date&, const Date&,

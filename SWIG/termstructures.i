@@ -32,28 +32,43 @@
 %include marketelements.i
 %include interpolation.i
 
+
 %{
-using QuantLib::YieldTermStructure;
+using QuantLib::TermStructure;
 %}
 
-%shared_ptr(YieldTermStructure);
-class YieldTermStructure : public Observable {
+%shared_ptr(TermStructure);
+class TermStructure : public Observable {
+    #if defined(SWIGRUBY)
+    %rename("enableExtrapolation!")  enableExtrapolation;
+    %rename("disableExtrapolation!") disableExtrapolation;
+    %rename("allowsExtrapolation?")  allowsExtrapolation;
+    #endif
   private:
-    YieldTermStructure();
+    TermStructure();
   public:
-    // from TermStructure, to be defined later
     DayCounter dayCounter() const;
     Calendar calendar() const;
     Date referenceDate() const;
     Date maxDate() const;
     Time maxTime() const;
-
     // from Extrapolator, since we can't use multiple inheritance
+    // and we're already inheriting from Observable
     void enableExtrapolation();
     void disableExtrapolation();
     bool allowsExtrapolation();
+};
 
-    // own methods
+
+%{
+using QuantLib::YieldTermStructure;
+%}
+
+%shared_ptr(YieldTermStructure);
+class YieldTermStructure : public TermStructure {
+  private:
+    YieldTermStructure();
+  public:
     DiscountFactor discount(const Date&, bool extrapolate = false);
     DiscountFactor discount(Time, bool extrapolate = false);
     InterestRate zeroRate(const Date& d,

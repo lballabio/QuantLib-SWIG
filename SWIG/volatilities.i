@@ -34,7 +34,7 @@
 %include indexes.i
 %include optimizers.i
 %include options.i
-%include boost_shared_ptr.i
+%include termstructures.i
 
 %define QL_TYPECHECK_VOLATILITYTYPE       8210    %enddef
 
@@ -72,23 +72,10 @@ using QuantLib::SwaptionVolatilityStructure;
 %}
 
 %shared_ptr(VolatilityTermStructure);
-class VolatilityTermStructure : public Observable {
+class VolatilityTermStructure : public TermStructure {
   private:
     VolatilityTermStructure();
   public:
-    // from TermStructure, to be defined later
-    Date referenceDate() const;
-    DayCounter dayCounter() const;
-    Calendar calendar() const;
-    Date maxDate() const;
-    Time maxTime() const;
-
-    // from Extrapolator, since we can't use multiple inheritance
-    void enableExtrapolation();
-    void disableExtrapolation();
-    bool allowsExtrapolation();
-
-    // own methods
     Real minStrike() const;
     Real maxStrike() const;
 };

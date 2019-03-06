@@ -56,31 +56,15 @@ class MultiplicativePriceSeasonality : public Seasonality {
 %}
 
 %shared_ptr(InflationTermStructure);
-class InflationTermStructure : public Observable {
+class InflationTermStructure : public TermStructure {
     #if defined(SWIGRUBY)
     %rename("indexIsInterpolated?")   indexIsInterpolated;
     %rename("setSeasonality!")        setSeasonality;
     %rename("hasSeasonality?")        hasSeasonality;
-    %rename("enableExtrapolation!")  enableExtrapolation;
-    %rename("disableExtrapolation!") disableExtrapolation;
-    %rename("allowsExtrapolation?")  allowsExtrapolation;
     #endif
   private:
     InflationTermStructure();
   public:
-    // from TermStructure, to be defined later
-    DayCounter dayCounter() const;
-    Calendar calendar() const;
-    Date referenceDate() const;
-    Date maxDate() const;
-    Time maxTime() const;
-
-    // from Extrapolator, since we can't use multiple inheritance
-    void enableExtrapolation();
-    void disableExtrapolation();
-    bool allowsExtrapolation();
-
-    // own methods
     virtual Period observationLag() const;
     virtual Frequency frequency() const;
     virtual bool indexIsInterpolated() const;
