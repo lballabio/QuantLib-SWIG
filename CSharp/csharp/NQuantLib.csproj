@@ -191,7 +191,6 @@
     <Compile Include="BachelierSwaptionEngine.cs" />
     <Compile Include="BackwardFlat.cs" />
     <Compile Include="BackwardFlatInterpolation.cs" />
-    <Compile Include="BackwardFlatZeroCurve.cs" />
     <Compile Include="BaroneAdesiWhaleyEngine.cs" />
     <Compile Include="Barrier.cs" />
     <Compile Include="BarrierOption.cs" />
@@ -284,6 +283,7 @@
     <Compile Include="Bond.cs" />
     <Compile Include="BondFunctions.cs" />
     <Compile Include="BondHelper.cs" />
+    <Compile Include="BondHelperVector.cs" />
     <Compile Include="BoolVector.cs" />
     <Compile Include="BoundaryConstraint.cs" />
     <Compile Include="BoxMullerKnuthGaussianRng.cs" />
@@ -535,7 +535,6 @@
     <Compile Include="ForwardEuropeanEngine.cs" />
     <Compile Include="ForwardFlat.cs" />
     <Compile Include="ForwardFlatInterpolation.cs" />
-    <Compile Include="ForwardFlatZeroCurve.cs" />
     <Compile Include="ForwardRate.cs" />
     <Compile Include="ForwardRateAgreement.cs" />
     <Compile Include="ForwardSpreadedTermStructure.cs" />
@@ -622,6 +621,7 @@
     <Compile Include="India.cs" />
     <Compile Include="Indonesia.cs" />
     <Compile Include="InflationIndex.cs" />
+    <Compile Include="InflationTermStructure.cs" />
     <Compile Include="INRCurrency.cs" />
     <Compile Include="Instrument.cs" />
     <Compile Include="InstrumentVector.cs" />
@@ -753,7 +753,7 @@
     <Compile Include="MultiPath.cs" />
     <Compile Include="MultipleIncrementalStatistics.cs" />
     <Compile Include="MultipleStatistics.cs" />
-    <Compile Include="MultiplicativePriceSeasonalityPtr.cs" />
+    <Compile Include="MultiplicativePriceSeasonality.cs" />
     <Compile Include="MXNCurrency.cs" />
     <Compile Include="MYRCurrency.cs" />
     <Compile Include="NelsonSiegelFitting.cs" />
@@ -948,7 +948,6 @@
     <Compile Include="SwaptionVolCube1.cs" />
     <Compile Include="SwaptionVolCube2.cs" />
     <Compile Include="Sweden.cs" />
-    <Compile Include="SWIGTYPE_p_BlackVolTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_boost__functionT_double_fdoubleF_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_bool_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_VolatilityType_t.cs" />
@@ -958,26 +957,16 @@
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SwaptionHelper_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_Swaption_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_VanillaSwap_t.cs" />
-    <Compile Include="SWIGTYPE_p_CapFloorTermVolatilityStructure.cs" />
-    <Compile Include="SWIGTYPE_p_DefaultProbabilityTermStructure.cs" />
     <Compile Include="SWIGTYPE_p_DisposableT_Array_t.cs" />
     <Compile Include="SWIGTYPE_p_EndCriteria__Type.cs" />
-    <Compile Include="SWIGTYPE_p_InflationTermStructure.cs" />
-    <Compile Include="SWIGTYPE_p_LocalVolTermStructure.cs" />
-    <Compile Include="SWIGTYPE_p_OptionletVolatilityStructure.cs" />
-    <Compile Include="SWIGTYPE_p_Seasonality.cs" />
     <Compile Include="SWIGTYPE_p_std__size_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_std__vectorT_double_t_t.cs" />
-    <Compile Include="SWIGTYPE_p_StrippedOptionletBase.cs" />
-    <Compile Include="SWIGTYPE_p_SwaptionVolatilityStructure.cs" />
-    <Compile Include="SWIGTYPE_p_YieldTermStructure.cs" />
-    <Compile Include="SWIGTYPE_p_YoYInflationTermStructure.cs" />
-    <Compile Include="SWIGTYPE_p_ZeroInflationTermStructure.cs" />
     <Compile Include="SwingExercise.cs" />
     <Compile Include="Switzerland.cs" />
     <Compile Include="Taiwan.cs" />
     <Compile Include="TARGET.cs" />
     <Compile Include="TemperatureExponential.cs" />
+    <Compile Include="TermStructure.cs" />
     <Compile Include="TermStructureConsistentModel.cs" />
     <Compile Include="Thailand.cs" />
     <Compile Include="THBCurrency.cs" />
@@ -1029,6 +1018,7 @@
     <Compile Include="Vasicek.cs" />
     <Compile Include="VEBCurrency.cs" />
     <Compile Include="VNDCurrency.cs" />
+    <Compile Include="VolatilityTermStructure.cs" />
     <Compile Include="VolatilityType.cs" />
     <Compile Include="Weekday.cs" />
     <Compile Include="WeekendsOnly.cs" />
@@ -1078,7 +1068,6 @@
     <Compile Include="ZeroSpreadedTermStructure.cs" />
     <Compile Include="ZeroYield.cs" />
     <Compile Include="Zibor.cs" />
-    <Compile Include="_BlackVarianceSurface.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
