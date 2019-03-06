@@ -26,25 +26,6 @@
 %include linearalgebra.i
 
 %{
-using QuantLib::Extrapolator;
-%}
-
-%ignore Extrapolator;
-class Extrapolator {
-    #if defined(SWIGRUBY)
-    %rename("enableExtrapolation!")  enableExtrapolation;
-    %rename("disableExtrapolation!") disableExtrapolation;
-    %rename("allowsExtrapolation?")  allowsExtrapolation;
-    #endif
-  public:
-    void enableExtrapolation();
-    void disableExtrapolation();
-    bool allowsExtrapolation();
-};
-
-// interpolations
-
-%{
 // safe versions which copy their arguments
 template <class I>
 class SafeInterpolation {
