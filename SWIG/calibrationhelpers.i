@@ -76,9 +76,6 @@ class BlackCalibrationHelper : public CalibrationHelperBase {
 
 };
 
-deprecate_feature(CalibrationHelper,
-                  BlackCalibrationHelper);
-
 %inline %{
     boost::shared_ptr<BlackCalibrationHelper> as_black_helper(const boost::shared_ptr<CalibrationHelperBase>& h) {
         return boost::dynamic_pointer_cast<BlackCalibrationHelper>(h);

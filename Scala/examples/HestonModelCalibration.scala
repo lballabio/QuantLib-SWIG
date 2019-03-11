@@ -83,7 +83,7 @@ object HestonModelCalibration {
                 calibrationHelpers.add(
                     new HestonModelHelper(maturity, calendar, s0.value, 
                                           strikes(s), vol, rTS, divTS, 
-                                          CalibrationHelper.ImpliedVolError))
+                                          BlackCalibrationHelper.ImpliedVolError))
             }
         }
         
