@@ -110,5 +110,28 @@ class BinomialConvertibleEngine : public PricingEngine {
 %template(BinomialLRConvertibleEngine) BinomialConvertibleEngine<LeisenReimer>;
 %template(BinomialJ4ConvertibleEngine) BinomialConvertibleEngine<Joshi4>;
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def BinomialConvertibleEngine(process, type, steps):
+        type = type.lower()
+        if type == "crr" or type == "coxrossrubinstein":
+            cls = BinomialCRRConvertibleEngine
+        elif type == "jr" or type == "jarrowrudd":
+            cls = BinomialJRConvertibleEngine
+        elif type == "eqp":
+            cls = BinomialEQPConvertibleEngine
+        elif type == "trigeorgis":
+            cls = BinomialTrigeorgisConvertibleEngine
+        elif type == "tian":
+            cls = BinomialTianConvertibleEngine
+        elif type == "lr" or type == "leisenreimer":
+            cls = BinomialLRConvertibleEngine
+        elif type == "j4" or type == "joshi4":
+            cls = BinomialJ4ConvertibleEngine
+        else:
+            raise RuntimeError("unknown binomial engine type: %s" % type);
+        return cls(process, steps)
+%}
+#endif
 
 #endif

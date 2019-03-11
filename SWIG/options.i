@@ -458,6 +458,30 @@ class BinomialVanillaEngine : public PricingEngine {
 %template(BinomialJ4VanillaEngine) BinomialVanillaEngine<Joshi4>;
 
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def BinomialVanillaEngine(process, type, steps):
+        type = type.lower()
+        if type == "crr" or type == "coxrossrubinstein":
+            cls = BinomialCRRVanillaEngine
+        elif type == "jr" or type == "jarrowrudd":
+            cls = BinomialJRVanillaEngine
+        elif type == "eqp":
+            cls = BinomialEQPVanillaEngine
+        elif type == "trigeorgis":
+            cls = BinomialTrigeorgisVanillaEngine
+        elif type == "tian":
+            cls = BinomialTianVanillaEngine
+        elif type == "lr" or type == "leisenreimer":
+            cls = BinomialLRVanillaEngine
+        elif type == "j4" or type == "joshi4":
+            cls = BinomialJ4VanillaEngine
+        else:
+            raise RuntimeError("unknown binomial engine type: %s" % type);
+        return cls(process, steps)
+%}
+#endif
+
 %{
 using QuantLib::MCEuropeanEngine;
 using QuantLib::MCAmericanEngine;
@@ -951,6 +975,30 @@ class BinomialBarrierEngine : public PricingEngine {
 %template(BinomialLRBarrierEngine) BinomialBarrierEngine<LeisenReimer, DiscretizedDermanKaniBarrierOption>;
 %template(BinomialJ4BarrierEngine) BinomialBarrierEngine<Joshi4, DiscretizedDermanKaniBarrierOption>;
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def BinomialBarrierEngine(process, type, steps):
+        type = type.lower()
+        if type == "crr" or type == "coxrossrubinstein":
+            cls = BinomialCRRBarrierEngine
+        elif type == "jr" or type == "jarrowrudd":
+            cls = BinomialJRBarrierEngine
+        elif type == "eqp":
+            cls = BinomialEQPBarrierEngine
+        elif type == "trigeorgis":
+            cls = BinomialTrigeorgisBarrierEngine
+        elif type == "tian":
+            cls = BinomialTianBarrierEngine
+        elif type == "lr" or type == "leisenreimer":
+            cls = BinomialLRBarrierEngine
+        elif type == "j4" or type == "joshi4":
+            cls = BinomialJ4BarrierEngine
+        else:
+            raise RuntimeError("unknown binomial engine type: %s" % type);
+        return cls(process, steps)
+%}
+#endif
+
 #endif
 
 
@@ -1422,6 +1470,30 @@ class BinomialDoubleBarrierEngine : public PricingEngine {
 %template(BinomialTianDoubleBarrierEngine) BinomialDoubleBarrierEngine<Tian, DiscretizedDermanKaniDoubleBarrierOption>;
 %template(BinomialLRDoubleBarrierEngine) BinomialDoubleBarrierEngine<LeisenReimer, DiscretizedDermanKaniDoubleBarrierOption>;
 %template(BinomialJ4DoubleBarrierEngine) BinomialDoubleBarrierEngine<Joshi4, DiscretizedDermanKaniDoubleBarrierOption>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def BinomialDoubleBarrierEngine(process, type, steps):
+        type = type.lower()
+        if type == "crr" or type == "coxrossrubinstein":
+            cls = BinomialCRRDoubleBarrierEngine
+        elif type == "jr" or type == "jarrowrudd":
+            cls = BinomialJRDoubleBarrierEngine
+        elif type == "eqp":
+            cls = BinomialEQPDoubleBarrierEngine
+        elif type == "trigeorgis":
+            cls = BinomialTrigeorgisDoubleBarrierEngine
+        elif type == "tian":
+            cls = BinomialTianDoubleBarrierEngine
+        elif type == "lr" or type == "leisenreimer":
+            cls = BinomialLRDoubleBarrierEngine
+        elif type == "j4" or type == "joshi4":
+            cls = BinomialJ4DoubleBarrierEngine
+        else:
+            raise RuntimeError("unknown binomial engine type: %s" % type);
+        return cls(process, steps)
+%}
+#endif
 
 #endif
 

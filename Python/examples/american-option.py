@@ -1,4 +1,3 @@
-
 # Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
@@ -17,13 +16,13 @@
 from QuantLib import *
 
 # global data
-todaysDate = Date(15,May,1998)
+todaysDate = Date(15, May, 1998)
 Settings.instance().evaluationDate = todaysDate
-settlementDate = Date(17,May,1998)
+settlementDate = Date(17, May, 1998)
 riskFreeRate = FlatForward(settlementDate, 0.06, Actual365Fixed())
 
 # option parameters
-exercise = AmericanExercise(settlementDate, Date(17,May,1999))
+exercise = AmericanExercise(settlementDate, Date(17, May, 1999))
 payoff = PlainVanillaPayoff(Option.Put, 40.0)
 
 # market data
@@ -32,69 +31,73 @@ volatility = BlackConstantVol(todaysDate, TARGET(), 0.20, Actual365Fixed())
 dividendYield = FlatForward(settlementDate, 0.00, Actual365Fixed())
 
 # report
-header = '%19s' % 'method' + ' |' + \
-         ' |'.join(['%17s' % tag for tag in ['value',
-                                            'estimated error',
-                                            'actual error' ] ])
-print('')
+header = "%19s" % "method" + " |" + " |".join(["%17s" % tag for tag in ["value", "estimated error", "actual error"]])
+print("")
 print(header)
-print('-'*len(header))
+print("-" * len(header))
 
 refValue = None
-def report(method, x, dx = None):
-    e = '%.4f' % abs(x-refValue)
-    x = '%.5f' % x
+
+
+def report(method, x, dx=None):
+    e = "%.4f" % abs(x - refValue)
+    x = "%.5f" % x
     if dx:
-        dx = '%.4f' % dx
+        dx = "%.4f" % dx
     else:
-        dx = 'n/a'
-    print('%19s' % method + ' |' +
-          ' |'.join(['%17s' % y for y in [x, dx, e] ]))
+        dx = "n/a"
+    print("%19s" % method + " |" + " |".join(["%17s" % y for y in [x, dx, e]]))
+
 
 # good to go
 
-process = BlackScholesMertonProcess(QuoteHandle(underlying),
-                                    YieldTermStructureHandle(dividendYield),
-                                    YieldTermStructureHandle(riskFreeRate),
-                                    BlackVolTermStructureHandle(volatility))
+process = BlackScholesMertonProcess(
+    QuoteHandle(underlying),
+    YieldTermStructureHandle(dividendYield),
+    YieldTermStructureHandle(riskFreeRate),
+    BlackVolTermStructureHandle(volatility),
+)
 
 option = VanillaOption(payoff, exercise)
 
 refValue = 4.48667344
-report('reference value',refValue)
+report("reference value", refValue)
 
 # method: analytic
 
 option.setPricingEngine(BaroneAdesiWhaleyEngine(process))
-report('Barone-Adesi-Whaley',option.NPV())
+report("Barone-Adesi-Whaley", option.NPV())
 
 option.setPricingEngine(BjerksundStenslandEngine(process))
-report('Bjerksund-Stensland',option.NPV())
+report("Bjerksund-Stensland", option.NPV())
 
 # method: finite differences
 timeSteps = 801
 gridPoints = 800
 
-option.setPricingEngine(FDAmericanEngine(process,timeSteps,gridPoints))
-report('finite differences',option.NPV())
+option.setPricingEngine(FDAmericanEngine(process, timeSteps, gridPoints))
+report("finite differences", option.NPV())
 
 # method: binomial
 timeSteps = 801
 
-option.setPricingEngine(BinomialJRVanillaEngine(process,timeSteps))
-report('binomial (JR)',option.NPV())
+option.setPricingEngine(BinomialVanillaEngine(process, "JR", timeSteps))
+report("binomial (JR)", option.NPV())
 
-option.setPricingEngine(BinomialCRRVanillaEngine(process,timeSteps))
-report('binomial (CRR)',option.NPV())
+option.setPricingEngine(BinomialVanillaEngine(process, "CRR", timeSteps))
+report("binomial (CRR)", option.NPV())
 
-option.setPricingEngine(BinomialEQPVanillaEngine(process,timeSteps))
-report('binomial (EQP)',option.NPV())
+option.setPricingEngine(BinomialVanillaEngine(process, "EQP", timeSteps))
+report("binomial (EQP)", option.NPV())
 
-option.setPricingEngine(BinomialTrigeorgisVanillaEngine(process,timeSteps))
-report('bin. (Trigeorgis)',option.NPV())
+option.setPricingEngine(BinomialVanillaEngine(process, "Trigeorgis", timeSteps))
+report("bin. (Trigeorgis)", option.NPV())
 
-option.setPricingEngine(BinomialTianVanillaEngine(process,timeSteps))
-report('binomial (Tian)',option.NPV())
+option.setPricingEngine(BinomialVanillaEngine(process, "Tian", timeSteps))
+report("binomial (Tian)", option.NPV())
 
-option.setPricingEngine(BinomialLRVanillaEngine(process,timeSteps))
-report('binomial (LR)',option.NPV())
+option.setPricingEngine(BinomialVanillaEngine(process, "LR", timeSteps))
+report("binomial (LR)", option.NPV())
+
+option.setPricingEngine(BinomialVanillaEngine(process, "Joshi4", timeSteps))
+report("binomial (Joshi)", option.NPV())
