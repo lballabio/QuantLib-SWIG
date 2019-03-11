@@ -52,32 +52,36 @@ matrix[1][0] = 0.5
 
 process = StochasticProcessArray([process1, process2], matrix)
 basketoption = BasketOption(MaxBasketPayoff(payoff), exercise)
-basketoption.setPricingEngine(MCPREuropeanBasketEngine(process,
-                                                       timeStepsPerYear = 1,
-                                                       requiredTolerance = 0.02,
-                                                       seed = 42))
+basketoption.setPricingEngine(MCEuropeanBasketEngine(process,
+                                                     "pseudorandom",
+                                                     timeStepsPerYear = 1,
+                                                     requiredTolerance = 0.02,
+                                                     seed = 42))
 print(basketoption.NPV())
 
 basketoption = BasketOption(MinBasketPayoff(payoff), exercise)
-basketoption.setPricingEngine(MCPREuropeanBasketEngine(process,
-                                                       timeStepsPerYear = 1,
-                                                       requiredTolerance = 0.02,
-                                                       seed = 42))
+basketoption.setPricingEngine(MCEuropeanBasketEngine(process,
+                                                     "pseudorandom",
+                                                     timeStepsPerYear = 1,
+                                                     requiredTolerance = 0.02,
+                                                     seed = 42))
 print(basketoption.NPV())
 
 basketoption = BasketOption(AverageBasketPayoff(payoff, 2), exercise)
-basketoption.setPricingEngine(MCPREuropeanBasketEngine(process,
-                                                       timeStepsPerYear = 1,
-                                                       requiredTolerance = 0.02,
-                                                       seed = 42))
+basketoption.setPricingEngine(MCEuropeanBasketEngine(process,
+                                                     "pseudorandom",
+                                                     timeStepsPerYear = 1,
+                                                     requiredTolerance = 0.02,
+                                                     seed = 42))
 print(basketoption.NPV())
 
 americanExercise = AmericanExercise(settlementDate, Date(17,May,1999))
 americanbasketoption = BasketOption(MaxBasketPayoff(payoff), americanExercise)
-americanbasketoption.setPricingEngine(MCPRAmericanBasketEngine(process,
-                                                               timeSteps = 10,
-                                                               requiredTolerance = 0.02,
-                                                               seed = 42,
-                                                               polynomOrder = 5,
-                                                               polynomType = LsmBasisSystem.Hermite))
+americanbasketoption.setPricingEngine(MCAmericanBasketEngine(process,
+                                                             "pseudorandom",
+                                                             timeSteps = 10,
+                                                             requiredTolerance = 0.02,
+                                                             seed = 42,
+                                                             polynomOrder = 5,
+                                                             polynomType = LsmBasisSystem.Hermite))
 print(americanbasketoption.NPV())

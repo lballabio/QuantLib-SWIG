@@ -125,8 +125,8 @@ report("binomial (Joshi)", option.NPV())
 # not yet implemented
 
 # method: Monte Carlo
-option.setPricingEngine(MCPREuropeanEngine(process, timeSteps=1, requiredTolerance=0.02, seed=42))
+option.setPricingEngine(MCEuropeanEngine(process, "pseudorandom", timeSteps=1, requiredTolerance=0.02, seed=42))
 report("MC (crude)", option.NPV(), option.errorEstimate())
 
-option.setPricingEngine(MCLDEuropeanEngine(process, timeSteps=1, requiredSamples=32768))
+option.setPricingEngine(MCEuropeanEngine(process, "lowdiscrepancy", timeSteps=1, requiredSamples=32768))
 report("MC (Sobol)", option.NPV())

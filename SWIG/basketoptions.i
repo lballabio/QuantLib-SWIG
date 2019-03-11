@@ -89,8 +89,8 @@ class MCEuropeanBasketEngine : public PricingEngine {
   public:
     %extend {
         MCEuropeanBasketEngine(const boost::shared_ptr<StochasticProcessArray>& process,
-                               Size timeSteps = Null<Size>(),
-                               Size timeStepsPerYear = Null<Size>(),
+                               intOrNull timeSteps = Null<Size>(),
+                               intOrNull timeStepsPerYear = Null<Size>(),
                                bool brownianBridge = false,
                                bool antitheticVariate = false,
                                intOrNull requiredSamples = Null<Size>(),
@@ -113,6 +113,37 @@ class MCEuropeanBasketEngine : public PricingEngine {
 %template(MCPREuropeanBasketEngine) MCEuropeanBasketEngine<PseudoRandom>;
 %template(MCLDEuropeanBasketEngine) MCEuropeanBasketEngine<LowDiscrepancy>;
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanBasketEngine(process,
+                               traits,
+                               timeSteps=None,
+                               timeStepsPerYear=None,
+                               brownianBridge=False,
+                               antitheticVariate=False,
+                               requiredSamples=None,
+                               requiredTolerance=None,
+                               maxSamples=None,
+                               seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanBasketEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanBasketEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
 
 %shared_ptr(MCAmericanBasketEngine<PseudoRandom>);
 %shared_ptr(MCAmericanBasketEngine<LowDiscrepancy>);
@@ -125,8 +156,8 @@ class MCAmericanBasketEngine : public PricingEngine {
   public:
     %extend {
         MCAmericanBasketEngine(const boost::shared_ptr<StochasticProcessArray>& process,
-                               Size timeSteps = Null<Size>(),
-                               Size timeStepsPerYear = Null<Size>(),
+                               intOrNull timeSteps = Null<Size>(),
+                               intOrNull timeStepsPerYear = Null<Size>(),
                                bool brownianBridge = false,
                                bool antitheticVariate = false,
                                intOrNull requiredSamples = Null<Size>(),
@@ -155,6 +186,43 @@ class MCAmericanBasketEngine : public PricingEngine {
 
 %template(MCPRAmericanBasketEngine) MCAmericanBasketEngine<PseudoRandom>;
 %template(MCLDAmericanBasketEngine) MCAmericanBasketEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCAmericanBasketEngine(process,
+                               traits,
+                               timeSteps=None,
+                               timeStepsPerYear=None,
+                               brownianBridge=False,
+                               antitheticVariate=False,
+                               requiredSamples=None,
+                               requiredTolerance=None,
+                               maxSamples=None,
+                               seed=0,
+                               nCalibrationSamples=2048,
+                               polynomOrder=2,
+                               polynomType=LsmBasisSystem.Monomial):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRAmericanBasketEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDAmericanBasketEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed,
+                   nCalibrationSamples,
+                   polynomOrder,
+                   polynomType)
+%}
+#endif
 
 
 %{
@@ -218,6 +286,37 @@ class MCEverestEngine : public PricingEngine {
 %template(MCPREverestEngine) MCEverestEngine<PseudoRandom>;
 %template(MCLDEverestEngine) MCEverestEngine<LowDiscrepancy>;
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEverestEngine(process,
+                        traits,
+                        timeSteps=None,
+                        timeStepsPerYear=None,
+                        brownianBridge=False,
+                        antitheticVariate=False,
+                        requiredSamples=None,
+                        requiredTolerance=None,
+                        maxSamples=None,
+                        seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREverestEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEverestEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
 
 %{
 using QuantLib::HimalayaOption;
@@ -261,6 +360,33 @@ class MCHimalayaEngine : public PricingEngine {
 
 %template(MCPRHimalayaEngine) MCHimalayaEngine<PseudoRandom>;
 %template(MCLDHimalayaEngine) MCHimalayaEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCHimalayaEngine(process,
+                         traits,
+                         brownianBridge=False,
+                         antitheticVariate=False,
+                         requiredSamples=None,
+                         requiredTolerance=None,
+                         maxSamples=None,
+                         seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRHimalayaEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDHimalayaEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 
 #endif

@@ -533,6 +533,37 @@ class MCEuropeanEngine : public PricingEngine {
 %template(MCPREuropeanEngine) MCEuropeanEngine<PseudoRandom>;
 %template(MCLDEuropeanEngine) MCEuropeanEngine<LowDiscrepancy>;
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanEngine(process,
+                         traits,
+                         timeSteps=None,
+                         timeStepsPerYear=None,
+                         brownianBridge=False,
+                         antitheticVariate=False,
+                         requiredSamples=None,
+                         requiredTolerance=None,
+                         maxSamples=None,
+                         seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
 
 %shared_ptr(MCAmericanEngine<PseudoRandom>);
 %shared_ptr(MCAmericanEngine<LowDiscrepancy>);
@@ -578,6 +609,47 @@ class MCAmericanEngine : public PricingEngine {
 
 %template(MCPRAmericanEngine) MCAmericanEngine<PseudoRandom>;
 %template(MCLDAmericanEngine) MCAmericanEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCAmericanEngine(process,
+                         traits,
+                         timeSteps=None,
+                         timeStepsPerYear=None,
+                         antitheticVariate=False,
+                         controlVariate=False,
+                         requiredSamples=None,
+                         requiredTolerance=None,
+                         maxSamples=None,
+                         seed=0,
+                         polynomOrder=2,
+                         polynomType=LsmBasisSystem.Monomial,
+                         nCalibrationSamples=2048,
+                         antitheticVariateCalibration=None,
+                         seedCalibration=None):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRAmericanEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDAmericanEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   antitheticVariate,
+                   controlVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed,
+                   polynomOrder,
+                   polynomType,
+                   nCalibrationSamples,
+                   antitheticVariateCalibration,
+                   seedCalibration)
+%}
+#endif
 
 // American engines
 
@@ -801,8 +873,8 @@ class MCBarrierEngine : public PricingEngine {
   public:
     %extend {
         MCBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                        Size timeSteps = Null<Size>(),
-                        Size timeStepsPerYear = Null<Size>(),
+                        intOrNull timeSteps = Null<Size>(),
+                        intOrNull timeStepsPerYear = Null<Size>(),
                         bool brownianBridge = false,
                         bool antitheticVariate = false,
                         intOrNull requiredSamples = Null<Size>(),
@@ -826,6 +898,39 @@ class MCBarrierEngine : public PricingEngine {
 
 %template(MCPRBarrierEngine) MCBarrierEngine<PseudoRandom>;
 %template(MCLDBarrierEngine) MCBarrierEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCBarrierEngine(process,
+                        traits,
+                        timeSteps=None,
+                        timeStepsPerYear=None,
+                        brownianBridge=False,
+                        antitheticVariate=False,
+                        requiredSamples=None,
+                        requiredTolerance=None,
+                        maxSamples=None,
+                        isBiased=False,
+                        seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRBarrierEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDBarrierEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   isBiased,
+                   seed)
+%}
+#endif
 
 
 %{
@@ -1178,6 +1283,35 @@ class MCDiscreteArithmeticAPEngine : public PricingEngine {
 %template(MCPRDiscreteArithmeticAPEngine) MCDiscreteArithmeticAPEngine<PseudoRandom>;
 %template(MCLDDiscreteArithmeticAPEngine) MCDiscreteArithmeticAPEngine<LowDiscrepancy>;
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteArithmeticAPEngine(process,
+                                     traits,
+                                     brownianBridge=False,
+                                     antitheticVariate=False,
+                                     controlVariate=False,
+                                     requiredSamples=None,
+                                     requiredTolerance=None,
+                                     maxSamples=None,
+                                     seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteArithmeticAPEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteArithmeticAPEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   controlVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
 
 %shared_ptr(MCDiscreteArithmeticASEngine<PseudoRandom>);
 %shared_ptr(MCDiscreteArithmeticASEngine<LowDiscrepancy>);
@@ -1210,6 +1344,33 @@ class MCDiscreteArithmeticASEngine : public PricingEngine {
 
 %template(MCPRDiscreteArithmeticASEngine) MCDiscreteArithmeticASEngine<PseudoRandom>;
 %template(MCLDDiscreteArithmeticASEngine) MCDiscreteArithmeticASEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteArithmeticASEngine(process,
+                                     traits,
+                                     brownianBridge=False,
+                                     antitheticVariate=False,
+                                     requiredSamples=None,
+                                     requiredTolerance=None,
+                                     maxSamples=None,
+                                     seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteArithmeticASEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteArithmeticASEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 
 %shared_ptr(MCDiscreteGeometricAPEngine<PseudoRandom>);
@@ -1244,6 +1405,33 @@ class MCDiscreteGeometricAPEngine : public PricingEngine {
 
 %template(MCPRDiscreteGeometricAPEngine) MCDiscreteGeometricAPEngine<PseudoRandom>;
 %template(MCLDDiscreteGeometricAPEngine) MCDiscreteGeometricAPEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteGeometricAPEngine(process,
+                                     traits,
+                                     brownianBridge=False,
+                                     antitheticVariate=False,
+                                     requiredSamples=None,
+                                     requiredTolerance=None,
+                                     maxSamples=None,
+                                     seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteGeometricAPEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteGeometricAPEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 
 %{
