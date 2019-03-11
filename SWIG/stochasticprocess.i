@@ -35,6 +35,17 @@ using QuantLib::StochasticProcess;
 class StochasticProcess : public Observable {
   private:
     StochasticProcess();
+  public:
+    Size size() const;
+    Size factors() const;
+    Array initialValues() const;
+    Array drift(Time t, const Array& x) const;
+    Matrix diffusion(Time t, const Array& x) const;
+    Array expectation(Time t0, const Array& x0, Time dt) const;
+    Matrix stdDeviation(Time t0, const Array& x0, Time dt) const;
+    Matrix covariance(Time t0, const Array& x0, Time dt) const;
+    Array evolve(Time t0, const Array& x0,
+                 Time dt, const Array& dw) const;
 };
 
 #if defined(SWIGCSHARP)
