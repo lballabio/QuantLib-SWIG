@@ -151,6 +151,17 @@ if test [ -n "$ql_jdk_sys_include_path" ] ; then
 fi
 
 
+AC_PATH_PROG([SCALAC], [scalac])
+AC_PATH_PROG([SCALA], [scala])
+AM_CONDITIONAL(HAVE_SCALA, test "x${SCALAC}" != "x" && test "x${JAR}" != "x")
+AC_ARG_ENABLE([scala],
+              AC_HELP_STRING([--disable-scala],
+                             [If disabled, the scala examples
+                              will not be built]),
+              [build_scala=$enableval],
+              [build_scala=yes])
+AM_CONDITIONAL(BUILD_SCALA, test "$build_scala" != "no")
+
 # flags
 
 case "$target" in
