@@ -25,6 +25,9 @@ env:
     # R
     - DOCKER_IMAGE=lballabio/quantlib-swig-devenv:r
       BUILD_SCRIPT="r.build"
+    # Scala
+    - DOCKER_IMAGE=lballabio/quantlib-swig-devenv:scala
+      BUILD_SCRIPT="scala.build"
 
 before_install:
   - docker pull ${DOCKER_IMAGE}
