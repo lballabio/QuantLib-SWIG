@@ -21,7 +21,7 @@ if HAVE_SCALA
 if BUILD_SCALA
 
 examples/%.class: examples/%.scala
-	$(SCALAC) -cp ../Java/QuantLib.jar examples/$*.scala
+	$(SCALAC) -cp ../Java/QuantLib.jar -language:postfixOps examples/$*.scala
 
 .PHONY: $(EXAMPLES)
 
