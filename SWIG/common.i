@@ -127,6 +127,12 @@ class RelinkableHandle : public Handle<T> {
   public:
     RelinkableHandle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
     void linkTo(const boost::shared_ptr<T>&);
+    %extend {
+        // could be defined in C++ class, added here in the meantime
+        void reset() {
+            self->linkTo(boost::shared_ptr<T>());
+        }
+    }
 };
 
 %define swigr_list_converter(ContainerRType,
