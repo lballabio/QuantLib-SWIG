@@ -42,11 +42,11 @@ class VanillaPricingService(payoff: PlainVanillaPayoff,
                 // copy instrument data to ensure thread safe execution
 
                 val t = exercise exerciseType match {
-                    case Exercise.European => new EuropeanExercise(
+                    case Exercise.Type.European => new EuropeanExercise(
                                                     exercise.dates().get(0))
-                    case Exercise.Bermudan => new BermudanExercise(
+                    case Exercise.Type.Bermudan => new BermudanExercise(
                                                     exercise.dates());
-                    case Exercise.American => 
+                    case Exercise.Type.American =>
                         new AmericanExercise(
                             exercise.dates get 0, exercise.dates().get(
                             (exercise.dates.size() - 1).toInt))

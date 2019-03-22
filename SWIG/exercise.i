@@ -42,6 +42,14 @@ class Exercise {
     Date dateAt(Size index);
     const std::vector<Date>& dates();
     Date lastDate() const;
+    #if defined(SWIGJAVA)
+    // Scala can't use "type" as a method name
+    %extend {
+        Exercise::Type exerciseType() {
+            return self->type();
+        }
+    }
+    #endif
 };
 
 %{
