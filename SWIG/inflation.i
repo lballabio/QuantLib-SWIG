@@ -34,9 +34,9 @@ class Seasonality {
     Seasonality();
   public:
     virtual Rate correctZeroRate(const Date &d, const Rate r,
-                                 const InflationTermStructure& iTS) const = 0;
+                                 const InflationTermStructure& iTS) const;
     virtual Rate correctYoYRate(const Date &d, const Rate r,
-                                const InflationTermStructure& iTS) const = 0;
+                                const InflationTermStructure& iTS) const;
     virtual bool isConsistent(const InflationTermStructure& iTS);
 };
 
@@ -70,7 +70,7 @@ class InflationTermStructure : public TermStructure {
     virtual bool indexIsInterpolated() const;
     virtual Rate baseRate() const;
     virtual Handle<YieldTermStructure> nominalTermStructure() const;
-    virtual Date baseDate() const = 0;
+    virtual Date baseDate() const;
     void setSeasonality(const boost::shared_ptr<Seasonality>& seasonality =
                                             boost::shared_ptr<Seasonality>());
     boost::shared_ptr<Seasonality> seasonality() const;
