@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,16 +32,20 @@
 using QuantLib::PricingEngine;
 %}
 
-%template(PricingEngine) boost::shared_ptr<PricingEngine>;
+%shared_ptr(PricingEngine)
+class PricingEngine : public Observable {
+  private:
+    PricingEngine();
+};
 
 // instrument
 
 %{
 using QuantLib::Instrument;
 %}
-
-%ignore Instrument;
-class Instrument {
+    
+%shared_ptr(Instrument)
+class Instrument : public Observable {
     #if defined(SWIGRUBY)
     %rename("isExpired?")     isExpired;
     %rename("pricingEngine=") setPricingEngine;
@@ -56,6 +61,8 @@ class Instrument {
     void recalculate();
     void freeze();
     void unfreeze();
+  private:
+    Instrument();
 };
 
 #if defined(SWIGR)
@@ -68,9 +75,6 @@ function(x) print(summary(x)))
 %}
 #endif
 
-%template(Instrument) boost::shared_ptr<Instrument>;
-IsObservable(boost::shared_ptr<Instrument>);
-
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<Instrument> )
 #endif
@@ -82,43 +86,27 @@ namespace std {
 
 %{
 using QuantLib::Stock;
-typedef boost::shared_ptr<Instrument> StockPtr;
 %}
 
-%rename(Stock) StockPtr;
-class StockPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(Stock)
+class Stock : public Instrument {
   public:
-    %extend {
-        StockPtr(const Handle<Quote>& quote) {
-            return new StockPtr(new Stock(quote));
-        }
-    }
+    Stock(const Handle<Quote>& quote);
 };
 
 
 %{
 using QuantLib::CompositeInstrument;
-typedef boost::shared_ptr<Instrument> CompositeInstrumentPtr;
 %}
 
-%rename(CompositeInstrument) CompositeInstrumentPtr;
-class CompositeInstrumentPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(CompositeInstrument)
+class CompositeInstrument : public Instrument {
   public:
-    %extend {
-        CompositeInstrumentPtr() {
-            return new CompositeInstrumentPtr(new CompositeInstrument);
-        }
-        void add(const boost::shared_ptr<Instrument>& instrument,
-                 Real multiplier = 1.0) {
-            boost::dynamic_pointer_cast<CompositeInstrument>(*self)
-                ->add(instrument, multiplier);
-        }
-        void subtract(const boost::shared_ptr<Instrument>& instrument,
-                      Real multiplier = 1.0) {
-            boost::dynamic_pointer_cast<CompositeInstrument>(*self)
-                ->subtract(instrument, multiplier);
-        }
-    }
+    CompositeInstrument();
+    void add(const boost::shared_ptr<Instrument>& instrument,
+             Real multiplier = 1.0);
+    void subtract(const boost::shared_ptr<Instrument>& instrument,
+                  Real multiplier = 1.0);
 };
 
 

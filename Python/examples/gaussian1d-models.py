@@ -21,11 +21,11 @@ def printBasket(basket):
     print ("==================================================================================================================")
 
     for i in range(0, len(basket)):
-        expiryDate = ql.as_black_helper(basket[i]).swaptionExpiryDate()
-        endDate = ql.as_black_helper(basket[i]).swaptionMaturityDate()
-        nominal = ql.as_black_helper(basket[i]).swaptionNominal()
+        expiryDate = ql.as_swaption_helper(basket[i]).swaptionExpiryDate()
+        endDate = ql.as_swaption_helper(basket[i]).swaptionMaturityDate()
+        nominal = ql.as_swaption_helper(basket[i]).swaptionNominal()
         vol     = ql.as_black_helper(basket[i]).volatility().value()
-        rate    = ql.as_black_helper(basket[i]).swaptionStrike()
+        rate    = ql.as_swaption_helper(basket[i]).swaptionStrike()
         print ("%-20s %-20s %-20f %-20f %-20f" % (str(expiryDate), str(endDate), nominal, rate, vol))
 
     print("==================================================================================================================")
@@ -35,7 +35,7 @@ def printModelCalibration(basket, volatility):
     print ("=================================================================================================================")
 
     for i in range(0, len(basket)):
-        expiryDate = ql.as_black_helper(basket[i]).swaptionExpiryDate()
+        expiryDate = ql.as_swaption_helper(basket[i]).swaptionExpiryDate()
         modelValue = ql.as_black_helper(basket[i]).modelValue()
         marketValue= ql.as_black_helper(basket[i]).marketValue()
         impVol     = ql.as_black_helper(basket[i]).impliedVolatility(modelValue, 1e-6, 1000, 0.0, 2.0)
@@ -357,7 +357,7 @@ cmsFixingDates = markovStepDates
 markovSimgas = [0.01]* (len(markovStepDates)+1)
 tenors = [ql.Period('10Y')]*len(cmsFixingDates)
 markov = ql.MarkovFunctional(t0_curve, reversionQuote.value(), markovStepDates, markovSimgas, swaptionVolHandle,
-                             cmsFixingDates, tenors, swapBase, 16)
+                             cmsFixingDates, tenors, swapBase)
 
 swaptionEngineMarkov = ql.Gaussian1dSwaptionEngine(markov, 8, 5.0, True,
                                                    False, t0_Ois)

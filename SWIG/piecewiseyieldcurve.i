@@ -24,8 +24,6 @@
 %include ratehelpers.i
 %include interpolation.i
 
-#if !defined(VC6)
-
 // bootstrap traits
 
 %{
@@ -44,61 +42,37 @@ struct ForwardRate {};
 using QuantLib::PiecewiseYieldCurve;
 %}
 
-%define export_piecewise_curve(Name,Base,Interpolator)
+/* We have to resort to a macro, because the R implementation of shared_ptr
+   can't take class templates with two or more template arguments. */
+
+%define export_piecewise_curve(Name,Traits,Interpolator)
 
 %{
-typedef boost::shared_ptr<YieldTermStructure> Name##Ptr;
+typedef PiecewiseYieldCurve<Traits, Interpolator> Name;
 %}
 
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(Name);
+class Name : public YieldTermStructure {
   public:
-    %extend {
-        Name##Ptr(
-                const Date& referenceDate,
-                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-                const DayCounter& dayCounter,
-                const std::vector<Handle<Quote> >& jumps =
-                                                std::vector<Handle<Quote> >(),
-                const std::vector<Date>& jumpDates = std::vector<Date>(),
-                Real accuracy = 1.0e-12,
-                const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new PiecewiseYieldCurve<Base,Interpolator>(
-                                                 referenceDate,instruments,
-                                                 dayCounter, jumps, jumpDates,
-                                                 accuracy,i));
-        }
-        Name##Ptr(
-                Integer settlementDays, const Calendar& calendar,
-                const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-                const DayCounter& dayCounter,
-                const std::vector<Handle<Quote> >& jumps =
-                                                std::vector<Handle<Quote> >(),
-                const std::vector<Date>& jumpDates = std::vector<Date>(),
-                Real accuracy = 1.0e-12,
-                const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new PiecewiseYieldCurve<Base,Interpolator>(
-                                        settlementDays, calendar, instruments,
-                                        dayCounter, jumps, jumpDates,
-                                        accuracy, i));
-        }
-        const std::vector<Date>& dates() {
-            typedef PiecewiseYieldCurve<Base,Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Time>& times() {
-            typedef PiecewiseYieldCurve<Base,Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->times();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Real> > nodes() {
-            typedef PiecewiseYieldCurve<Base,Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+    Name(const Date& referenceDate,
+         const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+         const DayCounter& dayCounter,
+         const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+         const std::vector<Date>& jumpDates = std::vector<Date>(),
+         Real accuracy = 1.0e-12,
+         const Interpolator& i = Interpolator());
+    Name(Integer settlementDays, const Calendar& calendar,
+         const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+         const DayCounter& dayCounter,
+         const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+         const std::vector<Date>& jumpDates = std::vector<Date>(),
+         Real accuracy = 1.0e-12,
+         const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
 
 %enddef
@@ -110,10 +84,7 @@ export_piecewise_curve(PiecewiseLinearForward,ForwardRate,Linear);
 export_piecewise_curve(PiecewiseLinearZero,ZeroYield,Linear);
 export_piecewise_curve(PiecewiseCubicZero,ZeroYield,Cubic);
 export_piecewise_curve(PiecewiseLogCubicDiscount,Discount,MonotonicLogCubic);
-// combine other traits as you wish
 
-
-#endif
 
 
 #endif

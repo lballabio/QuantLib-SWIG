@@ -5,6 +5,7 @@
  Copyright (C) 2007 Luis Cota
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,198 +42,136 @@ using QuantLib::BlackCalibrationHelper;
 using QuantLib::SwaptionHelper;
 using QuantLib::CapHelper;
 using QuantLib::HestonModelHelper;
-typedef boost::shared_ptr<CalibrationHelperBase> BlackCalibrationHelperPtr;
-typedef boost::shared_ptr<CalibrationHelperBase> SwaptionHelperPtr;
-typedef boost::shared_ptr<CalibrationHelperBase> CapHelperPtr;
-typedef boost::shared_ptr<CalibrationHelperBase> HestonModelHelperPtr;
 %}
 
 // calibration helpers
-
-%ignore CalibrationHelperBase;
+%shared_ptr(CalibrationHelperBase)
 class CalibrationHelperBase {
   public:
 	Real calibrationError();
-};
-
-%template(CalibrationHelperBase) boost::shared_ptr<CalibrationHelperBase>;
-
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_BlackCalibrationHelper) BlackCalibrationHelper;
-#else
-%ignore BlackCalibrationHelper;
-#endif
-class BlackCalibrationHelper : public CalibrationHelperBase {
   private:
-    BlackCalibrationHelper();
-  public:
-    enum CalibrationErrorType { RelativePriceError, PriceError, ImpliedVolError };
+    CalibrationHelperBase();
 };
 
-%rename(BlackCalibrationHelper) BlackCalibrationHelperPtr;
-class BlackCalibrationHelperPtr : public boost::shared_ptr<CalibrationHelperBase> {
+%shared_ptr(BlackCalibrationHelper)
+class BlackCalibrationHelper : public CalibrationHelperBase {
     #if defined(SWIGRUBY)
     %rename("pricingEngine=")      setPricingEngine;
     #endif
-  private:
-    BlackCalibrationHelperPtr();
   public:
-    %extend {
-        static const BlackCalibrationHelper::CalibrationErrorType RelativePriceError =
-            BlackCalibrationHelper::RelativePriceError;
-        static const BlackCalibrationHelper::CalibrationErrorType PriceError =
-            BlackCalibrationHelper::PriceError;
-        static const BlackCalibrationHelper::CalibrationErrorType ImpliedVolError =
-            BlackCalibrationHelper::ImpliedVolError;
-        void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine) {
-            boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)
-                ->setPricingEngine(engine);
-        }
-        Real marketValue() const {
-            return boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)
-                ->marketValue();
-        }
-        Real modelValue() const {
-            return boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)
-                ->modelValue();
-        }
-        Volatility impliedVolatility(Real targetValue,
-                                     Real accuracy, Size maxEvaluations,
-                                     Volatility minVol, Volatility maxVol) {
-            return boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)
-                ->impliedVolatility(targetValue, accuracy, maxEvaluations,
-                                    minVol, maxVol);
-        }
-        Real blackPrice(Volatility volatility) {
-            return boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)
-                ->blackPrice(volatility);
-        }
-        Handle<Quote> volatility() const {
-            return boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)
-                ->volatility();
-        }
-        VolatilityType volatilityType() const {
-            return boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)
-                ->volatilityType();
-        }
+    enum CalibrationErrorType { RelativePriceError, PriceError, ImpliedVolError };
+                       
+    void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine);
+    Real marketValue() const;
+    virtual Real modelValue() const;
+    Volatility impliedVolatility(Real targetValue,
+                                 Real accuracy, Size maxEvaluations,
+                                 Volatility minVol, Volatility maxVol);
+    Real blackPrice(Volatility volatility);
+    Handle<Quote> volatility() const;
+    VolatilityType volatilityType() const;
+    Real calibrationError();
+  private:
+    BlackCalibrationHelper();
 
-        Date swaptionExpiryDate() {
-            boost::shared_ptr<SwaptionHelper> s =
-                boost::dynamic_pointer_cast<SwaptionHelper>(*self);
-            return s ? s->swaption()->exercise()->date(0) : Null<Date>();
-        }
-        Real swaptionStrike() {
-            boost::shared_ptr<SwaptionHelper> s =
-                boost::dynamic_pointer_cast<SwaptionHelper>(*self);
-            return s ? s->swaption()->underlyingSwap()->fixedRate() : Null<Real>();
-        }
-        Real swaptionNominal() {
-            boost::shared_ptr<SwaptionHelper> s =
-                boost::dynamic_pointer_cast<SwaptionHelper>(*self);
-            return s ? s->swaption()->underlyingSwap()->nominal() : Null<Real>();
-        }
-        Date swaptionMaturityDate() {
-            boost::shared_ptr<SwaptionHelper> s =
-                boost::dynamic_pointer_cast<SwaptionHelper>(*self);
-            return s ? s->swaption()->underlyingSwap()->fixedSchedule().dates().back() : Null<Date>();
-        }
-    }
 };
 
-deprecate_feature(CalibrationHelper,
-                  BlackCalibrationHelper);
-
 %inline %{
-    BlackCalibrationHelperPtr as_black_helper(const boost::shared_ptr<CalibrationHelperBase>& h) {
+    boost::shared_ptr<BlackCalibrationHelper> as_black_helper(const boost::shared_ptr<CalibrationHelperBase>& h) {
         return boost::dynamic_pointer_cast<BlackCalibrationHelper>(h);
+    }
+    boost::shared_ptr<SwaptionHelper> as_swaption_helper(const boost::shared_ptr<BlackCalibrationHelper>& h) {
+        return boost::dynamic_pointer_cast<SwaptionHelper>(h);
     }
 %}
 
-%rename(SwaptionHelper) SwaptionHelperPtr;
-class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
+%shared_ptr(SwaptionHelper)
+class SwaptionHelper : public BlackCalibrationHelper {
   public:
+    SwaptionHelper(const Period& maturity, const Period& length,
+                      const Handle<Quote>& volatility,
+                      const boost::shared_ptr<IborIndex>& index,
+                      const Period& fixedLegTenor,
+                      const DayCounter& fixedLegDayCounter,
+                      const DayCounter& floatingLegDayCounter,
+                      const Handle<YieldTermStructure>& termStructure,
+                      BlackCalibrationHelper::CalibrationErrorType errorType
+                                = BlackCalibrationHelper::RelativePriceError,
+                      const Real strike = Null<Real>(),
+                      const Real nominal = 1.0,
+                      const VolatilityType type = ShiftedLognormal,
+                      const Real shift = 0.0);
+    
+    SwaptionHelper(const Date& exerciseDate, const Period& length,
+                      const Handle<Quote>& volatility,
+                      const boost::shared_ptr<IborIndex>& index,
+                      const Period& fixedLegTenor,
+                      const DayCounter& fixedLegDayCounter,
+                      const DayCounter& floatingLegDayCounter,
+                      const Handle<YieldTermStructure>& termStructure,
+                      BlackCalibrationHelper::CalibrationErrorType errorType
+                                = BlackCalibrationHelper::RelativePriceError,
+                      const Real strike = Null<Real>(),
+                      const Real nominal = 1.0,
+                      const VolatilityType type = ShiftedLognormal,
+                      const Real shift = 0.0);
+    
+    SwaptionHelper(const Date& exerciseDate, const Date& endDate,
+                      const Handle<Quote>& volatility,
+                      const boost::shared_ptr<IborIndex>& index,
+                      const Period& fixedLegTenor,
+                      const DayCounter& fixedLegDayCounter,
+                      const DayCounter& floatingLegDayCounter,
+                      const Handle<YieldTermStructure>& termStructure,
+                      BlackCalibrationHelper::CalibrationErrorType errorType
+                                = BlackCalibrationHelper::RelativePriceError,
+                      const Real strike = Null<Real>(),
+                      const Real nominal = 1.0,
+                      const VolatilityType type = ShiftedLognormal,
+                      const Real shift = 0.0);
+
+    boost::shared_ptr<VanillaSwap> underlyingSwap() const;
+    boost::shared_ptr<Swaption> swaption() const;
+                      
     %extend {
-        SwaptionHelperPtr(const Period& maturity, const Period& length,
-                          const Handle<Quote>& volatility,
-                          const IborIndexPtr& index,
-                          const Period& fixedLegTenor,
-                          const DayCounter& fixedLegDayCounter,
-                          const DayCounter& floatingLegDayCounter,
-                          const Handle<YieldTermStructure>& termStructure,
-                          BlackCalibrationHelper::CalibrationErrorType errorType
-                                    = BlackCalibrationHelper::RelativePriceError,
-                          const Real strike = Null<Real>(),
-                          const Real nominal = 1.0,
-                          const VolatilityType type = ShiftedLognormal,
-                          const Real shift = 0.0) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new SwaptionHelperPtr(
-                new SwaptionHelper(maturity,length,volatility,
-                                   libor,fixedLegTenor,
-                                   fixedLegDayCounter,
-                                   floatingLegDayCounter,
-                                   termStructure,
-                                   errorType,
-                                   strike, nominal, 
-                                   type, shift));
-        }
-        
-        SwaptionHelperPtr(const Date& exerciseDate, const Period& length,
-                          const Handle<Quote>& volatility,
-                          const IborIndexPtr& index,
-                          const Period& fixedLegTenor,
-                          const DayCounter& fixedLegDayCounter,
-                          const DayCounter& floatingLegDayCounter,
-                          const Handle<YieldTermStructure>& termStructure,
-                          BlackCalibrationHelper::CalibrationErrorType errorType
-                                    = BlackCalibrationHelper::RelativePriceError,
-                          const Real strike = Null<Real>(),
-                          const Real nominal = 1.0,
-                          const VolatilityType type = ShiftedLognormal,
-                          const Real shift = 0.0) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new SwaptionHelperPtr(
-                new SwaptionHelper(exerciseDate,length,volatility,
-                                   libor,fixedLegTenor,
-                                   fixedLegDayCounter,
-                                   floatingLegDayCounter,
-                                   termStructure,
-                                   errorType,
-                                   strike, nominal, 
-                                   type, shift));
-        }
-        
-        SwaptionHelperPtr(const Date& exerciseDate, const Date& endDate,
-                          const Handle<Quote>& volatility,
-                          const IborIndexPtr& index,
-                          const Period& fixedLegTenor,
-                          const DayCounter& fixedLegDayCounter,
-                          const DayCounter& floatingLegDayCounter,
-                          const Handle<YieldTermStructure>& termStructure,
-                          BlackCalibrationHelper::CalibrationErrorType errorType
-                                    = BlackCalibrationHelper::RelativePriceError,
-                          const Real strike = Null<Real>(),
-                          const Real nominal = 1.0,
-                          const VolatilityType type = ShiftedLognormal,
-                          const Real shift = 0.0) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new SwaptionHelperPtr(
-                new SwaptionHelper(exerciseDate,endDate,volatility,
-                                   libor,fixedLegTenor,
-                                   fixedLegDayCounter,
-                                   floatingLegDayCounter,
-                                   termStructure,
-                                   errorType,
-                                   strike, nominal, 
-                                   type, shift));
-        }
-        
         std::vector<Time> times() {
             std::list<Time> l;
-            boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)->addTimesTo(l);
+            self->addTimesTo(l);
+            std::vector<Time> v;
+            std::copy(l.begin(),l.end(),std::back_inserter(v));
+            return v;
+        }
+        Date swaptionExpiryDate() {
+            return self->swaption()->exercise()->date(0);
+        }
+        Real swaptionStrike() {
+            return self->swaption()->underlyingSwap()->fixedRate();
+        }
+        Real swaptionNominal() {
+            return self->swaption()->underlyingSwap()->nominal();
+        }
+        Date swaptionMaturityDate() {
+            return self->swaption()->underlyingSwap()->fixedSchedule().dates().back();
+        }
+    }
+};
+
+%shared_ptr(CapHelper)
+class CapHelper : public BlackCalibrationHelper {
+  public:
+    CapHelper(const Period& length,
+                 const Handle<Quote>& volatility,
+                 const boost::shared_ptr<IborIndex>& index,
+                 Frequency fixedLegFrequency,
+                 const DayCounter& fixedLegDayCounter,
+                 bool includeFirstSwaplet,
+                 const Handle<YieldTermStructure>& termStructure,
+                 BlackCalibrationHelper::CalibrationErrorType errorType
+                                = BlackCalibrationHelper::RelativePriceError);
+    %extend {        
+        std::vector<Time> times() {
+            std::list<Time> l;
+            self->addTimesTo(l);
             std::vector<Time> v;
             std::copy(l.begin(),l.end(),std::back_inserter(v));
             return v;
@@ -240,73 +179,40 @@ class SwaptionHelperPtr : public BlackCalibrationHelperPtr {
     }
 };
 
-%rename(CapHelper) CapHelperPtr;
-class CapHelperPtr : public BlackCalibrationHelperPtr {
+%shared_ptr(HestonModelHelper)
+class HestonModelHelper : public BlackCalibrationHelper {
   public:
-    %extend {
-        CapHelperPtr(const Period& length,
-                     const Handle<Quote>& volatility,
-                     const IborIndexPtr& index,
-                     Frequency fixedLegFrequency,
-                     const DayCounter& fixedLegDayCounter,
-                     bool includeFirstSwaplet,
-                     const Handle<YieldTermStructure>& termStructure,
-                     BlackCalibrationHelper::CalibrationErrorType errorType
-                                    = BlackCalibrationHelper::RelativePriceError) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new CapHelperPtr(
-                new CapHelper(length,volatility,libor,fixedLegFrequency,
-                              fixedLegDayCounter,includeFirstSwaplet,
-                              termStructure));
-        }
-        std::vector<Time> times() {
-            std::list<Time> l;
-            boost::dynamic_pointer_cast<BlackCalibrationHelper>(*self)->addTimesTo(l);
-            std::vector<Time> v;
-            std::copy(l.begin(),l.end(),std::back_inserter(v));
-            return v;
-        }
-    }
-};
-
-%rename(HestonModelHelper) HestonModelHelperPtr;
-class HestonModelHelperPtr : public BlackCalibrationHelperPtr {
-  public:
-	%extend {
-		HestonModelHelperPtr(const Period& maturity,
-                             const Calendar& calendar,
-                             const Real s0,
-                             const Real strikePrice,
-                             const Handle<Quote>& volatility,
-                             const Handle<YieldTermStructure>& riskFreeRate,
-                             const Handle<YieldTermStructure>& dividendYield,
-                             BlackCalibrationHelper::CalibrationErrorType errorType
-								 = BlackCalibrationHelper::RelativePriceError) {
-			return new HestonModelHelperPtr(
-				new HestonModelHelper(maturity, calendar, s0, strikePrice,
-									  volatility, riskFreeRate, dividendYield,
-									  errorType)); 
-		}
-	}
+    HestonModelHelper(const Period& maturity,
+                      const Calendar& calendar,
+                      const Real s0,
+                      const Real strikePrice,
+                      const Handle<Quote>& volatility,
+                      const Handle<YieldTermStructure>& riskFreeRate,
+                      const Handle<YieldTermStructure>& dividendYield,
+                      BlackCalibrationHelper::CalibrationErrorType errorType
+                          = BlackCalibrationHelper::RelativePriceError);
 };
 
 // allow use of vectors of helpers
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<CalibrationHelperBase> )
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BlackCalibrationHelper> )
 #endif
 namespace std {
     %template(CalibrationHelperVector)
         vector<boost::shared_ptr<CalibrationHelperBase> >;
+    %template(BlackCalibrationHelperVector)
+        vector<boost::shared_ptr<BlackCalibrationHelper> >;        
 }
 
 // the base class for calibrated models
 %{
 using QuantLib::CalibratedModel;
+using QuantLib::TermStructureConsistentModel;
 %}
 
-%ignore CalibratedModel;
-class CalibratedModel {
+%shared_ptr(CalibratedModel)
+class CalibratedModel : public virtual Observable {
     #if defined(SWIGRUBY)
     %rename("calibrate!") calibrate;
     #elif defined(SWIGCSHARP)
@@ -314,22 +220,33 @@ class CalibratedModel {
     #endif
   public:
     Array params() const;
-    void calibrate(
+    virtual void calibrate(
         const std::vector<boost::shared_ptr<CalibrationHelperBase> >&,
         OptimizationMethod&, const EndCriteria &,
         const Constraint& constraint = Constraint(),
-        const std::vector<Real>& weights = std::vector<Real>());
+        const std::vector<Real>& weights = std::vector<Real>(),
+        const std::vector<bool>& fixParameters = std::vector<bool>());
+     
     void setParams(const Array& params);
     Real value(const Array& params,
                const std::vector<boost::shared_ptr<CalibrationHelperBase> >&);
+    const boost::shared_ptr<Constraint>& constraint() const;
+    EndCriteria::Type endCriteria() const;
+    const Array& problemValues() const;
+    Integer functionEvaluation() const;
+  private:
+    CalibratedModel();
 };
 
-
-%template(CalibratedModel) boost::shared_ptr<CalibratedModel>;
-IsObservable(boost::shared_ptr<CalibratedModel>);
+%shared_ptr(TermStructureConsistentModel)
+class TermStructureConsistentModel : public virtual Observable{
+  public:
+    const Handle<YieldTermStructure>& termStructure() const;
+  private:
+    TermStructureConsistentModel();
+};
 
 %template(CalibratedModelHandle) Handle<CalibratedModel>;
-IsObservable(Handle<CalibratedModel>);
 %template(RelinkableCalibratedModelHandle)
 RelinkableHandle<CalibratedModel>;
 

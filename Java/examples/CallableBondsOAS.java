@@ -164,7 +164,7 @@ public class CallableBondsOAS {
 		new CallabilityPrice(callPrice,
 				      CallabilityPrice.Type.Clean);
             callSchedule.add(new Callability(myPrice,
-					     Callability.Call,
+					     Callability.Type.Call,
 					     callDate));
             callDate = nullCalendar.advance(callDate, 1, TimeUnit.Months);
         }	
@@ -210,7 +210,7 @@ public class CallableBondsOAS {
 		new CallabilityPrice(callPrice,
 				      CallabilityPrice.Type.Clean);
             callSchedule.add(new Callability(myPrice,
-					     Callability.Call,
+					     Callability.Type.Call,
 					     callDate));
             callDate = nullCalendar.advance(callDate, 3, TimeUnit.Months);
         }	
@@ -252,7 +252,7 @@ public class CallableBondsOAS {
 	    new CallabilityPrice(callPrice,
 				 CallabilityPrice.Type.Clean);
 	callSchedule.add(new Callability(myPrice,
-					 Callability.Put,
+					 Callability.Type.Put,
 					 callDate));
 
 	return new CallableFixedRateBond(1,

@@ -2,6 +2,7 @@
 /*
  Copyright (C) 2003 StatPro Italia srl
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,6 +22,7 @@
 #define quantlib_exercise_i
 
 %include common.i
+%include boost_shared_ptr.i
 
 // exercise conditions
 
@@ -28,34 +30,27 @@
 using QuantLib::Exercise;
 %}
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_Exercise) Exercise;
-#else
-%ignore Exercise;
-#endif
+%shared_ptr(Exercise)
 class Exercise {
   public:
-    enum Type { American, Bermudan, European };
-    Exercise::Type type() const;
-    const std::vector<Date>& dates() const;
-    Date lastDate() const { return dates_.back(); }
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    Exercise();
-#endif
+    enum Type {
+        American, Bermudan, European
+    };
+    explicit Exercise(Type type);
+    Type type() const;
+    Date date(Size index);
+    Date dateAt(Size index);
+    const std::vector<Date>& dates();
+    Date lastDate() const;
+    #if defined(SWIGJAVA)
+    // Scala can't use "type" as a method name
+    %extend {
+        Exercise::Type exerciseType() {
+            return self->type();
+        }
+    }
+    #endif
 };
-
-%template(Exercise) boost::shared_ptr<Exercise>;
-%extend boost::shared_ptr<Exercise> {
-    static const Exercise::Type American = Exercise::American;
-    static const Exercise::Type Bermudan = Exercise::Bermudan;
-    static const Exercise::Type European = Exercise::European;
-
-	Exercise::Type exerciseType() { 
-		return boost::dynamic_pointer_cast<Exercise>(*self)->type(); 
-	}
-}
-
 
 %{
 using QuantLib::EuropeanExercise;
@@ -63,50 +58,27 @@ using QuantLib::AmericanExercise;
 using QuantLib::BermudanExercise;
 using QuantLib::RebatedExercise;
 using QuantLib::SwingExercise;
-typedef boost::shared_ptr<Exercise> EuropeanExercisePtr;
-typedef boost::shared_ptr<Exercise> AmericanExercisePtr;
-typedef boost::shared_ptr<Exercise> BermudanExercisePtr;
-typedef boost::shared_ptr<Exercise> RebatedExercisePtr;
-typedef boost::shared_ptr<Exercise> SwingExercisePtr;
 %}
 
-%rename(EuropeanExercise) EuropeanExercisePtr;
-class EuropeanExercisePtr : public boost::shared_ptr<Exercise> {
+%shared_ptr(EuropeanExercise)
+class EuropeanExercise : public Exercise {
   public:
-    %extend {
-        EuropeanExercisePtr(const Date& date) {
-            return new EuropeanExercisePtr(new EuropeanExercise(date));
-        }
-	}
+    EuropeanExercise(const Date& date);
 };
 
-%rename(AmericanExercise) AmericanExercisePtr;
-class AmericanExercisePtr : public boost::shared_ptr<Exercise> {
+%shared_ptr(AmericanExercise)
+class AmericanExercise : public Exercise {
   public:
-    %extend {
-        AmericanExercisePtr(const Date& earliestDate,
-                            const Date& latestDate,
-                            bool payoffAtExpiry = false) {
-            return new AmericanExercisePtr(
-                                        new AmericanExercise(earliestDate,
-                                                             latestDate,
-                                                             payoffAtExpiry));
-
-        }
-    }
+    AmericanExercise(const Date& earliestDate,
+                        const Date& latestDate,
+                        bool payoffAtExpiry = false);
 };
 
-%rename(BermudanExercise) BermudanExercisePtr;
-class BermudanExercisePtr : public boost::shared_ptr<Exercise> {
+%shared_ptr(BermudanExercise)
+class BermudanExercise : public Exercise {
   public:
-    %extend {
-        BermudanExercisePtr(const std::vector<Date>& dates,
-                            bool payoffAtExpiry = false) {
-            return new BermudanExercisePtr(
-                                        new BermudanExercise(dates,
-                                                             payoffAtExpiry));
-        }
-    }
+    BermudanExercise(const std::vector<Date>& dates,
+                        bool payoffAtExpiry = false);
 };
 
 %{
@@ -116,32 +88,21 @@ using QuantLib::Following;
 using QuantLib::NullCalendar;
 %}
 
-%rename(RebatedExercise) RebatedExercisePtr;
-class RebatedExercisePtr : public boost::shared_ptr<Exercise> {
+%shared_ptr(RebatedExercise)
+class RebatedExercise : public Exercise {
   public:
-    %extend {
-        RebatedExercisePtr(const boost::shared_ptr<Exercise> exercise,
-                           const std::vector<Real> rebates,
-                           Natural rebateSettlementDays = 0,
-                           const Calendar &rebatePaymentCalendar = NullCalendar(),
-                           const BusinessDayConvention rebatePaymentConvention = Following) {
-            return new RebatedExercisePtr(new RebatedExercise(*exercise, rebates,
-                                                              rebateSettlementDays,
-                                                              rebatePaymentCalendar,
-                                                              rebatePaymentConvention));
-        }
-    }
+    RebatedExercise(const Exercise &exercise,
+                       const std::vector<Real> rebates,
+                       Natural rebateSettlementDays = 0,
+                       const Calendar &rebatePaymentCalendar = NullCalendar(),
+                       const BusinessDayConvention rebatePaymentConvention = Following);
 };
 
 
-%rename(SwingExercise) SwingExercisePtr;
-class SwingExercisePtr : public boost::shared_ptr<Exercise> {
+%shared_ptr(SwingExercise)
+class SwingExercise : public Exercise {
   public:
-    %extend {
-        SwingExercisePtr(const std::vector<Date>& dates) {
-            return new SwingExercisePtr(new SwingExercise(dates));
-        }
-    }
+    SwingExercise(const std::vector<Date>& dates);
 };
 
 #endif

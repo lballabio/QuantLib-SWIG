@@ -97,7 +97,7 @@ class FixedRateBondTest(unittest.TestCase):
 
     def testPrevCoupon(self):
         """ Testing FixedRateBond correct previous coupon amount. """
-        self.assertEqual(self.bond.previousCouponRate(self.issue_date), 0.05)
+        self.assertEqual(self.bond.previousCouponRate(), 0.05)
 
     def testCleanPrice(self):
         """ Testing FixedRateBond clean price. """

@@ -48,58 +48,29 @@ class FittingMethod {
     Array weights() const;
 };
 
-%rename(FittedBondDiscountCurve) FittedBondDiscountCurvePtr;
-class FittedBondDiscountCurvePtr
-    : public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(FittedBondDiscountCurve);
+class FittedBondDiscountCurve : public YieldTermStructure {
   public:
-    %extend {
-        FittedBondDiscountCurvePtr(
+    FittedBondDiscountCurve(
                    Natural settlementDays,
                    const Calendar& calendar,
-                   const std::vector<boost::shared_ptr<RateHelper> >& helpers,
+                   const std::vector<boost::shared_ptr<BondHelper> >& helpers,
                    const DayCounter& dayCounter,
                    const FittingMethod& fittingMethod,
                    Real accuracy = 1.0e-10,
                    Size maxEvaluations = 10000,
                    const Array& guess = Array(),
-                   Real simplexLambda = 1.0) {
-            return new FittedBondDiscountCurvePtr(
-                new FittedBondDiscountCurve(settlementDays,
-                                            calendar,
-                                            convert_bond_helpers(helpers),
-                                            dayCounter,
-                                            fittingMethod,
-                                            accuracy,
-                                            maxEvaluations,
-                                            guess,
-                                            simplexLambda));
-        }
-
-        FittedBondDiscountCurvePtr(
+                   Real simplexLambda = 1.0);
+    FittedBondDiscountCurve(
                    const Date &referenceDate,
-                   const std::vector<boost::shared_ptr<RateHelper> >& helpers,
+                   const std::vector<boost::shared_ptr<BondHelper> >& helpers,
                    const DayCounter& dayCounter,
                    const FittingMethod& fittingMethod,
                    Real accuracy = 1.0e-10,
                    Size maxEvaluations = 10000,
                    const Array &guess = Array(),
-                   Real simplexLambda = 1.0) {
-            return new FittedBondDiscountCurvePtr(
-                new FittedBondDiscountCurve(referenceDate,
-                                            convert_bond_helpers(helpers),
-                                            dayCounter,
-                                            fittingMethod,
-                                            accuracy,
-                                            maxEvaluations,
-                                            guess,
-                                            simplexLambda));
-        }
-
-        const FittingMethod& fitResults() const {
-            return boost::dynamic_pointer_cast<FittedBondDiscountCurve>(*self)
-                ->fitResults();
-        }
-    }
+                   Real simplexLambda = 1.0);
+    const FittingMethod& fitResults() const;
 };
 
 

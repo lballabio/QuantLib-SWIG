@@ -1,4 +1,3 @@
-
 # Copyright (C) 2004, 2005, 2006 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
@@ -45,20 +44,16 @@ process2 = BlackScholesMertonProcess(QuoteHandle(underlying2),
                                     YieldTermStructureHandle(riskFreeRate),
                                     BlackVolTermStructureHandle(volatility2))
 
-procs = StochasticProcessVector()
-procs.push_back(process1)
-procs.push_back(process2)
-
 matrix = Matrix(2,2)
 matrix[0][0] = 1.0
 matrix[1][1] = 1.0
 matrix[0][1] = 0.5
 matrix[1][0] = 0.5
 
-process = StochasticProcessArray(procs, matrix)
+process = StochasticProcessArray([process1, process2], matrix)
 basketoption = BasketOption(MaxBasketPayoff(payoff), exercise)
 basketoption.setPricingEngine(MCEuropeanBasketEngine(process,
-                                                     'pseudorandom',
+                                                     "pseudorandom",
                                                      timeStepsPerYear = 1,
                                                      requiredTolerance = 0.02,
                                                      seed = 42))
@@ -66,7 +61,7 @@ print(basketoption.NPV())
 
 basketoption = BasketOption(MinBasketPayoff(payoff), exercise)
 basketoption.setPricingEngine(MCEuropeanBasketEngine(process,
-                                                     'pseudorandom',
+                                                     "pseudorandom",
                                                      timeStepsPerYear = 1,
                                                      requiredTolerance = 0.02,
                                                      seed = 42))
@@ -74,7 +69,7 @@ print(basketoption.NPV())
 
 basketoption = BasketOption(AverageBasketPayoff(payoff, 2), exercise)
 basketoption.setPricingEngine(MCEuropeanBasketEngine(process,
-                                                     'pseudorandom',
+                                                     "pseudorandom",
                                                      timeStepsPerYear = 1,
                                                      requiredTolerance = 0.02,
                                                      seed = 42))
@@ -82,8 +77,11 @@ print(basketoption.NPV())
 
 americanExercise = AmericanExercise(settlementDate, Date(17,May,1999))
 americanbasketoption = BasketOption(MaxBasketPayoff(payoff), americanExercise)
-americanbasketoption.setPricingEngine(MCAmericanBasketEngine(
-	process, 'pseudorandom', timeSteps = 10, requiredTolerance = 0.02,
-    seed = 42, polynomOrder = 5, polynomType = LsmBasisSystem.Hermite))
+americanbasketoption.setPricingEngine(MCAmericanBasketEngine(process,
+                                                             "pseudorandom",
+                                                             timeSteps = 10,
+                                                             requiredTolerance = 0.02,
+                                                             seed = 42,
+                                                             polynomOrder = 5,
+                                                             polynomType = LsmBasisSystem.Hermite))
 print(americanbasketoption.NPV())
-                                                     

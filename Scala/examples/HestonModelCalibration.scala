@@ -96,7 +96,7 @@ object HestonModelCalibration {
                 val helper = new HestonModelHelper(
                     maturity, calendar, s0.value,
                     strikes(s), vol, rTS, divTS,
-                    BlackCalibrationHelper.ImpliedVolError)
+                    BlackCalibrationHelper.CalibrationErrorType.ImpliedVolError)
 
                 helper setPricingEngine(analyticHestonEngine)
 
