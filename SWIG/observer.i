@@ -40,17 +40,6 @@ class Observable {};
     }
 }
 
-%define IsObservable(Type)
-#if defined(SWIGRUBY)
-%rename("toObservable") Type::asObservable;
-#endif
-%extend Type {
-    boost::shared_ptr<Observable> asObservable() {
-        return boost::shared_ptr<Observable>(*self);
-    }
-}
-%enddef
-
 
 #if defined(SWIGPYTHON)
 
