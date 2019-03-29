@@ -21,6 +21,7 @@
 
 %include stl.i
 %include exception.i
+%include boost_shared_ptr.i
 
 %define QL_TYPECHECK_BOOL       7210    %enddef
 
@@ -71,30 +72,26 @@ using QuantLib::RelinkableHandle;
 
 namespace boost {
 
-    template <class T>
-    class shared_ptr {
+    %extend shared_ptr {
         #if defined(SWIGRUBY)
         %rename("null?") isNull;
         #endif
-      public:
-        T* operator->();
+        T* operator->() {
+            return (*self).operator->();
+        }
         #if defined(SWIGPYTHON)
-        %extend {
-            bool __nonzero__() {
-                return !!(*self);
-            }
-            bool __bool__() {
-                return !!(*self);
-            }
+        bool __nonzero__() {
+            return !!(*self);
+        }
+        bool __bool__() {
+            return !!(*self);
         }
         #else
-        %extend {
-            bool isNull() {
-                return !(*self);
-            }
+        bool isNull() {
+            return !(*self);
         }
         #endif
-    };
+    }
 
 }
 
@@ -130,6 +127,12 @@ class RelinkableHandle : public Handle<T> {
   public:
     RelinkableHandle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
     void linkTo(const boost::shared_ptr<T>&);
+    %extend {
+        // could be defined in C++ class, added here in the meantime
+        void reset() {
+            self->linkTo(boost::shared_ptr<T>());
+        }
+    }
 };
 
 %define swigr_list_converter(ContainerRType,

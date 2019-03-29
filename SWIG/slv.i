@@ -27,71 +27,50 @@
 
 %{
 using QuantLib::HestonSLVProcess;
-typedef boost::shared_ptr<StochasticProcess> HestonSLVProcessPtr;
 %}
 
-%rename(HestonSLVProcess) HestonSLVProcessPtr;
-class HestonSLVProcessPtr : public boost::shared_ptr<StochasticProcess> {
+%shared_ptr(HestonSLVProcess);
+class HestonSLVProcess : public StochasticProcess {
   public:
-    %extend {
-      HestonSLVProcessPtr(const HestonProcessPtr& hestonProcess,
-                          const boost::shared_ptr<LocalVolTermStructure>& leverageFct) {
-        
-        boost::shared_ptr<HestonProcess> hProcess =
-            boost::dynamic_pointer_cast<HestonProcess>(hestonProcess);
-        QL_REQUIRE(hProcess, "Heston process required");
-        
-        return new HestonSLVProcessPtr(
-          new HestonSLVProcess(hProcess, leverageFct));
-      }
-    }
+    HestonSLVProcess(const boost::shared_ptr<HestonProcess>& hestonProcess,
+                     const boost::shared_ptr<LocalVolTermStructure>& leverageFct);
 };
 
 
 %{
-using QuantLib::HestonProcess;
 using QuantLib::HestonSLVMCModel;
 using QuantLib::BrownianGeneratorFactory;
 using QuantLib::MTBrownianGeneratorFactory;
 using QuantLib::SobolBrownianGeneratorFactory;
-
-typedef boost::shared_ptr<BrownianGeneratorFactory> MTBrownianGeneratorFactoryPtr;
-typedef boost::shared_ptr<BrownianGeneratorFactory> SobolBrownianGeneratorFactoryPtr;
 %}
 
-%template(BrownianGeneratorFactory) boost::shared_ptr<BrownianGeneratorFactory>;
+%shared_ptr(BrownianGeneratorFactory);
+class BrownianGeneratorFactory {
+  private:
+    BrownianGeneratorFactory();
+};
 
-%rename(MTBrownianGeneratorFactory) MTBrownianGeneratorFactoryPtr;
-class MTBrownianGeneratorFactoryPtr : public boost::shared_ptr<BrownianGeneratorFactory> {
+
+%shared_ptr(MTBrownianGeneratorFactory);
+class MTBrownianGeneratorFactory : public BrownianGeneratorFactory {
   public:
-    %extend {
-        MTBrownianGeneratorFactoryPtr(unsigned long seed = 0) {
-            return new MTBrownianGeneratorFactoryPtr(new MTBrownianGeneratorFactory(seed));
-        }
-    }
+    MTBrownianGeneratorFactory(unsigned long seed = 0);
 };
 
 class SobolBrownianGenerator {
   public:
     enum Ordering { Factors, Steps, Diagonal };
-    
   private: 
     SobolBrownianGenerator();
 };
 
-%rename(SobolBrownianGeneratorFactory) SobolBrownianGeneratorFactoryPtr;
-class SobolBrownianGeneratorFactoryPtr : public boost::shared_ptr<BrownianGeneratorFactory> {
+%shared_ptr(SobolBrownianGeneratorFactory);
+class SobolBrownianGeneratorFactory : public BrownianGeneratorFactory {
   public:
-    %extend {
-        SobolBrownianGeneratorFactoryPtr(
+    SobolBrownianGeneratorFactory(
             SobolBrownianGenerator::Ordering ordering,
             unsigned long seed = 0,
-            SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel) {
-            
-            return new SobolBrownianGeneratorFactoryPtr(
-                new SobolBrownianGeneratorFactory(ordering, seed));
-        }
-    }
+            SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel);
 };
 
 class HestonSLVMCModel {
@@ -99,38 +78,30 @@ class HestonSLVMCModel {
     %extend {
         HestonSLVMCModel(
            const boost::shared_ptr<LocalVolTermStructure>& localVol,
-           const HestonModelPtr& model,
+           const boost::shared_ptr<HestonModel>& model,
            const boost::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
            const Date& endDate,
            Size timeStepsPerYear = 365,
            Size nBins = 201,
            Size calibrationPaths = (1 << 15),
            const std::vector<Date>& mandatoryDates = std::vector<Date>()) {
-           
-           boost::shared_ptr<HestonModel> hModel =
-               boost::dynamic_pointer_cast<HestonModel>(model);
-           QL_REQUIRE(hModel, "Heston model required");
-
-           return new HestonSLVMCModel(
-               Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(hModel), 
-               brownianGeneratorFactory, endDate, timeStepsPerYear, nBins,
-               calibrationPaths, mandatoryDates);
+            return new HestonSLVMCModel(
+                Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(model),
+                brownianGeneratorFactory, endDate, timeStepsPerYear,
+                nBins, calibrationPaths, mandatoryDates);
         }
-    }    
+    }
     boost::shared_ptr<HestonProcess> hestonProcess() const;
-    
     boost::shared_ptr<LocalVolTermStructure> localVol() const;
-    
     boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 };
+
 
 %{
 using QuantLib::FdmSquareRootFwdOp;
 using QuantLib::FdmHestonGreensFct;
 using QuantLib::HestonSLVFDMModel;
 using QuantLib::HestonSLVFokkerPlanckFdmParams;
-
-typedef boost::shared_ptr<HestonSLVFokkerPlanckFdmParams> HestonSLVFokkerPlanckFdmParamsPtr;
 %}
 
 struct FdmSquareRootFwdOp {
@@ -145,14 +116,10 @@ struct FdmHestonGreensFct {
     FdmHestonGreensFct();
 };
 
-%template(_HestonSLVFokkerPlanckFdmParams) boost::shared_ptr<HestonSLVFokkerPlanckFdmParams>;
-
-%rename(HestonSLVFokkerPlanckFdmParams) HestonSLVFokkerPlanckFdmParamsPtr;
-class HestonSLVFokkerPlanckFdmParamsPtr 
-    : public boost::shared_ptr<HestonSLVFokkerPlanckFdmParams> {
+class HestonSLVFokkerPlanckFdmParams {
   public:
     %extend {
-        HestonSLVFokkerPlanckFdmParamsPtr(
+        HestonSLVFokkerPlanckFdmParams(
             Size xGrid, Size vGrid, 
             Size tMaxStepsPerYear, Size tMinStepsPerYear,
             Real tStepNumberDecay,
@@ -182,16 +149,9 @@ class HestonSLVFokkerPlanckFdmParamsPtr
                     greensAlgorithm,
                     trafoType,
                     schemeDesc };
-                    
-                return new HestonSLVFokkerPlanckFdmParamsPtr(
-                    new HestonSLVFokkerPlanckFdmParams(params));
-            }
-            
-        private:
-            HestonSLVFokkerPlanckFdmParamsPtr cstr(
-                const boost::shared_ptr<HestonSLVFokkerPlanckFdmParams>& params) : params_(params) {}
-                
-            boost::shared_ptr<HestonSLVFokkerPlanckFdmParams> params_;
+
+                return new HestonSLVFokkerPlanckFdmParams(params);
+        }
     }
 };
 
@@ -200,83 +160,50 @@ class HestonSLVFDMModel {
     %extend {
         HestonSLVFDMModel(
             const boost::shared_ptr<LocalVolTermStructure>& localVol,
-            const HestonModelPtr& model,
+            const boost::shared_ptr<HestonModel>& model,
             const Date& endDate,
-            const HestonSLVFokkerPlanckFdmParamsPtr& params,
+            const HestonSLVFokkerPlanckFdmParams& params,
             const bool logging = false,
             const std::vector<Date>& mandatoryDates = std::vector<Date>()) {
-            
-            boost::shared_ptr<HestonModel> hModel =
-                boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
-
-            
             return new HestonSLVFDMModel(
-                Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(hModel), 
-                endDate, *(params.get()), logging, mandatoryDates);            
+                Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(model),
+                endDate, params, logging, mandatoryDates);
         }
     }
     boost::shared_ptr<HestonProcess> hestonProcess() const;
-    
     boost::shared_ptr<LocalVolTermStructure> localVol() const;
-    
     boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 };
 
 
 %{
 using QuantLib::FdHestonBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> FdHestonBarrierEnginePtr;
-%}
-
-%rename(FdHestonBarrierEngine) FdHestonBarrierEnginePtr;
-class FdHestonBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-        FdHestonBarrierEnginePtr(
-            const HestonModelPtr& model,
-            Size tGrid = 100, Size xGrid = 100,
-            Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>()) {
-            
-            boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
-            return new FdHestonBarrierEnginePtr(
-                new FdHestonBarrierEngine(hModel, tGrid, xGrid,
-                    vGrid, dampingSteps, schemeDesc, leverageFct));
-        }
-    }
-};
-
-
-%{
 using QuantLib::FdHestonDoubleBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> FdHestonDoubleBarrierEnginePtr;
 %}
 
-%rename(FdHestonDoubleBarrierEngine) FdHestonDoubleBarrierEnginePtr;
-class FdHestonDoubleBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdHestonBarrierEngine);
+class FdHestonBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        FdHestonDoubleBarrierEnginePtr(
-            const HestonModelPtr& model,
+    FdHestonBarrierEngine(
+            const boost::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>()) {
-            
-            boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
-            return new FdHestonDoubleBarrierEnginePtr(
-                new FdHestonDoubleBarrierEngine(hModel, tGrid, xGrid,
-                    vGrid, dampingSteps, schemeDesc, leverageFct));
-        }
-    }
+                = boost::shared_ptr<LocalVolTermStructure>());
 };
+
+%shared_ptr(FdHestonDoubleBarrierEngine);
+class FdHestonDoubleBarrierEngine : public PricingEngine {
+  public:
+    FdHestonDoubleBarrierEngine(
+            const boost::shared_ptr<HestonModel>& model,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
+};
+
 
 #endif

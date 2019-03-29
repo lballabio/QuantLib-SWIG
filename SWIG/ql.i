@@ -50,37 +50,10 @@
 %}
 #endif
 
-#if defined(SWIGPERL)
-%{
-#ifdef accept
-#undef accept
-#endif
-#ifdef Null
-#undef Null
-#endif
-#ifdef Nullch
-#undef Nullch
-#define Nullch ((char*) NULL)
-#endif
-#ifdef Stat
-#undef Stat
-#endif
-#ifdef seed
-#undef seed
-#endif
-#ifdef setbuf
-#undef setbuf
-#endif
-#ifdef times
-#undef times
-#endif
-%}
-#endif
-
 %{
 #include <ql/quantlib.hpp>
 
-#if QL_HEX_VERSION < 0x011400f0
+#if QL_HEX_VERSION < 0x011500f0
     #error using an old version of QuantLib, please update
 #endif
 
@@ -148,9 +121,7 @@
 #endif
 
 // common name mappings
-#if defined(SWIGPERL)
-%rename("to_string")     __str__;
-#elif defined(SWIGJAVA)
+#if defined(SWIGJAVA)
 %rename(add)           operator+;
 %rename(add)           __add__;
 %rename(subtract)      operator-;

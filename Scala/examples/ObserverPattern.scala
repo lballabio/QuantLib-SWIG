@@ -45,13 +45,12 @@ object ObserverPattern {
 
         
         val quote = new SimpleQuote(100d)
-        while (true) {
+        (0 until 100).par.foreach{j =>
             (0 until 10000).par.foreach{i =>
                 val underlying = new QuoteHandle(quote)
                 quote.setValue(quote.value())
                 if (i == 534) System.gc
             }
-            
         }
     }
 }

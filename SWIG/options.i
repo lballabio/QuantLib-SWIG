@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
@@ -37,16 +36,39 @@
 %include parameter.i
 %include vectors.i
 
+// payoff
+
+%{
+using QuantLib::Payoff;
+using QuantLib::TypePayoff;
+using QuantLib::StrikedTypePayoff;
+%}
+
+%shared_ptr(Payoff);
+class Payoff {
+    #if defined(SWIGCSHARP)
+    %rename(call) operator();
+    #endif
+  public:
+    Real operator()(Real price) const;
+  private:
+    Payoff();
+};
+
 // option and barrier types
 %{
 using QuantLib::Option;
 using QuantLib::Barrier;
 %}
 
-// declared out of its hierarchy just to export the inner enumeration
-class Option {
+%shared_ptr(Option)
+class Option : public Instrument {
   public:
-    enum Type { Put = -1, Call = 1};
+    enum Type { Put = -1,
+                Call = 1
+    };
+    boost::shared_ptr<Payoff> payoff();
+    boost::shared_ptr<Exercise> exercise();
   private:
     Option();
 };
@@ -59,27 +81,10 @@ struct DoubleBarrier {
     enum Type { KnockIn, KnockOut, KIKO, KOKI };
 };
 
-// payoff
-
-%{
-using QuantLib::Payoff;
-using QuantLib::StrikedTypePayoff;
-%}
-
-%ignore Payoff;
-class Payoff {
-    #if defined(SWIGCSHARP) || defined(SWIGPERL)
-    %rename(call) operator();
-    #endif
-  public:
-    Real operator()(Real price) const;
-};
-
-%template(Payoff) boost::shared_ptr<Payoff>;
 
 #if defined(SWIGR)
 %Rruntime %{
-setMethod("summary", "_p_VanillaOptionPtr",
+setMethod("summary", "_p_VanillaOption",
 function(object) {object$freeze()
 ans <- c(value=object$NPV(), delta=object$delta(),
 gamma=object$gamma(), vega=object$vega(),
@@ -89,7 +94,7 @@ object$unfreeze()
 ans
 })
 
-setMethod("summary", "_p_DividendVanillaOptionPtr",
+setMethod("summary", "_p_DividendVanillaOption",
 function(object) {object$freeze()
 ans <- c(value=object$NPV(), delta=object$delta(),
 gamma=object$gamma(), vega=object$vega(),
@@ -103,294 +108,184 @@ ans
 #endif
 
 
-%define add_greeks_to(Type)
+%shared_ptr(TypePayoff)
+class TypePayoff : public Payoff {
+  public:
+    Option::Type optionType();
+  private:
+    TypePayoff();
+};
 
-%extend Type##Ptr {
-    Real delta() {
-        return boost::dynamic_pointer_cast<Type>(*self)->delta();
-    }
-    Real gamma() {
-        return boost::dynamic_pointer_cast<Type>(*self)->gamma();
-    }
-    Real theta() {
-        return boost::dynamic_pointer_cast<Type>(*self)->theta();
-    }
-    Real thetaPerDay() {
-        return boost::dynamic_pointer_cast<Type>(*self)->thetaPerDay();
-    }
-    Real vega() {
-        return boost::dynamic_pointer_cast<Type>(*self)->vega();
-    }
-    Real rho() {
-        return boost::dynamic_pointer_cast<Type>(*self)->rho();
-    }
-    Real dividendRho() {
-        return boost::dynamic_pointer_cast<Type>(*self)->dividendRho();
-    }
-    Real strikeSensitivity() {
-        return boost::dynamic_pointer_cast<Type>(*self)->strikeSensitivity();
-    }
-}
-
-%enddef
+%shared_ptr(StrikedTypePayoff)
+class StrikedTypePayoff : public TypePayoff
+{
+  public:
+    Real strike();
+  private:
+    StrikedTypePayoff();
+};
 
 
 // plain option and engines
 
 %{
+using QuantLib::OneAssetOption;
 using QuantLib::VanillaOption;
 using QuantLib::ForwardVanillaOption;
-typedef boost::shared_ptr<Instrument> VanillaOptionPtr;
-typedef boost::shared_ptr<Instrument> MultiAssetOptionPtr;
 %}
 
-
-%rename(VanillaOption) VanillaOptionPtr;
-class VanillaOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(OneAssetOption)
+class OneAssetOption : public Option {
+  private:
+    OneAssetOption();
   public:
-    %extend {
-        VanillaOptionPtr(
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new VanillaOptionPtr(new VanillaOption(stPayoff,exercise));
-        }
+    Real delta() const;
+    Real deltaForward() const;
+    Real elasticity() const;
+    Real gamma() const;
+    Real theta() const;
+    Real thetaPerDay() const;
+    Real vega() const;
+    Real rho() const;
+    Real dividendRho() const;
+    Real strikeSensitivity() const;
+    Real itmCashProbability() const;
+};
+
+%shared_ptr(VanillaOption)
+class VanillaOption : public OneAssetOption {
+  public:
+    VanillaOption(
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
+
+    Volatility impliedVolatility(
+                         Real targetValue,
+                         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         Real accuracy = 1.0e-4,
+                         Size maxEvaluations = 100,
+                         Volatility minVol = 1.0e-4,
+                         Volatility maxVol = 4.0);
+    %extend{
         SampledCurve priceCurve() {
-            return boost::dynamic_pointer_cast<VanillaOption>(*self)
-                ->result<SampledCurve>("priceCurve");
-        }
-        Volatility impliedVolatility(
-                             Real targetValue,
-                             const GeneralizedBlackScholesProcessPtr& process,
-                             Real accuracy = 1.0e-4,
-                             Size maxEvaluations = 100,
-                             Volatility minVol = 1.0e-4,
-                             Volatility maxVol = 4.0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return boost::dynamic_pointer_cast<VanillaOption>(*self)
-                ->impliedVolatility(targetValue, bsProcess, accuracy,
-                                    maxEvaluations, minVol, maxVol);
+            return self->result<SampledCurve>("priceCurve");
         }
     }
 };
 
-add_greeks_to(VanillaOption);
-
 
 %{
 using QuantLib::EuropeanOption;
-typedef boost::shared_ptr<Instrument> EuropeanOptionPtr;
 %}
 
 
-%rename(EuropeanOption) EuropeanOptionPtr;
-class EuropeanOptionPtr : public VanillaOptionPtr {
+%shared_ptr(EuropeanOption)
+class EuropeanOption : public VanillaOption {
   public:
-    %extend {
-        EuropeanOptionPtr(
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new EuropeanOptionPtr(new EuropeanOption(stPayoff,exercise));
-        }
-    }
+    EuropeanOption(
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
 };
 
 // ForwardVanillaOption
 
 %{
 using QuantLib::ForwardVanillaOption;
-typedef boost::shared_ptr<Instrument> ForwardVanillaOptionPtr;
 %}
 
-%rename(ForwardVanillaOption) ForwardVanillaOptionPtr;
-class ForwardVanillaOptionPtr : public VanillaOptionPtr {
+%shared_ptr(ForwardVanillaOption)
+class ForwardVanillaOption : public OneAssetOption {
   public:
-    %extend {
-        ForwardVanillaOptionPtr(
+        ForwardVanillaOption(
                 Real moneyness,
                 Date resetDate,
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new ForwardVanillaOptionPtr(
-                                new ForwardVanillaOption(moneyness, resetDate,
-                                                         stPayoff, exercise));
-        }
-    }
+                const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                const boost::shared_ptr<Exercise>& exercise);
 };
 
 // QuantoVanillaOption
 
 %{
 using QuantLib::QuantoVanillaOption;
-typedef boost::shared_ptr<Instrument> QuantoVanillaOptionPtr;
 %}
 
-%rename(QuantoVanillaOption) QuantoVanillaOptionPtr;
-class QuantoVanillaOptionPtr : public VanillaOptionPtr {
+%shared_ptr(QuantoVanillaOption)
+class QuantoVanillaOption : public OneAssetOption {
   public:
-    %extend {
-        QuantoVanillaOptionPtr(
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new QuantoVanillaOptionPtr(
-                                 new QuantoVanillaOption(stPayoff, exercise));
-        }
-        Real qvega() {
-            return boost::dynamic_pointer_cast<QuantoVanillaOption>(*self)
-                ->qvega();
-        }
-        Real qrho() {
-            return boost::dynamic_pointer_cast<QuantoVanillaOption>(*self)
-                ->qrho();
-        }
-        Real qlambda() {
-            return boost::dynamic_pointer_cast<QuantoVanillaOption>(*self)
-                ->qlambda();
-        }
-    }
+    QuantoVanillaOption(
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
+    Real qvega();
+    Real qrho();
+    Real qlambda();
 };
 
 %{
 using QuantLib::QuantoForwardVanillaOption;
-typedef boost::shared_ptr<Instrument> QuantoForwardVanillaOptionPtr;
 %}
 
-%rename(QuantoForwardVanillaOption) QuantoForwardVanillaOptionPtr;
-class QuantoForwardVanillaOptionPtr : public QuantoVanillaOptionPtr {
+%shared_ptr(QuantoForwardVanillaOption)
+class QuantoForwardVanillaOption : public ForwardVanillaOption {
   public:
-    %extend {
-        QuantoForwardVanillaOptionPtr(
-                Real moneyness,
-                Date resetDate,
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new QuantoForwardVanillaOptionPtr(
-                          new QuantoForwardVanillaOption(moneyness, resetDate,
-                                                         stPayoff, exercise));
-        }
-    }
+    QuantoForwardVanillaOption(
+            Real moneyness,
+            Date resetDate,
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
 };
 
 %{
 using QuantLib::MultiAssetOption;
 %}
-%rename(MultiAssetOption) MultiAssetOptionPtr;
-class MultiAssetOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(MultiAssetOption)
+class MultiAssetOption : public Option {
   public:
-    %extend {
-        Real delta() {
-            return boost::dynamic_pointer_cast<MultiAssetOption>(*self)
-                ->delta();
-        }
-        Real gamma() {
-            return boost::dynamic_pointer_cast<MultiAssetOption>(*self)
-                ->gamma();
-        }
-        Real theta() {
-            return boost::dynamic_pointer_cast<MultiAssetOption>(*self)
-                ->theta();
-        }
-        Real vega() {
-            return boost::dynamic_pointer_cast<MultiAssetOption>(*self)->vega();
-        }
-        Real rho() {
-            return boost::dynamic_pointer_cast<MultiAssetOption>(*self)->rho();
-        }
-        Real dividendRho() {
-            return boost::dynamic_pointer_cast<MultiAssetOption>(*self)
-                ->dividendRho();
-        }
-    }
+    Real delta();
+    Real gamma();
+    Real theta();
+    Real vega();
+    Real rho();
+    Real dividendRho();
 };
 
 // European engines
 
 %{
 using QuantLib::AnalyticEuropeanEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticEuropeanEnginePtr;
 %}
 
-%rename(AnalyticEuropeanEngine) AnalyticEuropeanEnginePtr;
-class AnalyticEuropeanEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticEuropeanEngine)
+class AnalyticEuropeanEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticEuropeanEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticEuropeanEnginePtr(
-                                       new AnalyticEuropeanEngine(bsProcess));
-        }
-    }
+    AnalyticEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
 
 %{
 using QuantLib::HestonModel;
-typedef boost::shared_ptr<CalibratedModel> HestonModelPtr;
 %}
 
-%rename(HestonModel) HestonModelPtr;
-class HestonModelPtr : public boost::shared_ptr<CalibratedModel> {
+%shared_ptr(HestonModel)
+class HestonModel : public CalibratedModel {
   public:
-    %extend {
-        HestonModelPtr(const HestonProcessPtr&  process) {
-
-            boost::shared_ptr<HestonProcess> hProcess =
-                 boost::dynamic_pointer_cast<HestonProcess>(process);
-            QL_REQUIRE(hProcess, "Heston process required");
-
-            return new HestonModelPtr(new HestonModel(hProcess));
-        }
-        Real theta() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->theta();
-        }
-        Real kappa() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->kappa();
-        }
-        Real sigma() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->sigma();
-        }
-        Real rho() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->rho();
-        }
-        Real v0() const {
-            return boost::dynamic_pointer_cast<HestonModel>(*self)->v0();
-        }
-    }
+    HestonModel(const boost::shared_ptr<HestonProcess>&  process);
+    Real theta() const;
+    Real kappa() const;
+    Real sigma() const;
+    Real rho() const;
+    Real v0() const;
 };
 
 
 
 %{
 using QuantLib::PiecewiseTimeDependentHestonModel;
-typedef boost::shared_ptr<CalibratedModel> PiecewiseTimeDependentHestonModelPtr;
 %}
 
-%rename(PiecewiseTimeDependentHestonModel) PiecewiseTimeDependentHestonModelPtr;
-class PiecewiseTimeDependentHestonModelPtr : public boost::shared_ptr<CalibratedModel> {
+%shared_ptr(PiecewiseTimeDependentHestonModel)
+class PiecewiseTimeDependentHestonModel : public CalibratedModel {
     public:
-      %extend {
-         PiecewiseTimeDependentHestonModelPtr(
+         PiecewiseTimeDependentHestonModel(
               const Handle<YieldTermStructure>& riskFreeRate,
               const Handle<YieldTermStructure>& dividendYield,
               const Handle<Quote>& s0,
@@ -399,132 +294,63 @@ class PiecewiseTimeDependentHestonModelPtr : public boost::shared_ptr<Calibrated
               const Parameter& kappa,
               const Parameter& sigma,
               const Parameter& rho,
-              const TimeGrid& timeGrid) {
-            return new PiecewiseTimeDependentHestonModelPtr (
-                new PiecewiseTimeDependentHestonModel(riskFreeRate,
-                    dividendYield, s0, v0, theta, kappa, 
-                    sigma, rho, timeGrid));
-        }
-    
-        Real theta(Time t) const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->theta(t);
-        }
-        Real kappa(Time t) const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->kappa(t);
-        }
-        Real sigma(Time t) const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->sigma(t);
-        }
-        Real rho(Time t)   const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->rho(t);
-        }
-        Real v0()          const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->v0();
-        }
-        Real s0()          const { 
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->s0();
-        }
-        const TimeGrid& timeGrid() const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->timeGrid();
-        }
-        const Handle<YieldTermStructure>& dividendYield() const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->dividendYield();
-        }
-        const Handle<YieldTermStructure>& riskFreeRate() const {
-            return boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(*self)->riskFreeRate();
-        }
-    
-    }
+              const TimeGrid& timeGrid);
+
+        Real theta(Time t) const;
+        Real kappa(Time t) const;
+        Real sigma(Time t) const;
+        Real rho(Time t)   const;
+        Real v0()          const;
+        Real s0()          const;
+        const TimeGrid& timeGrid() const;
+        const Handle<YieldTermStructure>& dividendYield() const;
+        const Handle<YieldTermStructure>& riskFreeRate() const;
+
 };
 
 
 
 %{
 using QuantLib::AnalyticHestonEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticHestonEnginePtr;
 %}
 
-%rename(AnalyticHestonEngine) AnalyticHestonEnginePtr;
-class AnalyticHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticHestonEngine)
+class AnalyticHestonEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticHestonEnginePtr(const HestonModelPtr& model, 
-                                Size integrationOrder = 144) {
-            boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
-
-            return new AnalyticHestonEnginePtr(
-                new AnalyticHestonEngine(hModel, integrationOrder));
-        }
-
-        AnalyticHestonEnginePtr(const HestonModelPtr& model, 
-                                Real relTolerance,
-                                Size maxEvaluations) {
-            boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
-
-            return new AnalyticHestonEnginePtr(
-                new AnalyticHestonEngine(hModel, relTolerance,maxEvaluations));
-        }
-    }
+    AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+                         Size integrationOrder = 144);
+    AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+                         Real relTolerance,
+                         Size maxEvaluations);
 };
 
 %{
 using QuantLib::COSHestonEngine;
-typedef boost::shared_ptr<PricingEngine> COSHestonEnginePtr;
 %}
 
-%rename(COSHestonEngine) COSHestonEnginePtr;
-class COSHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(COSHestonEngine)
+class COSHestonEngine : public PricingEngine {
   public:
-    %extend {
-        COSHestonEnginePtr(const HestonModelPtr& model, 
-                           Real L = 16, Size N=200) {
-            boost::shared_ptr<HestonModel> hModel =
-                boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
-
-            return new COSHestonEnginePtr(
-                new COSHestonEngine(hModel, L, N));
-        }
-    }
+    COSHestonEngine(const boost::shared_ptr<HestonModel>& model,
+                    Real L = 16, Size N = 200);
 };
 
 
 %{
 using QuantLib::AnalyticPTDHestonEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticPTDHestonEnginePtr;
 %}
 
-%rename(AnalyticPTDHestonEngine) AnalyticPTDHestonEnginePtr;
-class AnalyticPTDHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticPTDHestonEngine)
+class AnalyticPTDHestonEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticPTDHestonEnginePtr(
-            const PiecewiseTimeDependentHestonModelPtr & model,
-            Real relTolerance, Size maxEvaluations) {
-                const boost::shared_ptr<PiecewiseTimeDependentHestonModel> hmodel = 
-                    boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(model);
-                return new AnalyticPTDHestonEnginePtr(
-                    new AnalyticPTDHestonEngine(hmodel, relTolerance, maxEvaluations)
-            );
-        }
-
-        // Constructor using Laguerre integration
-        // and Gatheral's version of complex log.
-        AnalyticPTDHestonEnginePtr(
-            const PiecewiseTimeDependentHestonModelPtr & model,
-            Size integrationOrder = 144) {
-                const boost::shared_ptr<PiecewiseTimeDependentHestonModel> hmodel = 
-                    boost::dynamic_pointer_cast<PiecewiseTimeDependentHestonModel>(model);
-                return new AnalyticPTDHestonEnginePtr(
-                    new AnalyticPTDHestonEngine(hmodel, integrationOrder)
-            );
-        }
-    
-    }
+    AnalyticPTDHestonEngine(
+            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            Real relTolerance, Size maxEvaluations);
+    // Constructor using Laguerre integration
+    // and Gatheral's version of complex log.
+    AnalyticPTDHestonEngine(
+            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            Size integrationOrder = 144);
 };
 
 
@@ -534,131 +360,67 @@ class AnalyticPTDHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 %{
 using QuantLib::BatesModel;
-typedef boost::shared_ptr<CalibratedModel> BatesModelPtr;
 %}
 
-%rename(BatesModel) BatesModelPtr;
-class BatesModelPtr : public HestonModelPtr {
+%shared_ptr(BatesModel)
+class BatesModel : public HestonModel {
   public:
-    %extend {
-        BatesModelPtr(const BatesProcessPtr&  process) {
-
-            boost::shared_ptr<BatesProcess> bProcess =
-                 boost::dynamic_pointer_cast<BatesProcess>(process);
-            QL_REQUIRE(bProcess, "Bates process required");
-
-            return new BatesModelPtr(new BatesModel(bProcess));
-        }
-        Real nu() const {
-            return boost::dynamic_pointer_cast<BatesModel>(*self)->nu();
-        }
-        Real delta() const {
-            return boost::dynamic_pointer_cast<BatesModel>(*self)->delta();
-        }
-        Real lambda() const {
-            return boost::dynamic_pointer_cast<BatesModel>(*self)->lambda();
-        }
-    }
+    BatesModel(const boost::shared_ptr<BatesProcess>&  process);
+    Real nu() const;
+    Real delta() const;
+    Real lambda() const;
 };
 
 
 %{
 using QuantLib::BatesEngine;
-typedef boost::shared_ptr<PricingEngine> BatesEnginePtr;
 %}
 
-%rename(BatesEngine) BatesEnginePtr;
-class BatesEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BatesEngine)
+class BatesEngine : public PricingEngine {
   public:
-    %extend {
-        BatesEnginePtr(const BatesModelPtr& model, 
-                       Size integrationOrder = 144) {
-            boost::shared_ptr<BatesModel> bModel =
-                 boost::dynamic_pointer_cast<BatesModel>(model);
-            QL_REQUIRE(bModel, "Bates model required");
-
-            return new BatesEnginePtr(
-                new BatesEngine(bModel, integrationOrder));
-        }
-
-        BatesEnginePtr(const BatesModelPtr& model, 
-                       Real relTolerance,
-                       Size maxEvaluations) {
-            boost::shared_ptr<BatesModel> bModel =
-                 boost::dynamic_pointer_cast<BatesModel>(model);
-            QL_REQUIRE(bModel, "Bates model required");
-
-            return new BatesEnginePtr(
-                new BatesEngine(bModel, relTolerance,maxEvaluations));
-        }
-    }
+    BatesEngine(const boost::shared_ptr<BatesModel>& model,
+                Size integrationOrder = 144);
+    BatesEngine(const boost::shared_ptr<BatesModel>& model,
+                Real relTolerance,
+                Size maxEvaluations);
 };
 
 
 %{
 using QuantLib::IntegralEngine;
-typedef boost::shared_ptr<PricingEngine> IntegralEnginePtr;
 %}
 
-%rename(IntegralEngine) IntegralEnginePtr;
-class IntegralEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(IntegralEngine)
+class IntegralEngine : public PricingEngine {
   public:
-    %extend {
-        IntegralEnginePtr(const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new IntegralEnginePtr(new IntegralEngine(bsProcess));
-        }
-    }
+    IntegralEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
 
 %{
-using QuantLib::FDBermudanEngine;
-typedef boost::shared_ptr<PricingEngine> FDBermudanEnginePtr;
+using QuantLib::CrankNicolson;
+typedef QuantLib::FDBermudanEngine<CrankNicolson> FDBermudanEngine;
 %}
 
-%rename(FDBermudanEngine) FDBermudanEnginePtr;
-class FDBermudanEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FDBermudanEngine)
+class FDBermudanEngine : public PricingEngine {
   public:
-    %extend {
-        FDBermudanEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                            Size timeSteps = 100, Size gridPoints = 100,
-                            bool timeDependent = false) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FDBermudanEnginePtr(
-                            new FDBermudanEngine<>(bsProcess,timeSteps,
-                                                   gridPoints,timeDependent));
-        }
-    }
+    FDBermudanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                     Size timeSteps = 100, Size gridPoints = 100,
+                     bool timeDependent = false);
 };
 
 %{
-using QuantLib::FDEuropeanEngine;
-typedef boost::shared_ptr<PricingEngine> FDEuropeanEnginePtr;
+typedef QuantLib::FDEuropeanEngine<CrankNicolson> FDEuropeanEngine;
 %}
 
-%rename(FDEuropeanEngine) FDEuropeanEnginePtr;
-class FDEuropeanEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FDEuropeanEngine)
+class FDEuropeanEngine : public PricingEngine {
   public:
-    %extend {
-        FDEuropeanEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                            Size timeSteps = 100, Size gridPoints = 100,
-                            bool timeDependent = false) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FDEuropeanEnginePtr(
-                            new FDEuropeanEngine<>(bsProcess,timeSteps,
-                                                   gridPoints,timeDependent));
-        }
-    }
+    FDEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess> process,
+                     Size timeSteps = 100, Size gridPoints = 100,
+                     bool timeDependent = false);
 };
 
 %{
@@ -670,51 +432,55 @@ using QuantLib::Trigeorgis;
 using QuantLib::Tian;
 using QuantLib::LeisenReimer;
 using QuantLib::Joshi4;
-typedef boost::shared_ptr<PricingEngine> BinomialVanillaEnginePtr;
 %}
 
-%rename(BinomialVanillaEngine) BinomialVanillaEnginePtr;
-class BinomialVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BinomialVanillaEngine<CoxRossRubinstein>)
+%shared_ptr(BinomialVanillaEngine<JarrowRudd>)
+%shared_ptr(BinomialVanillaEngine<AdditiveEQPBinomialTree>)
+%shared_ptr(BinomialVanillaEngine<Trigeorgis>)
+%shared_ptr(BinomialVanillaEngine<Tian>)
+%shared_ptr(BinomialVanillaEngine<LeisenReimer>)
+%shared_ptr(BinomialVanillaEngine<Joshi4>)
+
+template <class T>
+class BinomialVanillaEngine : public PricingEngine {
   public:
-    %extend {
-        BinomialVanillaEnginePtr(
-                             const GeneralizedBlackScholesProcessPtr& process,
-                             const std::string& type,
-                             Size steps) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(type);
-            if (s == "crr" || s == "coxrossrubinstein")
-                return new BinomialVanillaEnginePtr(
-                    new BinomialVanillaEngine<CoxRossRubinstein>(
-                                                            bsProcess,steps));
-            else if (s == "jr" || s == "jarrowrudd")
-                return new BinomialVanillaEnginePtr(
-                    new BinomialVanillaEngine<JarrowRudd>(bsProcess,steps));
-            else if (s == "eqp" || s == "additiveeqpbinomialtree")
-                return new BinomialVanillaEnginePtr(
-                    new BinomialVanillaEngine<AdditiveEQPBinomialTree>(
-                                                            bsProcess,steps));
-            else if (s == "trigeorgis")
-                return new BinomialVanillaEnginePtr(
-                    new BinomialVanillaEngine<Trigeorgis>(bsProcess,steps));
-            else if (s == "tian")
-                return new BinomialVanillaEnginePtr(
-                    new BinomialVanillaEngine<Tian>(bsProcess,steps));
-            else if (s == "lr" || s == "leisenreimer")
-                return new BinomialVanillaEnginePtr(
-                    new BinomialVanillaEngine<LeisenReimer>(bsProcess,steps));
-            else if (s == "j4" || s == "joshi4")
-                return new BinomialVanillaEnginePtr(
-                    new BinomialVanillaEngine<Joshi4>(bsProcess,steps));
-            else
-                QL_FAIL("unknown binomial engine type: "+s);
-        }
-    }
+    BinomialVanillaEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                          Size steps);
 };
 
+%template(BinomialCRRVanillaEngine) BinomialVanillaEngine<CoxRossRubinstein>;
+%template(BinomialJRVanillaEngine) BinomialVanillaEngine<JarrowRudd>;
+%template(BinomialEQPVanillaEngine) BinomialVanillaEngine<AdditiveEQPBinomialTree>;
+%template(BinomialTrigeorgisVanillaEngine) BinomialVanillaEngine<Trigeorgis>;
+%template(BinomialTianVanillaEngine) BinomialVanillaEngine<Tian>;
+%template(BinomialLRVanillaEngine) BinomialVanillaEngine<LeisenReimer>;
+%template(BinomialJ4VanillaEngine) BinomialVanillaEngine<Joshi4>;
+
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def BinomialVanillaEngine(process, type, steps):
+        type = type.lower()
+        if type == "crr" or type == "coxrossrubinstein":
+            cls = BinomialCRRVanillaEngine
+        elif type == "jr" or type == "jarrowrudd":
+            cls = BinomialJRVanillaEngine
+        elif type == "eqp":
+            cls = BinomialEQPVanillaEngine
+        elif type == "trigeorgis":
+            cls = BinomialTrigeorgisVanillaEngine
+        elif type == "tian":
+            cls = BinomialTianVanillaEngine
+        elif type == "lr" or type == "leisenreimer":
+            cls = BinomialLRVanillaEngine
+        elif type == "j4" or type == "joshi4":
+            cls = BinomialJ4VanillaEngine
+        else:
+            raise RuntimeError("unknown binomial engine type: %s" % type);
+        return cls(process, steps)
+%}
+#endif
 
 %{
 using QuantLib::MCEuropeanEngine;
@@ -723,9 +489,6 @@ using QuantLib::MCAmericanEngine;
 using QuantLib::PseudoRandom;
 using QuantLib::LowDiscrepancy;
 using QuantLib::LsmBasisSystem;
-typedef boost::shared_ptr<PricingEngine> MCEuropeanEnginePtr;
-typedef boost::shared_ptr<PricingEngine> MCAmericanEnginePtr;
-typedef boost::shared_ptr<PricingEngine> MCEuropeanHestonEnginePtr;
 %}
 
 struct LsmBasisSystem {
@@ -733,626 +496,522 @@ struct LsmBasisSystem {
                            Legendre, Chebyshev, Chebyshev2nd };
 };
 
-%rename(MCEuropeanEngine) MCEuropeanEnginePtr;
-class MCEuropeanEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MCEuropeanEngine<PseudoRandom>);
+%shared_ptr(MCEuropeanEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCEuropeanEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCEuropeanEnginePtr;
+    %feature("kwargs") MCEuropeanEngine;
     #endif
   public:
     %extend {
-        MCEuropeanEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                            const std::string& traits,
-                            intOrNull timeSteps = Null<Size>(),
-                            intOrNull timeStepsPerYear = Null<Size>(),
-                            bool brownianBridge = false,
-                            bool antitheticVariate = false,
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
+        MCEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         intOrNull timeSteps = Null<Size>(),
+                         intOrNull timeStepsPerYear = Null<Size>(),
+                         bool brownianBridge = false,
+                         bool antitheticVariate = false,
+                         intOrNull requiredSamples = Null<Size>(),
+                         doubleOrNull requiredTolerance = Null<Real>(),
+                         intOrNull maxSamples = Null<Size>(),
+                         BigInteger seed = 0) {
             QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
                        Size(timeStepsPerYear) != Null<Size>(),
                        "number of steps not specified");
-            if (s == "pseudorandom" || s == "pr")
-                return new MCEuropeanEnginePtr(
-                         new MCEuropeanEngine<PseudoRandom>(bsProcess,
-                                                            timeSteps,
-                                                            timeStepsPerYear,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCEuropeanEnginePtr(
-                       new MCEuropeanEngine<LowDiscrepancy>(bsProcess,
-                                                            timeSteps,
-                                                            timeStepsPerYear,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+            return new MCEuropeanEngine<RNG>(process,
+                                             timeSteps,
+                                             timeStepsPerYear,
+                                             brownianBridge,
+                                             antitheticVariate,
+                                             requiredSamples,
+                                             requiredTolerance,
+                                             maxSamples,
+                                             seed);
         }
     }
 };
 
-%rename(MCAmericanEngine) MCAmericanEnginePtr;
-class MCAmericanEnginePtr : public boost::shared_ptr<PricingEngine> {
+%template(MCPREuropeanEngine) MCEuropeanEngine<PseudoRandom>;
+%template(MCLDEuropeanEngine) MCEuropeanEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanEngine(process,
+                         traits,
+                         timeSteps=None,
+                         timeStepsPerYear=None,
+                         brownianBridge=False,
+                         antitheticVariate=False,
+                         requiredSamples=None,
+                         requiredTolerance=None,
+                         maxSamples=None,
+                         seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
+
+%shared_ptr(MCAmericanEngine<PseudoRandom>);
+%shared_ptr(MCAmericanEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCAmericanEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCAmericanEnginePtr;
+    %feature("kwargs") MCAmericanEngine;
     #endif
   public:
     %extend {
-		static const VanillaSwap::Type Receiver = VanillaSwap::Receiver;
-        static const VanillaSwap::Type Payer = VanillaSwap::Payer;
-		
-        MCAmericanEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                            const std::string& traits,
-                            intOrNull timeSteps = Null<Size>(),
-                            intOrNull timeStepsPerYear = Null<Size>(),
-                            bool antitheticVariate = false,
-                            bool controlVariate = false,							
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0,
-							intOrNull polynomOrder = 2, 
-							LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial,
-							int nCalibrationSamples = 2048,
-							boost::optional<bool> antitheticVariateCalibration = boost::none,
-							BigNatural seedCalibration = Null<Size>()) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
-                       Size(timeStepsPerYear) != Null<Size>(),
-                       "number of steps not specified");
-            if (s == "pseudorandom" || s == "pr")
-                return new MCAmericanEnginePtr(
-                         new MCAmericanEngine<PseudoRandom>(bsProcess,
-                                                            timeSteps,
-                                                            timeStepsPerYear,
-                                                            antitheticVariate,
-															controlVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed,
-															polynomOrder,
-															polynomType,
-															nCalibrationSamples,
-															antitheticVariateCalibration,
-															seedCalibration));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCAmericanEnginePtr(
-                       new MCAmericanEngine<LowDiscrepancy>(bsProcess,
-                                                            timeSteps,
-                                                            timeStepsPerYear,
-                                                            antitheticVariate,
-															controlVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed,
-															polynomOrder,
-															polynomType,
-															nCalibrationSamples,
-															antitheticVariateCalibration,
-															seedCalibration));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+        MCAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         intOrNull timeSteps = Null<Size>(),
+                         intOrNull timeStepsPerYear = Null<Size>(),
+                         bool antitheticVariate = false,
+                         bool controlVariate = false,
+                         intOrNull requiredSamples = Null<Size>(),
+                         doubleOrNull requiredTolerance = Null<Real>(),
+                         intOrNull maxSamples = Null<Size>(),
+                         BigInteger seed = 0,
+                         intOrNull polynomOrder = 2,
+                         LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial,
+                         int nCalibrationSamples = 2048,
+                         boost::optional<bool> antitheticVariateCalibration = boost::none,
+                         BigNatural seedCalibration = Null<Size>()) {
+            return new MCAmericanEngine<RNG>(process,
+                                             timeSteps,
+                                             timeStepsPerYear,
+                                             antitheticVariate,
+                                             controlVariate,
+                                             requiredSamples,
+                                             requiredTolerance,
+                                             maxSamples,
+                                             seed,
+                                             polynomOrder,
+                                             polynomType,
+                                             nCalibrationSamples,
+                                             antitheticVariateCalibration,
+                                             seedCalibration);
         }
     }
 };
 
+%template(MCPRAmericanEngine) MCAmericanEngine<PseudoRandom>;
+%template(MCLDAmericanEngine) MCAmericanEngine<LowDiscrepancy>;
 
-%rename(MCEuropeanHestonEngine) MCEuropeanHestonEnginePtr;
-class MCEuropeanHestonEnginePtr : public boost::shared_ptr<PricingEngine> {
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCAmericanEngine(process,
+                         traits,
+                         timeSteps=None,
+                         timeStepsPerYear=None,
+                         antitheticVariate=False,
+                         controlVariate=False,
+                         requiredSamples=None,
+                         requiredTolerance=None,
+                         maxSamples=None,
+                         seed=0,
+                         polynomOrder=2,
+                         polynomType=LsmBasisSystem.Monomial,
+                         nCalibrationSamples=2048,
+                         antitheticVariateCalibration=None,
+                         seedCalibration=None):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRAmericanEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDAmericanEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   antitheticVariate,
+                   controlVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed,
+                   polynomOrder,
+                   polynomType,
+                   nCalibrationSamples,
+                   antitheticVariateCalibration,
+                   seedCalibration)
+%}
+#endif
+
+
+%shared_ptr(MCEuropeanHestonEngine<PseudoRandom>);
+%shared_ptr(MCEuropeanHestonEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCEuropeanHestonEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCEuropeanHestonEnginePtr;
+    %feature("kwargs") MCEuropeanHestonEngine;
     #endif
   public:
     %extend {
-        MCEuropeanHestonEnginePtr(const HestonProcessPtr& process,
-                            const std::string& traits,
-                            intOrNull timeSteps = Null<Size>(),
-                            intOrNull timeStepsPerYear = Null<Size>(),
-                            bool antitheticVariate = false,
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0) {
-            boost::shared_ptr<HestonProcess> hestonProcess =
-                 boost::dynamic_pointer_cast<HestonProcess>(process);
-            QL_REQUIRE(hestonProcess, "Heston process required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
+        MCEuropeanHestonEngine(const boost::shared_ptr<HestonProcess>& process,
+                               intOrNull timeSteps = Null<Size>(),
+                               intOrNull timeStepsPerYear = Null<Size>(),
+                               bool antitheticVariate = false,
+                               intOrNull requiredSamples = Null<Size>(),
+                               doubleOrNull requiredTolerance = Null<Real>(),
+                               intOrNull maxSamples = Null<Size>(),
+                               BigInteger seed = 0) {
             QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
                        Size(timeStepsPerYear) != Null<Size>(),
                        "number of steps not specified");
-            if (s == "pseudorandom" || s == "pr")
-                return new MCEuropeanHestonEnginePtr(
-                         new MCEuropeanHestonEngine<PseudoRandom>(hestonProcess,
-                                                                  timeSteps,
-                                                                  timeStepsPerYear,
-                                                                  antitheticVariate,
-                                                                  requiredSamples,
-                                                                  requiredTolerance,
-                                                                  maxSamples,
-                                                                  seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCEuropeanHestonEnginePtr(
-                       new MCEuropeanHestonEngine<LowDiscrepancy>(hestonProcess,
-                                                                  timeSteps,
-                                                                  timeStepsPerYear,
-                                                                  antitheticVariate,
-                                                                  requiredSamples,
-                                                                  requiredTolerance,
-                                                                  maxSamples,
-                                                                  seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+            return new MCEuropeanHestonEngine<RNG>(process,
+                                                   timeSteps,
+                                                   timeStepsPerYear,
+                                                   antitheticVariate,
+                                                   requiredSamples,
+                                                   requiredTolerance,
+                                                   maxSamples,
+                                                   seed);
         }
     }
 };
+
+%template(MCPREuropeanHestonEngine) MCEuropeanHestonEngine<PseudoRandom>;
+%template(MCLDEuropeanHestonEngine) MCEuropeanHestonEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanHestonEngine(process,
+                               traits,
+                               timeSteps=None,
+                               timeStepsPerYear=None,
+                               antitheticVariate=False,
+                               requiredSamples=None,
+                               requiredTolerance=None,
+                               maxSamples=None,
+                               seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanHestonEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanHestonEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 
 // American engines
 
 %{
-using QuantLib::FDAmericanEngine;
-using QuantLib::FDShoutEngine;
-typedef boost::shared_ptr<PricingEngine> FDAmericanEnginePtr;
-typedef boost::shared_ptr<PricingEngine> FDShoutEnginePtr;
+typedef QuantLib::FDAmericanEngine<CrankNicolson> FDAmericanEngine;
+typedef QuantLib::FDShoutEngine<CrankNicolson> FDShoutEngine;
 %}
 
-%rename(FDAmericanEngine) FDAmericanEnginePtr;
-class FDAmericanEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FDAmericanEngine)
+class FDAmericanEngine : public PricingEngine {
   public:
-    %extend {
-        FDAmericanEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                            Size timeSteps = 100, Size gridPoints = 100,
-                            bool timeDependent = false) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FDAmericanEnginePtr(
-                            new FDAmericanEngine<>(bsProcess,timeSteps,
-                                                   gridPoints,timeDependent));
-        }
-    }
+    FDAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                     Size timeSteps = 100, Size gridPoints = 100,
+                     bool timeDependent = false);
 };
+
+%shared_ptr(FDShoutEngine)
+class FDShoutEngine : public PricingEngine {
+  public:
+    FDShoutEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                  Size timeSteps = 100, Size gridPoints = 100,
+                  bool timeDependent = false);
+};
+
 
 %{
 using QuantLib::ContinuousArithmeticAsianLevyEngine;
-typedef boost::shared_ptr<PricingEngine> ContinuousArithmeticAsianLevyEnginePtr;
 %}
 
-%rename(ContinuousArithmeticAsianLevyEngine) ContinuousArithmeticAsianLevyEnginePtr;
-class ContinuousArithmeticAsianLevyEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(ContinuousArithmeticAsianLevyEngine)
+class ContinuousArithmeticAsianLevyEngine : public PricingEngine {
   public:
-    %extend {
-        ContinuousArithmeticAsianLevyEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                                               const Handle<Quote>& runningAverage,
-                                               const Date& startDate) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new ContinuousArithmeticAsianLevyEnginePtr(
-                            new ContinuousArithmeticAsianLevyEngine(bsProcess,runningAverage, startDate));
-        }
-    }
+    ContinuousArithmeticAsianLevyEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                        const Handle<Quote>& runningAverage,
+                                        const Date& startDate);
 };
 
 %{
 using QuantLib::FdBlackScholesAsianEngine;
-typedef boost::shared_ptr<PricingEngine> FdBlackScholesAsianEnginePtr;
 %}
 
-%rename(FdBlackScholesAsianEngine) FdBlackScholesAsianEnginePtr;
-class FdBlackScholesAsianEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdBlackScholesAsianEngine)
+class FdBlackScholesAsianEngine : public PricingEngine {
   public:
-    %extend {
-        FdBlackScholesAsianEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                                     Size tGrid, Size xGrid, Size aGrid) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FdBlackScholesAsianEnginePtr(
-                            new FdBlackScholesAsianEngine(bsProcess,tGrid, xGrid, aGrid));
-        }
-    }
+    FdBlackScholesAsianEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                              Size tGrid, Size xGrid, Size aGrid);
 };
-
-
-
-%rename(FDShoutEngine) FDShoutEnginePtr;
-class FDShoutEnginePtr : public boost::shared_ptr<PricingEngine> {
-  public:
-    %extend {
-        FDShoutEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                         Size timeSteps = 100, Size gridPoints = 100,
-                         bool timeDependent = false) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FDShoutEnginePtr(
-                               new FDShoutEngine<>(bsProcess,timeSteps,
-                                                   gridPoints,timeDependent));
-        }
-    }
-};
-
 
 %{
 using QuantLib::BaroneAdesiWhaleyApproximationEngine;
-typedef boost::shared_ptr<PricingEngine>
-    BaroneAdesiWhaleyApproximationEnginePtr;
 %}
 
-%rename(BaroneAdesiWhaleyEngine) BaroneAdesiWhaleyApproximationEnginePtr;
-class BaroneAdesiWhaleyApproximationEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BaroneAdesiWhaleyApproximationEngine);
+%rename(BaroneAdesiWhaleyEngine) BaroneAdesiWhaleyApproximationEngine;
+class BaroneAdesiWhaleyApproximationEngine : public PricingEngine {
   public:
-    %extend {
-        BaroneAdesiWhaleyApproximationEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new BaroneAdesiWhaleyApproximationEnginePtr(
-                         new BaroneAdesiWhaleyApproximationEngine(bsProcess));
-        }
-    }
+    BaroneAdesiWhaleyApproximationEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
 %{
 using QuantLib::BjerksundStenslandApproximationEngine;
-typedef boost::shared_ptr<PricingEngine>
-    BjerksundStenslandApproximationEnginePtr;
 %}
 
-%rename(BjerksundStenslandEngine) BjerksundStenslandApproximationEnginePtr;
-class BjerksundStenslandApproximationEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BjerksundStenslandApproximationEngine);
+%rename(BjerksundStenslandEngine) BjerksundStenslandApproximationEngine;
+class BjerksundStenslandApproximationEngine : public PricingEngine {
   public:
-    %extend {
-        BjerksundStenslandApproximationEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new BjerksundStenslandApproximationEnginePtr(
-                        new BjerksundStenslandApproximationEngine(bsProcess));
-        }
-    }
+    BjerksundStenslandApproximationEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
 using QuantLib::AnalyticDigitalAmericanEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticDigitalAmericanEnginePtr;
 %}
 
-%rename(AnalyticDigitalAmericanEngine) AnalyticDigitalAmericanEnginePtr;
-class AnalyticDigitalAmericanEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticDigitalAmericanEngine)
+class AnalyticDigitalAmericanEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticDigitalAmericanEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticDigitalAmericanEnginePtr(
-                                new AnalyticDigitalAmericanEngine(bsProcess));
-        }
-    }
+    AnalyticDigitalAmericanEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
 using QuantLib::AnalyticDigitalAmericanKOEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticDigitalAmericanKOEnginePtr;
 %}
 
-%rename(AnalyticDigitalAmericanKOEngine) AnalyticDigitalAmericanKOEnginePtr;
-class AnalyticDigitalAmericanKOEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticDigitalAmericanKOEngine)
+class AnalyticDigitalAmericanKOEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticDigitalAmericanKOEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticDigitalAmericanKOEnginePtr(
-                                new AnalyticDigitalAmericanKOEngine(bsProcess));
-        }
-    }
+    AnalyticDigitalAmericanKOEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 // Dividend option
 
 %{
 using QuantLib::DividendVanillaOption;
-typedef boost::shared_ptr<Instrument> DividendVanillaOptionPtr;
 %}
 
 
-%rename(DividendVanillaOption) DividendVanillaOptionPtr;
-class DividendVanillaOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(DividendVanillaOption)
+class DividendVanillaOption : public OneAssetOption {
   public:
-    %extend {
-        DividendVanillaOptionPtr(
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise,
-                const std::vector<Date>& dividendDates,
-                const std::vector<Real>& dividends) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new DividendVanillaOptionPtr(
-                          new DividendVanillaOption(stPayoff,exercise,
-                                                    dividendDates,dividends));
-        }
-        SampledCurve priceCurve() {
-            return boost::dynamic_pointer_cast<DividendVanillaOption>(*self)
-                ->result<SampledCurve>("priceCurve");
-        }
-        Volatility impliedVolatility(
-                             Real targetValue,
-                             const GeneralizedBlackScholesProcessPtr& process,
-                             Real accuracy = 1.0e-4,
-                             Size maxEvaluations = 100,
-                             Volatility minVol = 1.0e-4,
-                             Volatility maxVol = 4.0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return boost::dynamic_pointer_cast<DividendVanillaOption>(*self)
-                ->impliedVolatility(targetValue, bsProcess, accuracy,
-                                    maxEvaluations, minVol, maxVol);
-        }
+    DividendVanillaOption(
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise,
+            const std::vector<Date>& dividendDates,
+            const std::vector<Real>& dividends);
+    Volatility impliedVolatility(
+                         Real targetValue,
+                         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         Real accuracy = 1.0e-4,
+                         Size maxEvaluations = 100,
+                         Volatility minVol = 1.0e-4,
+                         Volatility maxVol = 4.0) {
+        return boost::dynamic_pointer_cast<DividendVanillaOption>(*self)
+            ->impliedVolatility(targetValue, process, accuracy,
+                                maxEvaluations, minVol, maxVol);
     }
 };
-
-add_greeks_to(DividendVanillaOption);
 
 
 %{
 using QuantLib::AnalyticDividendEuropeanEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticDividendEuropeanEnginePtr;
 %}
 
-%rename(AnalyticDividendEuropeanEngine) AnalyticDividendEuropeanEnginePtr;
-class AnalyticDividendEuropeanEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticDividendEuropeanEngine)
+class AnalyticDividendEuropeanEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticDividendEuropeanEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticDividendEuropeanEnginePtr(
-                               new AnalyticDividendEuropeanEngine(bsProcess));
-        }
-    }
+    AnalyticDividendEuropeanEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
 using QuantLib::FDDividendEuropeanEngine;
 using QuantLib::FDDividendAmericanEngine;
-typedef boost::shared_ptr<PricingEngine> FDDividendEuropeanEnginePtr;
-typedef boost::shared_ptr<PricingEngine> FDDividendAmericanEnginePtr;
 %}
 
-%rename(FDDividendEuropeanEngine) FDDividendEuropeanEnginePtr;
-class FDDividendEuropeanEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FDDividendEuropeanEngine<CrankNicolson>)
+
+%rename(FDDividendEuropeanEngineT) FDDividendEuropeanEngine;
+template <class S>
+class FDDividendEuropeanEngine : public PricingEngine {
   public:
-    %extend {
-        FDDividendEuropeanEnginePtr(
-                             const GeneralizedBlackScholesProcessPtr& process,
+    FDDividendEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                              Size timeSteps = 100,
                              Size gridPoints = 100,
-                             bool timeDependent = false) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FDDividendEuropeanEnginePtr(
-                   new FDDividendEuropeanEngine<>(bsProcess,timeSteps,
-                                                  gridPoints, timeDependent));
-        }
-    }
+                             bool timeDependent = false);
 };
 
-%rename(FDDividendAmericanEngine) FDDividendAmericanEnginePtr;
-class FDDividendAmericanEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%template(FDDividendEuropeanEngine) FDDividendEuropeanEngine<CrankNicolson>;
+
+
+%shared_ptr(FDDividendAmericanEngine<CrankNicolson>)
+
+%rename(FDDividendAmericanEngineT) FDDividendAmericanEngine;
+template <class S>
+class FDDividendAmericanEngine : public PricingEngine {
   public:
-    %extend {
-        FDDividendAmericanEnginePtr(
-                             const GeneralizedBlackScholesProcessPtr& process,
+    FDDividendAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                              Size timeSteps = 100,
                              Size gridPoints = 100,
-                             bool timeDependent = false) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FDDividendAmericanEnginePtr(
-                   new FDDividendAmericanEngine<>(bsProcess,timeSteps,
-                                                  gridPoints, timeDependent));
-        }
-    }
+                             bool timeDependent = false);
 };
+
+%template(FDDividendAmericanEngine) FDDividendAmericanEngine<CrankNicolson>;
 
 
 // Barrier option
 
 %{
 using QuantLib::BarrierOption;
-typedef boost::shared_ptr<Instrument> BarrierOptionPtr;
 %}
 
-%rename(BarrierOption) BarrierOptionPtr;
-class BarrierOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(BarrierOption)
+class BarrierOption : public OneAssetOption {
   public:
-    %extend {
-        BarrierOptionPtr(
-                   Barrier::Type barrierType,
-                   Real barrier,
-                   Real rebate,
-                   const boost::shared_ptr<Payoff>& payoff,
-                   const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new BarrierOptionPtr(
-                               new BarrierOption(barrierType, barrier, rebate,
-                                                 stPayoff,exercise));
-        }
-        SampledCurve priceCurve() {
-            return boost::dynamic_pointer_cast<BarrierOption>(*self)
-                ->result<SampledCurve>("priceCurve");
-        }
-        Volatility impliedVolatility(
-                             Real targetValue,
-                             const GeneralizedBlackScholesProcessPtr& process,
-                             Real accuracy = 1.0e-4,
-                             Size maxEvaluations = 100,
-                             Volatility minVol = 1.0e-4,
-                             Volatility maxVol = 4.0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return boost::dynamic_pointer_cast<BarrierOption>(*self)
-                 ->impliedVolatility(targetValue, bsProcess, accuracy,
-                                     maxEvaluations, minVol, maxVol);
-        }
+    BarrierOption(
+               Barrier::Type barrierType,
+               Real barrier,
+               Real rebate,
+               const boost::shared_ptr<StrikedTypePayoff>& payoff,
+               const boost::shared_ptr<Exercise>& exercise);
+    Volatility impliedVolatility(
+                         Real targetValue,
+                         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         Real accuracy = 1.0e-4,
+                         Size maxEvaluations = 100,
+                         Volatility minVol = 1.0e-4,
+                         Volatility maxVol = 4.0) {
+        return boost::dynamic_pointer_cast<BarrierOption>(*self)
+             ->impliedVolatility(targetValue, process, accuracy,
+                                 maxEvaluations, minVol, maxVol);
     }
 };
-
-add_greeks_to(BarrierOption);
-
 
 // Barrier engines
 
 %{
 using QuantLib::AnalyticBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticBarrierEnginePtr;
+using QuantLib::MCBarrierEngine;
 %}
 
-%rename(AnalyticBarrierEngine) AnalyticBarrierEnginePtr;
-class AnalyticBarrierEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticBarrierEngine)
+class AnalyticBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticBarrierEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticBarrierEnginePtr(
-                                        new AnalyticBarrierEngine(bsProcess));
-        }
-    }
+    AnalyticBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
-%{
-using QuantLib::MCBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> MCBarrierEnginePtr;
-%}
 
-%rename(MCBarrierEngine) MCBarrierEnginePtr;
-class MCBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MCBarrierEngine<PseudoRandom>);
+%shared_ptr(MCBarrierEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCBarrierEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCBarrierEnginePtr;
+    %feature("kwargs") MCBarrierEngine;
     #endif
   public:
     %extend {
-        MCBarrierEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                           const std::string& traits,
-                           Size timeSteps = Null<Size>(),
-                           Size timeStepsPerYear = Null<Size>(),
-                           bool brownianBridge = false,
-                           bool antitheticVariate = false,
-                           intOrNull requiredSamples = Null<Size>(),
-                           doubleOrNull requiredTolerance = Null<Real>(),
-                           intOrNull maxSamples = Null<Size>(),
-                           bool isBiased = false,
-                           BigInteger seed = 0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                return new MCBarrierEnginePtr(
-                         new MCBarrierEngine<PseudoRandom>(bsProcess,
-                                                           timeSteps,
-                                                           timeStepsPerYear,
-                                                           brownianBridge,
-                                                           antitheticVariate,
-                                                           requiredSamples,
-                                                           requiredTolerance,
-                                                           maxSamples,
-                                                           isBiased,
-                                                           seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCBarrierEnginePtr(
-                       new MCBarrierEngine<LowDiscrepancy>(bsProcess,
-                                                           timeSteps,
-                                                           timeStepsPerYear,
-                                                           brownianBridge,
-                                                           antitheticVariate,
-                                                           requiredSamples,
-                                                           requiredTolerance,
-                                                           maxSamples,
-                                                           isBiased,
-                                                           seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+        MCBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                        intOrNull timeSteps = Null<Size>(),
+                        intOrNull timeStepsPerYear = Null<Size>(),
+                        bool brownianBridge = false,
+                        bool antitheticVariate = false,
+                        intOrNull requiredSamples = Null<Size>(),
+                        doubleOrNull requiredTolerance = Null<Real>(),
+                        intOrNull maxSamples = Null<Size>(),
+                        bool isBiased = false,
+                        BigInteger seed = 0) {
+            return new MCBarrierEngine<RNG>(process,
+                                            timeSteps,
+                                            timeStepsPerYear,
+                                            brownianBridge,
+                                            antitheticVariate,
+                                            requiredSamples,
+                                            requiredTolerance,
+                                            maxSamples,
+                                            isBiased,
+                                            seed);
         }
     }
 };
+
+%template(MCPRBarrierEngine) MCBarrierEngine<PseudoRandom>;
+%template(MCLDBarrierEngine) MCBarrierEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCBarrierEngine(process,
+                        traits,
+                        timeSteps=None,
+                        timeStepsPerYear=None,
+                        brownianBridge=False,
+                        antitheticVariate=False,
+                        requiredSamples=None,
+                        requiredTolerance=None,
+                        maxSamples=None,
+                        isBiased=False,
+                        seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRBarrierEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDBarrierEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   isBiased,
+                   seed)
+%}
+#endif
+
 
 %{
 using QuantLib::FdmSchemeDesc;
 %}
 
 struct FdmSchemeDesc {
-  enum FdmSchemeType { HundsdorferType, DouglasType, 
-                       CraigSneydType, ModifiedCraigSneydType, 
+  enum FdmSchemeType { HundsdorferType, DouglasType,
+                       CraigSneydType, ModifiedCraigSneydType,
                        ImplicitEulerType, ExplicitEulerType };
-  
+
   FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
-  
+
   const FdmSchemeType type;
   const Real theta, mu;
 
@@ -1361,219 +1020,128 @@ struct FdmSchemeDesc {
   static FdmSchemeDesc ImplicitEuler();
   static FdmSchemeDesc ExplicitEuler();
   static FdmSchemeDesc CraigSneyd();
-  static FdmSchemeDesc ModifiedCraigSneyd(); 
+  static FdmSchemeDesc ModifiedCraigSneyd();
   static FdmSchemeDesc Hundsdorfer();
   static FdmSchemeDesc ModifiedHundsdorfer();
 };
 
 %{
 using QuantLib::FdBlackScholesVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdBlackScholesVanillaEnginePtr;
+using QuantLib::FdBatesVanillaEngine;
+using QuantLib::FdHestonVanillaEngine;
 %}
 
-%rename(FdBlackScholesVanillaEngine) FdBlackScholesVanillaEnginePtr;
-class FdBlackScholesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdBlackScholesVanillaEngine)
+class FdBlackScholesVanillaEngine : public PricingEngine {
   public:
-    %extend {
-        FdBlackScholesVanillaEnginePtr(
-        	const GeneralizedBlackScholesProcessPtr& process,
+    FdBlackScholesVanillaEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
             bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>()) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FdBlackScholesVanillaEnginePtr(
-                new FdBlackScholesVanillaEngine( 
-                    bsProcess,tGrid, xGrid, dampingSteps, 
-                    schemeDesc, localVol, illegalLocalVolOverwrite));
-        }
-    }
+            Real illegalLocalVolOverwrite = -Null<Real>());
 };
 
-%{
-using QuantLib::FdBatesVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdBatesVanillaEnginePtr;
-%}
-
-%rename(FdBatesVanillaEngine) FdBatesVanillaEnginePtr;
-class FdBatesVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdBatesVanillaEngine)
+class FdBatesVanillaEngine : public PricingEngine {
   public:
-    %extend {
-        FdBatesVanillaEnginePtr(
-            const BatesModelPtr& model,
+    FdBatesVanillaEngine(
+            const boost::shared_ptr<BatesModel>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid=50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
-            
-            boost::shared_ptr<BatesModel> bModel =
-                 boost::dynamic_pointer_cast<BatesModel>(model);
-            QL_REQUIRE(bModel, "Bates model required");
-            return new FdBatesVanillaEnginePtr(
-                new FdBatesVanillaEngine(
-                    bModel, tGrid, xGrid, vGrid, dampingSteps, schemeDesc));
-        }
-    }
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 };
 
-%{
-using QuantLib::FdHestonVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdHestonVanillaEnginePtr;
-%}
-
-%rename(FdHestonVanillaEngine) FdHestonVanillaEnginePtr;
-class FdHestonVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdHestonVanillaEngine)
+class FdHestonVanillaEngine : public PricingEngine {
   public:
-    %extend {
-        FdHestonVanillaEnginePtr(
-            const HestonModelPtr& model,
+    FdHestonVanillaEngine(
+            const boost::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>()) {
-            
-            boost::shared_ptr<HestonModel> hModel =
-                 boost::dynamic_pointer_cast<HestonModel>(model);
-            QL_REQUIRE(hModel, "Heston model required");
-            return new FdHestonVanillaEnginePtr(
-                new FdHestonVanillaEngine(hModel, tGrid, xGrid,
-                                          vGrid, dampingSteps, schemeDesc, leverageFct));
-        }
-    }
+                = boost::shared_ptr<LocalVolTermStructure>());
 };
 
 
 %{
 using QuantLib::AnalyticCEVEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticCEVEnginePtr;
+using QuantLib::FdCEVVanillaEngine;
 %}
 
-%rename(AnalyticCEVEngine) AnalyticCEVEnginePtr;
-class AnalyticCEVEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticCEVEngine);
+class AnalyticCEVEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticCEVEnginePtr(
+    AnalyticCEVEngine(
             Real f0, Real alpha, Real beta,
-            const Handle<YieldTermStructure>& rTS) {
-            
-            return new AnalyticCEVEnginePtr(
-                new AnalyticCEVEngine(f0, alpha, beta, rTS));
-        }
-    }
+            const Handle<YieldTermStructure>& rTS);
 };
 
-%{
-using QuantLib::FdCEVVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdCEVVanillaEnginePtr;
-%}
-
-%rename(FdCEVVanillaEngine) FdCEVVanillaEnginePtr;
-class FdCEVVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdCEVVanillaEngine);
+class FdCEVVanillaEngine : public PricingEngine {
   public:
-    %extend {
-        FdCEVVanillaEnginePtr(
+    FdCEVVanillaEngine(
             Real f0, Real alpha, Real beta,
             const Handle<YieldTermStructure>& rTS,
             Size tGrid = 50, Size xGrid = 400,
             Size dampingSteps = 0,
             Real scalingFactor = 1.0, Real eps = 1e-4,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas()) {
-            
-            return new FdCEVVanillaEnginePtr(
-                new FdCEVVanillaEngine(f0, alpha, beta, rTS, 
-                	tGrid, xGrid, dampingSteps, scalingFactor, eps, 
-                	schemeDesc));
-        }
-    }
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 };
+
 
 %{
 using QuantLib::FdSabrVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> FdSabrVanillaEnginePtr;
 %}
 
-%rename(FdSabrVanillaEngine) FdSabrVanillaEnginePtr;
-class FdSabrVanillaEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdSabrVanillaEngine);
+class FdSabrVanillaEngine : public PricingEngine {
   public:
-    %extend {
-        FdSabrVanillaEnginePtr(
+    FdSabrVanillaEngine(
             Real f0, Real alpha, Real beta, Real nu, Real rho,
             const Handle<YieldTermStructure>& rTS,
             Size tGrid = 50, Size fGrid = 400, Size xGrid = 50,
             Size dampingSteps = 0,
             Real scalingFactor = 1.0, Real eps = 1e-4,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
-            
-            return new FdSabrVanillaEnginePtr(
-                new FdSabrVanillaEngine(f0, alpha, beta, nu, rho, rTS, 
-                	tGrid, fGrid, xGrid, dampingSteps, scalingFactor, eps, 
-                	schemeDesc));
-        }
-    }
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 };
+
 
 %{
 using QuantLib::FdBlackScholesBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> FdBlackScholesBarrierEnginePtr;
 %}
 
-%rename(FdBlackScholesBarrierEngine) FdBlackScholesBarrierEnginePtr;
-class FdBlackScholesBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdBlackScholesBarrierEngine)
+class FdBlackScholesBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        FdBlackScholesBarrierEnginePtr(const GeneralizedBlackScholesProcessPtr& process,
-                                       Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-                                       const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-                                       bool localVol = false, 
-                                       Real illegalLocalVolOverwrite = -Null<Real>()) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new FdBlackScholesBarrierEnginePtr(
-                            new FdBlackScholesBarrierEngine(bsProcess,
-                                                              tGrid,  xGrid, dampingSteps, 
-                                                              schemeDesc, localVol,
-                                                              illegalLocalVolOverwrite));
-        }
-  }
+    FdBlackScholesBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+                                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                                bool localVol = false,
+                                Real illegalLocalVolOverwrite = -Null<Real>());
 };
 
 
 %{
 using QuantLib::AnalyticBinaryBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticBinaryBarrierEnginePtr;
 %}
 
-%rename(AnalyticBinaryBarrierEngine) AnalyticBinaryBarrierEnginePtr;
-class AnalyticBinaryBarrierEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticBinaryBarrierEngine)
+class AnalyticBinaryBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticBinaryBarrierEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticBinaryBarrierEnginePtr(
-                                        new AnalyticBinaryBarrierEngine(bsProcess));
-        }
-    }
+    AnalyticBinaryBarrierEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
 %{
 using QuantLib::BinomialBarrierEngine;
 using QuantLib::DiscretizedDermanKaniBarrierOption;
-typedef boost::shared_ptr<PricingEngine> BinomialBarrierEnginePtr;
 %}
 
 #if defined(SWIGPYTHON)
-%feature("docstring") BinomialBarrierEnginePtr "Binomial Engine for barrier options.
+%feature("docstring") BinomialBarrierEngine "Binomial Engine for barrier options.
 Features different binomial models, selected by the type parameters.
 Uses Boyle-Lau adjustment for optimize steps and Derman-Kani optimization to speed
 up convergence.
@@ -1588,137 +1156,98 @@ Type values:
 
 Boyle-Lau adjustment is controlled by parameter max_steps.
 If max_steps is equal to steps Boyle-Lau is disabled.
-Il max_steps is 0 (default value), max_steps is calculated by capping it to 
+Il max_steps is 0 (default value), max_steps is calculated by capping it to
 5*steps when Boyle-Lau would need more than 1000 steps.
 If max_steps is specified, it would limit binomial steps to this value.
 "
 #endif
-%rename(BinomialBarrierEngine) BinomialBarrierEnginePtr;
-class BinomialBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
+
+#if !defined(SWIGR)
+
+%shared_ptr(BinomialBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniBarrierOption>);
+%shared_ptr(BinomialBarrierEngine<JarrowRudd, DiscretizedDermanKaniBarrierOption>);
+%shared_ptr(BinomialBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniBarrierOption>);
+%shared_ptr(BinomialBarrierEngine<Trigeorgis, DiscretizedDermanKaniBarrierOption>);
+%shared_ptr(BinomialBarrierEngine<Tian, DiscretizedDermanKaniBarrierOption>);
+%shared_ptr(BinomialBarrierEngine<LeisenReimer, DiscretizedDermanKaniBarrierOption>);
+%shared_ptr(BinomialBarrierEngine<Joshi4, DiscretizedDermanKaniBarrierOption>);
+
+template <class T, class U>
+class BinomialBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        BinomialBarrierEnginePtr(
-                             const GeneralizedBlackScholesProcessPtr& process,
-                             const std::string& type,
-                             Size steps,
-                             Size max_steps = 0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(type);
-            if (s == "crr" || s == "coxrossrubinstein")
-                return new BinomialBarrierEnginePtr(
-                    new BinomialBarrierEngine<CoxRossRubinstein,
-                                          DiscretizedDermanKaniBarrierOption>(
-                                                  bsProcess,steps,max_steps));
-            else if (s == "jr" || s == "jarrowrudd")
-                return new BinomialBarrierEnginePtr(
-                    new BinomialBarrierEngine<JarrowRudd,
-                                          DiscretizedDermanKaniBarrierOption>(
-                                                  bsProcess,steps,max_steps));
-            else if (s == "eqp" || s == "additiveeqpbinomialtree")
-                return new BinomialBarrierEnginePtr(
-                    new BinomialBarrierEngine<AdditiveEQPBinomialTree,
-                                          DiscretizedDermanKaniBarrierOption>(
-                                                  bsProcess,steps,max_steps));
-            else if (s == "trigeorgis")
-                return new BinomialBarrierEnginePtr(
-                    new BinomialBarrierEngine<Trigeorgis,
-                                          DiscretizedDermanKaniBarrierOption>(
-                                                  bsProcess,steps,max_steps));
-            else if (s == "tian")
-                return new BinomialBarrierEnginePtr(
-                    new BinomialBarrierEngine<Tian,
-                                          DiscretizedDermanKaniBarrierOption>(
-                                                  bsProcess,steps,max_steps));
-            else if (s == "lr" || s == "leisenreimer")
-                return new BinomialBarrierEnginePtr(
-                    new BinomialBarrierEngine<LeisenReimer,
-                                          DiscretizedDermanKaniBarrierOption>(
-                                                  bsProcess,steps,max_steps));
-            else if (s == "j4" || s == "joshi4")
-                return new BinomialBarrierEnginePtr(
-                    new BinomialBarrierEngine<Joshi4,
-                                          DiscretizedDermanKaniBarrierOption>(
-                                                  bsProcess,steps,max_steps));
-            else
-                QL_FAIL("unknown binomial barrier engine type: "+s);
-        }
-    }
+    BinomialBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                          Size steps,
+                          Size max_steps = 0);
 };
 
+%template(BinomialCRRBarrierEngine) BinomialBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniBarrierOption>;
+%template(BinomialJRBarrierEngine) BinomialBarrierEngine<JarrowRudd, DiscretizedDermanKaniBarrierOption>;
+%template(BinomialEQPBarrierEngine) BinomialBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniBarrierOption>;
+%template(BinomialTrigeorgisBarrierEngine) BinomialBarrierEngine<Trigeorgis, DiscretizedDermanKaniBarrierOption>;
+%template(BinomialTianBarrierEngine) BinomialBarrierEngine<Tian, DiscretizedDermanKaniBarrierOption>;
+%template(BinomialLRBarrierEngine) BinomialBarrierEngine<LeisenReimer, DiscretizedDermanKaniBarrierOption>;
+%template(BinomialJ4BarrierEngine) BinomialBarrierEngine<Joshi4, DiscretizedDermanKaniBarrierOption>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def BinomialBarrierEngine(process, type, steps):
+        type = type.lower()
+        if type == "crr" or type == "coxrossrubinstein":
+            cls = BinomialCRRBarrierEngine
+        elif type == "jr" or type == "jarrowrudd":
+            cls = BinomialJRBarrierEngine
+        elif type == "eqp":
+            cls = BinomialEQPBarrierEngine
+        elif type == "trigeorgis":
+            cls = BinomialTrigeorgisBarrierEngine
+        elif type == "tian":
+            cls = BinomialTianBarrierEngine
+        elif type == "lr" or type == "leisenreimer":
+            cls = BinomialLRBarrierEngine
+        elif type == "j4" or type == "joshi4":
+            cls = BinomialJ4BarrierEngine
+        else:
+            raise RuntimeError("unknown binomial engine type: %s" % type);
+        return cls(process, steps)
+%}
+#endif
+
+#endif
+
+
 %{
-using QuantLib::QuantoEngine;
 using QuantLib::ForwardVanillaEngine;
-typedef boost::shared_ptr<PricingEngine> ForwardEuropeanEnginePtr;
-typedef boost::shared_ptr<PricingEngine> QuantoEuropeanEnginePtr;
-typedef boost::shared_ptr<PricingEngine> QuantoForwardEuropeanEnginePtr;
+using QuantLib::QuantoEngine;
+typedef ForwardVanillaEngine<AnalyticEuropeanEngine> ForwardEuropeanEngine;
+typedef QuantoEngine<VanillaOption,AnalyticEuropeanEngine> QuantoEuropeanEngine;
+typedef QuantoEngine<ForwardVanillaOption,AnalyticEuropeanEngine> QuantoForwardEuropeanEngine;
 %}
 
 
-%rename(ForwardEuropeanEngine) ForwardEuropeanEnginePtr;
-class ForwardEuropeanEnginePtr: public boost::shared_ptr<PricingEngine> {
+%shared_ptr(ForwardEuropeanEngine)
+class ForwardEuropeanEngine: public PricingEngine {
   public:
-    %extend {
-        ForwardEuropeanEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new ForwardEuropeanEnginePtr(
-                 new ForwardVanillaEngine<AnalyticEuropeanEngine>(bsProcess));
-        }
-    }
+    ForwardEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
-
-%rename(QuantoEuropeanEngine) QuantoEuropeanEnginePtr;
-class QuantoEuropeanEnginePtr: public boost::shared_ptr<PricingEngine> {
+%shared_ptr(QuantoEuropeanEngine)
+class QuantoEuropeanEngine : public PricingEngine {
   public:
-    %extend {
-        QuantoEuropeanEnginePtr(
-                  const GeneralizedBlackScholesProcessPtr& process,
-                  const Handle<YieldTermStructure>& foreignRiskFreeRate,
-                  const Handle<BlackVolTermStructure>& exchangeRateVolatility,
-                  const Handle<Quote>& correlation) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new QuantoEuropeanEnginePtr(
-                new QuantoEngine<VanillaOption,AnalyticEuropeanEngine>(
-                                                       bsProcess,
-                                                       foreignRiskFreeRate,
-                                                       exchangeRateVolatility,
-                                                       correlation));
-        }
-    }
+    QuantoEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const Handle<YieldTermStructure>& foreignRiskFreeRate,
+                         const Handle<BlackVolTermStructure>& exchangeRateVolatility,
+                         const Handle<Quote>& correlation);
 };
 
-%rename(QuantoForwardEuropeanEngine) QuantoForwardEuropeanEnginePtr;
-class QuantoForwardEuropeanEnginePtr: public boost::shared_ptr<PricingEngine> {
-public:
-    %extend {
-        QuantoForwardEuropeanEnginePtr(
-                  const GeneralizedBlackScholesProcessPtr& process,
-                  const Handle<YieldTermStructure>& foreignRiskFreeRate,
-                  const Handle<BlackVolTermStructure>& exchangeRateVolatility,
-                  const Handle<Quote>& correlation) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new QuantoForwardEuropeanEnginePtr(
-                new QuantoEngine<ForwardVanillaOption,AnalyticEuropeanEngine>(
-                                                       bsProcess,
-                                                       foreignRiskFreeRate,
-                                                       exchangeRateVolatility,
-                                                       correlation));
-        }
-    }
+%shared_ptr(QuantoForwardEuropeanEngine)
+class QuantoForwardEuropeanEngine : public PricingEngine {
+  public:
+    QuantoForwardEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                const Handle<YieldTermStructure>& foreignRiskFreeRate,
+                                const Handle<BlackVolTermStructure>& exchangeRateVolatility,
+                                const Handle<Quote>& correlation);
 };
+
 
 %{
 using QuantLib::BlackCalculator;
@@ -1726,21 +1255,10 @@ using QuantLib::BlackCalculator;
 
 class BlackCalculator {
   public:
-    %extend {
-        BlackCalculator (
-                   const boost::shared_ptr<Payoff>& payoff,
-                   Real forward,
-                   Real stdDev,
-                   Real discount = 1.0) {
-
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-
-            return new BlackCalculator(stPayoff,forward,stdDev,discount);
-        }
-    }
+    BlackCalculator(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                    Real forward,
+                    Real stdDev,
+                    Real discount = 1.0);
     Real value() const;
     Real deltaForward() const;
     Real delta(Real spot) const;
@@ -1768,351 +1286,282 @@ class BlackCalculator {
 using QuantLib::Average;
 using QuantLib::ContinuousAveragingAsianOption;
 using QuantLib::DiscreteAveragingAsianOption;
-typedef boost::shared_ptr<Instrument> ContinuousAveragingAsianOptionPtr;
-typedef boost::shared_ptr<Instrument> DiscreteAveragingAsianOptionPtr;
 %}
 
 struct Average {
     enum Type { Arithmetic, Geometric };
 };
 
-%rename(ContinuousAveragingAsianOption) ContinuousAveragingAsianOptionPtr;
-class ContinuousAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(ContinuousAveragingAsianOption)
+class ContinuousAveragingAsianOption : public OneAssetOption {
   public:
-    %extend {
-        ContinuousAveragingAsianOptionPtr(
-                Average::Type averageType,
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new ContinuousAveragingAsianOptionPtr(
-                       new ContinuousAveragingAsianOption(averageType,
-                                                          stPayoff,exercise));
-        }
-    }
+    ContinuousAveragingAsianOption(
+            Average::Type averageType,
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
 };
 
-add_greeks_to(ContinuousAveragingAsianOption);
-
-
-%rename(DiscreteAveragingAsianOption) DiscreteAveragingAsianOptionPtr;
-class DiscreteAveragingAsianOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(DiscreteAveragingAsianOption)
+class DiscreteAveragingAsianOption : public OneAssetOption {
   public:
-    %extend {
-        DiscreteAveragingAsianOptionPtr(
-                Average::Type averageType,
-                Real runningAccumulator,
-                Size pastFixings,
-                const std::vector<Date>& fixingDates,
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new DiscreteAveragingAsianOptionPtr(
-                          new DiscreteAveragingAsianOption(averageType,
-                                                           runningAccumulator,
-                                                           pastFixings,
-                                                           fixingDates,
-                                                           stPayoff,
-                                                           exercise));
-        }
-    }
+    DiscreteAveragingAsianOption(
+            Average::Type averageType,
+            Real runningAccumulator,
+            Size pastFixings,
+            const std::vector<Date>& fixingDates,
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
 };
-
-add_greeks_to(DiscreteAveragingAsianOption);
-
 
 // Asian engines
 
 
 %{
 using QuantLib::AnalyticContinuousGeometricAveragePriceAsianEngine;
-typedef boost::shared_ptr<PricingEngine>
-    AnalyticContinuousGeometricAveragePriceAsianEnginePtr;
 %}
 
-%rename(AnalyticContinuousGeometricAveragePriceAsianEngine)
-        AnalyticContinuousGeometricAveragePriceAsianEnginePtr;
-class AnalyticContinuousGeometricAveragePriceAsianEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticContinuousGeometricAveragePriceAsianEngine)
+class AnalyticContinuousGeometricAveragePriceAsianEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticContinuousGeometricAveragePriceAsianEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticContinuousGeometricAveragePriceAsianEnginePtr(
-                new AnalyticContinuousGeometricAveragePriceAsianEngine(
-                                                                  bsProcess));
-        }
-    }
+    AnalyticContinuousGeometricAveragePriceAsianEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
 %{
 using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianEngine;
-typedef boost::shared_ptr<PricingEngine>
-    AnalyticDiscreteGeometricAveragePriceAsianEnginePtr;
 %}
 
-%rename(AnalyticDiscreteGeometricAveragePriceAsianEngine)
-        AnalyticDiscreteGeometricAveragePriceAsianEnginePtr;
-class AnalyticDiscreteGeometricAveragePriceAsianEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticDiscreteGeometricAveragePriceAsianEngine)
+class AnalyticDiscreteGeometricAveragePriceAsianEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticDiscreteGeometricAveragePriceAsianEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticDiscreteGeometricAveragePriceAsianEnginePtr(
-                new AnalyticDiscreteGeometricAveragePriceAsianEngine(
-                                                                  bsProcess));
-        }
-    }
+    AnalyticDiscreteGeometricAveragePriceAsianEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
 %{
 using QuantLib::AnalyticDiscreteGeometricAverageStrikeAsianEngine;
-typedef boost::shared_ptr<PricingEngine>
-    AnalyticDiscreteGeometricAverageStrikeAsianEnginePtr;
 %}
 
-%rename(AnalyticDiscreteGeometricAverageStrikeAsianEngine)
-        AnalyticDiscreteGeometricAverageStrikeAsianEnginePtr;
-class AnalyticDiscreteGeometricAverageStrikeAsianEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticDiscreteGeometricAverageStrikeAsianEngine)
+class AnalyticDiscreteGeometricAverageStrikeAsianEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticDiscreteGeometricAverageStrikeAsianEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticDiscreteGeometricAverageStrikeAsianEnginePtr(
-                new AnalyticDiscreteGeometricAverageStrikeAsianEngine(
-                                                                  bsProcess));
-        }
-    }
+    AnalyticDiscreteGeometricAverageStrikeAsianEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
-
 
 
 %{
 using QuantLib::MCDiscreteArithmeticAPEngine;
-typedef boost::shared_ptr<PricingEngine> MCDiscreteArithmeticAPEnginePtr;
-%}
-
-%rename(MCDiscreteArithmeticAPEngine) MCDiscreteArithmeticAPEnginePtr;
-class MCDiscreteArithmeticAPEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteArithmeticAPEnginePtr;
-    #endif
-  public:
-    %extend {
-        MCDiscreteArithmeticAPEnginePtr(
-                            const GeneralizedBlackScholesProcessPtr& process,
-                            const std::string& traits,
-                            bool brownianBridge = false,
-                            bool antitheticVariate = false,
-                            bool controlVariate = false,
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                return new MCDiscreteArithmeticAPEnginePtr(
-                         new MCDiscreteArithmeticAPEngine<PseudoRandom>(
-                                                            bsProcess,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            controlVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCDiscreteArithmeticAPEnginePtr(
-                       new MCDiscreteArithmeticAPEngine<LowDiscrepancy>(
-                                                            bsProcess,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            controlVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
-        }
-    }
-};
-
-
-%{
 using QuantLib::MCDiscreteArithmeticASEngine;
-typedef boost::shared_ptr<PricingEngine> MCDiscreteArithmeticASEnginePtr;
-%}
-
-%rename(MCDiscreteArithmeticASEngine) MCDiscreteArithmeticASEnginePtr;
-class MCDiscreteArithmeticASEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteArithmeticASEnginePtr;
-    #endif
-  public:
-    %extend {
-        MCDiscreteArithmeticASEnginePtr(
-                            const GeneralizedBlackScholesProcessPtr& process,
-                            const std::string& traits,
-                            bool brownianBridge = false,
-                            bool antitheticVariate = false,
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                return new MCDiscreteArithmeticASEnginePtr(
-                         new MCDiscreteArithmeticASEngine<PseudoRandom>(
-                                                            bsProcess,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCDiscreteArithmeticASEnginePtr(
-                       new MCDiscreteArithmeticASEngine<LowDiscrepancy>(
-                                                            bsProcess,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
-        }
-    }
-};
-
-
-%{
 using QuantLib::MCDiscreteGeometricAPEngine;
-typedef boost::shared_ptr<PricingEngine> MCDiscreteGeometricAPEnginePtr;
 %}
 
-%rename(MCDiscreteGeometricAPEngine) MCDiscreteGeometricAPEnginePtr;
-class MCDiscreteGeometricAPEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MCDiscreteArithmeticAPEngine<PseudoRandom>);
+%shared_ptr(MCDiscreteArithmeticAPEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCDiscreteArithmeticAPEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteGeometricAPEnginePtr;
+    %feature("kwargs") MCDiscreteArithmeticAPEngine;
     #endif
   public:
     %extend {
-        MCDiscreteGeometricAPEnginePtr(
-                            const GeneralizedBlackScholesProcessPtr& process,
-                            const std::string& traits,
+        MCDiscreteArithmeticAPEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                     bool brownianBridge = false,
+                                     bool antitheticVariate = false,
+                                     bool controlVariate = false,
+                                     intOrNull requiredSamples = Null<Size>(),
+                                     doubleOrNull requiredTolerance = Null<Real>(),
+                                     intOrNull maxSamples = Null<Size>(),
+                                     BigInteger seed = 0) {
+            return new MCDiscreteArithmeticAPEngine<RNG>(process,
+                                                         brownianBridge,
+                                                         antitheticVariate,
+                                                         controlVariate,
+                                                         requiredSamples,
+                                                         requiredTolerance,
+                                                         maxSamples,
+                                                         seed);
+        }
+    }
+};
+
+%template(MCPRDiscreteArithmeticAPEngine) MCDiscreteArithmeticAPEngine<PseudoRandom>;
+%template(MCLDDiscreteArithmeticAPEngine) MCDiscreteArithmeticAPEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteArithmeticAPEngine(process,
+                                     traits,
+                                     brownianBridge=False,
+                                     antitheticVariate=False,
+                                     controlVariate=False,
+                                     requiredSamples=None,
+                                     requiredTolerance=None,
+                                     maxSamples=None,
+                                     seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteArithmeticAPEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteArithmeticAPEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   controlVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
+
+%shared_ptr(MCDiscreteArithmeticASEngine<PseudoRandom>);
+%shared_ptr(MCDiscreteArithmeticASEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCDiscreteArithmeticASEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCDiscreteArithmeticASEngine;
+    #endif
+  public:
+    %extend {
+        MCDiscreteArithmeticASEngine(
+                            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                             bool brownianBridge = false,
                             bool antitheticVariate = false,
                             intOrNull requiredSamples = Null<Size>(),
                             doubleOrNull requiredTolerance = Null<Real>(),
                             intOrNull maxSamples = Null<Size>(),
                             BigInteger seed = 0) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                return new MCDiscreteGeometricAPEnginePtr(
-                         new MCDiscreteGeometricAPEngine<PseudoRandom>(
-                                                            bsProcess,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCDiscreteGeometricAPEnginePtr(
-                       new MCDiscreteGeometricAPEngine<LowDiscrepancy>(
-                                                            bsProcess,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+            return new MCDiscreteArithmeticASEngine<RNG>(process,
+                                                         brownianBridge,
+                                                         antitheticVariate,
+                                                         requiredSamples,
+                                                         requiredTolerance,
+                                                         maxSamples,
+                                                         seed);
         }
     }
 };
+
+%template(MCPRDiscreteArithmeticASEngine) MCDiscreteArithmeticASEngine<PseudoRandom>;
+%template(MCLDDiscreteArithmeticASEngine) MCDiscreteArithmeticASEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteArithmeticASEngine(process,
+                                     traits,
+                                     brownianBridge=False,
+                                     antitheticVariate=False,
+                                     requiredSamples=None,
+                                     requiredTolerance=None,
+                                     maxSamples=None,
+                                     seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteArithmeticASEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteArithmeticASEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
+
+%shared_ptr(MCDiscreteGeometricAPEngine<PseudoRandom>);
+%shared_ptr(MCDiscreteGeometricAPEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCDiscreteGeometricAPEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCDiscreteGeometricAPEngine;
+    #endif
+  public:
+    %extend {
+        MCDiscreteGeometricAPEngine(
+                            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                            bool brownianBridge = false,
+                            bool antitheticVariate = false,
+                            intOrNull requiredSamples = Null<Size>(),
+                            doubleOrNull requiredTolerance = Null<Real>(),
+                            intOrNull maxSamples = Null<Size>(),
+                            BigInteger seed = 0) {
+            return new MCDiscreteGeometricAPEngine<RNG>(process,
+                                                        brownianBridge,
+                                                        antitheticVariate,
+                                                        requiredSamples,
+                                                        requiredTolerance,
+                                                        maxSamples,
+                                                        seed);
+        }
+    }
+};
+
+
+%template(MCPRDiscreteGeometricAPEngine) MCDiscreteGeometricAPEngine<PseudoRandom>;
+%template(MCLDDiscreteGeometricAPEngine) MCDiscreteGeometricAPEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteGeometricAPEngine(process,
+                                     traits,
+                                     brownianBridge=False,
+                                     antitheticVariate=False,
+                                     requiredSamples=None,
+                                     requiredTolerance=None,
+                                     maxSamples=None,
+                                     seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteGeometricAPEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteGeometricAPEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
 
 %{
 using QuantLib::VarianceGammaEngine;
-typedef boost::shared_ptr<PricingEngine>
-    VarianceGammaEnginePtr;
 %}
 
-%rename(VarianceGammaEngine) VarianceGammaEnginePtr;
-class VarianceGammaEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(VarianceGammaEngine)
+class VarianceGammaEngine : public PricingEngine {
   public:
-    %extend {
-        VarianceGammaEnginePtr(const VarianceGammaProcessPtr& process) {
-            boost::shared_ptr<VarianceGammaProcess> vgProcess =
-                boost::dynamic_pointer_cast<VarianceGammaProcess>(process);
-            QL_REQUIRE(vgProcess, "Variance-Gamma process required");
-            return new VarianceGammaEnginePtr(new VarianceGammaEngine(vgProcess));
-        }
-    }
+    VarianceGammaEngine(const boost::shared_ptr<VarianceGammaProcess>& process);
 };
 
 %{
 using QuantLib::FFTVarianceGammaEngine;
-typedef boost::shared_ptr<PricingEngine>
-    FFTVarianceGammaEnginePtr;
 %}
 
-%rename(FFTVarianceGammaEngine) FFTVarianceGammaEnginePtr;
-class FFTVarianceGammaEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FFTVarianceGammaEngine)
+class FFTVarianceGammaEngine : public PricingEngine {
   public:
-    %extend {
-        FFTVarianceGammaEnginePtr(const VarianceGammaProcessPtr& process, Real logStrikeSpacing = 0.001) {
-            boost::shared_ptr<VarianceGammaProcess> vgProcess =
-                boost::dynamic_pointer_cast<VarianceGammaProcess>(process);
-            QL_REQUIRE(vgProcess, "Variance Gamma process required");
-            return new FFTVarianceGammaEnginePtr(new FFTVarianceGammaEngine(vgProcess, logStrikeSpacing));
-        }
-        void precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList)
-        {
-            boost::dynamic_pointer_cast<FFTVarianceGammaEngine>(*self)->precalculate(optionList);
-        }
-    }
+    FFTVarianceGammaEngine(const boost::shared_ptr<VarianceGammaProcess>& process,
+                           Real logStrikeSpacing = 0.001);
+    void precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList);
 };
 
 // Double barrier options
@@ -2123,192 +1572,97 @@ using QuantLib::DoubleBarrier;
 
 %{
 using QuantLib::DoubleBarrierOption;
-typedef boost::shared_ptr<Instrument> DoubleBarrierOptionPtr;
 %}
 
-%rename(DoubleBarrierOption) DoubleBarrierOptionPtr;
-class DoubleBarrierOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(DoubleBarrierOption)
+class DoubleBarrierOption : public OneAssetOption {
   public:
-    %extend {
-        DoubleBarrierOptionPtr(
-                   DoubleBarrier::Type barrierType,
-                   Real barrier_lo,
-                   Real barrier_hi,
-                   Real rebate,
-                   const boost::shared_ptr<Payoff>& payoff,
-                   const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new DoubleBarrierOptionPtr(
-                               new DoubleBarrierOption(barrierType, barrier_lo, 
-                                                 barrier_hi, rebate,
-                                                 stPayoff,exercise));
-        }
-    }
+    DoubleBarrierOption(
+               DoubleBarrier::Type barrierType,
+               Real barrier_lo,
+               Real barrier_hi,
+               Real rebate,
+               const boost::shared_ptr<StrikedTypePayoff>& payoff,
+               const boost::shared_ptr<Exercise>& exercise);
 };
-
-add_greeks_to(DoubleBarrierOption);
 
 // QuantoVanillaOption
 
 %{
 using QuantLib::QuantoDoubleBarrierOption;
-typedef boost::shared_ptr<Instrument> QuantoDoubleBarrierOptionPtr;
 %}
 
-%rename(QuantoDoubleBarrierOption) QuantoDoubleBarrierOptionPtr;
-class QuantoDoubleBarrierOptionPtr : public DoubleBarrierOptionPtr {
+%shared_ptr(QuantoDoubleBarrierOption)
+class QuantoDoubleBarrierOption : public DoubleBarrierOption {
   public:
-    %extend {
-        QuantoDoubleBarrierOptionPtr(
-                DoubleBarrier::Type barrierType,
-                Real barrier_lo,
-                Real barrier_hi,
-                Real rebate,
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<StrikedTypePayoff> stPayoff =
-                 boost::dynamic_pointer_cast<StrikedTypePayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new QuantoDoubleBarrierOptionPtr(
-                         new QuantoDoubleBarrierOption(barrierType, barrier_lo, 
-                                      barrier_hi, rebate, stPayoff, exercise));
-        }
-        Real qvega() {
-            return boost::dynamic_pointer_cast<QuantoDoubleBarrierOption>(*self)
-                ->qvega();
-        }
-        Real qrho() {
-            return boost::dynamic_pointer_cast<QuantoDoubleBarrierOption>(*self)
-                ->qrho();
-        }
-        Real qlambda() {
-            return boost::dynamic_pointer_cast<QuantoDoubleBarrierOption>(*self)
-                ->qlambda();
-        }
-    }
+    QuantoDoubleBarrierOption(
+            DoubleBarrier::Type barrierType,
+            Real barrier_lo,
+            Real barrier_hi,
+            Real rebate,
+            const boost::shared_ptr<StrikedTypePayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
+    Real qvega();
+    Real qrho();
+    Real qlambda();
 };
 
 // Double Barrier engines
 
 %{
 using QuantLib::AnalyticDoubleBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticDoubleBarrierEnginePtr;
 %}
 
 #if defined(SWIGPYTHON)
-%feature("docstring") AnalyticDoubleBarrierEnginePtr "Double barrier engine implementing Ikeda-Kunitomo series."
+%feature("docstring") AnalyticDoubleBarrierEngine "Double barrier engine implementing Ikeda-Kunitomo series."
 #endif
-%rename(AnalyticDoubleBarrierEngine) AnalyticDoubleBarrierEnginePtr;
-class AnalyticDoubleBarrierEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticDoubleBarrierEngine)
+class AnalyticDoubleBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticDoubleBarrierEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process,
-                           int series = 5) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticDoubleBarrierEnginePtr(
-                            new AnalyticDoubleBarrierEngine(bsProcess, series));
-        }
-    }
+    AnalyticDoubleBarrierEngine(
+                           const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                           int series = 5);
 };
 
 %{
 using QuantLib::WulinYongDoubleBarrierEngine;
-typedef boost::shared_ptr<PricingEngine> WulinYongDoubleBarrierEnginePtr;
 %}
 
-%rename(WulinYongDoubleBarrierEngine) WulinYongDoubleBarrierEnginePtr;
-class WulinYongDoubleBarrierEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(WulinYongDoubleBarrierEngine)
+class WulinYongDoubleBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        WulinYongDoubleBarrierEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process,
-                           int series = 5) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new WulinYongDoubleBarrierEnginePtr(
-                            new WulinYongDoubleBarrierEngine(bsProcess, series));
-        }
-    }
+    WulinYongDoubleBarrierEngine(
+                           const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                           int series = 5);
 };
 
 %{
-using QuantLib::VannaVolgaDoubleBarrierEngine;
 using QuantLib::VannaVolgaBarrierEngine;
 using QuantLib::DeltaVolQuote;
-typedef boost::shared_ptr<PricingEngine> VannaVolgaDoubleBarrierEnginePtr;
-typedef boost::shared_ptr<PricingEngine> VannaVolgaBarrierEnginePtr;
 %}
 
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-%rename(_DeltaVolQuote) DeltaVolQuote;
-#else
-%ignore DeltaVolQuote;
-#endif
+%shared_ptr(DeltaVolQuote)
+
 class DeltaVolQuote : public Quote {
   public:
     enum DeltaType { Spot, Fwd, PaSpot, PaFwd };
     enum AtmType { AtmNull, AtmSpot, AtmFwd, AtmDeltaNeutral,
                    AtmVegaMax, AtmGammaMax, AtmPutCall50 };
-#if defined(SWIGJAVA) || defined(SWIGCSHARP)
-  private:
-    DeltaVolQuote();
-#endif
+    DeltaVolQuote(Real delta,
+                  const Handle<Quote>& vol,
+                  Time maturity,
+                  DeltaVolQuote::DeltaType deltaType);
+    DeltaVolQuote(const Handle<Quote>& vol,
+                  DeltaVolQuote::DeltaType deltaType,
+                  Time maturity,
+                  DeltaVolQuote::AtmType atmType);
 };
 
-%template(DeltaVolQuote) boost::shared_ptr<DeltaVolQuote>;
-IsObservable(boost::shared_ptr<DeltaVolQuote>);
-
-%extend boost::shared_ptr<DeltaVolQuote> {
-    static const DeltaVolQuote::DeltaType Spot = DeltaVolQuote::Spot;
-    static const DeltaVolQuote::DeltaType Fwd = DeltaVolQuote::Fwd;
-    static const DeltaVolQuote::DeltaType PaSpot = DeltaVolQuote::PaSpot;
-    static const DeltaVolQuote::DeltaType PaFwd = DeltaVolQuote::PaFwd;
-
-    static const DeltaVolQuote::AtmType AtmNull = DeltaVolQuote::AtmNull;
-    static const DeltaVolQuote::AtmType AtmSpot = DeltaVolQuote::AtmSpot;
-    static const DeltaVolQuote::AtmType AtmFwd = DeltaVolQuote::AtmFwd;
-    static const DeltaVolQuote::AtmType AtmDeltaNeutral =
-                                               DeltaVolQuote::AtmDeltaNeutral;
-    static const DeltaVolQuote::AtmType AtmVegaMax =
-                                               DeltaVolQuote::AtmVegaMax;
-    static const DeltaVolQuote::AtmType AtmGammaMax =
-                                               DeltaVolQuote::AtmGammaMax;
-    static const DeltaVolQuote::AtmType AtmPutCall50 =
-                                               DeltaVolQuote::AtmPutCall50;
-
-    shared_ptr<DeltaVolQuote>(Real delta,
-                              const Handle<Quote>& vol,
-                              Time maturity,
-                              DeltaVolQuote::DeltaType deltaType) {
-        return new boost::shared_ptr<DeltaVolQuote>(
-                          new DeltaVolQuote(delta, vol, maturity, deltaType));
-    }
-    shared_ptr<DeltaVolQuote>(const Handle<Quote>& vol,
-                              DeltaVolQuote::DeltaType deltaType,
-                              Time maturity,
-                              DeltaVolQuote::AtmType atmType) {
-        return new boost::shared_ptr<DeltaVolQuote>(
-                        new DeltaVolQuote(vol, deltaType, maturity, atmType));
-    }
-}
-
 %template(DeltaVolQuoteHandle) Handle<DeltaVolQuote>;
-IsObservable(Handle<DeltaVolQuote>);
-%template(RelinkableDeltaVolQuoteHandle)
-RelinkableHandle<DeltaVolQuote>;
+%template(RelinkableDeltaVolQuoteHandle) RelinkableHandle<DeltaVolQuote>;
 
 #if defined(SWIGPYTHON)
-%feature("docstring") VannaVolgaDoubleBarrierEnginePtr "
+%feature("docstring") VannaVolgaDoubleBarrierEngine "
 Vanna-Volga engine for double barrier options.
 Supports different double barrier engines, selected by the type parameters.
 Type values:
@@ -2316,47 +1670,37 @@ Type values:
     wo:              Wulin-Yong engine
 "
 #endif
-%rename(VannaVolgaDoubleBarrierEngine) VannaVolgaDoubleBarrierEnginePtr;
-class VannaVolgaDoubleBarrierEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+
+%{
+using QuantLib::VannaVolgaDoubleBarrierEngine;
+%}
+
+%shared_ptr(VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine>);
+%shared_ptr(VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine>);
+
+template <class E>
+class VannaVolgaDoubleBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        VannaVolgaDoubleBarrierEnginePtr(
+    VannaVolgaDoubleBarrierEngine(
                            const Handle<DeltaVolQuote> atmVol,
                            const Handle<DeltaVolQuote> vol25Put,
                            const Handle<DeltaVolQuote> vol25Call,
                            const Handle<Quote> spotFX,
                            const Handle<YieldTermStructure> domesticTS,
                            const Handle<YieldTermStructure> foreignTS,
-                           const std::string& type = "ik",
                            const bool adaptVanDelta = false,
                            const Real bsPriceWithSmile = 0.0,
-                           int series = 5) {
-            std::string s = boost::algorithm::to_lower_copy(type);
-            if (s == "ik" || s == "analytic")
-                return new VannaVolgaDoubleBarrierEnginePtr(
-                   new VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine>(
-                                        atmVol, vol25Put, vol25Call, spotFX, 
-                                        domesticTS, foreignTS, adaptVanDelta, 
-                                        bsPriceWithSmile, series));
-            else if (s == "wo")
-                return new VannaVolgaDoubleBarrierEnginePtr(
-                   new VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine>(
-                                        atmVol, vol25Put, vol25Call, spotFX, 
-                                        domesticTS, foreignTS, adaptVanDelta, 
-                                        bsPriceWithSmile, series));
-            else
-                QL_FAIL("unknown binomial engine type: "+s);
-        }
-    }
+                           int series = 5);
 };
 
-%rename(VannaVolgaBarrierEngine) VannaVolgaBarrierEnginePtr;
-class VannaVolgaBarrierEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%template(VannaVolgaIKDoubleBarrierEngine) VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine>;
+%template(VannaVolgaWODoubleBarrierEngine) VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine>;
+
+
+%shared_ptr(VannaVolgaBarrierEngine)
+class VannaVolgaBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        VannaVolgaBarrierEnginePtr(
+    VannaVolgaBarrierEngine(
                 const Handle<DeltaVolQuote>& atmVol,
                 const Handle<DeltaVolQuote>& vol25Put,
                 const Handle<DeltaVolQuote>& vol25Call,
@@ -2364,46 +1708,27 @@ class VannaVolgaBarrierEnginePtr
                 const Handle<YieldTermStructure>& domesticTS,
                 const Handle<YieldTermStructure>& foreignTS,
                 const bool adaptVanDelta = false,
-                const Real bsPriceWithSmile = 0.0) {
-                return new VannaVolgaBarrierEnginePtr(
-                   new VannaVolgaBarrierEngine(
-                                        atmVol, vol25Put, vol25Call, spotFX, 
-                                        domesticTS, foreignTS, adaptVanDelta, 
-                                        bsPriceWithSmile));
-        }
-    }
+                const Real bsPriceWithSmile = 0.0);
 };
 
 %{
 using QuantLib::AnalyticDoubleBarrierBinaryEngine;
-typedef boost::shared_ptr<PricingEngine> AnalyticDoubleBarrierBinaryEnginePtr;
 %}
 
-%rename(AnalyticDoubleBarrierBinaryEngine) AnalyticDoubleBarrierBinaryEnginePtr;
-class AnalyticDoubleBarrierBinaryEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(AnalyticDoubleBarrierBinaryEngine)
+class AnalyticDoubleBarrierBinaryEngine : public PricingEngine {
   public:
-    %extend {
-        AnalyticDoubleBarrierBinaryEnginePtr(
-                           const GeneralizedBlackScholesProcessPtr& process) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            return new AnalyticDoubleBarrierBinaryEnginePtr(
-                            new AnalyticDoubleBarrierBinaryEngine(bsProcess));
-        }
-    }
+    AnalyticDoubleBarrierBinaryEngine(
+                           const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
 using QuantLib::BinomialDoubleBarrierEngine;
 using QuantLib::DiscretizedDermanKaniDoubleBarrierOption;
-typedef boost::shared_ptr<PricingEngine> BinomialDoubleBarrierEnginePtr;
 %}
 
 #if defined(SWIGPYTHON)
-%feature("docstring") BinomialDoubleBarrierEnginePtr "Binomial Engine for double barrier options.
+%feature("docstring") BinomialDoubleBarrierEngine "Binomial Engine for double barrier options.
 Features different binomial models, selected by the type parameters.
 Uses Derman-Kani optimization to speed up convergence.
 Type values:
@@ -2416,86 +1741,72 @@ Type values:
     j4  or joshi4:                   Joshi 4th (smoothed) model
 "
 #endif
-%rename(BinomialDoubleBarrierEngine) BinomialDoubleBarrierEnginePtr;
-class BinomialDoubleBarrierEnginePtr : public boost::shared_ptr<PricingEngine> {
+
+#if !defined(SWIGR)
+
+%shared_ptr(BinomialDoubleBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniDoubleBarrierOption>);
+%shared_ptr(BinomialDoubleBarrierEngine<JarrowRudd, DiscretizedDermanKaniDoubleBarrierOption>);
+%shared_ptr(BinomialDoubleBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniDoubleBarrierOption>);
+%shared_ptr(BinomialDoubleBarrierEngine<Trigeorgis, DiscretizedDermanKaniDoubleBarrierOption>);
+%shared_ptr(BinomialDoubleBarrierEngine<Tian, DiscretizedDermanKaniDoubleBarrierOption>);
+%shared_ptr(BinomialDoubleBarrierEngine<LeisenReimer, DiscretizedDermanKaniDoubleBarrierOption>);
+%shared_ptr(BinomialDoubleBarrierEngine<Joshi4, DiscretizedDermanKaniDoubleBarrierOption>);
+
+template <class T, class U>
+class BinomialDoubleBarrierEngine : public PricingEngine {
   public:
-    %extend {
-        BinomialDoubleBarrierEnginePtr(
-                             const GeneralizedBlackScholesProcessPtr& process,
-                             const std::string& type,
-                             Size steps) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            std::string s = boost::algorithm::to_lower_copy(type);
-            if (s == "crr" || s == "coxrossrubinstein")
-                return new BinomialDoubleBarrierEnginePtr(
-                    new BinomialDoubleBarrierEngine<CoxRossRubinstein,
-                                     DiscretizedDermanKaniDoubleBarrierOption>(
-                                                  bsProcess,steps));
-            else if (s == "jr" || s == "jarrowrudd")
-                return new BinomialDoubleBarrierEnginePtr(
-                    new BinomialDoubleBarrierEngine<JarrowRudd,
-                                     DiscretizedDermanKaniDoubleBarrierOption>(
-                                                  bsProcess,steps));
-            else if (s == "eqp" || s == "additiveeqpbinomialtree")
-                return new BinomialDoubleBarrierEnginePtr(
-                    new BinomialDoubleBarrierEngine<AdditiveEQPBinomialTree,
-                                     DiscretizedDermanKaniDoubleBarrierOption>(
-                                                  bsProcess,steps));
-            else if (s == "trigeorgis")
-                return new BinomialDoubleBarrierEnginePtr(
-                    new BinomialDoubleBarrierEngine<Trigeorgis,
-                                     DiscretizedDermanKaniDoubleBarrierOption>(
-                                                  bsProcess,steps));
-            else if (s == "tian")
-                return new BinomialDoubleBarrierEnginePtr(
-                    new BinomialDoubleBarrierEngine<Tian,
-                                     DiscretizedDermanKaniDoubleBarrierOption>(
-                                                  bsProcess,steps));
-            else if (s == "lr" || s == "leisenreimer")
-                return new BinomialDoubleBarrierEnginePtr(
-                    new BinomialDoubleBarrierEngine<LeisenReimer,
-                                     DiscretizedDermanKaniDoubleBarrierOption>(
-                                                  bsProcess,steps));
-            else if (s == "j4" || s == "joshi4")
-                return new BinomialDoubleBarrierEnginePtr(
-                    new BinomialDoubleBarrierEngine<Joshi4,
-                                     DiscretizedDermanKaniDoubleBarrierOption>(
-                                                  bsProcess,steps));
-            else
-                QL_FAIL("unknown binomial double barrier engine type: "+s);
-        }
-    }
+    BinomialDoubleBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                                Size steps);
 };
+
+%template(BinomialCRRDoubleBarrierEngine) BinomialDoubleBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniDoubleBarrierOption>;
+%template(BinomialJRDoubleBarrierEngine) BinomialDoubleBarrierEngine<JarrowRudd, DiscretizedDermanKaniDoubleBarrierOption>;
+%template(BinomialEQPDoubleBarrierEngine) BinomialDoubleBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniDoubleBarrierOption>;
+%template(BinomialTrigeorgisDoubleBarrierEngine) BinomialDoubleBarrierEngine<Trigeorgis, DiscretizedDermanKaniDoubleBarrierOption>;
+%template(BinomialTianDoubleBarrierEngine) BinomialDoubleBarrierEngine<Tian, DiscretizedDermanKaniDoubleBarrierOption>;
+%template(BinomialLRDoubleBarrierEngine) BinomialDoubleBarrierEngine<LeisenReimer, DiscretizedDermanKaniDoubleBarrierOption>;
+%template(BinomialJ4DoubleBarrierEngine) BinomialDoubleBarrierEngine<Joshi4, DiscretizedDermanKaniDoubleBarrierOption>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def BinomialDoubleBarrierEngine(process, type, steps):
+        type = type.lower()
+        if type == "crr" or type == "coxrossrubinstein":
+            cls = BinomialCRRDoubleBarrierEngine
+        elif type == "jr" or type == "jarrowrudd":
+            cls = BinomialJRDoubleBarrierEngine
+        elif type == "eqp":
+            cls = BinomialEQPDoubleBarrierEngine
+        elif type == "trigeorgis":
+            cls = BinomialTrigeorgisDoubleBarrierEngine
+        elif type == "tian":
+            cls = BinomialTianDoubleBarrierEngine
+        elif type == "lr" or type == "leisenreimer":
+            cls = BinomialLRDoubleBarrierEngine
+        elif type == "j4" or type == "joshi4":
+            cls = BinomialJ4DoubleBarrierEngine
+        else:
+            raise RuntimeError("unknown binomial engine type: %s" % type);
+        return cls(process, steps)
+%}
+#endif
+
+#endif
 
 
 // Swing option
 
 %{
 using QuantLib::VanillaSwingOption;
-typedef boost::shared_ptr<Instrument> VanillaSwingOptionPtr;
 %}
 
-%rename(VanillaSwingOption) VanillaSwingOptionPtr;
-class VanillaSwingOptionPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(VanillaSwingOption)
+class VanillaSwingOption : public OneAssetOption {
   public:
-    %extend {
-        VanillaSwingOptionPtr(
-            const boost::shared_ptr<Payoff>& payoff,
-            const boost::shared_ptr<Exercise>& ex,
-            Size minExerciseRights, Size maxExerciseRights) {
-            
-            const boost::shared_ptr<SwingExercise> swingExercise =
-                 boost::dynamic_pointer_cast<SwingExercise>(ex);
-            QL_REQUIRE(swingExercise, "Swing exercise required");            
-            
-            return new VanillaSwingOptionPtr(
-                new VanillaSwingOption(payoff, swingExercise, 
-                    minExerciseRights, maxExerciseRights));
-        }
-    }
+    VanillaSwingOption(
+        const boost::shared_ptr<Payoff>& payoff,
+        const boost::shared_ptr<SwingExercise>& ex,
+        Size minExerciseRights, Size maxExerciseRights);
 };
 
 // Swing engines
@@ -2503,54 +1814,35 @@ class VanillaSwingOptionPtr : public boost::shared_ptr<Instrument> {
 %{
 using QuantLib::FdSimpleBSSwingEngine;
 using QuantLib::FdSimpleExtOUJumpSwingEngine;
-typedef boost::shared_ptr<PricingEngine> FdSimpleExtOUJumpSwingEnginePtr;
-typedef boost::shared_ptr<PricingEngine> FdSimpleBSSwingEnginePtr;
 %}
 
-%rename(FdSimpleBSSwingEngine) FdSimpleBSSwingEnginePtr;
-class FdSimpleBSSwingEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdSimpleBSSwingEngine)
+class FdSimpleBSSwingEngine : public PricingEngine {
   public:
-    %extend {
-        FdSimpleBSSwingEnginePtr(
-            const GeneralizedBlackScholesProcessPtr& process,
+    FdSimpleBSSwingEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Size tGrid = 50, Size xGrid = 100,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas()) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                     process);
-            QL_REQUIRE(bsProcess, "Black-Scholes process required");
-            
-            return new FdSimpleBSSwingEnginePtr(
-                new FdSimpleBSSwingEngine(bsProcess,tGrid, xGrid, schemeDesc));
-        }
-    }
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 };
 
-%rename(FdSimpleExtOUJumpSwingEngine) FdSimpleExtOUJumpSwingEnginePtr;
-class FdSimpleExtOUJumpSwingEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(FdSimpleExtOUJumpSwingEngine)
+class FdSimpleExtOUJumpSwingEngine : public PricingEngine {
   public:
     %extend {
-        FdSimpleExtOUJumpSwingEnginePtr(            
-        	const ExtOUWithJumpsProcessPtr& process,
+        FdSimpleExtOUJumpSwingEngine(
+            const boost::shared_ptr<ExtOUWithJumpsProcess>& process,
             const boost::shared_ptr<YieldTermStructure>& rTS,
             Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
             const std::vector<std::pair<Time,Real> >& shape =
                                          std::vector<std::pair<Time,Real> >(),
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
-            
-            const boost::shared_ptr<ExtOUWithJumpsProcess> jProcess =
-                boost::dynamic_pointer_cast<ExtOUWithJumpsProcess>(process);
 
             boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> curve(
                               new FdSimpleExtOUJumpSwingEngine::Shape(shape));
 
-            QL_REQUIRE(jProcess, 
-            	"Extended Ornstein-Uhlenbeck with jumps process required");
-            
-            return new FdSimpleExtOUJumpSwingEnginePtr(
-                new FdSimpleExtOUJumpSwingEngine(
-                    jProcess, rTS, tGrid, xGrid, yGrid, 
-                    curve, schemeDesc));
+            return new FdSimpleExtOUJumpSwingEngine(
+                    process, rTS, tGrid, xGrid, yGrid,
+                    curve, schemeDesc);
         }
     }
 };

@@ -104,8 +104,8 @@ for i in range(0,len(termDates)):
                 ql.Protection.Buyer,10000000,0,spreads[j],cdsSchedule,
                 ql.Following,ql.Actual360(),True,True,tradeDate+1,
                 ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
-                ql.Claim(), ql.Actual360(True))
-            
+                ql.FaceValueClaim(), ql.Actual360(True))
+
             h = quotedTrade.impliedHazardRate(0,discountCurve,ql.Actual365Fixed(),
                                               recoveries[k],1e-10,
                                               ql.CreditDefaultSwap.ISDA)
@@ -120,7 +120,7 @@ for i in range(0,len(termDates)):
                 ql.Protection.Buyer,10000000,0,0.01,cdsSchedule,
                 ql.Following,ql.Actual360(),True,True,tradeDate+1,
                 ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
-                ql.Claim(), ql.Actual360(True))
+                ql.FaceValueClaim(), ql.Actual360(True))
             conventionalTrade.setPricingEngine(engine)
             
             upfront = conventionalTrade.notional() * conventionalTrade.fairUpfront()

@@ -43,152 +43,73 @@ using QuantLib::AmortizingFixedRateBond;
 using QuantLib::FloatingRateBond;
 using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
-
-typedef boost::shared_ptr<Instrument> BondPtr;
-typedef boost::shared_ptr<Instrument> ZeroCouponBondPtr;
-typedef boost::shared_ptr<Instrument> FixedRateBondPtr;
-typedef boost::shared_ptr<Instrument> AmortizingFixedRateBondPtr;
-typedef boost::shared_ptr<Instrument> FloatingRateBondPtr;
-typedef boost::shared_ptr<Instrument> AmortizingFloatingRateBondPtr;
-typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
 %}
 
-%rename(Bond) BondPtr;
-class BondPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(Bond)
+class Bond : public Instrument {
     #if defined(SWIGPYTHON) || defined (SWIGRUBY)
     %rename(bondYield) yield;
     #endif
   public:
-    %extend {
-        BondPtr(Natural settlementDays,
-                const Calendar& calendar,
-                Real faceAmount,
-                const Date& maturityDate,
-                const Date& issueDate = Date(),
-                const Leg& cashflows = Leg()) {
-            return new BondPtr(new Bond(settlementDays,
-                                        calendar,
-                                        faceAmount,
-                                        maturityDate,
-                                        issueDate,
-                                        cashflows));
-        }
-        BondPtr(Natural settlementDays,
-                const Calendar& calendar,
-                const Date& issueDate = Date(),
-                const Leg& coupons = Leg()) {
-            return new BondPtr(new Bond(settlementDays,
-                                        calendar,
-                                        issueDate,
-                                        coupons));
-        }
-        // public functions
-        Rate nextCouponRate(const Date& d = Date()) {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->nextCouponRate();
-        }
-        Rate previousCouponRate(const Date& d = Date()) {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->previousCouponRate();
-        }
-        // inspectors
-        Natural settlementDays() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->settlementDays();
-        }
-        Date settlementDate(Date d = Date()) {
-            return boost::dynamic_pointer_cast<Bond>(*self)->settlementDate(d);
-        }
-        Date startDate() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->startDate();
-        }
-        Date maturityDate() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->maturityDate();
-        }
-        Date issueDate() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->issueDate();
-        }
-        std::vector<boost::shared_ptr<CashFlow> > cashflows() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->cashflows();
-        }
-        std::vector<boost::shared_ptr<CashFlow> > redemptions() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->redemptions();
-        }
-        boost::shared_ptr<CashFlow> redemption() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->redemption();
-        }
-        Calendar calendar() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->calendar();
-        }
-        std::vector<Real> notionals() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->notionals();
-        }
-        Real notional(Date d = Date()) const {
-            return boost::dynamic_pointer_cast<Bond>(*self)->notional(d);
-        }
-        // calculations
-        Real cleanPrice() {
-            return boost::dynamic_pointer_cast<Bond>(*self)->cleanPrice();
-        }
-        Real cleanPrice(Rate yield,
-                        const DayCounter &dc,
-                        Compounding compounding,
-                        Frequency frequency,
-                        const Date& settlement = Date()) {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->cleanPrice(yield,dc, compounding, frequency, settlement);
-        }
-        Real dirtyPrice() {
-            return boost::dynamic_pointer_cast<Bond>(*self)->dirtyPrice();
-        }
-        Real dirtyPrice(Rate yield,
-                        const DayCounter &dc,
-                        Compounding compounding,
-                        Frequency frequency,
-                        const Date& settlement = Date()) {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->dirtyPrice(yield,dc, compounding,
-                             frequency, settlement);
-        }
-        Real yield(const DayCounter& dc,
-                   Compounding compounding,
-                   Frequency freq,
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100) {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->yield(dc,compounding,freq,accuracy,maxEvaluations);
-        }
-        Real yield(Real cleanPrice,
-                   const DayCounter& dc,
-                   Compounding compounding,
-                   Frequency freq,
-                   const Date& settlement = Date(),
-                   Real accuracy = 1.0e-8,
-                   Size maxEvaluations = 100) {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->yield(cleanPrice,dc,compounding,freq,
-                        settlement,accuracy,maxEvaluations);
-        }
-        Real accruedAmount(const Date& settlement = Date()) {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->accruedAmount(settlement);
-        }
-        Real settlementValue() const {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->settlementValue();
-        }
-        Real settlementValue(Real cleanPrice) const {
-            return boost::dynamic_pointer_cast<Bond>(*self)
-                ->settlementValue(cleanPrice);
-        }
-    }
+    Bond(Natural settlementDays,
+            const Calendar& calendar,
+            Real faceAmount,
+            const Date& maturityDate,
+            const Date& issueDate = Date(),
+            const Leg& cashflows = Leg());
+    Bond(Natural settlementDays,
+            const Calendar& calendar,
+            const Date& issueDate = Date(),
+            const Leg& coupons = Leg());
+    // public functions
+    Rate nextCouponRate(const Date& d = Date());
+    Rate previousCouponRate(const Date& d = Date());
+    // inspectors
+    Natural settlementDays() const;
+    Date settlementDate(Date d = Date());
+    Date startDate() const;
+    Date maturityDate() const;
+    Date issueDate() const;
+    std::vector<boost::shared_ptr<CashFlow> > cashflows() const;
+    std::vector<boost::shared_ptr<CashFlow> > redemptions() const;
+    boost::shared_ptr<CashFlow> redemption() const;
+    Calendar calendar() const;
+    std::vector<Real> notionals() const;
+    Real notional(Date d = Date()) const;
+    // calculations
+    Real cleanPrice();
+    Real cleanPrice(Rate yield,
+                    const DayCounter &dc,
+                    Compounding compounding,
+                    Frequency frequency,
+                    const Date& settlement = Date());
+    Real dirtyPrice();
+    Real dirtyPrice(Rate yield,
+                    const DayCounter &dc,
+                    Compounding compounding,
+                    Frequency frequency,
+                    const Date& settlement = Date());
+    Real yield(const DayCounter& dc,
+               Compounding compounding,
+               Frequency freq,
+               Real accuracy = 1.0e-8,
+               Size maxEvaluations = 100);
+    Real yield(Real cleanPrice,
+               const DayCounter& dc,
+               Compounding compounding,
+               Frequency freq,
+               const Date& settlement = Date(),
+               Real accuracy = 1.0e-8,
+               Size maxEvaluations = 100);
+    Real accruedAmount(const Date& settlement = Date());
+    Real settlementValue() const;
+    Real settlementValue(Real cleanPrice) const;
 };
 
 
 %inline %{
-
     Real cleanPriceFromZSpread(
-                   const BondPtr& bond,
+                   const boost::shared_ptr<Bond>& bond,
                    const boost::shared_ptr<YieldTermStructure>& discountCurve,
                    Spread zSpread,
                    const DayCounter& dc,
@@ -206,306 +127,186 @@ class BondPtr : public boost::shared_ptr<Instrument> {
 
 
 
-%rename(ZeroCouponBond) ZeroCouponBondPtr;
-class ZeroCouponBondPtr : public BondPtr {
+%shared_ptr(ZeroCouponBond)
+class ZeroCouponBond : public Bond {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") ZeroCouponBondPtr;
+    %feature("kwargs") ZeroCouponBond;
     #endif
   public:
-    %extend {
-        ZeroCouponBondPtr(
-                Natural settlementDays,
-                const Calendar &calendar,
-                Real faceAmount,
-                const Date & maturityDate,
-                BusinessDayConvention paymentConvention = QuantLib::Following,
-                Real redemption = 100.0,
-                const Date& issueDate = Date()) {
-            return new ZeroCouponBondPtr(
-                new ZeroCouponBond(settlementDays, calendar, faceAmount,
-                                   maturityDate,
-                                   paymentConvention, redemption,
-                                   issueDate));
-        }
-    }
-};
-
-%rename(FixedRateBond) FixedRateBondPtr;
-class FixedRateBondPtr : public BondPtr {
-  public:
-    %extend {
-        FixedRateBondPtr(
-                Integer settlementDays,
-                Real faceAmount,
-                const Schedule &schedule,
-                const std::vector<Rate>& coupons,
-                const DayCounter& paymentDayCounter,
-                BusinessDayConvention paymentConvention = QuantLib::Following,
-                Real redemption = 100.0,
-                Date issueDate = Date(),
-                const Calendar& paymentCalendar = Calendar(),
-                const Period& exCouponPeriod = Period(),
-                const Calendar& exCouponCalendar = Calendar(),
-                BusinessDayConvention exCouponConvention = Unadjusted,
-                bool exCouponEndOfMonth = false) {
-            return new FixedRateBondPtr(
-                new FixedRateBond(settlementDays, faceAmount,
-                                  schedule, coupons, paymentDayCounter,
-                                  paymentConvention, redemption,
-                                  issueDate, paymentCalendar,
-                                  exCouponPeriod, exCouponCalendar,
-                                  exCouponConvention, exCouponEndOfMonth));
-        }
-        //! generic compounding and frequency InterestRate coupons 
-        FixedRateBondPtr(
-              Integer settlementDays,
-              Real faceAmount,
-              const Schedule& schedule,
-              const std::vector<InterestRate>& coupons,
-              BusinessDayConvention paymentConvention = Following,
-              Real redemption = 100.0,
-              const Date& issueDate = Date(),
-              const Calendar& paymentCalendar = Calendar(),
-              const Period& exCouponPeriod = Period(),
-              const Calendar& exCouponCalendar = Calendar(),
-              BusinessDayConvention exCouponConvention = Unadjusted,
-              bool exCouponEndOfMonth = false) {
-	       return new FixedRateBondPtr(
-		      new FixedRateBond(settlementDays, faceAmount,
-		                  schedule, coupons, paymentConvention,
-		                  redemption, issueDate, paymentCalendar,
-		                  exCouponPeriod, exCouponCalendar,
-		                  exCouponConvention, exCouponEndOfMonth));
-		}
-        //! simple annual compounding coupon rates with internal schedule calculation 
-        FixedRateBondPtr(
-              Integer settlementDays,
-              const Calendar& couponCalendar,
-              Real faceAmount,
-              const Date& startDate,
-              const Date& maturityDate,
-              const Period& tenor,
-              const std::vector<Rate>& coupons,
-              const DayCounter& accrualDayCounter,
-              BusinessDayConvention accrualConvention = QuantLib::Following,
-              BusinessDayConvention paymentConvention = QuantLib::Following,
-              Real redemption = 100.0,
-              const Date& issueDate = Date(),
-              const Date& stubDate = Date(),
-              DateGeneration::Rule rule = QuantLib::DateGeneration::Backward,
-              bool endOfMonth = false,
-              const Calendar& paymentCalendar = Calendar(),
-              const Period& exCouponPeriod = Period(),
-              const Calendar& exCouponCalendar = Calendar(),
-              const BusinessDayConvention exCouponConvention = Unadjusted,
-              bool exCouponEndOfMonth = false) {
-	       return new FixedRateBondPtr(
-		      new FixedRateBond(settlementDays, couponCalendar, faceAmount,
-                          startDate, maturityDate, tenor, coupons, accrualDayCounter,
-                          accrualConvention, paymentConvention, 
-		                  redemption, issueDate, stubDate, rule, endOfMonth, paymentCalendar,
-		                  exCouponPeriod, exCouponCalendar,
-		                  exCouponConvention, exCouponEndOfMonth));
-		}
-
-
-        Frequency frequency() const {
-            return boost::dynamic_pointer_cast<FixedRateBond>(*self)
-                ->frequency();
-        }
-        DayCounter dayCounter() const {
-            return boost::dynamic_pointer_cast<FixedRateBond>(*self)
-                ->dayCounter();
-        }
-    }
-};
-
-
-%rename(AmortizingFixedRateBond) AmortizingFixedRateBondPtr;
-class AmortizingFixedRateBondPtr : public BondPtr {
-  public:
-    %extend {
-        AmortizingFixedRateBondPtr(
-                Integer settlementDays,
-                const std::vector<Real>& notionals,
-                const Schedule& schedule,
-                const std::vector<Rate>& coupons,
-                const DayCounter& accrualDayCounter,
-                BusinessDayConvention paymentConvention = QuantLib::Following,
-                Date issueDate = Date()) {
-            return new AmortizingFixedRateBondPtr(
-                new AmortizingFixedRateBond(settlementDays, notionals,
-                                  schedule, coupons, accrualDayCounter,
-                                  paymentConvention, issueDate));
-        }
-        AmortizingFixedRateBondPtr(
-                Integer settlementDays,
-                const Calendar& paymentCalendar,
-                Real faceAmount,
-                Date startDate,
-                const Period& bondTenor,
-                const Frequency& sinkingFrequency,
-                Real coupon,
-                const DayCounter& accrualDayCounter,
-                BusinessDayConvention paymentConvention = QuantLib::Following,
-                Date issueDate = Date()) {
-            return new AmortizingFixedRateBondPtr(
-                new AmortizingFixedRateBond(settlementDays, paymentCalendar,
-                                  faceAmount, startDate, bondTenor,
-                                  sinkingFrequency,
-                                  coupon, accrualDayCounter,
-                                  paymentConvention, issueDate));
-        }
-        Frequency frequency() const {
-            return boost::dynamic_pointer_cast<AmortizingFixedRateBond>(*self)
-                ->frequency();
-        }
-        DayCounter dayCounter() const {
-            return boost::dynamic_pointer_cast<AmortizingFixedRateBond>(*self)
-                ->dayCounter();
-        }
-    }
-};
-
-
-%rename(AmortizingFloatingRateBond) AmortizingFloatingRateBondPtr;
-class AmortizingFloatingRateBondPtr : public BondPtr {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") AmortizingFloatingRateBondPtr;
-    #endif
-  public:
-    %extend {
-        AmortizingFloatingRateBondPtr(
-            Size settlementDays,
-            const std::vector<Real>& notional,
-            const Schedule& schedule,
-            const IborIndexPtr& index,
-            const DayCounter& accrualDayCounter,
-            BusinessDayConvention paymentConvention = Following,
-            Size fixingDays = Null<Size>(),
-            const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
-            const std::vector<Spread>& spreads = std::vector<Spread>(1, 1.0),
-            const std::vector<Rate>& caps = std::vector<Rate>(),
-            const std::vector<Rate>& floors = std::vector<Rate>(),
-            bool inArrears = false,
-            const Date& issueDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new AmortizingFloatingRateBondPtr(
-                new AmortizingFloatingRateBond(settlementDays, notional,
-                                                schedule, libor,
-                                                accrualDayCounter,
-                                                paymentConvention,
-                                                fixingDays, gearings,
-                                                spreads, caps, floors,
-                                                inArrears, issueDate));
-        }
-    }
-};
-
-
-%rename(FloatingRateBond) FloatingRateBondPtr;
-class FloatingRateBondPtr : public BondPtr {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") FloatingRateBondPtr;
-    #endif
-  public:
-    %extend {
-        FloatingRateBondPtr(
-            Size settlementDays,
+    ZeroCouponBond(
+            Natural settlementDays,
+            const Calendar &calendar,
             Real faceAmount,
-            const Schedule& schedule,
-            const IborIndexPtr& index,
-            const DayCounter& paymentDayCounter,
-            BusinessDayConvention paymentConvention = Following,
-            Size fixingDays = Null<Size>(),
-            const std::vector<Real>& gearings = std::vector<Real>(),
-            const std::vector<Spread>& spreads = std::vector<Spread>(),
-            const std::vector<Rate>& caps = std::vector<Rate>(),
-            const std::vector<Rate>& floors = std::vector<Rate>(),
-            bool inArrears = false,
+            const Date & maturityDate,
+            BusinessDayConvention paymentConvention = QuantLib::Following,
             Real redemption = 100.0,
-            const Date& issueDate = Date()) {
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new FloatingRateBondPtr(
-                new FloatingRateBond(settlementDays,
-                                     faceAmount,
-                                     schedule,
-                                     libor,
-                                     paymentDayCounter,
-                                     paymentConvention,
-                                     fixingDays,
-                                     gearings,
-                                     spreads,
-                                     caps,
-                                     floors,
-                                     inArrears,
-                                     redemption,
-                                     issueDate));
-        }
-    }
+            const Date& issueDate = Date());
+};
+
+%shared_ptr(FixedRateBond)
+class FixedRateBond : public Bond {
+  public:
+    FixedRateBond(
+            Integer settlementDays,
+            Real faceAmount,
+            const Schedule &schedule,
+            const std::vector<Rate>& coupons,
+            const DayCounter& paymentDayCounter,
+            BusinessDayConvention paymentConvention = QuantLib::Following,
+            Real redemption = 100.0,
+            Date issueDate = Date(),
+            const Calendar& paymentCalendar = Calendar(),
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false);
+    //! generic compounding and frequency InterestRate coupons 
+    FixedRateBond(
+          Integer settlementDays,
+          Real faceAmount,
+          const Schedule& schedule,
+          const std::vector<InterestRate>& coupons,
+          BusinessDayConvention paymentConvention = Following,
+          Real redemption = 100.0,
+          const Date& issueDate = Date(),
+          const Calendar& paymentCalendar = Calendar(),
+          const Period& exCouponPeriod = Period(),
+          const Calendar& exCouponCalendar = Calendar(),
+          BusinessDayConvention exCouponConvention = Unadjusted,
+          bool exCouponEndOfMonth = false);
+    //! simple annual compounding coupon rates with internal schedule calculation 
+    FixedRateBond(
+          Integer settlementDays,
+          const Calendar& couponCalendar,
+          Real faceAmount,
+          const Date& startDate,
+          const Date& maturityDate,
+          const Period& tenor,
+          const std::vector<Rate>& coupons,
+          const DayCounter& accrualDayCounter,
+          BusinessDayConvention accrualConvention = QuantLib::Following,
+          BusinessDayConvention paymentConvention = QuantLib::Following,
+          Real redemption = 100.0,
+          const Date& issueDate = Date(),
+          const Date& stubDate = Date(),
+          DateGeneration::Rule rule = QuantLib::DateGeneration::Backward,
+          bool endOfMonth = false,
+          const Calendar& paymentCalendar = Calendar(),
+          const Period& exCouponPeriod = Period(),
+          const Calendar& exCouponCalendar = Calendar(),
+          const BusinessDayConvention exCouponConvention = Unadjusted,
+          bool exCouponEndOfMonth = false);
+
+    Frequency frequency() const;
+    DayCounter dayCounter() const;
+};
+
+
+%shared_ptr(AmortizingFixedRateBond)
+class AmortizingFixedRateBond : public Bond {
+  public:
+    AmortizingFixedRateBond(
+            Integer settlementDays,
+            const std::vector<Real>& notionals,
+            const Schedule& schedule,
+            const std::vector<Rate>& coupons,
+            const DayCounter& accrualDayCounter,
+            BusinessDayConvention paymentConvention = QuantLib::Following,
+            Date issueDate = Date());
+    AmortizingFixedRateBond(
+            Integer settlementDays,
+            const Calendar& paymentCalendar,
+            Real faceAmount,
+            Date startDate,
+            const Period& bondTenor,
+            const Frequency& sinkingFrequency,
+            Real coupon,
+            const DayCounter& accrualDayCounter,
+            BusinessDayConvention paymentConvention = QuantLib::Following,
+            Date issueDate = Date());
+    Frequency frequency() const;
+    DayCounter dayCounter() const;
+};
+
+
+%shared_ptr(AmortizingFloatingRateBond)
+class AmortizingFloatingRateBond : public Bond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") AmortizingFloatingRateBond;
+    #endif
+  public:
+    AmortizingFloatingRateBond(
+        Size settlementDays,
+        const std::vector<Real>& notional,
+        const Schedule& schedule,
+        const boost::shared_ptr<IborIndex>& index,
+        const DayCounter& accrualDayCounter,
+        BusinessDayConvention paymentConvention = Following,
+        Size fixingDays = Null<Size>(),
+        const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
+        const std::vector<Spread>& spreads = std::vector<Spread>(1, 1.0),
+        const std::vector<Rate>& caps = std::vector<Rate>(),
+        const std::vector<Rate>& floors = std::vector<Rate>(),
+        bool inArrears = false,
+        const Date& issueDate = Date());
+};
+
+
+%shared_ptr(FloatingRateBond)
+class FloatingRateBond : public Bond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FloatingRateBond;
+    #endif
+  public:
+    FloatingRateBond(
+        Size settlementDays,
+        Real faceAmount,
+        const Schedule& schedule,
+        const boost::shared_ptr<IborIndex>& index,
+        const DayCounter& paymentDayCounter,
+        BusinessDayConvention paymentConvention = Following,
+        Size fixingDays = Null<Size>(),
+        const std::vector<Real>& gearings = std::vector<Real>(),
+        const std::vector<Spread>& spreads = std::vector<Spread>(),
+        const std::vector<Rate>& caps = std::vector<Rate>(),
+        const std::vector<Rate>& floors = std::vector<Rate>(),
+        bool inArrears = false,
+        Real redemption = 100.0,
+        const Date& issueDate = Date());
 };
 
 
 %{
 using QuantLib::CmsRateBond;
-typedef boost::shared_ptr<Instrument> CmsRateBondPtr;
 %}
 
-%rename(CmsRateBond) CmsRateBondPtr;
-class CmsRateBondPtr : public BondPtr {
+%shared_ptr(CmsRateBond)
+class CmsRateBond : public Bond {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") CmsRateBondPtr;
+    %feature("kwargs") CmsRateBond;
     #endif
   public:
-    %extend {
-        CmsRateBondPtr(Size settlementDays,
-                       Real faceAmount,
-                       const Schedule& schedule,
-                       const SwapIndexPtr& index,
-                       const DayCounter& paymentDayCounter,
-                       BusinessDayConvention paymentConvention,
-                       Natural fixingDays,
-                       const std::vector<Real>& gearings,
-                       const std::vector<Spread>& spreads,
-                       const std::vector<Rate>& caps,
-                       const std::vector<Rate>& floors,
-                       bool inArrears = false,
-                       Real redemption = 100.0,
-                       const Date& issueDate = Date()) {
-            boost::shared_ptr<SwapIndex> swap =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
-            return new CmsRateBondPtr(
-                new CmsRateBond(settlementDays,
-                                faceAmount,
-                                schedule,
-                                swap,
-                                paymentDayCounter,
-                                paymentConvention,
-                                fixingDays,
-                                gearings,
-                                spreads,
-                                caps,
-                                floors,
-                                inArrears,
-                                redemption,
-                                issueDate));
-        }
-    }
+    CmsRateBond(Size settlementDays,
+                   Real faceAmount,
+                   const Schedule& schedule,
+                   const boost::shared_ptr<SwapIndex>& index,
+                   const DayCounter& paymentDayCounter,
+                   BusinessDayConvention paymentConvention,
+                   Natural fixingDays,
+                   const std::vector<Real>& gearings,
+                   const std::vector<Spread>& spreads,
+                   const std::vector<Rate>& caps,
+                   const std::vector<Rate>& floors,
+                   bool inArrears = false,
+                   Real redemption = 100.0,
+                   const Date& issueDate = Date());
 };
 
 
-%rename(DiscountingBondEngine) DiscountingBondEnginePtr;
-class DiscountingBondEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(DiscountingBondEngine)
+class DiscountingBondEngine : public PricingEngine {
   public:
-    %extend {
-        DiscountingBondEnginePtr(
-                            const Handle<YieldTermStructure>& discountCurve) {
-            return new DiscountingBondEnginePtr(
-                                    new DiscountingBondEngine(discountCurve));
-        }
-    }
+    DiscountingBondEngine(const Handle<YieldTermStructure>& discountCurve);
 };
 
 
@@ -514,186 +315,108 @@ using QuantLib::CallableBond;
 using QuantLib::CallableFixedRateBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
-typedef boost::shared_ptr<Instrument> CallableFixedRateBondPtr;
-typedef boost::shared_ptr<PricingEngine> TreeCallableFixedRateBondEnginePtr;
-typedef boost::shared_ptr<PricingEngine> BlackCallableFixedRateBondEnginePtr;
 %}
 
-%rename(CallableFixedRateBond) CallableFixedRateBondPtr;
-class CallableFixedRateBondPtr : public BondPtr {
+%shared_ptr(CallableFixedRateBond)
+class CallableFixedRateBond : public Bond {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") CallableFixedRateBondPtr;
+    %feature("kwargs") CallableFixedRateBond;
     #endif
   public:
-    %extend {
-        CallableFixedRateBondPtr(
-                Integer settlementDays,
-                Real faceAmount,
-                const Schedule &schedule,
-                const std::vector<Rate>& coupons,
-                const DayCounter& accrualDayCounter,
-                BusinessDayConvention paymentConvention,
-                Real redemption,
-                Date issueDate,
-                const std::vector<boost::shared_ptr<Callability> > &putCallSchedule) {
-            return new CallableFixedRateBondPtr(
-                new CallableFixedRateBond(settlementDays, faceAmount,
-                                          schedule, coupons, accrualDayCounter,
-                                          paymentConvention, redemption,
-                                          issueDate, putCallSchedule));
-        }
+    CallableFixedRateBond(
+            Integer settlementDays,
+            Real faceAmount,
+            const Schedule &schedule,
+            const std::vector<Rate>& coupons,
+            const DayCounter& accrualDayCounter,
+            BusinessDayConvention paymentConvention,
+            Real redemption,
+            Date issueDate,
+            const std::vector<boost::shared_ptr<Callability> > &putCallSchedule);
 
-        Real OAS(Real cleanPrice,
-                 const Handle<YieldTermStructure>& engineTS,
-                 const DayCounter& dc,
-                 Compounding compounding,
-                 Frequency freq,
-                 const Date& settlementDate = Date(),
-                 Real accuracy =1e-10,
-                 Size maxIterations = 100,
-                 Spread guess = 0.0)
-        {
-            return boost::dynamic_pointer_cast<CallableBond>(*self)
-                ->OAS(cleanPrice,
-                      engineTS,
-                      dc, compounding, freq, settlementDate,
-                      accuracy,
-                      maxIterations,
-                      guess);
-        }
+    Real OAS(Real cleanPrice,
+             const Handle<YieldTermStructure>& engineTS,
+             const DayCounter& dc,
+             Compounding compounding,
+             Frequency freq,
+             const Date& settlementDate = Date(),
+             Real accuracy =1e-10,
+             Size maxIterations = 100,
+             Spread guess = 0.0);
 
-        Real cleanPriceOAS(Real oas,
+    Real cleanPriceOAS(Real oas,
+                       const Handle<YieldTermStructure>& engineTS,
+                       const DayCounter& dayCounter,
+                       Compounding compounding,
+                       Frequency frequency,
+                       Date settlementDate = Date());
+
+    Real effectiveDuration(Real oas,
                            const Handle<YieldTermStructure>& engineTS,
                            const DayCounter& dayCounter,
                            Compounding compounding,
                            Frequency frequency,
-                           Date settlementDate = Date())
-        {
-            return boost::dynamic_pointer_cast<CallableBond>(*self)
-                ->cleanPriceOAS(oas,
-                                engineTS,
-                                dayCounter,
-                                compounding,
-                                frequency,
-                                settlementDate);
-        }
+                           Real bump=2e-4);
 
-        Real effectiveDuration(Real oas,
-                               const Handle<YieldTermStructure>& engineTS,
-                               const DayCounter& dayCounter,
-                               Compounding compounding,
-                               Frequency frequency,
-                               Real bump=2e-4)
-        {
-            return boost::dynamic_pointer_cast<CallableBond>(*self)
-                ->effectiveDuration(oas,
-                                    engineTS,
-                                    dayCounter,
-                                    compounding,
-                                    frequency,
-                                    bump);
-        }
-
-        Real effectiveConvexity(Real oas,
-                                const Handle<YieldTermStructure>& engineTS,
-                                const DayCounter& dayCounter,
-                                Compounding compounding,
-                                Frequency frequency,
-                                Real bump=2e-4)
-        {
-            return boost::dynamic_pointer_cast<CallableBond>(*self)
-                ->effectiveConvexity(oas,
-                                     engineTS,
-                                     dayCounter,
-                                     compounding,
-                                     frequency,
-                                     bump);
-        }
-    }
+    Real effectiveConvexity(Real oas,
+                            const Handle<YieldTermStructure>& engineTS,
+                            const DayCounter& dayCounter,
+                            Compounding compounding,
+                            Frequency frequency,
+                            Real bump=2e-4);
 };
 
-%rename(TreeCallableFixedRateBondEngine) TreeCallableFixedRateBondEnginePtr;
-class TreeCallableFixedRateBondEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(TreeCallableFixedRateBondEngine)
+class TreeCallableFixedRateBondEngine : public PricingEngine {
   public:
-    %extend {
-        TreeCallableFixedRateBondEnginePtr(
+    TreeCallableFixedRateBondEngine(
                          const boost::shared_ptr<ShortRateModel>& model,
                          Size timeSteps,
                          const Handle<YieldTermStructure>& termStructure =
-                                                Handle<YieldTermStructure>()) {
-            return new TreeCallableFixedRateBondEnginePtr(
-                new TreeCallableFixedRateBondEngine(model, timeSteps,
-                                                    termStructure));
-        }
-        TreeCallableFixedRateBondEnginePtr(
+                                                Handle<YieldTermStructure>());
+    TreeCallableFixedRateBondEngine(
                          const boost::shared_ptr<ShortRateModel>& model,
                          const TimeGrid& grid,
                          const Handle<YieldTermStructure>& termStructure =
-                                                Handle<YieldTermStructure>()) {
-            return new TreeCallableFixedRateBondEnginePtr(
-                new TreeCallableFixedRateBondEngine(model, grid,
-                                                    termStructure));
-        }
-    }
+                                                Handle<YieldTermStructure>());
 };
 
-%rename(BlackCallableFixedRateBondEngine) BlackCallableFixedRateBondEnginePtr;
-class BlackCallableFixedRateBondEnginePtr 
-    : public boost::shared_ptr<PricingEngine> {
-    public:
-    %extend {
-        BlackCallableFixedRateBondEnginePtr(
+%shared_ptr(BlackCallableFixedRateBondEngine)
+class BlackCallableFixedRateBondEngine : public PricingEngine {
+  public:
+    BlackCallableFixedRateBondEngine(
                 const Handle<Quote>& fwdYieldVol,
-                const Handle<YieldTermStructure>& discountCurve) {
-            return new BlackCallableFixedRateBondEnginePtr(
-                new BlackCallableFixedRateBondEngine(fwdYieldVol, discountCurve));
-        }
-        
-    }    
+                const Handle<YieldTermStructure>& discountCurve);
 };
 
 %{
 using QuantLib::CPIBond;
-typedef boost::shared_ptr<Instrument> CPIBondPtr;
 %}
 
-%rename(CPIBond) CPIBondPtr;
-class CPIBondPtr : public BondPtr {
+%shared_ptr(CPIBond)
+class CPIBond : public Bond {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") CPIBondPtr;
+    %feature("kwargs") CPIBond;
     #endif
   public:
-    %extend {
-        CPIBondPtr(
-                Natural settlementDays,
-                Real faceAmount,
-                bool growthOnly,
-                Real baseCPI,
-                const Period& observationLag,
-                const ZeroInflationIndexPtr& cpiIndex,
-                CPI::InterpolationType observationInterpolation,
-                const Schedule& schedule,
-                const std::vector<Rate>& coupons,
-                const DayCounter& accrualDayCounter,
-                BusinessDayConvention paymentConvention = ModifiedFollowing,
-                const Date& issueDate = Date(),
-                const Calendar& paymentCalendar = Calendar(),
-                const Period& exCouponPeriod = Period(),
-                const Calendar& exCouponCalendar = Calendar(),
-                BusinessDayConvention exCouponConvention = Unadjusted,
-                bool exCouponEndOfMonth = false) {
-            boost::shared_ptr<ZeroInflationIndex> zeroIndex =
-                boost::dynamic_pointer_cast<ZeroInflationIndex>(cpiIndex);
-            return new CPIBondPtr(
-                new CPIBond(settlementDays, faceAmount, growthOnly, baseCPI,
-                            observationLag, zeroIndex, observationInterpolation,
-                            schedule, coupons, accrualDayCounter,
-                            paymentConvention, issueDate, paymentCalendar,
-                            exCouponPeriod, exCouponCalendar,
-                            exCouponConvention, exCouponEndOfMonth));
-        }
-    }
+    CPIBond(
+            Natural settlementDays,
+            Real faceAmount,
+            bool growthOnly,
+            Real baseCPI,
+            const Period& observationLag,
+            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+            CPI::InterpolationType observationInterpolation,
+            const Schedule& schedule,
+            const std::vector<Rate>& coupons,
+            const DayCounter& accrualDayCounter,
+            BusinessDayConvention paymentConvention = ModifiedFollowing,
+            const Date& issueDate = Date(),
+            const Calendar& paymentCalendar = Calendar(),
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false);
 };
 
 

@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005 StatPro Italia srl
  Copyright (C) 2008 Tito Ingargiola
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,13 +84,11 @@ typedef QuantLib::PathGenerator<GaussianRandomSequenceGenerator>
 class GaussianPathGenerator {
   public:
     %extend {
-        GaussianPathGenerator(const StochasticProcess1DPtr& process,
+        GaussianPathGenerator(const boost::shared_ptr<StochasticProcess1D>& process,
                               Time length, Size steps,
                               const GaussianRandomSequenceGenerator& rsg,
                               bool brownianBridge) {
-            boost::shared_ptr<StochasticProcess1D> process1d =
-                boost::dynamic_pointer_cast<StochasticProcess1D>(process);
-            return new GaussianPathGenerator(process1d,length,steps,
+            return new GaussianPathGenerator(process,length,steps,
                                              rsg,brownianBridge);
         }
     }
@@ -105,13 +104,11 @@ class GaussianSobolPathGenerator {
   public:
     %extend {
         GaussianSobolPathGenerator(
-                           const StochasticProcess1DPtr& process,
+                           const boost::shared_ptr<StochasticProcess1D>& process,
                            Time length, Size steps,
                            const GaussianLowDiscrepancySequenceGenerator& rsg,
                            bool brownianBridge) {
-            boost::shared_ptr<StochasticProcess1D> process1d =
-                boost::dynamic_pointer_cast<StochasticProcess1D>(process);
-            return new GaussianSobolPathGenerator(process1d,length,steps,
+            return new GaussianSobolPathGenerator(process,length,steps,
                                                   rsg,brownianBridge);
         }
     }
