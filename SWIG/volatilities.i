@@ -770,4 +770,35 @@ class NoArbSabrInterpolatedSmileSection : public SmileSection {
     EndCriteria::Type endCriteria() const;
 };
 
+%{
+using QuantLib::sabrVolatility;
+using QuantLib::shiftedSabrVolatility;
+using QuantLib::sabrFlochKennedyVolatility;
+%}
+
+Real sabrVolatility(Rate strike,
+                    Rate forward,
+                    Time expiryTime,
+                    Real alpha,
+                    Real beta,
+                    Real nu,
+                    Real rho);
+
+Real shiftedSabrVolatility(Rate strike,
+                             Rate forward,
+                             Time expriyTime,
+                             Real alpha,
+                             Real beta,
+                             Real nu,
+                             Real rho,
+                             Real shift);
+
+Real sabrFlochKennedyVolatility(Rate strike,
+                                Rate forward,
+                                Time expiryTime,
+                                Real alpha,
+                                Real beta,
+                                Real nu,
+                                Real rho);
+
 #endif

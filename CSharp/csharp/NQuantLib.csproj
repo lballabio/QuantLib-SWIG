@@ -163,6 +163,7 @@
     <Compile Include="AnalyticBarrierEngine.cs" />
     <Compile Include="AnalyticBinaryBarrierEngine.cs" />
     <Compile Include="AnalyticCapFloorEngine.cs" />
+    <Compile Include="AnalyticCEVEngine.cs" />
     <Compile Include="AnalyticContinuousGeometricAveragePriceAsianEngine.cs" />
     <Compile Include="AnalyticDigitalAmericanEngine.cs" />
     <Compile Include="AnalyticDigitalAmericanKOEngine.cs" />
@@ -293,6 +294,7 @@
     <Compile Include="Brent.cs" />
     <Compile Include="BRLCurrency.cs" />
     <Compile Include="BrownianBridge.cs" />
+    <Compile Include="BrownianGeneratorFactory.cs" />
     <Compile Include="Business252.cs" />
     <Compile Include="BusinessDayConvention.cs" />
     <Compile Include="BYRCurrency.cs" />
@@ -499,13 +501,19 @@
     <Compile Include="FdBlackScholesAsianEngine.cs" />
     <Compile Include="FdBlackScholesBarrierEngine.cs" />
     <Compile Include="FdBlackScholesVanillaEngine.cs" />
+    <Compile Include="FdCEVVanillaEngine.cs" />
     <Compile Include="FDDividendAmericanEngine.cs" />
     <Compile Include="FDDividendEuropeanEngine.cs" />
     <Compile Include="FDEuropeanEngine.cs" />
     <Compile Include="FdG2SwaptionEngine.cs" />
+    <Compile Include="FdHestonBarrierEngine.cs" />
+    <Compile Include="FdHestonDoubleBarrierEngine.cs" />
     <Compile Include="FdHestonVanillaEngine.cs" />
     <Compile Include="FdHullWhiteSwaptionEngine.cs" />
+    <Compile Include="FdmHestonGreensFct.cs" />
+    <Compile Include="FdmSquareRootFwdOp.cs" />
     <Compile Include="FdmSchemeDesc.cs" />
+    <Compile Include="FdSabrVanillaEngine.cs" />
     <Compile Include="FDShoutEngine.cs" />
     <Compile Include="FdSimpleBSSwingEngine.cs" />
     <Compile Include="FdSimpleExtOUJumpSwingEngine.cs" />
@@ -598,6 +606,10 @@
     <Compile Include="HestonModel.cs" />
     <Compile Include="HestonModelHelper.cs" />
     <Compile Include="HestonProcess.cs" />
+    <Compile Include="HestonSLVFDMModel.cs" />
+    <Compile Include="HestonSLVFokkerPlanckFdmParams.cs" />
+    <Compile Include="HestonSLVMCModel.cs" />
+    <Compile Include="HestonSLVProcess.cs" />
     <Compile Include="HimalayaOption.cs" />
     <Compile Include="HKDCurrency.cs" />
     <Compile Include="HongKong.cs" />
@@ -710,6 +722,7 @@
     <Compile Include="MCLDDiscreteGeometricAPEngine.cs" />
     <Compile Include="MCLDEuropeanBasketEngine.cs" />
     <Compile Include="MCLDEuropeanEngine.cs" />
+    <Compile Include="MCLDEuropeanHestonEngine.cs" />
     <Compile Include="MCLDEverestEngine.cs" />
     <Compile Include="MCLDHimalayaEngine.cs" />
     <Compile Include="MCPRAmericanBasketEngine.cs" />
@@ -720,6 +733,7 @@
     <Compile Include="MCPRDiscreteGeometricAPEngine.cs" />
     <Compile Include="MCPREuropeanBasketEngine.cs" />
     <Compile Include="MCPREuropeanEngine.cs" />
+    <Compile Include="MCPREuropeanHestonEngine.cs" />
     <Compile Include="MCPREverestEngine.cs" />
     <Compile Include="MCPRHimalayaEngine.cs" />
     <Compile Include="MersenneTwisterUniformRng.cs" />
@@ -748,6 +762,7 @@
     <Compile Include="MoroInvCumulativeMersenneTwisterGaussianRsg.cs" />
     <Compile Include="MoroInvCumulativeSobolGaussianRsg.cs" />
     <Compile Include="MoroInverseCumulativeNormal.cs" />
+    <Compile Include="MTBrownianGeneratorFactory.cs" />
     <Compile Include="MTLCurrency.cs" />
     <Compile Include="MultiAssetOption.cs" />
     <Compile Include="MultiPath.cs" />
@@ -908,6 +923,8 @@
     <Compile Include="Slovakia.cs" />
     <Compile Include="SmileSection.cs" />
     <Compile Include="SobolBrownianBridgeRsg.cs" />
+    <Compile Include="SobolBrownianGenerator.cs" />
+    <Compile Include="SobolBrownianGeneratorFactory.cs" />
     <Compile Include="SobolRsg.cs" />
     <Compile Include="SoftCallability.cs" />
     <Compile Include="Sonia.cs" />

@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2008 Tito Ingargiola
- Copyright (C) 2010, 2012, 2018 Klaus Spanderen
+ Copyright (C) 2010, 2012, 2018, 2019 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2018 Matthias Lungwitz
@@ -484,6 +484,7 @@ class BinomialVanillaEngine : public PricingEngine {
 
 %{
 using QuantLib::MCEuropeanEngine;
+using QuantLib::MCEuropeanHestonEngine;
 using QuantLib::MCAmericanEngine;
 using QuantLib::PseudoRandom;
 using QuantLib::LowDiscrepancy;
@@ -650,6 +651,73 @@ class MCAmericanEngine : public PricingEngine {
                    seedCalibration)
 %}
 #endif
+
+
+%shared_ptr(MCEuropeanHestonEngine<PseudoRandom>);
+%shared_ptr(MCEuropeanHestonEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCEuropeanHestonEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCEuropeanHestonEngine;
+    #endif
+  public:
+    %extend {
+        MCEuropeanHestonEngine(const boost::shared_ptr<HestonProcess>& process,
+                               intOrNull timeSteps = Null<Size>(),
+                               intOrNull timeStepsPerYear = Null<Size>(),
+                               bool antitheticVariate = false,
+                               intOrNull requiredSamples = Null<Size>(),
+                               doubleOrNull requiredTolerance = Null<Real>(),
+                               intOrNull maxSamples = Null<Size>(),
+                               BigInteger seed = 0) {
+            QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
+                       Size(timeStepsPerYear) != Null<Size>(),
+                       "number of steps not specified");
+            return new MCEuropeanHestonEngine<RNG>(process,
+                                                   timeSteps,
+                                                   timeStepsPerYear,
+                                                   antitheticVariate,
+                                                   requiredSamples,
+                                                   requiredTolerance,
+                                                   maxSamples,
+                                                   seed);
+        }
+    }
+};
+
+%template(MCPREuropeanHestonEngine) MCEuropeanHestonEngine<PseudoRandom>;
+%template(MCLDEuropeanHestonEngine) MCEuropeanHestonEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanHestonEngine(process,
+                               traits,
+                               timeSteps=None,
+                               timeStepsPerYear=None,
+                               antitheticVariate=False,
+                               requiredSamples=None,
+                               requiredTolerance=None,
+                               maxSamples=None,
+                               seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanHestonEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanHestonEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
 
 // American engines
 
@@ -959,6 +1027,8 @@ struct FdmSchemeDesc {
 
 %{
 using QuantLib::FdBlackScholesVanillaEngine;
+using QuantLib::FdBatesVanillaEngine;
+using QuantLib::FdHestonVanillaEngine;
 %}
 
 %shared_ptr(FdBlackScholesVanillaEngine)
@@ -972,10 +1042,6 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
             Real illegalLocalVolOverwrite = -Null<Real>());
 };
 
-%{
-using QuantLib::FdBatesVanillaEngine;
-%}
-
 %shared_ptr(FdBatesVanillaEngine)
 class FdBatesVanillaEngine : public PricingEngine {
   public:
@@ -986,10 +1052,6 @@ class FdBatesVanillaEngine : public PricingEngine {
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 };
 
-%{
-using QuantLib::FdHestonVanillaEngine;
-%}
-
 %shared_ptr(FdHestonVanillaEngine)
 class FdHestonVanillaEngine : public PricingEngine {
   public:
@@ -997,8 +1059,54 @@ class FdHestonVanillaEngine : public PricingEngine {
             const boost::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
+};
+
+
+%{
+using QuantLib::AnalyticCEVEngine;
+using QuantLib::FdCEVVanillaEngine;
+%}
+
+%shared_ptr(AnalyticCEVEngine);
+class AnalyticCEVEngine : public PricingEngine {
+  public:
+    AnalyticCEVEngine(
+            Real f0, Real alpha, Real beta,
+            const Handle<YieldTermStructure>& rTS);
+};
+
+%shared_ptr(FdCEVVanillaEngine);
+class FdCEVVanillaEngine : public PricingEngine {
+  public:
+    FdCEVVanillaEngine(
+            Real f0, Real alpha, Real beta,
+            const Handle<YieldTermStructure>& rTS,
+            Size tGrid = 50, Size xGrid = 400,
+            Size dampingSteps = 0,
+            Real scalingFactor = 1.0, Real eps = 1e-4,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+};
+
+
+%{
+using QuantLib::FdSabrVanillaEngine;
+%}
+
+%shared_ptr(FdSabrVanillaEngine);
+class FdSabrVanillaEngine : public PricingEngine {
+  public:
+    FdSabrVanillaEngine(
+            Real f0, Real alpha, Real beta, Real nu, Real rho,
+            const Handle<YieldTermStructure>& rTS,
+            Size tGrid = 50, Size fGrid = 400, Size xGrid = 50,
+            Size dampingSteps = 0,
+            Real scalingFactor = 1.0, Real eps = 1e-4,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 };
+
 
 %{
 using QuantLib::FdBlackScholesBarrierEngine;
