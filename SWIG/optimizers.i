@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2015 Klaus Spanderen
- Copyright (C) 2018 Matthias Lungwitz 
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +24,7 @@
 
 %include functions.i
 %include linearalgebra.i
+%include stl.i
 
 // 1D Solvers
 
@@ -207,39 +208,47 @@ using QuantLib::LogNormalSimulatedAnnealing;
 
 %}
 
+%shared_ptr(OptimizationMethod)
 class OptimizationMethod {
   private:
     // prevent direct instantiation
     OptimizationMethod();
 };
 
+%shared_ptr(ConjugateGradient)
 class ConjugateGradient : public OptimizationMethod {
   public:
     ConjugateGradient();
 };
 
+%shared_ptr(Simplex)
 class Simplex : public OptimizationMethod {
   public:
     Simplex(Real lambda);
 };
 
+%shared_ptr(SteepestDescent)
 class SteepestDescent : public OptimizationMethod {
   public:
     SteepestDescent();
 };
 
+%shared_ptr(BFGS)
 class BFGS : public OptimizationMethod {
   public:
     BFGS();
 };
 
+%shared_ptr(LevenbergMarquardt)
 class LevenbergMarquardt : public OptimizationMethod {
   public:
     LevenbergMarquardt(Real epsfcn = 1.0e-8,
                        Real xtol = 1.0e-8,
-                       Real gtol = 1.0e-8);
+                       Real gtol = 1.0e-8,
+                       bool useCostFunctionsJacobian = false);
 };
 
+%shared_ptr(DifferentialEvolution)
 class DifferentialEvolution : public OptimizationMethod {
   public:
     DifferentialEvolution();
@@ -275,6 +284,7 @@ class ReannealingTrivial {
     ReannealingTrivial();
 };
 
+%shared_ptr(GaussianSimulatedAnnealing)
 class GaussianSimulatedAnnealing : public OptimizationMethod {
   public:
     enum ResetScheme{
@@ -293,6 +303,7 @@ class GaussianSimulatedAnnealing : public OptimizationMethod {
             Size resetSteps = 150);
 };
 
+%shared_ptr(MirrorGaussianSimulatedAnnealing)
 class MirrorGaussianSimulatedAnnealing : public OptimizationMethod {
   public:
     enum ResetScheme{
@@ -311,6 +322,7 @@ class MirrorGaussianSimulatedAnnealing : public OptimizationMethod {
             Size resetSteps = 150);
 };
 
+%shared_ptr(LogNormalSimulatedAnnealing)
 class LogNormalSimulatedAnnealing : public OptimizationMethod {
   public:
    enum ResetScheme{
