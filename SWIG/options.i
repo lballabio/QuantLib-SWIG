@@ -791,6 +791,19 @@ class BjerksundStenslandApproximationEngine : public PricingEngine {
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
+
+%{
+using QuantLib::JuQuadraticApproximationEngine;
+%}
+
+%shared_ptr(JuQuadraticApproximationEngine);
+%rename(JuQuadraticEngine) JuQuadraticApproximationEngine;
+class JuQuadraticApproximationEngine : public PricingEngine {
+  public:
+    JuQuadraticApproximationEngine(
+            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+};
+
 %{
 using QuantLib::AnalyticDigitalAmericanEngine;
 %}
