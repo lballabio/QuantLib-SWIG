@@ -173,6 +173,8 @@ class VanillaOption : public OneAssetOption {
     }
 };
 
+%template(CalibrationPair) std::pair< boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> >;
+%template(CalibrationSet) std::vector<std::pair< boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> > >;
 
 %{
 using QuantLib::EuropeanOption;

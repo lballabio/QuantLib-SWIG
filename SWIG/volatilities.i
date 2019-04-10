@@ -801,4 +801,68 @@ Real sabrFlochKennedyVolatility(Rate strike,
                                 Real nu,
                                 Real rho);
 
+%{
+using QuantLib::AndreasenHugeVolatilityInterpl;
+using QuantLib::AndreasenHugeVolatilityAdapter;
+using QuantLib::AndreasenHugeLocalVolAdapter;
+%}
+
+%shared_ptr(AndreasenHugeVolatilityInterpl)
+class AndreasenHugeVolatilityInterpl : public Observable {
+  public:
+        enum InterpolationType {PiecewiseConstant, Linear, CubicSpline};
+        enum CalibrationType {
+            Call = Option::Call, Put = Option::Put, CallPut};
+
+        typedef std::vector<std::pair<
+            boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> > >
+          CalibrationSet;
+
+        AndreasenHugeVolatilityInterpl(
+            const CalibrationSet& calibrationSet,
+            const Handle<Quote>& spot,
+            const Handle<YieldTermStructure>& rTS,
+            const Handle<YieldTermStructure>& qTS,
+            InterpolationType interpolationType = CubicSpline,
+            CalibrationType calibrationType = Call,
+            Size nGridPoints = 500,
+            Real minStrike = Null<Real>(),
+            Real maxStrike = Null<Real>(),
+            const boost::shared_ptr<OptimizationMethod>& optimizationMethod =
+                boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
+            const EndCriteria& endCriteria =
+                EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
+
+        Date maxDate() const;
+        Real minStrike() const;
+        Real maxStrike() const;
+
+        Real fwd(Time t) const;
+        const Handle<YieldTermStructure>& riskFreeRate() const;
+
+        // returns min, max and average error in volatility units
+        boost::tuple<Real, Real, Real> calibrationError() const;
+
+        // returns the option price of the calibration type. In case
+        // of CallPut it return the call option price
+        Real optionPrice(Time t, Real strike, Option::Type optionType) const;
+
+        Volatility localVol(Time t, Real strike) const;
+};
+
+%shared_ptr(AndreasenHugeVolatilityAdapter)
+class AndreasenHugeVolatilityAdapter : public BlackVolTermStructure {
+  public:
+    AndreasenHugeVolatilityAdapter(
+        const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
+        Real eps = 1e-6);
+};
+
+%shared_ptr(AndreasenHugeLocalVolAdapter)
+class AndreasenHugeLocalVolAdapter : public LocalVolTermStructure {
+  public:
+    explicit AndreasenHugeLocalVolAdapter(
+        const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
+};
+
 #endif
