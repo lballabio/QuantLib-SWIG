@@ -35,6 +35,7 @@
 %include optimizers.i
 %include options.i
 %include termstructures.i
+%include vectors.i
 
 %define QL_TYPECHECK_VOLATILITYTYPE       8210    %enddef
 
@@ -806,6 +807,8 @@ using QuantLib::AndreasenHugeVolatilityInterpl;
 using QuantLib::AndreasenHugeVolatilityAdapter;
 using QuantLib::AndreasenHugeLocalVolAdapter;
 %}
+
+%template(CalibrationErrorTuple) boost::tuple<Real, Real, Real>;
 
 %shared_ptr(AndreasenHugeVolatilityInterpl)
 class AndreasenHugeVolatilityInterpl : public Observable {
