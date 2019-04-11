@@ -4,7 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -806,6 +806,7 @@ Real sabrFlochKennedyVolatility(Rate strike,
 using QuantLib::AndreasenHugeVolatilityInterpl;
 using QuantLib::AndreasenHugeVolatilityAdapter;
 using QuantLib::AndreasenHugeLocalVolAdapter;
+using QuantLib::HestonBlackVolSurface;
 %}
 
 %template(CalibrationErrorTuple) boost::tuple<Real, Real, Real>;
@@ -866,6 +867,17 @@ class AndreasenHugeLocalVolAdapter : public LocalVolTermStructure {
   public:
     explicit AndreasenHugeLocalVolAdapter(
         const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
+};
+
+%shared_ptr(HestonBlackVolSurface)
+class HestonBlackVolSurface : public BlackVolTermStructure {
+  public:
+    explicit HestonBlackVolSurface(
+        const Handle<HestonModel>& hestonModel,
+        const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula
+            = AnalyticHestonEngine::Gatheral,
+        const AnalyticHestonEngine::Integration& integration =
+            AnalyticHestonEngine::Integration::gaussLaguerre(164));
 };
 
 #endif

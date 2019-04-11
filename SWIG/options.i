@@ -6,7 +6,7 @@
  Copyright (C) 2010, 2012, 2018, 2019 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -278,7 +278,7 @@ class HestonModel : public CalibratedModel {
     Real v0() const;
 };
 
-
+%template(HestonModelHandle) Handle<HestonModel>;
 
 %{
 using QuantLib::PiecewiseTimeDependentHestonModel;
@@ -316,14 +316,54 @@ class PiecewiseTimeDependentHestonModel : public CalibratedModel {
 using QuantLib::AnalyticHestonEngine;
 %}
 
+%rename (AnalyticHestonEngine_Integration) AnalyticHestonEngine::Integration;
+%feature ("flatnested") Integration;
+
 %shared_ptr(AnalyticHestonEngine)
 class AnalyticHestonEngine : public PricingEngine {
   public:
+    class Integration {
+      public:
+        // non adaptive integration algorithms based on Gaussian quadrature
+        static Integration gaussLaguerre    (Size integrationOrder = 128);
+        static Integration gaussLegendre    (Size integrationOrder = 128);
+        static Integration gaussChebyshev   (Size integrationOrder = 128);
+        static Integration gaussChebyshev2nd(Size integrationOrder = 128);
+
+        // for an adaptive integration algorithm Gatheral's version has to
+        // be used.Be aware: using a too large number for maxEvaluations might
+        // result in a stack overflow as the these integrations are based on
+        // recursive algorithms.
+        static Integration gaussLobatto(Real relTolerance, Real absTolerance,
+                                        Size maxEvaluations = 1000);
+
+        // usually these routines have a poor convergence behavior.
+        static Integration gaussKronrod(Real absTolerance,
+                                        Size maxEvaluations = 1000);
+        static Integration simpson(Real absTolerance,
+                                   Size maxEvaluations = 1000);
+        static Integration trapezoid(Real absTolerance,
+                                     Size maxEvaluations = 1000);
+        static Integration discreteSimpson(Size evaluation = 1000);
+        static Integration discreteTrapezoid(Size evaluation = 1000);
+
+        static Real andersenPiterbargIntegrationLimit(
+            Real c_inf, Real epsilon, Real v0, Real t);
+
+        Size numberOfEvaluations() const;
+        bool isAdaptiveIntegration() const;
+      private:
+        Integration();
+    };
+    enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                          Real relTolerance,
                          Size maxEvaluations);
+    AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+                     ComplexLogFormula cpxLog, const Integration& itg,
+                     Real andersenPiterbargEpsilon = 1e-8);
 };
 
 %{
