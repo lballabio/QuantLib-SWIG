@@ -36,6 +36,7 @@ from blackformula import BlackDeltaCalculatorTest
 from iborindex import IborIndexTest
 from sabr import SabrTest
 from slv import SlvTest
+from americanquantooption import AmericanQuantoOptionTest
 
 
 def test():
@@ -62,7 +63,8 @@ def test():
     suite.addTest(unittest.makeSuite(IborIndexTest, 'test'))
     suite.addTest(unittest.makeSuite(SabrTest, 'test'))
     suite.addTest(unittest.makeSuite(SlvTest, 'test'))
-    
+    suite.addTest(unittest.makeSuite(AmericanQuantoOptionTest, 'test'))
+        
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
     if not result.wasSuccessful:

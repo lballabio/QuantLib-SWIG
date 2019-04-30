@@ -1026,6 +1026,21 @@ struct FdmSchemeDesc {
 };
 
 %{
+using QuantLib::FdmQuantoHelper;
+%}
+
+%shared_ptr(FdmQuantoHelper)
+class FdmQuantoHelper {
+  public:
+	FdmQuantoHelper(
+	    const boost::shared_ptr<YieldTermStructure>& rTS,
+        const boost::shared_ptr<YieldTermStructure>& fTS,
+        const boost::shared_ptr<BlackVolTermStructure>& fxVolTS,
+        Real equityFxCorrelation,
+        Real exchRateATMlevel);
+};
+
+%{
 using QuantLib::FdBlackScholesVanillaEngine;
 using QuantLib::FdBatesVanillaEngine;
 using QuantLib::FdHestonVanillaEngine;
@@ -1035,11 +1050,19 @@ using QuantLib::FdHestonVanillaEngine;
 class FdBlackScholesVanillaEngine : public PricingEngine {
   public:
     FdBlackScholesVanillaEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-            bool localVol = false,
-            Real illegalLocalVolOverwrite = -Null<Real>());
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+        bool localVol = false,
+        Real illegalLocalVolOverwrite = -Null<Real>());
+            
+    FdBlackScholesVanillaEngine(
+        const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+        bool localVol = false,
+        Real illegalLocalVolOverwrite = -Null<Real>());
 };
 
 %shared_ptr(FdBatesVanillaEngine)
@@ -1056,12 +1079,21 @@ class FdBatesVanillaEngine : public PricingEngine {
 class FdHestonVanillaEngine : public PricingEngine {
   public:
     FdHestonVanillaEngine(
-            const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100,
-            Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
+        const boost::shared_ptr<HestonModel>& model,
+        Size tGrid = 100, Size xGrid = 100,
+        Size vGrid = 50, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+            = boost::shared_ptr<LocalVolTermStructure>());
+
+    FdHestonVanillaEngine(
+        const boost::shared_ptr<HestonModel>& model,
+        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        Size tGrid = 100, Size xGrid = 100,
+        Size vGrid = 50, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+        const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+            = boost::shared_ptr<LocalVolTermStructure>());
 };
 
 

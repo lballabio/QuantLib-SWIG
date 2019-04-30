@@ -95,7 +95,7 @@ class SlvTest(unittest.TestCase):
         
         option.setPricingEngine(
             FdHestonVanillaEngine(
-                hestonModel, 20, 100, 3, 0, FdmSchemeDesc.Hundsdorfer(), 
+                hestonModel, 20, 100, 3, 1, FdmSchemeDesc.Douglas(), 
                 LocalVolSurface(
                     self.constVol(2.0),
                     self.riskFreeRate,
