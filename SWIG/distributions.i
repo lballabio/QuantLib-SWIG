@@ -140,9 +140,6 @@ class CumulativeChiSquareDistribution {
     Real operator()(Real x);
 };
 
-deprecate_feature(ChiSquareDistribution,
-                  CumulativeChiSquareDistribution);
-
 class NonCentralCumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP)
     %rename(call) operator();
@@ -151,9 +148,6 @@ class NonCentralCumulativeChiSquareDistribution {
     NonCentralCumulativeChiSquareDistribution(Real df, Real ncp);
     Real operator()(Real x);
 };
-
-deprecate_feature(NonCentralChiSquareDistribution,
-                  NonCentralCumulativeChiSquareDistribution);
 
 class InverseNonCentralCumulativeChiSquareDistribution {
     #if defined(SWIGCSHARP)
@@ -166,9 +160,6 @@ class InverseNonCentralCumulativeChiSquareDistribution {
     Real operator()(Real x);
 };
 
-deprecate_feature(InverseNonCentralChiSquareDistribution,
-                  InverseNonCentralCumulativeChiSquareDistribution);
-
 class CumulativeGammaDistribution {
     #if defined(SWIGCSHARP)
     %rename(call) operator();
@@ -177,9 +168,6 @@ class CumulativeGammaDistribution {
     CumulativeGammaDistribution(Real a);
     Real operator()(Real x);
 };
-
-deprecate_feature(GammaDistribution,
-                  CumulativeGammaDistribution);
 
 class GammaFunction {
     #if defined(SWIGCSHARP)
