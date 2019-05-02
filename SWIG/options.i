@@ -797,7 +797,7 @@ using QuantLib::JuQuadraticApproximationEngine;
 %}
 
 %shared_ptr(JuQuadraticApproximationEngine);
-%rename(JuQuadraticEngine) JuQuadraticApproximationEngine;
+%rename(JuQuadraticApproximationEngine) JuQuadraticApproximationEngine;
 class JuQuadraticApproximationEngine : public PricingEngine {
   public:
     JuQuadraticApproximationEngine(
