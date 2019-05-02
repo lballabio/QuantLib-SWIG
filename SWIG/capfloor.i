@@ -44,6 +44,7 @@ class CapFloor : public Instrument {
                                  Volatility maxVol = 4.0,
                                  VolatilityType type = ShiftedLognormal,
                                  Real displacement = 0.0) const;
+    enum Type { Cap, Floor, Collar };
     const Leg& floatingLeg() const;
 
     const std::vector<Rate>& capRates();
@@ -51,6 +52,9 @@ class CapFloor : public Instrument {
     Date startDate() const;
     Date maturityDate() const;
 
+    bool isExpired() const;
+    Type type() const;
+    
     Rate atmRate(const YieldTermStructure& discountCurve) const;
 };
 
