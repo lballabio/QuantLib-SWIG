@@ -15,65 +15,73 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-from QuantLib import *
+import QuantLib as ql
 
-calendar = TARGET()
+calendar = ql.TARGET()
 
 # set evaluation date
-todaysDate = Date(15,May,2007);
+todaysDate = ql.Date(15, ql.May, 2007)
 todaysDate = calendar.adjust(todaysDate)
-Settings.instance().evaluationDate = todaysDate
+ql.Settings.instance().evaluationDate = todaysDate
 
-risk_free_rate = YieldTermStructureHandle(
-        FlatForward(todaysDate, 0.01, Actual365Fixed()))
+risk_free_rate = ql.YieldTermStructureHandle(ql.FlatForward(todaysDate, 0.01, ql.Actual365Fixed()))
 
 # CDS parameters
 recovery_rate = 0.5
-quoted_spreads = [ 0.0150, 0.0150, 0.0150, 0.0150 ]
-tenors = [ Period(3, Months), Period(6, Months),
-           Period(1, Years), Period(2, Years) ]
-maturities = [ calendar.adjust(todaysDate + x, Following) for x in tenors]
+quoted_spreads = [0.0150, 0.0150, 0.0150, 0.0150]
+tenors = [ql.Period(3, ql.Months), ql.Period(6, ql.Months), ql.Period(1, ql.Years), ql.Period(2, ql.Years)]
+maturities = [calendar.adjust(todaysDate + x, ql.Following) for x in tenors]
 
 instruments = [
-    SpreadCdsHelper(QuoteHandle(SimpleQuote(s)),
-                    tenor,
-                    0,
-                    calendar,
-                    Quarterly,
-                    Following,
-                    DateGeneration.TwentiethIMM,
-                    Actual365Fixed(),
-                    recovery_rate,
-                    risk_free_rate)
-    for s,tenor in zip(quoted_spreads, tenors) ]
+    ql.SpreadCdsHelper(
+        ql.QuoteHandle(ql.SimpleQuote(s)),
+        tenor,
+        0,
+        calendar,
+        ql.Quarterly,
+        ql.Following,
+        ql.DateGeneration.TwentiethIMM,
+        ql.Actual365Fixed(),
+        recovery_rate,
+        risk_free_rate,
+    )
+    for s, tenor in zip(quoted_spreads, tenors)
+]
 
-hazard_curve = PiecewiseFlatHazardRate(todaysDate, instruments,
-                                       Actual365Fixed())
+hazard_curve = ql.PiecewiseFlatHazardRate(todaysDate, instruments, ql.Actual365Fixed())
 print("Calibrated hazard rate values: ")
 for x in hazard_curve.nodes():
     print("hazard rate on %s is %.7f" % x)
 
 print("Some survival probability values: ")
-print("1Y survival probability: %.4g, \n\t\texpected %.4g" % (
-    hazard_curve.survivalProbability(todaysDate + Period("1Y")),
-    0.9704))
-print("2Y survival probability: %.4g, \n\t\texpected %.4g" % (
-    hazard_curve.survivalProbability(todaysDate + Period("2Y")),
-    0.9418))
+print(
+    "1Y survival probability: %.4g, \n\t\texpected %.4g"
+    % (hazard_curve.survivalProbability(todaysDate + ql.Period("1Y")), 0.9704)
+)
+print(
+    "2Y survival probability: %.4g, \n\t\texpected %.4g"
+    % (hazard_curve.survivalProbability(todaysDate + ql.Period("2Y")), 0.9418)
+)
 
 # reprice instruments
 nominal = 1000000.0
-probability = DefaultProbabilityTermStructureHandle(hazard_curve)
+probability = ql.DefaultProbabilityTermStructureHandle(hazard_curve)
 
 # create a cds for every maturity
 all_cds = []
 for maturity, s in zip(maturities, quoted_spreads):
-    schedule = Schedule(todaysDate, maturity, Period(Quarterly),
-                        calendar, Following, Unadjusted,
-                        DateGeneration.TwentiethIMM, False)
-    cds = CreditDefaultSwap(Protection.Seller, nominal, s,
-                            schedule, Following, Actual365Fixed())
-    engine = MidPointCdsEngine(probability, recovery_rate, risk_free_rate)
+    schedule = ql.Schedule(
+        todaysDate,
+        maturity,
+        ql.Period(ql.Quarterly),
+        calendar,
+        ql.Following,
+        ql.Unadjusted,
+        ql.DateGeneration.TwentiethIMM,
+        False,
+    )
+    cds = ql.CreditDefaultSwap(ql.Protection.Seller, nominal, s, schedule, ql.Following, ql.Actual365Fixed())
+    engine = ql.MidPointCdsEngine(probability, recovery_rate, risk_free_rate)
     cds.setPricingEngine(engine)
     all_cds.append(cds)
 
