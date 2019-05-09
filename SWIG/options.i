@@ -315,15 +315,17 @@ class PiecewiseTimeDependentHestonModel : public CalibratedModel {
 %{
 using QuantLib::AnalyticHestonEngine;
 %}
-
 %rename (AnalyticHestonEngine_Integration) AnalyticHestonEngine::Integration;
-%feature ("flatnested") Integration;
-
 %shared_ptr(AnalyticHestonEngine)
+#if !defined(SWIGCSHARP)
+%feature ("flatnested") AnalyticHestonEngine::Integration;
+#endif
+
 class AnalyticHestonEngine : public PricingEngine {
   public:
-    class Integration {
-      public:
+    class Integration
+    {
+    public:
         // non adaptive integration algorithms based on Gaussian quadrature
         static Integration gaussLaguerre    (Size integrationOrder = 128);
         static Integration gaussLegendre    (Size integrationOrder = 128);
@@ -350,10 +352,25 @@ class AnalyticHestonEngine : public PricingEngine {
         static Real andersenPiterbargIntegrationLimit(
             Real c_inf, Real epsilon, Real v0, Real t);
 
+        Real calculate(Real c_inf,
+                       const boost::function<Real(Real)>& f,
+                       Real maxBound = Null<Real>()) const;
+
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
-      private:
-        Integration();
+
+    private:
+      enum Algorithm
+        { GaussLobatto, GaussKronrod, Simpson, Trapezoid,
+          DiscreteTrapezoid, DiscreteSimpson,
+          GaussLaguerre, GaussLegendre,
+          GaussChebyshev, GaussChebyshev2nd };
+
+      Integration(Algorithm intAlgo,
+                const boost::shared_ptr<GaussianQuadrature>& quadrature);
+
+      Integration(Algorithm intAlgo,
+                const boost::shared_ptr<Integrator>& integrator);
     };
     enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
@@ -362,7 +379,7 @@ class AnalyticHestonEngine : public PricingEngine {
                          Real relTolerance,
                          Size maxEvaluations);
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
-                     ComplexLogFormula cpxLog, const Integration& itg,
+                     ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
                      Real andersenPiterbargEpsilon = 1e-8);
 };
 
