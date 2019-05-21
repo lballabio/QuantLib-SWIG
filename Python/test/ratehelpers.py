@@ -1,7 +1,7 @@
 # coding=utf-8-unix
 """
  Copyright (C) 2009 Joseph Malicki
- Copyright (C) 2016 Wojciech Ślusarski
+ Copyright (C) 2016,2019 Wojciech Ślusarski
 
 
  This file is part of QuantLib, a free-software/open-source library
@@ -63,6 +63,123 @@ class FixedRateBondHelperTest(unittest.TestCase):
         bond = self.bond_helper.bond()
         self.assertEqual(bond.issueDate(), self.issue_date)
         self.assertEqual(bond.nextCouponRate(), self.coupons[0])
+
+
+class OISRateHelperTest(unittest.TestCase):
+    def setUp(self):
+
+        # Market rates are artificial, just close to real ones.
+        self.default_quote_date = ql.Date(26, 8, 2016)
+        self.build_eur_curve(self.default_quote_date)
+
+    def build_eur_curve(self, quotes_date):
+        """
+        Builds the EUR OIS curve as the collateral currency discount curve
+        :param quotes_date: date from which it is assumed all market data are
+            valid
+        :return: tuple consisting of objects related to EUR OIS discounting
+            curve: ql.PiecewiseFlatForward,
+                   ql.YieldTermStructureHandle
+                   ql.RelinkableYieldTermStructureHandle
+        """
+        calendar = ql.TARGET()
+        settlementDays = 2
+
+        todaysDate = quotes_date
+        ql.Settings.instance().evaluationDate = todaysDate
+
+        todays_Eonia_quote = -0.00341
+
+        # market quotes
+        # deposits, key structure as (settlement_days_number, number_of_units_
+        # for_maturity, unit)
+        deposits = {(0, 1, ql.Days): todays_Eonia_quote}
+
+        self.discounting_yts_handle = ql.RelinkableYieldTermStructureHandle()
+        on_index = ql.Eonia(self.discounting_yts_handle)
+        on_index.addFixing(todaysDate, todays_Eonia_quote / 100.0)
+
+        self.ois = {
+            (1, ql.Weeks): -0.342,
+            (1, ql.Months): -0.344,
+            (3, ql.Months): -0.349,
+            (6, ql.Months): -0.363,
+            (1, ql.Years): -0.389,
+        }
+
+        # convert them to Quote objects
+        for sett_num, n, unit in deposits.keys():
+            deposits[(sett_num, n, unit)] = ql.SimpleQuote(deposits[(sett_num, n, unit)] / 100.0)
+
+        for n, unit in self.ois.keys():
+            self.ois[(n, unit)] = ql.SimpleQuote(self.ois[(n, unit)] / 100.0)
+
+        # build rate helpers
+        dayCounter = ql.Actual360()
+        # looping left if somone wants two add more deposits to tests, e.g. T/N
+
+        self.depositHelpers = [
+            ql.DepositRateHelper(
+                ql.QuoteHandle(deposits[(sett_num, n, unit)]),
+                ql.Period(n, unit),
+                sett_num,
+                calendar,
+                ql.ModifiedFollowing,
+                True,
+                dayCounter,
+            )
+            for sett_num, n, unit in deposits.keys()
+        ]
+
+        self.oisHelpers = [
+            ql.OISRateHelper(
+                settlementDays, ql.Period(n, unit),
+                ql.QuoteHandle(self.ois[(n, unit)]), on_index,
+                self.discounting_yts_handle)
+            for n, unit in self.ois.keys()
+        ]
+
+        rateHelpers = self.depositHelpers + self.oisHelpers
+
+        # term-structure construction
+        self.oisSwapCurve = ql.PiecewiseFlatForward(todaysDate, rateHelpers,
+                                                    ql.Actual360())
+        self.oisSwapCurve.enableExtrapolation()
+        self.discounting_yts_handle.linkTo(self.oisSwapCurve)
+
+    def test_ois_ratehelper_setTermStructure(self):
+        """Test if OISRateHelper.impliedQuote provides original quote from curve"""
+        for key, rate_helper in zip(self.ois.keys(), self.oisHelpers):
+            expected = self.ois[key].value()
+            # This test case is just to prove, that only if we provide
+            # explicitely the curve to the rate helper, the quote can be
+            # calculated
+            rate_helper.setTermStructure(self.oisSwapCurve)
+            # based on bootstrapped_curve
+            calculated = rate_helper.impliedQuote()
+            # I need to run calculation again - it looks as if the update of the
+            # curve was slow - if I don't do that, in the first weekly quote I
+            # get strange result of -0.006840684068403689
+            calculated = rate_helper.impliedQuote()
+            diff = (expected - calculated) * 1E4
+            print("Maturity: {}: diff: {} bps".format(rate_helper.maturityDate(),
+                                                      diff))
+            self.assertAlmostEqual(expected, calculated,
+                                   delta=1e-5,
+                                   msg="Calculated implied quote differes too "
+                                       "much from original market value")
+
+    def test_ois_ratehelper_impliedquote(self):
+        """Test if OISRateHelper.impliedQuote provides original quote from curve"""
+        for key, rate_helper in zip(self.ois.keys(), self.oisHelpers):
+            expected = self.ois[key].value()
+            # based on bootstrapped_curve
+            calculated = rate_helper.impliedQuote()
+            self.assertAlmostEqual(expected, calculated,
+                                   delta=1e-5,
+                                   msg="Calculated implied quote differes too "
+                                       "much from original market value")
+
 
 
 class FxSwapRateHelperTest(unittest.TestCase):
@@ -239,18 +356,19 @@ class FxSwapRateHelperTest(unittest.TestCase):
         for n in range(len(original_quotes)):
             original_quote = original_quotes[n]
             rate_helper_quote = self.eur_pln_fx_swap_helpers[n].quote().value()
-            self.assertEquals(original_quote, rate_helper_quote)
+            self.assertEqual(original_quote, rate_helper_quote)
 
     def testLatestDate(self):
         """ Testing FxSwapRateHelper.latestDate()  method. """
         self.build_curves(self.default_quote_date)
         # Check if still the test date is unchanged, otherwise all other
         # tests here make no sense.
-        self.assertEquals(self.today, ql.Date(26, 8, 2016))
+        self.assertEqual(self.today, ql.Date(26, 8, 2016))
 
         # Hard coded expected maturities of fx swaps
         for n in range(len(self.maturities)):
-            self.assertEquals(self.maturities[n], self.eur_pln_fx_swap_helpers[n].latestDate())
+            self.assertEqual(self.maturities[n],
+                             self.eur_pln_fx_swap_helpers[n].latestDate())
 
     def testImpliedRates(self):
         """
@@ -364,7 +482,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         maturities = [settlement_calendar.adjust(date) for date in maturities]
 
         for n in range(len(maturities)):
-            self.assertEquals(maturities[n], self.eur_pln_fx_swap_helpers[n].latestDate())
+            self.assertEqual(maturities[n], self.eur_pln_fx_swap_helpers[n].latestDate())
 
     def testFxMarketConventionsForDatesInEURUSD_ON_Period(self):
         """
