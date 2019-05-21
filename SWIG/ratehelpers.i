@@ -284,6 +284,7 @@ class OISRateHelper : public RateHelper {
             const Period& forwardStart = 0 * Days, 
             const Spread overnightSpread = 0.0);
     boost::shared_ptr<OvernightIndexedSwap> swap();
+    void setTermStructure(YieldTermStructure*);
 };
 
 %shared_ptr(DatedOISRateHelper)
