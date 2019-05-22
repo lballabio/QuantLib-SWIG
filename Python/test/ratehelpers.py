@@ -571,5 +571,6 @@ if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FixedRateBondHelperTest, "test"))
+    suite.addTest(unittest.makeSuite(OISRateHelperTest, "test"))
     suite.addTest(unittest.makeSuite(FxSwapRateHelperTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)
