@@ -109,7 +109,8 @@ class OISRateHelperTest(unittest.TestCase):
 
         # convert them to Quote objects
         for sett_num, n, unit in deposits.keys():
-            deposits[(sett_num, n, unit)] = ql.SimpleQuote(deposits[(sett_num, n, unit)] / 100.0)
+            deposits[(sett_num, n, unit)] = ql.SimpleQuote(
+                deposits[(sett_num, n, unit)] / 100.0)
 
         for n, unit in self.ois.keys():
             self.ois[(n, unit)] = ql.SimpleQuote(self.ois[(n, unit)] / 100.0)
@@ -147,39 +148,19 @@ class OISRateHelperTest(unittest.TestCase):
         self.oisSwapCurve.enableExtrapolation()
         self.discounting_yts_handle.linkTo(self.oisSwapCurve)
 
-    def test_ois_ratehelper_setTermStructure(self):
-        """Test if OISRateHelper.impliedQuote provides original quote from curve"""
-        for key, rate_helper in zip(self.ois.keys(), self.oisHelpers):
-            expected = self.ois[key].value()
-            # This test case is just to prove, that only if we provide
-            # explicitely the curve to the rate helper, the quote can be
-            # calculated
-            rate_helper.setTermStructure(self.oisSwapCurve)
-            # based on bootstrapped_curve
-            calculated = rate_helper.impliedQuote()
-            # I need to run calculation again - it looks as if the update of the
-            # curve was slow - if I don't do that, in the first weekly quote I
-            # get strange result of -0.006840684068403689
-            calculated = rate_helper.impliedQuote()
-            diff = (expected - calculated) * 1E4
-            print("Maturity: {}: diff: {} bps".format(rate_helper.maturityDate(),
-                                                      diff))
-            self.assertAlmostEqual(expected, calculated,
-                                   delta=1e-5,
-                                   msg="Calculated implied quote differes too "
-                                       "much from original market value")
-
     def test_ois_ratehelper_impliedquote(self):
         """Test if OISRateHelper.impliedQuote provides original quote from curve"""
+        # initiate curves - required due to lazy evaluation
+        df = self.discounting_yts_handle.discount(0.0)
+
         for key, rate_helper in zip(self.ois.keys(), self.oisHelpers):
             expected = self.ois[key].value()
             # based on bootstrapped_curve
             calculated = rate_helper.impliedQuote()
             self.assertAlmostEqual(expected, calculated,
-                                   delta=1e-5,
+                                   delta=1e-8,
                                    msg="Calculated implied quote differes too "
                                        "much from original market value")
-
 
 
 class FxSwapRateHelperTest(unittest.TestCase):
@@ -196,7 +177,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         }
 
         # Valid only for the quote date of ql.Date(26, 8, 2016)
-        self.maturities = [ql.Date(30, 9, 2016), ql.Date(30, 11, 2016), ql.Date(28, 2, 2017), ql.Date(30, 8, 2017)]
+        self.maturities = [ql.Date(30, 9, 2016), ql.Date(30, 11, 2016),
+                           ql.Date(28, 2, 2017), ql.Date(30, 8, 2017)]
 
         self.fx_spot_quote_EURPLN = 4.3
         self.fx_spot_quote_EURUSD = 1.1
@@ -238,7 +220,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         # convert them to Quote objects
         for sett_num, n, unit in deposits.keys():
-            deposits[(sett_num, n, unit)] = ql.SimpleQuote(deposits[(sett_num, n, unit)] / 100.0)
+            deposits[(sett_num, n, unit)] = ql.SimpleQuote(
+                deposits[(sett_num, n, unit)] / 100.0)
 
         for n, unit in ois.keys():
             ois[(n, unit)] = ql.SimpleQuote(ois[(n, unit)] / 100.0)
@@ -262,7 +245,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         oisHelpers = [
             ql.OISRateHelper(
-                settlementDays, ql.Period(n, unit), ql.QuoteHandle(ois[(n, unit)]), on_index, discounting_yts_handle
+                settlementDays, ql.Period(n, unit),
+                ql.QuoteHandle(ois[(n, unit)]), on_index, discounting_yts_handle
             )
             for n, unit in ois.keys()
         ]
@@ -270,7 +254,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         rateHelpers = depositHelpers + oisHelpers
 
         # term-structure construction
-        oisSwapCurve = ql.PiecewiseFlatForward(todaysDate, rateHelpers, ql.Actual360())
+        oisSwapCurve = ql.PiecewiseFlatForward(todaysDate, rateHelpers,
+                                               ql.Actual360())
         oisSwapCurve.enableExtrapolation()
         return (
             oisSwapCurve,
@@ -323,7 +308,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         ]
 
         # term-structure construction
-        fxSwapCurve = ql.PiecewiseFlatForward(todaysDate, fxSwapHelpers, ql.Actual365Fixed())
+        fxSwapCurve = ql.PiecewiseFlatForward(todaysDate, fxSwapHelpers,
+                                              ql.Actual365Fixed())
         fxSwapCurve.enableExtrapolation()
         return (
             fxSwapCurve,
@@ -340,10 +326,12 @@ class FxSwapRateHelperTest(unittest.TestCase):
             e.g. ql.Date(26, 8, 2016)
         """
         self.today = quote_date
-        self.eur_ois_curve, self.eur_ois_handle, self.eur_ois_rel_handle = self.build_eur_curve(self.today)
+        self.eur_ois_curve, self.eur_ois_handle, self.eur_ois_rel_handle = self.build_eur_curve(
+            self.today)
 
         self.pln_eur_implied_curve, self.pln_eur_implied_curve_handle, self.pln_eur_implied_curve_relinkable_handle, self.eur_pln_fx_swap_helpers = self.build_pln_fx_swap_curve(
-            self.eur_ois_rel_handle, self.fx_swap_quotes, self.fx_spot_quote_EURPLN
+            self.eur_ois_rel_handle, self.fx_swap_quotes,
+            self.fx_spot_quote_EURPLN
         )
 
     def testQuote(self):
@@ -381,20 +369,22 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # here while retrieving values from fx_swap_quotes dictionary
         original_quotes = list(self.fx_swap_quotes.values())
         spot_date = ql.Date(30, 8, 2016)
-        spot_df = self.eur_ois_curve.discount(spot_date) / self.pln_eur_implied_curve.discount(spot_date)
+        spot_df = self.eur_ois_curve.discount(
+            spot_date) / self.pln_eur_implied_curve.discount(spot_date)
 
         for n in range(len(original_quotes)):
             original_quote = original_quotes[n]
             maturity = self.maturities[n]
             original_forward = self.fx_spot_quote_EURPLN + original_quote
             curve_impl_forward = (
-                self.fx_spot_quote_EURPLN
-                * self.eur_ois_curve.discount(maturity)
-                / self.pln_eur_implied_curve.discount(maturity)
-                / spot_df
+                    self.fx_spot_quote_EURPLN
+                    * self.eur_ois_curve.discount(maturity)
+                    / self.pln_eur_implied_curve.discount(maturity)
+                    / spot_df
             )
 
-            self.assertAlmostEqual(original_forward, curve_impl_forward, places=6)
+            self.assertAlmostEqual(original_forward, curve_impl_forward,
+                                   places=6)
 
     def testFxMarketConventionsForCrossRate(self):
         """
@@ -414,12 +404,14 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # Settlement should be on a day where all three centers are operating
         #  and follow EndOfMonth rule
         maturities = [
-            settlement_calendar.advance(spot_date, n, unit, ql.ModifiedFollowing, True)
+            settlement_calendar.advance(spot_date, n, unit,
+                                        ql.ModifiedFollowing, True)
             for n, unit in self.fx_swap_quotes.keys()
         ]
 
         for n in range(len(maturities)):
-            self.assertEqual(maturities[n], self.eur_pln_fx_swap_helpers[n].latestDate())
+            self.assertEqual(maturities[n],
+                             self.eur_pln_fx_swap_helpers[n].latestDate())
 
     def testFxMarketConventionsForCrossRateONPeriod(self):
         """
@@ -475,14 +467,16 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # Settlement should be on a day where all three centers are operating
         #  and follow EndOfMonth rule
         maturities = [
-            joint_calendar.advance(spot_date, n, unit, ql.ModifiedFollowing, True)
+            joint_calendar.advance(spot_date, n, unit, ql.ModifiedFollowing,
+                                   True)
             for n, unit in self.fx_swap_quotes.keys()
         ]
 
         maturities = [settlement_calendar.adjust(date) for date in maturities]
 
         for n in range(len(maturities)):
-            self.assertEqual(maturities[n], self.eur_pln_fx_swap_helpers[n].latestDate())
+            self.assertEqual(maturities[n],
+                             self.eur_pln_fx_swap_helpers[n].latestDate())
 
     def testFxMarketConventionsForDatesInEURUSD_ON_Period(self):
         """
