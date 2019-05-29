@@ -4,7 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Joseph Wang
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,6 +33,7 @@ using QuantLib::BasketPayoff;
 using QuantLib::MinBasketPayoff;
 using QuantLib::MaxBasketPayoff;
 using QuantLib::AverageBasketPayoff;
+using QuantLib::SpreadBasketPayoff;
 %}
 
 %shared_ptr(BasketPayoff)
@@ -63,6 +64,11 @@ class AverageBasketPayoff :
                            Size n);
 };
 
+%shared_ptr(SpreadBasketPayoff)
+class SpreadBasketPayoff : public BasketPayoff  {
+  public:
+    SpreadBasketPayoff(const boost::shared_ptr<Payoff> p);
+};
 
 %shared_ptr(BasketOption)
 class BasketOption : public MultiAssetOption {
@@ -224,9 +230,10 @@ class MCAmericanBasketEngine : public PricingEngine {
 %}
 #endif
 
-
 %{
 using QuantLib::StulzEngine;
+using QuantLib::KirkEngine;
+using QuantLib::Fd2dBlackScholesVanillaEngine;
 %}
 
 %shared_ptr(StulzEngine)
@@ -237,6 +244,26 @@ class StulzEngine : public PricingEngine {
                 Real correlation);
 };
 
+%shared_ptr(KirkEngine)
+class KirkEngine : public PricingEngine {
+  public:
+    KirkEngine(const boost::shared_ptr<BlackProcess>& process1,
+               const boost::shared_ptr<BlackProcess>& process2,
+               Real correlation);
+};
+
+%shared_ptr(Fd2dBlackScholesVanillaEngine)
+class Fd2dBlackScholesVanillaEngine : public PricingEngine {
+  public:
+    Fd2dBlackScholesVanillaEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+                const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+                Real correlation,
+                Size xGrid = 100, Size yGrid = 100, 
+                Size tGrid = 50, Size dampingSteps = 0,
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                bool localVol = false,
+                Real illegalLocalVolOverwrite = -Null<Real>());
+};
 
 %{
 using QuantLib::EverestOption;
