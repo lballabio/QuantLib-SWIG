@@ -387,10 +387,24 @@ class ConstantSwaptionVolatility : public SwaptionVolatilityStructure {
 
 %{
 using QuantLib::SwaptionVolatilityMatrix;
+using QuantLib::SwaptionVolatilityDiscrete;
 %}
 
+%shared_ptr(SwaptionVolatilityDiscrete);
+class SwaptionVolatilityDiscrete : public SwaptionVolatilityStructure {
+    private:
+        SwaptionVolatilityDiscrete();
+    public:
+        const std::vector<Period>& optionTenors() const;
+        const std::vector<Date>& optionDates() const;
+        const std::vector<Time>& optionTimes() const;
+        const std::vector<Period>& swapTenors() const;
+        const std::vector<Time>& swapLengths() const;
+        const Date optionDateFromTime(Time optionTime) const;
+};
+
 %shared_ptr(SwaptionVolatilityMatrix);
-class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure {
+class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
   public:
     SwaptionVolatilityMatrix(const Date& referenceDate,
                              const std::vector<Date>& dates,
@@ -419,6 +433,11 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityStructure {
                              const bool flatExtrapolation = false,
                              const VolatilityType type = ShiftedLognormal,
                              const Matrix& shifts = Matrix());
+    std::pair<Size,Size> locate(const Date& optionDate,
+                                const Period& swapTenor) const;
+    std::pair<Size,Size> locate(Time optionTime,
+                                Time swapLength) const;
+    VolatilityType volatilityType() const;
 };
 
 %{
@@ -427,7 +446,7 @@ using QuantLib::SwaptionVolCube2;
 %}
 
 %shared_ptr(SwaptionVolCube1);
-class SwaptionVolCube1 : public SwaptionVolatilityStructure {
+class SwaptionVolCube1 : public SwaptionVolatilityDiscrete {
   public:
     SwaptionVolCube1(
              const Handle<SwaptionVolatilityStructure>& atmVolStructure,
@@ -453,7 +472,7 @@ class SwaptionVolCube1 : public SwaptionVolatilityStructure {
 };
 
 %shared_ptr(SwaptionVolCube2);
-class SwaptionVolCube2 : public SwaptionVolatilityStructure {
+class SwaptionVolCube2 : public SwaptionVolatilityDiscrete {
   public:
     SwaptionVolCube2(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
                      const std::vector<Period>& optionTenors,
