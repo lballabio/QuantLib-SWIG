@@ -2,7 +2,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2016 Peter Caspers
- Copyright (C) 2017, 2018 Matthias Lungwitz
+ Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -43,7 +43,7 @@ struct Settlement {
 };
     
 %shared_ptr(Swaption)
-class Swaption : public Instrument {
+class Swaption : public Option {
   public:
     Swaption(const boost::shared_ptr<VanillaSwap>& swap,
              const boost::shared_ptr<Exercise>& exercise,
