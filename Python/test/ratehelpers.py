@@ -96,8 +96,8 @@ class OISRateHelperTest(unittest.TestCase):
         deposits = {(0, 1, ql.Days): todays_Eonia_quote}
 
         self.discounting_yts_handle = ql.RelinkableYieldTermStructureHandle()
-        on_index = ql.Eonia(self.discounting_yts_handle)
-        on_index.addFixing(todaysDate, todays_Eonia_quote / 100.0)
+        self.on_index = ql.Eonia(self.discounting_yts_handle)
+        self.on_index.addFixing(todaysDate, todays_Eonia_quote / 100.0)
 
         self.ois = {
             (1, ql.Weeks): -0.342,
@@ -135,7 +135,7 @@ class OISRateHelperTest(unittest.TestCase):
         self.oisHelpers = [
             ql.OISRateHelper(
                 settlementDays, ql.Period(n, unit),
-                ql.QuoteHandle(self.ois[(n, unit)]), on_index,
+                ql.QuoteHandle(self.ois[(n, unit)]), self.on_index,
                 self.discounting_yts_handle)
             for n, unit in self.ois.keys()
         ]
@@ -161,6 +161,27 @@ class OISRateHelperTest(unittest.TestCase):
                                    delta=1e-8,
                                    msg="Calculated implied quote differes too "
                                        "much from original market value")
+
+    def test_ois_pricing_with_calibrated_discount_curve(self):
+        """Test repricing of swaps built with MakeOIS class"""
+        expected_npv = 0.0
+        for n, unit in self.ois.keys():
+            ois = ql.MakeOIS(ql.Period(n, unit), self.on_index,
+                             fixedRate=self.ois.get((n, unit)).value(),
+                             fwdStart=ql.Period(0, ql.Days),
+                             nominal=10000,
+                             settlementDays=2,
+                             paymentFrequency=ql.Annual,
+                             paymentAdjustmentConvention=ql.Following,
+                             paymentLag=0,
+                             overnightLegSpread=0.0,
+                             discountingTermStructure=self.discounting_yts_handle,
+                             telescopicValueDates=False)
+            npv = ois.NPV()
+            self.assertAlmostEqual(expected_npv, npv,
+                                   delta=1e-3,
+                                   msg=f"Failed to reprice swap {n} {unit}"
+                                   f" with a npv difference of {npv - expected_npv}")
 
 
 class FxSwapRateHelperTest(unittest.TestCase):
