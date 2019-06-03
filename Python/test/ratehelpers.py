@@ -174,6 +174,7 @@ class OISRateHelperTest(unittest.TestCase):
                              settlementDays=2,
                              paymentFrequency=ql.Annual,
                              paymentAdjustmentConvention=ql.Following,
+                             endOfMonth=False,
                              paymentLag=0,
                              overnightLegSpread=0.0,
                              discountingTermStructure=self.discounting_yts_handle,
@@ -181,7 +182,7 @@ class OISRateHelperTest(unittest.TestCase):
             calculated_rate = ois.fairRate()
             diff = (quote_rate - calculated_rate) * 1E4
             self.assertAlmostEqual(quote_rate, calculated_rate,
-                                   delta=1e-7,
+                                   delta=1e-10,
                                    msg=f"Failed to reprice swap {n} {unit}"
                                    f" with a npv difference of {diff}bps")
 
