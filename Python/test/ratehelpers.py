@@ -166,8 +166,9 @@ class OISRateHelperTest(unittest.TestCase):
         """Test repricing of swaps built with MakeOIS class"""
         expected_npv = 0.0
         for n, unit in self.ois.keys():
+            quote_rate = self.ois.get((n, unit)).value()
             ois = ql.MakeOIS(ql.Period(n, unit), self.on_index,
-                             fixedRate=self.ois.get((n, unit)).value(),
+                             fixedRate=quote_rate,
                              fwdStart=ql.Period(0, ql.Days),
                              nominal=10000,
                              settlementDays=2,
@@ -177,11 +178,12 @@ class OISRateHelperTest(unittest.TestCase):
                              overnightLegSpread=0.0,
                              discountingTermStructure=self.discounting_yts_handle,
                              telescopicValueDates=False)
-            npv = ois.NPV()
-            self.assertAlmostEqual(expected_npv, npv,
-                                   delta=1e-3,
+            calculated_rate = ois.fairRate()
+            diff = (quote_rate - calculated_rate) * 1E4
+            self.assertAlmostEqual(quote_rate, calculated_rate,
+                                   delta=1e-7,
                                    msg=f"Failed to reprice swap {n} {unit}"
-                                   f" with a npv difference of {npv - expected_npv}")
+                                   f" with a npv difference of {diff}bps")
 
 
 class FxSwapRateHelperTest(unittest.TestCase):
