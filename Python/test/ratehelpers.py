@@ -70,6 +70,7 @@ class OISRateHelperTest(unittest.TestCase):
 
         # Market rates are artificial, just close to real ones.
         self.default_quote_date = ql.Date(26, 8, 2016)
+        ql.Settings.instance().setEvaluationDate(self.default_quote_date)
         self.build_eur_curve(self.default_quote_date)
 
     def build_eur_curve(self, quotes_date):
@@ -164,27 +165,42 @@ class OISRateHelperTest(unittest.TestCase):
 
     def test_ois_pricing_with_calibrated_discount_curve(self):
         """Test repricing of swaps built with MakeOIS class"""
-        expected_npv = 0.0
         for n, unit in self.ois.keys():
             quote_rate = self.ois.get((n, unit)).value()
             ois = ql.MakeOIS(ql.Period(n, unit), self.on_index,
                              fixedRate=quote_rate,
-                             fwdStart=ql.Period(0, ql.Days),
                              nominal=10000,
-                             settlementDays=2,
-                             paymentFrequency=ql.Annual,
-                             paymentAdjustmentConvention=ql.Following,
-                             endOfMonth=False,
-                             paymentLag=0,
-                             overnightLegSpread=0.0,
-                             discountingTermStructure=self.discounting_yts_handle,
-                             telescopicValueDates=False)
+                             discountingTermStructure=self.discounting_yts_handle)
             calculated_rate = ois.fairRate()
             diff = (quote_rate - calculated_rate) * 1E4
             self.assertAlmostEqual(quote_rate, calculated_rate,
                                    delta=1e-10,
                                    msg=f"Failed to reprice swap {n} {unit}"
                                    f" with a npv difference of {diff}bps")
+
+    def test_ois_default_calendar(self):
+        """Test if ois built using MakeOIS has proper default calendar
+
+        MakeOIS class constructor in C++ is hardcoded with default calendar set
+        to the same as of the overnightIndex. The methods available in the class
+        allow for assigning different paymentCalendar, but the start date is
+        already set and additional calendar will have no impact. The test checks
+        if the constructor exposed to Python maintains this desired property and
+        verifies that the start date of a EUR plain vanilla OIS traded on March
+        29th, 2018 is equal to April 4th, 2018 (du to holiday on March 30th,
+        2018 in TARGET calendar.
+        """
+        test_date = ql.Date(29, 3, 2018)
+        ql.Settings.instance().setEvaluationDate(test_date)
+        eonia = ql.Eonia()
+        calendar = eonia.fixingCalendar()
+        expected_date = calendar.advance(test_date,
+                                         ql.Period('2d'),
+                                         ql.Following)
+        self.assertEqual(expected_date, ql.Date(4, 4, 2018))
+        ois = ql.MakeOIS(ql.Period('1Y'), eonia, -0.003, ql.Period(0, ql.Days))
+        print(ois.startDate())
+        self.assertEqual(expected_date, ois.startDate())
 
 
 class FxSwapRateHelperTest(unittest.TestCase):

@@ -405,58 +405,60 @@ class MakeOIS {
 
 #if defined(SWIGPYTHON)
 %pythoncode{
-def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart,
-            receiveFixed=None,
-            swapType=None,
-            nominal=None,
-            settlementDays=None,
+def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
+            receiveFixed=True,
+            swapType=OvernightIndexedSwap.Payer,
+            nominal=1.0,
+            settlementDays=2,
             effectiveDate=None,
             terminationDate=None,
-            dateGenerationRule=None,
-            paymentFrequency=None,
-            paymentAdjustmentConvention=None,
-            paymentLag=None,
+            dateGenerationRule=DateGeneration.Backward,
+            paymentFrequency=Annual,
+            paymentAdjustmentConvention=Following,
+            paymentLag=0,
             paymentCalendar=None,
             endOfMonth=True,    
             fixedLegDayCount=None,
-            overnightLegSpread=None,
+            overnightLegSpread=0.0,
             discountingTermStructure=None,
-            telescopicValueDates=None,
+            telescopicValueDates=False,
             pricingEngine=None):
 
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
-    if receiveFixed is not None:
+    
+    if not receiveFixed:
         mv.receiveFixed(receiveFixed)
-    if swapType is not None:
+    if swapType != OvernightIndexedSwap.Payer:
         mv.withType(swapType)
-    if nominal is not None:
+    if nominal != 1.0:
         mv.withNominal(nominal)
-    if settlementDays is not None:
+    if settlementDays != 2:
         mv.withSettlementDays(settlementDays)
     if effectiveDate is not None:
         mv.withEffectiveDate(effectiveDate)
     if terminationDate is not None:
         mv.withTerminationDate(terminationDate)
-    if dateGenerationRule is not None:
-        mv.withRule(dateGenerationRule)
-    if paymentFrequency is not None:
+    if dateGenerationRule != DateGeneration.Backward:
+        mv.withRule(dateGenerationRule)  
+    if paymentFrequency != Annual:
         mv.withPaymentFrequency(paymentFrequency)
-    if paymentAdjustmentConvention is not None:
+    if paymentAdjustmentConvention != Following:
         mv.withPaymentAdjustment(paymentAdjustmentConvention)
-    if paymentLag is not None:
+    if paymentLag != 0:
         mv.withPaymentLag(paymentLag)
-    if paymentCalendar:
+    if paymentCalendar is not None:
         mv.withPaymentCalendar(paymentCalendar)
-    
-    mv.withEndOfMonth(endOfMonth)
-    
+    if not endOfMonth:
+        mv.withEndOfMonth(endOfMonth)
     if fixedLegDayCount is not None:
         mv.withFixedLegDayCount(fixedLegDayCount)
-    if overnightLegSpread is not None:
+    else:
+        mv.withFixedLegDayCount(overnightIndex.dayCounter())
+    if overnightLegSpread != 0.0:
         mv.withOvernightLegSpread(overnightLegSpread)
     if discountingTermStructure is not None:
-        mv.withDiscountingTermStructure(discountingTermStructure)
-    if telescopicValueDates is not None:
+        mv.withDiscountingTermStructure(discountingTermStructure)        
+    if telescopicValueDates:
         mv.withTelescopicValueDates(telescopicValueDates)
     if pricingEngine is not None:
         mv.withPricingEngine(pricingEngine)
