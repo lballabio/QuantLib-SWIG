@@ -175,8 +175,9 @@ class OISRateHelperTest(unittest.TestCase):
             diff = (quote_rate - calculated_rate) * 1E4
             self.assertAlmostEqual(quote_rate, calculated_rate,
                                    delta=1e-10,
-                                   msg=f"Failed to reprice swap {n} {unit}"
-                                   f" with a npv difference of {diff}bps")
+                                   msg="Failed to reprice swap {n} {unit}"
+                                       " with a npv difference of {diff}bps"
+                                       "".format(n=n, unit=unit, diff=diff))
 
     def test_ois_default_calendar(self):
         """Test if ois built using MakeOIS has proper default calendar
