@@ -816,7 +816,11 @@ class AndreasenHugeVolatilityInterpl : public Observable {
   public:
         enum InterpolationType {PiecewiseConstant, Linear, CubicSpline};
         enum CalibrationType {
-            Call = Option::Call, Put = Option::Put, CallPut};
+            // we specify values directly to work around a problem in
+            // the SWIG C# module
+            Call = 1, // Option::Call,
+            Put = -1, // Option::Put,
+            CallPut};
 
         typedef std::vector<std::pair<
             boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> > >
