@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2019 Klaus Spanderen
+ Copyright (C) 2019 Matthias Lungwitz 
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -205,5 +206,53 @@ class FdHestonDoubleBarrierEngine : public PricingEngine {
                 = boost::shared_ptr<LocalVolTermStructure>());
 };
 
+
+%{
+using QuantLib::HestonBlackVolSurface;
+%}
+
+%shared_ptr(HestonBlackVolSurface);
+class HestonBlackVolSurface : public BlackVolTermStructure {
+  public:
+    %extend {
+        HestonBlackVolSurface(
+           const boost::shared_ptr<HestonModel>& model,
+           const std::string& complexLogFormula = "gatheral",
+           const std::string& integrationType = "gausslaguerre",
+           Size integrationOrder = 164) {
+            std::string formula = boost::algorithm::to_lower_copy(complexLogFormula);
+            std::string integration = boost::algorithm::to_lower_copy(integrationType);
+            
+            AnalyticHestonEngine::ComplexLogFormula cpxLogFormula;
+            if (formula == "gatheral") {
+                cpxLogFormula = AnalyticHestonEngine::Gatheral;
+            } else if (formula == "branchcorrection") {
+                cpxLogFormula = AnalyticHestonEngine::BranchCorrection;
+            } else if (formula == "andersenpiterbarg") {
+                cpxLogFormula = AnalyticHestonEngine::AndersenPiterbarg;
+            } else {
+                QL_FAIL("Unknown ComplexLogFormula: " << formula);
+            }
+
+            if (integration == "gausslaguerre") {
+                return new HestonBlackVolSurface(Handle<HestonModel>(model), cpxLogFormula, 
+                   AnalyticHestonEngine::Integration::gaussLaguerre(integrationOrder));
+            } else if (integration == "gausslegendre") {
+                return new HestonBlackVolSurface(Handle<HestonModel>(model), cpxLogFormula, 
+                   AnalyticHestonEngine::Integration::gaussLegendre(integrationOrder));
+            } else if (integration == "gausschebyshev") {
+                return new HestonBlackVolSurface(Handle<HestonModel>(model), cpxLogFormula, 
+                   AnalyticHestonEngine::Integration::gaussChebyshev(integrationOrder));
+            } else if (integration == "gausschebyshev2nd") {
+                return new HestonBlackVolSurface(Handle<HestonModel>(model), cpxLogFormula, 
+                    AnalyticHestonEngine::Integration::gaussChebyshev2nd(integrationOrder));
+            } else {
+                QL_FAIL("Unknown Integration: " << integration);
+            }
+            
+
+        }
+    }
+};
 
 #endif
