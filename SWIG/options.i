@@ -1059,7 +1059,9 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
     FdBlackScholesVanillaEngine(
         const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        Size tGrid = 100, 
+        Size xGrid = 100, 
+        Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
         bool localVol = false,
         Real illegalLocalVolOverwrite = -Null<Real>());
@@ -1089,8 +1091,10 @@ class FdHestonVanillaEngine : public PricingEngine {
     FdHestonVanillaEngine(
         const boost::shared_ptr<HestonModel>& model,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        Size tGrid = 100, Size xGrid = 100,
-        Size vGrid = 50, Size dampingSteps = 0,
+        Size tGrid = 100, 
+        Size xGrid = 100,
+        Size vGrid = 50, 
+        Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
         const boost::shared_ptr<LocalVolTermStructure>& leverageFct
             = boost::shared_ptr<LocalVolTermStructure>());
