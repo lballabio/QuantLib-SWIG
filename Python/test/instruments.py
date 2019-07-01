@@ -15,25 +15,28 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import QuantLib
+import QuantLib as ql
 import unittest
 
 flag = None
+
+
 def raiseFlag():
     global flag
     flag = 1
+
 
 class InstrumentTest(unittest.TestCase):
     def testObservable(self):
         "Testing observability of stocks"
         global flag
         flag = None
-        me1 = QuantLib.SimpleQuote(0.0)
-        h = QuantLib.RelinkableQuoteHandle(me1)
-        s = QuantLib.Stock(h)
+        me1 = ql.SimpleQuote(0.0)
+        h = ql.RelinkableQuoteHandle(me1)
+        s = ql.Stock(h)
         s.NPV()
 
-        obs = QuantLib.Observer(raiseFlag)
+        obs = ql.Observer(raiseFlag)
         obs.registerWith(s)
 
         me1.setValue(3.14)
@@ -42,7 +45,7 @@ class InstrumentTest(unittest.TestCase):
 
         s.NPV()
         flag = None
-        me2 = QuantLib.SimpleQuote(0.0)
+        me2 = ql.SimpleQuote(0.0)
         h.linkTo(me2)
         if not flag:
             self.fail("Observer was not notified of instrument change")
@@ -57,8 +60,9 @@ class InstrumentTest(unittest.TestCase):
         if not flag:
             self.fail("Observer was not notified of instrument change")
 
-if __name__ == '__main__':
-    print('testing QuantLib ' + QuantLib.__version__)
+
+if __name__ == "__main__":
+    print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(InstrumentTest,'test'))
+    suite.addTest(unittest.makeSuite(InstrumentTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)

@@ -13,22 +13,22 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-from QuantLib import *
+import QuantLib as ql
 
 # global data
-todaysDate = Date(15, May, 1998)
-Settings.instance().evaluationDate = todaysDate
-settlementDate = Date(17, May, 1998)
-riskFreeRate = FlatForward(settlementDate, 0.06, Actual365Fixed())
+todaysDate = ql.Date(15, ql.May, 1998)
+ql.Settings.instance().evaluationDate = todaysDate
+settlementDate = ql.Date(17, ql.May, 1998)
+riskFreeRate = ql.FlatForward(settlementDate, 0.06, ql.Actual365Fixed())
 
 # option parameters
-exercise = AmericanExercise(settlementDate, Date(17, May, 1999))
-payoff = PlainVanillaPayoff(Option.Put, 40.0)
+exercise = ql.AmericanExercise(settlementDate, ql.Date(17, ql.May, 1999))
+payoff = ql.PlainVanillaPayoff(ql.Option.Put, 40.0)
 
 # market data
-underlying = SimpleQuote(36.0)
-volatility = BlackConstantVol(todaysDate, TARGET(), 0.20, Actual365Fixed())
-dividendYield = FlatForward(settlementDate, 0.00, Actual365Fixed())
+underlying = ql.SimpleQuote(36.0)
+volatility = ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.20, ql.Actual365Fixed())
+dividendYield = ql.FlatForward(settlementDate, 0.00, ql.Actual365Fixed())
 
 # report
 header = "%19s" % "method" + " |" + " |".join(["%17s" % tag for tag in ["value", "estimated error", "actual error"]])
@@ -51,53 +51,53 @@ def report(method, x, dx=None):
 
 # good to go
 
-process = BlackScholesMertonProcess(
-    QuoteHandle(underlying),
-    YieldTermStructureHandle(dividendYield),
-    YieldTermStructureHandle(riskFreeRate),
-    BlackVolTermStructureHandle(volatility),
+process = ql.BlackScholesMertonProcess(
+    ql.QuoteHandle(underlying),
+    ql.YieldTermStructureHandle(dividendYield),
+    ql.YieldTermStructureHandle(riskFreeRate),
+    ql.BlackVolTermStructureHandle(volatility),
 )
 
-option = VanillaOption(payoff, exercise)
+option = ql.VanillaOption(payoff, exercise)
 
 refValue = 4.48667344
 report("reference value", refValue)
 
 # method: analytic
 
-option.setPricingEngine(BaroneAdesiWhaleyEngine(process))
+option.setPricingEngine(ql.BaroneAdesiWhaleyEngine(process))
 report("Barone-Adesi-Whaley", option.NPV())
 
-option.setPricingEngine(BjerksundStenslandEngine(process))
+option.setPricingEngine(ql.BjerksundStenslandEngine(process))
 report("Bjerksund-Stensland", option.NPV())
 
 # method: finite differences
 timeSteps = 801
 gridPoints = 800
 
-option.setPricingEngine(FDAmericanEngine(process, timeSteps, gridPoints))
+option.setPricingEngine(ql.FDAmericanEngine(process, timeSteps, gridPoints))
 report("finite differences", option.NPV())
 
 # method: binomial
 timeSteps = 801
 
-option.setPricingEngine(BinomialVanillaEngine(process, "JR", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "JR", timeSteps))
 report("binomial (JR)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "CRR", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "CRR", timeSteps))
 report("binomial (CRR)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "EQP", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "EQP", timeSteps))
 report("binomial (EQP)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "Trigeorgis", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "Trigeorgis", timeSteps))
 report("bin. (Trigeorgis)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "Tian", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "Tian", timeSteps))
 report("binomial (Tian)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "LR", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "LR", timeSteps))
 report("binomial (LR)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "Joshi4", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "Joshi4", timeSteps))
 report("binomial (Joshi)", option.NPV())

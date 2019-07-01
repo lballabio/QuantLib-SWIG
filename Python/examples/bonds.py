@@ -18,37 +18,36 @@
 #    some simple bonds. The last part is dedicated to peripherical
 #    computations such as "Yield to Price" or "Price to Yield"
 
-from QuantLib import *
+import QuantLib as ql
 
 # global data
-calendar = TARGET()
-settlementDate = Date(18,September,2008)
+calendar = ql.TARGET()
+settlementDate = ql.Date(18, ql.September, 2008)
 settlementDate = calendar.adjust(settlementDate)
 
 fixingDays = 3
 settlementDays = 3
 
-todaysDate = calendar.advance(settlementDate,-fixingDays, Days)
-Settings.instance().evaluationDate = todaysDate
+todaysDate = calendar.advance(settlementDate, -fixingDays, ql.Days)
+ql.Settings.instance().evaluationDate = todaysDate
 
-print('Today: '  + str(todaysDate))
-print('Settlement Date: ' + str(settlementDate))
+print("Today: " + str(todaysDate))
+print("Settlement Date: " + str(settlementDate))
 
 # market quotes
 
 # constructing bond yield curve
 
-zcQuotes = [(0.0096, Period(3,Months)),
-            (0.0145, Period(6,Months)),
-            (0.0194, Period(1,Years))]
+zcQuotes = [(0.0096, ql.Period(3, ql.Months)), (0.0145, ql.Period(6, ql.Months)), (0.0194, ql.Period(1, ql.Years))]
 
-zcBondsDayCounter = Actual365Fixed()
+zcBondsDayCounter = ql.Actual365Fixed()
 
-zcHelpers = [ DepositRateHelper(QuoteHandle(SimpleQuote(r)),
-                                tenor, fixingDays,
-                                calendar, ModifiedFollowing,
-                                True, zcBondsDayCounter)
-              for (r,tenor) in zcQuotes ]
+zcHelpers = [
+    ql.DepositRateHelper(
+        ql.QuoteHandle(ql.SimpleQuote(r)), tenor, fixingDays, calendar, ql.ModifiedFollowing, True, zcBondsDayCounter
+    )
+    for (r, tenor) in zcQuotes
+]
 
 # setup bonds
 
@@ -56,99 +55,116 @@ redemption = 100.0
 numberOfBonds = 5
 
 bondQuotes = [
-    (Date(15,March,2005),    Date(31,August,2010), 0.02375, 100.390625),
-    (Date(15,June,2005),     Date(31,August,2011), 0.04625, 106.21875),
-    (Date(30,June,2006),     Date(31,August,2013), 0.03125, 100.59375),
-    (Date(15,November,2002), Date(15,August,2018), 0.04000, 101.6875),
-    (Date(15,May,1987),      Date (15,May,2038),   0.04500, 102.140625)
+    (ql.Date(15, ql.March, 2005), ql.Date(31, ql.August, 2010), 0.02375, 100.390625),
+    (ql.Date(15, ql.June, 2005), ql.Date(31, ql.August, 2011), 0.04625, 106.21875),
+    (ql.Date(30, ql.June, 2006), ql.Date(31, ql.August, 2013), 0.03125, 100.59375),
+    (ql.Date(15, ql.November, 2002), ql.Date(15, ql.August, 2018), 0.04000, 101.6875),
+    (ql.Date(15, ql.May, 1987), ql.Date(15, ql.May, 2038), 0.04500, 102.140625),
 ]
 
 # Definition of the rate helpers
 
-bondsHelpers =[]
+bondsHelpers = []
 
 for issueDate, maturity, couponRate, marketQuote in bondQuotes:
-    schedule = Schedule(issueDate, maturity, Period(Semiannual),
-                        UnitedStates(UnitedStates.GovernmentBond),
-                        Unadjusted, Unadjusted,
-                        DateGeneration.Backward, False)
+    schedule = ql.Schedule(
+        issueDate,
+        maturity,
+        ql.Period(ql.Semiannual),
+        ql.UnitedStates(ql.UnitedStates.GovernmentBond),
+        ql.Unadjusted,
+        ql.Unadjusted,
+        ql.DateGeneration.Backward,
+        False,
+    )
     bondsHelpers.append(
-        FixedRateBondHelper(QuoteHandle(SimpleQuote(marketQuote)),
-                            settlementDays,
-                            100.0,
-                            schedule,
-                            [couponRate],
-                            ActualActual(ActualActual.Bond),
-                            Unadjusted,
-                            redemption,
-                            issueDate))
+        ql.FixedRateBondHelper(
+            ql.QuoteHandle(ql.SimpleQuote(marketQuote)),
+            settlementDays,
+            100.0,
+            schedule,
+            [couponRate],
+            ql.ActualActual(ql.ActualActual.Bond),
+            ql.Unadjusted,
+            redemption,
+            issueDate,
+        )
+    )
 
 ###################################
 ####  **  CURVE BUILDING  **  #####
 ###################################
 
-termStructureDayCounter =  ActualActual(ActualActual.ISDA)  
+termStructureDayCounter = ql.ActualActual(ql.ActualActual.ISDA)
 
 # not needed as defined in the interface file:  tolerance = 1.0e-15
 
 bondInstruments = zcHelpers + bondsHelpers
 
-bondDiscountingTermStructure = PiecewiseFlatForward(
-    settlementDate, bondInstruments,
-    termStructureDayCounter)
+bondDiscountingTermStructure = ql.PiecewiseFlatForward(settlementDate, bondInstruments, termStructureDayCounter)
 
 # Building of the Libor forecasting curve
 # deposits
-dQuotes = [(0.043375, Period(1,Weeks)),
-           (0.031875, Period(1,Months)),
-           (0.0320375, Period(3,Months)),
-           (0.03385, Period(6,Months)),
-           (0.0338125, Period(9,Months)),
-           (0.0335125, Period(1,Years))]
-sQuotes = [(0.0295, Period(2,Years)),
-           (0.0323, Period(3,Years)),
-           (0.0359, Period(5,Years)),
-           (0.0412, Period(10,Years)),
-           (0.0433, Period(15,Years))]
+dQuotes = [
+    (0.043375, ql.Period(1, ql.Weeks)),
+    (0.031875, ql.Period(1, ql.Months)),
+    (0.0320375, ql.Period(3, ql.Months)),
+    (0.03385, ql.Period(6, ql.Months)),
+    (0.0338125, ql.Period(9, ql.Months)),
+    (0.0335125, ql.Period(1, ql.Years)),
+]
+sQuotes = [
+    (0.0295, ql.Period(2, ql.Years)),
+    (0.0323, ql.Period(3, ql.Years)),
+    (0.0359, ql.Period(5, ql.Years)),
+    (0.0412, ql.Period(10, ql.Years)),
+    (0.0433, ql.Period(15, ql.Years)),
+]
 
 # deposits
 
-depositDayCounter = Actual360()
+depositDayCounter = ql.Actual360()
 depositHelpers = [
-    DepositRateHelper(QuoteHandle(SimpleQuote(rate)),
-                      tenor, fixingDays,
-                      calendar, ModifiedFollowing,
-                      True, depositDayCounter)
-    for rate, tenor in dQuotes ]
+    ql.DepositRateHelper(
+        ql.QuoteHandle(ql.SimpleQuote(rate)), tenor, fixingDays, calendar, ql.ModifiedFollowing, True, depositDayCounter
+    )
+    for rate, tenor in dQuotes
+]
 
 # swaps
 
-swFixedLegFrequency = Annual
-swFixedLegConvention = Unadjusted
-swFixedLegDayCounter = Thirty360(Thirty360.European)
-swFloatingLegIndex = Euribor6M()
-forwardStart = Period(1,Days)
+swFixedLegFrequency = ql.Annual
+swFixedLegConvention = ql.Unadjusted
+swFixedLegDayCounter = ql.Thirty360(ql.Thirty360.European)
+swFloatingLegIndex = ql.Euribor6M()
+forwardStart = ql.Period(1, ql.Days)
 swapHelpers = [
-    SwapRateHelper(QuoteHandle(SimpleQuote(rate)), tenor,
-                   calendar, swFixedLegFrequency,
-                   swFixedLegConvention, swFixedLegDayCounter,
-                   swFloatingLegIndex, QuoteHandle(),forwardStart)
-    for rate, tenor in sQuotes ]
+    ql.SwapRateHelper(
+        ql.QuoteHandle(ql.SimpleQuote(rate)),
+        tenor,
+        calendar,
+        swFixedLegFrequency,
+        swFixedLegConvention,
+        swFixedLegDayCounter,
+        swFloatingLegIndex,
+        ql.QuoteHandle(),
+        forwardStart,
+    )
+    for rate, tenor in sQuotes
+]
 
 depoSwapInstruments = depositHelpers + swapHelpers
 
-depoSwapTermStructure = PiecewiseFlatForward(
-    settlementDate, depoSwapInstruments,
-    termStructureDayCounter)
+depoSwapTermStructure = ql.PiecewiseFlatForward(settlementDate, depoSwapInstruments, termStructureDayCounter)
 
 # Term structures that will be used for pricing:
 # the one used for discounting cash flows
 
-discountingTermStructure = RelinkableYieldTermStructureHandle()
+discountingTermStructure = ql.RelinkableYieldTermStructureHandle()
 
 # the one used for forward rate forecasting
 
-forecastingTermStructure = RelinkableYieldTermStructureHandle()
+forecastingTermStructure = ql.RelinkableYieldTermStructureHandle()
 
 #######################################
 #        BONDS TO BE PRICED           #
@@ -156,87 +172,100 @@ forecastingTermStructure = RelinkableYieldTermStructureHandle()
 
 # common data
 
-faceAmount = 100;
+faceAmount = 100
 
 # pricing engine
-bondEngine = DiscountingBondEngine(discountingTermStructure)
+bondEngine = ql.DiscountingBondEngine(discountingTermStructure)
 
 # zero coupon bond
 
-zeroCouponBond = ZeroCouponBond(settlementDays,
-                                UnitedStates(UnitedStates.GovernmentBond),
-                                faceAmount,
-                                Date(15,August,2013),
-                                Following,
-                                116.92,
-                                Date(15,August,2003))
+zeroCouponBond = ql.ZeroCouponBond(
+    settlementDays,
+    ql.UnitedStates(ql.UnitedStates.GovernmentBond),
+    faceAmount,
+    ql.Date(15, ql.August, 2013),
+    ql.Following,
+    116.92,
+    ql.Date(15, ql.August, 2003),
+)
 
 zeroCouponBond.setPricingEngine(bondEngine)
 
 # fixed 4.5% US Treasury note
 
-fixedBondSchedule = Schedule(Date(15, May, 2007),
-                             Date(15,May,2017), Period(Semiannual),
-                             UnitedStates(UnitedStates.GovernmentBond),
-                             Unadjusted, Unadjusted,
-                             DateGeneration.Backward, False)
+fixedBondSchedule = ql.Schedule(
+    ql.Date(15, ql.May, 2007),
+    ql.Date(15, ql.May, 2017),
+    ql.Period(ql.Semiannual),
+    ql.UnitedStates(ql.UnitedStates.GovernmentBond),
+    ql.Unadjusted,
+    ql.Unadjusted,
+    ql.DateGeneration.Backward,
+    False,
+)
 
-fixedRateBond = FixedRateBond(settlementDays,
-                              faceAmount,
-                              fixedBondSchedule,
-                              [0.045],
-                              ActualActual(ActualActual.Bond),
-                              ModifiedFollowing,
-                              100.0, Date(15, May, 2007))
+fixedRateBond = ql.FixedRateBond(
+    settlementDays,
+    faceAmount,
+    fixedBondSchedule,
+    [0.045],
+    ql.ActualActual(ql.ActualActual.Bond),
+    ql.ModifiedFollowing,
+    100.0,
+    ql.Date(15, ql.May, 2007),
+)
 
-fixedRateBond.setPricingEngine(bondEngine);
+fixedRateBond.setPricingEngine(bondEngine)
 
 # Floating rate bond (3M USD Libor + 0.1%)
 # Should and will be priced on another curve later...
 
-liborTermStructure = RelinkableYieldTermStructureHandle()
+liborTermStructure = ql.RelinkableYieldTermStructureHandle()
 
-libor3m = USDLibor(Period(3,Months),liborTermStructure)
-libor3m.addFixing(Date(17, July, 2008),0.0278625)
+libor3m = ql.USDLibor(ql.Period(3, ql.Months), liborTermStructure)
+libor3m.addFixing(ql.Date(17, ql.July, 2008), 0.0278625)
 
-floatingBondSchedule = Schedule(Date(21, October, 2005),
-                                Date(21, October, 2010), Period(Quarterly),
-                                UnitedStates(UnitedStates.NYSE),
-                                Unadjusted, Unadjusted,
-                                DateGeneration.Backward, True);
+floatingBondSchedule = ql.Schedule(
+    ql.Date(21, ql.October, 2005),
+    ql.Date(21, ql.October, 2010),
+    ql.Period(ql.Quarterly),
+    ql.UnitedStates(ql.UnitedStates.NYSE),
+    ql.Unadjusted,
+    ql.Unadjusted,
+    ql.DateGeneration.Backward,
+    True,
+)
 
-floatingRateBond = FloatingRateBond(settlementDays,
-                                    faceAmount,
-                                    floatingBondSchedule,
-                                    libor3m,
-                                    Actual360(),
-                                    ModifiedFollowing,
-                                    spreads=[0.001],
-                                    inArrears=True,
-                                    issueDate=Date(21, October, 2005))
+floatingRateBond = ql.FloatingRateBond(
+    settlementDays,
+    faceAmount,
+    floatingBondSchedule,
+    libor3m,
+    ql.Actual360(),
+    ql.ModifiedFollowing,
+    spreads=[0.001],
+    inArrears=True,
+    issueDate=ql.Date(21, ql.October, 2005),
+)
 
-floatingRateBond.setPricingEngine(bondEngine);
+floatingRateBond.setPricingEngine(bondEngine)
 
 # coupon pricers
 
-pricer = BlackIborCouponPricer()
+pricer = ql.BlackIborCouponPricer()
 
 # optionlet volatilities
-volatility = 0.0;
-vol = ConstantOptionletVolatility(settlementDays,
-                                  calendar,
-                                  ModifiedFollowing,
-                                  volatility,
-                                  Actual365Fixed())
+volatility = 0.0
+vol = ql.ConstantOptionletVolatility(settlementDays, calendar, ql.ModifiedFollowing, volatility, ql.Actual365Fixed())
 
-pricer.setCapletVolatility(OptionletVolatilityStructureHandle(vol))
-setCouponPricer(floatingRateBond.cashflows(),pricer)
+pricer.setCapletVolatility(ql.OptionletVolatilityStructureHandle(vol))
+ql.setCouponPricer(floatingRateBond.cashflows(), pricer)
 
 # Yield curve bootstrapping
 forecastingTermStructure.linkTo(depoSwapTermStructure)
 discountingTermStructure.linkTo(bondDiscountingTermStructure)
 
-#We are using the depo & swap curve to estimate the future Libor rates
+# We are using the depo & swap curve to estimate the future Libor rates
 liborTermStructure.linkTo(depoSwapTermStructure)
 
 #############################
@@ -244,91 +273,86 @@ liborTermStructure.linkTo(depoSwapTermStructure)
 #############################
 
 # write column headings
-def formatPrice(p,digits=2):
-    format = '%%.%df' % digits
+def formatPrice(p, digits=2):
+    format = "%%.%df" % digits
     return format % p
 
-def formatRate(r,digits=2):
-    format = '%%.%df %%%%' % digits
-    return format % (r*100)
+
+def formatRate(r, digits=2):
+    format = "%%.%df %%%%" % digits
+    return format % (r * 100)
+
 
 def report(Info, Zc, Fix, Frn, format):
-    if format== "Price":
+    if format == "Price":
         Zc = formatPrice(Zc)
         Fix = formatPrice(Fix)
         Frn = formatPrice(Frn)
     else:
-        if Info.find("coupon")==-1:
-            Zc  = formatRate(Zc)
+        if Info.find("coupon") == -1:
+            Zc = formatRate(Zc)
         else:
-            Zc  = "N/A"
+            Zc = "N/A"
         Fix = formatRate(Fix)
         Frn = formatRate(Frn)
-        
-    print('%19s' % Info + ' |' +
-          ' |'.join(['%10s' % y for y in [Zc, Fix, Frn] ]))
+
+    print("%19s" % Info + " |" + " |".join(["%10s" % y for y in [Zc, Fix, Frn]]))
 
 
+headers = ["ZC", "Fixed", "Floating"]
+print("")
+print("%19s" % "" + " |" + " |".join(["%10s" % y for y in headers]))
 
-headers = [ "ZC", "Fixed", "Floating" ]
-print('')
-print('%19s' % '' + ' |' +
-          ' |'.join(['%10s' % y for y in headers]))
-                     
 separator = " | "
-widths = [ 18, 10, 10, 10 ]
-width = widths[0] + widths[1] + widths[2]  + widths[3] + widths[3];
+widths = [18, 10, 10, 10]
+width = widths[0] + widths[1] + widths[2] + widths[3] + widths[3]
 rule = "-" * width
 dblrule = "=" * width
 tab = " " * 8
 
 print(rule)
-report( "Net present value",
-        zeroCouponBond.NPV(),
-        fixedRateBond.NPV(),
-        floatingRateBond.NPV(),
-        "Price")
-report( "Clean price",
-        zeroCouponBond.cleanPrice(),
-        fixedRateBond.cleanPrice(),
-        floatingRateBond.cleanPrice(),
-        "Price")
-report( "Dirty price",
-        zeroCouponBond.dirtyPrice(),
-        fixedRateBond.dirtyPrice(),
-        floatingRateBond.dirtyPrice(),
-        "Price")
-report( "Accrued coupon",
-        zeroCouponBond.accruedAmount(),
-        fixedRateBond.accruedAmount(),
-        floatingRateBond.accruedAmount(),
-        "Price")
-report( "Previous coupon",
-        0,
-        fixedRateBond.previousCouponRate(),
-        floatingRateBond.previousCouponRate(),
-        "Rate")
-report( "Next coupon",
-        0,
-        fixedRateBond.nextCouponRate(),
-        floatingRateBond.nextCouponRate(),
-        "Rate")
-report( "Yield",
-        zeroCouponBond.bondYield(Actual360(),Compounded,Annual)
-        ,fixedRateBond.bondYield(Actual360(),Compounded,Annual),
-        floatingRateBond.bondYield(Actual360(),Compounded,Annual),
-        "Rate")
-print('')
+report("Net present value", zeroCouponBond.NPV(), fixedRateBond.NPV(), floatingRateBond.NPV(), "Price")
+report("Clean price", zeroCouponBond.cleanPrice(), fixedRateBond.cleanPrice(), floatingRateBond.cleanPrice(), "Price")
+report("Dirty price", zeroCouponBond.dirtyPrice(), fixedRateBond.dirtyPrice(), floatingRateBond.dirtyPrice(), "Price")
+report(
+    "Accrued coupon",
+    zeroCouponBond.accruedAmount(),
+    fixedRateBond.accruedAmount(),
+    floatingRateBond.accruedAmount(),
+    "Price",
+)
+report("Previous coupon", 0, fixedRateBond.previousCouponRate(), floatingRateBond.previousCouponRate(), "Rate")
+report("Next coupon", 0, fixedRateBond.nextCouponRate(), floatingRateBond.nextCouponRate(), "Rate")
+report(
+    "Yield",
+    zeroCouponBond.bondYield(ql.Actual360(), ql.Compounded, ql.Annual),
+    fixedRateBond.bondYield(ql.Actual360(), ql.Compounded, ql.Annual),
+    floatingRateBond.bondYield(ql.Actual360(), ql.Compounded, ql.Annual),
+    "Rate",
+)
+print("")
 
 # Other computations
 
 print("Sample indirect computations (for the floating rate bond): ")
 print(rule)
-print("Yield to Clean Price: " + formatPrice(
-    floatingRateBond.cleanPrice(floatingRateBond.bondYield(Actual360(),
-                                                           Compounded,Annual),
-                                Actual360(),Compounded,Annual,settlementDate)))
-print("Clean Price to Yield: " + formatRate(
-    floatingRateBond.bondYield(floatingRateBond.cleanPrice(),
-                               Actual360(),Compounded,
-                               Annual,settlementDate)))
+print(
+    "Yield to Clean Price: "
+    + formatPrice(
+        floatingRateBond.cleanPrice(
+            floatingRateBond.bondYield(ql.Actual360(), ql.Compounded, ql.Annual),
+            ql.Actual360(),
+            ql.Compounded,
+            ql.Annual,
+            settlementDate,
+        )
+    )
+)
+print(
+    "Clean Price to Yield: "
+    + formatRate(
+        floatingRateBond.bondYield(
+            floatingRateBond.cleanPrice(), ql.Actual360(), ql.Compounded, ql.Annual, settlementDate
+        )
+    )
+)

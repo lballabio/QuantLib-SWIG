@@ -13,22 +13,22 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-from QuantLib import *
+import QuantLib as ql
 
 # global data
-todaysDate = Date(15, May, 1998)
-Settings.instance().evaluationDate = todaysDate
-settlementDate = Date(17, May, 1998)
-riskFreeRate = FlatForward(settlementDate, 0.05, Actual365Fixed())
+todaysDate = ql.Date(15, ql.May, 1998)
+ql.Settings.instance().evaluationDate = todaysDate
+settlementDate = ql.Date(17, ql.May, 1998)
+riskFreeRate = ql.FlatForward(settlementDate, 0.05, ql.Actual365Fixed())
 
 # option parameters
-exercise = EuropeanExercise(Date(17, May, 1999))
-payoff = PlainVanillaPayoff(Option.Call, 8.0)
+exercise = ql.EuropeanExercise(ql.Date(17, ql.May, 1999))
+payoff = ql.PlainVanillaPayoff(ql.Option.Call, 8.0)
 
 # market data
-underlying = SimpleQuote(7.0)
-volatility = BlackConstantVol(settlementDate, TARGET(), 0.10, Actual365Fixed())
-dividendYield = FlatForward(settlementDate, 0.05, Actual365Fixed())
+underlying = ql.SimpleQuote(7.0)
+volatility = ql.BlackConstantVol(settlementDate, ql.TARGET(), 0.10, ql.Actual365Fixed())
+dividendYield = ql.FlatForward(settlementDate, 0.05, ql.Actual365Fixed())
 
 # report
 header = " |".join(["%17s" % tag for tag in ["method", "value", "estimated error", "actual error"]])
@@ -51,82 +51,82 @@ def report(method, x, dx=None):
 
 # good to go
 
-process = BlackScholesMertonProcess(
-    QuoteHandle(underlying),
-    YieldTermStructureHandle(dividendYield),
-    YieldTermStructureHandle(riskFreeRate),
-    BlackVolTermStructureHandle(volatility),
+process = ql.BlackScholesMertonProcess(
+    ql.QuoteHandle(underlying),
+    ql.YieldTermStructureHandle(dividendYield),
+    ql.YieldTermStructureHandle(riskFreeRate),
+    ql.BlackVolTermStructureHandle(volatility),
 )
 
-hestonProcess = HestonProcess(
-    YieldTermStructureHandle(riskFreeRate),
-    YieldTermStructureHandle(dividendYield),
-    QuoteHandle(underlying),
+hestonProcess = ql.HestonProcess(
+    ql.YieldTermStructureHandle(riskFreeRate),
+    ql.YieldTermStructureHandle(dividendYield),
+    ql.QuoteHandle(underlying),
     0.1 * 0.1,
     1.0,
     0.1 * 0.1,
     0.0001,
     0.0,
 )
-hestonModel = HestonModel(hestonProcess)
+hestonModel = ql.HestonModel(hestonProcess)
 
-option = VanillaOption(payoff, exercise)
+option = ql.VanillaOption(payoff, exercise)
 
 # method: analytic
-option.setPricingEngine(AnalyticEuropeanEngine(process))
+option.setPricingEngine(ql.AnalyticEuropeanEngine(process))
 value = option.NPV()
 refValue = value
 report("analytic", value)
 
 # method: Heston semi-analytic
-option.setPricingEngine(AnalyticHestonEngine(hestonModel))
+option.setPricingEngine(ql.AnalyticHestonEngine(hestonModel))
 report("Heston analytic", option.NPV())
 
 # method: Heston COS method
-option.setPricingEngine(COSHestonEngine(hestonModel))
+option.setPricingEngine(ql.COSHestonEngine(hestonModel))
 report("Heston COS Method", option.NPV())
 
 # method: integral
-option.setPricingEngine(IntegralEngine(process))
+option.setPricingEngine(ql.IntegralEngine(process))
 report("integral", option.NPV())
 
 # method: finite differences
 timeSteps = 801
 gridPoints = 800
 
-option.setPricingEngine(FDEuropeanEngine(process, timeSteps, gridPoints))
+option.setPricingEngine(ql.FDEuropeanEngine(process, timeSteps, gridPoints))
 report("finite diff.", option.NPV())
 
 # method: binomial
 timeSteps = 801
 
-option.setPricingEngine(BinomialVanillaEngine(process, "JR", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "JR", timeSteps))
 report("binomial (JR)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "CRR", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "CRR", timeSteps))
 report("binomial (CRR)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "EQP", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "EQP", timeSteps))
 report("binomial (EQP)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "Trigeorgis", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "Trigeorgis", timeSteps))
 report("bin. (Trigeorgis)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "Tian", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "Tian", timeSteps))
 report("binomial (Tian)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "LR", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "LR", timeSteps))
 report("binomial (LR)", option.NPV())
 
-option.setPricingEngine(BinomialVanillaEngine(process, "Joshi4", timeSteps))
+option.setPricingEngine(ql.BinomialVanillaEngine(process, "Joshi4", timeSteps))
 report("binomial (Joshi)", option.NPV())
 
 # method: finite differences
 # not yet implemented
 
 # method: Monte Carlo
-option.setPricingEngine(MCEuropeanEngine(process, "pseudorandom", timeSteps=1, requiredTolerance=0.02, seed=42))
+option.setPricingEngine(ql.MCEuropeanEngine(process, "pseudorandom", timeSteps=1, requiredTolerance=0.02, seed=42))
 report("MC (crude)", option.NPV(), option.errorEstimate())
 
-option.setPricingEngine(MCEuropeanEngine(process, "lowdiscrepancy", timeSteps=1, requiredSamples=32768))
+option.setPricingEngine(ql.MCEuropeanEngine(process, "lowdiscrepancy", timeSteps=1, requiredSamples=32768))
 report("MC (Sobol)", option.NPV())

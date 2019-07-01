@@ -15,48 +15,57 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import QuantLib
+import QuantLib as ql
 import unittest
 import math
 
-class IntegralTest(unittest.TestCase):
-    def Gauss(self,x):
-        return math.exp(-x*x/2.0)/math.sqrt(2*math.pi)
-    def singleTest(self,I):
-        tolerance = 1e-4
-        cases = [["f(x) = 1",        lambda x: 1,    0.0,     1.0, 1.0],
-                 ["f(x) = x",        lambda x: x,    0.0,     1.0, 0.5],
-                 ["f(x) = x^2",      lambda x: x*x,  0.0,     1.0, 1.0/3.0],
-                 ["f(x) = sin(x)",   math.sin,       0.0, math.pi, 2.0],
-                 ["f(x) = cos(x)",   math.cos,       0.0, math.pi, 0.0],
-                 ["f(x) = Gauss(x)", self.Gauss,   -10.0,    10.0, 1.0]]
 
-        for tag,f,a,b,expected in cases:
-            calculated = I(f,a,b)
-            if not (abs(calculated-expected) <= tolerance):
-                self.fail("""
+class IntegralTest(unittest.TestCase):
+    def Gauss(self, x):
+        return math.exp(-x * x / 2.0) / math.sqrt(2 * math.pi)
+
+    def singleTest(self, I):
+        tolerance = 1e-4
+        cases = [
+            ["f(x) = 1", lambda x: 1, 0.0, 1.0, 1.0],
+            ["f(x) = x", lambda x: x, 0.0, 1.0, 0.5],
+            ["f(x) = x^2", lambda x: x * x, 0.0, 1.0, 1.0 / 3.0],
+            ["f(x) = sin(x)", math.sin, 0.0, math.pi, 2.0],
+            ["f(x) = cos(x)", math.cos, 0.0, math.pi, 0.0],
+            ["f(x) = Gauss(x)", self.Gauss, -10.0, 10.0, 1.0],
+        ]
+
+        for tag, f, a, b, expected in cases:
+            calculated = I(f, a, b)
+            if not (abs(calculated - expected) <= tolerance):
+                self.fail(
+                    """
 integrating %(tag)s
     calculated: %(calculated)f
     expected  : %(expected)f
-                      """ % locals())
+                      """
+                    % locals()
+                )
 
     def testSegment(self):
         "Testing segment integration"
-        self.singleTest(QuantLib.SegmentIntegral(10000))
+        self.singleTest(ql.SegmentIntegral(10000))
+
     def testTrapezoid(self):
         "Testing trapezoid integration"
-        self.singleTest(QuantLib.TrapezoidIntegralDefault(1.0e-4, 1000))
+        self.singleTest(ql.TrapezoidIntegralDefault(1.0e-4, 1000))
+
     def testSimpson(self):
         "Testing Simpson integration"
-        self.singleTest(QuantLib.SimpsonIntegral(1.0e-4, 1000))
+        self.singleTest(ql.SimpsonIntegral(1.0e-4, 1000))
+
     def testKronrod(self):
         "Testing Gauss-Kronrod integration"
-        self.singleTest(QuantLib.GaussKronrodAdaptive(1.0e-4))
+        self.singleTest(ql.GaussKronrodAdaptive(1.0e-4))
 
 
-
-if __name__ == '__main__':
-    print('testing QuantLib ' + QuantLib.__version__)
+if __name__ == "__main__":
+    print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(IntegralTest,'test'))
+    suite.addTest(unittest.makeSuite(IntegralTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)

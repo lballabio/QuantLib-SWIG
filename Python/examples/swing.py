@@ -13,31 +13,32 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-from QuantLib import *
+import QuantLib as ql
 import math
 
-todaysDate = Date(30,September,2018)
-Settings.instance().evaluationDate = todaysDate
+todaysDate = ql.Date(30, ql.September, 2018)
+ql.Settings.instance().evaluationDate = todaysDate
 settlementDate = todaysDate
-riskFreeRate = FlatForward(settlementDate, 0.0, Actual365Fixed())
-dividendYield = FlatForward(settlementDate, 0.0, Actual365Fixed())
-underlying = SimpleQuote(30.0)
-volatility = BlackConstantVol(todaysDate, TARGET(), 0.20, Actual365Fixed())
+riskFreeRate = ql.FlatForward(settlementDate, 0.0, ql.Actual365Fixed())
+dividendYield = ql.FlatForward(settlementDate, 0.0, ql.Actual365Fixed())
+underlying = ql.SimpleQuote(30.0)
+volatility = ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.20, ql.Actual365Fixed())
 
 
-exerciseDates = [ Date(1, January, 2019) + i
-                  for i in range(31) ]
+exerciseDates = [ql.Date(1, ql.January, 2019) + i for i in range(31)]
 
-swingOption = VanillaSwingOption(VanillaForwardPayoff(Option.Call, underlying.value()),
-                                 SwingExercise(exerciseDates), 0, len(exerciseDates))
+swingOption = ql.VanillaSwingOption(
+    ql.VanillaForwardPayoff(ql.Option.Call, underlying.value()), ql.SwingExercise(exerciseDates), 0, len(exerciseDates)
+)
 
-bsProcess = BlackScholesMertonProcess(
-    QuoteHandle(underlying),
-    YieldTermStructureHandle(dividendYield),
-    YieldTermStructureHandle(riskFreeRate),
-    BlackVolTermStructureHandle(volatility))
+bsProcess = ql.BlackScholesMertonProcess(
+    ql.QuoteHandle(underlying),
+    ql.YieldTermStructureHandle(dividendYield),
+    ql.YieldTermStructureHandle(riskFreeRate),
+    ql.BlackVolTermStructureHandle(volatility),
+)
 
-swingOption.setPricingEngine(FdSimpleBSSwingEngine(bsProcess))
+swingOption.setPricingEngine(ql.FdSimpleBSSwingEngine(bsProcess))
 
 print("Black Scholes Price: %f" % swingOption.NPV())
 
@@ -52,16 +53,17 @@ volatility = 0.1
 
 curveShape = []
 for d in exerciseDates:
-    t = Actual365Fixed().yearFraction(todaysDate, d)
-    gs = math.log(underlying.value())                                   \
-        - volatility*volatility/(4*speed)*(1-math.exp(-2*speed*t))      \
-        - jumpIntensity/beta*math.log((eta-math.exp(-beta*t))/(eta-1.0))
+    t = ql.Actual365Fixed().yearFraction(todaysDate, d)
+    gs = (
+        math.log(underlying.value())
+        - volatility * volatility / (4 * speed) * (1 - math.exp(-2 * speed * t))
+        - jumpIntensity / beta * math.log((eta - math.exp(-beta * t)) / (eta - 1.0))
+    )
     curveShape.append((t, gs))
 
-ouProcess = ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0, lambda x: x0)
-jProcess = ExtOUWithJumpsProcess(ouProcess, x1, beta, jumpIntensity, eta)
+ouProcess = ql.ExtendedOrnsteinUhlenbeckProcess(speed, volatility, x0, lambda x: x0)
+jProcess = ql.ExtOUWithJumpsProcess(ouProcess, x1, beta, jumpIntensity, eta)
 
-swingOption.setPricingEngine(FdSimpleExtOUJumpSwingEngine(
-    jProcess, riskFreeRate, 25, 25, 200, curveShape))
+swingOption.setPricingEngine(ql.FdSimpleExtOUJumpSwingEngine(jProcess, riskFreeRate, 25, 25, 200, curveShape))
 
 print("Kluge Model Price  : %f" % swingOption.NPV())
