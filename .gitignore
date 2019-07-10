@@ -26,7 +26,6 @@ Python/QuantLib/quantlib_wrap.cpp
 Python/.cache/
 Python/QuantLib_Python.egg-info
 Python/dist
-.pytest_cache/v/cache/nodeids
 R/src/QuantLib.cpp
 R/makeRData.Rout
 R/src/symbols.rds
@@ -91,8 +90,4 @@ Python/build
 R/R/QuantLib.R
 R/QuantLib.RData
 
-.vscode/launch.json
-.vscode/settings.json
-.vscode/tags
-.vscode/tasks.json
-
+.vscode

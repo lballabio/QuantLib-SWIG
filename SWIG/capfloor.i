@@ -52,8 +52,6 @@ class CapFloor : public Instrument {
     const std::vector<Rate>& floorRates();
     Date startDate() const;
     Date maturityDate() const;
-
-    bool isExpired() const;
     Type type() const;
     
     Rate atmRate(const YieldTermStructure& discountCurve) const;
@@ -63,18 +61,16 @@ class CapFloor : public Instrument {
         return self->result<Real>("vega");
       }
       const std::vector<Real> optionletsPrice() {
-        return self->result<std::vector<Real>>("optionletsPrice");
+        return self->result<std::vector<Real> >("optionletsPrice");
       }
       const std::vector<Real> optionletsVega() {
-        return self->result<std::vector<Real>>("optionletsVega");
+        return self->result<std::vector<Real> >("optionletsVega");
       }
       const std::vector<Rate> optionletsAtmForward(){
-        return self->result<std::vector<Real>>("optionletsAtmForward");
+        return self->result<std::vector<Real> >("optionletsAtmForward");
       }
-      // BlackCapFloorEngine will not return the below for CapFloor::Collar
-      // Should there be any error handling for such case?
       const std::vector<Rate> optionletsStdDev(){
-        return self->result<std::vector<Real>>("optionletsStdDev");
+        return self->result<std::vector<Real> >("optionletsStdDev");
       }
     }
 };
