@@ -4,7 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -35,6 +35,7 @@
 %include optimizers.i
 %include options.i
 %include termstructures.i
+%include vectors.i
 
 %define QL_TYPECHECK_VOLATILITYTYPE       8210    %enddef
 
@@ -800,5 +801,87 @@ Real sabrFlochKennedyVolatility(Rate strike,
                                 Real beta,
                                 Real nu,
                                 Real rho);
+
+%{
+using QuantLib::AndreasenHugeVolatilityInterpl;
+using QuantLib::AndreasenHugeVolatilityAdapter;
+using QuantLib::AndreasenHugeLocalVolAdapter;
+using QuantLib::HestonBlackVolSurface;
+%}
+
+%template(CalibrationErrorTuple) boost::tuple<Real, Real, Real>;
+
+%shared_ptr(AndreasenHugeVolatilityInterpl)
+class AndreasenHugeVolatilityInterpl : public Observable {
+  public:
+        enum InterpolationType {PiecewiseConstant, Linear, CubicSpline};
+        enum CalibrationType {
+            // we specify values directly to work around a problem in
+            // the SWIG C# module
+            Call = 1, // Option::Call,
+            Put = -1, // Option::Put,
+            CallPut};
+
+        typedef std::vector<std::pair<
+            boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> > >
+          CalibrationSet;
+
+        AndreasenHugeVolatilityInterpl(
+            const CalibrationSet& calibrationSet,
+            const Handle<Quote>& spot,
+            const Handle<YieldTermStructure>& rTS,
+            const Handle<YieldTermStructure>& qTS,
+            InterpolationType interpolationType = CubicSpline,
+            CalibrationType calibrationType = Call,
+            Size nGridPoints = 500,
+            Real minStrike = Null<Real>(),
+            Real maxStrike = Null<Real>(),
+            const boost::shared_ptr<OptimizationMethod>& optimizationMethod =
+                boost::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
+            const EndCriteria& endCriteria =
+                EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
+
+        Date maxDate() const;
+        Real minStrike() const;
+        Real maxStrike() const;
+
+        Real fwd(Time t) const;
+        const Handle<YieldTermStructure>& riskFreeRate() const;
+
+        // returns min, max and average error in volatility units
+        boost::tuple<Real, Real, Real> calibrationError() const;
+
+        // returns the option price of the calibration type. In case
+        // of CallPut it return the call option price
+        Real optionPrice(Time t, Real strike, Option::Type optionType) const;
+
+        Volatility localVol(Time t, Real strike) const;
+};
+
+%shared_ptr(AndreasenHugeVolatilityAdapter)
+class AndreasenHugeVolatilityAdapter : public BlackVolTermStructure {
+  public:
+    AndreasenHugeVolatilityAdapter(
+        const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
+        Real eps = 1e-6);
+};
+
+%shared_ptr(AndreasenHugeLocalVolAdapter)
+class AndreasenHugeLocalVolAdapter : public LocalVolTermStructure {
+  public:
+    explicit AndreasenHugeLocalVolAdapter(
+        const boost::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
+};
+
+%shared_ptr(HestonBlackVolSurface)
+class HestonBlackVolSurface : public BlackVolTermStructure {
+  public:
+    explicit HestonBlackVolSurface(
+        const Handle<HestonModel>& hestonModel,
+        const AnalyticHestonEngine::ComplexLogFormula cpxLogFormula
+            = AnalyticHestonEngine::Gatheral,
+        const AnalyticHestonEngine::Integration& integration =
+            AnalyticHestonEngine::Integration::gaussLaguerre(164));
+};
 
 #endif
