@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2019 Wojciech Ślusarski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -44,14 +45,34 @@ class CapFloor : public Instrument {
                                  Volatility maxVol = 4.0,
                                  VolatilityType type = ShiftedLognormal,
                                  Real displacement = 0.0) const;
+    enum Type { Cap, Floor, Collar };
     const Leg& floatingLeg() const;
 
     const std::vector<Rate>& capRates();
     const std::vector<Rate>& floorRates();
     Date startDate() const;
     Date maturityDate() const;
-
+    Type type() const;
+    
     Rate atmRate(const YieldTermStructure& discountCurve) const;
+
+    %extend {
+      const Real vega() {
+        return self->result<Real>("vega");
+      }
+      const std::vector<Real> optionletsPrice() {
+        return self->result<std::vector<Real> >("optionletsPrice");
+      }
+      const std::vector<Real> optionletsVega() {
+        return self->result<std::vector<Real> >("optionletsVega");
+      }
+      const std::vector<Rate> optionletsAtmForward(){
+        return self->result<std::vector<Real> >("optionletsAtmForward");
+      }
+      const std::vector<Rate> optionletsStdDev(){
+        return self->result<std::vector<Real> >("optionletsStdDev");
+      }
+    }
 };
 
 
