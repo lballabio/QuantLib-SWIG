@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2008, 2009 StatPro Italia srl
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +24,8 @@
 %include termstructures.i
 %include bonds.i
 %include null.i
+%include options.i
+%include exercise.i
 
 %{
 using QuantLib::CreditDefaultSwap;
@@ -33,6 +35,8 @@ using QuantLib::IsdaCdsEngine;
 using QuantLib::Claim;
 using QuantLib::FaceValueClaim;
 using QuantLib::FaceValueAccrualClaim;
+using QuantLib::CdsOption;
+using QuantLib::BlackCdsOptionEngine;
 %}
 
 %shared_ptr(Claim);
@@ -162,5 +166,34 @@ class IsdaCdsEngine : public PricingEngine {
             const IsdaCdsEngine::ForwardsInCouponPeriod forwardsInCouponPeriod = IsdaCdsEngine::Piecewise);
 };
 
+%shared_ptr(CdsOption)
+class CdsOption : public Option {
+    public:
+        CdsOption(const boost::shared_ptr<CreditDefaultSwap>& swap,
+                  const boost::shared_ptr<Exercise>& exercise,
+                  bool knocksOut = true);
+        Rate atmRate() const;
+        Real riskyAnnuity() const;
+        Volatility impliedVolatility(
+                              Real price,
+                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<DefaultProbabilityTermStructure>&,
+                              Real recoveryRate,
+                              Real accuracy = 1.e-4,
+                              Size maxEvaluations = 100,
+                              Volatility minVol = 1.0e-7,
+                              Volatility maxVol = 4.0) const;
+};
+
+%shared_ptr(BlackCdsOptionEngine)
+class BlackCdsOptionEngine : public PricingEngine {
+    public:
+        BlackCdsOptionEngine(const Handle<DefaultProbabilityTermStructure>&,
+                             Real recoveryRate,
+                             const Handle<YieldTermStructure>& termStructure,
+                             const Handle<Quote>& vol);
+        Handle<YieldTermStructure> termStructure();
+        Handle<Quote> volatility();
+};
 
 #endif
