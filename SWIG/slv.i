@@ -1,6 +1,5 @@
 /*
  Copyright (C) 2019 Klaus Spanderen
- Copyright (C) 2019 Matthias Lungwitz 
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
