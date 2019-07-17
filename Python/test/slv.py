@@ -87,7 +87,7 @@ class SlvTest(unittest.TestCase):
                 20,
                 100,
                 3,
-                0,
+                1,
                 ql.FdmSchemeDesc.Hundsdorfer(),
                 ql.LocalVolSurface(self.constVol(2.0), self.riskFreeRate, self.dividendYield, self.underlying),
             )
