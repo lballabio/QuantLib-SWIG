@@ -82,13 +82,16 @@ class SlvTest(unittest.TestCase):
         )
 
         option.setPricingEngine(
-            FdHestonVanillaEngine(
-                hestonModel, 20, 100, 3, 1, FdmSchemeDesc.Douglas(), 
-                LocalVolSurface(
-                    self.constVol(2.0),
-                    self.riskFreeRate,
-                    self.dividendYield,
-                    self.underlying)))
+            ql.FdHestonVanillaEngine(
+                hestonModel,
+                20,
+                100,
+                3,
+                0,
+                ql.FdmSchemeDesc.Hundsdorfer(),
+                ql.LocalVolSurface(self.constVol(2.0), self.riskFreeRate, self.dividendYield, self.underlying),
+            )
+        )
         
         slvNPV = option.NPV()
 
