@@ -408,6 +408,8 @@ class SwaptionVolatilityDiscrete : public SwaptionVolatilityStructure {
 class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
   public:
     SwaptionVolatilityMatrix(const Date& referenceDate,
+                             const Calendar& calendar,
+                             BusinessDayConvention bdc,
                              const std::vector<Date>& dates,
                              const std::vector<Period>& lengths,
                              const Matrix& vols,
@@ -434,6 +436,21 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
                              const bool flatExtrapolation = false,
                              const VolatilityType type = ShiftedLognormal,
                              const Matrix& shifts = Matrix());
+    %extend {
+        SwaptionVolatilityMatrix(const Date& referenceDate,
+                                 const std::vector<Date>& dates,
+                                 const std::vector<Period>& lengths,
+                                 const Matrix& vols,
+                                 const DayCounter& dayCounter,
+                                 const bool flatExtrapolation = false,
+                                 const VolatilityType type = ShiftedLognormal,
+                                 const Matrix& shifts = Matrix()) {
+            return new SwaptionVolatilityMatrix(referenceDate, NullCalendar(), Following,
+                                                dates, lengths, vols, dayCounter,
+                                                flatExtrapolation, type, shifts);
+        }
+    }
+    
     std::pair<Size,Size> locate(const Date& optionDate,
                                 const Period& swapTenor) const;
     std::pair<Size,Size> locate(Time optionTime,
