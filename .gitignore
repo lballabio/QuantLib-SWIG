@@ -90,6 +90,4 @@ Python/build
 R/R/QuantLib.R
 R/QuantLib.RData
 
-.vscode/launch.json
-.vscode/settings.json
-.vscode/tags
+.vscode
