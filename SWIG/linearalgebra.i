@@ -609,7 +609,7 @@ class Array {
                 throw std::out_of_range("array index out of range");
             }
         }
-        #elif defined(SWIGCSHARP) || defined(SWIGJAVA) || defined(SWIGPERL)
+        #elif defined(SWIGCSHARP) || defined(SWIGJAVA)
         Real get(Size i) {
             if (i<self->size())
                 return (*self)[i];
@@ -753,7 +753,7 @@ class Matrix {
         void setitem(Size i, Size j, Real x) {
             (*self)[i][j] = x;
         }
-        #elif defined(SWIGCSHARP) || defined(SWIGJAVA) || defined(SWIGPERL)
+        #elif defined(SWIGCSHARP) || defined(SWIGJAVA)
         Real get(Size i, Size j) {
             return (*self)[i][j];
         }

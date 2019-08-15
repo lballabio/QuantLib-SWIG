@@ -177,7 +177,7 @@ public class CallableBonds {
                 new CallabilityPrice(callPrice,
                                      CallabilityPrice.Type.Clean);
             callSchedule.add(new Callability(myPrice,
-                                             Callability.Call,
+                                             Callability.Type.Call,
                                              callDate));
             callDate = nullCalendar.advance(callDate, 3, TimeUnit.Months);
         }

@@ -42,11 +42,9 @@ class DayCounter {
                       const Date& endRef = Date()) const;
     std::string name() const;
     %extend {
-        #if !defined(SWIGPERL)
         std::string __str__() {
             return self->name()+" day counter";
         }
-        #endif
         #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA)
         bool __eq__(const DayCounter& other) {
             return (*self) == other;
@@ -68,7 +66,10 @@ class DayCounter {
 
 namespace QuantLib {
 
-    class Actual360 : public DayCounter {};
+    class Actual360 : public DayCounter {
+      public:
+        Actual360(const bool includeLastDay = false);
+    };
     class Actual365Fixed : public DayCounter {
       public:
         enum Convention { Standard, Canadian, NoLeap };

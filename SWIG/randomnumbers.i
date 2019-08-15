@@ -3,6 +3,7 @@
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -215,6 +216,8 @@ template<class RNG> class RandomSequenceGenerator {
   public:
     RandomSequenceGenerator(Size dimensionality,
                             const RNG& rng);
+    RandomSequenceGenerator(Size dimensionality,
+                                BigNatural seed = 0);
     const Sample<std::vector<Real> >& nextSequence() const;
     Size dimension() const;
 };
@@ -247,6 +250,8 @@ template <class U, class I>
 class InverseCumulativeRsg {
   public:
     InverseCumulativeRsg(const U& uniformSequenceGenerator);
+    InverseCumulativeRsg(const U& uniformSequenceGenerator,
+                             const I& inverseCumulative);
     const Sample<std::vector<Real> >& nextSequence() const;
     Size dimension() const;
 };

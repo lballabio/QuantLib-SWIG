@@ -65,6 +65,25 @@ const char* __version__;
 %}
 #endif
 
+
+#if defined(JAVA_AUTOCLOSEABLE)
+%typemap(javaimports) SWIGTYPE %{
+import java.lang.AutoCloseable;
+%}
+%typemap(javainterfaces) SWIGTYPE "AutoCloseable";
+%typemap(javacode) SWIGTYPE %{
+  @Override
+  public void close() {
+   this.delete();
+  }
+%}
+#endif
+
+
+#if !defined(JAVA_FINALIZER)
+%typemap(javafinalize) SWIGTYPE %{%}
+#endif
+
 //#if defined(SWIGPYTHON)
 //%feature("autodoc");
 //#endif

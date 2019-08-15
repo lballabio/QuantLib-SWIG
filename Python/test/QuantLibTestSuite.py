@@ -34,6 +34,8 @@ from capfloor import CapFloorTest
 from blackformula import BlackFormulaTest
 from blackformula import BlackDeltaCalculatorTest
 from iborindex import IborIndexTest
+from sabr import SabrTest
+from slv import SlvTest
 
 
 def test():
@@ -58,7 +60,9 @@ def test():
     suite.addTest(unittest.makeSuite(BlackFormulaTest, 'test'))
     suite.addTest(unittest.makeSuite(BlackDeltaCalculatorTest, 'test'))
     suite.addTest(unittest.makeSuite(IborIndexTest, 'test'))
-
+    suite.addTest(unittest.makeSuite(SabrTest, 'test'))
+    suite.addTest(unittest.makeSuite(SlvTest, 'test'))
+    
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
     if not result.wasSuccessful:

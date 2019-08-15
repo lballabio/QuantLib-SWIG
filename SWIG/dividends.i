@@ -24,38 +24,28 @@
 %{
 using QuantLib::Dividend;
 %}
-%ignore Dividend;
+
+%shared_ptr(Dividend)
 class Dividend : public CashFlow {
+  private:
+    Dividend();
 };
-%template(Dividend) boost::shared_ptr<Dividend>;
 
 %{
 using QuantLib::FixedDividend;
 using QuantLib::FractionalDividend;
-
-typedef boost::shared_ptr<Dividend> FixedDividendPtr;
-typedef boost::shared_ptr<Dividend> FractionalDividendPtr;
 %}
 
-%rename(FixedDividend) FixedDividendPtr;
-class FixedDividendPtr : public boost::shared_ptr<Dividend> {
+%shared_ptr(FixedDividend)
+class FixedDividend : public Dividend {
   public:
-    %extend {
-        FixedDividendPtr(Real amount, const Date& date) {
-            return new FixedDividendPtr(new FixedDividend(amount,date));
-        }
-    }
+    FixedDividend(Real amount, const Date& date);
 };
 
-%rename(FractionalDividend) FractionalDividendPtr;
-class FractionalDividendPtr : public boost::shared_ptr<Dividend> {
+%shared_ptr(FractionalDividend)
+class FractionalDividend : public Dividend {
   public:
-    %extend {
-        FractionalDividendPtr(Rate rate, const Date& date) {
-            return new FractionalDividendPtr(
-                                     new FractionalDividend(rate,date));
-        }
-    }
+    FractionalDividend(Rate rate, const Date& date);
 };
 
 

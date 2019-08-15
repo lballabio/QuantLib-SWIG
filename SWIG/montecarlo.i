@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005 StatPro Italia srl
  Copyright (C) 2008 Tito Ingargiola
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -74,51 +75,38 @@ class Path {
         #endif
     }
 };
-
-%{
-typedef QuantLib::PathGenerator<GaussianRandomSequenceGenerator>
-    GaussianPathGenerator;
-%}
 %template(SamplePath) Sample<Path>;
-class GaussianPathGenerator {
-  public:
-    %extend {
-        GaussianPathGenerator(const StochasticProcess1DPtr& process,
-                              Time length, Size steps,
-                              const GaussianRandomSequenceGenerator& rsg,
-                              bool brownianBridge) {
-            boost::shared_ptr<StochasticProcess1D> process1d =
-                boost::dynamic_pointer_cast<StochasticProcess1D>(process);
-            return new GaussianPathGenerator(process1d,length,steps,
-                                             rsg,brownianBridge);
-        }
-    }
-    Sample<Path> next() const;
-    Sample<Path> antithetic() const;
-};
 
 %{
-typedef QuantLib::PathGenerator<GaussianLowDiscrepancySequenceGenerator>
-    GaussianSobolPathGenerator;
+using QuantLib::PathGenerator;
 %}
-class GaussianSobolPathGenerator {
+
+template <class GSG>
+class PathGenerator {
   public:
-    %extend {
-        GaussianSobolPathGenerator(
-                           const StochasticProcess1DPtr& process,
-                           Time length, Size steps,
-                           const GaussianLowDiscrepancySequenceGenerator& rsg,
-                           bool brownianBridge) {
-            boost::shared_ptr<StochasticProcess1D> process1d =
-                boost::dynamic_pointer_cast<StochasticProcess1D>(process);
-            return new GaussianSobolPathGenerator(process1d,length,steps,
-                                                  rsg,brownianBridge);
-        }
-    }
-    Sample<Path> next() const;
-    Sample<Path> antithetic() const;
+    typedef Sample<Path> sample_type;
+    PathGenerator(const boost::shared_ptr<StochasticProcess>&,
+                      Time length,
+                      Size timeSteps,
+                      const GSG& generator,
+                      bool brownianBridge);
+    PathGenerator(const boost::shared_ptr<StochasticProcess>&,
+                      const TimeGrid& timeGrid,
+                      const GSG& generator,
+                      bool brownianBridge);
+    const sample_type& next() const;
+    const sample_type& antithetic() const;
+    Size size() const;
+    const TimeGrid& timeGrid() const;
 };
 
+%template(GaussianPathGenerator)
+    PathGenerator<GaussianRandomSequenceGenerator>;
+%template(GaussianSobolPathGenerator)
+    PathGenerator<GaussianLowDiscrepancySequenceGenerator>;
+%template(InvCumulativeMersenneTwisterPathGenerator)
+    PathGenerator<InverseCumulativeRsg<RandomSequenceGenerator<MersenneTwisterUniformRng>,
+                         InverseCumulativeNormal> >;
 
 %{
 using QuantLib::MultiPath;

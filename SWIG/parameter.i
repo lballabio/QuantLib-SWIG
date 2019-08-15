@@ -33,27 +33,29 @@ using QuantLib::PiecewiseConstantParameter;
 %}
 
 class Parameter {
-    public:
-        Parameter();
-        const Array& params() const;
-        void setParam(Size i, Real x);
-        bool testParams(const Array& params) const; 
-        Size size() const ;
-        Real operator()(Time t) const;
-        const Constraint& constraint() const ;
+  public:
+    Parameter();
+    const Array& params() const;
+    void setParam(Size i, Real x);
+    bool testParams(const Array& params) const; 
+    Size size() const ;
+    Real operator()(Time t) const;
+    #ifndef SWIGR
+    const Constraint& constraint() const;
+    #endif
 };
 
 //! Standard constant parameter \f$ a(t) = a \f$
 class ConstantParameter : public Parameter {
-    public: 
-        ConstantParameter(const Constraint& constraint);
-        ConstantParameter(Real value, const Constraint& constraint);
+  public: 
+    ConstantParameter(const Constraint& constraint);
+    ConstantParameter(Real value, const Constraint& constraint);
 
 };
 
 //! %Parameter which is always zero \f$ a(t) = 0 \f$
 class NullParameter : public Parameter {
-public:
+  public:
     NullParameter();
 };
 
@@ -63,7 +65,7 @@ public:
     model
 */
 class PiecewiseConstantParameter : public Parameter {
-public:
+  public:
      PiecewiseConstantParameter(const std::vector<Time>& times,
                                 const Constraint& constraint=QuantLib::NoConstraint());
     

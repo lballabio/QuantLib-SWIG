@@ -29,12 +29,19 @@ import org.quantlib.BatesEngine;
 import org.quantlib.BatesModel;
 import org.quantlib.BatesProcess;
 import org.quantlib.BermudanExercise;
-import org.quantlib.BinomialVanillaEngine;
+import org.quantlib.BinomialCRRVanillaEngine;
+import org.quantlib.BinomialEQPVanillaEngine;
+import org.quantlib.BinomialJ4VanillaEngine;
+import org.quantlib.BinomialJRVanillaEngine;
+import org.quantlib.BinomialLRVanillaEngine;
+import org.quantlib.BinomialTianVanillaEngine;
+import org.quantlib.BinomialTrigeorgisVanillaEngine;
 import org.quantlib.BjerksundStenslandEngine;
 import org.quantlib.BlackConstantVol;
 import org.quantlib.BlackScholesMertonProcess;
 import org.quantlib.BlackVolTermStructureHandle;
 import org.quantlib.Calendar;
+import org.quantlib.COSHestonEngine;
 import org.quantlib.Date;
 import org.quantlib.DateVector;
 import org.quantlib.DayCounter;
@@ -47,7 +54,9 @@ import org.quantlib.HestonModel;
 import org.quantlib.HestonProcess;
 import org.quantlib.FlatForward;
 import org.quantlib.IntegralEngine;
-import org.quantlib.MCEuropeanEngine;
+import org.quantlib.MCLDEuropeanEngine;
+import org.quantlib.MCPREuropeanEngine;
+import org.quantlib.MCPREuropeanHestonEngine;
 import org.quantlib.Month;
 import org.quantlib.Option;
 import org.quantlib.Payoff;
@@ -130,7 +139,7 @@ public class EquityOptions {
                                           flatVolatility);
 
         // options
-        Payoff payoff = new PlainVanillaPayoff(type, strike);
+        PlainVanillaPayoff payoff = new PlainVanillaPayoff(type, strike);
 
         VanillaOption europeanOption =
             new VanillaOption(payoff, europeanExercise);
@@ -162,10 +171,17 @@ public class EquityOptions {
 							  volatility*volatility,
 							  1.0,
 							  volatility*volatility,
-							  0.001,
+							  0.0001,
 							  0.0);
 		HestonModel hestonModel = new HestonModel(hestonProcess);
 		europeanOption.setPricingEngine(new AnalyticHestonEngine(hestonModel));
+        System.out.printf(fmt, new Object[] { method,
+                                              europeanOption.NPV(),
+                                              Double.NaN,
+                                              Double.NaN } );
+
+        method = "Heston COS Method";                                      	
+		europeanOption.setPricingEngine(new COSHestonEngine(hestonModel));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               Double.NaN,
@@ -180,7 +196,7 @@ public class EquityOptions {
 							 volatility*volatility,
 							 1.0,
 							 volatility*volatility,
-							 0.001,
+							 0.0001,
 							 0.0,
 							 1e-14, 1e-14, 1e-14);
 		BatesModel batesModel = new BatesModel(batesProcess);
@@ -233,15 +249,12 @@ public class EquityOptions {
 
         // Binomial method
         method = "Binomial Jarrow-Rudd";
-        europeanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "JarrowRudd", timeSteps));
-        bermudanOption.setPricingEngine(new BinomialVanillaEngine(
-                                                    stochasticProcess,
-                                                    "JarrowRudd", timeSteps));
-        americanOption.setPricingEngine(new BinomialVanillaEngine(
-                                                    stochasticProcess,
-                                                    "JarrowRudd", timeSteps));
+        europeanOption.setPricingEngine(new BinomialJRVanillaEngine(
+                                                    stochasticProcess, timeSteps));
+        bermudanOption.setPricingEngine(new BinomialJRVanillaEngine(
+                                                    stochasticProcess, timeSteps));
+        americanOption.setPricingEngine(new BinomialJRVanillaEngine(
+                                                    stochasticProcess, timeSteps));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               bermudanOption.NPV(),
@@ -249,14 +262,11 @@ public class EquityOptions {
 
         method = "Binomial Cox-Ross-Rubinstein";
         europeanOption.setPricingEngine(
-                   new BinomialVanillaEngine(stochasticProcess,
-                                             "CoxRossRubinstein", timeSteps));
+                   new BinomialCRRVanillaEngine(stochasticProcess, timeSteps));
         bermudanOption.setPricingEngine(
-                   new BinomialVanillaEngine(stochasticProcess,
-                                             "CoxRossRubinstein", timeSteps));
+                   new BinomialCRRVanillaEngine(stochasticProcess, timeSteps));
         americanOption.setPricingEngine(
-                   new BinomialVanillaEngine(stochasticProcess,
-                                             "CoxRossRubinstein", timeSteps));
+                   new BinomialCRRVanillaEngine(stochasticProcess, timeSteps));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               bermudanOption.NPV(),
@@ -264,14 +274,11 @@ public class EquityOptions {
 
         method = "Additive equiprobabilities";
         europeanOption.setPricingEngine(
-             new BinomialVanillaEngine(stochasticProcess,
-                                       "AdditiveEQPBinomialTree", timeSteps));
+             new BinomialEQPVanillaEngine(stochasticProcess, timeSteps));
         bermudanOption.setPricingEngine(
-             new BinomialVanillaEngine(stochasticProcess,
-                                       "AdditiveEQPBinomialTree", timeSteps));
+             new BinomialEQPVanillaEngine(stochasticProcess, timeSteps));
         americanOption.setPricingEngine(
-             new BinomialVanillaEngine(stochasticProcess,
-                                       "AdditiveEQPBinomialTree", timeSteps));
+             new BinomialEQPVanillaEngine(stochasticProcess, timeSteps));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               bermudanOption.NPV(),
@@ -279,14 +286,11 @@ public class EquityOptions {
 
         method = "Binomial Trigeorgis";
         europeanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "Trigeorgis", timeSteps));
+                          new BinomialTrigeorgisVanillaEngine(stochasticProcess, timeSteps));
         bermudanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "Trigeorgis", timeSteps));
+                          new BinomialTrigeorgisVanillaEngine(stochasticProcess, timeSteps));
         americanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "Trigeorgis", timeSteps));
+                          new BinomialTrigeorgisVanillaEngine(stochasticProcess, timeSteps));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               bermudanOption.NPV(),
@@ -294,14 +298,11 @@ public class EquityOptions {
 
         method = "Binomial Tian";
         europeanOption.setPricingEngine(
-                                new BinomialVanillaEngine(stochasticProcess,
-                                                          "Tian", timeSteps));
+                                new BinomialTianVanillaEngine(stochasticProcess, timeSteps));
         bermudanOption.setPricingEngine(
-                                new BinomialVanillaEngine(stochasticProcess,
-                                                          "Tian", timeSteps));
+                                new BinomialTianVanillaEngine(stochasticProcess, timeSteps));
         americanOption.setPricingEngine(
-                                new BinomialVanillaEngine(stochasticProcess,
-                                                          "Tian", timeSteps));
+                                new BinomialTianVanillaEngine(stochasticProcess, timeSteps));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               bermudanOption.NPV(),
@@ -309,14 +310,11 @@ public class EquityOptions {
 
         method = "Binomial Leisen-Reimer";
         europeanOption.setPricingEngine(
-                        new BinomialVanillaEngine(stochasticProcess,
-                                                  "LeisenReimer", timeSteps));
+                        new BinomialLRVanillaEngine(stochasticProcess, timeSteps));
         bermudanOption.setPricingEngine(
-                        new BinomialVanillaEngine(stochasticProcess,
-                                                  "LeisenReimer", timeSteps));
+                        new BinomialLRVanillaEngine(stochasticProcess, timeSteps));
         americanOption.setPricingEngine(
-                        new BinomialVanillaEngine(stochasticProcess,
-                                                  "LeisenReimer", timeSteps));
+                        new BinomialLRVanillaEngine(stochasticProcess, timeSteps));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               bermudanOption.NPV(),
@@ -324,14 +322,11 @@ public class EquityOptions {
 
         method = "Binomial Joshi";
         europeanOption.setPricingEngine(
-                              new BinomialVanillaEngine(stochasticProcess,
-                                                        "Joshi4", timeSteps));
+                              new BinomialJ4VanillaEngine(stochasticProcess, timeSteps));
         bermudanOption.setPricingEngine(
-                              new BinomialVanillaEngine(stochasticProcess,
-                                                        "Joshi4", timeSteps));
+                              new BinomialJ4VanillaEngine(stochasticProcess, timeSteps));
         americanOption.setPricingEngine(
-                              new BinomialVanillaEngine(stochasticProcess,
-                                                        "Joshi4", timeSteps));
+                              new BinomialJ4VanillaEngine(stochasticProcess, timeSteps));
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               bermudanOption.NPV(),
@@ -346,8 +341,8 @@ public class EquityOptions {
 
         method = "MC (crude)";
         europeanOption.setPricingEngine(
-                    new MCEuropeanEngine(stochasticProcess,
-                                         "PseudoRandom", timeSteps,
+                  new MCPREuropeanEngine(stochasticProcess,
+                                         timeSteps,
                                          QuantLib.nullInt(),
                                          false, false,
                                          nSamples, 0.02, maxSamples, mcSeed));
@@ -358,8 +353,8 @@ public class EquityOptions {
 
         method = "MC (Sobol)";
         europeanOption.setPricingEngine(
-                    new MCEuropeanEngine(stochasticProcess,
-                                         "LowDiscrepancy", timeSteps,
+                  new MCLDEuropeanEngine(stochasticProcess,
+                                         timeSteps,
                                          QuantLib.nullInt(),
                                          false, false,
                                          nSamples, 0.02, maxSamples, mcSeed));
@@ -368,7 +363,15 @@ public class EquityOptions {
                                               Double.NaN,
                                               Double.NaN } );
 
-
+		method = "Heston Monte-Carlo";
+		europeanOption.setPricingEngine(
+			new MCPREuropeanHestonEngine(hestonProcess, 25, QuantLib.nullInt(), true, nSamples));
+									   
+        System.out.printf(fmt, new Object[] { method,
+                                              europeanOption.NPV(),
+                                              Double.NaN,
+                                              Double.NaN } );
+                                              
         /*
         method = "MC (Longstaff Schwartz)";
         // This is the original C++ code:
