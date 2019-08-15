@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2005 Johan Witters
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -85,12 +86,6 @@ class Calendar {
     %rename("isEndOfMonth?")    isEndOfMonth;
     %rename("addHoliday!")      addHoliday;
     %rename("removeHoliday!")   removeHoliday;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-business-day?") isBusinessDay;
-    %rename("is-holiday?")      isHoliday;
-    %rename("is-end-of-month?") isEndOfMonth;
-    %rename("add-holiday")      addHoliday;
-    %rename("remove-holiday")   removeHoliday;
     #endif
   protected:
     Calendar();
@@ -114,6 +109,10 @@ class Calendar {
                                    const Date& to,
                                    bool includeFirst = true,
                                    bool includeLast = false);
+    static std::vector<Date> holidayList(const Calendar& calendar,
+                                   const Date& from,
+                                   const Date& to,
+                                   bool includeWeekEnds = false);
     std::string name();
     %extend {
         #if !defined(SWIGPERL)
@@ -139,15 +138,6 @@ class Calendar {
     %}
     #endif
 };
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Calendar=?") Calendar_equal;
-%inline %{
-    bool Calendar_equal(const Calendar& c1, const Calendar& c2) {
-        return c1 == c2;
-    }
-%}
-#endif
 
 namespace QuantLib {
 
@@ -286,6 +276,7 @@ namespace QuantLib {
     };
 
     class TARGET : public Calendar {};
+    class Thailand : public Calendar {};
     class Turkey : public Calendar {};
 
     class Ukraine : public Calendar {
@@ -302,7 +293,8 @@ namespace QuantLib {
 
     class UnitedStates : public Calendar {
       public:
-        enum Market { Settlement, NYSE, GovernmentBond, NERC };
+        enum Market { Settlement, NYSE, GovernmentBond,
+                      NERC, LiborImpact, FederalReserve };
         UnitedStates(Market m = Settlement);
     };
 

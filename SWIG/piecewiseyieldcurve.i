@@ -1,6 +1,7 @@
 
 /*
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -91,7 +92,7 @@ class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
             typedef PiecewiseYieldCurve<Base,Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->times();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef PiecewiseYieldCurve<Base,Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -104,6 +105,7 @@ class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
 
 
 export_piecewise_curve(PiecewiseFlatForward,ForwardRate,BackwardFlat);
+export_piecewise_curve(PiecewiseLogLinearDiscount,Discount,LogLinear);
 export_piecewise_curve(PiecewiseLinearForward,ForwardRate,Linear);
 export_piecewise_curve(PiecewiseLinearZero,ZeroYield,Linear);
 export_piecewise_curve(PiecewiseCubicZero,ZeroYield,Cubic);

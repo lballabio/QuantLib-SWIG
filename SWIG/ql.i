@@ -80,7 +80,7 @@
 %{
 #include <ql/quantlib.hpp>
 
-#if QL_HEX_VERSION < 0x011100f0
+#if QL_HEX_VERSION < 0x011400f0
     #error using an old version of QuantLib, please update
 #endif
 
@@ -148,9 +148,7 @@
 #endif
 
 // common name mappings
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename(">string")       __str__;
-#elif defined(SWIGPERL)
+#if defined(SWIGPERL)
 %rename("to_string")     __str__;
 #elif defined(SWIGJAVA)
 %rename(add)           operator+;

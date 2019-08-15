@@ -89,13 +89,6 @@ class TridiagonalOperator {
     %rename("midRow=")        setMidRow;
     %rename("midRows=")       setMidRows;
     %rename("lastRow=")       setLastRow;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("solve-for")      solveFor;
-    %rename("apply-to")       applyTo;
-    %rename("first-row-set!") setFirstRow;
-    %rename("mid-row-set!")   setMidRow;
-    %rename("mid-rows-set!")  setMidRows;
-    %rename("last-row-set!")  setLastRow;
     #endif
   public:
     // constructors
@@ -147,31 +140,6 @@ class TridiagonalOperator {
     #endif
 };
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("TridiagonalOperator+") TridiagonalOperator_add;
-%rename("TridiagonalOperator-") TridiagonalOperator_sub;
-%rename("TridiagonalOperator*") TridiagonalOperator_mul;
-%rename("TridiagonalOperator/") TridiagonalOperator_div;
-%inline %{
-    TridiagonalOperator TridiagonalOperator_add(const TridiagonalOperator& p,
-                                                const TridiagonalOperator& q) {
-        return p+q;
-    }
-    TridiagonalOperator TridiagonalOperator_sub(const TridiagonalOperator& p,
-                                                const TridiagonalOperator& q) {
-        return p-q;
-    }
-    TridiagonalOperator TridiagonalOperator_mul(const TridiagonalOperator& p,
-                                                Real x) {
-        return p*x;
-    }
-    TridiagonalOperator TridiagonalOperator_div(const TridiagonalOperator& p,
-                                                Real x) {
-        return p/x;
-    }
-%}
-#endif
-
 
 %{
 using QuantLib::DPlus;
@@ -180,29 +148,6 @@ using QuantLib::DZero;
 using QuantLib::DPlusDMinus;
 %}
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-// TridiagonalOperator doesn't have a virtual destructor:
-// let's make sure users won't deallocate derived classes
-// with the wrong one
-%rename("new-D+")   makeDPlus;
-%rename("new-D-")   makeDMinus;
-%rename("new-D0")   makeDZero;
-%rename("new-D+D-") makeDPlusDMinus;
-%inline %{
-    TridiagonalOperator makeDPlus(Size gridPoints, Real h) {
-        return DPlus(gridPoints,h);
-    }
-    TridiagonalOperator makeDMinus(Size gridPoints, Real h) {
-        return DMinus(gridPoints,h);
-    }
-    TridiagonalOperator makeDZero(Size gridPoints, Real h) {
-        return DZero(gridPoints,h);
-    }
-    TridiagonalOperator makeDPlusDMinus(Size gridPoints, Real h) {
-        return DPlusDMinus(gridPoints,h);
-    }
-%}
-#else
 class DPlus : public TridiagonalOperator {
   public:
     DPlus(Size gridPoints, Real h);
@@ -219,7 +164,6 @@ class DPlusDMinus : public TridiagonalOperator {
   public:
     DPlusDMinus(Size gridPoints, Real h);
 };
-#endif
 
 
 #endif

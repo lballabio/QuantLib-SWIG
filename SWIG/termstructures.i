@@ -2,7 +2,8 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2014 StatPro Italia srl
-
+ Copyright (C) 2018 Matthias Lungwitz
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -37,14 +38,6 @@ using QuantLib::YieldTermStructure;
 
 %ignore YieldTermStructure;
 class YieldTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")     dayCounter;
-    %rename("reference-date")  referenceDate;
-    %rename("max-date")        maxDate;
-    %rename("max-time")        maxTime;
-    %rename("zero-rate")       zeroRate;
-    %rename("forward-rate")    forwardRate;
-    #endif
   public:
     DayCounter dayCounter() const;
     Calendar calendar() const;
@@ -169,7 +162,7 @@ class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
 %enddef
 
 export_piecewise_zero_spreaded_term_structure(SpreadedLinearZeroInterpolatedTermStructure,Linear);
-
+export_piecewise_zero_spreaded_term_structure(SpreadedBackwardFlatZeroInterpolatedTermStructure,BackwardFlat);
 
 // flat forward curve
 

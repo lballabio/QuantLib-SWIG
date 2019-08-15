@@ -4,6 +4,8 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2014 Simon Mazzucca
  Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2017 BN Algorithms Ltd
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,13 +38,17 @@
 using QuantLib::Bond;
 using QuantLib::ZeroCouponBond;
 using QuantLib::FixedRateBond;
+using QuantLib::AmortizingFixedRateBond;
 using QuantLib::FloatingRateBond;
+using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
 
 typedef boost::shared_ptr<Instrument> BondPtr;
 typedef boost::shared_ptr<Instrument> ZeroCouponBondPtr;
 typedef boost::shared_ptr<Instrument> FixedRateBondPtr;
+typedef boost::shared_ptr<Instrument> AmortizingFixedRateBondPtr;
 typedef boost::shared_ptr<Instrument> FloatingRateBondPtr;
+typedef boost::shared_ptr<Instrument> AmortizingFloatingRateBondPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
 %}
 
@@ -50,18 +56,6 @@ typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
 class BondPtr : public boost::shared_ptr<Instrument> {
     #if defined(SWIGPYTHON) || defined (SWIGRUBY)
     %rename(bondYield) yield;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("next-coupon-rate")      nextCouponRate;
-    %rename("previous-coupon-rate")  previousCouponRate;
-    %rename("settlement-days")       settlementDays;
-    %rename("settlement-date")       settlementDate;
-    %rename("start-date")            startDate;
-    %rename("maturity-date")         maturityDate;
-    %rename("issue-date")            issueDate;
-    %rename("clean-price")           cleanPrice;
-    %rename("dirty-price")           dirtyPrice;
-    %rename("settlement-value")      settlementValue;
-    %rename("accrued-amount")        accruedAmount;
     #endif
   public:
     %extend {
@@ -77,6 +71,15 @@ class BondPtr : public boost::shared_ptr<Instrument> {
                                         maturityDate,
                                         issueDate,
                                         cashflows));
+        }
+        BondPtr(Natural settlementDays,
+                const Calendar& calendar,
+                const Date& issueDate = Date(),
+                const Leg& coupons = Leg()) {
+            return new BondPtr(new Bond(settlementDays,
+                                        calendar,
+                                        issueDate,
+                                        coupons));
         }
         // public functions
         Rate nextCouponRate(const Date& d = Date()) {
@@ -181,11 +184,6 @@ class BondPtr : public boost::shared_ptr<Instrument> {
 };
 
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("clean-price-from-z-spread") cleanPriceFromZSpread;
-%rename("dirty-price-from-z-spread") dirtyPriceFromZSpread;
-#endif
-
 %inline %{
 
     Real cleanPriceFromZSpread(
@@ -288,6 +286,90 @@ class FixedRateBondPtr : public BondPtr {
         }
     }
 };
+
+
+%rename(AmortizingFixedRateBond) AmortizingFixedRateBondPtr;
+class AmortizingFixedRateBondPtr : public BondPtr {
+  public:
+    %extend {
+        AmortizingFixedRateBondPtr(
+                Integer settlementDays,
+                const std::vector<Real>& notionals,
+                const Schedule& schedule,
+                const std::vector<Rate>& coupons,
+                const DayCounter& accrualDayCounter,
+                BusinessDayConvention paymentConvention = QuantLib::Following,
+                Date issueDate = Date()) {
+            return new AmortizingFixedRateBondPtr(
+                new AmortizingFixedRateBond(settlementDays, notionals,
+                                  schedule, coupons, accrualDayCounter,
+                                  paymentConvention, issueDate));
+        }
+        AmortizingFixedRateBondPtr(
+                Integer settlementDays,
+                const Calendar& paymentCalendar,
+                Real faceAmount,
+                Date startDate,
+                const Period& bondTenor,
+                const Frequency& sinkingFrequency,
+                Real coupon,
+                const DayCounter& accrualDayCounter,
+                BusinessDayConvention paymentConvention = QuantLib::Following,
+                Date issueDate = Date()) {
+            return new AmortizingFixedRateBondPtr(
+                new AmortizingFixedRateBond(settlementDays, paymentCalendar,
+                                  faceAmount, startDate, bondTenor,
+                                  sinkingFrequency,
+                                  coupon, accrualDayCounter,
+                                  paymentConvention, issueDate));
+        }
+        Frequency frequency() const {
+            return boost::dynamic_pointer_cast<AmortizingFixedRateBond>(*self)
+                ->frequency();
+        }
+        DayCounter dayCounter() const {
+            return boost::dynamic_pointer_cast<AmortizingFixedRateBond>(*self)
+                ->dayCounter();
+        }
+    }
+};
+
+
+%rename(AmortizingFloatingRateBond) AmortizingFloatingRateBondPtr;
+class AmortizingFloatingRateBondPtr : public BondPtr {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") AmortizingFloatingRateBondPtr;
+    #endif
+  public:
+    %extend {
+        AmortizingFloatingRateBondPtr(
+            Size settlementDays,
+            const std::vector<Real>& notional,
+            const Schedule& schedule,
+            const IborIndexPtr& index,
+            const DayCounter& accrualDayCounter,
+            BusinessDayConvention paymentConvention = Following,
+            Size fixingDays = Null<Size>(),
+            const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
+            const std::vector<Spread>& spreads = std::vector<Spread>(1, 1.0),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            bool inArrears = false,
+            const Date& issueDate = Date()) {
+            boost::shared_ptr<IborIndex> libor =
+                boost::dynamic_pointer_cast<IborIndex>(index);
+            return new AmortizingFloatingRateBondPtr(
+                new AmortizingFloatingRateBond(settlementDays, notional,
+                                                schedule, libor,
+                                                accrualDayCounter,
+                                                paymentConvention,
+                                                fixingDays, gearings,
+                                                spreads, caps, floors,
+                                                inArrears, issueDate));
+        }
+    }
+};
+
 
 %rename(FloatingRateBond) FloatingRateBondPtr;
 class FloatingRateBondPtr : public BondPtr {
@@ -395,6 +477,7 @@ class DiscountingBondEnginePtr : public boost::shared_ptr<PricingEngine> {
 
 
 %{
+using QuantLib::CallableBond;
 using QuantLib::CallableFixedRateBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
@@ -425,6 +508,73 @@ class CallableFixedRateBondPtr : public BondPtr {
                                           schedule, coupons, accrualDayCounter,
                                           paymentConvention, redemption,
                                           issueDate, putCallSchedule));
+        }
+
+        Real OAS(Real cleanPrice,
+                 const Handle<YieldTermStructure>& engineTS,
+                 const DayCounter& dc,
+                 Compounding compounding,
+                 Frequency freq,
+                 const Date& settlementDate = Date(),
+                 Real accuracy =1e-10,
+                 Size maxIterations = 100,
+                 Spread guess = 0.0)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->OAS(cleanPrice,
+                      engineTS,
+                      dc, compounding, freq, settlementDate,
+                      accuracy,
+                      maxIterations,
+                      guess);
+        }
+
+        Real cleanPriceOAS(Real oas,
+                           const Handle<YieldTermStructure>& engineTS,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date())
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->cleanPriceOAS(oas,
+                                engineTS,
+                                dayCounter,
+                                compounding,
+                                frequency,
+                                settlementDate);
+        }
+
+        Real effectiveDuration(Real oas,
+                               const Handle<YieldTermStructure>& engineTS,
+                               const DayCounter& dayCounter,
+                               Compounding compounding,
+                               Frequency frequency,
+                               Real bump=2e-4)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->effectiveDuration(oas,
+                                    engineTS,
+                                    dayCounter,
+                                    compounding,
+                                    frequency,
+                                    bump);
+        }
+
+        Real effectiveConvexity(Real oas,
+                                const Handle<YieldTermStructure>& engineTS,
+                                const DayCounter& dayCounter,
+                                Compounding compounding,
+                                Frequency frequency,
+                                Real bump=2e-4)
+        {
+            return boost::dynamic_pointer_cast<CallableBond>(*self)
+                ->effectiveConvexity(oas,
+                                     engineTS,
+                                     dayCounter,
+                                     compounding,
+                                     frequency,
+                                     bump);
         }
     }
 };

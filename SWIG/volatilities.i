@@ -4,6 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,18 +51,6 @@ using QuantLib::SwaptionVolatilityStructure;
 
 %ignore BlackVolTermStructure;
 class BlackVolTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date") referenceDate;
-    %rename("day-counter")    dayCounter;
-    %rename("max-date")       maxDate;
-    %rename("max-time")       maxTime;
-    %rename("min-strike")     minStrike;
-    %rename("max-strike")     maxStrike;
-    %rename("black-vol")      blackVol;
-    %rename("black-variance") blackVariance;
-    %rename("black-forward-vol")      blackVol;
-    %rename("black-forward-variance") blackVariance;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -99,15 +88,6 @@ RelinkableHandle<BlackVolTermStructure>;
 
 %ignore LocalVolTermStructure;
 class LocalVolTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date") referenceDate;
-    %rename("day-counter")    dayCounter;
-    %rename("max-date")       maxDate;
-    %rename("max-time")       maxTime;
-    %rename("min-strike")     minStrike;
-    %rename("max-strike")     maxStrike;
-    %rename("local-vol")      localVol;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -133,15 +113,6 @@ RelinkableHandle<LocalVolTermStructure>;
 
 %ignore OptionletVolatilityStructure;
 class OptionletVolatilityStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date") referenceDate;
-    %rename("day-counter")    dayCounter;
-    %rename("max-date")       maxDate;
-    %rename("max-time")       maxTime;
-    %rename("min-strike")     minStrike;
-    %rename("max-strike")     maxStrike;
-    %rename("black-variance") blackVariance;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -178,17 +149,6 @@ using QuantLib::SwaptionVolatilityStructure;
 
 %ignore SwaptionVolatilityStructure;
 class SwaptionVolatilityStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date")  referenceDate;
-    %rename("day-counter")     dayCounter;
-    %rename("max-option-date")  maxOptionDate;
-    %rename("max-option-time")  maxOptionTime;
-    %rename("max-swap-tenor")      maxSwapTenor;
-    %rename("max-swap-length") maxSwapLength;
-    %rename("min-strike")      minStrike;
-    %rename("max-strike")      maxStrike;
-    %rename("black-variance")  blackVariance;
-    #endif
   public:
     Date referenceDate() const;
     DayCounter dayCounter() const;
@@ -422,14 +382,6 @@ typedef boost::shared_ptr<LocalVolTermStructure> LocalVolSurfacePtr;
 %}
 %rename(LocalVolSurface) LocalVolSurfacePtr;
 class LocalVolSurfacePtr : public boost::shared_ptr<LocalVolTermStructure> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("reference-date")       referenceDate;
-    %rename("day-counter") dayCounter;
-    %rename("max-date") maxDate;
-    %rename("min-strike") minStrike;
-    %rename("max-strike") maxStrike;    
-    #endif
-
     public:
      %extend {
         LocalVolSurfacePtr(const Handle<BlackVolTermStructure>& blackTS,
@@ -718,6 +670,256 @@ class SwaptionVolCube2Ptr
                 new SwaptionVolCube2(
                     atmVolStructure,optionTenors,swapTenors,strikeSpreads,
                     volSpreads, swi, shortSwi, vegaWeightedSmileFit));
+        }
+    }
+};
+
+%{
+using QuantLib::SmileSection;
+%}
+
+%ignore SmileSection;
+class SmileSection{
+  public:
+    SmileSection(const Date& d,
+                 const DayCounter& dc = DayCounter(),
+                 const Date& referenceDate = Date(),
+                 const VolatilityType type = ShiftedLognormal,
+                 const Rate shift = 0.0);
+    SmileSection(Time exerciseTime,
+                 const DayCounter& dc = DayCounter(),
+                 const VolatilityType type = ShiftedLognormal,
+                 const Rate shift = 0.0);
+    SmileSection() {}
+
+    Real variance(Rate strike) const;
+    Volatility volatility(Rate strike) const;
+    virtual const Date& exerciseDate() const;
+    virtual VolatilityType volatilityType() const;
+    virtual Rate shift() const;
+    virtual const Date& referenceDate() const;
+    virtual Time exerciseTime() const;
+    virtual const DayCounter& dayCounter();
+    virtual Real optionPrice(Rate strike,
+                             Option::Type type = Option::Call,
+                             Real discount=1.0) const;
+    virtual Real digitalOptionPrice(Rate strike,
+                                    Option::Type type = Option::Call,
+                                    Real discount=1.0,
+                                    Real gap=1.0e-5) const;
+    virtual Real vega(Rate strike,
+                      Real discount=1.0) const;
+    virtual Real density(Rate strike,
+                         Real discount=1.0,
+                         Real gap=1.0E-4) const;
+    Volatility volatility(Rate strike, VolatilityType type, Real shift=0.0) const;
+};
+
+%template(SmileSection) boost::shared_ptr<SmileSection>;
+IsObservable(boost::shared_ptr<SmileSection>);
+
+%{
+using QuantLib::FlatSmileSection;
+typedef boost::shared_ptr<SmileSection> FlatSmileSectionPtr;
+%}
+
+%rename(FlatSmileSection) FlatSmileSectionPtr;
+class FlatSmileSectionPtr
+    : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        FlatSmileSectionPtr(const Date& d,
+                         Volatility vol,
+                         const DayCounter& dc,
+                         const Date& referenceDate = Date(),
+                         Real atmLevel = Null<Rate>(),
+                         VolatilityType type = ShiftedLognormal,
+                         Real shift = 0.0) {
+            return new FlatSmileSectionPtr(
+                new FlatSmileSection(
+                    d,
+                    vol,
+                    dc,
+                    referenceDate,
+                    atmLevel,
+                    type,
+                    shift
+                )
+            );
+        }
+        FlatSmileSectionPtr(Time exerciseTime,
+                         Volatility vol,
+                         const DayCounter& dc,
+                         Real atmLevel = Null<Rate>(),
+                         VolatilityType type = ShiftedLognormal,
+                         Real shift = 0.0) {
+            return new FlatSmileSectionPtr(
+                new FlatSmileSection(
+                    exerciseTime,
+                    vol,
+                    dc,
+                    atmLevel,
+                    type,
+                    shift
+                )
+            );
+        }
+    }
+};
+
+%{
+using QuantLib::InterpolatedSmileSection;
+using QuantLib::Actual365Fixed;
+%}
+
+%define export_smileinterpolation_curve(Name,Interpolator)
+
+%{
+typedef boost::shared_ptr<SmileSection> Name##Ptr;
+%}
+
+%rename(Name) Name##Ptr;
+class Name##Ptr : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        Name##Ptr(
+               Time expiryTime,
+               const std::vector<Rate>& strikes,
+               const std::vector<Handle<Quote> >& stdDevHandles,
+               const Handle<Quote>& atmLevel,
+               const Interpolator& interpolator = Interpolator(),
+               const DayCounter& dc = Actual365Fixed(),
+               const VolatilityType type = ShiftedLognormal,
+               const Real shift = 0.0) {
+            return new Name##Ptr(
+                new InterpolatedSmileSection<Interpolator>(
+                          expiryTime,strikes,stdDevHandles,atmLevel,interpolator,dc,type,shift));
+        }
+        Name##Ptr(
+               Time expiryTime,
+               const std::vector<Rate>& strikes,
+               const std::vector<Real>& stdDevs,
+               Real atmLevel,
+               const Interpolator& interpolator = Interpolator(),
+               const DayCounter& dc = Actual365Fixed(),
+               const VolatilityType type = ShiftedLognormal,
+               const Real shift = 0.0) {
+            return new Name##Ptr(
+                new InterpolatedSmileSection<Interpolator>(
+                          expiryTime,strikes,stdDevs,atmLevel,interpolator,dc,type,shift));
+        }
+        Name##Ptr(
+               const Date& d,
+               const std::vector<Rate>& strikes,
+               const std::vector<Handle<Quote> >& stdDevHandles,
+               const Handle<Quote>& atmLevel,
+               const DayCounter& dc = Actual365Fixed(),               
+               const Interpolator& interpolator = Interpolator(),
+               const Date& referenceDate = Date(),
+               const VolatilityType type = ShiftedLognormal,
+               const Real shift = 0.0) {
+            return new Name##Ptr(
+                new InterpolatedSmileSection<Interpolator>(
+                          d,strikes,stdDevHandles,atmLevel,dc,interpolator,referenceDate,type,shift));
+        }
+        Name##Ptr(
+               const Date& d,
+               const std::vector<Rate>& strikes,
+               const std::vector<Real>& stdDevs,
+               Real atmLevel,
+               const DayCounter& dc = Actual365Fixed(),
+               const Interpolator& interpolator = Interpolator(),
+               const Date& referenceDate = Date(),
+               const VolatilityType type = ShiftedLognormal,
+               const Real shift = 0.0) {
+            return new Name##Ptr(
+                new InterpolatedSmileSection<Interpolator>(
+                          d,strikes,stdDevs,atmLevel,dc,interpolator,referenceDate,type,shift));
+        }
+    }
+};
+
+%enddef
+
+export_smileinterpolation_curve(LinearInterpolatedSmileSection, Linear);
+export_smileinterpolation_curve(CubicInterpolatedSmileSection, Cubic);
+export_smileinterpolation_curve(MonotonicCubicInterpolatedSmileSection, MonotonicCubic);
+export_smileinterpolation_curve(SplineCubicInterpolatedSmileSection, SplineCubic);
+
+%{
+using QuantLib::SabrSmileSection;
+typedef boost::shared_ptr<SmileSection> SabrSmileSectionPtr;
+%}
+
+%rename(SabrSmileSection) SabrSmileSectionPtr;
+class SabrSmileSectionPtr
+    : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        SabrSmileSectionPtr(const Date& d,
+                         Rate forward,
+                         const std::vector<Real>& sabrParameters,
+                         const DayCounter& dc = Actual365Fixed(),
+                         Real shift = 0.0) {
+            return new SabrSmileSectionPtr(
+                new SabrSmileSection(
+                    d,
+                    forward,
+                    sabrParameters,
+                    dc,
+                    shift
+                )
+            );
+        }
+        SabrSmileSectionPtr(Time timeToExpiry,
+                         Rate forward,
+                         const std::vector<Real>& sabrParameters,
+                         Real shift = 0.0) {
+            return new SabrSmileSectionPtr(
+                new SabrSmileSection(
+                    timeToExpiry,
+                    forward,
+                    sabrParameters,
+                    shift
+                )
+            );
+        }
+    }
+};
+
+%{
+using QuantLib::KahaleSmileSection;
+typedef boost::shared_ptr<SmileSection> KahaleSmileSectionPtr;
+%}
+
+%rename(KahaleSmileSection) KahaleSmileSectionPtr;
+class KahaleSmileSectionPtr
+    : public boost::shared_ptr<SmileSection> {
+  public:
+    %extend {
+        KahaleSmileSectionPtr(const boost::shared_ptr<SmileSection> source,
+                           const Real atm = Null<Real>(),
+                           const bool interpolate = false,
+                           const bool exponentialExtrapolation = false,
+                           const bool deleteArbitragePoints = false,
+                           const std::vector<Real> &moneynessGrid =
+                               std::vector<Real>(),
+                           const Real gap = 1.0E-5,
+                           const int forcedLeftIndex = -1,
+                           const int forcedRightIndex = QL_MAX_INTEGER) {
+            return new KahaleSmileSectionPtr(
+                new KahaleSmileSection(
+                    source,
+                    atm,
+                    interpolate,
+                    exponentialExtrapolation,
+                    deleteArbitragePoints,
+                    moneynessGrid,
+                    gap,
+                    forcedLeftIndex,
+                    QL_MAX_INTEGER
+                )
+            );
         }
     }
 };

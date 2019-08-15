@@ -20,6 +20,7 @@ import unittest
 
 class FixedRateBondTest(unittest.TestCase):
     def setUp(self):
+        QuantLib.Settings.instance().setEvaluationDate(QuantLib.Date(2,1,2010))
         self.settlement_days = 3
         self.face_amount = 100.0
         self.redemption = 100.0
@@ -134,6 +135,9 @@ class FixedRateBondTest(unittest.TestCase):
                     self.bond, self.flat_forward, 0.01,
                     self.day_counter, QuantLib.Compounded, QuantLib.Semiannual,
                     self.issue_date + QuantLib.Period(1,QuantLib.Months)), 4), 92.5926)
+    
+    def tearDown(self):
+        QuantLib.Settings.instance().setEvaluationDate(QuantLib.Date())
 
 if __name__ == '__main__':
     print('testing QuantLib ' + QuantLib.__version__)

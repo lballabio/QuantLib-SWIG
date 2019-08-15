@@ -1,41 +1,35 @@
 
-Changes for QuantLib-SWIG 1.10
+Changes for QuantLib-SWIG 1.13
 ==============================
 
-The most notable changes are included below.
-A detailed list of changes is available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/3?closed=1>.
+More details on the changes are available in ChangeLog.txt and at
+<https://github.com/lballabio/QuantLib-SWIG/milestone/6?closed=1>.
 
-- Unified Visual Studio solution file for the C# module. The provided
-  file works for all versions from 2010 to 2017.
+- Exported amortizing bonds (thanks to Anthony Calleja).
 
-- Exported newly added CDS2015 date-generation rule.
+- Exported vanna-volga barrier-option engine (thanks to Matthias
+  Lungwitz).
 
-- Exported GSR model (thanks to Andres Hernandez).
+- Exported the MakeSchedule helper class (thanks to Roy Zywina).
 
-- Exported Markov functional model (thanks to Matthias Lungwitz).
+- Exported the Cashflows::previousCashFlowDate and
+  Cashflows::nextCashFlowDate methods (thanks to Weston Steimel).
 
-- Exported hybrid simulated annealing optimizer (thanks to Andres
-  Hernandez).
+- Exported more methods from the SwapIndex class, as well as a few
+  derived classes (thanks to Matthias Lungwitz).
 
-- Exported vega method for swaptions (thanks to Alexander Baker).
+- Exported CPISwap (thanks to Matthias Lungwitz).
 
-- Exported more instantiations of piecewise yield curve (thanks to
-  Grant Bartel).
+- Exported more methods from the ZeroCouponInflationSwap and
+  YearOnYearInflationSwap classes (thanks to Matthias Lungwitz).
 
-- Exported non-standard swap and swaption (thanks to Peter Caspers).
+- Exported MC American option engine (thanks to Matthias Lungwitz).
 
-- Exported newly added CompoundingThenSimple convention (thanks to
-  Martin Ross).
+- Exported more methods from the NonStandardSwaption class and its
+  Gaussian engines (thanks to Matthias Lungwitz).
 
-- Allow using an arbitrary solver to calculate yields (thanks to
-  Daniel Hrabovcak).
+- Exported overnight-indexes swaps (thanks to Matthias Lungwitz).
 
-- Allow passing a schedule to Actual/Actual day counter for correct
-  calculation of reference dates (thanks to Ryan Taylor).
-
-- Allow passing an arbitrary calendar to business/252 calendar (thanks
-  to Stanislav Vinokurov).
-
-- Fixed comparison operators in Python 3.x (thanks to Rob Chu).
+- Exported more methods from the RateHelper class and a few of its
+  derived classes (thanks to Matthias Lungwitz).
 

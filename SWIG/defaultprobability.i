@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,16 +35,6 @@ using QuantLib::DefaultProbabilityTermStructure;
 
 %ignore DefaultProbabilityTermStructure;
 class DefaultProbabilityTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")     dayCounter;
-    %rename("reference-date")  referenceDate;
-    %rename("max-date")        maxDate;
-    %rename("max-time")        maxTime;
-    %rename("default-probability")  defaultProbability;
-    %rename("survival-probability") survivalProbability;
-    %rename("hazard-rate")          hazardRate;
-    %rename("default-density")      defaultDensity;
-    #endif
   public:
     DayCounter dayCounter() const;
     Calendar calendar() const;
@@ -144,7 +135,7 @@ class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
             typedef InterpolatedHazardRateCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->hazardRates();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef InterpolatedHazardRateCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -195,7 +186,7 @@ class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
             typedef InterpolatedDefaultDensityCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->defaultDensities();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef InterpolatedDefaultDensityCurve<Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
@@ -211,6 +202,56 @@ export_default_density_curve(DefaultDensityCurve,Linear);
 // add interpolations as you wish, e.g.,
 // export_default_density_curve(CubicDefaultDensityCurve,Cubic);
 
+
+
+%{
+using QuantLib::InterpolatedSurvivalProbabilityCurve;
+%}
+
+%define export_survival_probability_curve(Name,Interpolator)
+
+%{
+typedef boost::shared_ptr<DefaultProbabilityTermStructure> Name##Ptr;
+%}
+
+%rename(Name) Name##Ptr;
+class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
+  public:
+    %extend {
+        Name##Ptr(const std::vector<Date>& dates,
+                  const std::vector<Probability>& probabilities,
+                  const DayCounter& dayCounter,
+                  const Calendar& calendar = Calendar(),
+                  const Interpolator& i = Interpolator()) {
+            return new Name##Ptr(
+                new InterpolatedSurvivalProbabilityCurve<Interpolator>(dates,
+                                                                  probabilities,
+                                                                  dayCounter,
+                                                                  calendar,i));
+        }
+        const std::vector<Date>& dates() {
+            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
+            return boost::dynamic_pointer_cast<Name>(*self)->dates();
+        }
+        const std::vector<Probability>& survivalProbabilities() {
+            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
+            return boost::dynamic_pointer_cast<Name>(*self)->survivalProbabilities();
+        }
+        #if !defined(SWIGR)
+        std::vector<std::pair<Date,Real> > nodes() {
+            typedef InterpolatedSurvivalProbabilityCurve<Interpolator> Name;
+            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
+        }
+        #endif
+    }
+};
+
+%enddef
+
+export_survival_probability_curve(SurvivalProbabilityCurve,Linear);
+
+// add interpolations as you wish, e.g.,
+// export_survival_probability_curve(CubicSurvivalProbabilityCurve,Cubic);
 
 
 %{
@@ -390,7 +431,7 @@ class Name##Ptr : public boost::shared_ptr<DefaultProbabilityTermStructure> {
             typedef PiecewiseDefaultCurve<Base,Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->times();
         }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+        #if !defined(SWIGR)
         std::vector<std::pair<Date,Real> > nodes() {
             typedef PiecewiseDefaultCurve<Base,Interpolator> Name;
             return boost::dynamic_pointer_cast<Name>(*self)->nodes();
