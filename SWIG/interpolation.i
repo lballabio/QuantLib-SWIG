@@ -174,6 +174,14 @@ class DefaultLogCubic : public QuantLib::LogCubic {
     : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger) {}
 };
 
+class LogCubic : public QuantLib::LogCubic {
+  public:
+    LogCubic()
+    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Spline, false,
+                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
+                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
 class MonotonicLogCubic : public QuantLib::LogCubic {
   public:
     MonotonicLogCubic()
@@ -190,6 +198,7 @@ struct LogLinear {};
 struct Cubic {};
 struct MonotonicCubic {};
 struct DefaultLogCubic {};
+struct LogCubic {};
 struct MonotonicLogCubic {};
 struct SplineCubic {};
 
