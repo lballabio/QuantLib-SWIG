@@ -50,6 +50,8 @@ class Swap : public Instrument {
     Date maturityDate();
     const Leg & leg(Size i);
     Real legNPV(Size j) const;
+    Real legBPS(Size k) const;
+    Rate fairRate();
 };
 
 %shared_ptr(VanillaSwap)
