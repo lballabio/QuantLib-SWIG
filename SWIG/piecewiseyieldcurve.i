@@ -84,7 +84,7 @@ export_piecewise_curve(PiecewiseLinearForward,ForwardRate,Linear);
 export_piecewise_curve(PiecewiseLinearZero,ZeroYield,Linear);
 export_piecewise_curve(PiecewiseCubicZero,ZeroYield,Cubic);
 export_piecewise_curve(PiecewiseLogCubicDiscount,Discount,MonotonicLogCubic);
-export_piecewise_curve(PiecewiseNonMonotonicLogCubicDiscount,Discount,LogCubic);
+export_piecewise_curve(PiecewiseSplineCubicDiscount,Discount,SplineCubic);
 
 
 #endif
