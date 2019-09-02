@@ -24,6 +24,7 @@ Perl/MYMETA.yml
 Perl/MYMETA.json
 Python/QuantLib/quantlib_wrap.cpp
 Python/.cache/
+Python/QuantLib.egg-info
 Python/QuantLib_Python.egg-info
 Python/dist
 R/src/QuantLib.cpp

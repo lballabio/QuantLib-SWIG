@@ -171,6 +171,7 @@ AC_CONFIG_FILES([
     Java/Makefile
     Python/Makefile
     Python/setup.py
+    Python/setup-old.py
     R/Makefile
     R/DESCRIPTION
     Ruby/Makefile
