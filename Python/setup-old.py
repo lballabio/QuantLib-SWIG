@@ -33,6 +33,5 @@ setup(
     url="http://quantlib.org",
     license="BSD 3-Clause",
     classifiers=classifiers,
-    data_files=["../LICENSE.TXT"],
     install_requires=["QuantLib == 1.17"],
 )
