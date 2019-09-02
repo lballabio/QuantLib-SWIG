@@ -190,7 +190,6 @@ struct LogLinear {};
 struct Cubic {};
 struct MonotonicCubic {};
 struct DefaultLogCubic {};
-struct LogCubic {};
 struct MonotonicLogCubic {};
 struct SplineCubic {};
 
