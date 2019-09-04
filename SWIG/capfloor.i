@@ -66,6 +66,12 @@ class CapFloor : public Instrument {
       const std::vector<Real> optionletsVega() {
         return self->result<std::vector<Real> >("optionletsVega");
       }
+      const std::vector<Real> optionletsDelta() {
+        return self->result<std::vector<Real> >("optionletsDelta");
+      }
+      const std::vector<DiscountFactor> optionletsDiscountFactor() {
+        return self->result<std::vector<DiscountFactor> >("optionletsDiscountFactor");
+      }
       const std::vector<Rate> optionletsAtmForward(){
         return self->result<std::vector<Real> >("optionletsAtmForward");
       }
