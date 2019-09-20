@@ -707,7 +707,7 @@ class MCAmericanEngine : public PricingEngine {
                    polynomType,
                    nCalibrationSamples,
                    antitheticVariateCalibration,
-                   seedCalibration)
+                   seedCalibration if seedCalibration is not None else nullInt())
 %}
 #endif
 
