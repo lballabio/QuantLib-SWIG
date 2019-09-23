@@ -33,7 +33,7 @@ public class UnaryFunctions {
         new RichardsonExtrapolation(
             new UnaryFunctionDelegate() {
                 public double value(double x) { return Math.exp(1 + x); }
-            }, 0.1, 1.0).getValue(4.0, 2.0)
+            }, 0.1).getValue(4.0, 2.0)
         );
 
     }
