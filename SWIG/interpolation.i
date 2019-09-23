@@ -193,4 +193,33 @@ struct DefaultLogCubic {};
 struct MonotonicLogCubic {};
 struct SplineCubic {};
 
+
+%{
+using QuantLib::RichardsonExtrapolation;
+%}
+
+class RichardsonExtrapolation {
+  public:
+    Real operator()(Real t=2.0) const;
+    Real operator()(Real t, Real s) const;
+    
+    %extend {
+      #if defined(SWIGPYTHON)
+		RichardsonExtrapolation(
+			PyObject* fct, Real delta_h, Real n = Null<Real>()) {
+		
+			UnaryFunction f(fct);
+			return new RichardsonExtrapolation(f, delta_h, n); 
+		}
+	  #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+		RichardsonExtrapolation(
+			UnaryFunctionDelegate* fct, Real delta_h, Real n = Null<Real>()) {
+		
+			UnaryFunction f(fct);
+			return new RichardsonExtrapolation(f, delta_h, n); 
+		}		
+	  #endif
+	}
+};
+
 #endif
