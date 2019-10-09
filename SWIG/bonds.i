@@ -229,6 +229,33 @@ class AmortizingFixedRateBond : public Bond {
     DayCounter dayCounter() const;
 };
 
+% shared_ptr(AmortizingFixedRatePool) class AmortizingFixedRatePool : public Bond
+{
+public:
+  AmortizingFixedRatePool(
+      Integer settlementDays,
+      const std::vector<Real> &notionals,
+      const std:vector<Real> &redemptions,
+      const Schedule &schedule,
+      const std::vector<Rate> &coupons,
+      const DayCounter &accrualDayCounter,
+      BusinessDayConvention paymentConvention = QuantLib::Following,
+      Date issueDate = Date(),
+      Natural paymentLag);
+  AmortizingFixedRatePool(
+      Integer settlementDays,
+      const Calendar &paymentCalendar,
+      Real faceAmount,
+      Date startDate,
+      const Period &bondTenor,
+      const Frequency &sinkingFrequency,
+      Real coupon,
+      const DayCounter &accrualDayCounter,
+      BusinessDayConvention paymentConvention = QuantLib::Following,
+      Date issueDate = Date());
+  Frequency frequency() const;
+  DayCounter dayCounter() const;
+};
 
 %shared_ptr(AmortizingFloatingRateBond)
 class AmortizingFloatingRateBond : public Bond {
