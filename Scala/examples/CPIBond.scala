@@ -96,7 +96,7 @@ object CPIBond {
         val zeroSwapHelpers = new ZeroHelperVector
         zciisData map { datum => zeroSwapHelpers add 
           new ZeroCouponInflationSwapHelper(
-            datum.rate/100d, observationLag,
+            new QuoteHandle(new SimpleQuote(datum.rate/100d)), observationLag,
             datum.date, calendar, convention, dayCounter, inflationIndex) }
 
         cpiTS linkTo new PiecewiseZeroInflation(          
@@ -138,7 +138,6 @@ object CPIBond {
         println("clean price: " + bond.cleanPrice + " \t exec time: " + 
           (System.currentTimeMillis - startTime)/1000d)
           
-        cpiTS linkTo new ZeroInflationTermStructure  // break cylic reference between
-                                                     // cpiTS, zeroSwapHelpers and inflationIndex
+        cpiTS reset  // break cyclic reference between cpiTS, zeroSwapHelpers and inflationIndex
     }
 }

@@ -3,6 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2015 Klaus Spanderen
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -23,6 +24,7 @@
 
 %include functions.i
 %include linearalgebra.i
+%include stl.i
 
 // 1D Solvers
 
@@ -111,32 +113,38 @@ using QuantLib::CompositeConstraint;
 using QuantLib::NonhomogeneousBoundaryConstraint;
 %}
 
+%shared_ptr(Constraint)
 class Constraint {
     // prevent direct instantiation
   private:
     Constraint();
 };
 
+%shared_ptr(BoundaryConstraint)
 class BoundaryConstraint : public Constraint {
   public:
     BoundaryConstraint(Real lower, Real upper);
 };
 
+%shared_ptr(NoConstraint)
 class NoConstraint : public Constraint {
   public:
     NoConstraint();
 };
 
+%shared_ptr(PositiveConstraint)
 class PositiveConstraint : public Constraint {
   public:
     PositiveConstraint();
 };
 
+%shared_ptr(CompositeConstraint)
 class CompositeConstraint : public Constraint {
   public:
     CompositeConstraint(const Constraint& c1, const Constraint& c2);
 };
 
+%shared_ptr(NonhomogeneousBoundaryConstraint)
 class NonhomogeneousBoundaryConstraint : public Constraint {
   public:
     NonhomogeneousBoundaryConstraint(const Array& l, const Array& u);
@@ -149,7 +157,7 @@ using QuantLib::EndCriteria;
 class EndCriteria {
     #if defined(SWIGRUBY)
     %rename("setPositiveOptimization!") setPositiveOptimization;
-    #elif defined(SWIGCSHARP) || defined(SWIGPERL)
+    #elif defined(SWIGCSHARP)
     %rename(call) operator();
     #elif defined(SWIGPYTHON)
     %rename(NoCriteria) None;
@@ -200,39 +208,47 @@ using QuantLib::LogNormalSimulatedAnnealing;
 
 %}
 
+%shared_ptr(OptimizationMethod)
 class OptimizationMethod {
   private:
     // prevent direct instantiation
     OptimizationMethod();
 };
 
+%shared_ptr(ConjugateGradient)
 class ConjugateGradient : public OptimizationMethod {
   public:
     ConjugateGradient();
 };
 
+%shared_ptr(Simplex)
 class Simplex : public OptimizationMethod {
   public:
     Simplex(Real lambda);
 };
 
+%shared_ptr(SteepestDescent)
 class SteepestDescent : public OptimizationMethod {
   public:
     SteepestDescent();
 };
 
+%shared_ptr(BFGS)
 class BFGS : public OptimizationMethod {
   public:
     BFGS();
 };
 
+%shared_ptr(LevenbergMarquardt)
 class LevenbergMarquardt : public OptimizationMethod {
   public:
     LevenbergMarquardt(Real epsfcn = 1.0e-8,
                        Real xtol = 1.0e-8,
-                       Real gtol = 1.0e-8);
+                       Real gtol = 1.0e-8,
+                       bool useCostFunctionsJacobian = false);
 };
 
+%shared_ptr(DifferentialEvolution)
 class DifferentialEvolution : public OptimizationMethod {
   public:
     DifferentialEvolution();
@@ -268,6 +284,7 @@ class ReannealingTrivial {
     ReannealingTrivial();
 };
 
+%shared_ptr(GaussianSimulatedAnnealing)
 class GaussianSimulatedAnnealing : public OptimizationMethod {
   public:
     enum ResetScheme{
@@ -286,6 +303,7 @@ class GaussianSimulatedAnnealing : public OptimizationMethod {
             Size resetSteps = 150);
 };
 
+%shared_ptr(MirrorGaussianSimulatedAnnealing)
 class MirrorGaussianSimulatedAnnealing : public OptimizationMethod {
   public:
     enum ResetScheme{
@@ -304,6 +322,7 @@ class MirrorGaussianSimulatedAnnealing : public OptimizationMethod {
             Size resetSteps = 150);
 };
 
+%shared_ptr(LogNormalSimulatedAnnealing)
 class LogNormalSimulatedAnnealing : public OptimizationMethod {
   public:
    enum ResetScheme{

@@ -15,40 +15,53 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import QuantLib
+import QuantLib as ql
 import unittest
+
 
 class FixedRateBondTest(unittest.TestCase):
     def setUp(self):
-        QuantLib.Settings.instance().setEvaluationDate(QuantLib.Date(2,1,2010))
+        ql.Settings.instance().setEvaluationDate(ql.Date(2, 1, 2010))
         self.settlement_days = 3
         self.face_amount = 100.0
         self.redemption = 100.0
-        self.issue_date = QuantLib.Date(2,1,2008)
-        self.maturity_date = QuantLib.Date(2,1,2018)
-        self.calendar = QuantLib.UnitedStates(QuantLib.UnitedStates.GovernmentBond)
-        self.day_counter = QuantLib.ActualActual(QuantLib.ActualActual.Bond)
-        self.sched = QuantLib.Schedule(self.issue_date, self.maturity_date,
-                                       QuantLib.Period(QuantLib.Semiannual), self.calendar,
-                                       QuantLib.Unadjusted, QuantLib.Unadjusted,
-                                       QuantLib.DateGeneration.Backward, False)
+        self.issue_date = ql.Date(2, 1, 2008)
+        self.maturity_date = ql.Date(2, 1, 2018)
+        self.calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
+        self.day_counter = ql.ActualActual(ql.ActualActual.Bond)
+        self.sched = ql.Schedule(
+            self.issue_date,
+            self.maturity_date,
+            ql.Period(ql.Semiannual),
+            self.calendar,
+            ql.Unadjusted,
+            ql.Unadjusted,
+            ql.DateGeneration.Backward,
+            False,
+        )
         self.coupons = [0.05]
 
-        self.bond = QuantLib.FixedRateBond(self.settlement_days, self.face_amount,
-                                           self.sched, self.coupons, self.day_counter,
-                                           QuantLib.Following, self.redemption,
-                                           self.issue_date)
+        self.bond = ql.FixedRateBond(
+            self.settlement_days,
+            self.face_amount,
+            self.sched,
+            self.coupons,
+            self.day_counter,
+            ql.Following,
+            self.redemption,
+            self.issue_date,
+        )
 
-        self.flat_forward = QuantLib.FlatForward(self.issue_date,
-                                            self.coupons[0], self.day_counter,
-                                            QuantLib.Compounded, QuantLib.Semiannual)
-        self.term_structure_handle = QuantLib.RelinkableYieldTermStructureHandle(self.flat_forward)
-        bondEngine = QuantLib.DiscountingBondEngine(self.term_structure_handle)
+        self.flat_forward = ql.FlatForward(
+            self.issue_date, self.coupons[0], self.day_counter, ql.Compounded, ql.Semiannual
+        )
+        self.term_structure_handle = ql.RelinkableYieldTermStructureHandle(self.flat_forward)
+        bondEngine = ql.DiscountingBondEngine(self.term_structure_handle)
         self.bond.setPricingEngine(bondEngine)
 
     def testFrequency(self):
         """ Testing FixedRateBond frequency() method. """
-        self.assertEqual(self.bond.frequency(), QuantLib.Semiannual)
+        self.assertEqual(self.bond.frequency(), ql.Semiannual)
 
     def testDayCounter(self):
         """ Testing FixedRateBond dayCounter() method. """
@@ -61,18 +74,19 @@ class FixedRateBondTest(unittest.TestCase):
         self.assertEqual(self.bond.issueDate(), self.issue_date)
         self.assertEqual(self.bond.maturityDate(), self.maturity_date)
 
-    #def testSettlementValue(self):
+    # def testSettlementValue(self):
     #    """ Testing FixedRateBond settlement value. """
-    #    orig_date = QuantLib.Settings.evaluationDate
-    #    QuantLib.Settings.evaluationDate = self.issue_date + 1*QuantLib.Months
+    #    orig_date = ql.Settings.evaluationDate
+    #    ql.Settings.evaluationDate = self.issue_date + 1*ql.Months
     #    self.assertEqual(round(self.bond.settlementValue(100.0), 4), 102.3098)
-    #    QuantLib.Settings.evaluationDate = orig_date
+    #    ql.Settings.evaluationDate = orig_date
 
     def testCashFlows(self):
         """ Testing that the FixedRateBond gives the expected cash flows. """
-        self.assertEqual([round(cf.amount(), 4) for cf in self.bond.cashflows()],
-                         20*[round(self.face_amount * self.coupons[0] / 2, 4)] + \
-                         [round(self.redemption, 4)])
+        self.assertEqual(
+            [round(cf.amount(), 4) for cf in self.bond.cashflows()],
+            20 * [round(self.face_amount * self.coupons[0] / 2, 4)] + [round(self.redemption, 4)],
+        )
 
     def testRedemption(self):
         """ Testing FixedRateBond redemption value and date. """
@@ -97,50 +111,83 @@ class FixedRateBondTest(unittest.TestCase):
 
     def testPrevCoupon(self):
         """ Testing FixedRateBond correct previous coupon amount. """
-        self.assertEqual(self.bond.previousCouponRate(self.issue_date), 0.05)
+        self.assertEqual(self.bond.previousCouponRate(), 0.05)
 
     def testCleanPrice(self):
         """ Testing FixedRateBond clean price. """
-        self.assertEqual(round(self.bond.cleanPrice(0.05, self.day_counter, QuantLib.Compounded,
-                                                    QuantLib.Semiannual, self.issue_date), 4),
-                         99.9964)
-        self.assertEqual(round(self.bond.cleanPrice(0.05, self.day_counter, QuantLib.Compounded,
-                                                    QuantLib.Semiannual, self.issue_date +
-                                                    QuantLib.Period(1, QuantLib.Months)), 4),
-                         99.9921)
+        self.assertEqual(
+            round(self.bond.cleanPrice(0.05, self.day_counter, ql.Compounded, ql.Semiannual, self.issue_date), 4),
+            99.9964,
+        )
+        self.assertEqual(
+            round(
+                self.bond.cleanPrice(
+                    0.05, self.day_counter, ql.Compounded, ql.Semiannual, self.issue_date + ql.Period(1, ql.Months)
+                ),
+                4,
+            ),
+            99.9921,
+        )
 
-        self.assertEqual(round(self.bond.cleanPrice(0.06, self.day_counter, QuantLib.Compounded,
-                                                    QuantLib.Semiannual, self.issue_date +
-                                                    QuantLib.Period(1,QuantLib.Months)), 4),
-                         92.5985)
-
+        self.assertEqual(
+            round(
+                self.bond.cleanPrice(
+                    0.06, self.day_counter, ql.Compounded, ql.Semiannual, self.issue_date + ql.Period(1, ql.Months)
+                ),
+                4,
+            ),
+            92.5985,
+        )
 
     def testDirtyPrice(self):
         """ Testing FixedRateBond dirty price. """
-        self.assertEqual(round(self.bond.dirtyPrice(0.05, self.day_counter, QuantLib.Compounded,
-                                                    QuantLib.Semiannual, self.issue_date), 4),
-                         99.9964)
-        self.assertEqual(round(self.bond.dirtyPrice(0.05, self.day_counter, QuantLib.Compounded,
-                                                    QuantLib.Semiannual, self.issue_date +
-                                                    QuantLib.Period(1,QuantLib.Months)), 4),
-                         100.4179)
-        self.assertEqual(round(self.bond.dirtyPrice(0.06, self.day_counter, QuantLib.Compounded,
-                                                    QuantLib.Semiannual, self.issue_date +
-                                                    QuantLib.Period(1,QuantLib.Months)), 4),
-                         93.0244)
+        self.assertEqual(
+            round(self.bond.dirtyPrice(0.05, self.day_counter, ql.Compounded, ql.Semiannual, self.issue_date), 4),
+            99.9964,
+        )
+        self.assertEqual(
+            round(
+                self.bond.dirtyPrice(
+                    0.05, self.day_counter, ql.Compounded, ql.Semiannual, self.issue_date + ql.Period(1, ql.Months)
+                ),
+                4,
+            ),
+            100.4179,
+        )
+        self.assertEqual(
+            round(
+                self.bond.dirtyPrice(
+                    0.06, self.day_counter, ql.Compounded, ql.Semiannual, self.issue_date + ql.Period(1, ql.Months)
+                ),
+                4,
+            ),
+            93.0244,
+        )
 
     def testCleanPriceFromZSpread(self):
         """ Testing FixedRateBond clean price derived from Z-spread. """
-        self.assertEqual(round(QuantLib.cleanPriceFromZSpread(
-                    self.bond, self.flat_forward, 0.01,
-                    self.day_counter, QuantLib.Compounded, QuantLib.Semiannual,
-                    self.issue_date + QuantLib.Period(1,QuantLib.Months)), 4), 92.5926)
-    
-    def tearDown(self):
-        QuantLib.Settings.instance().setEvaluationDate(QuantLib.Date())
+        self.assertEqual(
+            round(
+                ql.cleanPriceFromZSpread(
+                    self.bond,
+                    self.flat_forward,
+                    0.01,
+                    self.day_counter,
+                    ql.Compounded,
+                    ql.Semiannual,
+                    self.issue_date + ql.Period(1, ql.Months),
+                ),
+                4,
+            ),
+            92.5926,
+        )
 
-if __name__ == '__main__':
-    print('testing QuantLib ' + QuantLib.__version__)
+    def tearDown(self):
+        ql.Settings.instance().setEvaluationDate(ql.Date())
+
+
+if __name__ == "__main__":
+    print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(FixedRateBondTest,'test'))
+    suite.addTest(unittest.makeSuite(FixedRateBondTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)

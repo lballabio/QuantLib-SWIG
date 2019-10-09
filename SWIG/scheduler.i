@@ -95,7 +95,23 @@ class Schedule {
     Schedule();
     Size size() const;
     Date date(Size i) const;
+    Date previousDate(const Date& refDate) const;
+    Date nextDate(const Date& refDate) const;
+    bool hasIsRegular() const;
     bool isRegular(Size i) const;
+    const std::vector<bool>& isRegular() const;
+    const Calendar& calendar() const;
+    const Date& startDate() const;
+    const Date& endDate() const;
+    bool hasTenor() const;
+    const Period& tenor() const;
+    BusinessDayConvention businessDayConvention() const;
+    bool hasTerminationDateBusinessDayConvention() const;
+    BusinessDayConvention terminationDateBusinessDayConvention() const;
+    bool hasRule() const;
+    DateGeneration::Rule rule() const;
+    bool hasEndOfMonth() const;
+    bool endOfMonth() const;
     Schedule until(Date truncationDate) const;
     %extend {
         #if defined(SWIGPYTHON) || defined(SWIGRUBY)

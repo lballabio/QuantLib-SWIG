@@ -26,51 +26,24 @@
 using QuantLib::InterpolatedForwardCurve;
 %}
 
-%define export_forward_curve(Name,Interpolator)
-
-%{
-typedef boost::shared_ptr<YieldTermStructure> Name##Ptr;
-%}
-
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(InterpolatedForwardCurve<BackwardFlat>);
+            
+template <class Interpolator>
+class InterpolatedForwardCurve : public YieldTermStructure {
   public:
-    %extend {
-        Name##Ptr(const std::vector<Date>& dates,
-                  const std::vector<Rate>& forwards,
-                  const DayCounter& dayCounter,
-                  const Calendar& calendar = Calendar(),
-                  const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new InterpolatedForwardCurve<Interpolator>(dates,forwards,
-                                                           dayCounter,
-                                                           calendar,i));
-        }
-        const std::vector<Date>& dates() {
-            typedef InterpolatedForwardCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Rate>& forwards() {
-            typedef InterpolatedForwardCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->forwards();
-        }
-        #if !defined(SWIGR)
-        std::vector<std::pair<Date,Rate> > nodes() {
-            typedef InterpolatedForwardCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+    InterpolatedForwardCurve(const std::vector<Date>& dates,
+                             const std::vector<Rate>& forwards,
+                             const DayCounter& dayCounter,
+                             const Calendar& calendar = Calendar(),
+                             const Interpolator& i = Interpolator());
+    const std::vector<Date>& dates() const;
+    const std::vector<Rate>& forwards() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Rate> > nodes() const;
+    #endif
 };
 
-%enddef
-
-
-export_forward_curve(ForwardCurve,BackwardFlat);
-
-// add interpolations as you wish, e.g.,
-// export_forward_curve(LinearForwardCurve,Linear);
-
+%template(ForwardCurve) InterpolatedForwardCurve<BackwardFlat>;
 
 
 #endif

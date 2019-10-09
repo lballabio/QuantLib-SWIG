@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Joseph Wang
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,342 +26,394 @@
 %include date.i
 %include options.i
 %include payoffs.i
+
 %{
 using QuantLib::BasketOption;
 using QuantLib::BasketPayoff;
 using QuantLib::MinBasketPayoff;
 using QuantLib::MaxBasketPayoff;
 using QuantLib::AverageBasketPayoff;
-typedef boost::shared_ptr<Instrument> BasketOptionPtr;
-typedef boost::shared_ptr<Payoff> BasketPayoffPtr;
-typedef boost::shared_ptr<Payoff> MinBasketPayoffPtr;
-typedef boost::shared_ptr<Payoff> MaxBasketPayoffPtr;
-typedef boost::shared_ptr<Payoff> AverageBasketPayoffPtr;
+using QuantLib::SpreadBasketPayoff;
 %}
 
-%rename(BasketPayoff) BasketPayoffPtr;
-class BasketPayoffPtr : public boost::shared_ptr<Payoff> {};
-
-%rename(MinBasketPayoff) MinBasketPayoffPtr;
-class MinBasketPayoffPtr : public BasketPayoffPtr  {
-  public:
-    %extend {
-        MinBasketPayoffPtr(const boost::shared_ptr<Payoff> p) {
-            return new MinBasketPayoffPtr(new MinBasketPayoff(p));
-        }
-    }
+%shared_ptr(BasketPayoff)
+class BasketPayoff : public Payoff {
+  private:
+    BasketPayoff();
 };
 
-%rename(MaxBasketPayoff) MaxBasketPayoffPtr;
-class MaxBasketPayoffPtr : public BasketPayoffPtr  {
+%shared_ptr(MinBasketPayoff)
+class MinBasketPayoff : public BasketPayoff  {
   public:
-    %extend {
-        MaxBasketPayoffPtr(const boost::shared_ptr<Payoff> p) {
-            return new MaxBasketPayoffPtr(new MaxBasketPayoff(p));
-        }
-    }
+    MinBasketPayoff(const boost::shared_ptr<Payoff> p);
 };
 
-%rename(AverageBasketPayoff) AverageBasketPayoffPtr;
-class AverageBasketPayoffPtr :
-      public BasketPayoffPtr  {
+%shared_ptr(MaxBasketPayoff)
+class MaxBasketPayoff : public BasketPayoff  {
   public:
-    %extend {
-        AverageBasketPayoffPtr(const boost::shared_ptr<Payoff> p,
-                               const Array &a) {
-            return new AverageBasketPayoffPtr(new AverageBasketPayoff(p, a));
-        }
-        AverageBasketPayoffPtr(const boost::shared_ptr<Payoff> p,
-                               Size n) {
-            return new AverageBasketPayoffPtr(new AverageBasketPayoff(p, n));
-        }
-    }
+    MaxBasketPayoff(const boost::shared_ptr<Payoff> p);
 };
 
-
-%rename(BasketOption) BasketOptionPtr;
-class BasketOptionPtr : public MultiAssetOptionPtr {
+%shared_ptr(AverageBasketPayoff)
+class AverageBasketPayoff :
+      public BasketPayoff  {
   public:
-    %extend {
-        BasketOptionPtr(
-                const boost::shared_ptr<Payoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise) {
-            boost::shared_ptr<BasketPayoff> stPayoff =
-                 boost::dynamic_pointer_cast<BasketPayoff>(payoff);
-            QL_REQUIRE(stPayoff, "wrong payoff given");
-            return new BasketOptionPtr(new BasketOption(stPayoff,exercise));
-        }
-    }
+    AverageBasketPayoff(const boost::shared_ptr<Payoff> p,
+                           const Array &a);
+    AverageBasketPayoff(const boost::shared_ptr<Payoff> p,
+                           Size n);
+};
+
+%shared_ptr(SpreadBasketPayoff)
+class SpreadBasketPayoff : public BasketPayoff  {
+  public:
+    SpreadBasketPayoff(const boost::shared_ptr<Payoff> p);
+};
+
+%shared_ptr(BasketOption)
+class BasketOption : public MultiAssetOption {
+  public:
+    BasketOption(
+            const boost::shared_ptr<BasketPayoff>& payoff,
+            const boost::shared_ptr<Exercise>& exercise);
 };
 
 
 %{
 using QuantLib::MCEuropeanBasketEngine;
-typedef boost::shared_ptr<PricingEngine> MCEuropeanBasketEnginePtr;
-%}
-
-%rename(MCEuropeanBasketEngine) MCEuropeanBasketEnginePtr;
-class MCEuropeanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCEuropeanBasketEnginePtr;
-    #endif
-  public:
-    %extend {
-        MCEuropeanBasketEnginePtr(const StochasticProcessArrayPtr& process,
-                                  const std::string& traits,
-                                  Size timeSteps = Null<Size>(),
-                                  Size timeStepsPerYear = Null<Size>(),
-                                  bool brownianBridge = false,
-                                  bool antitheticVariate = false,
-                                  intOrNull requiredSamples = Null<Size>(),
-                                  doubleOrNull requiredTolerance = Null<Real>(),
-                                  intOrNull maxSamples = Null<Size>(),
-                                  BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                return new MCEuropeanBasketEnginePtr(
-                   new MCEuropeanBasketEngine<PseudoRandom>(processes,
-                                                            timeSteps,
-                                                            timeStepsPerYear,
-                                                            brownianBridge,
-                                                            antitheticVariate,
-                                                            requiredSamples,
-                                                            requiredTolerance,
-                                                            maxSamples,
-                                                            seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCEuropeanBasketEnginePtr(
-                   new MCEuropeanBasketEngine<LowDiscrepancy>(processes,
-                                                              timeSteps,
-                                                              timeStepsPerYear,
-                                                              brownianBridge,
-                                                              antitheticVariate,
-                                                              requiredSamples,
-                                                              requiredTolerance,
-                                                              maxSamples,
-                                                              seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
-        }
-    }
-};
-
-%{
 using QuantLib::MCAmericanBasketEngine;
-typedef boost::shared_ptr<PricingEngine> MCAmericanBasketEnginePtr;
 %}
 
-%rename(MCAmericanBasketEngine) MCAmericanBasketEnginePtr;
-class MCAmericanBasketEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MCEuropeanBasketEngine<PseudoRandom>);
+%shared_ptr(MCEuropeanBasketEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCEuropeanBasketEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCAmericanBasketEnginePtr;
+    %feature("kwargs") MCEuropeanBasketEngine;
     #endif
   public:
     %extend {
-        MCAmericanBasketEnginePtr(const StochasticProcessArrayPtr& process,
-                                  const std::string& traits,
-                                  Size timeSteps = Null<Size>(),
-                                  Size timeStepsPerYear = Null<Size>(),
-                                  bool brownianBridge = false,
-                                  bool antitheticVariate = false,
-                                  intOrNull requiredSamples = Null<Size>(),
-                                  doubleOrNull requiredTolerance = Null<Real>(),
-                                  intOrNull maxSamples = Null<Size>(),
-                                  BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                  return new MCAmericanBasketEnginePtr(
-                  new MCAmericanBasketEngine<PseudoRandom>(processes,
-                                                           timeSteps,
-                                                           timeStepsPerYear,
-                                                           brownianBridge,
-                                                           antitheticVariate,
-                                                           requiredSamples,
-                                                           requiredTolerance,
-                                                           maxSamples,
-                                                           seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCAmericanBasketEnginePtr(
-                new MCAmericanBasketEngine<LowDiscrepancy>(processes,
-                                                           timeSteps,
-                                                           timeStepsPerYear,
-                                                           brownianBridge,
-                                                           antitheticVariate,
-                                                           requiredSamples,
-                                                           requiredTolerance,
-                                                           maxSamples,
-                                                           seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+        MCEuropeanBasketEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+                               intOrNull timeSteps = Null<Size>(),
+                               intOrNull timeStepsPerYear = Null<Size>(),
+                               bool brownianBridge = false,
+                               bool antitheticVariate = false,
+                               intOrNull requiredSamples = Null<Size>(),
+                               doubleOrNull requiredTolerance = Null<Real>(),
+                               intOrNull maxSamples = Null<Size>(),
+                               BigInteger seed = 0) {
+            return new MCEuropeanBasketEngine<RNG>(process,
+                                                   timeSteps,
+                                                   timeStepsPerYear,
+                                                   brownianBridge,
+                                                   antitheticVariate,
+                                                   requiredSamples,
+                                                   requiredTolerance,
+                                                   maxSamples,
+                                                   seed);
         }
     }
 };
 
+%template(MCPREuropeanBasketEngine) MCEuropeanBasketEngine<PseudoRandom>;
+%template(MCLDEuropeanBasketEngine) MCEuropeanBasketEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanBasketEngine(process,
+                               traits,
+                               timeSteps=None,
+                               timeStepsPerYear=None,
+                               brownianBridge=False,
+                               antitheticVariate=False,
+                               requiredSamples=None,
+                               requiredTolerance=None,
+                               maxSamples=None,
+                               seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanBasketEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanBasketEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
+
+%shared_ptr(MCAmericanBasketEngine<PseudoRandom>);
+%shared_ptr(MCAmericanBasketEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCAmericanBasketEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCAmericanBasketEngine;
+    #endif
+  public:
+    %extend {
+        MCAmericanBasketEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+                               intOrNull timeSteps = Null<Size>(),
+                               intOrNull timeStepsPerYear = Null<Size>(),
+                               bool brownianBridge = false,
+                               bool antitheticVariate = false,
+                               intOrNull requiredSamples = Null<Size>(),
+                               doubleOrNull requiredTolerance = Null<Real>(),
+                               intOrNull maxSamples = Null<Size>(),
+                               BigInteger seed = 0,
+                               Size nCalibrationSamples = Null<Size>(),
+                               Size polynomOrder = 2,
+                               LsmBasisSystem::PolynomType polynomType 
+                                  	= LsmBasisSystem::Monomial) {
+            return new MCAmericanBasketEngine<RNG>(process,
+                                                   timeSteps,
+                                                   timeStepsPerYear,
+                                                   brownianBridge,
+                                                   antitheticVariate,
+                                                   requiredSamples,
+                                                   requiredTolerance,
+                                                   maxSamples,
+                                                   seed,
+                                                   nCalibrationSamples,
+                                                   polynomOrder,
+                                                   polynomType);
+        }
+    }
+};
+
+%template(MCPRAmericanBasketEngine) MCAmericanBasketEngine<PseudoRandom>;
+%template(MCLDAmericanBasketEngine) MCAmericanBasketEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCAmericanBasketEngine(process,
+                               traits,
+                               timeSteps=None,
+                               timeStepsPerYear=None,
+                               brownianBridge=False,
+                               antitheticVariate=False,
+                               requiredSamples=None,
+                               requiredTolerance=None,
+                               maxSamples=None,
+                               seed=0,
+                               nCalibrationSamples=2048,
+                               polynomOrder=2,
+                               polynomType=LsmBasisSystem.Monomial):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRAmericanBasketEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDAmericanBasketEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed,
+                   nCalibrationSamples,
+                   polynomOrder,
+                   polynomType)
+%}
+#endif
 
 %{
 using QuantLib::StulzEngine;
-typedef boost::shared_ptr<PricingEngine> StulzEnginePtr;
+using QuantLib::KirkEngine;
+using QuantLib::Fd2dBlackScholesVanillaEngine;
 %}
 
-%rename(StulzEngine) StulzEnginePtr;
-class StulzEnginePtr
-    : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(StulzEngine)
+class StulzEngine : public PricingEngine {
   public:
-    %extend {
-        StulzEnginePtr(const GeneralizedBlackScholesProcessPtr& process1,
-                       const GeneralizedBlackScholesProcessPtr& process2,
-                       Real correlation) {
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess1 =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                    process1);
-            QL_REQUIRE(bsProcess1, "Black-Scholes process required");
-            boost::shared_ptr<GeneralizedBlackScholesProcess> bsProcess2 =
-                 boost::dynamic_pointer_cast<GeneralizedBlackScholesProcess>(
-                                                                    process2);
-            QL_REQUIRE(bsProcess2, "Black-Scholes process required");
-            return new StulzEnginePtr(
-                          new StulzEngine(bsProcess1,bsProcess2,correlation));
-        }
-    }
+    StulzEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
+                const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
+                Real correlation);
 };
 
+%shared_ptr(KirkEngine)
+class KirkEngine : public PricingEngine {
+  public:
+    KirkEngine(const boost::shared_ptr<BlackProcess>& process1,
+               const boost::shared_ptr<BlackProcess>& process2,
+               Real correlation);
+};
+
+%shared_ptr(Fd2dBlackScholesVanillaEngine)
+class Fd2dBlackScholesVanillaEngine : public PricingEngine {
+  public:
+    Fd2dBlackScholesVanillaEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+                const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+                Real correlation,
+                Size xGrid = 100, Size yGrid = 100, 
+                Size tGrid = 50, Size dampingSteps = 0,
+                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                bool localVol = false,
+                Real illegalLocalVolOverwrite = -Null<Real>());
+};
 
 %{
 using QuantLib::EverestOption;
-typedef boost::shared_ptr<Instrument> EverestOptionPtr;
 using QuantLib::MCEverestEngine;
-typedef boost::shared_ptr<PricingEngine> MCEverestEnginePtr;
 %}
 
-%rename(EverestOption) EverestOptionPtr;
-class EverestOptionPtr : public MultiAssetOptionPtr {
+%shared_ptr(EverestOption)
+class EverestOption : public MultiAssetOption {
   public:
-    %extend {
-        EverestOptionPtr(Real notional,
-                         Rate guarantee,
-                         const boost::shared_ptr<Exercise>& exercise) {
-            return new EverestOptionPtr(new EverestOption(notional,guarantee,
-                                                          exercise));
-        }
-    }
+    EverestOption(Real notional,
+                     Rate guarantee,
+                     const boost::shared_ptr<Exercise>& exercise);
 };
 
-%rename(MCEverestEngine) MCEverestEnginePtr;
-class MCEverestEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MCEverestEngine<PseudoRandom>);
+%shared_ptr(MCEverestEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCEverestEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCEverestEnginePtr;
+    %feature("kwargs") MCEverestEngine;
     #endif
   public:
     %extend {
-        MCEverestEnginePtr(const StochasticProcessArrayPtr& process,
-                           const std::string& traits,
-                           Size timeSteps = Null<Size>(),
-                           Size timeStepsPerYear = Null<Size>(),
-                           bool brownianBridge = false,
-                           bool antitheticVariate = false,
-                           intOrNull requiredSamples = Null<Size>(),
-                           doubleOrNull requiredTolerance = Null<Real>(),
-                           intOrNull maxSamples = Null<Size>(),
-                           BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                return new MCEverestEnginePtr(
-                        new MCEverestEngine<PseudoRandom>(processes,
-                                                          timeSteps,
-                                                          timeStepsPerYear,
-                                                          brownianBridge,
-                                                          antitheticVariate,
-                                                          requiredSamples,
-                                                          requiredTolerance,
-                                                          maxSamples,
-                                                          seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCEverestEnginePtr(
-                      new MCEverestEngine<LowDiscrepancy>(processes,
-                                                          timeSteps,
-                                                          timeStepsPerYear,
-                                                          brownianBridge,
-                                                          antitheticVariate,
-                                                          requiredSamples,
-                                                          requiredTolerance,
-                                                          maxSamples,
-                                                          seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+        MCEverestEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+                        Size timeSteps = Null<Size>(),
+                        Size timeStepsPerYear = Null<Size>(),
+                        bool brownianBridge = false,
+                        bool antitheticVariate = false,
+                        intOrNull requiredSamples = Null<Size>(),
+                        doubleOrNull requiredTolerance = Null<Real>(),
+                        intOrNull maxSamples = Null<Size>(),
+                        BigInteger seed = 0) {
+            return new MCEverestEngine<RNG>(process,
+                                            timeSteps,
+                                            timeStepsPerYear,
+                                            brownianBridge,
+                                            antitheticVariate,
+                                            requiredSamples,
+                                            requiredTolerance,
+                                            maxSamples,
+                                            seed);
         }
     }
 };
+
+%template(MCPREverestEngine) MCEverestEngine<PseudoRandom>;
+%template(MCLDEverestEngine) MCEverestEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEverestEngine(process,
+                        traits,
+                        timeSteps=None,
+                        timeStepsPerYear=None,
+                        brownianBridge=False,
+                        antitheticVariate=False,
+                        requiredSamples=None,
+                        requiredTolerance=None,
+                        maxSamples=None,
+                        seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREverestEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEverestEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 
 %{
 using QuantLib::HimalayaOption;
-typedef boost::shared_ptr<Instrument> HimalayaOptionPtr;
 using QuantLib::MCHimalayaEngine;
-typedef boost::shared_ptr<PricingEngine> MCHimalayaEnginePtr;
 %}
 
-%rename(HimalayaOption) HimalayaOptionPtr;
-class HimalayaOptionPtr : public MultiAssetOptionPtr {
+%shared_ptr(HimalayaOption)
+class HimalayaOption : public MultiAssetOption {
   public:
-    %extend {
-        HimalayaOptionPtr(const std::vector<Date>& fixingDates,
-                          Real strike) {
-            return new HimalayaOptionPtr(new HimalayaOption(fixingDates,
-                                                            strike));
-        }
-    }
+    HimalayaOption(const std::vector<Date>& fixingDates,
+                      Real strike);
 };
 
-%rename(MCHimalayaEngine) MCHimalayaEnginePtr;
-class MCHimalayaEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MCHimalayaEngine<PseudoRandom>);
+%shared_ptr(MCHimalayaEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCHimalayaEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCHimalayaEnginePtr;
+    %feature("kwargs") MCHimalayaEngine;
     #endif
   public:
     %extend {
-        MCHimalayaEnginePtr(const StochasticProcessArrayPtr& process,
-                            const std::string& traits,
-                            bool brownianBridge = false,
-                            bool antitheticVariate = false,
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0) {
-            boost::shared_ptr<StochasticProcessArray> processes =
-                 boost::dynamic_pointer_cast<StochasticProcessArray>(process);
-            QL_REQUIRE(processes, "stochastic-process array required");
-            std::string s = boost::algorithm::to_lower_copy(traits);
-            if (s == "pseudorandom" || s == "pr")
-                return new MCHimalayaEnginePtr(
-                       new MCHimalayaEngine<PseudoRandom>(processes,
-                                                          brownianBridge,
-                                                          antitheticVariate,
-                                                          requiredSamples,
-                                                          requiredTolerance,
-                                                          maxSamples,
-                                                          seed));
-            else if (s == "lowdiscrepancy" || s == "ld")
-                return new MCHimalayaEnginePtr(
-                     new MCHimalayaEngine<LowDiscrepancy>(processes,
-                                                          brownianBridge,
-                                                          antitheticVariate,
-                                                          requiredSamples,
-                                                          requiredTolerance,
-                                                          maxSamples,
-                                                          seed));
-            else
-                QL_FAIL("unknown Monte Carlo engine type: "+s);
+        MCHimalayaEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+                         bool brownianBridge = false,
+                         bool antitheticVariate = false,
+                         intOrNull requiredSamples = Null<Size>(),
+                         doubleOrNull requiredTolerance = Null<Real>(),
+                         intOrNull maxSamples = Null<Size>(),
+                         BigInteger seed = 0) {
+            return new MCHimalayaEngine<RNG>(process,
+                                             brownianBridge,
+                                             antitheticVariate,
+                                             requiredSamples,
+                                             requiredTolerance,
+                                             maxSamples,
+                                             seed);
         }
     }
 };
+
+%template(MCPRHimalayaEngine) MCHimalayaEngine<PseudoRandom>;
+%template(MCLDHimalayaEngine) MCHimalayaEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCHimalayaEngine(process,
+                         traits,
+                         brownianBridge=False,
+                         antitheticVariate=False,
+                         requiredSamples=None,
+                         requiredTolerance=None,
+                         maxSamples=None,
+                         seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRHimalayaEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDHimalayaEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   brownianBridge,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
 
 #endif

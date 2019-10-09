@@ -20,23 +20,25 @@
 #define quantlib_observer_i
 
 %include common.i
+%include boost_shared_ptr.i
 
 %{
 using QuantLib::Observer;
 using QuantLib::Observable;
 %}
 
-%template(Observable) boost::shared_ptr<Observable>;
-%define IsObservable(Type)
-#if defined(SWIGRUBY)
-%rename("toObservable") Type::asObservable;
-#endif
-%extend Type {
+%shared_ptr(Observable);
+class Observable {};
+
+
+%extend Handle {
+    #if defined(SWIGRUBY)
+    %rename("toObservable") asObservable;
+    #endif
     boost::shared_ptr<Observable> asObservable() {
         return boost::shared_ptr<Observable>(*self);
     }
 }
-%enddef
 
 
 #if defined(SWIGPYTHON)
@@ -90,9 +92,15 @@ class PyObserver {
     void unregisterWith(const boost::shared_ptr<Observable>&);
     %pythoncode %{
         def registerWith(self,x):
-            self._registerWith(x.asObservable())
+            if hasattr(x, "asObservable"):
+                self._registerWith(x.asObservable())
+            else:
+                self._registerWith(x)
         def unregisterWith(self,x):
-            self._unregisterWith(x.asObservable())
+            if hasattr(x, "asObservable"):
+                self._unregisterWith(x.asObservable())
+            else:
+                self._unregisterWith(x)
     %}
 };
 
