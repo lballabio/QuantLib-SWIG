@@ -39,6 +39,7 @@ using QuantLib::Bond;
 using QuantLib::ZeroCouponBond;
 using QuantLib::FixedRateBond;
 using QuantLib::AmortizingFixedRateBond;
+using QuantLib::AmortizingFixedRatePool;
 using QuantLib::FloatingRateBond;
 using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
@@ -47,6 +48,7 @@ typedef boost::shared_ptr<Instrument> BondPtr;
 typedef boost::shared_ptr<Instrument> ZeroCouponBondPtr;
 typedef boost::shared_ptr<Instrument> FixedRateBondPtr;
 typedef boost::shared_ptr<Instrument> AmortizingFixedRateBondPtr;
+typedef boost::shared_ptr<Instrument> AmortizingFixedRatePoolPtr;
 typedef boost::shared_ptr<Instrument> FloatingRateBondPtr;
 typedef boost::shared_ptr<Instrument> AmortizingFloatingRateBondPtr;
 typedef boost::shared_ptr<PricingEngine> DiscountingBondEnginePtr;
@@ -329,6 +331,39 @@ class AmortizingFixedRateBondPtr : public BondPtr {
         }
         DayCounter dayCounter() const {
             return boost::dynamic_pointer_cast<AmortizingFixedRateBond>(*self)
+                ->dayCounter();
+        }
+    }
+};
+
+
+%rename(AmortizingFixedRatePool) AmortizingFixedRatePoolPtr;
+class AmortizingFixedRatePoolPtr : public BondPtr {
+  public:
+    %extend {
+        AmortizingFixedRatePoolPtr(
+                Integer settlementDays,
+                const std::vector<Real>& notionals,
+		const std::vector<Real>& redemptions,
+                const Schedule& schedule,
+                const std::vector<Rate>& coupons,
+                const DayCounter& accrualDayCounter,
+                BusinessDayConvention paymentConvention = QuantLib::Following,
+                Date issueDate = Date(),
+		Natural paymentLag=0) {
+            return new AmortizingFixedRatePoolPtr(
+                new AmortizingFixedRatePool(settlementDays, notionals,
+					    redemptions, schedule, coupons,
+					    accrualDayCounter,
+					    paymentConvention, issueDate,
+					    paymentLag));
+        }
+        Frequency frequency() const {
+            return boost::dynamic_pointer_cast<AmortizingFixedRatePool>(*self)
+                ->frequency();
+        }
+        DayCounter dayCounter() const {
+            return boost::dynamic_pointer_cast<AmortizingFixedRatePool>(*self)
                 ->dayCounter();
         }
     }
