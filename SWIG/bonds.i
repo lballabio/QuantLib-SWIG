@@ -235,7 +235,7 @@ public:
   AmortizingFixedRatePool(
       Integer settlementDays,
       const std::vector<Real> &notionals,
-      const std:vector<Real> &redemptions,
+      const std::vector<Real> &redemptions,
       const Schedule &schedule,
       const std::vector<Rate> &coupons,
       const DayCounter &accrualDayCounter,
