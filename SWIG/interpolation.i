@@ -205,21 +205,21 @@ class RichardsonExtrapolation {
     
     %extend {
       #if defined(SWIGPYTHON)
-		RichardsonExtrapolation(
-			PyObject* fct, Real delta_h, Real n = Null<Real>()) {
-		
-			UnaryFunction f(fct);
-			return new RichardsonExtrapolation(f, delta_h, n); 
-		}
-	  #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
-		RichardsonExtrapolation(
-			UnaryFunctionDelegate* fct, Real delta_h, Real n = Null<Real>()) {
-		
-			UnaryFunction f(fct);
-			return new RichardsonExtrapolation(f, delta_h, n); 
-		}		
-	  #endif
-	}
+        RichardsonExtrapolation(
+            PyObject* fct, Real delta_h, Real n = Null<Real>()) {
+        
+            UnaryFunction f(fct);
+            return new RichardsonExtrapolation(f, delta_h, n); 
+        }
+      #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+        RichardsonExtrapolation(
+            UnaryFunctionDelegate* fct, Real delta_h, Real n = Null<Real>()) {
+        
+            UnaryFunction f(fct);
+            return new RichardsonExtrapolation(f, delta_h, n); 
+        }        
+      #endif
+    }
 };
 
 #endif
