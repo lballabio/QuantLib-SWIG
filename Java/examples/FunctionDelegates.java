@@ -1,0 +1,59 @@
+package examples;
+
+import org.quantlib.Brent;
+import org.quantlib.DoubleVector;
+import org.quantlib.OdeFctDelegate;
+import org.quantlib.GaussKronrodAdaptive;
+import org.quantlib.UnaryFunctionDelegate;
+import org.quantlib.BinaryFunctionDelegate;
+import org.quantlib.RungeKutta;
+
+public class FunctionDelegates {
+
+    public static void main(String[] args) {
+        long beginTime = System.currentTimeMillis();
+    
+        System.out.println("Integration result " +
+            new GaussKronrodAdaptive(1e-8).calculate(
+                new UnaryFunctionDelegate() {
+                    public double value(double x) { return Math.sin(x); }
+                }, 0.0, Math.PI
+            )
+        );
+    
+        System.out.println("Brent Solver result " +
+            new Brent().solve(
+                new UnaryFunctionDelegate() {
+                    public double value(double x) { return Math.cos(x)-x; }
+                }, 1e-8, 0.5, 0.0, Math.PI
+            )
+        );
+        
+        System.out.println("One dimensional adaptive Runge-Kutta result " + 
+            // y'=y  and y[0] = 1
+            new RungeKutta().getValue(
+                new BinaryFunctionDelegate() {
+                    public double value(double x, double y) { return y; }
+                }, 1.0, 0.0, 1.0
+            )
+        );
+        
+        DoubleVector startVal = new DoubleVector();
+        startVal.add(0.0);
+        startVal.add(1.0);
+
+        System.out.println("Two dimensional adaptive Runge-Kutta result " + 
+            // y_0'=y_1 & y_1'=-y_0 and y_0[0]=0 & y_1[0]=1
+            new RungeKutta().getValue(
+                new OdeFctDelegate() {                    
+                    public DoubleVector value(double x, DoubleVector y) {
+                         DoubleVector retVal = new DoubleVector();
+                         retVal.add(y.get(1));
+                         retVal.add(-y.get(0));
+                        return retVal; 
+                    }
+                }, startVal, 0.0, 0.5*Math.PI
+            ).get(0)
+        );        
+    }
+}
