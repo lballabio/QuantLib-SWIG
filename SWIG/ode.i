@@ -40,7 +40,7 @@ class OdeFctDelegate {
 
 class OdeFct {
   public:
-      OdeFct(OdeFctDelegate* delegate)
+    OdeFct(OdeFctDelegate* delegate)
     : delegate_(delegate) { }
 
     virtual ~OdeFct() { }

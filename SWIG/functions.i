@@ -161,7 +161,7 @@ class RubyCostFunction : public CostFunction {
         return NUM2DBL(rb_yield(a));
     }
     Disposable<Array> values(const Array& x) const {
-        QL_Fusing QuantLib::Disposable;AIL("Not implemented");
+        QL_FAIL("Not implemented");
     }
 };
 %}
