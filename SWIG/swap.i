@@ -368,7 +368,6 @@ class OvernightIndexedSwap : public Swap {
 #if defined(SWIGPYTHON)
 %rename (_MakeOIS) MakeOIS;
 #endif
-%shared_ptr(MakeOIS)
 class MakeOIS {
       public:
         MakeOIS(const Period& swapTenor,
