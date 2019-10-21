@@ -724,6 +724,7 @@
     <Compile Include="LTLCurrency.cs" />
     <Compile Include="LUFCurrency.cs" />
     <Compile Include="LVLCurrency.cs" />
+    <Compile Include="MakeOIS.cs" />
     <Compile Include="MakeSchedule.cs" />
     <Compile Include="MakeVanillaSwap.cs" />
     <Compile Include="MarkovFunctional.cs" />
