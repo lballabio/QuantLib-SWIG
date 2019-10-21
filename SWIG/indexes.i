@@ -4,7 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2015, 2018 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -403,12 +403,17 @@ export_quoted_xibor_instance(EURLibor1Y,EURLibor);
 export_xibor_instance(GBPLibor);
 export_xibor_instance(Jibar);
 export_xibor_instance(JPYLibor);
+export_xibor_instance(Mosprime);
 export_xibor_instance(NZDLibor);
+export_xibor_instance(Pribor);
+export_xibor_instance(Robor);
 export_xibor_instance(SEKLibor);
+export_xibor_instance(Shibor);
 export_xibor_instance(Tibor);
 export_xibor_instance(THBFIX);
 export_xibor_instance(TRLibor);
 export_xibor_instance(USDLibor);
+export_xibor_instance(Wibor);
 export_xibor_instance(Zibor);
 
 export_overnight_instance(Aonia);
@@ -416,6 +421,7 @@ export_overnight_instance(Eonia);
 export_overnight_instance(Sonia);
 export_overnight_instance(FedFunds);
 export_overnight_instance(Nzocr);
+export_overnight_instance(Sofr);
 
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);

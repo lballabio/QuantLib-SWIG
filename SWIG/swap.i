@@ -4,7 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Gouthaman Balaraman
  Copyright (C) 2016 Peter Caspers
- Copyright (C) 2017, 2018 Matthias Lungwitz
+ Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
  Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
@@ -272,6 +272,7 @@ class DiscountingSwapEngine : public PricingEngine {
 
 %{
 using QuantLib::AssetSwap;
+using QuantLib::OvernightIndexedSwapIndex;
 %}
 
 %shared_ptr(AssetSwap)
@@ -465,5 +466,33 @@ def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
     return mv.makeOIS()
 }
 #endif
+
+
+%shared_ptr(OvernightIndexedSwapIndex)
+class OvernightIndexedSwapIndex : public SwapIndex {
+  public:
+    OvernightIndexedSwapIndex(
+              const std::string& familyName,
+              const Period& tenor,
+              Natural settlementDays,
+              Currency currency,
+              const boost::shared_ptr<OvernightIndex>& overnightIndex,
+              bool telescopicValueDates = false);
+    //! \name Inspectors
+    //@{
+    boost::shared_ptr<OvernightIndex> overnightIndex() const;
+    /*! \warning Relinking the term structure underlying the index will
+                 not have effect on the returned swap.
+    */
+    boost::shared_ptr<OvernightIndexedSwap> underlyingSwap(
+                                            const Date& fixingDate) const;
+};
+
+%inline %{
+    boost::shared_ptr<OvernightIndexedSwap> as_overnight_swap_index(
+                          const boost::shared_ptr<InterestRateIndex>& index) {
+        return boost::dynamic_pointer_cast<OvernightIndexedSwap>(index);
+    }
+%}
 
 #endif

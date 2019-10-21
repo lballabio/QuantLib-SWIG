@@ -3,7 +3,7 @@
  Copyright (C) 2004, 2005, 2007, 2008 StatPro Italia srl
  Copyright (C) 2010 Klaus Spanderen
  Copyright (C) 2015 Matthias Groncki
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -92,6 +92,14 @@ class GeneralizedBlackScholesProcess : public StochasticProcess1D {
                              const Handle<YieldTermStructure>& dividendTS,
                              const Handle<YieldTermStructure>& riskFreeTS,
                              const Handle<BlackVolTermStructure>& volTS);
+
+      GeneralizedBlackScholesProcess(
+            const Handle<Quote>& x0,
+            const Handle<YieldTermStructure>& dividendTS,
+            const Handle<YieldTermStructure>& riskFreeTS,
+            const Handle<BlackVolTermStructure>& blackVolTS,
+            const Handle<LocalVolTermStructure>& localVolTS);
+
       Handle<Quote> stateVariable();
       Handle<YieldTermStructure> dividendYield();
       Handle<YieldTermStructure> riskFreeRate();
@@ -264,6 +272,27 @@ class HullWhiteForwardProcess : public StochasticProcess1D {
     Real alpha(Time t) const;
     Real M_T(Real s, Real t, Real T) const;
     Real B(Time t, Time T) const;
+    void setForwardMeasureTime(Time t);
+};
+
+%{
+using QuantLib::G2Process;
+%}
+
+%shared_ptr(G2Process)
+class G2Process : public StochasticProcess {
+  public:
+    G2Process(Real a, Real sigma, Real b, Real eta, Real rho);
+};
+
+%{
+using QuantLib::G2ForwardProcess;
+%}
+
+%shared_ptr(G2ForwardProcess)
+class G2ForwardProcess : public StochasticProcess {
+  public:
+    G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho);
     void setForwardMeasureTime(Time t);
 };
 

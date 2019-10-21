@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import os, sys, math, codecs
+import os, sys, math
 from distutils.cmd import Command
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build
@@ -73,8 +73,8 @@ class my_wrap(Command):
         print('Generating Python bindings for QuantLib...')
         swig_version = os.popen("swig -version").read().split()[2]
         major_swig_version = swig_version[0]
-        if major_swig_version < '3':
-           print('Warning: You have SWIG {} installed, but at least SWIG 3.0.1'
+        if major_swig_version < '4':
+           print('Warning: You have SWIG {} installed, but at least SWIG 4.0.1'
                  ' is recommended. \nSome features may not work.'
                  .format(swig_version))
         swig_dir = os.path.join("..","SWIG")
@@ -216,29 +216,25 @@ if os.name == 'posix':
             g['LDSHARED'] = g['CC'] + ' -shared'
     sysconfig._init_posix = my_init_posix
 
-datafiles  = []
-
-# patch distutils if it can't cope with the "classifiers" or
-# "download_url" keywords
-if sys.version < '2.2.3':
-    from distutils.dist import DistributionMetadata
-    DistributionMetadata.classifiers = None
-    DistributionMetadata.download_url = None
-
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Environment :: Console',
     'Intended Audience :: Developers',
+    'Intended Audience :: Science/Research',
     'Intended Audience :: End Users/Desktop',
     'License :: OSI Approved :: BSD License',
     'Natural Language :: English',
-    'Operating System :: OS Independent',
+    'Programming Language :: C++',
     'Programming Language :: Python',
     'Topic :: Scientific/Engineering',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: POSIX',
+    'Operating System :: Unix',
+    'Operating System :: MacOS',
 ]
 
-setup(name             = "QuantLib-Python",
-      version          = "1.16",
+setup(name             = "QuantLib",
+      version          = "1.17",
       description      = "Python bindings for the QuantLib library",
       long_description = """
 QuantLib (http://quantlib.org/) is a C++ library for financial quantitative
@@ -248,14 +244,13 @@ framework for quantitative finance.
       author           = "QuantLib Team",
       author_email     = "quantlib-users@lists.sourceforge.net",
       url              = "http://quantlib.org",
-      license          = codecs.open('../LICENSE.TXT','r+',
-                                     encoding='utf8').read(),
+      license          = "BSD 3-Clause",
       classifiers      = classifiers,
       py_modules       = ['QuantLib.__init__','QuantLib.QuantLib'],
       ext_modules      = [Extension("QuantLib._QuantLib",
                                     ["QuantLib/quantlib_wrap.cpp"])
                          ],
-      data_files       = datafiles,
+      data_files       = [('share/doc/quantlib/', ['../LICENSE.TXT'])],
       cmdclass         = {'test': test,
                           'wrap': my_wrap,
                           'build': my_build,
