@@ -849,6 +849,7 @@
     <Compile Include="PiecewiseLinearZero.cs" />
     <Compile Include="PiecewiseLogLinearDiscount.cs" />
     <Compile Include="PiecewiseLogCubicDiscount.cs" />
+    <Compile Include="PiecewiseSplineCubicDiscount.cs" />
     <Compile Include="PiecewiseTimeDependentHestonModel.cs" />
     <Compile Include="PiecewiseYoYInflation.cs" />
     <Compile Include="PiecewiseZeroInflation.cs" />
