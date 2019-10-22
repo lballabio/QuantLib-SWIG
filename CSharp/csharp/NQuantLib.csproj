@@ -520,6 +520,7 @@
     <Compile Include="FdHestonVanillaEngine.cs" />
     <Compile Include="FdHullWhiteSwaptionEngine.cs" />
     <Compile Include="FdmHestonGreensFct.cs" />
+    <Compile Include="FdmQuantoHelper.cs" />
     <Compile Include="FdmSquareRootFwdOp.cs" />
     <Compile Include="FdmSchemeDesc.cs" />
     <Compile Include="FdSabrVanillaEngine.cs" />
