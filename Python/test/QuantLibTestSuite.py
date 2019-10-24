@@ -27,7 +27,7 @@ from integrals import IntegralTest
 from solvers1d import Solver1DTest
 from termstructures import TermStructureTest
 from bonds import FixedRateBondTest
-from ratehelpers import FixedRateBondHelperTest, FxSwapRateHelperTest
+from ratehelpers import FixedRateBondHelperTest, FxSwapRateHelperTest, OISRateHelperTest
 from cms import CmsTest
 from assetswap import AssetSwapTest
 from capfloor import CapFloorTest
@@ -36,7 +36,9 @@ from blackformula import BlackDeltaCalculatorTest
 from iborindex import IborIndexTest
 from sabr import SabrTest
 from slv import SlvTest
+from americanquantooption import AmericanQuantoOptionTest
 from extrapolation import ExtrapolationTest
+
 
 def test():
     import QuantLib
@@ -55,6 +57,7 @@ def test():
     suite.addTest(unittest.makeSuite(FixedRateBondHelperTest, 'test'))
     suite.addTest(unittest.makeSuite(CmsTest, 'test'))
     suite.addTest(unittest.makeSuite(AssetSwapTest, 'test'))
+    suite.addTest(unittest.makeSuite(OISRateHelperTest, "test"))
     suite.addTest(unittest.makeSuite(FxSwapRateHelperTest, 'test'))
     suite.addTest(unittest.makeSuite(CapFloorTest, 'test'))
     suite.addTest(unittest.makeSuite(BlackFormulaTest, 'test'))
@@ -62,8 +65,9 @@ def test():
     suite.addTest(unittest.makeSuite(IborIndexTest, 'test'))
     suite.addTest(unittest.makeSuite(SabrTest, 'test'))
     suite.addTest(unittest.makeSuite(SlvTest, 'test'))
+    suite.addTest(unittest.makeSuite(AmericanQuantoOptionTest, 'test'))
     suite.addTest(unittest.makeSuite(ExtrapolationTest, 'test'))
-    
+        
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
     if not result.wasSuccessful:

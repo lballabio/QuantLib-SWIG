@@ -39,6 +39,7 @@ using QuantLib::NonstandardSwap;
 using QuantLib::DiscountingSwapEngine;
 using QuantLib::FloatFloatSwap;
 using QuantLib::OvernightIndexedSwap;
+using QuantLib::MakeOIS;
 %}
 
 %shared_ptr(Swap)
@@ -50,6 +51,7 @@ class Swap : public Instrument {
     Date maturityDate();
     const Leg & leg(Size i);
     Real legNPV(Size j) const;
+    Real legBPS(Size k) const;
 };
 
 %shared_ptr(VanillaSwap)
@@ -137,7 +139,7 @@ class MakeVanillaSwap {
 
 #if defined(SWIGPYTHON)
 %pythoncode{
-def MakeVanillaSwap(swapTenor,iborIndex,fixedRate,forwardStart,
+def MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart,
     receiveFixed=None, swapType=None, Nominal=None, settlementDays=None,
     effectiveDate=None, terminationDate=None, dateGenerationRule=None,
     fixedLegTenor=None, fixedLegCalendar=None, fixedLegConvention=None,
@@ -364,6 +366,107 @@ class OvernightIndexedSwap : public Swap {
     const Leg& fixedLeg();
     const Leg& overnightLeg();
 };
+
+#if defined(SWIGPYTHON)
+%rename (_MakeOIS) MakeOIS;
+#endif
+class MakeOIS {
+      public:
+        MakeOIS(const Period& swapTenor,
+                const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                Rate fixedRate = Null<Rate>(),
+                const Period& fwdStart = 0*Days);
+
+        %extend{
+            boost::shared_ptr<OvernightIndexedSwap> makeOIS(){
+                return (boost::shared_ptr<OvernightIndexedSwap>)(* $self);
+            }
+        }
+
+        MakeOIS& receiveFixed(bool flag = true);
+        MakeOIS& withType(OvernightIndexedSwap::Type type);
+        MakeOIS& withNominal(Real n);
+        MakeOIS& withSettlementDays(Natural settlementDays);
+        MakeOIS& withEffectiveDate(const Date&);
+        MakeOIS& withTerminationDate(const Date&);
+        MakeOIS& withRule(DateGeneration::Rule r);
+        MakeOIS& withPaymentFrequency(Frequency f);
+        MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
+        MakeOIS& withPaymentLag(Natural lag);
+        MakeOIS& withPaymentCalendar(const Calendar& cal);
+        MakeOIS& withEndOfMonth(bool flag = true);
+        MakeOIS& withFixedLegDayCount(const DayCounter& dc);
+        MakeOIS& withOvernightLegSpread(Spread sp);
+        MakeOIS& withDiscountingTermStructure(
+                  const Handle<YieldTermStructure>& discountingTermStructure);
+        MakeOIS& withTelescopicValueDates(bool telescopicValueDates);
+        MakeOIS& withPricingEngine(
+                              const boost::shared_ptr<PricingEngine>& engine);
+};
+
+#if defined(SWIGPYTHON)
+%pythoncode{
+def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
+            receiveFixed=True,
+            swapType=OvernightIndexedSwap.Payer,
+            nominal=1.0,
+            settlementDays=2,
+            effectiveDate=None,
+            terminationDate=None,
+            dateGenerationRule=DateGeneration.Backward,
+            paymentFrequency=Annual,
+            paymentAdjustmentConvention=Following,
+            paymentLag=0,
+            paymentCalendar=None,
+            endOfMonth=True,    
+            fixedLegDayCount=None,
+            overnightLegSpread=0.0,
+            discountingTermStructure=None,
+            telescopicValueDates=False,
+            pricingEngine=None):
+
+    mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
+    
+    if not receiveFixed:
+        mv.receiveFixed(receiveFixed)
+    if swapType != OvernightIndexedSwap.Payer:
+        mv.withType(swapType)
+    if nominal != 1.0:
+        mv.withNominal(nominal)
+    if settlementDays != 2:
+        mv.withSettlementDays(settlementDays)
+    if effectiveDate is not None:
+        mv.withEffectiveDate(effectiveDate)
+    if terminationDate is not None:
+        mv.withTerminationDate(terminationDate)
+    if dateGenerationRule != DateGeneration.Backward:
+        mv.withRule(dateGenerationRule)  
+    if paymentFrequency != Annual:
+        mv.withPaymentFrequency(paymentFrequency)
+    if paymentAdjustmentConvention != Following:
+        mv.withPaymentAdjustment(paymentAdjustmentConvention)
+    if paymentLag != 0:
+        mv.withPaymentLag(paymentLag)
+    if paymentCalendar is not None:
+        mv.withPaymentCalendar(paymentCalendar)
+    if not endOfMonth:
+        mv.withEndOfMonth(endOfMonth)
+    if fixedLegDayCount is not None:
+        mv.withFixedLegDayCount(fixedLegDayCount)
+    else:
+        mv.withFixedLegDayCount(overnightIndex.dayCounter())
+    if overnightLegSpread != 0.0:
+        mv.withOvernightLegSpread(overnightLegSpread)
+    if discountingTermStructure is not None:
+        mv.withDiscountingTermStructure(discountingTermStructure)        
+    if telescopicValueDates:
+        mv.withTelescopicValueDates(telescopicValueDates)
+    if pricingEngine is not None:
+        mv.withPricingEngine(pricingEngine)
+
+    return mv.makeOIS()
+}
+#endif
 
 
 %shared_ptr(OvernightIndexedSwapIndex)
