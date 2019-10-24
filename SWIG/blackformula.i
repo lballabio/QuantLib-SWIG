@@ -27,8 +27,10 @@ using QuantLib::blackFormula;
 using QuantLib::blackFormulaImpliedStdDev;
 using QuantLib::blackFormulaImpliedStdDevLiRS;
 using QuantLib::blackFormulaCashItmProbability;
+using QuantLib::blackFormulaAssetItmProbability;
 using QuantLib::bachelierBlackFormula;
 using QuantLib::bachelierBlackFormulaImpliedVol;
+using QuantLib::bachelierBlackFormulaAssetItmProbability;
 %}
 
 
@@ -84,6 +86,19 @@ Real blackFormulaCashItmProbability(
                         Real stdDev,
                         Real displacement = 0.0);
 
+Real blackFormulaAssetItmProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement = 0.0);
+
+Real blackFormulaAssetItmProbability(
+                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        Real forward,
+                        Real stdDev,
+                        Real displacement = 0.0);
+
 Real bachelierBlackFormula(Option::Type optionType,
                             Real strike,
                             Real forward,
@@ -97,6 +112,16 @@ Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
                                 Real bachelierPrice,
                                 Real discount = 1.0);
 
+Real bachelierBlackFormulaAssetItmProbability(
+                        Option::Type optionType,
+                        Real strike,
+                        Real forward,
+                        Real stdDev);
+
+Real bachelierBlackFormulaAssetItmProbability(
+                    const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                    Real forward,
+                    Real stdDev);      
 
 %{
 using QuantLib::BlackDeltaCalculator;

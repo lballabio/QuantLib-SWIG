@@ -6,6 +6,7 @@ import org.quantlib.OdeFctDelegate;
 import org.quantlib.GaussKronrodAdaptive;
 import org.quantlib.UnaryFunctionDelegate;
 import org.quantlib.BinaryFunctionDelegate;
+import org.quantlib.RichardsonExtrapolation;
 import org.quantlib.RungeKutta;
 
 public class FunctionDelegates {
@@ -28,6 +29,20 @@ public class FunctionDelegates {
                 }, 1e-8, 0.5, 0.0, Math.PI
             )
         );
+        
+        System.out.println("Richardson Extrapolation, known order " +
+            new RichardsonExtrapolation(
+                new UnaryFunctionDelegate() {
+                    public double value(double x) { return Math.exp(1 + x); }
+                }, 0.1, 1.0).getValue(2.0)
+            );
+            
+        System.out.println("Richardson Extrapolation, unknown order" +
+            new RichardsonExtrapolation(
+                new UnaryFunctionDelegate() {
+                    public double value(double x) { return Math.exp(1 + x); }
+                }, 0.1).getValue(4.0, 2.0)
+            );
         
         System.out.println("One dimensional adaptive Runge-Kutta result " + 
             // y'=y  and y[0] = 1

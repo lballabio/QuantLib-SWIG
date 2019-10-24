@@ -94,7 +94,7 @@ class SlvTest(unittest.TestCase):
                 leverageFct,
             )
         )
-
+        
         slvNPV = option.NPV()
 
         bsmProcess = ql.BlackScholesMertonProcess(self.underlying, self.dividendYield, self.riskFreeRate, self.constVol(0.2))

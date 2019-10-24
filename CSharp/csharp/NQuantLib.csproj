@@ -520,6 +520,7 @@
     <Compile Include="FdHestonVanillaEngine.cs" />
     <Compile Include="FdHullWhiteSwaptionEngine.cs" />
     <Compile Include="FdmHestonGreensFct.cs" />
+    <Compile Include="FdmQuantoHelper.cs" />
     <Compile Include="FdmSquareRootFwdOp.cs" />
     <Compile Include="FdmSchemeDesc.cs" />
     <Compile Include="FdSabrVanillaEngine.cs" />
@@ -724,6 +725,7 @@
     <Compile Include="LTLCurrency.cs" />
     <Compile Include="LUFCurrency.cs" />
     <Compile Include="LVLCurrency.cs" />
+    <Compile Include="MakeOIS.cs" />
     <Compile Include="MakeSchedule.cs" />
     <Compile Include="MakeVanillaSwap.cs" />
     <Compile Include="MarkovFunctional.cs" />
@@ -847,6 +849,7 @@
     <Compile Include="PiecewiseLinearZero.cs" />
     <Compile Include="PiecewiseLogLinearDiscount.cs" />
     <Compile Include="PiecewiseLogCubicDiscount.cs" />
+    <Compile Include="PiecewiseSplineCubicDiscount.cs" />
     <Compile Include="PiecewiseTimeDependentHestonModel.cs" />
     <Compile Include="PiecewiseYoYInflation.cs" />
     <Compile Include="PiecewiseZeroInflation.cs" />

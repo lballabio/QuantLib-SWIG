@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2010, 2011 Lluis Pujol Bajador
- Copyright (C) 2017, 2018 Matthias Lungwitz
+ Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -64,6 +64,7 @@ using QuantLib::FixedRateCoupon;
 using QuantLib::IborCoupon;
 using QuantLib::Leg;
 using QuantLib::FloatingRateCoupon;
+using QuantLib::OvernightIndexedCoupon;
 %}
 
 %shared_ptr(SimpleCashFlow)
@@ -170,6 +171,26 @@ class FloatingRateCoupon : public Coupon {
     }
 %}
 
+%shared_ptr(OvernightIndexedCoupon)
+class OvernightIndexedCoupon : public FloatingRateCoupon {
+  public:
+    OvernightIndexedCoupon(
+                const Date& paymentDate,
+                Real nominal,
+                const Date& startDate,
+                const Date& endDate,
+                const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                Real gearing = 1.0,
+                Spread spread = 0.0,
+                const Date& refPeriodStart = Date(),
+                const Date& refPeriodEnd = Date(),
+                const DayCounter& dayCounter = DayCounter(),
+                bool telescopicValueDates = false);
+    const std::vector<Date>& fixingDates() const;
+    const std::vector<Time>& dt() const;
+    const std::vector<Rate>& indexFixings() const;
+    const std::vector<Date>& valueDates() const;
+};
 
 %{
 using QuantLib::CappedFlooredCoupon;
@@ -474,6 +495,39 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              const std::vector<Rate>& caps = std::vector<Rate>(),
              const std::vector<Rate>& floors = std::vector<Rate>(),
              bool isInArrears = false);
+
+%{
+Leg _OvernightLeg(const std::vector<Real>& nominals,
+             const Schedule& schedule,
+             const boost::shared_ptr<Index>& index,
+             const DayCounter& paymentDayCounter = DayCounter(),
+             const BusinessDayConvention paymentConvention = Following,
+             const std::vector<Real>& gearings = std::vector<Real>(),
+             const std::vector<Spread>& spreads = std::vector<Spread>(),
+             bool telescopicValueDates = false) {
+    boost::shared_ptr<OvernightIndex> overnightindex =
+        boost::dynamic_pointer_cast<OvernightIndex>(index);
+    return QuantLib::OvernightLeg(schedule, overnightindex)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(paymentDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withGearings(gearings)
+        .withSpreads(spreads)
+        .withTelescopicValueDates(telescopicValueDates);
+}
+%}
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+%feature("kwargs") _OvernightLeg;
+#endif
+%rename(OvernightLeg) _OvernightLeg;
+Leg _OvernightLeg(const std::vector<Real>& nominals,
+             const Schedule& schedule,
+             const boost::shared_ptr<Index>& index,
+             const DayCounter& paymentDayCounter = DayCounter(),
+             const BusinessDayConvention paymentConvention = Following,
+             const std::vector<Real>& gearings = std::vector<Real>(),
+             const std::vector<Spread>& spreads = std::vector<Spread>(),
+             bool telescopicValueDates = false);
 
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,
