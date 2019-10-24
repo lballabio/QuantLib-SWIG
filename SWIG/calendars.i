@@ -174,6 +174,12 @@ namespace QuantLib {
     class Denmark : public Calendar {};
     class Finland : public Calendar {};
 
+    class France : public Calendar {
+      public:
+        enum Market { Settlement, Exchange };
+        France(Market m = Settlement);
+    };
+
     class Germany : public Calendar {
       public:
         enum Market { Settlement, FrankfurtStockExchange, Xetra, Eurex };
