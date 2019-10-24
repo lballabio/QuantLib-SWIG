@@ -268,6 +268,9 @@ class FixedRateBondHelper : public BondHelper {
 
 %shared_ptr(OISRateHelper)
 class OISRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") OISRateHelper;
+    #endif
   public:
     OISRateHelper(
             Natural settlementDays,
@@ -282,7 +285,9 @@ class OISRateHelper : public RateHelper {
             Frequency paymentFrequency = Annual,
             const Calendar& paymentCalendar = Calendar(),
             const Period& forwardStart = 0 * Days, 
-            const Spread overnightSpread = 0.0);
+            const Spread overnightSpread = 0.0,
+            Pillar::Choice pillar = Pillar::LastRelevantDate,
+            Date customPillarDate = Date());
     boost::shared_ptr<OvernightIndexedSwap> swap();
 };
 
