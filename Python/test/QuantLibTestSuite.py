@@ -37,6 +37,7 @@ from iborindex import IborIndexTest
 from sabr import SabrTest
 from slv import SlvTest
 from americanquantooption import AmericanQuantoOptionTest
+from extrapolation import ExtrapolationTest
 
 
 def test():
@@ -65,6 +66,7 @@ def test():
     suite.addTest(unittest.makeSuite(SabrTest, 'test'))
     suite.addTest(unittest.makeSuite(SlvTest, 'test'))
     suite.addTest(unittest.makeSuite(AmericanQuantoOptionTest, 'test'))
+    suite.addTest(unittest.makeSuite(ExtrapolationTest, 'test'))
         
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
