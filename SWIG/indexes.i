@@ -171,6 +171,7 @@ class OvernightIndex : public IborIndex {
 
 %{
 using QuantLib::Libor;
+using QuantLib::DailyTenorLibor;
 %}
 
 %shared_ptr(Libor)
@@ -184,6 +185,19 @@ class Libor : public IborIndex {
           const Calendar& financialCenterCalendar,
           const DayCounter& dayCounter,
           const Handle<YieldTermStructure>& h =
+                                     Handle<YieldTermStructure>());
+};
+
+%shared_ptr(DailyTenorLibor)
+
+class DailyTenorLibor : public IborIndex {
+  public:
+    DailyTenorLibor(const std::string& familyName,
+                    Natural settlementDays,
+                    const Currency& currency,
+                    const Calendar& financialCenterCalendar,
+                    const DayCounter& dayCounter,
+                    const Handle<YieldTermStructure>& h =
                                      Handle<YieldTermStructure>());
 };
 
@@ -222,6 +236,19 @@ using QuantLib::Name;
 %shared_ptr(Name)
 
 class Name : public OvernightIndex {
+  public:
+      Name(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+};
+%enddef
+
+%define export_daily_libor_instance(Name)
+%{
+using QuantLib::Name;
+%}
+%shared_ptr(Name)
+
+class Name : public DailyTenorLibor {
   public:
       Name(const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
@@ -329,7 +356,10 @@ class SwapSpreadIndex : public InterestRateIndex {
 };
 
 export_xibor_instance(AUDLibor);
+
 export_xibor_instance(CADLibor);
+export_daily_libor_instance(CADLiborON);
+
 export_xibor_instance(Cdor);
 export_xibor_instance(CHFLibor);
 export_xibor_instance(DKKLibor);
@@ -401,6 +431,8 @@ export_quoted_xibor_instance(EURLibor11M,EURLibor);
 export_quoted_xibor_instance(EURLibor1Y,EURLibor);
 
 export_xibor_instance(GBPLibor);
+export_daily_libor_instance(GBPLiborON);
+
 export_xibor_instance(Jibar);
 export_xibor_instance(JPYLibor);
 export_xibor_instance(Mosprime);
@@ -412,7 +444,10 @@ export_xibor_instance(Shibor);
 export_xibor_instance(Tibor);
 export_xibor_instance(THBFIX);
 export_xibor_instance(TRLibor);
+
 export_xibor_instance(USDLibor);
+export_daily_libor_instance(USDLiborON);
+
 export_xibor_instance(Wibor);
 export_xibor_instance(Zibor);
 
