@@ -226,6 +226,8 @@
     <Compile Include="Bibor1Y.cs" />
     <Compile Include="BicubicSpline.cs" />
     <Compile Include="BilinearInterpolation.cs" />
+    <Compile Include="BinaryFunction.cs" />
+    <Compile Include="BinaryFunctionDelegate.cs" />
     <Compile Include="BinomialCRRBarrierEngine.cs" />
     <Compile Include="BinomialCRRConvertibleEngine.cs" />
     <Compile Include="BinomialCRRDoubleBarrierEngine.cs" />
@@ -304,6 +306,7 @@
     <Compile Include="BYRCurrency.cs" />
     <Compile Include="CADCurrency.cs" />
     <Compile Include="CADLibor.cs" />
+    <Compile Include="CADLiborON.cs" />
     <Compile Include="Calendar.cs" />
     <Compile Include="CalibratedModel.cs" />
     <Compile Include="CalibratedModelHandle.cs" />
@@ -388,6 +391,7 @@
     <Compile Include="CYPCurrency.cs" />
     <Compile Include="CzechRepublic.cs" />
     <Compile Include="CZKCurrency.cs" />
+    <Compile Include="DailyTenorLibor.cs" />
     <Compile Include="Date.cs" />
     <Compile Include="DatedOISRateHelper.cs" />
     <Compile Include="DateGeneration.cs" />
@@ -558,6 +562,7 @@
     <Compile Include="ForwardSpreadedTermStructure.cs" />
     <Compile Include="ForwardVanillaOption.cs" />
     <Compile Include="FractionalDividend.cs" />
+    <Compile Include="France.cs" />
     <Compile Include="FraRateHelper.cs" />
     <Compile Include="Frequency.cs" />
     <Compile Include="FRFCurrency.cs" />
@@ -604,6 +609,7 @@
     <Compile Include="GaussLobattoIntegral.cs" />
     <Compile Include="GBPCurrency.cs" />
     <Compile Include="GBPLibor.cs" />
+    <Compile Include="GBPLiborON.cs" />
     <Compile Include="GbpLiborSwapIsdaFix.cs" />
     <Compile Include="GeneralizedBlackScholesProcess.cs" />
     <Compile Include="GeometricBrownianMotionProcess.cs" />
@@ -816,6 +822,8 @@
     <Compile Include="NZDLibor.cs" />
     <Compile Include="Nzocr.cs" />
     <Compile Include="Observable.cs" />
+    <Compile Include="OdeFct.cs" />
+    <Compile Include="OdeFctDelegate.cs" />
     <Compile Include="OISRateHelper.cs" />
     <Compile Include="OneAssetOption.cs" />
     <Compile Include="OneDayCounter.cs" />
@@ -827,6 +835,7 @@
     <Compile Include="OptionletVolatilityStructure.cs" />
     <Compile Include="OptionletVolatilityStructureHandle.cs" />
     <Compile Include="OvernightIndex.cs" />
+    <Compile Include="OvernightIndexedCoupon.cs" />
     <Compile Include="OvernightIndexedSwap.cs" />
     <Compile Include="OvernightIndexedSwapIndex.cs" />
     <Compile Include="Parabolic.cs" />
@@ -900,6 +909,7 @@
     <Compile Include="RelinkableYieldTermStructureHandle.cs" />
     <Compile Include="RelinkableYoYInflationTermStructureHandle.cs" />
     <Compile Include="RelinkableZeroInflationTermStructureHandle.cs" />
+    <Compile Include="RichardsonExtrapolation.cs" />
     <Compile Include="Ridder.cs" />
     <Compile Include="RiskStatistics.cs" />
     <Compile Include="Robor.cs" />
@@ -908,6 +918,7 @@
     <Compile Include="RONCurrency.cs" />
     <Compile Include="Rounding.cs" />
     <Compile Include="RUBCurrency.cs" />
+    <Compile Include="RungeKutta.cs" />
     <Compile Include="Russia.cs" />
     <Compile Include="SabrSmileSection.cs" />
     <Compile Include="SalvagingAlgorithm.cs" />
@@ -1001,6 +1012,7 @@
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_Swaption_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_VanillaSwap_t.cs" />
     <Compile Include="SWIGTYPE_p_DisposableT_Array_t.cs" />
+    <Compile Include="SWIGTYPE_p_DisposableT_std__vectorT_double_t_t.cs" />
     <Compile Include="SWIGTYPE_p_EndCriteria__Type.cs" />
     <Compile Include="SWIGTYPE_p_std__pairT_std__size_t_std__size_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__size_t.cs" />
@@ -1048,6 +1060,7 @@
     <Compile Include="USCPI.cs" />
     <Compile Include="USDCurrency.cs" />
     <Compile Include="USDLibor.cs" />
+    <Compile Include="USDLiborON.cs" />
     <Compile Include="UsdLiborSwapIsdaFixAm.cs" />
     <Compile Include="UsdLiborSwapIsdaFixPm.cs" />
     <Compile Include="VanillaForwardPayoff.cs" />
@@ -1077,6 +1090,7 @@
     <Compile Include="YoYInflationCap.cs" />
     <Compile Include="YoYInflationCapFloor.cs" />
     <Compile Include="YoYInflationCollar.cs" />
+    <Compile Include="YoYInflationCurve.cs" />
     <Compile Include="YoYInflationFloor.cs" />
     <Compile Include="YoYInflationIndex.cs" />
     <Compile Include="YoYInflationTermStructure.cs" />
@@ -1107,6 +1121,7 @@
     <Compile Include="ZeroCurve.cs" />
     <Compile Include="ZeroHelper.cs" />
     <Compile Include="ZeroHelperVector.cs" />
+    <Compile Include="ZeroInflationCurve.cs" />
     <Compile Include="ZeroInflationIndex.cs" />
     <Compile Include="ZeroInflationTermStructure.cs" />
     <Compile Include="ZeroInflationTermStructureHandle.cs" />
