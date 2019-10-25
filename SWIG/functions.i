@@ -174,7 +174,7 @@ class UnaryFunctionDelegate {
     virtual ~UnaryFunctionDelegate() {}
     virtual Real value(Real x) const {
         QL_FAIL("implementation of UnaryFunctionDelegate.value is missing");
-    };
+    }
 };
 
 class UnaryFunction : public std::unary_function<Real, Real> {
@@ -205,6 +205,45 @@ class UnaryFunctionDelegate {
   public:
     virtual ~UnaryFunctionDelegate();
     virtual Real value(Real x) const;
+};
+
+%{
+class BinaryFunctionDelegate {
+  public:
+    virtual ~BinaryFunctionDelegate() {}
+    virtual Real value(Real x, Real y) const {
+    	QL_FAIL("implementation of BinaryFunctionDelegate.value is missing");
+    }	
+};
+
+class BinaryFunction {
+  public:
+    BinaryFunction(BinaryFunctionDelegate* delegate)
+    : delegate_(delegate) {}
+    
+    virtual ~BinaryFunction() {}
+    
+    Real operator()(Real x, Real y) const {
+    	return delegate_->value(x, y);
+    }
+    
+  private:
+    BinaryFunctionDelegate* delegate_; 
+};
+%}
+
+class BinaryFunction {
+  public:
+    BinaryFunction(BinaryFunctionDelegate*);
+    Real operator()(Real, Real) const;
+};
+
+%feature("director") BinaryFunctionDelegate;
+
+class BinaryFunctionDelegate {
+  public:
+    virtual ~BinaryFunctionDelegate();
+    virtual Real value(Real, Real) const;
 };
 
 %{
@@ -303,6 +342,45 @@ class UnaryFunctionDelegate {
   public:
     virtual ~UnaryFunctionDelegate();
     virtual Real value(Real x) const;
+};
+
+%{
+class BinaryFunctionDelegate {
+  public:
+    virtual ~BinaryFunctionDelegate() {}
+    virtual Real value(Real x, Real y) const {
+    	QL_FAIL("implementation of BinaryFunctionDelegate.value is missing");
+    }	
+};
+
+class BinaryFunction {
+  public:
+    BinaryFunction(BinaryFunctionDelegate* delegate)
+    : delegate_(delegate) {}
+    
+    virtual ~BinaryFunction() {}
+    
+    Real operator()(Real x, Real y) const {
+    	return delegate_->value(x, y);
+    }
+    
+  private:
+    BinaryFunctionDelegate* delegate_; 
+};
+%}
+
+class BinaryFunction {
+  public:
+    BinaryFunction(BinaryFunctionDelegate*);
+    Real operator()(Real, Real) const;
+};
+
+%feature("director") BinaryFunctionDelegate;
+
+class BinaryFunctionDelegate {
+  public:
+    virtual ~BinaryFunctionDelegate();
+    virtual Real value(Real, Real) const;
 };
 
 %{

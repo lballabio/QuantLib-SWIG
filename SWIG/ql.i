@@ -188,6 +188,7 @@
 %include montecarlo.i
 %include null.i
 %include observer.i
+%include ode.i
 %include operators.i
 %include optimizers.i
 %include parameter.i

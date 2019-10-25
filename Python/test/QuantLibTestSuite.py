@@ -36,6 +36,7 @@ from blackformula import BlackDeltaCalculatorTest
 from iborindex import IborIndexTest
 from sabr import SabrTest
 from slv import SlvTest
+from ode import OdeTest
 from americanquantooption import AmericanQuantoOptionTest
 from extrapolation import ExtrapolationTest
 
@@ -65,6 +66,7 @@ def test():
     suite.addTest(unittest.makeSuite(IborIndexTest, 'test'))
     suite.addTest(unittest.makeSuite(SabrTest, 'test'))
     suite.addTest(unittest.makeSuite(SlvTest, 'test'))
+    suite.addTest(unittest.makeSuite(OdeTest, 'test'))
     suite.addTest(unittest.makeSuite(AmericanQuantoOptionTest, 'test'))
     suite.addTest(unittest.makeSuite(ExtrapolationTest, 'test'))
         

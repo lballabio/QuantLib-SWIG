@@ -1079,7 +1079,8 @@ using QuantLib::FdmSchemeDesc;
 struct FdmSchemeDesc {
   enum FdmSchemeType { HundsdorferType, DouglasType,
                        CraigSneydType, ModifiedCraigSneydType,
-                       ImplicitEulerType, ExplicitEulerType };
+                       ImplicitEulerType, ExplicitEulerType,
+                       MethodOfLinesType, TrBDF2Type };
 
   FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
 
@@ -1094,6 +1095,9 @@ struct FdmSchemeDesc {
   static FdmSchemeDesc ModifiedCraigSneyd();
   static FdmSchemeDesc Hundsdorfer();
   static FdmSchemeDesc ModifiedHundsdorfer();
+  static FdmSchemeDesc MethodOfLines(
+      Real eps=0.001, Real relInitStepSize=0.01);
+  static FdmSchemeDesc TrBDF2();
 };
 
 %{
