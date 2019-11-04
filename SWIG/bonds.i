@@ -145,6 +145,11 @@ class ZeroCouponBond : public Bond {
 
 %shared_ptr(FixedRateBond)
 class FixedRateBond : public Bond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") from_rates;
+    %feature("kwargs") from_interest_rates;
+    %feature("kwargs") from_rates_schedule_calc;
+    #endif
   public:
     FixedRateBond(
             Integer settlementDays,
@@ -196,7 +201,116 @@ class FixedRateBond : public Bond {
           const Calendar& exCouponCalendar = Calendar(),
           const BusinessDayConvention exCouponConvention = Unadjusted,
           bool exCouponEndOfMonth = false);
-
+    //! Wrapper around constructor taking rates
+    %extend {
+      static FixedRateBond from_rates(Integer settlementDays,
+                              Real faceAmount,
+                              const Schedule &schedule,
+                              const std::vector<Rate>& coupons,
+                              const DayCounter& paymentDayCounter,
+                              BusinessDayConvention paymentConvention = QuantLib::Following,
+                              Real redemption = 100.0,
+                              Date issueDate = Date(),
+                              const Calendar& paymentCalendar = Calendar(),
+                              const Period& exCouponPeriod = Period(),
+                              const Calendar& exCouponCalendar = Calendar(),
+                              BusinessDayConvention exCouponConvention = Unadjusted,
+                              bool exCouponEndOfMonth = false)
+                              {
+                                return FixedRateBond(
+                                                      settlementDays,
+                                                      faceAmount,
+                                                      schedule,
+                                                      coupons,
+                                                      paymentDayCounter,
+                                                      paymentConvention,
+                                                      redemption,
+                                                      issueDate,
+                                                      paymentCalendar,
+                                                      exCouponPeriod,
+                                                      exCouponCalendar,
+                                                      exCouponConvention,
+                                                      exCouponEndOfMonth);
+                              }
+    }
+    //! Wrapper around constructor taking interest rates
+    %extend {
+    static FixedRateBond from_interest_rates(
+                              Integer settlementDays,
+                              Real faceAmount,
+                              const Schedule& schedule,
+                              const std::vector<InterestRate>& coupons,
+                              BusinessDayConvention paymentConvention = Following,
+                              Real redemption = 100.0,
+                              const Date& issueDate = Date(),
+                              const Calendar& paymentCalendar = Calendar(),
+                              const Period& exCouponPeriod = Period(),
+                              const Calendar& exCouponCalendar = Calendar(),
+                              BusinessDayConvention exCouponConvention = Unadjusted,
+                              bool exCouponEndOfMonth = false)
+                              {
+                                return FixedRateBond(
+                                                      settlementDays,
+                                                      faceAmount,
+                                                      schedule,
+                                                      coupons,
+                                                      paymentConvention,
+                                                      redemption,
+                                                      issueDate,
+                                                      paymentCalendar,
+                                                      exCouponPeriod,
+                                                      exCouponCalendar,
+                                                      exCouponConvention,
+                                                      exCouponEndOfMonth);
+                              }
+    }
+    //! Wrapper around constructor rates and doing internal schedule calculation
+    %extend {
+    static FixedRateBond from_rates_schedule_calc(
+                              Integer settlementDays,
+                              const Calendar& couponCalendar,
+                              Real faceAmount,
+                              const Date& startDate,
+                              const Date& maturityDate,
+                              const Period& tenor,
+                              const std::vector<Rate>& coupons,
+                              const DayCounter& accrualDayCounter,
+                              BusinessDayConvention accrualConvention = QuantLib::Following,
+                              BusinessDayConvention paymentConvention = QuantLib::Following,
+                              Real redemption = 100.0,
+                              const Date& issueDate = Date(),
+                              const Date& stubDate = Date(),
+                              DateGeneration::Rule rule = QuantLib::DateGeneration::Backward,
+                              bool endOfMonth = false,
+                              const Calendar& paymentCalendar = Calendar(),
+                              const Period& exCouponPeriod = Period(),
+                              const Calendar& exCouponCalendar = Calendar(),
+                              const BusinessDayConvention exCouponConvention = Unadjusted,
+                              bool exCouponEndOfMonth = false)
+                              {
+                                return FixedRateBond(
+                                                      settlementDays,
+                                                      couponCalendar,
+                                                      faceAmount,
+                                                      startDate,
+                                                      maturityDate,
+                                                      tenor,
+                                                      coupons,
+                                                      accrualDayCounter,
+                                                      accrualConvention,
+                                                      paymentConvention,
+                                                      redemption,
+                                                      issueDate,
+                                                      stubDate,
+                                                      rule,
+                                                      endOfMonth,
+                                                      paymentCalendar,
+                                                      exCouponPeriod,
+                                                      exCouponCalendar,
+                                                      exCouponConvention,
+                                                      exCouponEndOfMonth);
+                                }
+    }
     Frequency frequency() const;
     DayCounter dayCounter() const;
 };
