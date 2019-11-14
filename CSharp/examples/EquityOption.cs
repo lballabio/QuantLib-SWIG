@@ -156,14 +156,14 @@ namespace EquityOptionTest
             // Finite differences
             try {
                 europeanOption.setPricingEngine(
-                              new FDEuropeanEngine(stochasticProcess,
-                                                   timeSteps, timeSteps - 1));
+                    new FdBlackScholesVanillaEngine(stochasticProcess,
+                                                    timeSteps, timeSteps - 1));
                 bermudanOption.setPricingEngine(
-                              new FDBermudanEngine(stochasticProcess,
-                                                   timeSteps, timeSteps - 1));
+                    new FdBlackScholesVanillaEngine(stochasticProcess,
+                                                    timeSteps, timeSteps - 1));
                 americanOption.setPricingEngine(
-                              new FDAmericanEngine(stochasticProcess,
-                                                   timeSteps, timeSteps - 1));
+                    new FdBlackScholesVanillaEngine(stochasticProcess,
+                                                    timeSteps, timeSteps - 1));
                 ReportResults("Finite differences",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),

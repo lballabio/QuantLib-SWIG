@@ -77,7 +77,7 @@ report('integral',option.NPV)
 timeSteps = 801
 gridPoints = 800
 
-option.pricingEngine = FDEuropeanEngine.new(process,timeSteps,gridPoints)
+option.pricingEngine = FdBlackScholesVanillaEngine.new(process,timeSteps,gridPoints)
 report('finite diff.',option.NPV)
 
 # method: binomial

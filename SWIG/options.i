@@ -464,6 +464,12 @@ typedef QuantLib::FDBermudanEngine<CrankNicolson> FDBermudanEngine;
 
 %shared_ptr(FDBermudanEngine)
 class FDBermudanEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %pythonprepend FDBermudanEngine %{
+        from warnings import warn
+        warn("FDBermudanEngine is deprecated; use FdBlackScholesVanillaEngine")
+    %}
+    #endif
   public:
     FDBermudanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                      Size timeSteps = 100, Size gridPoints = 100,
@@ -476,6 +482,12 @@ typedef QuantLib::FDEuropeanEngine<CrankNicolson> FDEuropeanEngine;
 
 %shared_ptr(FDEuropeanEngine)
 class FDEuropeanEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %pythonprepend FDEuropeanEngine %{
+        from warnings import warn
+        warn("FDEuropeanEngine is deprecated; use FdBlackScholesVanillaEngine")
+    %}
+    #endif
   public:
     FDEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess> process,
                      Size timeSteps = 100, Size gridPoints = 100,
@@ -787,6 +799,12 @@ typedef QuantLib::FDShoutEngine<CrankNicolson> FDShoutEngine;
 
 %shared_ptr(FDAmericanEngine)
 class FDAmericanEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %pythonprepend FDAmericanEngine %{
+        from warnings import warn
+        warn("FDAmericanEngine is deprecated; use FdBlackScholesVanillaEngine")
+    %}
+    #endif
   public:
     FDAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                      Size timeSteps = 100, Size gridPoints = 100,
@@ -934,6 +952,12 @@ using QuantLib::FDDividendAmericanEngine;
 %rename(FDDividendEuropeanEngineT) FDDividendEuropeanEngine;
 template <class S>
 class FDDividendEuropeanEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %pythonprepend FDDividendEuropeanEngine %{
+        from warnings import warn
+        warn("FDDividendEuropeanEngine is deprecated; use FdBlackScholesVanillaEngine")
+    %}
+    #endif
   public:
     FDDividendEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                              Size timeSteps = 100,
@@ -949,6 +973,12 @@ class FDDividendEuropeanEngine : public PricingEngine {
 %rename(FDDividendAmericanEngineT) FDDividendAmericanEngine;
 template <class S>
 class FDDividendAmericanEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %pythonprepend FDDividendAmericanEngine %{
+        from warnings import warn
+        warn("FDDividendAmericanEngine is deprecated; use FdBlackScholesVanillaEngine")
+    %}
+    #endif
   public:
     FDDividendAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                              Size timeSteps = 100,
@@ -1124,22 +1154,45 @@ using QuantLib::FdHestonVanillaEngine;
 %shared_ptr(FdBlackScholesVanillaEngine)
 class FdBlackScholesVanillaEngine : public PricingEngine {
   public:
+    enum CashDividendModel { Spot, Escrowed };
+
     FdBlackScholesVanillaEngine(
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
         bool localVol = false,
-        Real illegalLocalVolOverwrite = -Null<Real>());
-            
+        Real illegalLocalVolOverwrite = -Null<Real>(),
+        CashDividendModel cashDividendModel = Spot);
+
     FdBlackScholesVanillaEngine(
         const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
         const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
-        Size tGrid = 100, 
-        Size xGrid = 100, 
-        Size dampingSteps = 0,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
         bool localVol = false,
-        Real illegalLocalVolOverwrite = -Null<Real>());
+        Real illegalLocalVolOverwrite = -Null<Real>(),
+        CashDividendModel cashDividendModel = Spot);
+
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") make;
+    %extend {
+        static boost::shared_ptr<FdBlackScholesVanillaEngine> make(
+                    const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                    const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
+                        = boost::shared_ptr<FdmQuantoHelper>(),
+                    Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+                    const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                    bool localVol = false,
+                    Real illegalLocalVolOverwrite = -Null<Real>(),
+                    CashDividendModel cashDividendModel = Spot) {
+            return boost::shared_ptr<FdBlackScholesVanillaEngine>(
+                new FdBlackScholesVanillaEngine(process, quantoHelper, tGrid, xGrid,
+                                                dampingSteps, schemeDesc,
+                                                localVol, illegalLocalVolOverwrite,
+                                                cashDividendModel));
+        }
+    }
+    #endif
 };
 
 %shared_ptr(FdBatesVanillaEngine)
@@ -1173,6 +1226,25 @@ class FdHestonVanillaEngine : public PricingEngine {
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
         const boost::shared_ptr<LocalVolTermStructure>& leverageFct
             = boost::shared_ptr<LocalVolTermStructure>());
+
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") make;
+    %extend {
+        static boost::shared_ptr<FdHestonVanillaEngine> make(
+                    const boost::shared_ptr<HestonModel>& model,
+                    const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
+                        = boost::shared_ptr<FdmQuantoHelper>(),
+                    Size tGrid = 100, Size xGrid = 100, Size vGrid = 50,
+                    Size dampingSteps = 0,
+                    const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                    const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                        = boost::shared_ptr<LocalVolTermStructure>()) {
+            return boost::shared_ptr<FdHestonVanillaEngine>(
+                new FdHestonVanillaEngine(model, quantoHelper, tGrid, xGrid, vGrid,
+                                          dampingSteps, schemeDesc, leverageFct));
+        }
+    }
+    #endif
 };
 
 

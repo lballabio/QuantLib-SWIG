@@ -15,7 +15,7 @@ process <- BlackScholesMertonProcess(QuoteHandle(underlying),
 		YieldTermStructureHandle(riskFreeRate),
 		BlackVolTermStructureHandle(volatility))
 option <- VanillaOption(payoff, exercise)
-invisible(option$setPricingEngine(s_arg2=FDEuropeanEngine(process)))
+invisible(option$setPricingEngine(s_arg2=FdBlackScholesVanillaEngine(process)))
 priceCurve <- option$priceCurve()
 
 print(summary(as.data.frame(priceCurve)))

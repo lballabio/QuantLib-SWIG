@@ -44,7 +44,7 @@ report('integral', option$NPV())
 timeSteps <- 801
 gridPoints <- 800
 
-invisible(option$setPricingEngine(FDEuropeanEngine(process,timeSteps,gridPoints)))
+invisible(option$setPricingEngine(FdBlackScholesVanillaEngine(process,timeSteps,gridPoints)))
 report('finite diff.', option$NPV())
 
 

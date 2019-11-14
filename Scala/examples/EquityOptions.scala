@@ -212,18 +212,18 @@ object EquityOptions {
 
         // Finite Difference
         var timeSteps : Int = 801;
-        val fdEuropeanNpv =   
-            new VanillaPricingService(payoff, europeanExercise) !! 
-                new FDEuropeanEngine(SimpleFactory.bsProcess(),     
-                                     timeSteps, timeSteps-1)
-        val fdBermudanNpv = 
+        val fdEuropeanNpv =
+            new VanillaPricingService(payoff, europeanExercise) !!
+                new FdBlackScholesVanillaEngine(SimpleFactory.bsProcess(),
+                                                timeSteps, timeSteps-1)
+        val fdBermudanNpv =
             new VanillaPricingService(payoff, bermudanExercise) !!
-                  new FDBermudanEngine(SimpleFactory.bsProcess(), 
-                                     timeSteps, timeSteps-1)
-        val fdAmericanNpv = 
+                new FdBlackScholesVanillaEngine(SimpleFactory.bsProcess(),
+                                                timeSteps, timeSteps-1)
+        val fdAmericanNpv =
             new VanillaPricingService(payoff, americanExercise) !!
-                  new FDAmericanEngine(SimpleFactory.bsProcess(), 
-                                     timeSteps, timeSteps-1)
+                new FdBlackScholesVanillaEngine(SimpleFactory.bsProcess(),
+                                                timeSteps, timeSteps-1)
 
         // Binomial method      
         val jarrowRuddEuropeanNpv = 

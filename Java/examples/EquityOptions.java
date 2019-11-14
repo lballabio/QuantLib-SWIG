@@ -47,9 +47,7 @@ import org.quantlib.DateVector;
 import org.quantlib.DayCounter;
 import org.quantlib.EuropeanExercise;
 import org.quantlib.Exercise;
-import org.quantlib.FDAmericanEngine;
-import org.quantlib.FDBermudanEngine;
-import org.quantlib.FDEuropeanEngine;
+import org.quantlib.FdBlackScholesVanillaEngine;
 import org.quantlib.HestonModel;
 import org.quantlib.HestonProcess;
 import org.quantlib.FlatForward;
@@ -233,13 +231,16 @@ public class EquityOptions {
         // Finite differences
         int timeSteps = 801;
         method = "Finite differences";
-        europeanOption.setPricingEngine(new FDEuropeanEngine(stochasticProcess,
+        europeanOption.setPricingEngine(
+                             new FdBlackScholesVanillaEngine(stochasticProcess,
                                                              timeSteps,
                                                              timeSteps-1));
-        bermudanOption.setPricingEngine(new FDBermudanEngine(stochasticProcess,
+        bermudanOption.setPricingEngine(
+                             new FdBlackScholesVanillaEngine(stochasticProcess,
                                                              timeSteps,
                                                              timeSteps-1));
-        americanOption.setPricingEngine(new FDAmericanEngine(stochasticProcess,
+        americanOption.setPricingEngine(
+                             new FdBlackScholesVanillaEngine(stochasticProcess,
                                                              timeSteps,
                                                              timeSteps-1));
         System.out.printf(fmt, new Object[] { method,
