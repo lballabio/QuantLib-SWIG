@@ -50,7 +50,7 @@ class InterpolatedDiscountCurve : public YieldTermStructure {
 };
 
 %template(DiscountCurve) InterpolatedDiscountCurve<LogLinear>;
-%template(DiscountCurveMonotonicLogCubic) InterpolatedDiscountCurve<MonotonicLogCubic>;
-%template(DiscountCurveSplineCubic) InterpolatedDiscountCurve<SplineCubic>;
+%template(MonotonicLogCubicDiscountCurve) InterpolatedDiscountCurve<MonotonicLogCubic>;
+%template(NaturalCubicDiscountCurve) InterpolatedDiscountCurve<SplineCubic>;
 
 #endif
