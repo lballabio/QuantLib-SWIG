@@ -79,7 +79,7 @@ report('Bjerksund-Stensland',option.NPV)
 timeSteps = 801
 gridPoints = 800
 
-option.pricingEngine = FDAmericanEngine.new(process,timeSteps,gridPoints)
+option.pricingEngine = FdBlackScholesVanillaEngine.new(process,timeSteps,gridPoints)
 report('finite differences',option.NPV)
 
 # method: binomial

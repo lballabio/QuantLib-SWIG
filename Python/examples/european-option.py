@@ -94,7 +94,7 @@ report("integral", option.NPV())
 timeSteps = 801
 gridPoints = 800
 
-option.setPricingEngine(ql.FDEuropeanEngine(process, timeSteps, gridPoints))
+option.setPricingEngine(ql.FdBlackScholesVanillaEngine(process, timeSteps, gridPoints))
 report("finite diff.", option.NPV())
 
 # method: binomial
