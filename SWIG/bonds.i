@@ -272,7 +272,11 @@ class FloatingRateBond : public Bond {
         const std::vector<Rate>& floors = std::vector<Rate>(),
         bool inArrears = false,
         Real redemption = 100.0,
-        const Date& issueDate = Date());
+        const Date& issueDate = Date(),
+        const Period& exCouponPeriod = Period(),
+        const Calendar& exCouponCalendar = Calendar(),
+        BusinessDayConvention exCouponConvention = Unadjusted,
+        bool exCouponEndOfMonth = false);
 };
 
 
