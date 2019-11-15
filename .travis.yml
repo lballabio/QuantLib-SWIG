@@ -33,5 +33,5 @@ before_install:
   - docker pull ${DOCKER_IMAGE}
 
 script:
-  - docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./.travis/${BUILD_SCRIPT}
+  - travis_wait 30 sleep infinity & docker run ${DOCKER_OPTS} ${DOCKER_IMAGE} ./.travis/${BUILD_SCRIPT}
 
