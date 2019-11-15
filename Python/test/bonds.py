@@ -1,5 +1,6 @@
 """
  Copyright (C) 2009 Joseph Malicki
+ Copyright (C) 2019 Prasad Somwanshi
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -186,8 +187,80 @@ class FixedRateBondTest(unittest.TestCase):
         ql.Settings.instance().setEvaluationDate(ql.Date())
 
 
+class FixedRateBondKwargsTest(unittest.TestCase):
+    def setUp(self):
+        self.settlement_days = 3
+        self.face_amount = 100.0
+        self.redemption = 100.0
+        self.issue_date = ql.Date(2, 1, 2008)
+        self.maturity_date = ql.Date(2, 1, 2018)
+        self.calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
+        self.day_counter = ql.ActualActual(ql.ActualActual.Bond)
+        self.sched = ql.Schedule(
+            self.issue_date,
+            self.maturity_date,
+            ql.Period(ql.Semiannual),
+            self.calendar,
+            ql.Unadjusted,
+            ql.Unadjusted,
+            ql.DateGeneration.Backward,
+            False,
+        )
+        self.coupons = [0.05]
+
+    def check_construction(self, bond):
+        self.assertTrue(type(bond) is ql.FixedRateBond)
+        self.assertEqual(bond.dayCounter(), self.day_counter)
+        self.assertEqual(bond.settlementDays(), self.settlement_days)
+        self.assertEqual(bond.issueDate(), self.issue_date)
+        self.assertEqual(bond.maturityDate(), self.maturity_date)
+        self.assertEqual(bond.redemption().date(), self.maturity_date)
+        self.assertEqual(bond.redemption().amount(), self.redemption)
+        self.assertEqual(bond.notional(self.issue_date), 100.0)
+        self.assertEqual(bond.notionals(), (100.0, 0))
+
+    def testFromRates(self):
+        """ Testing FixedRateBond from_rates method. """
+        bond = ql.FixedRateBond.from_rates(
+            settlementDays=self.settlement_days,
+            schedule=self.sched,
+            paymentDayCounter=self.day_counter,
+            issueDate=self.issue_date,
+            coupons=self.coupons,
+            faceAmount=self.face_amount,
+        )
+        self.check_construction(bond)
+
+    def testFromInterestRates(self):
+        """ Testing FixedRateBond from_interest_rates method. """
+        bond = ql.FixedRateBond.from_interest_rates(
+            settlementDays=self.settlement_days,
+            faceAmount=self.face_amount,
+            schedule=self.sched,
+            coupons=[ql.InterestRate(0.05, self.day_counter, ql.Continuous, ql.Annual)],
+            issueDate=self.issue_date,
+        )
+        self.check_construction(bond)
+
+    def testFromDateInfo(self):
+        """ Testing FixedRateBond from_interest_rates method. """
+        bond = ql.FixedRateBond.from_date_info(
+            settlementDays=self.settlement_days,
+            faceAmount=self.face_amount,
+            coupons=self.coupons,
+            issueDate=self.issue_date,
+            couponCalendar=ql.UnitedStates(),
+            startDate=ql.Date(2, 1, 2010),
+            maturityDate=self.maturity_date,
+            tenor=ql.Period(3, ql.Months),
+            accrualDayCounter=self.day_counter,
+        )
+        self.check_construction(bond)
+
+
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(FixedRateBondTest, "test"))
+    suite.addTest(unittest.makeSuite(FixedRateBondKwargsTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)

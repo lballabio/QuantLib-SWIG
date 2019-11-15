@@ -26,7 +26,7 @@ from marketelements import MarketElementTest
 from integrals import IntegralTest
 from solvers1d import Solver1DTest
 from termstructures import TermStructureTest
-from bonds import FixedRateBondTest
+from bonds import FixedRateBondTest, FixedRateBondKwargsTest
 from ratehelpers import FixedRateBondHelperTest, FxSwapRateHelperTest, OISRateHelperTest
 from cms import CmsTest
 from assetswap import AssetSwapTest
@@ -53,6 +53,7 @@ def test():
     suite.addTest(Solver1DTest())
     suite.addTest(unittest.makeSuite(TermStructureTest, 'test'))
     suite.addTest(unittest.makeSuite(FixedRateBondTest, 'test'))
+    suite.addTest(unittest.makeSuite(FixedRateBondKwargsTest, 'test'))
     suite.addTest(unittest.makeSuite(FixedRateBondHelperTest, 'test'))
     suite.addTest(unittest.makeSuite(CmsTest, 'test'))
     suite.addTest(unittest.makeSuite(AssetSwapTest, 'test'))

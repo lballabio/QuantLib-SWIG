@@ -148,7 +148,7 @@ class FixedRateBond : public Bond {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") from_rates;
     %feature("kwargs") from_interest_rates;
-    %feature("kwargs") from_rates_schedule_calc;
+    %feature("kwargs") from_date_info;
     #endif
   public:
     FixedRateBond(
@@ -201,9 +201,10 @@ class FixedRateBond : public Bond {
           const Calendar& exCouponCalendar = Calendar(),
           const BusinessDayConvention exCouponConvention = Unadjusted,
           bool exCouponEndOfMonth = false);
-    //! Wrapper around constructor taking rates
     %extend {
-      static FixedRateBond from_rates(Integer settlementDays,
+        //! convenience wrapper around constructor taking rates
+        static boost::shared_ptr<FixedRateBond> from_rates(
+                              Integer settlementDays,
                               Real faceAmount,
                               const Schedule &schedule,
                               const std::vector<Rate>& coupons,
@@ -215,27 +216,16 @@ class FixedRateBond : public Bond {
                               const Period& exCouponPeriod = Period(),
                               const Calendar& exCouponCalendar = Calendar(),
                               BusinessDayConvention exCouponConvention = Unadjusted,
-                              bool exCouponEndOfMonth = false)
-                              {
-                                return FixedRateBond(
-                                                      settlementDays,
-                                                      faceAmount,
-                                                      schedule,
-                                                      coupons,
-                                                      paymentDayCounter,
-                                                      paymentConvention,
-                                                      redemption,
-                                                      issueDate,
-                                                      paymentCalendar,
-                                                      exCouponPeriod,
-                                                      exCouponCalendar,
-                                                      exCouponConvention,
-                                                      exCouponEndOfMonth);
-                              }
-    }
-    //! Wrapper around constructor taking interest rates
-    %extend {
-    static FixedRateBond from_interest_rates(
+                              bool exCouponEndOfMonth = false) {
+            return boost::shared_ptr<FixedRateBond>(
+                new FixedRateBond(settlementDays, faceAmount, schedule, coupons,
+                                  paymentDayCounter, paymentConvention,
+                                  redemption, issueDate, paymentCalendar,
+                                  exCouponPeriod, exCouponCalendar,
+                                  exCouponConvention, exCouponEndOfMonth));
+        }
+        //! convenience wrapper around constructor taking interest rates
+        static boost::shared_ptr<FixedRateBond> from_interest_rates(
                               Integer settlementDays,
                               Real faceAmount,
                               const Schedule& schedule,
@@ -247,26 +237,16 @@ class FixedRateBond : public Bond {
                               const Period& exCouponPeriod = Period(),
                               const Calendar& exCouponCalendar = Calendar(),
                               BusinessDayConvention exCouponConvention = Unadjusted,
-                              bool exCouponEndOfMonth = false)
-                              {
-                                return FixedRateBond(
-                                                      settlementDays,
-                                                      faceAmount,
-                                                      schedule,
-                                                      coupons,
-                                                      paymentConvention,
-                                                      redemption,
-                                                      issueDate,
-                                                      paymentCalendar,
-                                                      exCouponPeriod,
-                                                      exCouponCalendar,
-                                                      exCouponConvention,
-                                                      exCouponEndOfMonth);
-                              }
-    }
-    //! Wrapper around constructor rates and doing internal schedule calculation
-    %extend {
-    static FixedRateBond from_rates_schedule_calc(
+                              bool exCouponEndOfMonth = false) {
+            return boost::shared_ptr<FixedRateBond>(
+                new FixedRateBond(settlementDays, faceAmount, schedule, coupons,
+                                  paymentConvention, redemption,
+                                  issueDate, paymentCalendar,
+                                  exCouponPeriod, exCouponCalendar,
+                                  exCouponConvention, exCouponEndOfMonth));
+        }
+        //! convenience wrapper around constructor doing internal schedule calculation
+        static boost::shared_ptr<FixedRateBond> from_date_info(
                               Integer settlementDays,
                               const Calendar& couponCalendar,
                               Real faceAmount,
@@ -286,30 +266,16 @@ class FixedRateBond : public Bond {
                               const Period& exCouponPeriod = Period(),
                               const Calendar& exCouponCalendar = Calendar(),
                               const BusinessDayConvention exCouponConvention = Unadjusted,
-                              bool exCouponEndOfMonth = false)
-                              {
-                                return FixedRateBond(
-                                                      settlementDays,
-                                                      couponCalendar,
-                                                      faceAmount,
-                                                      startDate,
-                                                      maturityDate,
-                                                      tenor,
-                                                      coupons,
-                                                      accrualDayCounter,
-                                                      accrualConvention,
-                                                      paymentConvention,
-                                                      redemption,
-                                                      issueDate,
-                                                      stubDate,
-                                                      rule,
-                                                      endOfMonth,
-                                                      paymentCalendar,
-                                                      exCouponPeriod,
-                                                      exCouponCalendar,
-                                                      exCouponConvention,
-                                                      exCouponEndOfMonth);
-                                }
+                              bool exCouponEndOfMonth = false) {
+            return boost::shared_ptr<FixedRateBond>(
+                new FixedRateBond(settlementDays, couponCalendar, faceAmount,
+                                  startDate, maturityDate, tenor,
+                                  coupons, accrualDayCounter, accrualConvention,
+                                  paymentConvention, redemption, issueDate,
+                                  stubDate, rule, endOfMonth, paymentCalendar,
+                                  exCouponPeriod, exCouponCalendar,
+                                  exCouponConvention, exCouponEndOfMonth));
+        }
     }
     Frequency frequency() const;
     DayCounter dayCounter() const;
