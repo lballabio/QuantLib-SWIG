@@ -45,7 +45,8 @@ class ForwardRateAgreement : public Forward {
                     Real notionalAmount,
                     const boost::shared_ptr<IborIndex>& index,
                     const Handle<YieldTermStructure>& discountCurve =
-                                           Handle<YieldTermStructure>());
+                                           Handle<YieldTermStructure>(),
+                    bool useIndexedCoupon = true);
 
     Date fixingDate() const;
     Real spotIncome(const Handle<YieldTermStructure>& discount) const;

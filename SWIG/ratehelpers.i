@@ -102,7 +102,8 @@ class FraRateHelper : public RateHelper {
             bool endOfMonth,
             const DayCounter& dayCounter,
             Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date());
+            Date customPillarDate = Date(),
+            bool useIndexedCoupon = true);
     FraRateHelper(
             Rate rate,
             Natural monthsToStart,
@@ -113,17 +114,20 @@ class FraRateHelper : public RateHelper {
             bool endOfMonth,
             const DayCounter& dayCounter,
             Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date());
+            Date customPillarDate = Date(),
+            bool useIndexedCoupon = true);
     FraRateHelper(const Handle<Quote>& rate,
-                     Natural monthsToStart,
-                     const boost::shared_ptr<IborIndex>& index,
-                     Pillar::Choice pillar = Pillar::LastRelevantDate,
-                     Date customPillarDate = Date());
+                  Natural monthsToStart,
+                  const boost::shared_ptr<IborIndex>& index,
+                  Pillar::Choice pillar = Pillar::LastRelevantDate,
+                  Date customPillarDate = Date(),
+                  bool useIndexedCoupon = true);
     FraRateHelper(Rate rate,
-                     Natural monthsToStart,
-                     const boost::shared_ptr<IborIndex>& index,
-                     Pillar::Choice pillar = Pillar::LastRelevantDate,
-                     Date customPillarDate = Date());
+                  Natural monthsToStart,
+                  const boost::shared_ptr<IborIndex>& index,
+                  Pillar::Choice pillar = Pillar::LastRelevantDate,
+                  Date customPillarDate = Date(),
+                  bool useIndexedCoupon = true);
 };
 
 %shared_ptr(FuturesRateHelper)
