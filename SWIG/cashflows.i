@@ -231,6 +231,9 @@ class IborCoupon : public FloatingRateCoupon {
                const Date& refPeriodStart = Date(),
                const Date& refPeriodEnd = Date(),
                const DayCounter& dayCounter = DayCounter());
+    static void createAtParCoupons();
+    static void createIndexedCoupons();
+    static bool usingAtParCoupons();
 };
 
 
