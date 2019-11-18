@@ -330,6 +330,7 @@
     <Compile Include="CappedFlooredCmsCoupon.cs" />
     <Compile Include="CappedFlooredCmsSpreadCoupon.cs" />
     <Compile Include="CappedFlooredCoupon.cs" />
+    <Compile Include="CappedFlooredIborCoupon.cs" />
     <Compile Include="CashFlow.cs" />
     <Compile Include="CashFlows.cs" />
     <Compile Include="CashOrNothingPayoff.cs" />
@@ -773,6 +774,7 @@
     <Compile Include="MonotonicCubicNaturalSpline.cs" />
     <Compile Include="MonotonicCubicZeroCurve.cs" />
     <Compile Include="MonotonicLogCubic.cs" />
+    <Compile Include="MonotonicLogCubicDiscountCurve.cs" />
     <Compile Include="MonotonicLogCubicNaturalSpline.cs" />
     <Compile Include="MonotonicLogParabolic.cs" />
     <Compile Include="MonotonicParabolic.cs" />
@@ -796,6 +798,8 @@
     <Compile Include="MultiplicativePriceSeasonality.cs" />
     <Compile Include="MXNCurrency.cs" />
     <Compile Include="MYRCurrency.cs" />
+    <Compile Include="NaturalCubicDiscountCurve.cs" />
+    <Compile Include="NaturalCubicZeroCurve.cs" />
     <Compile Include="NelsonSiegelFitting.cs" />
     <Compile Include="NeumannBC.cs" />
     <Compile Include="NewZealand.cs" />
