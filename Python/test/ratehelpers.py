@@ -1,7 +1,7 @@
 # coding=utf-8-unix
 """
  Copyright (C) 2009 Joseph Malicki
- Copyright (C) 2016,2019 Wojciech Ślusarski
+ Copyright (C) 2016, 2019 Wojciech Ślusarski
 
 
  This file is part of QuantLib, a free-software/open-source library
