@@ -1,6 +1,7 @@
 package examples;
 
 import org.quantlib.Brent;
+import org.quantlib.Newton;
 import org.quantlib.DoubleVector;
 import org.quantlib.OdeFctDelegate;
 import org.quantlib.GaussKronrodAdaptive;
@@ -30,6 +31,18 @@ public class FunctionDelegates {
             )
         );
         
+        System.out.println("Newton Solver result " +
+            new Newton().solve(
+                new UnaryFunctionDelegate() {
+                    public double value(double x) { return x*x-1.0; }
+                },
+                new UnaryFunctionDelegate() {
+                    public double value(double x) { return 2*x; }
+                },                
+                1e-4, 0.25, 0.1
+            )
+        );
+                
         System.out.println("Richardson Extrapolation, known order " +
             new RichardsonExtrapolation(
                 new UnaryFunctionDelegate() {
@@ -37,7 +50,7 @@ public class FunctionDelegates {
                 }, 0.1, 1.0).getValue(2.0)
             );
             
-        System.out.println("Richardson Extrapolation, unknown order" +
+        System.out.println("Richardson Extrapolation, unknown order " +
             new RichardsonExtrapolation(
                 new UnaryFunctionDelegate() {
                     public double value(double x) { return Math.exp(1 + x); }
