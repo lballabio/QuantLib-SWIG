@@ -87,6 +87,7 @@ class SolverName {
 };
 %enddef
 
+
 // Keep this list in sync with bondfunctions.i yield solvers.
 // Actual solvers
 DeclareSolver(Brent);
@@ -103,11 +104,10 @@ DeclareSolver(NewtonSafe);
 %{
 class NFunctAndDer {
   public:
-    NFunctAndDer(
-    	const UnaryFunction& function,
-    	const UnaryFunction& derivative)
+    NFunctAndDer(const UnaryFunction& function,
+                 const UnaryFunction& derivative)
     : f_(function), d_(derivative) {}
-     	  
+           
     Real operator()(Real x) const { return f_(x); }
     Real derivative(Real x) const { return d_(x); }
   private:          
@@ -124,18 +124,16 @@ class SolverName {
     void setUpperBound(Real upperBound);
     %extend {
         Real solve(UnaryFunctionDelegate* function,
-         		   UnaryFunctionDelegate* derivative,
-      		       Real xAccuracy, Real guess, Real step) {
+                   UnaryFunctionDelegate* derivative,
+                   Real xAccuracy, Real guess, Real step) {
             UnaryFunction f(function), d(derivative);            
-            return self->solve(NFunctAndDer(f, d), 
-            	xAccuracy, guess, step);
+            return self->solve(NFunctAndDer(f, d), xAccuracy, guess, step);
         }
         Real solve(UnaryFunctionDelegate* function,
-         		   UnaryFunctionDelegate* derivative,         
-    	  	       Real xAccuracy, Real guess, Real xMin, Real xMax) {
+                   UnaryFunctionDelegate* derivative,         
+                   Real xAccuracy, Real guess, Real xMin, Real xMax) {
             UnaryFunction f(function), d(derivative);            
-            return self->solve(NFunctAndDer(f, d), 
-            	xAccuracy, guess, xMin, xMax);
+            return self->solve(NFunctAndDer(f, d), xAccuracy, guess, xMin, xMax);
         }
     }
 };
