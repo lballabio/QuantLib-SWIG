@@ -169,6 +169,7 @@ class my_build_ext(build_ext):
 
             self.define += [ (arg[2:],None) for arg in ql_compile_args
                              if arg.startswith('-D') ]
+            self.define += [('NDEBUG', None)]
             self.include_dirs += [ arg[2:] for arg in ql_compile_args
                                    if arg.startswith('-I') ]
             self.library_dirs += [ arg[2:] for arg in ql_link_args
