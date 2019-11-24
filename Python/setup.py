@@ -250,7 +250,7 @@ framework for quantitative finance.
       ext_modules      = [Extension("QuantLib._QuantLib",
                                     ["QuantLib/quantlib_wrap.cpp"])
                          ],
-      data_files       = [('share/doc/quantlib/', ['../LICENSE.TXT'])],
+      data_files       = [('share/doc/quantlib', ['../LICENSE.TXT'])],
       cmdclass         = {'test': test,
                           'wrap': my_wrap,
                           'build': my_build,
