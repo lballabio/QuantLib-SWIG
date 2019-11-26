@@ -2031,4 +2031,32 @@ class FdSimpleExtOUJumpSwingEngine : public PricingEngine {
 };
 
 
+%{
+using QuantLib::GJRGARCHModel;
+%}
+
+%shared_ptr(GJRGARCHModel)
+class GJRGARCHModel : public CalibratedModel {
+      public:
+        GJRGARCHModel(const boost::shared_ptr<GJRGARCHProcess>& process);
+        Real omega() const;
+        Real alpha() const;
+        Real beta() const;
+        Real gamma() const;
+        Real lambda() const;
+        Real v0() const;
+};
+
+
+%{
+using QuantLib::AnalyticGJRGARCHEngine;
+%}
+
+%shared_ptr(AnalyticGJRGARCHEngine)
+class AnalyticGJRGARCHEngine : public PricingEngine {
+  public:
+    AnalyticGJRGARCHEngine(const boost::shared_ptr<GJRGARCHModel>& process);
+};
+
+
 #endif
