@@ -1,1306 +1,792 @@
-commit 96d1506e63755b5700095083af4a862a73754903
-Merge: fdcb4df 3d21ca3
+commit c66d1066bffb14113359f4f79f35152133c0bb5b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 18 Jul 2019 12:52:43 +0200
+Date:   Sun, 24 Nov 2019 21:32:39 +0100
 
-    Merge pull request #193.
+    Remove assertions in compiled Python module.
 
-commit 3d21ca357d05600f273ff988dac1ba34794874cb
+ Python/setup.py    | 1 +
+ Python/setup.py.in | 3 ++-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
+
+commit dd0f33814eaa364770a06c9eca55005753254ea7
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 17 Jul 2019 18:15:57 +0200
+Date:   Sun, 24 Nov 2019 13:40:56 +0100
 
-    Avoid deprecation warning.
+    Use valid path for install_data.
 
- SWIG/volatilities.i | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-commit fdcb4dff4b4d2b419e371964269e7f7e71b211b9
-Merge: a66f494 3e366b0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 17 Jul 2019 11:09:26 +0200
-
-    Merge pull request #192.
-
-commit 3e366b0df02c4ca837cecb344f1f558f24a76ffb
-Author: klausspanderen <klaus@spanderen.de>
-Date:   Tue, 16 Jul 2019 21:25:18 +0200
-
-    added test for HestonSLV DoubleBarrier option pricing
-
- Python/test/slv.py | 58 +++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 47 insertions(+), 11 deletions(-)
-
-commit a66f4944365f2b2c95f3f48becf853aa1e6bc4e0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 16 Jul 2019 12:00:29 +0200
-
-    Update VC# project.
-
- CSharp/csharp/NQuantLib.csproj | 27 ++++++++++++++++++++++++++-
- 1 file changed, 26 insertions(+), 1 deletion(-)
-
-commit d5fe830f602c68725e730fcbce96dcf0cf31b06f
-Merge: 330c6cb 6c70cee
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 12 Jul 2019 18:17:31 +0200
-
-    Merge pull request #185.
-
-commit 330c6cbe571cd3716383c07c342db961afd9826d
-Merge: a6a1592 1e27d24
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 12 Jul 2019 11:12:36 +0200
-
-    Merge pull request #190.
-
-commit 6c70cee882a09c13b4e3f4c093ccf5cc3e075c16
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 12 Jul 2019 10:16:04 +0200
-
-    Revert unmodified file.
-
- SWIG/slv.i | 1 -
- 1 file changed, 1 deletion(-)
-
-commit c585fbb10075b023d55f117c16cc103631a6cca1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 12 Jul 2019 10:13:03 +0200
-
-    Remove duplicated class.
-
- SWIG/slv.i | 48 ------------------------------------------------
- 1 file changed, 48 deletions(-)
-
-commit a6a15928197ce53a95e0e91c29f4fd138e32f894
-Merge: 02605ec 906847b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Jul 2019 17:48:01 +0200
-
-    Merge pull request #182.
-
-commit 02605ec7504f7f2eebc270696b6dd87e38a7e289
-Merge: 90e62d6 65124e0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Jul 2019 17:33:44 +0200
-
-    Merge pull request #181.
-
-commit 1e27d24e6f394084befcee44c5dc513c4b97875a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Jul 2019 15:18:21 +0200
-
-    Export G2 processes.
-
- SWIG/stochasticprocess.i | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
-
-commit 90e62d60ad916f80a652f5087de8192a9b4b7dbc
-Merge: f397282 c8b62f2
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Jul 2019 13:20:10 +0200
-
-    Merge pull request #158.
-
-commit f39728205a431baa4d9867158ddd3ce70c8922f5
-Merge: 0d21bd2 a6b4e53
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Jul 2019 12:13:03 +0200
-
-    Merge pull request #175.
-
-commit 0d21bd2d01075134015c32fd84c05cb3a42d736e
-Merge: ce80e1f f8edd16
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Jul 2019 10:57:40 +0200
-
-    Merge pull request #169.
-
-commit ce80e1f47e1fef78a7f9dfc9f791b111abc144e4
-Merge: 256c19e 087149c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 10 Jul 2019 13:10:50 +0200
-
-    Merge pull request #174.
-
-commit f8edd160556a7e49e17c1bcd48fb429bb39e8c11
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 10 Jul 2019 11:32:18 +0200
-
-    Remove C++11-only syntax.
-
- .gitignore      |  7 +------
- SWIG/capfloor.i | 12 ++++--------
- 2 files changed, 5 insertions(+), 14 deletions(-)
-
-commit 256c19e7e176fc0e4e2f8af378682e5a88c1f79a
-Merge: 993f4e4 b6d8639
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 9 Jul 2019 17:17:21 +0200
-
-    Merge pull request #155.
-
-commit 5945125618b667aa8651ee54e81d860668f1575a
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 14 Jun 2019 00:05:56 +0200
-
-    HestonBlackVolSurface
-
- SWIG/slv.i | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-commit c8b62f2fd7f0290eedbcf368451674f1bbda48ee
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 10 Jun 2019 15:06:01 +0200
-
-    Work around invalid generated code in C# module.
-
- SWIG/volatilities.i | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-commit 906847b81e3bf99d4a27f5e021876b6554656759
-Author: Peter Caspers <peter.caspers@quaternion.com>
-Date:   Fri, 7 Jun 2019 18:53:26 +0200
-
-    improve description (thanks to Giuseppe Trapani)
-
- Python/examples/gaussian1d-models.py | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-commit 65124e0746f83dc0109f2463b413974d3193289a
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Mon, 3 Jun 2019 00:04:20 +0200
-
-    Add generic PathGenerator, InvCumulativeMersenneTwisterPathGenerator.
-
- SWIG/montecarlo.i    | 61 ++++++++++++++++++++++------------------------------
- SWIG/randomnumbers.i |  5 +++++
- 2 files changed, 31 insertions(+), 35 deletions(-)
-
-commit 2da9916a68524d38a1819b3352d5f3efc55e5a45
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Sun, 2 Jun 2019 21:18:13 +0200
-
-    Fix Swaption Inheritance.
-
- SWIG/swaption.i | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit 24c2c708d0d5bd74667969013f08a59bce5f5fd8
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 31 May 2019 23:26:12 +0200
-
-    Add SwaptionVolatilityDiscrete.
-
- SWIG/volatilities.i | 25 ++++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-commit d774d11755b117fc200424e57c08b04a787134a2
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 31 May 2019 23:02:05 +0200
-
-    Add timeFromReference.
-
- SWIG/termstructures.i | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-commit ab80cc4384b40cb762c204693d9d51f4743a779e
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 31 May 2019 22:28:25 +0200
-
-    Add OvernightIndexedSwapIndex.
-
- SWIG/swap.i | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
-
-commit 4c2bc67990a1dc1d96b027cce09d8bfefb1039b3
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 29 May 2019 22:41:50 +0200
-
-    Add Kirk Engine, SpreadBasketPayoff, Fd2dBlackScholesVanillaEngine
-
- SWIG/basketoptions.i | 31 +++++++++++++++++++++++++++++--
- 1 file changed, 29 insertions(+), 2 deletions(-)
-
-commit a6b4e53022831def10f40d139598ea8656d885b2
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 17 May 2019 23:51:44 +0200
-
-    Add CDS Option and Black Engine.
-
- SWIG/creditdefaultswap.i | 35 ++++++++++++++++++++++++++++++++++-
- 1 file changed, 34 insertions(+), 1 deletion(-)
-
-commit 087149c4ce61bd29053e1e0134e70a7deaf5c8fc
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 17 May 2019 23:19:32 +0200
-
-    Add further ibor indices.
-
- SWIG/indexes.i | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
-
-commit 97196edf8dfec2424c127d585ae8cbf2892a7de3
-Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
-Date:   Sun, 12 May 2019 22:35:13 +0200
-
-    Add copyright
-
- SWIG/capfloor.i | 1 +
- 1 file changed, 1 insertion(+)
-
-commit e33ba23d0dbc840606e2f8ea893a7edfb5f1a2cc
-Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
-Date:   Sun, 12 May 2019 09:18:34 +0200
-
-    Expose additionalresults from pricing engines
-    
-    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
-
- SWIG/capfloor.i | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
-
-commit a42119d402adf57099c726906d9433d0cd4d2896
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 10 May 2019 00:27:10 +0200
-
-    Fix Csharp build.
-
- SWIG/options.i | 33 +++++++++++++++++++++++++--------
- 1 file changed, 25 insertions(+), 8 deletions(-)
-
-commit b6d86398f1b53ec0ddb98dff83b0e2a6394e8374
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 May 2019 14:13:47 +0200
-
-    Remove redundant rename.
-
- SWIG/options.i | 1 -
- 1 file changed, 1 deletion(-)
-
-commit 633eb3dbf7c935274f81b6dd4324e6cc6d14c6da
-Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
-Date:   Thu, 2 May 2019 23:41:38 +0200
-
-    Expose isExpired and type methods of CapFloor
-
- .gitignore      | 3 +++
- SWIG/capfloor.i | 4 ++++
- 2 files changed, 7 insertions(+)
-
-commit e980b211cfe00d30ef5f0eee36f755f67ab98e9c
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 2 May 2019 20:07:05 +0200
-
-    Rename to JuQuadraticApproximationEngine.
-
- SWIG/options.i | 2 +-
+ Python/setup.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 993f4e4487356e61c24242590dcfe3b09cf3457b
-Merge: 5a117f9 5da20f3
+commit 8862e8c5059a249a9db6aa7d59198cf65549dbf8
+Merge: 597f70d 628484c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 2 May 2019 15:10:12 +0200
+Date:   Thu, 21 Nov 2019 12:47:34 +0100
 
-    Merge pull request #163.
+    Merge pull request #221.
 
-commit 5a117f966fa7f73acbe94b0ef034a70d2705cf0e
-Merge: 2480080 b07febd
+commit 628484ce96bbf1045faeb537a7fa431a10d4fedb
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 20 Nov 2019 13:32:26 +0100
+
+    formatting
+
+ SWIG/optimizers.i | 22 ++++++++++------------
+ 1 file changed, 10 insertions(+), 12 deletions(-)
+
+commit 8ced4d12ba06b547b5898d2c5aef4eff4143f870
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 20 Nov 2019 13:28:44 +0100
+
+    added Newton solver for Java and C#
+
+ Java/examples/FunctionDelegates.java | 15 +++++++++++-
+ SWIG/optimizers.i                    | 44 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 58 insertions(+), 1 deletion(-)
+
+commit 597f70d2c9bc14f0ee525503c9756f81de9dff21
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 2 May 2019 14:10:28 +0200
+Date:   Tue, 19 Nov 2019 15:18:01 +0100
 
-    Merge pull request #162.
+    Update list of copyrights.
 
-commit 2480080e815d7ed196c882e11fe1a36e030f1e91
-Merge: dd5bbad fca91ea
+ LICENSE.TXT                | 7 ++++---
+ Python/test/ratehelpers.py | 2 +-
+ 2 files changed, 5 insertions(+), 4 deletions(-)
+
+commit 3b52fd062e6cb1887267f0e04ce6893794c3b978
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 2 May 2019 12:30:07 +0200
+Date:   Mon, 18 Nov 2019 10:58:57 +0100
 
-    Merge pull request #156.
+    Update C# project.
 
-commit 5da20f301020b06c6d7ed86d107b60df6810de70
+ CSharp/csharp/NQuantLib.csproj | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 76eae21af6757169d63dd22b75d42273730f38c2
+Merge: bb3f496 d538df5
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 30 Apr 2019 17:28:53 +0200
+Date:   Sat, 16 Nov 2019 20:46:33 +0100
 
-    Remove deprecated classes.
+    Merge pull request #220.
 
- SWIG/distributions.i | 12 ------------
- 1 file changed, 12 deletions(-)
-
-commit b07febd11030a484b5ceff56f651487ecfce54f6
+commit bb3f49691e77141da8db24886e64eba1347eb5f9
+Merge: 0920905 12a0ca8
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 30 Apr 2019 10:53:35 +0200
+Date:   Sat, 16 Nov 2019 15:07:03 +0100
 
-    Avoid 'from QuantLib import *'.
+    Merge pull request #219.
 
- Python/examples/american-option.py                |   52 +-
- Python/examples/basket-option.py                  |  102 +-
- Python/examples/bermudan-swaption.py              |  275 +-
- Python/examples/bonds.py                          |  404 +-
- Python/examples/cds.py                            |   80 +-
- Python/examples/european-option.py                |   70 +-
- Python/examples/swap.py                           |  337 +-
- Python/examples/swing.py                          |   52 +-
- Python/examples/visualization/basketoption.py     |   90 +-
- Python/examples/visualization/eurooption.py       |   47 +-
- Python/examples/visualization/option.basket.py    |   20 +-
- Python/examples/visualization/option.mayavi.py    |   59 +-
- Python/examples/visualization/option.plotspace.py |   29 +-
- Python/examples/visualization/plotspace.py        |   38 +-
- Python/examples/visualization/slv.py              |  107 +-
- Python/test/assetswap.py                          | 6844 +++++++++++++--------
- Python/test/bonds.py                              |  169 +-
- Python/test/cms.py                                |  370 +-
- Python/test/date.py                               |   50 +-
- Python/test/daycounters.py                        |   22 +-
- Python/test/iborindex.py                          |   51 +-
- Python/test/instruments.py                        |   22 +-
- Python/test/integrals.py                          |   57 +-
- Python/test/marketelements.py                     |   24 +-
- Python/test/ratehelpers.py                        |  420 +-
- Python/test/slv.py                                |  297 +-
- Python/test/solvers1d.py                          |   70 +-
- Python/test/termstructures.py                     |   97 +-
- 28 files changed, 6196 insertions(+), 4059 deletions(-)
-
-commit a60915d9cde2a9ed4c305c4f5e28a1a2586767c6
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 11 Apr 2019 23:49:43 +0200
-
-    HestonBlackVolSurface. AnalyticHestonEngine extension.
-
- SWIG/options.i      | 44 ++++++++++++++++++++++++++++++++++++++++++--
- SWIG/volatilities.i | 14 +++++++++++++-
- 2 files changed, 55 insertions(+), 3 deletions(-)
-
-commit a7ac45a94baa3e215bb4ad67181e80b207ef30eb
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 10 Apr 2019 23:23:37 +0200
-
-    as_plain_vanilla_payoff. blackFormulaImpliedStdDevLiRS.
-
- SWIG/blackformula.i | 31 +++++++++++++++++++++++++++++++
- SWIG/payoffs.i      |  9 ++++++++-
- 2 files changed, 39 insertions(+), 1 deletion(-)
-
-commit bf28ecbbed068e90d5511d60d9eef8c4a1f987de
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 10 Apr 2019 22:31:15 +0200
-
-    Add GeneralizedBlackScholesProcess with local vol.
-
- SWIG/stochasticprocess.i | 10 +++++++++-
- 1 file changed, 9 insertions(+), 1 deletion(-)
-
-commit 1f821e9118b9e12c902efae06efe941bf25380b3
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 10 Apr 2019 22:02:41 +0200
-
-    Boost tuple for CalibrationError.
-
- SWIG/vectors.i      | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- SWIG/volatilities.i |  3 +++
- 2 files changed, 55 insertions(+)
-
-commit fb480d1d73780a4b8b1f26a20924a1f447063325
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 10 Apr 2019 21:07:12 +0200
-
-    shared_ptr for optimizers.
-
- SWIG/optimizers.i | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
-
-commit d33121e5b43654095024dd572d90ce4caafde78d
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 10 Apr 2019 15:01:44 +0200
-
-    Add Andreasen-Huge-Volatility.
-
- SWIG/options.i      |  2 ++
- SWIG/volatilities.i | 64 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 66 insertions(+)
-
-commit fca91ea69d90a4b64e3e2ec64a184bb6c1add060
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 10 Apr 2019 11:28:12 +0200
-
-    Extend Schedule.
-
- SWIG/scheduler.i | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-commit a73a071c2b4a7bcbe9a828fcc664dd48bb46ed94
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 10 Apr 2019 11:11:38 +0200
-
-    Add JuQuadraticEngine.
-
- SWIG/options.i | 13 +++++++++++++
- 1 file changed, 13 insertions(+)
-
-commit dd5bbad941029f392bf747024c45118938f78fff
+commit 0920905a91d8497d69bc3d4f546e9f474ff20984
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 8 Apr 2019 10:57:29 +0200
+Date:   Fri, 15 Nov 2019 23:05:06 +0100
 
-    Update required QuantLib version.
+    Upgrade requirement for QuantLib version.
 
  SWIG/ql.i | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit a679034ad69afa4fcac4567e2f1e582511f13ffb
-Merge: 34ea345 8cd619a
+commit ba87bbd57b838795ca86c60cb93367ad301f7c19
+Merge: 5cd4872 c54faf3
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 8 Apr 2019 10:06:20 +0200
+Date:   Fri, 15 Nov 2019 18:24:18 +0100
 
-    Merge pull request #141.
+    Merge pull request #214.
 
-commit 8cd619ad24aa140ffde50c82dcb6c1b7030f2dc8
+commit 5cd4872e2481765655f5d6ba07d6e3f9cafb5ff1
+Merge: f5cfb59 53a1c98
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 5 Apr 2019 17:51:51 +0200
+Date:   Fri, 15 Nov 2019 17:13:55 +0100
 
-    Move graphing example in subfolder.
+    Merge pull request #218.
 
- Python/examples/{ => visualization}/slv.py | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
-
-commit b7b269ad6cbd1da1e3023c05eaf78f8d7d2d1711
+commit c54faf36572038c18c810df177a76b32fb2c513d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 5 Apr 2019 16:13:03 +0200
+Date:   Fri, 15 Nov 2019 16:40:02 +0100
+
+    Return by shared_ptr to avoid copy; add tests to suite.
+
+ Python/test/QuantLibTestSuite.py |   3 +-
+ Python/test/bonds.py             |  73 ++++++++++++++++++++++++
+ Python/test/bondskwords.py       | 116 ---------------------------------------
+ SWIG/bonds.i                     | 102 ++++++++++++----------------------
+ 4 files changed, 109 insertions(+), 185 deletions(-)
+
+commit 39ec26fad0ed8c82fa9608f1cc4143d41ab30347
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 Nov 2019 15:46:32 +0100
+
+    Expose runtime selection of par/indexed coupons.
+
+ SWIG/cashflows.i | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 12a0ca8b14c6773065adf50ceed41dc5e4f839e7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 Nov 2019 14:42:09 +0100
+
+    Export switch to choose FRA pricing method.
+
+ SWIG/fra.i         |  3 ++-
+ SWIG/ratehelpers.i | 24 ++++++++++++++----------
+ 2 files changed, 16 insertions(+), 11 deletions(-)
+
+commit 05cea2a94d5b3b5b03d220f46ea7201fd7e20a08
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 Nov 2019 11:11:21 +0100
+
+    Expose ex-coupon functionality for floaters.
+
+ SWIG/bonds.i     |  6 ++++-
+ SWIG/cashflows.i | 77 +++++++++++++++++++++++++++++++++++++++++++++++---------
+ 2 files changed, 70 insertions(+), 13 deletions(-)
+
+commit f5cfb59eda6935589020de29815dbee2635c2e6d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Nov 2019 18:45:40 +0100
+
+    Avoid time-out with no output.
+
+ .travis.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 6c4c6d1cfb4dc729d051717a38109b534f88dfec
+Merge: 8fee133 5a249c4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Nov 2019 18:37:52 +0100
+
+    Merge pull request #216.
+
+commit 8fee133bd4ebac21be152c944a46286f76cca00e
+Merge: 1980839 0758344
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Nov 2019 17:43:29 +0100
+
+    Merge pull request #215.
+
+commit 075834419744f55256689f8412d18c74bc081d51
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Nov 2019 16:40:37 +0100
+
+    Rename classes.
+
+ SWIG/discountcurve.i | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 5a249c4098fa44fcdf38740a78d913404369acf9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Nov 2019 15:57:04 +0100
+
+    Avoid deprecated classes
+
+ CSharp/examples/EquityOption.cs    | 12 +++---
+ Java/examples/EquityOptions.java   | 13 +++---
+ Python/examples/american-option.py |  2 +-
+ Python/examples/european-option.py |  2 +-
+ R/demo/european-option.R           |  2 +-
+ R/demo/fd-option.R                 |  2 +-
+ Ruby/examples/american-option.rb   |  2 +-
+ Ruby/examples/european-option.rb   |  2 +-
+ SWIG/options.i                     | 84 +++++++++++++++++++++++++++++++++++---
+ Scala/examples/EquityOptions.scala | 20 ++++-----
+ 10 files changed, 107 insertions(+), 34 deletions(-)
+
+commit 1f206834434914ba62db0cfe7e7505fae482052f
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Sun, 10 Nov 2019 17:51:26 -0600
+
+    Update discountcurve.i
+
+ SWIG/discountcurve.i | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+commit a436acde1461f13509a3b25d70c6da297403f19d
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Sun, 10 Nov 2019 15:15:08 -0600
+
+    Update discountcurve.i
+
+ SWIG/discountcurve.i | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 43e37334920ea7b0db75f09fa0a3f86abe578f07
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Sun, 10 Nov 2019 14:58:38 -0600
+
+    Update zerocurve.i
+
+ SWIG/zerocurve.i | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 2277fb9dc914b8a195651363e10cff0666c5bf86
+Merge: b36b7d5 a5ea37f
+Author: Prasad Somwanshi <prasad_osd@yahoo.com>
+Date:   Tue, 5 Nov 2019 11:53:31 +0000
+
+    changed author email
+
+commit b36b7d5f0ce01d8d9b1018f5dd6ea75cafe2e0ac
+Author: Prasad Somwanshi <prasad_osd@yahoo.com>
+Date:   Mon, 4 Nov 2019 23:48:42 +0000
+
+    Added static method one for each ctor
+    
+            new file:   Python/test/bondskwords.py
+            modified:   SWIG/bonds.i
+
+ Python/test/bondskwords.py | 116 +++++++++++++++++++++++++++++++++++++++++++++
+ SWIG/bonds.i               | 116 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 231 insertions(+), 1 deletion(-)
+
+commit a5ea37f20328ba8935913cf2eec3764c6f9a0991
+Author: Prasad <prasad@localhost.localdomain>
+Date:   Mon, 4 Nov 2019 23:48:42 +0000
+
+    Added static method one for each ctor
+
+ Python/test/bondskwords.py | 116 +++++++++++++++++++++++++++++++++++++++++++++
+ SWIG/bonds.i               | 116 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 231 insertions(+), 1 deletion(-)
+
+commit 1980839c7fe4bd7c034353494e1a98950d6da42c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 25 Oct 2019 13:44:46 +0200
 
     Update C# project.
 
- CSharp/csharp/NQuantLib.csproj | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
+ CSharp/csharp/NQuantLib.csproj | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-commit 34ea3453cc79b208e2f3bc25ea9a8f7efa45756b
-Merge: 1018a99 de399ab
+commit 00c5768be3222a5ef4300061cd7d4d86dd6415e4
+Merge: 8689c5a 39bf268
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 28 Mar 2019 14:45:02 +0100
+Date:   Fri, 25 Oct 2019 13:28:50 +0200
 
-    Merge pull request #142.
+    Merge pull request #211.
 
-commit de399abb1ce73d359abd3d8ddbf754f1707fdf1b
+commit 8689c5a48a33d7ab5a48b4348df1e3d0d4b46047
+Merge: d93329c 078e137
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 28 Mar 2019 11:30:47 +0100
+Date:   Fri, 25 Oct 2019 12:43:20 +0200
 
-    Remove unused macro.
+    Merge pull request #210.
 
- SWIG/observer.i | 11 -----------
- 1 file changed, 11 deletions(-)
-
-commit 916d4f55fe1564b6dfdf27b440a3d15786d78343
+commit d93329c60190254b9d66e67ada9de5d2270610fe
+Merge: eb8e95b d6350ac
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2019 23:02:25 +0100
+Date:   Fri, 25 Oct 2019 11:35:52 +0200
 
-    Avoid feature warning in Scala compilation.
+    Merge pull request #208.
 
- Scala/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit d03add2ed7d74e1d98173b7d3c007aeedafed034
+commit eb8e95b33a1a82e26a1824437352901d090a0bca
+Merge: 1e152e5 f36140c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2019 22:55:30 +0100
+Date:   Thu, 24 Oct 2019 18:29:14 +0200
 
-    Update Scala examples.
+    Merge pull request #204.
 
- SWIG/exercise.i                             | 8 ++++++++
- Scala/examples/CPIBond.scala                | 5 ++---
- Scala/examples/EquityOptions.scala          | 6 +++---
- Scala/examples/HestonModelCalibration.scala | 2 +-
- 4 files changed, 14 insertions(+), 7 deletions(-)
-
-commit ba30eef1691dd0fab51972e52dc500998b2303dc
+commit 078e13733e61813e4840c1c851ceaf4c5af56afc
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2019 22:54:55 +0100
+Date:   Thu, 24 Oct 2019 16:33:26 +0200
 
-    Add method to link a relinkable handle to an empty pointer.
+    Export daily Libor indexes.
+    
+    Fixes #196.
 
- SWIG/common.i | 6 ++++++
+ SWIG/indexes.i | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
+
+commit 39bf2687dccf3615f38b00f8df534e4cb7b8204e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 24 Oct 2019 16:32:09 +0200
+
+    Export France calendar.
+    
+    Fixes #197.
+
+ SWIG/calendars.i | 6 ++++++
  1 file changed, 6 insertions(+)
 
-commit 210fdc7f5b66fce99a26c979214665b062195c75
+commit 1e152e566362646cd60d232038509ee7ecffebcc
+Merge: 79753b4 4a27d87
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2019 22:53:25 +0100
+Date:   Thu, 24 Oct 2019 15:46:14 +0200
 
-    Avoid marking base classes as abstract.
+    Merge pull request #209.
+
+commit 79753b47114b2d02ab508034b99f27b39e20f3b7
+Merge: 48bfec2 e8bbd41
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 24 Oct 2019 14:26:04 +0200
+
+    Merge pull request #205.
+
+commit 48bfec28623298ad215f6eca4fd775aa53238ac0
+Merge: ed807b0 bf35795
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 24 Oct 2019 11:49:45 +0200
+
+    Merge pull request #203.
+
+commit ed807b00872b012195086299bf9f5c85784fac92
+Merge: d7c97e8 49db5f4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 24 Oct 2019 10:17:07 +0200
+
+    Merge pull request #200.
+
+commit d7c97e8f173d7b25b38b36cfc773847adfcd8a90
+Merge: c9b33ce 8d166dd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 22 Oct 2019 18:23:03 +0200
+
+    Merge pull request #202.
+
+commit c9b33ce996351b31c44a542b60555d8453161e00
+Merge: dc08f6a 09ec338
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 22 Oct 2019 17:28:21 +0200
+
+    Merge pull request #198.
+
+commit dc08f6a7feaf7e68d37a848ef46b863ce9ca17a8
+Merge: d367bc6 3c953b6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 22 Oct 2019 15:32:12 +0200
+
+    Merge pull request #195.
+
+commit d367bc6e7e1b9dd2a6eab57bf00635de5f1da5ef
+Merge: a893c3e 782a86e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 21 Oct 2019 15:20:06 +0200
+
+    Merge pull request #176.
+
+commit 3eb501b257c3f5c9242354d45c4d7bb86e48c99c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 21 Oct 2019 13:54:24 +0200
+
+    Disable default constructor when needed.
+
+ SWIG/interpolation.i | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
+
+commit 782a86efee55aa9984abf22264ff18ebd10d150a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 21 Oct 2019 13:01:26 +0200
+
+    Update C# project.
+
+ CSharp/csharp/NQuantLib.csproj | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 363116e1d463c9ebe03c5966d3047e35d412e158
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 21 Oct 2019 12:13:38 +0200
+
+    Remove unneeded shared_ptr statement.
+
+ SWIG/swap.i | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit a893c3e537e99f041ff7ebfeb90bdfd67296a3e7
+Merge: 66ca967 61ecad3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 21 Oct 2019 11:52:53 +0200
+
+    Merge pull request #199.
+
+commit 4a27d871bcbfc4af9f0fd92462215df2f688bf8a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 18 Oct 2019 17:38:48 +0200
+
+    Add pillar choice to OIS rate helpers.
+
+ SWIG/ratehelpers.i | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+commit 90bc19965096040ec575ed45c2207bc7d12957a1
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 16 Oct 2019 11:53:59 +0200
+
+    fixed make file
+
+ Java/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 206566140771b98c77e7501eb80346ad123d8e7e
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 16 Oct 2019 03:44:41 +0200
+
+    fixed formatting
+
+ SWIG/functions.i | 2 +-
+ SWIG/ode.i       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit da04d33a6af48f1c4f6a93550c00b2014c74796c
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 16 Oct 2019 03:40:00 +0200
+
+    added SWIG bindings for AdaptiveRungeKutta method
+
+ Java/examples/FunctionDelegates.java |  59 ++++++++++++
+ Java/examples/UnaryFunctions.java    |  24 -----
+ Python/examples/visualization/slv.py |   1 +
+ Python/test/QuantLibTestSuite.py     |   2 +
+ Python/test/ode.py                   |  48 ++++++++++
+ SWIG/functions.i                     |  82 ++++++++++++++++-
+ SWIG/ode.i                           | 174 +++++++++++++++++++++++++++++++++++
+ SWIG/options.i                       |   6 +-
+ SWIG/ql.i                            |   1 +
+ 9 files changed, 370 insertions(+), 27 deletions(-)
+
+commit 8912f70bc35eca0feef5cf1ce0ec09ddb4ac0af4
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Tue, 15 Oct 2019 18:32:04 +0200
+
+    formatting
+
+ SWIG/interpolation.i | 30 +++++++++++++++---------------
+ 1 file changed, 15 insertions(+), 15 deletions(-)
+
+commit e8bbd418d3a455d7c7f50a62fcfb88c75b48beb7
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Tue, 24 Sep 2019 20:56:57 +0200
+
+    Add OvernightIndexedCoupon.
+
+ SWIG/cashflows.i | 56 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 55 insertions(+), 1 deletion(-)
+
+commit 51c1941a1c9a18f14112625988d4a0f03805d055
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 23 Sep 2019 19:17:25 +0200
+
+    test second constructor
+
+ Java/examples/UnaryFunctions.java | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 4ce029147998589b6f00f53da58e22e1c075d6b6
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Mon, 23 Sep 2019 19:14:19 +0200
+
+    added Richardson extrapolation
+
+ Java/examples/UnaryFunctions.java | 16 ++++++++++++++
+ Python/test/QuantLibTestSuite.py  |  3 ++-
+ Python/test/extrapolation.py      | 46 +++++++++++++++++++++++++++++++++++++++
+ SWIG/interpolation.i              | 29 ++++++++++++++++++++++++
+ 4 files changed, 93 insertions(+), 1 deletion(-)
+
+commit bf35795796ca06f46e535ec32476dae2d815d834
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Fri, 20 Sep 2019 22:19:42 +0200
+
+    Add Zero and YoYInflationCurves.
+
+ SWIG/inflation.i | 63 +++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 62 insertions(+), 1 deletion(-)
+
+commit 8d166dd4cca4a13980559bfb527213f57ccd642b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 20 Sep 2019 18:02:50 +0200
+
+    Fix invalid default parameter.
+
+ SWIG/options.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 66ca96765688e9094dcfbbbd032ffd0596e7cadf
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 5 Sep 2019 08:59:56 +0200
+
+    Add Stale configuration.
+
+ .github/stale.yml | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
+
+commit 49db5f4249a73c776bcf3d3e3b8b6d35a527527f
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Wed, 4 Sep 2019 23:59:48 +0200
+
+    Exposing functions and results for caplets
+    Functionalities are dependent on merging:
+    https://github.com/lballabio/QuantLib/pull/674
+
+ SWIG/blackformula.i | 25 +++++++++++++++++++++++++
+ SWIG/capfloor.i     |  6 ++++++
+ 2 files changed, 31 insertions(+)
+
+commit 61ecad3d4240225fee2ed6db421cbbf647a19d4d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 2 Sep 2019 12:13:51 +0200
+
+    Correct location for installed license file.
+
+ Python/setup-old.py    | 1 -
+ Python/setup-old.py.in | 1 -
+ Python/setup.py        | 2 +-
+ Python/setup.py.in     | 2 +-
+ 4 files changed, 2 insertions(+), 4 deletions(-)
+
+commit d6a40b7ecdf727979330784058aba9f35bd55093
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 2 Sep 2019 12:01:56 +0200
+
+    Rename Python module to "QuantLib".
     
-    This would require declaring overridden methods in derived
-    classes in order to be able to instantiate them.
+    The "-Python" part was redundant.  For a while, we'll provide
+    a meta-package for backward compatibility.
 
- SWIG/inflation.i | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ .gitignore             |  1 +
+ Python/setup-old.py    | 38 ++++++++++++++++++++++++++++++++++++++
+ Python/setup-old.py.in | 38 ++++++++++++++++++++++++++++++++++++++
+ Python/setup.py        | 29 ++++++++++++-----------------
+ Python/setup.py.in     | 29 ++++++++++++-----------------
+ configure.ac           |  1 +
+ 6 files changed, 102 insertions(+), 34 deletions(-)
 
-commit ea37300e84b4e46e484d4f39b2b85b59e4f884ef
-Merge: 85fd1a2 1018a99
+commit 09ec3385cbbd49505b10a66ed58d393ff91cbd29
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Sun, 1 Sep 2019 21:21:48 -0500
+
+    Update piecewiseyieldcurve.i
+
+ SWIG/piecewiseyieldcurve.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 8a3895ef3d8ab0668536a1ec951ec2168fa2ae85
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Sun, 1 Sep 2019 21:20:17 -0500
+
+    Update interpolation.i
+
+ SWIG/interpolation.i | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 86035eec1f82875da30ce5d6dfd8875626fd2251
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Sun, 1 Sep 2019 21:19:54 -0500
+
+    Update interpolation.i
+
+ SWIG/interpolation.i | 8 --------
+ 1 file changed, 8 deletions(-)
+
+commit ee4ad7bd3fd9eb6494fc784a1e2de33781f2e0f4
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Tue, 27 Aug 2019 22:57:15 -0500
+
+    Added non-monotonic logCubic PiecewiseYieldCurve
+
+ SWIG/piecewiseyieldcurve.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 79024b22247836c6761d6ef8155dc29beeb328bd
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Tue, 27 Aug 2019 22:54:22 -0500
+
+    Add non-monotonic logCubic to interpolation.i
+
+ SWIG/interpolation.i | 9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+commit 8986399984463472fd8c4c54c5e3582ec21326f8
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Tue, 27 Aug 2019 22:26:37 -0500
+
+    Update swap.i
+
+ SWIG/swap.i | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 30ce3aee2d7e87ea503addf14cb497cee5f6d1a4
+Author: mdelmedico <33408870+mdelmedico@users.noreply.github.com>
+Date:   Tue, 27 Aug 2019 21:42:39 -0500
+
+    Update swap.i
+
+ SWIG/swap.i | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit a1b2c301562cd11e37e1c332700c3f09ff018fc4
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 22 Mar 2019 12:05:35 +0100
+Date:   Tue, 6 Aug 2019 17:29:38 +0200
 
-    Sync with master and solve conflict.
+    Bump version number to 1.17.
 
-commit 1018a99b694451b1ac37d9a4bc7619795bf47729
-Merge: c31615e 04771fc
+ Python/setup.py | 2 +-
+ R/DESCRIPTION   | 2 +-
+ Ruby/setup.rb   | 2 +-
+ configure.ac    | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+commit c31d24a8eb2f88d52402a13f01b20111c62458d5
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 21 Mar 2019 10:26:33 +0000
+Date:   Tue, 23 Jul 2019 17:41:13 +0200
 
-    Merge pull request #154.
-
-commit 04771fc9e457d6f3aa798195ea607678800ac88b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 21 Mar 2019 09:37:40 +0000
-
-    Add Scala tests to Travis build matrix.
-
- .travis.yml         | 3 +++
- .travis/scala.build | 7 +++++++
- 2 files changed, 10 insertions(+)
-
-commit 08e4adf2dec4d4ce8c70bb5fb39b1123dd8881fa
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 20 Mar 2019 23:31:43 +0000
-
-    Add "check" target to Scala Makefile.
-
- Scala/Makefile.am | 47 ++++++++++++++++++++++++++++++++++++++++++++---
- configure.ac      | 11 +++++++++++
- 2 files changed, 55 insertions(+), 3 deletions(-)
-
-commit 277b9bc1a1544951a6e9481696175e90cccc92fb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 20 Mar 2019 23:31:26 +0000
-
-    Reordered code.
-
- Scala/examples/HestonModelCalibration.scala | 43 +++++++++++++++--------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
-
-commit 3d66e74f3c8b818e4245765bc18a0a8987a3ccb4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 20 Mar 2019 23:30:58 +0000
-
-    Limit execution time of example.
-
- Scala/examples/ObserverPattern.scala | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-commit 85fd1a21489fb99002b58b8498817f414cbda117
-Merge: efc3a7d c31615e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 13 Mar 2019 11:26:26 +0100
-
-    Sync with master.
-
-commit efc3a7d29d6b5d33a5055ccca2ab6a3fd359b3d7
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 11 Mar 2019 17:08:57 +0100
-
-    Remove not-working alias to deprecated feature.
-
- SWIG/calibrationhelpers.i                   | 3 ---
- Scala/examples/HestonModelCalibration.scala | 2 +-
- 2 files changed, 1 insertion(+), 4 deletions(-)
-
-commit 59d6b63e3bedf8b33ecb988ce78633af0edac582
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 11 Mar 2019 14:58:52 +0100
-
-    Add convenience functions in Python to create Monte Carlo engines.
-
- Python/examples/basket-option.py   |  40 ++++----
- Python/examples/european-option.py |   4 +-
- SWIG/basketoptions.i               | 134 +++++++++++++++++++++++++-
- SWIG/options.i                     | 192 ++++++++++++++++++++++++++++++++++++-
- 4 files changed, 344 insertions(+), 26 deletions(-)
-
-commit b556868451a2a130f6390feac36b6614fe2b2ac1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 11 Mar 2019 11:45:24 +0100
-
-    Add convenience functions in Python to create binomial engines.
-
- Python/examples/american-option.py |  79 ++++++++++++-------------
- Python/examples/european-option.py | 114 +++++++++++++++++++------------------
- SWIG/convertiblebonds.i            |  23 ++++++++
- SWIG/options.i                     |  72 +++++++++++++++++++++++
- 4 files changed, 195 insertions(+), 93 deletions(-)
-
-commit a8d26b5cea6221bbe7e3435a855158e0a7b15fc8
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 11 Mar 2019 10:27:45 +0100
-
-    Add missing StochasticProcess interface.
-
- SWIG/stochasticprocess.i | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-commit c31615e66ecd91a0453a3bba9d120ebecb6dea5c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 6 Mar 2019 12:14:01 +0100
-
-    Decrease optimization level in Travis build to reduce compilation time.
+    Reduce optimization level in Travis build for R.
 
  .travis/r.build | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 1ff5653aed39dee594220fbde455aa953a4b9d46
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 6 Mar 2019 12:13:11 +0100
-
-    Update C# project.
-
- CSharp/csharp/NQuantLib.csproj | 21 +++++----------------
- 1 file changed, 5 insertions(+), 16 deletions(-)
-
-commit d92584ea94eceb57d4407f053c39c3579203b85a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 6 Mar 2019 11:56:57 +0100
-
-    Declare base TermStructure interface.
-
- SWIG/defaultprobability.i | 21 ++-------------------
- SWIG/inflation.i          | 18 +-----------------
- SWIG/termstructures.i     | 29 ++++++++++++++++++++++-------
- SWIG/volatilities.i       | 17 ++---------------
- 4 files changed, 27 insertions(+), 58 deletions(-)
-
-commit 6d9d71c59bb0627e5c2060a75af20c7ded6884ee
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 6 Mar 2019 09:53:49 +0100
-
-    Remove unused Extrapolator class.
-
- SWIG/interpolation.i | 19 -------------------
- 1 file changed, 19 deletions(-)
-
-commit 962992a07d5ac983885ffc8c32f17dec6ead3093
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 23:39:03 +0100
-
-    Migrate interest-rate curves to native shared_ptr support.
-
- SWIG/discountcurve.i       |  64 +++++-------------
- SWIG/fittedbondcurve.i     |  47 +++----------
- SWIG/forwardcurve.i        |  57 +++++-----------
- SWIG/inflation.i           |  27 +++-----
- SWIG/piecewiseyieldcurve.i |  81 ++++++++---------------
- SWIG/ratehelpers.i         |   8 +++
- SWIG/termstructures.i      | 162 ++++++++++++++++-----------------------------
- SWIG/zerocurve.i           |  92 ++++++++-----------------
- 8 files changed, 168 insertions(+), 370 deletions(-)
-
-commit 20162f60aafbc76b4d390d897a915f3845351d57
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 18:40:28 +0100
-
-    Migrate volatility structures to native shared_ptr support.
-
- SWIG/old_volatility.i | 239 +++++++------------
- SWIG/volatilities.i   | 621 +++++++++++++++++---------------------------------
- 2 files changed, 286 insertions(+), 574 deletions(-)
-
-commit 9d59f80ffa493c8925f906f5779ed17617efd75d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 14:39:36 +0100
-
-    Avoid method incorrectly wrapped in R.
-
- SWIG/parameter.i | 28 +++++++++++++++-------------
- 1 file changed, 15 insertions(+), 13 deletions(-)
-
-commit 7425ecb619e83e032e98176136a84e4286944b04
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 12:23:20 +0100
-
-    Fix access to enum in C# example.
-
- CSharp/examples/BermudanSwaption.cs | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-commit c390bf37b26a897327e187af3d02d3a19e5d7b58
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 12:19:42 +0100
-
-    Decrease optimization level in Travis build to reduce compilation time.
-
- .travis/python2.build | 2 +-
- .travis/python3.build | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit ad8e7f57ab65cfb029d542f6b9a90b2b58b17329
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 12:18:07 +0100
-
-    Migrate inflation curves to native shared_ptr support.
-
- SWIG/inflation.i | 129 +++++++++++++++++++++----------------------------------
- 1 file changed, 48 insertions(+), 81 deletions(-)
-
-commit d06dc1326a970aeaa08032e9efb1bd0ec490b3d9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 11:43:43 +0100
-
-    Migrate default probability curves to native shared_ptr support.
-
- SWIG/defaultprobability.i | 298 +++++++++++++++-------------------------------
- 1 file changed, 99 insertions(+), 199 deletions(-)
-
-commit 2c8cf93ef967fa1b0234d8dfa5c3cb582376b524
-Merge: eeaf5d9 c88c59c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Mar 2019 09:31:27 +0100
-
-    Merge pull request #153.
-
-commit c88c59c307f73004b3068963e5b3ada908af469f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2019 23:06:16 +0100
-
-    Add Travis CI configuration.
-
- .travis.yml           | 34 ++++++++++++++++++++++++++++++++++
- .travis/csharp.build  |  6 ++++++
- .travis/java.build    |  7 +++++++
- .travis/python2.build |  9 +++++++++
- .travis/python3.build |  9 +++++++++
- .travis/r.build       |  6 ++++++
- CSharp/Makefile.am    |  4 ++--
- SWIG/ql.i             |  2 +-
- configure.ac          |  3 ++-
- 9 files changed, 76 insertions(+), 4 deletions(-)
-
-commit 2115987949e21b95aeb1039f7c9757056719ebc8
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2019 11:38:05 +0100
-
-    Update C# project.
-
- CSharp/csharp/NQuantLib.csproj | 119 ++++++++++++++++++++++-------------------
- 1 file changed, 63 insertions(+), 56 deletions(-)
-
-commit 4d242cfe1c8dc0164f2a076e07d4b80d82122424
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2019 11:37:16 +0100
-
-    Prevent construction of a couple of base classes.
-
- SWIG/options.i         | 4 ++--
- SWIG/shortratemodels.i | 2 ++
- 2 files changed, 4 insertions(+), 2 deletions(-)
-
-commit e19d81fcc112e04890d13b318732dc815c98d299
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2019 10:52:56 +0100
-
-    Export missing engines.
-
- SWIG/options.i | 4 ++++
- 1 file changed, 4 insertions(+)
-
-commit a9c875e483856f101f0b3b466a13ef153f18bf59
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2019 10:23:51 +0100
-
-    Rename engines.
-
- SWIG/options.i | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-commit 564ad26bbfdc28d2af7d46ccae45c7dcb77ff0bd
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Mar 2019 09:37:55 +0100
-
-    Use face value instead of null claim.
-
- Python/examples/isda-engine.py | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-commit e849385256397feaee67f59f83889480f06f7c7e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 3 Mar 2019 22:40:47 +0100
-
-    Enable vectors of 1-D stochastic processes.
-
- Python/examples/basket-option.py | 44 +++++++++++++++++-----------------------
- SWIG/stochasticprocess.i         |  6 ++++++
- 2 files changed, 25 insertions(+), 25 deletions(-)
-
-commit 8397cab9f3740b9236279e5ac75b4ae347f7299f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 3 Mar 2019 22:40:09 +0100
-
-    Migrate pricing engines to native shared_ptr support.
-
- CSharp/examples/EquityOption.cs      |  108 +--
- Java/examples/EquityOptions.java     |   88 +--
- Python/examples/american-option.py   |   12 +-
- Python/examples/european-option.py   |   28 +-
- Python/examples/gaussian1d-models.py |   12 +-
- R/Makefile.am                        |    8 +-
- R/demo/european-option.R             |   21 +-
- Ruby/examples/american-option.rb     |   12 +-
- Ruby/examples/european-option.rb     |   22 +-
- SWIG/basketoptions.i                 |  298 +++----
- SWIG/bonds.i                         |   56 +-
- SWIG/capfloor.i                      |   46 +-
- SWIG/convertiblebonds.i              |   58 +-
- SWIG/creditdefaultswap.i             |   84 +-
- SWIG/gaussian1dmodel.i               |  149 +---
- SWIG/instruments.i                   |    6 +-
- SWIG/options.i                       | 1444 +++++++++++-----------------------
- SWIG/shortratemodels.i               |  156 ++--
- SWIG/swap.i                          |   39 +-
- SWIG/swaption.i                      |   62 +-
- Scala/examples/EquityOptions.scala   |  103 +--
- 21 files changed, 940 insertions(+), 1872 deletions(-)
-
-commit 9131db875191eb01f78389f59389b91f213c5934
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 26 Feb 2019 14:33:31 +0100
-
-    Migrate boundary conditions and CDS claims to native shared_ptr support.
-
- SWIG/creditdefaultswap.i | 26 ++++++++++----------------
- SWIG/operators.i         | 44 ++++++++++----------------------------------
- 2 files changed, 20 insertions(+), 50 deletions(-)
-
-commit 84a1520093df9e62d5024191e93f01b68b824cad
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 25 Feb 2019 16:21:30 +0100
-
-    Migrate cashflows to native shared_ptr support.
-
- SWIG/cashflows.i | 588 ++++++++++++++++---------------------------------------
- SWIG/dividends.i |  30 +--
- 2 files changed, 178 insertions(+), 440 deletions(-)
-
-commit 62aeec6e9d8bbd050259ea0296a9c26fa407fde4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 25 Feb 2019 10:27:38 +0100
-
-    Remove Perl module.
-
- Makefile.am                      |  2 +-
- Perl/Makefile.PL                 | 10 ---------
- Perl/Makefile.PL.in              | 10 ---------
- Perl/Makefile.am                 | 41 -----------------------------------
- Perl/README.txt                  |  6 -----
- Perl/examples/european-option.pl | 47 ----------------------------------------
- SWIG/calendars.i                 |  2 --
- SWIG/currencies.i                |  2 --
- SWIG/daycounters.i               |  2 --
- SWIG/distributions.i             | 40 +++++++++++++++++-----------------
- SWIG/indexes.i                   |  2 --
- SWIG/interpolation.i             |  4 ++--
- SWIG/linearalgebra.i             |  4 ++--
- SWIG/optimizers.i                |  2 +-
- SWIG/options.i                   |  2 +-
- SWIG/ql.i                        | 31 +-------------------------
- SWIG/rounding.i                  |  2 +-
- configure.ac                     | 12 ----------
- 18 files changed, 29 insertions(+), 192 deletions(-)
-
-commit c193ce3d8de2573173ed04c74930e9f64d53dabb
-Merge: 975e574 eeaf5d9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 24 Feb 2019 23:43:20 +0100
-
-    Sync with master.
-
-commit 2abc998a32f8d1555945542d96c9a52d0a2ecf54
+commit f7d000527aee50528ae41bad4b32dbb064675359
 Author: klausspanderen <klaus@spanderen.de>
-Date:   Sat, 23 Feb 2019 15:30:41 +0100
+Date:   Wed, 17 Jul 2019 19:03:37 +0200
 
-    added more verbose Python string method and moved daysBetween
+    resolve commit
 
- SWIG/date.i | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
-
-commit eeaf5d98e57afd8cac891c964e7b299631d85bb9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 21 Feb 2019 18:17:07 +0100
-
-    Bump version number to 1.16.
-
- Perl/Makefile.PL | 2 +-
- Python/setup.py  | 2 +-
- R/DESCRIPTION    | 2 +-
- Ruby/setup.rb    | 2 +-
- configure.ac     | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
-
-commit 3a4339d34187211cae74e818b077114a7f7ffd8e
-Author: klausspanderen <klaus@spanderen.de>
-Date:   Thu, 31 Jan 2019 20:35:46 +0100
-
-    removed encoding information
-
- Python/test/sabr.py | 1 -
- 1 file changed, 1 deletion(-)
-
-commit d4d8c9f6929502d18eea7c2a03d33df29fe83310
-Author: klausspanderen <klaus@spanderen.de>
-Date:   Thu, 31 Jan 2019 20:32:12 +0100
-
-    added HestonSLV interfaces and tests
-
- Java/examples/EquityOptions.java |  14 +-
- Python/examples/slv.py           |  97 ++++++++++++++
- Python/test/QuantLibTestSuite.py |   2 +
- Python/test/sabr.py              |  35 +++++
- Python/test/slv.py               | 200 +++++++++++++++++++++++++++
- SWIG/options.i                   |  61 ++++++++-
- SWIG/ql.i                        |   1 +
- SWIG/slv.i                       | 282 +++++++++++++++++++++++++++++++++++++++
- 8 files changed, 687 insertions(+), 5 deletions(-)
-
-commit 975e5742204bd693f0f4593beabe013abae8245e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Jan 2019 21:38:47 +0100
-
-    Migrate quotes to native shared_ptr support.
-
- SWIG/marketelements.i | 65 +++++++++++++++++++++------------------------------
- SWIG/options.i        | 56 ++++++++------------------------------------
- SWIG/volatilities.i   |  2 +-
- 3 files changed, 37 insertions(+), 86 deletions(-)
-
-commit 0047ab3f5f6e80b15abdd58b2db57e5851f50129
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Jan 2019 18:27:34 +0100
-
-    Migrate callabilities to native shared_ptr support.
-
- Java/examples/CallableBonds.java    |  2 +-
- Java/examples/CallableBondsOAS.java |  6 ++---
- SWIG/callability.i                  | 46 ++++++++-----------------------------
- 3 files changed, 14 insertions(+), 40 deletions(-)
-
-commit a8b22990edd9dd9b17443050dcdf21507c2e3bb3
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Jan 2019 17:30:11 +0100
-
-    Migrate smile sections to native shared_ptr support.
-
- SWIG/volatilities.i | 406 ++++++++++++++--------------------------------------
- 1 file changed, 104 insertions(+), 302 deletions(-)
-
-commit 26524ffbe2185c069ac784e2c63d04c2a94e5425
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Jan 2019 15:48:12 +0100
-
-    Avoid redefinition of shared_ptr.
-
- SWIG/common.i | 29 +++++++++++++----------------
- 1 file changed, 13 insertions(+), 16 deletions(-)
-
-commit 94b29dc377471b61cbc35bc8a75bacd049b08200
-Merge: 4273884 5e372c0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Jan 2019 14:30:09 +0100
-
-    Sync with master.
-
-commit 4273884eb49e8369cacdb6c6023c1ae17c1368c3
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 22 Jan 2019 17:43:28 +0100
-
-    Declare TypePayoff after Option::Type.
-
- SWIG/options.i | 35 ++++++++++++++++++-----------------
- 1 file changed, 18 insertions(+), 17 deletions(-)
-
-commit 29f5f8beccb2b1f8ede88bd3ebb4e9e07500cd60
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 22 Jan 2019 17:25:13 +0100
-
-    Declare available methods instead of using %extend.
-
- SWIG/gaussian1dmodel.i | 42 ++++++++++++++++++------------------------
- SWIG/shortratemodels.i | 12 +++---------
- 2 files changed, 21 insertions(+), 33 deletions(-)
-
-commit b2b1f2773f776c714741f1e3ae8ab74076f9b2b7
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 22 Jan 2019 17:03:36 +0100
-
-    Pass class of the correct type in Java example.
-
- Java/examples/EquityOptions.java | 2 +-
+ Python/test/slv.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 1dcdc01fcec3ceec4bb7a88afc989d700bcbc6e3
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Sun, 20 Jan 2019 22:51:40 +0100
-
-    Move TypePayoff, StrikedTypePayoff to options.i
-
- SWIG/options.i | 53 ++++++++++++++++++++++++++++++++++++-----------------
- SWIG/payoffs.i | 18 ------------------
- 2 files changed, 36 insertions(+), 35 deletions(-)
-
-commit 3bcbfe6577f5d3db52abe5e6d1881b4a6bfce9f5
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Sun, 20 Jan 2019 20:47:06 +0100
-
-    Remove multiple inheritance.
-
- SWIG/gaussian1dmodel.i | 39 ++++++++++++++++++++++++++++++++++-----
- SWIG/shortratemodels.i | 21 ++++++++++++++++++---
- 2 files changed, 52 insertions(+), 8 deletions(-)
-
-commit e6538cef332985b14b47c9491715dbd1db37af79
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 9 Jan 2019 22:36:21 +0100
-
-    Fix Payoff.
-
- SWIG/options.i | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
-commit a1adcebdd71858975aa769b3d644704956049654
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 3 Jan 2019 16:57:02 +0100
-
-    Avoid a circular include.
-
- SWIG/inflation.i | 1 -
- 1 file changed, 1 deletion(-)
-
-commit 9beb936031f47eb8ede0007a7a21422bbf517c11
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 3 Jan 2019 15:27:46 +0100
-
-    Make handles observable by default.
-
- SWIG/calibrationhelpers.i | 1 -
- SWIG/defaultprobability.i | 1 -
- SWIG/inflation.i          | 2 --
- SWIG/marketelements.i     | 1 -
- SWIG/observer.i           | 9 +++++++++
- SWIG/old_volatility.i     | 1 -
- SWIG/options.i            | 1 -
- SWIG/shortratemodels.i    | 1 -
- SWIG/termstructures.i     | 1 -
- SWIG/volatilities.i       | 4 ----
- 10 files changed, 9 insertions(+), 13 deletions(-)
-
-commit 73036ea1ab0f773f09e3ad634f39e7e7e72a9566
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 3 Jan 2019 12:32:37 +0100
-
-    Fix for observable test.
-
- SWIG/calibrationhelpers.i |  4 +---
- SWIG/instruments.i        |  2 --
- SWIG/observer.i           | 10 ++++++++--
- SWIG/shortratemodels.i    |  4 +---
- 4 files changed, 10 insertions(+), 10 deletions(-)
-
-commit f4cd2a4916d6d4746429ec7d90b32e489bf597df
+commit 188112d8b563b2c93c5499f7f34f921d90c56ea7
 Author: klausspanderen <klaus@spanderen.de>
-Date:   Wed, 2 Jan 2019 20:15:15 +0100
+Date:   Wed, 17 Jul 2019 18:56:34 +0200
 
-    added SABR PDE engine
+    resolve conflict
 
- Python/test/QuantLibTestSuite.py |  4 +-
- Python/test/sabr.py              | 90 ++++++++++++++++++++++++++++++++++++++++
- SWIG/options.i                   | 72 +++++++++++++++++++++++++++++++-
- SWIG/volatilities.i              | 31 ++++++++++++++
- 4 files changed, 195 insertions(+), 2 deletions(-)
+ Python/test/slv.py | 17 ++++++++++-------
+ 1 file changed, 10 insertions(+), 7 deletions(-)
 
-commit 1a9895b5df1cc41ca71e4d11551712732a984e41
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 7 Dec 2018 21:50:36 +0100
+commit ca6a5ffbd319e675be457f830bb3e202e07c9374
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Sun, 30 Jun 2019 21:22:43 +0200
 
-    Further work towards migration: InflationHelper.
+    change formatting
 
- SWIG/inflation.i   | 84 +++++++++++++++++++++++++++++++++++++-----------------
- SWIG/ratehelpers.i |  2 +-
- 2 files changed, 59 insertions(+), 27 deletions(-)
+ SWIG/options.i | 10 +++++++---
+ 1 file changed, 7 insertions(+), 3 deletions(-)
 
-commit f149efdfebc974b4327adae86b75a481a1a468e9
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 7 Dec 2018 20:15:06 +0100
+commit 91c2e31f0608d7f609661f3f2a29159cffbedec1
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Fri, 7 Jun 2019 22:23:39 +0200
 
-    Further work migration: CDSHelper.
+    String formatting compliant with python 2.7
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- SWIG/defaultprobability.i | 168 +++++++++++++++++++++-------------------------
- 1 file changed, 75 insertions(+), 93 deletions(-)
+ Python/test/ratehelpers.py | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-commit dec196b7d31ae2f5b3e735c0d4c110160080a113
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 7 Dec 2018 14:27:40 +0100
+commit 248f4e890bed23c9c12bb5aac98d484d9ed3f280
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Thu, 6 Jun 2019 23:49:05 +0200
 
-    Further work migration: RateHelpers.
+    Align exposition of MakeOIS python function with C++
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- SWIG/ratehelpers.i | 615 ++++++++++++++++++++---------------------------------
- 1 file changed, 228 insertions(+), 387 deletions(-)
+ Python/test/ratehelpers.py | 36 ++++++++++++++++++++---------
+ SWIG/swap.i                | 56 ++++++++++++++++++++++++----------------------
+ 2 files changed, 55 insertions(+), 37 deletions(-)
 
-commit 7b3d26c1ccdcc9a919925c987f30ffe73a3fb880
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 6 Dec 2018 22:53:29 +0100
+commit f7e971349b45e28c4d49e317b7c33b078098a95d
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Tue, 4 Jun 2019 00:31:45 +0200
 
-    Further work on models migration: Heston, Bates.
+    changing endOfMonth to false
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- SWIG/options.i | 163 ++++++++++++++++-----------------------------------------
- 1 file changed, 44 insertions(+), 119 deletions(-)
+ Python/test/ratehelpers.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-commit 490c2d3577e7f356fd5319e3bde6756611b1830d
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 6 Dec 2018 22:28:13 +0100
+commit 5f2f5eb1c0692117f18093d11455d3745c0132fd
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Tue, 4 Jun 2019 00:15:34 +0200
 
-    Further work on models migration: ShortRateModels.
+    changing assertion from npv to fairRate
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- SWIG/shortratemodels.i | 171 ++++++++++++++++---------------------------------
- 1 file changed, 55 insertions(+), 116 deletions(-)
+ Python/test/ratehelpers.py | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
 
-commit add73cc47ec3a6ca8eca37744546e860fd6f2c2a
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 6 Dec 2018 22:06:00 +0100
+commit bb7e757a1857fc826a832dd606ce83e05228f3cc
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Sun, 2 Jun 2019 22:47:05 +0200
 
-    Further work on models migration: Constraints, CalibratedModel, GSR, Markov.
+    Expose MakeOIS with special treatment for python
 
- SWIG/calibrationhelpers.i |  25 ++++-
- SWIG/gaussian1dmodel.i    | 232 +++++++++++++---------------------------------
- SWIG/optimizers.i         |   7 ++
- 3 files changed, 91 insertions(+), 173 deletions(-)
+ Python/test/ratehelpers.py |  27 ++++++++++--
+ SWIG/swap.i                | 103 ++++++++++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 126 insertions(+), 4 deletions(-)
 
-commit 80b71b4358f82a39b3e91ed05b52394f03abc60c
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 6 Dec 2018 12:54:34 +0100
+commit a9b216e51e79797aedbf4103540d3bed5ab7c20c
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Thu, 23 May 2019 21:54:44 +0200
 
-    Fix bond unit test (should never have passed before).
+    Adjusting the test case for curve's lazy evaluation
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- Python/test/bonds.py | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Python/test/ratehelpers.py | 78 +++++++++++++++++++++-------------------------
+ SWIG/ratehelpers.i         |  1 -
+ 2 files changed, 36 insertions(+), 43 deletions(-)
 
-commit 8728663674c99486b7b7279c568978b0784b1ac2
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 5 Dec 2018 23:39:48 +0100
+commit fffd312bf1d6af4cd67d3d6c5cbb5e48dd847f8f
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Wed, 22 May 2019 22:25:05 +0200
 
-    Further work on instrument migration: Inflation.
+    Adding OISRateHelperTest to test suite - continuation
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- SWIG/inflation.i | 355 +++++++++++++++----------------------------------------
- 1 file changed, 97 insertions(+), 258 deletions(-)
+ Python/test/QuantLibTestSuite.py | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-commit baf3a403d8d4976b250dbb1bbe169829c02986e9
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 5 Dec 2018 22:02:40 +0100
+commit 4bc6d6d20aad01de8ad1c4b6624969a60d475efa
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Wed, 22 May 2019 21:30:38 +0200
 
-    Further work on instrument migration: Swaptions, CalibrationHelper.
+    Adding OISRateHelperTest to test suite
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- SWIG/calibrationhelpers.i | 304 +++++++++++++++++-----------------------------
- SWIG/swaption.i           | 153 ++++++++++++-----------
- 2 files changed, 189 insertions(+), 268 deletions(-)
+ Python/test/ratehelpers.py | 1 +
+ 1 file changed, 1 insertion(+)
 
-commit 76f96acca8d4cfcb6a30feec785b7c38fe846358
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 5 Dec 2018 18:12:59 +0100
+commit 3f8132f8ed027303854882840aa58baff2253ab8
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Wed, 22 May 2019 00:13:06 +0200
 
-    Further work on instrument migration: Swaps.
+    Example showing requirement of using setTermStructure
+    
+    OISRateHelper requires to use setTermStructure before
+    calculating impliedQuote
+    
+    Signed-off-by: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
 
- SWIG/ratehelpers.i |   4 +-
- SWIG/swap.i        | 541 ++++++++++++++++-------------------------------------
- SWIG/swaption.i    |  19 +-
- 3 files changed, 164 insertions(+), 400 deletions(-)
+ Python/test/ratehelpers.py | 128 +++++++++++++++++++++++++++++++++++++++++++--
+ 1 file changed, 123 insertions(+), 5 deletions(-)
 
-commit f1a0e930f57a9cf8f086911441c9dd4c3aef0a96
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 29 Nov 2018 23:20:57 +0100
+commit a0c85b51d371b967e363e64763566b018c4c9938
+Author: Wojciech Ślusarski <wojciech.slusarski@gmail.com>
+Date:   Tue, 21 May 2019 22:51:14 +0200
 
-    Further work on instrument migration: CDS.
+    Expose setTermStructure of OISRateHelper
 
- SWIG/creditdefaultswap.i | 188 ++++++++++++++---------------------------------
- 1 file changed, 56 insertions(+), 132 deletions(-)
+ SWIG/ratehelpers.i | 1 +
+ 1 file changed, 1 insertion(+)
 
-commit f5f3f109b002e8b6fc2ca959961d8d5f884b0b06
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 29 Nov 2018 21:52:32 +0100
+commit 81ac785eea227b8158e4c34b85728522dc146702
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Wed, 1 May 2019 10:23:06 +0200
 
-    Further work on instrument migration: Forwards.
+    added test case
 
- SWIG/capfloor.i |   2 +-
- SWIG/forward.i  | 109 ++++++++++++++++++++++----------------------------------
- SWIG/fra.i      |  49 ++++++++++---------------
- 3 files changed, 62 insertions(+), 98 deletions(-)
+ Python/test/americanquantooption.py | 110 ++++++++++++++++++++++++++++++++++++
+ 1 file changed, 110 insertions(+)
 
-commit e930ce562059562d2ce1452ebd2b3bb35ed10114
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 29 Nov 2018 21:10:47 +0100
+commit 10426add4da5aa08660f2227b8715c88b7f470fd
+Author: klausspanderen <klaus@spanderen.de>
+Date:   Tue, 30 Apr 2019 21:48:41 +0200
 
-    Further work on instrument migration: CapFloor.
+    added American Quanto Option
 
- SWIG/capfloor.i | 102 ++++++++++++++++++--------------------------------------
- 1 file changed, 33 insertions(+), 69 deletions(-)
-
-commit 8870ae2f3416b6feebe37dc550c6ee4c9c50de35
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Thu, 29 Nov 2018 20:30:13 +0100
-
-    Further work on instrument migration: ConvertibleBonds.
-
- SWIG/convertiblebonds.i | 120 +++++++++++++++++-------------------------------
- 1 file changed, 43 insertions(+), 77 deletions(-)
-
-commit fc1524ebb5cf4444ea5aa42caa4d4cb8de5e66d6
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Wed, 28 Nov 2018 23:09:14 +0100
-
-    Further work on instrument migration: Bonds.
-
- SWIG/bondfunctions.i     |  68 ++---
- SWIG/bonds.i             | 757 ++++++++++++++++-------------------------------
- SWIG/creditdefaultswap.i |   4 +-
- SWIG/forward.i           |   6 +-
- SWIG/instruments.i       |   7 +-
- SWIG/ratehelpers.i       |  13 +-
- SWIG/swap.i              |   6 +-
- 7 files changed, 307 insertions(+), 554 deletions(-)
-
-commit 473d5708eca67d285f6b665104c7314b78602119
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Sat, 24 Nov 2018 21:24:55 +0100
-
-    Temp commit.
-
- SWIG/basketoptions.i     | 100 ++---
- SWIG/convertiblebonds.i  |  21 +-
- SWIG/exercise.i          | 115 ++----
- SWIG/gaussian1dmodel.i   |   2 +-
- SWIG/instruments.i       |  43 +--
- SWIG/montecarlo.i        |  13 +-
- SWIG/observer.i          |   1 +
- SWIG/options.i           | 938 +++++++++++++++--------------------------------
- SWIG/payoffs.i           |  37 +-
- SWIG/stochasticprocess.i | 437 +++++++---------------
- 10 files changed, 540 insertions(+), 1167 deletions(-)
-
-commit dc7661c863a63ab77053d8d733216693e2737540
-Author: Matthias Lungwitz <lungwitz@gmail.com>
-Date:   Fri, 23 Nov 2018 22:56:21 +0100
-
-    Migrate Payoffs to native boost shared ptr.
-
- SWIG/basketoptions.i |  52 +++++++++--------------
- SWIG/payoffs.i       | 117 +++++++++++++++------------------------------------
- 2 files changed, 54 insertions(+), 115 deletions(-)
-
-commit ae39fc3d2539c89931a34f8dad29a2ae37df2e30
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Oct 2018 16:27:36 +0200
-
-    Use native shared_ptr support for indexes.
-
- SWIG/bonds.i              |  24 +--
- SWIG/calibrationhelpers.i |  24 +--
- SWIG/cashflows.i          |  42 ++---
- SWIG/convertiblebonds.i   |   6 +-
- SWIG/fra.i                |   8 +-
- SWIG/gaussian1dmodel.i    |   4 +-
- SWIG/indexes.i            | 470 +++++++++++++++-------------------------------
- SWIG/inflation.i          | 130 +++++--------
- SWIG/observer.i           |   5 +-
- SWIG/old_volatility.i     |   6 +-
- SWIG/ratehelpers.i        |  72 +++----
- SWIG/swap.i               |  41 ++--
- SWIG/volatilities.i       |  20 +-
- 13 files changed, 284 insertions(+), 568 deletions(-)
+ Python/test/QuantLibTestSuite.py |  4 ++-
+ Python/test/slv.py               |  2 +-
+ SWIG/options.i                   | 54 ++++++++++++++++++++++++++++++++--------
+ 3 files changed, 47 insertions(+), 13 deletions(-)
