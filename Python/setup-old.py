@@ -22,7 +22,7 @@ classifiers = [
 
 setup(
     name="QuantLib-Python",
-    version="1.17",
+    version="1.18",
     description="Backward-compatible meta-package for the QuantLib module",
     long_description="""
     This module is provided for backward compatibility.
@@ -33,5 +33,5 @@ setup(
     url="http://quantlib.org",
     license="BSD 3-Clause",
     classifiers=classifiers,
-    install_requires=["QuantLib == 1.17"],
+    install_requires=["QuantLib == 1.18"],
 )
