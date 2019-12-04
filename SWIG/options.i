@@ -2058,5 +2058,73 @@ class AnalyticGJRGARCHEngine : public PricingEngine {
     AnalyticGJRGARCHEngine(const boost::shared_ptr<GJRGARCHModel>& process);
 };
 
+%{
+using QuantLib::MCEuropeanGJRGARCHEngine;
+%}
+
+%shared_ptr(MCEuropeanGJRGARCHEngine<PseudoRandom>);
+%shared_ptr(MCEuropeanGJRGARCHEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCEuropeanGJRGARCHEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCEuropeanGJRGARCHEngine;
+    #endif
+  public:
+    %extend {
+        MCEuropeanGJRGARCHEngine(const boost::shared_ptr<GJRGARCHProcess>& process,
+                                 intOrNull timeSteps = Null<Size>(),
+                                 intOrNull timeStepsPerYear = Null<Size>(),
+                                 bool antitheticVariate = false,
+                                 intOrNull requiredSamples = Null<Size>(),
+                                 doubleOrNull requiredTolerance = Null<Real>(),
+                                 intOrNull maxSamples = Null<Size>(),
+                                 BigInteger seed = 0) {
+            QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
+                       Size(timeStepsPerYear) != Null<Size>(),
+                       "number of steps not specified");
+            return new MCEuropeanGJRGARCHEngine<RNG>(process,
+                                                     timeSteps,
+                                                     timeStepsPerYear,
+                                                     antitheticVariate,
+                                                     requiredSamples,
+                                                     requiredTolerance,
+                                                     maxSamples,
+                                                     seed);
+        }
+    }
+};
+
+%template(MCPREuropeanGJRGARCHEngine) MCEuropeanGJRGARCHEngine<PseudoRandom>;
+%template(MCLDEuropeanGJRGARCHEngine) MCEuropeanGJRGARCHEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanGJRGARCHEngine(process,
+                                 traits,
+                                 timeSteps=None,
+                                 timeStepsPerYear=None,
+                                 antitheticVariate=False,
+                                 requiredSamples=None,
+                                 requiredTolerance=None,
+                                 maxSamples=None,
+                                 seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanGJRGARCHEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanGJRGARCHEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 #endif
