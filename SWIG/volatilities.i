@@ -924,6 +924,7 @@ class HestonBlackVolSurface : public BlackVolTermStructure {
 using QuantLib::CmsMarket;
 %}
 
+%shared_ptr(CmsMarket)
 class CmsMarket{
   public:       
     CmsMarket(
@@ -951,6 +952,39 @@ class CmsMarket{
         Disposable<Array> weightedFwdNpvErrors(const Matrix& weights);
 };
 
+%{
+using QuantLib::CmsMarketCalibration;
+%}
 
+class CmsMarketCalibration {
+  public:
+    enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
+
+    CmsMarketCalibration(
+        Handle<SwaptionVolatilityStructure>& volCube,
+        boost::shared_ptr<CmsMarket>& cmsMarket,
+        const Matrix& weights,
+        CalibrationType calibrationType);
+
+    Array compute(const boost::shared_ptr<EndCriteria>& endCriteria,
+              const boost::shared_ptr<OptimizationMethod>& method,
+              const Array& guess,
+              bool isMeanReversionFixed);
+
+    Matrix compute(const boost::shared_ptr<EndCriteria>& endCriteria,
+                  const boost::shared_ptr<OptimizationMethod>& method,
+                  const Matrix& guess,
+                  bool isMeanReversionFixed,
+                  const Real meanReversionGuess = Null<Real>());
+
+
+    Matrix computeParametric(const boost::shared_ptr<EndCriteria> &endCriteria,
+                      const boost::shared_ptr<OptimizationMethod> &method,
+                      const Matrix &guess, bool isMeanReversionFixed,
+                      const Real meanReversionGuess = Null<Real>());
+
+    Real error();
+    EndCriteria::Type endCriteria();
+};
 
 #endif
