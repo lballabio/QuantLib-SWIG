@@ -228,3 +228,23 @@ class RichardsonExtrapolation {
 };
 
 #endif
+
+
+%{
+namespace QuantLib {
+    typedef ConvexMonotoneInterpolation<Array::const_iterator, Array::const_iterator> 
+        ConvexMonotoneArrayInterpolation;
+}
+
+typedef SafeInterpolation<QuantLib::ConvexMonotoneArrayInterpolation> SafeConvexMonotoneInterpolation;
+%}
+
+%rename(ConvexMonotoneInterpolation) SafeConvexMonotoneInterpolation;
+class SafeConvexMonotoneInterpolation {
+    #if defined(SWIGCSHARP)
+    %rename(call) operator();
+    #endif
+  public:
+    SafeConvexMonotoneInterpolation(const Array& x, const Array& y);
+    Real operator()(Real x, bool allowExtrapolation=false);
+};
