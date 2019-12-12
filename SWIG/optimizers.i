@@ -196,6 +196,7 @@ class NonhomogeneousBoundaryConstraint : public Constraint {
 using QuantLib::EndCriteria;
 %}
 
+%shared_ptr(EndCriteria)
 class EndCriteria {
     #if defined(SWIGRUBY)
     %rename("setPositiveOptimization!") setPositiveOptimization;
