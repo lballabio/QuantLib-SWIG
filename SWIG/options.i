@@ -402,6 +402,9 @@ using QuantLib::AnalyticPTDHestonEngine;
 %shared_ptr(AnalyticPTDHestonEngine)
 class AnalyticPTDHestonEngine : public PricingEngine {
   public:
+    enum ComplexLogFormula { Gatheral, AndersenPiterbarg };
+    typedef AnalyticHestonEngine::Integration Integration;
+    
     AnalyticPTDHestonEngine(
             const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Real relTolerance, Size maxEvaluations);
@@ -410,6 +413,13 @@ class AnalyticPTDHestonEngine : public PricingEngine {
     AnalyticPTDHestonEngine(
             const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Size integrationOrder = 144);
+            
+    // Constructor giving full control over Fourier integration algorithm
+    AnalyticPTDHestonEngine(
+        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        ComplexLogFormula cpxLog,
+        const Integration& itg,
+        Real andersenPiterbargEpsilon = 1e-8);            
 };
 
 
