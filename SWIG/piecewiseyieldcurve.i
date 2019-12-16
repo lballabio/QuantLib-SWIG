@@ -23,6 +23,7 @@
 %include termstructures.i
 %include ratehelpers.i
 %include interpolation.i
+%include null.i
 
 // bootstrap traits
 
@@ -54,20 +55,33 @@ typedef PiecewiseYieldCurve<Traits, Interpolator> Name;
 %shared_ptr(Name);
 class Name : public YieldTermStructure {
   public:
-    Name(const Date& referenceDate,
-         const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-         const DayCounter& dayCounter,
-         const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-         const std::vector<Date>& jumpDates = std::vector<Date>(),
-         Real accuracy = 1.0e-12,
-         const Interpolator& i = Interpolator());
-    Name(Integer settlementDays, const Calendar& calendar,
-         const std::vector<boost::shared_ptr<RateHelper> >& instruments,
-         const DayCounter& dayCounter,
-         const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
-         const std::vector<Date>& jumpDates = std::vector<Date>(),
-         Real accuracy = 1.0e-12,
-         const Interpolator& i = Interpolator());
+    %extend {
+        Name(const Date& referenceDate,
+             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+             const std::vector<Date>& jumpDates = std::vector<Date>(),
+             Real accuracy = 1.0e-12,
+             const Interpolator& i = Interpolator(),
+             doubleOrNull minValue = Null<double>(),
+             doubleOrNull maxValue = Null<double>()) {
+            return new Name(referenceDate, instruments, dayCounter, jumps, jumpDates,
+                            accuracy, i, Name::bootstrap_type(minValue, maxValue));
+        }
+        Name(Integer settlementDays, const Calendar& calendar,
+             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+             const std::vector<Date>& jumpDates = std::vector<Date>(),
+             Real accuracy = 1.0e-12,
+             const Interpolator& i = Interpolator(),
+             doubleOrNull minValue = Null<double>(),
+             doubleOrNull maxValue = Null<double>()) {
+            return new Name(settlementDays, calendar, instruments, dayCounter,
+                            jumps, jumpDates, accuracy, Interpolator(),
+                            Name::bootstrap_type(minValue, maxValue));
+        }
+    }
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     #if !defined(SWIGR)
