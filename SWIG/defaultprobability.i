@@ -29,6 +29,7 @@
 %include marketelements.i
 %include interpolation.i
 %include termstructures.i
+%include piecewiseyieldcurve.i
 
 %{
 using QuantLib::DefaultProbabilityTermStructure;
@@ -288,18 +289,40 @@ typedef PiecewiseDefaultCurve<Traits, Interpolator> Name;
 %shared_ptr(Name);
 class Name : public DefaultProbabilityTermStructure {
   public:
-    Name(const Date& referenceDate,
-         const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >&
-                                                                  instruments,
-         const DayCounter& dayCounter,
-         Real accuracy = 1.0e-12,
-         const Interpolator& i = Interpolator());
-    Name(Integer settlementDays, const Calendar& calendar,
-         const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >&
-                                                                  instruments,
-         const DayCounter& dayCounter,
-         Real accuracy = 1.0e-12,
-         const Interpolator& i = Interpolator());
+    %extend {
+        Name(const Date& referenceDate,
+             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const DayCounter& dayCounter,
+             Real accuracy = 1.0e-12,
+             const Interpolator& i = Interpolator(),
+             const IterativeBootstrap& b = IterativeBootstrap()) {
+            return new Name(referenceDate, instruments, dayCounter, accuracy, i,
+                            Name::bootstrap_type(b.minValue, b.maxValue));
+        }
+        Name(Integer settlementDays, const Calendar& calendar,
+             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const DayCounter& dayCounter,
+             Real accuracy = 1.0e-12,
+             const Interpolator& i = Interpolator(),
+             const IterativeBootstrap& b = IterativeBootstrap()) {
+            return new Name(settlementDays, calendar, instruments, dayCounter,
+                            accuracy, i, Name::bootstrap_type(b.minValue, b.maxValue));
+        }
+        Name(const Date& referenceDate,
+             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const IterativeBootstrap& b) {
+            return new Name(referenceDate, instruments, dayCounter, 1e-12,
+                            Interpolator(), Name::bootstrap_type(b.minValue, b.maxValue));
+        }
+        Name(Integer settlementDays, const Calendar& calendar,
+             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const IterativeBootstrap& b) {
+            return new Name(settlementDays, calendar, instruments, dayCounter, 1e-12,
+                            Interpolator(), Name::bootstrap_type(b.minValue, b.maxValue));
+        }
+    }
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     #if !defined(SWIGR)

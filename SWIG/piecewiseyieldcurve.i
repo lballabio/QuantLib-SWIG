@@ -46,6 +46,24 @@ using QuantLib::PiecewiseYieldCurve;
 /* We have to resort to a macro, because the R implementation of shared_ptr
    can't take class templates with two or more template arguments. */
 
+%{
+struct IterativeBootstrap {
+    double minValue, maxValue;
+    IterativeBootstrap(double minValue = Null<double>(),
+                       double maxValue = Null<double>())
+    : minValue(minValue), maxValue(maxValue) {}
+};
+%}
+
+struct IterativeBootstrap {
+    double minValue, maxValue;
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") IterativeBootstrap;
+    #endif
+    IterativeBootstrap(doubleOrNull minValue = Null<double>(),
+                       doubleOrNull maxValue = Null<double>());
+};
+
 %define export_piecewise_curve(Name,Traits,Interpolator)
 
 %{
@@ -63,10 +81,9 @@ class Name : public YieldTermStructure {
              const std::vector<Date>& jumpDates = std::vector<Date>(),
              Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
-             doubleOrNull minValue = Null<double>(),
-             doubleOrNull maxValue = Null<double>()) {
+             const IterativeBootstrap& b = IterativeBootstrap()) {
             return new Name(referenceDate, instruments, dayCounter, jumps, jumpDates,
-                            accuracy, i, Name::bootstrap_type(minValue, maxValue));
+                            accuracy, i, Name::bootstrap_type(b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
              const std::vector<boost::shared_ptr<RateHelper> >& instruments,
@@ -75,11 +92,24 @@ class Name : public YieldTermStructure {
              const std::vector<Date>& jumpDates = std::vector<Date>(),
              Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
-             doubleOrNull minValue = Null<double>(),
-             doubleOrNull maxValue = Null<double>()) {
+             const IterativeBootstrap& b = IterativeBootstrap()) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
                             jumps, jumpDates, accuracy, Interpolator(),
-                            Name::bootstrap_type(minValue, maxValue));
+                            Name::bootstrap_type(b.minValue, b.maxValue));
+        }
+        Name(const Date& referenceDate,
+             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const IterativeBootstrap& b) {
+            return new Name(referenceDate, instruments, dayCounter, Interpolator(),
+                            Name::bootstrap_type(b.minValue, b.maxValue));
+        }
+        Name(Integer settlementDays, const Calendar& calendar,
+             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const IterativeBootstrap& b) {
+            return new Name(settlementDays, calendar, instruments, dayCounter,
+                            Interpolator(), Name::bootstrap_type(b.minValue, b.maxValue));
         }
     }
     const std::vector<Date>& dates() const;
