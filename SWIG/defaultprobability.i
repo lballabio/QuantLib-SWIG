@@ -297,7 +297,7 @@ class Name : public DefaultProbabilityTermStructure {
              const Interpolator& i = Interpolator(),
              const IterativeBootstrap& b = IterativeBootstrap()) {
             return new Name(referenceDate, instruments, dayCounter, accuracy, i,
-                            Name::bootstrap_type(b.minValue, b.maxValue));
+                            Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
              const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
@@ -306,21 +306,21 @@ class Name : public DefaultProbabilityTermStructure {
              const Interpolator& i = Interpolator(),
              const IterativeBootstrap& b = IterativeBootstrap()) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
-                            accuracy, i, Name::bootstrap_type(b.minValue, b.maxValue));
+                            accuracy, i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(const Date& referenceDate,
              const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
              const DayCounter& dayCounter,
              const IterativeBootstrap& b) {
             return new Name(referenceDate, instruments, dayCounter, 1e-12,
-                            Interpolator(), Name::bootstrap_type(b.minValue, b.maxValue));
+                            Interpolator(), Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
              const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
              const DayCounter& dayCounter,
              const IterativeBootstrap& b) {
             return new Name(settlementDays, calendar, instruments, dayCounter, 1e-12,
-                            Interpolator(), Name::bootstrap_type(b.minValue, b.maxValue));
+                            Interpolator(), Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
     }
     const std::vector<Date>& dates() const;
