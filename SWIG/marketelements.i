@@ -50,9 +50,6 @@ using QuantLib::SimpleQuote;
 %shared_ptr(SimpleQuote)
 
 class SimpleQuote : public Quote {
-    #if defined(SWIGRUBY)
-    %rename("value=")     setValue;
-    #endif
   public:
     SimpleQuote(Real value);
     void setValue(Real value);

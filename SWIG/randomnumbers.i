@@ -24,10 +24,6 @@
 
 %include distributions.i
 
-#if defined(SWIGRUBY)
-#pragma SWIG nowarn=314
-#endif
-
 %{
 using QuantLib::Sample;
 
@@ -78,6 +74,10 @@ class Sample {
 %template(SampleRealVector) Sample<std::vector<Real> >; 
 
 /************* Uniform number generators *************/
+
+#if defined(SWIGR)
+%rename(nextSample) next;
+#endif
 
 class LecuyerUniformRng {
   public:

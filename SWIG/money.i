@@ -27,10 +27,7 @@ using QuantLib::Money;
 %}
 
 class Money {
-    #if defined(SWIGRUBY)
-    %rename("conversionType=") setConversionType;
-    %rename("baseCurrency=")   setBaseCurrency;
-    #elif defined(SWIGJAVA)
+    #if defined(SWIGJAVA)
     %rename("compare") __cmp__;
     #endif
   public:
@@ -40,7 +37,7 @@ class Money {
     Decimal value() const;
     Money rounded() const;
 
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA)
+    #if defined(SWIGPYTHON) || defined(SWIGJAVA)
     Money operator+() const;
     Money operator-() const;
     %extend {

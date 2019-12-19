@@ -39,11 +39,6 @@ using QuantLib::TermStructure;
 
 %shared_ptr(TermStructure);
 class TermStructure : public Observable {
-    #if defined(SWIGRUBY)
-    %rename("enableExtrapolation!")  enableExtrapolation;
-    %rename("disableExtrapolation!") disableExtrapolation;
-    %rename("allowsExtrapolation?")  allowsExtrapolation;
-    #endif
   private:
     TermStructure();
   public:

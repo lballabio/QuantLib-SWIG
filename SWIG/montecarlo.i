@@ -39,11 +39,8 @@ Matrix getCovariance(const Array& volatilities, const Matrix& correlations) {
 using QuantLib::Path;
 %}
 
-#if defined(SWIGRUBY)
-%mixin Path "Enumerable";
-#endif
 class Path {
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    #if defined(SWIGPYTHON)
     %rename(__len__) length;
     #endif
   private:
@@ -55,7 +52,7 @@ class Path {
     Real back() const;
     Time time(Size i) const;
     %extend {
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         Real __getitem__(Integer i) {
             Integer size_ = Integer(self->length());
             if (i>=0 && i<size_) {
@@ -67,12 +64,6 @@ class Path {
             }
         }
         #endif
-        #if defined(SWIGRUBY)
-        void each() {
-            for (Size i=0; i<self->length(); i++)
-                rb_yield(rb_float_new((*self)[i]));
-        }
-        #endif
     }
 };
 %template(SamplePath) Sample<Path>;
@@ -80,6 +71,10 @@ class Path {
 %{
 using QuantLib::PathGenerator;
 %}
+
+#if defined(SWIGR)
+%rename(nextSample) next;
+#endif
 
 template <class GSG>
 class PathGenerator {
@@ -113,8 +108,8 @@ using QuantLib::MultiPath;
 %}
 
 class MultiPath {
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
-    %rename(__len__)        pathSize;
+    #if defined(SWIGPYTHON)
+    %rename(__len__) pathSize;
     #endif
   private:
     MultiPath();
@@ -124,7 +119,7 @@ class MultiPath {
 	Path& at(Size j);
 
     %extend {
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         const Path& __getitem__(Integer i) {
             Integer assets_ = Integer(self->assetNumber());
             if (i>=0 && i<assets_) {
@@ -133,21 +128,6 @@ class MultiPath {
                 return (*self)[assets_+i];
             } else {
                 throw std::out_of_range("multi-path index out of range");
-            }
-        }
-        #endif
-        #if defined(SWIGRUBY)
-        void each_path() {
-            for (Size i=0; i<self->assetNumber(); i++)
-                rb_yield(SWIG_NewPointerObj(&((*self)[i]),
-                                            $descriptor(Path *), 0));
-        }
-        void each_step() {
-            for (Size j=0; j<self->pathSize(); j++) {
-                VALUE v = rb_ary_new2(self->assetNumber());
-                for (Size i=0; i<self->assetNumber(); i++)
-                    rb_ary_store(v,i,rb_float_new((*self)[i][j]));
-                rb_yield(v);
             }
         }
         #endif
