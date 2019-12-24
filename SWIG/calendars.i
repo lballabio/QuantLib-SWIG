@@ -76,17 +76,7 @@ else
 }
 #endif
 
-#if defined(SWIGRUBY)
-%mixin Calendar "Comparable";
-#endif
 class Calendar {
-    #if defined(SWIGRUBY)
-    %rename("isBusinessDay?")   isBusinessDay;
-    %rename("isHoliday?")       isHoliday;
-    %rename("isEndOfMonth?")    isEndOfMonth;
-    %rename("addHoliday!")      addHoliday;
-    %rename("removeHoliday!")   removeHoliday;
-    #endif
   protected:
     Calendar();
   public:
@@ -118,15 +108,13 @@ class Calendar {
         std::string __str__() {
             return self->name()+" calendar";
         }
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA)
+        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __eq__(const Calendar& other) {
             return (*self) == other;
         }
-        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __ne__(const Calendar& other) {
             return (*self) != other;
         }
-        #endif
         #endif
     }
     #if defined(SWIGPYTHON)

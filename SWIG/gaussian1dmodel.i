@@ -93,6 +93,9 @@ using QuantLib::MarkovFunctional;
 
 %shared_ptr(Gsr)
 class Gsr : public Gaussian1dModel {
+    #if defined(SWIGCSHARP)
+    %rename("parameters") params;
+    #endif
   public:
     Gsr(const Handle<YieldTermStructure> &termStructure,
            const std::vector<Date> &volstepdates,
@@ -132,6 +135,9 @@ class Gsr : public Gaussian1dModel {
 
 %shared_ptr(MarkovFunctional)
 class MarkovFunctional : public Gaussian1dModel {
+    #if defined(SWIGCSHARP)
+    %rename("parameters") params;
+    #endif
   public:
   
     struct ModelSettings {

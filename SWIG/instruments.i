@@ -46,13 +46,6 @@ using QuantLib::Instrument;
     
 %shared_ptr(Instrument)
 class Instrument : public Observable {
-    #if defined(SWIGRUBY)
-    %rename("isExpired?")     isExpired;
-    %rename("pricingEngine=") setPricingEngine;
-    %rename("recalculate!")   recalculate;
-    %rename("freeze!")        freeze;
-    %rename("unfreeze!")      unfreeze;
-    #endif
   public:
     Real NPV() const;
     Real errorEstimate() const;

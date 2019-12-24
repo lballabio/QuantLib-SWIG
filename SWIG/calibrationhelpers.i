@@ -55,9 +55,6 @@ class CalibrationHelperBase {
 
 %shared_ptr(BlackCalibrationHelper)
 class BlackCalibrationHelper : public CalibrationHelperBase {
-    #if defined(SWIGRUBY)
-    %rename("pricingEngine=")      setPricingEngine;
-    #endif
   public:
     enum CalibrationErrorType { RelativePriceError, PriceError, ImpliedVolError };
                        
@@ -213,9 +210,7 @@ using QuantLib::TermStructureConsistentModel;
 
 %shared_ptr(CalibratedModel)
 class CalibratedModel : public virtual Observable {
-    #if defined(SWIGRUBY)
-    %rename("calibrate!") calibrate;
-    #elif defined(SWIGCSHARP)
+    #if defined(SWIGCSHARP)
     %rename("parameters") params;
     #endif
   public:

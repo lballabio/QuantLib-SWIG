@@ -38,9 +38,6 @@ using QuantLib::IndexManager;
 %}
 
 class IndexManager {
-    #if defined(SWIGRUBY)
-    %rename("hasHistory?")  hasHistory;
-    #endif
   private:
     IndexManager();
   public:
@@ -63,10 +60,6 @@ using QuantLib::Index;
 %shared_ptr(Index)
 
 class Index : public Observable {
-    #if defined(SWIGRUBY)
-    %rename("isValidFixingDate?") isValidFixingDate;
-    %rename("addFixing!") addFixing;
-    #endif
   private:
     Index();
   public:
@@ -80,9 +73,6 @@ class Index : public Observable {
     const TimeSeries<Real>& timeSeries() const;
     void clearFixings();
     %extend {
-        #if defined(SWIGRUBY)
-        %rename("addFixings!") addFixings;
-        #endif
         void addFixings(const std::vector<Date>& fixingDates,
                         const std::vector<Rate>& fixings,
                         bool forceOverwrite = false) {
@@ -128,9 +118,6 @@ using QuantLib::OvernightIndex;
 %shared_ptr(IborIndex)
 
 class IborIndex : public InterestRateIndex {
-    #if defined(SWIGRUBY)
-    %rename("isAdjusted?") isAdjusted;
-    #endif
   public:
     IborIndex(const std::string& familyName,
               const Period& tenor,
@@ -263,9 +250,6 @@ using QuantLib::SwapIndex;
 %shared_ptr(SwapIndex)
 
 class SwapIndex : public InterestRateIndex {
-    #if defined(SWIGRUBY)
-    %rename("isAdjusted?") isAdjusted;
-    #endif
   public:
     SwapIndex(const std::string& familyName,
               const Period& tenor,

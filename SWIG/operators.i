@@ -60,12 +60,6 @@ using QuantLib::TridiagonalOperator;
 %}
 
 class TridiagonalOperator {
-    #if defined(SWIGRUBY)
-    %rename("firstRow=")      setFirstRow;
-    %rename("midRow=")        setMidRow;
-    %rename("midRows=")       setMidRows;
-    %rename("lastRow=")       setLastRow;
-    #endif
   public:
     // constructors
     TridiagonalOperator(const Array& low, const Array& mid, const Array& high);
@@ -81,7 +75,7 @@ class TridiagonalOperator {
     void setLastRow(Real, Real);
     // identity
     static TridiagonalOperator identity(Size size);
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    #if defined(SWIGPYTHON)
     %extend {
         TridiagonalOperator __add__(const TridiagonalOperator& O) {
             return *self+O;

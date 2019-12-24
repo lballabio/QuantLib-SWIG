@@ -47,7 +47,7 @@ using QuantLib::DiscountingBondEngine;
 
 %shared_ptr(Bond)
 class Bond : public Instrument {
-    #if defined(SWIGPYTHON) || defined (SWIGRUBY)
+    #if defined(SWIGPYTHON)
     %rename(bondYield) yield;
     #endif
   public:

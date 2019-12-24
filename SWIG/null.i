@@ -75,47 +75,6 @@ double nullDouble() { return Null<double>(); }
     }
 }
 
-#elif defined(SWIGRUBY)
-
-%typemap(in) intOrNull {
-    if ($input == Qnil)
-        $1 = Null<int>();
-    else if (FIXNUM_P($input))
-        $1 = int(FIX2INT($input));
-    else
-        SWIG_exception(SWIG_TypeError,"not an integer");
-}
-%typecheck(SWIG_TYPECHECK_INTEGER) intOrNull {
-    $1 = ($input == Qnil || FIXNUM_P($input)) ? 1 : 0;
-}
-%typemap(out) intOrNull {
-    if ($1 == Null<int>())
-        $result = Qnil;
-    else
-        $result = INT2NUM($1);
-}
-
-%typemap(in) doubleOrNull {
-    if ($input == Qnil)
-        $1 = Null<double>();
-    else if (TYPE($input) == T_FLOAT)
-        $1 = NUM2DBL($input);
-    else if (FIXNUM_P($input))
-        $1 = double(FIX2INT($input));
-    else
-        SWIG_exception(SWIG_TypeError,"not a double");
-}
-%typecheck(SWIG_TYPECHECK_DOUBLE) doubleOrNull {
-    $1 = ($input == Qnil || TYPE($input) == T_FLOAT ||
-          FIXNUM_P($input)) ? 1 : 0;
-}
-%typemap(out) doubleOrNull {
-    if ($1 == Null<double>())
-        $result = Qnil;
-    else
-        $result = rb_float_new($1);
-}
-
 #elif defined(SWIGJAVA)
 
 typedef int intOrNull;

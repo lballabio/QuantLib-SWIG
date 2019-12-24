@@ -142,30 +142,6 @@ class PyCostFunction : public CostFunction {
 };
 %}
 
-#elif defined(SWIGRUBY)
-
-%{
-class UnaryFunction {
-  public:
-    Real operator()(Real x) const {
-        return NUM2DBL(rb_yield(rb_float_new(x)));
-    }
-};
-
-class RubyCostFunction : public CostFunction {
-  public:
-    Real value(const Array& x) const {
-        VALUE a = rb_ary_new2(x.size());
-        for (Size i=0; i<x.size(); i++)
-            rb_ary_store(a,i,rb_float_new(x[i]));
-        return NUM2DBL(rb_yield(a));
-    }
-    Disposable<Array> values(const Array& x) const {
-        QL_FAIL("Not implemented");
-    }
-};
-%}
-
 #elif defined(SWIGJAVA)
 
 %{
