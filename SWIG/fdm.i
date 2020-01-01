@@ -464,7 +464,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 
         QL_ENSURE(pyResult != Py_None, methodName + " returned None");
             
-          Array* ptr;            
+        Array* ptr;            
         const int err = SWIG_ConvertPtr(
             pyResult, (void **) &ptr, SWIGTYPE_p_Array,    SWIG_POINTER_EXCEPTION);
 
