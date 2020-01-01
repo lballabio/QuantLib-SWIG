@@ -13,8 +13,6 @@ import org.quantlib.RungeKutta;
 public class FunctionDelegates {
 
     public static void main(String[] args) {
-        long beginTime = System.currentTimeMillis();
-    
         System.out.println("Integration result " +
             new GaussKronrodAdaptive(1e-8).calculate(
                 new UnaryFunctionDelegate() {

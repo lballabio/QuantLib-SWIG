@@ -57,13 +57,6 @@ class OdeFct {
 };
 %}
 
-class OdeFct {
-  public:
-    OdeFct(OdeFctDelegate*);
-    const Disposable<std::vector<Real> > operator()(
-        Real x, const std::vector<Real>& y) const;
-};
-
 %feature("director") OdeFctDelegate;
 
 class OdeFctDelegate {

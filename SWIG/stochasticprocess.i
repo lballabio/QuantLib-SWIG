@@ -321,6 +321,28 @@ class GsrProcess : public StochasticProcess1D {
 
 
 %{
+using QuantLib::OrnsteinUhlenbeckProcess;
+%}
+
+%shared_ptr(OrnsteinUhlenbeckProcess)
+class OrnsteinUhlenbeckProcess : public StochasticProcess1D {
+  public:
+    OrnsteinUhlenbeckProcess(
+    	Real speed, Volatility vol, Real x0 = 0.0, Real level = 0.0);
+    	
+	Real drift(Time t, Real x) const;
+    Real diffusion(Time t, Real x) const;
+    Real expectation(Time t0, Real x0, Time dt) const;
+    Real stdDeviation(Time t0, Real x0, Time dt) const;
+    Real x0() const;
+    Real speed() const;
+    Real volatility() const;
+    Real level() const;
+    Real variance(Time t0, Real x0, Time dt) const;
+};
+
+
+%{
 using QuantLib::KlugeExtOUProcess;
 using QuantLib::ExtendedOrnsteinUhlenbeckProcess;
 using QuantLib::ExtOUWithJumpsProcess;

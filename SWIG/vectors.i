@@ -39,6 +39,12 @@ namespace std {
     %template(DoublePair) pair<double,double>;
     %template(DoublePairVector) vector<pair<double,double> >;
 
+#if !defined(SWIGPYTHON)
+    // various versions of SWIG seem to have  
+    // problems with Python and std::vector<std::size_t> 
+    %template(SizeVector) vector<Size>;
+#endif
+
 #if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;
     %template(NodeVector) vector<pair<Date,double> >;

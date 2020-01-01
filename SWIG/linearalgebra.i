@@ -31,6 +31,7 @@ using QuantLib::Matrix;
 using QuantLib::SampledCurve;
 %}
 
+
 %define QL_TYPECHECK_ARRAY       4210    %enddef
 %define QL_TYPECHECK_MATRIX      4220    %enddef
 
@@ -65,15 +66,22 @@ bool extractArray(PyObject* source, Array* target) {
     if (extractArray($input,&$1)) {
         ;
     } else {
-        SWIG_ConvertPtr($input,(void **) &v, $&1_descriptor,1);
-        $1 = *v;
+        if (SWIG_ConvertPtr($input,(void **) &v, $&1_descriptor,1) != -1)
+        	$1 = *v;
+        else {
+            PyErr_SetString(PyExc_TypeError, "Array expected");
+            return NULL;
+        }
     }
 };
 %typemap(in) const Array& (Array temp) {
     if (extractArray($input,&temp)) {
         $1 = &temp;
     } else {
-        SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1);
+    	if (SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1) == -1) {
+            PyErr_SetString(PyExc_TypeError, "Array expected");
+            return NULL;
+        }
     }
 };
 %typecheck(QL_TYPECHECK_ARRAY) Array {
@@ -490,6 +498,17 @@ function(x,y) plot(as.data.frame(x)))
 %}
 #endif
 
+%{
+using QuantLib::Disposable;
+%}
+
+template <class T>
+class Disposable : public T {
+  public:
+    Disposable(T& t);
+    Disposable(const Disposable<T>& t);
+};
+
 #if defined(SWIGRUBY)
 %mixin Array "Enumerable";
 #elif defined(SWIGCSHARP)
@@ -503,6 +522,7 @@ class Array {
     Array();
     Array(Size n, Real fill = 0.0);
     Array(const Array&);
+    Array(const Disposable<Array>&);
     Size size() const;
     %extend {
         std::string __str__() {
@@ -625,6 +645,8 @@ class Array {
         #endif
     }
 };
+
+%template(DisposableArray) Disposable<Array>;
 
 // 2-D view
 
@@ -787,6 +809,7 @@ class Matrix {
     }
 };
 
+
 // functions
 
 %{
@@ -813,5 +836,16 @@ class SVD {
     Matrix S() const;
     const Array& singularValues() const;
 };
+
+%{
+using QuantLib::close;
+using QuantLib::close_enough;
+%}
+
+bool close(Real x, Real y);
+bool close(Real x, Real y, Size n);
+
+bool close_enough(Real x, Real y);
+bool close_enough(Real x, Real y, Size n);
 
 #endif
