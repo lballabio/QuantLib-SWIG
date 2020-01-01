@@ -33,6 +33,9 @@ using QuantLib::PiecewiseConstantParameter;
 %}
 
 class Parameter {
+    #if defined(SWIGCSHARP)
+    %rename("parameters") params;
+    #endif
   public:
     Parameter();
     const Array& params() const;

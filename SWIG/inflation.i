@@ -57,11 +57,6 @@ class MultiplicativePriceSeasonality : public Seasonality {
 
 %shared_ptr(InflationTermStructure);
 class InflationTermStructure : public TermStructure {
-    #if defined(SWIGRUBY)
-    %rename("indexIsInterpolated?")   indexIsInterpolated;
-    %rename("setSeasonality!")        setSeasonality;
-    %rename("hasSeasonality?")        hasSeasonality;
-    #endif
   private:
     InflationTermStructure();
   public:

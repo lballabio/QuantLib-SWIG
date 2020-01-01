@@ -31,7 +31,6 @@ using QuantLib::Matrix;
 using QuantLib::SampledCurve;
 %}
 
-
 %define QL_TYPECHECK_ARRAY       4210    %enddef
 %define QL_TYPECHECK_MATRIX      4220    %enddef
 
@@ -288,189 +287,6 @@ bool extractArray(PyObject* source, Array* target) {
             $1 = 0;
     }
 }
-#elif defined(SWIGRUBY)
-%typemap(in) Array (Array* v) {
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        Size size = RARRAY_LEN($input);
-        $1 = Array(size);
-        for (Size i=0; i<size; i++) {
-            VALUE o = RARRAY_PTR($input)[i];
-            if (TYPE(o) == T_FLOAT)
-                (($1_type &)$1)[i] = NUM2DBL(o);
-            else if (FIXNUM_P(o))
-                (($1_type &)$1)[i] = Real(FIX2INT(o));
-            else
-                rb_raise(rb_eTypeError,
-                         "wrong argument type"
-                         " (expected Array)");
-        }
-    } else {
-        SWIG_ConvertPtr($input,(void **) &v,$&1_descriptor,1);
-        $1 = *v;
-    }
-}
-%typemap(in) const Array& (Array temp),
-             const Array* (Array temp) {
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        Size size = RARRAY_LEN($input);
-        temp = Array(size);
-        $1 = &temp;
-        for (Size i=0; i<size; i++) {
-            VALUE o = RARRAY_PTR($input)[i];
-            if (TYPE(o) == T_FLOAT)
-                temp[i] = NUM2DBL(o);
-            else if (FIXNUM_P(o))
-                temp[i] = Real(FIX2INT(o));
-            else
-                rb_raise(rb_eTypeError,
-                         "wrong argument type"
-                         " (expected Array)");
-        }
-    } else {
-        SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1);
-    }
-}
-%typecheck(QL_TYPECHECK_ARRAY) Array {
-    /* native sequence? */
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        $1 = 1;
-    /* wrapped Array? */
-    } else {
-        Array* v;
-        if (SWIG_ConvertPtr($input,(void **) &v,
-                            $&1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
-    }
-}
-%typecheck(QL_TYPECHECK_ARRAY) const Array & {
-    /* native sequence? */
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        $1 = 1;
-    /* wrapped Array? */
-    } else {
-        Array* v;
-        if (SWIG_ConvertPtr($input,(void **) &v,
-                            $1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
-    }
-}
-
-
-%typemap(in) Matrix (Matrix* m) {
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        Size rows, cols;
-        rows = RARRAY_LEN($input);
-        if (rows > 0) {
-            VALUE o = RARRAY_PTR($input)[0];
-            if (rb_obj_is_kind_of(o,rb_cArray)) {
-                cols = RARRAY_LEN(o);
-            } else {
-                rb_raise(rb_eTypeError,
-                         "wrong argument type (expected Matrix)");
-            }
-        } else {
-            cols = 0;
-        }
-        $1 = Matrix(rows,cols);
-        for (Size i=0; i<rows; i++) {
-            VALUE o = RARRAY_PTR($input)[i];
-            if (rb_obj_is_kind_of(o,rb_cArray)) {
-                if (Size(RARRAY_LEN(o)) != cols) {
-                    rb_raise(rb_eTypeError,
-                             "Matrix must have equal-length rows");
-                }
-                for (Size j=0; j<cols; j++) {
-                    VALUE x = RARRAY_PTR(o)[j];
-                    if (SWIG_FLOAT_P(x))
-                        $1[i][j] = SWIG_NUM2DBL(x);
-                    else
-                        rb_raise(rb_eTypeError,
-                                 "wrong argument type (expected Matrix)");
-                }
-            } else {
-                rb_raise(rb_eTypeError,
-                         "wrong argument type (expected Matrix)");
-            }
-        }
-    } else {
-        SWIG_ConvertPtr($input,(void **) &m,$&1_descriptor,1);
-        $1 = *m;
-    }
-}
-%typemap(in) const Matrix& (Matrix temp),
-             const Matrix* (Matrix temp) {
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        Size rows, cols;
-        rows = RARRAY_LEN($input);
-        if (rows > 0) {
-            VALUE o = RARRAY_PTR($input)[0];
-            if (rb_obj_is_kind_of(o,rb_cArray)) {
-                cols = RARRAY_LEN(o);
-            } else {
-                rb_raise(rb_eTypeError,
-                         "wrong argument type (expected Matrix)");
-            }
-        } else {
-            cols = 0;
-        }
-        temp = Matrix(rows,cols);
-        $1 = &temp;
-        for (Size i=0; i<rows; i++) {
-            VALUE o = RARRAY_PTR($input)[i];
-            if (rb_obj_is_kind_of(o,rb_cArray)) {
-                if (Size(RARRAY_LEN(o)) != cols) {
-                    rb_raise(rb_eTypeError,
-                             "Matrix must have equal-length rows");
-                }
-                for (Size j=0; j<cols; j++) {
-                    VALUE x = RARRAY_PTR(o)[j];
-                    if (SWIG_FLOAT_P(x))
-                        temp[i][j] = SWIG_NUM2DBL(x);
-                    else
-                        rb_raise(rb_eTypeError,
-                                 "wrong argument type (expected Matrix)");
-                }
-            } else {
-                rb_raise(rb_eTypeError,
-                         "wrong argument type (expected Matrix)");
-            }
-        }
-    } else {
-        SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1);
-    }
-}
-%typecheck(QL_TYPECHECK_MATRIX) Matrix {
-    /* native sequence? */
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        $1 = 1;
-    /* wrapped Matrix? */
-    } else {
-        Matrix* m;
-        if (SWIG_ConvertPtr($input,(void **) &m,
-                            $&1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
-    }
-}
-%typecheck(QL_TYPECHECK_MATRIX) const Matrix & {
-    /* native sequence? */
-    if (rb_obj_is_kind_of($input,rb_cArray)) {
-        $1 = 1;
-    /* wrapped Matrix? */
-    } else {
-        Matrix* m;
-        if (SWIG_ConvertPtr($input,(void **) &m,
-                            $1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
-    }
-}
 #endif
 
 #if defined(SWIGR)
@@ -509,13 +325,11 @@ class Disposable : public T {
     Disposable(const Disposable<T>& t);
 };
 
-#if defined(SWIGRUBY)
-%mixin Array "Enumerable";
-#elif defined(SWIGCSHARP)
+#if defined(SWIGCSHARP)
 %rename(QlArray) Array;
 #endif
 class Array {
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    #if defined(SWIGPYTHON)
     %rename(__len__)   size;
     #endif
   public:
@@ -530,7 +344,7 @@ class Array {
             out << *self;
             return out.str();
         }
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGR)
+        #if defined(SWIGPYTHON) || defined(SWIGR)
         Array __add__(const Array& a) {
             return Array(*self+a);
         }
@@ -585,13 +399,7 @@ class Array {
             return (self->size() != 0);
         }
         #endif
-        #if defined(SWIGRUBY)
-        void each() {
-            for (Size i=0; i<self->size(); i++)
-                rb_yield(rb_float_new((*self)[i]));
-        }
-        #endif
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         Real __getitem__(Integer i) {
             Integer size_ = static_cast<Integer>(self->size());
             if (i>=0 && i<size_) {
@@ -657,7 +465,7 @@ typedef QuantLib::LexicographicalView<Array::iterator>::y_iterator
     DefaultLexicographicalViewColumn;
 %}
 
-#if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGR)
+#if defined(SWIGPYTHON) || defined(SWIGR)
 class DefaultLexicographicalViewColumn {
   private:
     // access control - no constructor exported
@@ -697,7 +505,7 @@ class DefaultLexicographicalView {
             s << "\n";
             return s.str();
         }
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGR)
+        #if defined(SWIGPYTHON) || defined(SWIGR)
         DefaultLexicographicalViewColumn __getitem__(Size i) {
             return (*self)[i];
         }
@@ -715,7 +523,7 @@ using QuantLib::transpose;
 using QuantLib::SVD;
 %}
 
-#if defined(SWIGPYTHON) || defined(SWIGRUBY)
+#if defined(SWIGPYTHON)
 class MatrixRow {
   private:
     MatrixRow();
@@ -744,7 +552,7 @@ class Matrix {
             out << *self;
             return out.str();
         }
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         Matrix __add__(const Matrix& m) {
             return *self+m;
         }
@@ -764,7 +572,7 @@ class Matrix {
             return *self/x;
         }
         #endif
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         MatrixRow __getitem__(Size i) {
             return (*self)[i];
         }

@@ -54,15 +54,6 @@ else
 }
 #endif
 
-#if defined(SWIGRUBY)
-%{
-#ifndef SWIG_FLOAT_P
-#define SWIG_FLOAT_P(x) ((TYPE(x) == T_FLOAT) || FIXNUM_P(x))
-#define SWIG_NUM2DBL(x) (FIXNUM_P(x) ? FIX2INT(x) : NUM2DBL(x))
-#endif
-%}
-#endif
-
 %{
 // generally useful classes
 using QuantLib::Error;
@@ -73,9 +64,6 @@ using QuantLib::RelinkableHandle;
 namespace boost {
 
     %extend shared_ptr {
-        #if defined(SWIGRUBY)
-        %rename("null?") isNull;
-        #endif
         T* operator->() {
             return (*self).operator->();
         }
@@ -98,10 +86,6 @@ namespace boost {
 
 template <class T>
 class Handle {
-    #if defined(SWIGRUBY)
-    %rename("null?")   isNull;
-    %rename("empty?")  empty;
-    #endif
   public:
     Handle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
     boost::shared_ptr<T> operator->();
@@ -121,9 +105,6 @@ class Handle {
 
 template <class T>
 class RelinkableHandle : public Handle<T> {
-    #if defined(SWIGRUBY)
-    %rename("linkTo!")  linkTo;
-    #endif
   public:
     RelinkableHandle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
     void linkTo(const boost::shared_ptr<T>&);

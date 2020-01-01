@@ -18,9 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#if defined(SWIGRUBY)
-%module QuantLibc
-#elif defined(SWIGCSHARP)
+#if defined(SWIGCSHARP)
 %module(directors="1") NQuantLibc
 #elif defined(SWIGJAVA)
 %module(directors="1") QuantLib

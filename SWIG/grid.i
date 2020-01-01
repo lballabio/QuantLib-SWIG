@@ -29,7 +29,7 @@ using QuantLib::TimeGrid;
 %}
 
 class TimeGrid {
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    #if defined(SWIGPYTHON)
     %rename(__len__)   size;
     #elif defined(SWIGJAVA)
     %rename("getSize")   size;
@@ -52,7 +52,7 @@ class TimeGrid {
     }
     Size size() const;
     %extend {
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         Time __getitem__(Integer i) {
             Integer size_ = static_cast<Integer>(self->size());
             if (i>=0 && i<size_) {

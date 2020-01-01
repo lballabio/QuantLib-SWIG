@@ -40,11 +40,6 @@ using QuantLib::Secant;
 
 %define DeclareSolver(SolverName)
 class SolverName {
-    #if defined(SWIGRUBY)
-    %rename("maxEvaluations=")      setMaxEvaluations;
-    %rename("lowerBound=")          setLowerBound;
-    %rename("upperBound=")          setUpperBound;
-    #endif
   public:
     void setMaxEvaluations(Size evaluations);
     void setLowerBound(Real lowerBound);
@@ -59,16 +54,6 @@ class SolverName {
         Real solve(PyObject* function, Real xAccuracy,
                    Real guess, Real xMin, Real xMax) {
             UnaryFunction f(function);
-            return self->solve(f, xAccuracy, guess, xMin, xMax);
-        }
-        #elif defined(SWIGRUBY)
-        Real solve(Real xAccuracy, Real guess, Real step) {
-            UnaryFunction f;
-            return self->solve(f, xAccuracy, guess, step);
-        }
-        Real solve(Real xAccuracy, Real guess,
-                   Real xMin, Real xMax) {
-            UnaryFunction f;
             return self->solve(f, xAccuracy, guess, xMin, xMax);
         }
         #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -197,9 +182,7 @@ using QuantLib::EndCriteria;
 %}
 
 class EndCriteria {
-    #if defined(SWIGRUBY)
-    %rename("setPositiveOptimization!") setPositiveOptimization;
-    #elif defined(SWIGCSHARP)
+    #if defined(SWIGCSHARP)
     %rename(call) operator();
     #elif defined(SWIGPYTHON)
     %rename(NoCriteria) None;
@@ -397,17 +380,6 @@ using QuantLib::Problem;
                 OptimizationMethod& m, EndCriteria &e,
                 Array &iv) {
         PyCostFunction f(function);
-        Problem p(f,c,iv);
-        m.minimize(p, e);
-        return p.currentValue();
-    }
-}
-#elif defined(SWIGRUBY)
-%extend Optimizer {
-    Array solve(Constraint& c, OptimizationMethod& m,
-                EndCriteria &e,
-                Array &iv) {
-        RubyCostFunction f;
         Problem p(f,c,iv);
         m.minimize(p, e);
         return p.currentValue();

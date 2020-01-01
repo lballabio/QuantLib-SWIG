@@ -26,12 +26,6 @@ using QuantLib::Settings;
 %}
 
 class Settings {
-    #if defined(SWIGRUBY)
-    %rename("evaluationDate") getEvaluationDate;
-    %rename("evaluationDate=") setEvaluationDate;
-    %rename("includeReferenceDateCashFlows=") includeReferenceDateCashFlows;
-    %rename("includeTodaysCashFlows=") includeTodaysCashFlows;
-    #endif
   private:
     Settings();
   public:

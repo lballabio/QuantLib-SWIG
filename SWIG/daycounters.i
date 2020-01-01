@@ -45,15 +45,13 @@ class DayCounter {
         std::string __str__() {
             return self->name()+" day counter";
         }
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA)
+        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __eq__(const DayCounter& other) {
             return (*self) == other;
         }
-        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __ne__(const DayCounter& other) {
             return (*self) != other;
         }
-        #endif
         #endif
     }
     #if defined(SWIGPYTHON)

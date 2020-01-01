@@ -27,29 +27,6 @@
 %}
 #endif
 
-#if defined(SWIGRUBY)
-%{
-#ifdef accept
-#undef accept
-#endif
-#ifdef close
-#undef close
-#endif
-#ifdef times
-#undef times
-#endif
-#ifdef Sleep
-#undef Sleep
-#endif
-#ifdef bind
-#undef bind
-#endif
-#ifdef ALLOC
-#undef ALLOC
-#endif
-%}
-#endif
-
 %{
 #include <ql/quantlib.hpp>
 

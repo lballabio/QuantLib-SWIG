@@ -32,9 +32,6 @@ using QuantLib::GenericSequenceStatistics;
 %}
 
 class Statistics {
-    #if defined(SWIGRUBY)
-    %rename("reset!")                reset;
-    #endif
   public:
     Size samples() const;
     Real weightSum() const;
@@ -62,9 +59,6 @@ class Statistics {
 
 
 class IncrementalStatistics {
-    #if defined(SWIGRUBY)
-    %rename("reset!")                reset;
-    #endif
   public:
     Size samples() const;
     Real weightSum() const;
@@ -107,9 +101,6 @@ class RiskStatistics : public Statistics {
 
 template <class S>
 class GenericSequenceStatistics {
-    #if defined(SWIGRUBY)
-    %rename("reset!")                reset;
-    #endif
   public:
     GenericSequenceStatistics(Size dimension);
     Size size() const;

@@ -31,7 +31,7 @@ using QuantLib::BondFunctions;
 %}
 
 class BondFunctions {
-    #if defined(SWIGPYTHON) || defined (SWIGRUBY)
+    #if defined(SWIGPYTHON)
     %rename(bondYield) yield;
     #endif
   public:
