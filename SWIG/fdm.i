@@ -76,7 +76,7 @@ class FdmBlackScholesMesher : public Fdm1dMesher {
         const std::pair<Real, Real>& cPoint
             = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
         const std::vector<boost::shared_ptr<Dividend> >& dividendSchedule 
-        	= std::vector<boost::shared_ptr<Dividend> >(),
+            = std::vector<boost::shared_ptr<Dividend> >(),
         const boost::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper
             = boost::shared_ptr<FdmQuantoHelper>(),
         Real spotAdjustment = 0.0);
@@ -177,27 +177,27 @@ class FdmLinearOpIterator {
   public:
   
 #if defined(SWIGPYTHON)
-	%extend {
-		static FdmLinearOpIterator create(
-			const std::vector<unsigned int>& dim,
-	        const std::vector<unsigned int>& coordinates, Size index) {
-	        
-	        std::vector<Size> _dim(dim.size());
-	        std::copy(dim.begin(), dim.end(), _dim.begin());
-	        std::vector<Size> _coordinates(coordinates.size());
-	        std::copy(coordinates.begin(), coordinates.end(), 
-	        	_coordinates.begin());
-	        
-	        return FdmLinearOpIterator(_dim, _coordinates, index);
-	     }
-	     
-	     std::vector<unsigned int> coordinates() {
-	        const std::vector<Size>& c = $self->coordinates();
-	     	std::vector<unsigned int> tmp(c.size());
-	     	std::copy(c.begin(), c.end(), tmp.begin());
-	     	
-	     	return tmp;
-	     }
+    %extend {
+        static FdmLinearOpIterator create(
+            const std::vector<unsigned int>& dim,
+            const std::vector<unsigned int>& coordinates, Size index) {
+            
+            std::vector<Size> _dim(dim.size());
+            std::copy(dim.begin(), dim.end(), _dim.begin());
+            std::vector<Size> _coordinates(coordinates.size());
+            std::copy(coordinates.begin(), coordinates.end(), 
+                _coordinates.begin());
+            
+            return FdmLinearOpIterator(_dim, _coordinates, index);
+         }
+         
+         std::vector<unsigned int> coordinates() {
+            const std::vector<Size>& c = $self->coordinates();
+             std::vector<unsigned int> tmp(c.size());
+             std::copy(c.begin(), c.end(), tmp.begin());
+             
+             return tmp;
+         }
      }
 #else  
     FdmLinearOpIterator(
@@ -208,12 +208,12 @@ class FdmLinearOpIterator {
 #endif
 
     %extend {
-    	void increment() {
-    		++(*$self);
-    	}
-    	bool notEqual(const FdmLinearOpIterator& iterator) {
-    		return $self->operator!=(iterator);
-    	}
+        void increment() {
+            ++(*$self);
+        }
+        bool notEqual(const FdmLinearOpIterator& iterator) {
+            return $self->operator!=(iterator);
+        }
     }    
     Size index() const;
 };
@@ -223,37 +223,37 @@ class FdmLinearOpLayout {
   public:
   
 #if defined(SWIGPYTHON)
-	%extend {
-	    static boost::shared_ptr<FdmLinearOpLayout> create(
-	    	const std::vector<unsigned int>& dim) {
-	        std::vector<Size> _dim(dim.size());
-	        std::copy(dim.begin(), dim.end(), _dim.begin());
-	    	
-	    	return boost::make_shared<FdmLinearOpLayout>(_dim);
-	    }
-	    
-	    Size index(const std::vector<unsigned int>& coordinates) const {
-	    	std::vector<Size> tmp(coordinates.size());
-	    	std::copy(coordinates.begin(), coordinates.end(), tmp.begin());
-	    	
-	    	return $self->index(tmp);
-	    }
-	    
-	    const std::vector<unsigned int> spacing() {	    
-	    	std::vector<unsigned int> tmp($self->spacing().size());
-	    	std::copy($self->spacing().begin(), $self->spacing().end(),
-	    		tmp.begin());
-	    		
-	     	return tmp;
-	    }
-	    const std::vector<unsigned int> dim() const {
-	    	std::vector<unsigned int> tmp($self->dim().size());
-	    	std::copy($self->dim().begin(), $self->dim().end(),
-	    		tmp.begin());
-	    		
-	     	return tmp;
-	    }	    
-	}
+    %extend {
+        static boost::shared_ptr<FdmLinearOpLayout> create(
+            const std::vector<unsigned int>& dim) {
+            std::vector<Size> _dim(dim.size());
+            std::copy(dim.begin(), dim.end(), _dim.begin());
+            
+            return boost::make_shared<FdmLinearOpLayout>(_dim);
+        }
+        
+        Size index(const std::vector<unsigned int>& coordinates) const {
+            std::vector<Size> tmp(coordinates.size());
+            std::copy(coordinates.begin(), coordinates.end(), tmp.begin());
+            
+            return $self->index(tmp);
+        }
+        
+        const std::vector<unsigned int> spacing() {        
+            std::vector<unsigned int> tmp($self->spacing().size());
+            std::copy($self->spacing().begin(), $self->spacing().end(),
+                tmp.begin());
+                
+             return tmp;
+        }
+        const std::vector<unsigned int> dim() const {
+            std::vector<unsigned int> tmp($self->dim().size());
+            std::copy($self->dim().begin(), $self->dim().end(),
+                tmp.begin());
+                
+             return tmp;
+        }        
+    }
 #else  
     explicit FdmLinearOpLayout(const std::vector<Size>& dim);
 
@@ -276,17 +276,17 @@ class FdmLinearOpLayout {
                        Size i1, Integer offset1,
                        Size i2, Integer offset2) const;
 
-	%extend {
-	    FdmLinearOpIterator iter_neighbourhood(
-	        const FdmLinearOpIterator& iterator, Size i, Integer offset) const {
-	        
-	        return $self->iter_neighbourhood(iterator, i, offset);
-	    }
+    %extend {
+        FdmLinearOpIterator iter_neighbourhood(
+            const FdmLinearOpIterator& iterator, Size i, Integer offset) const {
+            
+            return $self->iter_neighbourhood(iterator, i, offset);
+        }
     }
     
 #if defined(SWIGPYTHON)
-	private:
-		FdmLinearOpLayout();	
+    private:
+        FdmLinearOpLayout();    
 #endif    
 };
 
@@ -324,9 +324,9 @@ class FdmMesherComposite : public FdmMesher {
     Real dminus(const FdmLinearOpIterator& iter, Size direction) const;
     Real location(const FdmLinearOpIterator& iter, Size direction) const;
     %extend {
-    	Array locations(Size direction) const {
-    		return $self->locations(direction);
-    	}
+        Array locations(Size direction) const {
+            return $self->locations(direction);
+        }
     }
 
     const std::vector<boost::shared_ptr<Fdm1dMesher> >&
@@ -368,7 +368,7 @@ class FdmLinearOpComposite : public FdmLinearOp {
 %{
 class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
-  	FdmLinearOpCompositeProxy(PyObject* callback) : callback_(callback) {
+      FdmLinearOpCompositeProxy(PyObject* callback) : callback_(callback) {
         Py_XINCREF(callback_);
     }
     
@@ -382,7 +382,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
     
     ~FdmLinearOpCompositeProxy() {
-    	Py_XDECREF(callback_);
+        Py_XDECREF(callback_);
     }
         
     Size size() const {
@@ -394,13 +394,13 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         Size result = PyInt_AsLong(pyResult);
         Py_XDECREF(pyResult);
         
-        return result;	
+        return result;    
     }
 
     void setTime(Time t1, Time t2) {
         PyObject* pyResult 
-        	= PyObject_CallMethod(callback_,"setTime","dd", t1, t2);
-        	
+            = PyObject_CallMethod(callback_,"setTime","dd", t1, t2);
+            
         QL_ENSURE(pyResult != NULL,
                   "failed to call setTime() on Python object");
                                     
@@ -408,92 +408,92 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
     Disposable<Array> apply(const Array& r) const {
-    	return apply(r, "apply");        
+        return apply(r, "apply");        
     }
 
     Disposable<Array> apply_mixed(const Array& r) const {
-    	return apply(r, "apply_mixed");        
+        return apply(r, "apply_mixed");        
     }
     
     Disposable<Array> apply_direction(Size direction, const Array& r) const {
-    	PyObject* pyArray 
-    		= SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-    		
-    	PyObject* pyResult 
-    		= PyObject_CallMethod(callback_, "apply_direction", "kO", 
-    			(unsigned long)(direction), pyArray);
-    		
-    	Py_XDECREF(pyArray); 
-    		
+        PyObject* pyArray 
+            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+            
+        PyObject* pyResult 
+            = PyObject_CallMethod(callback_, "apply_direction", "kO", 
+                (unsigned long)(direction), pyArray);
+            
+        Py_XDECREF(pyArray); 
+            
         return extractArray(pyResult, "apply_direction");        
     }
     
     Disposable<Array> solve_splitting(
-    	Size direction, const Array& r, Real s) const {
+        Size direction, const Array& r, Real s) const {
 
-    	PyObject* pyArray 
-    		= SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-    		
-    	PyObject* pyResult 
-    		= PyObject_CallMethod(callback_, "solve_splitting", "kOd", 
-    			(unsigned long)(direction), pyArray, s);
-    		
-    	Py_XDECREF(pyArray); 
-    		
+        PyObject* pyArray 
+            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+            
+        PyObject* pyResult 
+            = PyObject_CallMethod(callback_, "solve_splitting", "kOd", 
+                (unsigned long)(direction), pyArray, s);
+            
+        Py_XDECREF(pyArray); 
+            
         return extractArray(pyResult, "solve_splitting");        
     }
     
     Disposable<Array> preconditioner(const Array& r, Real s) const {
-    	PyObject* pyArray 
-    		= SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-    		
-    	PyObject* pyResult 
-    		= PyObject_CallMethod(callback_, "preconditioner", "Od",pyArray, s);
-    		
-    	Py_XDECREF(pyArray); 
-    		
+        PyObject* pyArray 
+            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+            
+        PyObject* pyResult 
+            = PyObject_CallMethod(callback_, "preconditioner", "Od",pyArray, s);
+            
+        Py_XDECREF(pyArray); 
+            
         return extractArray(pyResult, "preconditioner");        
     }
 
   private:
-  	Disposable<Array> extractArray(
-  		PyObject* pyResult, const std::string& methodName) const {
-  		
+      Disposable<Array> extractArray(
+          PyObject* pyResult, const std::string& methodName) const {
+          
         QL_ENSURE(pyResult != NULL,
                   "failed to call " + methodName + " on Python object");
 
         QL_ENSURE(pyResult != Py_None, methodName + " returned None");
-    		
-      	Array* ptr;    		
-    	const int err = SWIG_ConvertPtr(
-    		pyResult, (void **) &ptr, SWIGTYPE_p_Array,	SWIG_POINTER_EXCEPTION);
+            
+          Array* ptr;            
+        const int err = SWIG_ConvertPtr(
+            pyResult, (void **) &ptr, SWIGTYPE_p_Array,    SWIG_POINTER_EXCEPTION);
 
-		if (err != 0) {
-    		Py_XDECREF(pyResult);
-			QL_FAIL("return type must be of type QuantLib Array in " 
-				+ methodName);
-		}
-		
-      	Array tmp(*ptr);      	
-    	Py_XDECREF(pyResult);
-    	 
-  		return tmp;
-  	}
-  	
+        if (err != 0) {
+            Py_XDECREF(pyResult);
+            QL_FAIL("return type must be of type QuantLib Array in " 
+                + methodName);
+        }
+        
+          Array tmp(*ptr);          
+        Py_XDECREF(pyResult);
+         
+          return tmp;
+      }
+      
     Disposable<Array> apply(
-    	const Array& r, const std::string& methodName) const {
+        const Array& r, const std::string& methodName) const {
 
-    	PyObject* pyArray 
-    		= SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-    		
-    	PyObject* pyResult 
-    		= PyObject_CallMethod(callback_, methodName.c_str(), "O", pyArray);
-    		
-    	Py_XDECREF(pyArray); 
-    	
-    	return extractArray(pyResult, methodName);        
+        PyObject* pyArray 
+            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+            
+        PyObject* pyResult 
+            = PyObject_CallMethod(callback_, methodName.c_str(), "O", pyArray);
+            
+        Py_XDECREF(pyArray); 
+        
+        return extractArray(pyResult, methodName);        
     }
-  	  
+        
     PyObject* callback_;    
 };
 %}
@@ -501,16 +501,16 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 %shared_ptr(FdmLinearOpCompositeProxy)
 class FdmLinearOpCompositeProxy {
   public:
-	FdmLinearOpCompositeProxy(PyObject* callback);
-	
-	Size size() const;
+    FdmLinearOpCompositeProxy(PyObject* callback);
+    
+    Size size() const;
     void setTime(Time t1, Time t2);
       
     Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> apply_mixed(const Array& r) const;	
-	Disposable<Array> apply_direction(Size direction, const Array& r) const;
-	Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const;
-	Disposable<Array> preconditioner(const Array& r, Real s) const;
+    Disposable<Array> apply_mixed(const Array& r) const;    
+    Disposable<Array> apply_direction(Size direction, const Array& r) const;
+    Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const;
+    Disposable<Array> preconditioner(const Array& r, Real s) const;
 };
 
 #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -518,89 +518,89 @@ class FdmLinearOpCompositeProxy {
 %{
 class FdmLinearOpCompositeDelegate {
   public:
-  	virtual ~FdmLinearOpCompositeDelegate() {}
-  	
-	virtual Size size() const {
-		QL_FAIL("implementation of FdmLinearOpCompositeDelegate.size is missing");		
-	}
-	
+      virtual ~FdmLinearOpCompositeDelegate() {}
+      
+    virtual Size size() const {
+        QL_FAIL("implementation of FdmLinearOpCompositeDelegate.size is missing");        
+    }
+    
     virtual void setTime(Time t1, Time t2) {
-    	QL_FAIL("implementation of FdmLinearOpCompositeDelegate.setTime is missing");    
+        QL_FAIL("implementation of FdmLinearOpCompositeDelegate.setTime is missing");    
     }
       
     virtual Array apply(const Array& r) const {
-    	QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply is missing");    
+        QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply is missing");    
     }
     
     virtual Array apply_mixed(const Array& r) const {
-    	QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply_mixed is missing");    
-    }	
+        QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply_mixed is missing");    
+    }    
     
-	virtual Array apply_direction(Size direction, const Array& r) const {
-    	QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply_direction is missing");    
-	}
-	
-	virtual Array solve_splitting(Size direction, const Array& r, Real s) const {
-    	QL_FAIL("implementation of FdmLinearOpCompositeDelegate.solve_splitting is missing");    	
-	}	
-	
-	virtual Array preconditioner(const Array& r, Real dt) const {
-		return solve_splitting(0, r, dt);
-	}
+    virtual Array apply_direction(Size direction, const Array& r) const {
+        QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply_direction is missing");    
+    }
+    
+    virtual Array solve_splitting(Size direction, const Array& r, Real s) const {
+        QL_FAIL("implementation of FdmLinearOpCompositeDelegate.solve_splitting is missing");        
+    }    
+    
+    virtual Array preconditioner(const Array& r, Real dt) const {
+        return solve_splitting(0, r, dt);
+    }
 };
 
 class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
-  	FdmLinearOpCompositeProxy(FdmLinearOpCompositeDelegate* delegate)
-  	: delegate_(delegate) {}
-  	
-  	Size size() const { return delegate_->size(); }
-	void setTime(Time t1, Time t2) { delegate_->setTime(t1, t2); }
-	
-	Disposable<Array> apply(const Array& r) const {
-		Array retVal = delegate_->apply(r);
-		return retVal;
-	}
-	Disposable<Array> apply_mixed(const Array& r) const {
-		Array retVal = delegate_->apply_mixed(r);
-		return retVal;
-	}        
+      FdmLinearOpCompositeProxy(FdmLinearOpCompositeDelegate* delegate)
+      : delegate_(delegate) {}
+      
+      Size size() const { return delegate_->size(); }
+    void setTime(Time t1, Time t2) { delegate_->setTime(t1, t2); }
+    
+    Disposable<Array> apply(const Array& r) const {
+        Array retVal = delegate_->apply(r);
+        return retVal;
+    }
+    Disposable<Array> apply_mixed(const Array& r) const {
+        Array retVal = delegate_->apply_mixed(r);
+        return retVal;
+    }        
     Disposable<Array> apply_direction(Size direction, const Array& r) const {
-    	Array retVal = delegate_->apply_direction(direction, r);
-    	return retVal;
+        Array retVal = delegate_->apply_direction(direction, r);
+        return retVal;
     }
     Disposable<Array> solve_splitting(
-    	Size direction, const Array& r, Real s) const {
-    	Array retVal = delegate_->solve_splitting(direction, r, s);
-    	return retVal;
+        Size direction, const Array& r, Real s) const {
+        Array retVal = delegate_->solve_splitting(direction, r, s);
+        return retVal;
     }
     Disposable<Array> preconditioner(const Array& r, Real s) const {
-    	Array retVal = delegate_->preconditioner(r, s);
-    	return retVal;
+        Array retVal = delegate_->preconditioner(r, s);
+        return retVal;
     }
-		   	
+               
   private:
-  	FdmLinearOpCompositeDelegate* const delegate_; 
+      FdmLinearOpCompositeDelegate* const delegate_; 
 };
 %}
 
 %shared_ptr(FdmLinearOpCompositeProxy)
 class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
-  	FdmLinearOpCompositeProxy(FdmLinearOpCompositeDelegate* delegate);
-  	
-  	Size size() const;
-	void setTime(Time t1, Time t2);
-	
-	Disposable<Array> apply(const Array& r) const;
-	Disposable<Array> apply_mixed(const Array& r) const;
+      FdmLinearOpCompositeProxy(FdmLinearOpCompositeDelegate* delegate);
+      
+      Size size() const;
+    void setTime(Time t1, Time t2);
+    
+    Disposable<Array> apply(const Array& r) const;
+    Disposable<Array> apply_mixed(const Array& r) const;
     Disposable<Array> apply_direction(Size direction, const Array& r) const;
     Disposable<Array> solve_splitting(
-    	Size direction, const Array& r, Real s) const;
+        Size direction, const Array& r, Real s) const;
     Disposable<Array> preconditioner(const Array& r, Real s) const;
-		   	
+               
   private:
-  	FdmLinearOpCompositeDelegate* const delegate_; 
+      FdmLinearOpCompositeDelegate* const delegate_; 
 };
 
 
@@ -608,19 +608,19 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 
 class FdmLinearOpCompositeDelegate {
   public:
-  	virtual ~FdmLinearOpCompositeDelegate();
-  	
-	virtual Size size() const;
+      virtual ~FdmLinearOpCompositeDelegate();
+      
+    virtual Size size() const;
     virtual void setTime(Time t1, Time t2);
       
     virtual Array apply(const Array& r) const;
-    virtual Array apply_mixed(const Array& r) const;	
-	virtual Array apply_direction(Size direction, const Array& r) const;
-	virtual Array solve_splitting(
-		Size direction, const Array& r, Real s) const;	
-	virtual Array preconditioner(const Array& r, Real dt) const;
+    virtual Array apply_mixed(const Array& r) const;    
+    virtual Array apply_direction(Size direction, const Array& r) const;
+    virtual Array solve_splitting(
+        Size direction, const Array& r, Real s) const;    
+    virtual Array preconditioner(const Array& r, Real dt) const;
 };
-	
+    
 #endif
 
 %{
@@ -650,8 +650,8 @@ typedef std::vector<boost::shared_ptr<BoundaryCondition<FdmLinearOp> > > FdmBoun
 template <class Operator>
 class BoundaryCondition {
   public:
-  	enum Side { None, Upper, Lower };
-  	  
+      enum Side { None, Upper, Lower };
+        
     virtual ~BoundaryCondition();
     virtual void applyBeforeApplying(Operator&) const = 0;
     virtual void applyAfterApplying(Array&) const = 0;
@@ -760,7 +760,7 @@ DeclareOperator(Fdm2dBlackScholesOp,
 )        
 
 DeclareOperator(FdmCEVOp, 
-	const boost::shared_ptr<FdmMesher>& mesher COMMA
+    const boost::shared_ptr<FdmMesher>& mesher COMMA
     const boost::shared_ptr<YieldTermStructure>& rTS COMMA
     Real f0 COMMA Real alpha COMMA Real beta COMMA
     Size direction
@@ -860,7 +860,7 @@ class FirstDerivativeOp : public TripleBandLinearOp {
                           
     Disposable<Array> apply(const Array& r) const;
     Disposable<Array> solve_splitting(
-    	const Array& r, Real a, Real b = 1.0) const;                     
+        const Array& r, Real a, Real b = 1.0) const;                     
 };
 
 %shared_ptr(SecondDerivativeOp)
@@ -871,7 +871,7 @@ class SecondDerivativeOp : public TripleBandLinearOp {
 
     Disposable<Array> apply(const Array& r) const;
     Disposable<Array> solve_splitting(
-    	const Array& r, Real a, Real b = 1.0) const;                     
+        const Array& r, Real a, Real b = 1.0) const;                     
 };
 
 %shared_ptr(NinePointLinearOp)
