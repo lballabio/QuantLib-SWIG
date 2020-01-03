@@ -297,7 +297,6 @@ class SwapIndex : public InterestRateIndex {
     boost::shared_ptr<SwapIndex> clone(const Period& tenor) const;
 };
 
-// allow use of vectors of helpers
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<SwapIndex> )
 #endif
