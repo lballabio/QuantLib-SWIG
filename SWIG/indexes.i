@@ -281,6 +281,14 @@ class SwapIndex : public InterestRateIndex {
     boost::shared_ptr<SwapIndex> clone(const Period& tenor) const;
 };
 
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<SwapIndex> )
+#endif
+namespace std {
+    %template(SwapIndexVector)
+        vector<boost::shared_ptr<SwapIndex> >;     
+}
+
 %define export_swap_instance(Name)
 %{
 using QuantLib::Name;

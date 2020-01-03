@@ -181,6 +181,7 @@ class NonhomogeneousBoundaryConstraint : public Constraint {
 using QuantLib::EndCriteria;
 %}
 
+%shared_ptr(EndCriteria)
 class EndCriteria {
     #if defined(SWIGCSHARP)
     %rename(call) operator();
