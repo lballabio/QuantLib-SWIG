@@ -181,6 +181,12 @@ class MonotonicLogCubic : public QuantLib::LogCubic {
                          QuantLib::CubicInterpolation::SecondDerivative, 0.0,
                          QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
+
+class KrugerCubicInterpolation : public Cubic {
+  public:
+    KrugerCubicInterpolation()
+    : Cubic(QuantLib::CubicInterpolation::Kruger) {}
+};
 %}
 
 struct BackwardFlat {};
@@ -192,7 +198,7 @@ struct MonotonicCubic {};
 struct DefaultLogCubic {};
 struct MonotonicLogCubic {};
 struct SplineCubic {};
-
+struct KrugerCubicInterpolation {};
 
 %{
 using QuantLib::RichardsonExtrapolation;
