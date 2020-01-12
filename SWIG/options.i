@@ -1146,7 +1146,9 @@ class FdmQuantoHelper {
 };
 
 %{
+using QuantLib::LocalVolTermStructure;
 using QuantLib::FdBlackScholesVanillaEngine;
+using QuantLib::FdOrnsteinUhlenbeckVanillaEngine;
 using QuantLib::FdBatesVanillaEngine;
 using QuantLib::FdHestonVanillaEngine;
 %}
@@ -1193,6 +1195,20 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
         }
     }
     #endif
+};
+
+%shared_ptr(FdOrnsteinUhlenbeckVanillaEngine)
+class FdOrnsteinUhlenbeckVanillaEngine : public PricingEngine {
+  public:
+    #if !defined(SWIGPYTHON)
+    %feature("kwargs") FdOrnsteinUhlenbeckVanillaEngine;
+	#endif
+    FdOrnsteinUhlenbeckVanillaEngine(
+        const boost::shared_ptr<OrnsteinUhlenbeckProcess>&,
+        const boost::shared_ptr<YieldTermStructure>& rTS,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        Real epsilon = 0.0001,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 };
 
 %shared_ptr(FdBatesVanillaEngine)

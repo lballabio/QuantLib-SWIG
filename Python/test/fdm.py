@@ -77,7 +77,7 @@ class FdmTest(unittest.TestCase):
         dim = ql.UnsignedIntVector([2,2,3])
         pos = ql.UnsignedIntVector([0,0,0])
         idx = 0
-        iter = ql.FdmLinearOpIterator.create(dim, pos, idx)
+        iter = ql.FdmLinearOpIterator(dim, pos, idx)
         
         self.assertEqual(iter.index(), 0)
         
@@ -87,7 +87,7 @@ class FdmTest(unittest.TestCase):
         iter.increment()
         self.assertEqual(iter.coordinates(), (0, 1, 0))
 
-        iter2 = ql.FdmLinearOpIterator.create(dim, pos, idx)
+        iter2 = ql.FdmLinearOpIterator(dim, pos, idx)
         self.assertEqual(iter.notEqual(iter2), True)
         self.assertEqual(iter.notEqual(iter), False)
 
@@ -97,7 +97,7 @@ class FdmTest(unittest.TestCase):
         
         dim = ql.UnsignedIntVector([2,2,3])
         
-        m = ql.FdmLinearOpLayout.create(dim)
+        m = ql.FdmLinearOpLayout(dim)
         
         self.assertEqual(m.size(), 2*2*3)
         self.assertEqual(m.dim(), (2, 2, 3))
@@ -272,6 +272,7 @@ class FdmTest(unittest.TestCase):
             self.assertAlmostEqual(v, -u, 4)
             
     def testFdmBoundaryCondition(self):
+        """Testing Diriclet Boundary conditions"""
 
         m = ql.FdmMesherComposite(
             ql.Uniform1dMesher(0.0, 1.0, 5))
@@ -285,9 +286,250 @@ class FdmTest(unittest.TestCase):
         
         self.assertEqual(list(x), [0,0,0,0, math.pi])
         
+        s = ql.FdmBoundaryConditionSet()
+        s.push_back(b)
         
-               
+        self.assertEqual(len(s), 1)
+        
+        ql.BoundaryConditionFdmLinearOp.NoSide # None is replaced by _None
+        
+    def testFdmStepConditionCallBack(self):
+        """Testing step condition call back function"""
 
+        class Foo:
+            def applyTo(self, a, t):                
+                for i,x in enumerate(a):
+                    a[i] = t+1.0
+            
+        m = ql.FdmStepConditionProxy(Foo())
+        
+        x = ql.Array(5)
+        
+        m.applyTo(x, 2.0)
+        
+        self.assertEqual(len(x), 5)
+        self.assertEqual(list(x), [3.0, 3.0, 3.0, 3.0, 3.0])       
+        
+    def testFdmInnerValueCalculatorCallBack(self):
+        """Testing inner value call back function"""
+
+        class Foo:
+            def innerValue(self, iter, t):                
+                return iter.index() + t
+              
+            def avgInnerValue(self, iter, t):                
+                return iter.index() + 2*t
+
+        m = ql.FdmInnerValueCalculatorProxy(Foo())
+        
+        dim = ql.UnsignedIntVector([2,2,3])
+        pos = ql.UnsignedIntVector([0,0,0])
+        
+        iter = ql.FdmLinearOpIterator(dim, pos, 0)
+        
+        for i in range(2*2*3):
+            idx = iter.index()
+            
+            self.assertEqual(m.innerValue(iter, 2.0), idx + 2.0)
+            self.assertEqual(m.avgInnerValue(iter, 2.0), idx + 4.0)
+            
+            iter.increment()
+    
+    
+    def testFdmLogInnerValueCalculator(self):
+        """Testing log inner value calculator"""
+        
+        m = ql.FdmMesherComposite(
+            ql.Uniform1dMesher(math.log(50), math.log(150), 11))
+        
+        p = ql.PlainVanillaPayoff(ql.Option.Call, 100)
+        
+        v = ql.FdmLogInnerValue(p, m, 0)
+        
+        iter = m.layout().begin()
+        for i in range(m.layout().size()):
+            x = math.exp(m.location(iter, 0));
+            self.assertAlmostEqual(p(x), v.innerValue(iter, 1.0), 14)
+            iter.increment()
+            
+    def testAmericanOptionPricing(self):
+        """Testing Black-Scholes and Heston American Option pricing"""
+        
+        xSteps = 100
+        tSteps = 25
+        dampingSteps = 0
+        
+        todaysDate = ql.Date(15, ql.January, 2020)
+        ql.Settings.instance().evaluationDate = todaysDate
+        
+        dc = ql.Actual365Fixed()
+        
+        riskFreeRate = ql.YieldTermStructureHandle(
+            ql.FlatForward(todaysDate, 0.06, dc))
+        dividendYield = ql.YieldTermStructureHandle(
+            ql.FlatForward(todaysDate, 0.02, dc))
+        
+        strike = 110.0
+        payoff = ql.PlainVanillaPayoff(ql.Option.Put, strike)
+        
+        maturityDate = todaysDate + ql.Period(1, ql.Years)
+        maturity = dc.yearFraction(todaysDate, maturityDate)
+
+        exercise = ql.AmericanExercise(todaysDate, maturityDate)
+        
+        spot = ql.QuoteHandle(ql.SimpleQuote(100.0))
+        volatility = ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.20, dc)
+        
+        process = ql.BlackScholesMertonProcess(
+            spot, dividendYield, riskFreeRate,
+            ql.BlackVolTermStructureHandle(volatility)
+        )
+
+        option = ql.VanillaOption(payoff, exercise)
+        option.setPricingEngine(ql.FdBlackScholesVanillaEngine.make(
+            process, xGrid = xSteps, tGrid = tSteps, 
+            dampingSteps = dampingSteps)
+        )
+        
+        expected = option.NPV()
+            
+        equityMesher = ql.FdmBlackScholesMesher(
+            xSteps, process, maturity, 
+            strike, cPoint = (strike, 0.1)
+        )
+        
+        mesher = ql.FdmMesherComposite(equityMesher)
+        
+        op = ql.FdmBlackScholesOp(mesher, process, strike)
+
+        innerValueCalculator = ql.FdmLogInnerValue(payoff, mesher, 0)
+            
+        x = []
+        rhs = []
+        layout = mesher.layout()        
+        iter = layout.begin()
+        while (iter.notEqual(layout.end())):
+            x.append(mesher.location(iter, 0))
+            rhs.append(innerValueCalculator.avgInnerValue(iter, maturity))
+            iter.increment()
+            
+        rhs = ql.Array(rhs)    
+        
+        bcSet = ql.FdmBoundaryConditionSet()
+        stepCondition = ql.FdmStepConditionComposite.vanillaComposite(
+            ql.DividendSchedule(), exercise, mesher,
+            innerValueCalculator, todaysDate, dc
+        )
+            
+        solver = ql.FdmBackwardSolver(
+            op, bcSet, stepCondition, ql.FdmSchemeDesc.Douglas()
+        )
+        
+        solver.rollback(rhs, maturity, 0.0, tSteps, dampingSteps)
+        
+        spline = ql.CubicNaturalSpline(x, rhs);
+        
+        logS = math.log(spot.value())
+
+        calculated = spline(logS)
+
+        self.assertAlmostEqual(calculated, expected, 1)
+
+        solverDesc = ql.FdmSolverDesc(
+            mesher, bcSet, stepCondition, innerValueCalculator, 
+            maturity, tSteps, dampingSteps)
+                
+        calculated = ql.Fdm1DimSolver(
+            solverDesc, ql.FdmSchemeDesc.Douglas(), op).interpolateAt(logS)
+                    
+        self.assertAlmostEqual(calculated, expected, 2)
+    
+        v0 = 0.4*0.4
+        kappa = 1.0
+        theta = v0
+        sigma = 1e-4
+        rho = 0.0
+        
+        hestonProcess = ql.HestonProcess(
+            riskFreeRate, dividendYield,  
+            spot, v0, kappa, theta, sigma, rho)
+        
+        leverageFct = ql.LocalVolSurface(
+            ql.BlackVolTermStructureHandle(
+                ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.50, dc)),
+            riskFreeRate,
+            dividendYield,
+            spot.value()
+        )
+
+        vSteps = 3
+        
+        vMesher = ql.FdmHestonLocalVolatilityVarianceMesher(
+            vSteps, hestonProcess, leverageFct, maturity)
+        
+        avgVolaEstimate = vMesher.volaEstimate()
+        
+        self.assertAlmostEqual(avgVolaEstimate, 0.2, 5)
+        
+        mesher = ql.FdmMesherComposite(equityMesher, vMesher)
+
+        innerValueCalculator = ql.FdmLogInnerValue(payoff, mesher, 0)
+
+        stepCondition = ql.FdmStepConditionComposite.vanillaComposite(
+            ql.DividendSchedule(), exercise, mesher,
+            innerValueCalculator, todaysDate, dc
+        )
+
+        solverDesc = ql.FdmSolverDesc(
+            mesher, bcSet, stepCondition, innerValueCalculator, 
+            maturity, tSteps, dampingSteps)
+                            
+        calculated = ql.FdmHestonSolver(
+            hestonProcess, solverDesc, leverageFct = leverageFct).valueAt(
+                spot.value(), 0.16)
+            
+        self.assertAlmostEqual(calculated, expected, 1)
+
+
+    def testBSMRNDCalculator(self):
+        """Testing Black-Scholes risk neutral density calculator"""
+        
+        dc = ql.Actual365Fixed()
+        todaysDate = ql.Date(15, ql.January, 2020)
+        
+        r   = 0.0
+        q   = 0.0
+        vol = 0.2
+        s0  = 100
+        
+        process = ql.BlackScholesMertonProcess(
+            ql.QuoteHandle(ql.SimpleQuote(s0)), 
+            ql.YieldTermStructureHandle(
+                ql.FlatForward(todaysDate, q, dc)), 
+            ql.YieldTermStructureHandle(
+                ql.FlatForward(todaysDate, r, dc)),
+            ql.BlackVolTermStructureHandle(
+                ql.BlackConstantVol(todaysDate, ql.TARGET(), vol, dc))
+        )
+        
+        rnd = ql.BSMRNDCalculator(process)
+        
+        t = 1.2
+        x = math.log(80.0)
+        
+        mu = math.log(s0) + (r-q-0.5*vol*vol)*t
+        
+        calculated = rnd.pdf(x, t)
+        
+        stdev = vol * math.sqrt(t)
+        
+        expected = (1.0/(math.sqrt(2*math.pi)*stdev) * 
+            math.exp( -0.5*math.pow((x-mu)/stdev, 2.0) ))
+        
+        self.assertAlmostEqual(calculated, expected, 8)
+        
+        
+                    
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()

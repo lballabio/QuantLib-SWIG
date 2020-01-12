@@ -37,6 +37,8 @@
 %include vectors.i
 
 %{
+using QuantLib::VanillaSwap;
+using QuantLib::Swaption;
 using QuantLib::CalibrationHelperBase;
 using QuantLib::BlackCalibrationHelper;
 using QuantLib::SwaptionHelper;
