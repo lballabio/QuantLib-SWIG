@@ -217,7 +217,7 @@ using QuantLib::FdmMesherComposite;
 class FdmLinearOpIterator {
   public:
   
-#if defined(SWIGPYTHON)
+#if defined(SWIGPYTHON) || defined(SWIGR)
     %extend {
         FdmLinearOpIterator(
             const std::vector<unsigned int>& dim,
@@ -265,7 +265,7 @@ class FdmLinearOpIterator {
 class FdmLinearOpLayout {
   public:
   
-#if defined(SWIGPYTHON)
+#if defined(SWIGPYTHON) || defined(SWIGR)
     %extend {
         FdmLinearOpLayout(const std::vector<unsigned int>& dim) {
             std::vector<Size> _dim(dim.size());
@@ -1488,6 +1488,7 @@ class FdmZeroInnerValue : public FdmInnerValueCalculator {
 %shared_ptr(FdmAffineModelSwapInnerValue<G2>)
 %shared_ptr(FdmAffineModelSwapInnerValue<HullWhite>)
 
+#if !defined(SWIGR)
 %template(TimeToDateMap) std::map<Time, Date>;
 
 template <class ModelType>
@@ -1507,7 +1508,7 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
 
 %template(FdmAffineG2ModelSwapInnerValue) FdmAffineModelSwapInnerValue<G2>;
 %template(FdmAffineHullWhiteModelSwapInnerValue) FdmAffineModelSwapInnerValue<HullWhite>;
-
+#endif
 
 %shared_ptr(FdmSnapshotCondition)
 class FdmSnapshotCondition : public StepCondition<Array> {
@@ -1998,7 +1999,7 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
     Real invcdf(Real p, Time t) const;
 
     boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
-#if defined(SWIGPYTHON)
+#if defined(SWIGPYTHON) || defined(SWIGR)
     %extend {
         std::vector<unsigned int> rescaleTimeSteps() const {
             const std::vector<Size> s = self->rescaleTimeSteps();
