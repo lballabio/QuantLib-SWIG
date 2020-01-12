@@ -196,12 +196,12 @@ class Predefined1dMesher : public Fdm1dMesher {
 class Glued1dMesher : public Fdm1dMesher {
   public:
     %extend {
-	    Glued1dMesher(
-	        const boost::shared_ptr<Fdm1dMesher>& leftMesher,
-	        const boost::shared_ptr<Fdm1dMesher>& rightMesher) {
-	        
-	        return new Glued1dMesher(*leftMesher, *rightMesher);
-	    }
+        Glued1dMesher(
+            const boost::shared_ptr<Fdm1dMesher>& leftMesher,
+            const boost::shared_ptr<Fdm1dMesher>& rightMesher) {
+            
+            return new Glued1dMesher(*leftMesher, *rightMesher);
+        }
     }
 };
 
@@ -919,7 +919,7 @@ DeclareOperator(FdmZabrOp,
 )
 
 DeclareOperator(FdmDupire1dOp,
-	const boost::shared_ptr<FdmMesher> & mesher __COMMA
+    const boost::shared_ptr<FdmMesher> & mesher __COMMA
     const Array &localVolatility
 )
 
@@ -2000,20 +2000,20 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
     boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
 #if defined(SWIGPYTHON)
     %extend {
-    	std::vector<unsigned int> rescaleTimeSteps() const {
-    		const std::vector<Size> s = self->rescaleTimeSteps();
-    		std::vector<unsigned int> tmp(s.size());
-    		std::copy(s.begin(), s.end(), tmp.begin());
-    		
-    		return tmp;
-    	}
+        std::vector<unsigned int> rescaleTimeSteps() const {
+            const std::vector<Size> s = self->rescaleTimeSteps();
+            std::vector<unsigned int> tmp(s.size());
+            std::copy(s.begin(), s.end(), tmp.begin());
+            
+            return tmp;
+        }
     }
 #else 
-	%extend {
-    	std::vector<Size> rescaleTimeSteps() const {
-    		return self->rescaleTimeSteps();
-    	}
-	}
+    %extend {
+        std::vector<Size> rescaleTimeSteps() const {
+            return self->rescaleTimeSteps();
+        }
+    }
 #endif    
 };
 
