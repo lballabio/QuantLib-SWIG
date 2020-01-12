@@ -984,7 +984,6 @@ using QuantLib::TripleBandLinearOp;
 using QuantLib::FirstDerivativeOp;
 using QuantLib::SecondDerivativeOp;
 using QuantLib::NinePointLinearOp;
-
 %}
 
 %shared_ptr(TripleBandLinearOp)
@@ -1611,11 +1610,11 @@ class FdmSimpleStorageCondition : public StepCondition<Array> {
 class FdmSimpleSwingCondition : public StepCondition<Array> {
   public:
       FdmSimpleSwingCondition(
-          const std::vector<Time> & exerciseTimes,
-          const boost::shared_ptr<FdmMesher>& mesher,
-          const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
-          Size swingDirection,
-          Size minExercises = 0);
+              const std::vector<Time> & exerciseTimes,
+              const boost::shared_ptr<FdmMesher>& mesher,
+              const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+              Size swingDirection,
+              Size minExercises = 0);
 
     void applyTo(Array& a, Time t) const;
 };
@@ -1897,7 +1896,6 @@ class FdmNdimSolver {
 
 %{
 using QuantLib::FdmIndicesOnBoundary;
-using QuantLib::FdmMesherIntegral;
 using QuantLib::RiskNeutralDensityCalculator;
 using QuantLib::BSMRNDCalculator;
 using QuantLib::CEVRNDCalculator;
@@ -1914,17 +1912,6 @@ class FdmIndicesOnBoundary {
                           Size direction, FdmDirichletBoundary::Side side);
 
     const std::vector<Size>& getIndices() const;
-};
-
-%shared_ptr(FdmMesherIntegral)
-class FdmMesherIntegral {
-  public:
-    FdmMesherIntegral(
-        const boost::shared_ptr<FdmMesherComposite>& mesher,
-        const boost::function<Real(const Array&, const Array&)>&
-            integrator1d);
-
-    Real integrate(const Array& f) const;
 };
 
 
@@ -1991,6 +1978,10 @@ public:
 %shared_ptr(LocalVolRNDCalculator)
 class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
   public:
+#if defined(SWIGPYTHON)
+%feature("kwargs") FdmHestonSolver;
+#endif
+  
     LocalVolRNDCalculator(
         const boost::shared_ptr<Quote>& spot,
         const boost::shared_ptr<YieldTermStructure>& rTS,
@@ -2002,25 +1993,28 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
         Size maxIter = 10000,
         Time gaussianStepSize = -Null<Time>());
 
-    LocalVolRNDCalculator(
-        const boost::shared_ptr<Quote>& spot,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& qTS,
-        const boost::shared_ptr<LocalVolTermStructure>& localVol,
-        const boost::shared_ptr<TimeGrid>& timeGrid,
-        Size xGrid = 101,
-        Real x0Density = 0.1,
-        Real eps = 1e-6,
-        Size maxIter = 10000,
-        Time gaussianStepSize = -Null<Time>());
-
     Real pdf(Real x, Time t) const;
     Real cdf(Real x, Time t) const;
     Real invcdf(Real p, Time t) const;
 
-    boost::shared_ptr<TimeGrid> timeGrid() const;
     boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
-    Disposable<std::vector<Size> > rescaleTimeSteps() const;
+#if defined(SWIGPYTHON)
+    %extend {
+    	std::vector<unsigned int> rescaleTimeSteps() const {
+    		const std::vector<Size> s = self->rescaleTimeSteps();
+    		std::vector<unsigned int> tmp(s.size());
+    		std::copy(s.begin(), s.end(), tmp.begin());
+    		
+    		return tmp;
+    	}
+    }
+#else 
+	%extend {
+    	std::vector<Size> rescaleTimeSteps() const {
+    		return self->rescaleTimeSteps();
+    	}
+	}
+#endif    
 };
 
 %shared_ptr(SquareRootProcessRNDCalculator)

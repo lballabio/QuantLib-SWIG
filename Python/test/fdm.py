@@ -351,6 +351,7 @@ class FdmTest(unittest.TestCase):
             x = math.exp(m.location(iter, 0));
             self.assertAlmostEqual(p(x), v.innerValue(iter, 1.0), 14)
             iter.increment()
+
             
     def testAmericanOptionPricing(self):
         """Testing Black-Scholes and Heston American Option pricing"""
