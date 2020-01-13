@@ -99,10 +99,6 @@ class FdmBlackScholesMesher : public Fdm1dMesher {
          Volatility vol);
 };
 
-#if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::tuple<Real, Real, bool> )
-#endif
-
 %template(Concentrating1dMesherPoint) boost::tuple<Real, Real, bool>;
 %template(Concentrating1dMesherPointVector) std::vector<boost::tuple<Real, Real, bool> >;
 

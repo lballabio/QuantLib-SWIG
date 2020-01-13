@@ -41,7 +41,7 @@ namespace std {
 
 #if !defined(SWIGPYTHON) && !defined(SWIGR) 
     // various versions of SWIG seem to have  
-    // problems with Python and std::vector<std::size_t> 
+    // problems with Python/R and std::vector<std::size_t> 
     %template(SizeVector) vector<Size>;
 #endif
 

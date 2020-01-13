@@ -404,7 +404,7 @@ class FdmTest(unittest.TestCase):
         op = ql.FdmBlackScholesOp(mesher, process, strike)
 
         innerValueCalculator = ql.FdmLogInnerValue(payoff, mesher, 0)
-            
+
         x = []
         rhs = []
         layout = mesher.layout()        
@@ -425,7 +425,7 @@ class FdmTest(unittest.TestCase):
         solver = ql.FdmBackwardSolver(
             op, bcSet, stepCondition, ql.FdmSchemeDesc.Douglas()
         )
-        
+
         solver.rollback(rhs, maturity, 0.0, tSteps, dampingSteps)
         
         spline = ql.CubicNaturalSpline(x, rhs);
@@ -442,7 +442,7 @@ class FdmTest(unittest.TestCase):
                 
         calculated = ql.Fdm1DimSolver(
             solverDesc, ql.FdmSchemeDesc.Douglas(), op).interpolateAt(logS)
-                    
+                
         self.assertAlmostEqual(calculated, expected, 2)
     
         v0 = 0.4*0.4
@@ -467,9 +467,9 @@ class FdmTest(unittest.TestCase):
         
         vMesher = ql.FdmHestonLocalVolatilityVarianceMesher(
             vSteps, hestonProcess, leverageFct, maturity)
-        
+    
         avgVolaEstimate = vMesher.volaEstimate()
-        
+    
         self.assertAlmostEqual(avgVolaEstimate, 0.2, 5)
         
         mesher = ql.FdmMesherComposite(equityMesher, vMesher)
@@ -490,8 +490,8 @@ class FdmTest(unittest.TestCase):
                 spot.value(), 0.16)
             
         self.assertAlmostEqual(calculated, expected, 1)
-
-
+    
+    
     def testBSMRNDCalculator(self):
         """Testing Black-Scholes risk neutral density calculator"""
         
@@ -529,8 +529,49 @@ class FdmTest(unittest.TestCase):
         
         self.assertAlmostEqual(calculated, expected, 8)
         
+
+    def testOrnsteinUhlenbeckVsBachelier(self):
+        """Testing Fdm Ornstein-Uhlenbeck pricing"""
         
-                    
+
+        todaysDate = ql.Date(15, ql.January, 2020)
+        ql.Settings.instance().evaluationDate = todaysDate
+        
+        dc = ql.Actual365Fixed()
+        
+        rTS = ql.FlatForward(todaysDate, 0.06, dc)
+
+        strike = 110.0
+        payoff = ql.PlainVanillaPayoff(ql.Option.Put, strike)
+        
+        maturityDate = todaysDate + ql.Period(2, ql.Years)
+
+        exercise = ql.EuropeanExercise(maturityDate)
+        
+        option = ql.VanillaOption(payoff, exercise)
+
+        x0 = 100
+        sigma = 20.0
+        speed = 5
+
+        pdeEngine = ql.FdOrnsteinUhlenbeckVanillaEngine(
+            ql.OrnsteinUhlenbeckProcess(speed, sigma, x0, x0), rTS, 50
+        )
+        
+        option.setPricingEngine(pdeEngine)
+        calculated = option.NPV()
+        
+        stdev = math.sqrt(sigma*sigma/(2*speed))
+        
+        expected = ql.bachelierBlackFormula(
+            ql.Option.Put, 
+            strike, x0, stdev,
+            rTS.discount(maturityDate)
+        )
+
+        self.assertAlmostEqual(calculated, expected, 2)
+        
+        
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
