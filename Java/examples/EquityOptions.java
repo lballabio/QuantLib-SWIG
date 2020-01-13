@@ -24,6 +24,8 @@ import org.quantlib.Actual365Fixed;
 import org.quantlib.AmericanExercise;
 import org.quantlib.AnalyticEuropeanEngine;
 import org.quantlib.AnalyticHestonEngine;
+import org.quantlib.AnalyticHestonEngine_Integration;
+import org.quantlib.AnalyticPTDHestonEngine;
 import org.quantlib.BaroneAdesiWhaleyEngine;
 import org.quantlib.BatesEngine;
 import org.quantlib.BatesModel;
@@ -40,7 +42,9 @@ import org.quantlib.BjerksundStenslandEngine;
 import org.quantlib.BlackConstantVol;
 import org.quantlib.BlackScholesMertonProcess;
 import org.quantlib.BlackVolTermStructureHandle;
+import org.quantlib.BoundaryConstraint;
 import org.quantlib.Calendar;
+import org.quantlib.ConstantParameter;
 import org.quantlib.COSHestonEngine;
 import org.quantlib.Date;
 import org.quantlib.DateVector;
@@ -59,11 +63,14 @@ import org.quantlib.Month;
 import org.quantlib.Option;
 import org.quantlib.Payoff;
 import org.quantlib.Period;
+import org.quantlib.PiecewiseTimeDependentHestonModel;
 import org.quantlib.PlainVanillaPayoff;
+import org.quantlib.PositiveConstraint;
 import org.quantlib.QuoteHandle;
 import org.quantlib.Settings;
 import org.quantlib.SimpleQuote;
 import org.quantlib.TARGET;
+import org.quantlib.TimeGrid;
 import org.quantlib.TimeUnit;
 import org.quantlib.VanillaOption;
 import org.quantlib.YieldTermStructureHandle;
@@ -184,7 +191,28 @@ public class EquityOptions {
                                               europeanOption.NPV(),
                                               Double.NaN,
                                               Double.NaN } );
-
+                                              
+		method = "Heston time dependent parameter";
+		europeanOption.setPricingEngine(
+			new AnalyticPTDHestonEngine(
+				new PiecewiseTimeDependentHestonModel(
+					flatTermStructure,
+					flatDividendYield,
+					underlyingH, 
+					volatility*volatility,
+					new ConstantParameter(volatility*volatility, new PositiveConstraint()),
+					new ConstantParameter(1.0, new PositiveConstraint()),
+					new ConstantParameter(1e-4, new PositiveConstraint()),
+					new ConstantParameter(0.0, new BoundaryConstraint(-1.0, 1.0)),
+					new TimeGrid(dayCounter.yearFraction(todaysDate, maturity), 10)					
+				), 
+				AnalyticPTDHestonEngine.ComplexLogFormula.AndersenPiterbarg,
+				AnalyticHestonEngine_Integration.gaussLaguerre(32)) );
+        System.out.printf(fmt, new Object[] { method,
+                                              europeanOption.NPV(),
+                                              Double.NaN,
+                                              Double.NaN } );
+		                                              
 		// Bates
         method = "Bates Semi-Analytic";
         BatesProcess batesProcess =

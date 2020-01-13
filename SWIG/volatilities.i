@@ -920,4 +920,71 @@ class HestonBlackVolSurface : public BlackVolTermStructure {
             AnalyticHestonEngine::Integration::gaussLaguerre(164));
 };
 
+%{
+using QuantLib::CmsMarket;
+%}
+
+%shared_ptr(CmsMarket)
+class CmsMarket{
+  public:       
+    CmsMarket(
+        const std::vector<Period>& swapLengths,
+        const std::vector<boost::shared_ptr<SwapIndex> >& swapIndexes,
+        const boost::shared_ptr<IborIndex>& iborIndex,
+        const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
+        const std::vector<boost::shared_ptr<CmsCouponPricer> >& pricers,
+        const Handle<YieldTermStructure>& discountingTS);
+
+        void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
+                     Real meanReversion);
+
+        const std::vector<Period>& swapTenors() const;
+        const std::vector<Period>& swapLengths() const;
+        const Matrix& impliedCmsSpreads();
+        const Matrix& spreadErrors();
+        Matrix browse() const;
+
+        Real weightedSpreadError(const Matrix& weights);
+        Real weightedSpotNpvError(const Matrix& weights);
+        Real weightedFwdNpvError(const Matrix& weights);
+        Disposable<Array> weightedSpreadErrors(const Matrix& weights);
+        Disposable<Array> weightedSpotNpvErrors(const Matrix& weights);
+        Disposable<Array> weightedFwdNpvErrors(const Matrix& weights);
+};
+
+%{
+using QuantLib::CmsMarketCalibration;
+%}
+
+class CmsMarketCalibration {
+  public:
+    enum CalibrationType {OnSpread, OnPrice, OnForwardCmsPrice };
+
+    CmsMarketCalibration(
+        Handle<SwaptionVolatilityStructure>& volCube,
+        boost::shared_ptr<CmsMarket>& cmsMarket,
+        const Matrix& weights,
+        CalibrationType calibrationType);
+
+    Array compute(const boost::shared_ptr<EndCriteria>& endCriteria,
+              const boost::shared_ptr<OptimizationMethod>& method,
+              const Array& guess,
+              bool isMeanReversionFixed);
+
+    Matrix compute(const boost::shared_ptr<EndCriteria>& endCriteria,
+                  const boost::shared_ptr<OptimizationMethod>& method,
+                  const Matrix& guess,
+                  bool isMeanReversionFixed,
+                  const Real meanReversionGuess = Null<Real>());
+
+
+    Matrix computeParametric(const boost::shared_ptr<EndCriteria> &endCriteria,
+                      const boost::shared_ptr<OptimizationMethod> &method,
+                      const Matrix &guess, bool isMeanReversionFixed,
+                      const Real meanReversionGuess = Null<Real>());
+
+    Real error();
+    EndCriteria::Type endCriteria();
+};
+
 #endif

@@ -349,6 +349,14 @@ class CmsCouponPricer : public FloatingRateCouponPricer {
                                       Handle<SwaptionVolatilityStructure>());
 };
 
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<CmsCouponPricer> )
+#endif
+namespace std {
+    %template(CmsCouponPricerVector)
+        vector<boost::shared_ptr<CmsCouponPricer> >;     
+}
+
 class GFunctionFactory {
   private:
     GFunctionFactory();

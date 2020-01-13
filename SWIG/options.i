@@ -402,6 +402,9 @@ using QuantLib::AnalyticPTDHestonEngine;
 %shared_ptr(AnalyticPTDHestonEngine)
 class AnalyticPTDHestonEngine : public PricingEngine {
   public:
+    enum ComplexLogFormula { Gatheral, AndersenPiterbarg };
+    typedef AnalyticHestonEngine::Integration Integration;
+    
     AnalyticPTDHestonEngine(
             const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Real relTolerance, Size maxEvaluations);
@@ -410,6 +413,13 @@ class AnalyticPTDHestonEngine : public PricingEngine {
     AnalyticPTDHestonEngine(
             const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Size integrationOrder = 144);
+            
+    // Constructor giving full control over Fourier integration algorithm
+    AnalyticPTDHestonEngine(
+        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        ComplexLogFormula cpxLog,
+        const Integration& itg,
+        Real andersenPiterbargEpsilon = 1e-8);            
 };
 
 
@@ -2046,5 +2056,101 @@ class FdSimpleExtOUJumpSwingEngine : public PricingEngine {
     }
 };
 
+
+%{
+using QuantLib::GJRGARCHModel;
+%}
+
+%shared_ptr(GJRGARCHModel)
+class GJRGARCHModel : public CalibratedModel {
+      public:
+        GJRGARCHModel(const boost::shared_ptr<GJRGARCHProcess>& process);
+        Real omega() const;
+        Real alpha() const;
+        Real beta() const;
+        Real gamma() const;
+        Real lambda() const;
+        Real v0() const;
+};
+
+
+%{
+using QuantLib::AnalyticGJRGARCHEngine;
+%}
+
+%shared_ptr(AnalyticGJRGARCHEngine)
+class AnalyticGJRGARCHEngine : public PricingEngine {
+  public:
+    AnalyticGJRGARCHEngine(const boost::shared_ptr<GJRGARCHModel>& process);
+};
+
+%{
+using QuantLib::MCEuropeanGJRGARCHEngine;
+%}
+
+%shared_ptr(MCEuropeanGJRGARCHEngine<PseudoRandom>);
+%shared_ptr(MCEuropeanGJRGARCHEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCEuropeanGJRGARCHEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCEuropeanGJRGARCHEngine;
+    #endif
+  public:
+    %extend {
+        MCEuropeanGJRGARCHEngine(const boost::shared_ptr<GJRGARCHProcess>& process,
+                                 intOrNull timeSteps = Null<Size>(),
+                                 intOrNull timeStepsPerYear = Null<Size>(),
+                                 bool antitheticVariate = false,
+                                 intOrNull requiredSamples = Null<Size>(),
+                                 doubleOrNull requiredTolerance = Null<Real>(),
+                                 intOrNull maxSamples = Null<Size>(),
+                                 BigInteger seed = 0) {
+            QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
+                       Size(timeStepsPerYear) != Null<Size>(),
+                       "number of steps not specified");
+            return new MCEuropeanGJRGARCHEngine<RNG>(process,
+                                                     timeSteps,
+                                                     timeStepsPerYear,
+                                                     antitheticVariate,
+                                                     requiredSamples,
+                                                     requiredTolerance,
+                                                     maxSamples,
+                                                     seed);
+        }
+    }
+};
+
+%template(MCPREuropeanGJRGARCHEngine) MCEuropeanGJRGARCHEngine<PseudoRandom>;
+%template(MCLDEuropeanGJRGARCHEngine) MCEuropeanGJRGARCHEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCEuropeanGJRGARCHEngine(process,
+                                 traits,
+                                 timeSteps=None,
+                                 timeStepsPerYear=None,
+                                 antitheticVariate=False,
+                                 requiredSamples=None,
+                                 requiredTolerance=None,
+                                 maxSamples=None,
+                                 seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPREuropeanGJRGARCHEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDEuropeanGJRGARCHEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 #endif

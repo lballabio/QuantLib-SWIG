@@ -37,9 +37,7 @@
 %include vectors.i
 
 %{
-using QuantLib::VanillaSwap;
-using QuantLib::Swaption;
-using QuantLib::CalibrationHelperBase;
+using QuantLib::CalibrationHelper;
 using QuantLib::BlackCalibrationHelper;
 using QuantLib::SwaptionHelper;
 using QuantLib::CapHelper;
@@ -47,16 +45,16 @@ using QuantLib::HestonModelHelper;
 %}
 
 // calibration helpers
-%shared_ptr(CalibrationHelperBase)
-class CalibrationHelperBase {
+%shared_ptr(CalibrationHelper)
+class CalibrationHelper {
   public:
 	Real calibrationError();
   private:
-    CalibrationHelperBase();
+    CalibrationHelper();
 };
 
 %shared_ptr(BlackCalibrationHelper)
-class BlackCalibrationHelper : public CalibrationHelperBase {
+class BlackCalibrationHelper : public CalibrationHelper {
   public:
     enum CalibrationErrorType { RelativePriceError, PriceError, ImpliedVolError };
                        
@@ -76,7 +74,7 @@ class BlackCalibrationHelper : public CalibrationHelperBase {
 };
 
 %inline %{
-    boost::shared_ptr<BlackCalibrationHelper> as_black_helper(const boost::shared_ptr<CalibrationHelperBase>& h) {
+    boost::shared_ptr<BlackCalibrationHelper> as_black_helper(const boost::shared_ptr<CalibrationHelper>& h) {
         return boost::dynamic_pointer_cast<BlackCalibrationHelper>(h);
     }
     boost::shared_ptr<SwaptionHelper> as_swaption_helper(const boost::shared_ptr<BlackCalibrationHelper>& h) {
@@ -194,12 +192,12 @@ class HestonModelHelper : public BlackCalibrationHelper {
 
 // allow use of vectors of helpers
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<CalibrationHelperBase> )
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<CalibrationHelper> )
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BlackCalibrationHelper> )
 #endif
 namespace std {
     %template(CalibrationHelperVector)
-        vector<boost::shared_ptr<CalibrationHelperBase> >;
+        vector<boost::shared_ptr<CalibrationHelper> >;
     %template(BlackCalibrationHelperVector)
         vector<boost::shared_ptr<BlackCalibrationHelper> >;        
 }
@@ -218,7 +216,7 @@ class CalibratedModel : public virtual Observable {
   public:
     Array params() const;
     virtual void calibrate(
-        const std::vector<boost::shared_ptr<CalibrationHelperBase> >&,
+        const std::vector<boost::shared_ptr<CalibrationHelper> >&,
         OptimizationMethod&, const EndCriteria &,
         const Constraint& constraint = Constraint(),
         const std::vector<Real>& weights = std::vector<Real>(),
@@ -226,7 +224,7 @@ class CalibratedModel : public virtual Observable {
      
     void setParams(const Array& params);
     Real value(const Array& params,
-               const std::vector<boost::shared_ptr<CalibrationHelperBase> >&);
+               const std::vector<boost::shared_ptr<CalibrationHelper> >&);
     const boost::shared_ptr<Constraint>& constraint() const;
     EndCriteria::Type endCriteria() const;
     const Array& problemValues() const;

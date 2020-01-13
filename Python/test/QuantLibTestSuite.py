@@ -40,6 +40,7 @@ from ode import OdeTest
 from americanquantooption import AmericanQuantoOptionTest
 from extrapolation import ExtrapolationTest
 from fdm import FdmTest
+from gjrgarch import GJRGARCHEngineTest, GJRGARCHCalibrationTest
 
 
 def test():
@@ -72,6 +73,8 @@ def test():
     suite.addTest(unittest.makeSuite(AmericanQuantoOptionTest, 'test'))
     suite.addTest(unittest.makeSuite(ExtrapolationTest, 'test'))
     suite.addTest(unittest.makeSuite(FdmTest, 'test'))
+    suite.addTest(unittest.makeSuite(GJRGARCHEngineTest, "test"))
+    suite.addTest(unittest.makeSuite(GJRGARCHCalibrationTest, "test"))
         
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 

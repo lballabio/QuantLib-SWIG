@@ -412,4 +412,26 @@ class KlugeExtOUProcess : public StochasticProcess {
 };
 
 
+%{
+using QuantLib::GJRGARCHProcess;
+%}
+
+%shared_ptr(GJRGARCHProcess)
+class GJRGARCHProcess : public StochasticProcess {
+  public:
+      enum Discretization { PartialTruncation, FullTruncation, Reflection};
+
+      GJRGARCHProcess(const Handle<YieldTermStructure>& riskFreeRate,
+                      const Handle<YieldTermStructure>& dividendYield,
+                      const Handle<Quote>& s0,
+                      Real v0, Real omega, Real alpha, Real beta,
+                      Real gamma, Real lambda, Real daysPerYear = 252.0,
+                      Discretization d = FullTruncation);
+
+  Handle<Quote> s0();
+  Handle<YieldTermStructure> dividendYield();
+  Handle<YieldTermStructure> riskFreeRate();
+};
+
+
 #endif
