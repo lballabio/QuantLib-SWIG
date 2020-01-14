@@ -228,3 +228,35 @@ class RichardsonExtrapolation {
 };
 
 #endif
+
+
+%{
+class SafeConvexMonotoneInterpolation {
+  public:
+    SafeConvexMonotoneInterpolation(const Array& x, const Array& y,
+                                    Real quadraticity = 0.3,
+                                    Real monotonicity = 0.7,
+                                    bool forcePositive = true)
+    : x_(x), y_(y), f_(x_.begin(), x_.end(), y_.begin(),
+                       quadraticity, monotonicity, forcePositive) {}
+    Real operator()(Real x, bool allowExtrapolation=false) {
+        return f_(x, allowExtrapolation);
+    }
+    Array x_, y_;
+    QuantLib::ConvexMonotoneInterpolation<Array::const_iterator, Array::const_iterator> f_;
+};
+%}
+
+%rename(ConvexMonotoneInterpolation) SafeConvexMonotoneInterpolation;
+class SafeConvexMonotoneInterpolation {
+    #if defined(SWIGCSHARP)
+    %rename(call) operator();
+    #endif
+  public:
+    SafeConvexMonotoneInterpolation(const Array& x, const Array& y,
+                                    Real quadraticity = 0.3,
+                                    Real monotonicity = 0.7,
+                                    bool forcePositive = true);
+    Real operator()(Real x, bool allowExtrapolation=false);
+};
+
