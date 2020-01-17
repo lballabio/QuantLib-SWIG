@@ -461,8 +461,8 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
     
     Disposable<Array> apply_direction(Size direction, const Array& r) const {
-        PyObject* pyArray 
-            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+        PyObject* pyArray = SWIG_NewPointerObj(
+        	SWIG_as_voidptr(&r), SWIGTYPE_p_Array, SWIG_BUILTIN_INIT | 0);
             
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, "apply_direction", "kO", 
@@ -476,8 +476,8 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     Disposable<Array> solve_splitting(
         Size direction, const Array& r, Real s) const {
 
-        PyObject* pyArray 
-            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+        PyObject* pyArray = SWIG_NewPointerObj(
+        	SWIG_as_voidptr(&r), SWIGTYPE_p_Array, SWIG_BUILTIN_INIT | 0);
             
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, "solve_splitting", "kOd", 
@@ -489,8 +489,8 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
     
     Disposable<Array> preconditioner(const Array& r, Real s) const {
-        PyObject* pyArray 
-            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+        PyObject* pyArray = SWIG_NewPointerObj(
+        	SWIG_as_voidptr(&r), SWIGTYPE_p_Array, SWIG_BUILTIN_INIT | 0);
             
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, "preconditioner", "Od",pyArray, s);
@@ -528,8 +528,8 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     Disposable<Array> apply(
         const Array& r, const std::string& methodName) const {
 
-        PyObject* pyArray 
-            = SWIG_NewPointerObj(SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+        PyObject* pyArray = SWIG_NewPointerObj(
+        	SWIG_as_voidptr(&r), SWIGTYPE_p_Array, SWIG_BUILTIN_INIT | 0);
             
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, methodName.c_str(), "O", pyArray);
@@ -1217,8 +1217,8 @@ class FdmStepConditionProxy : public StepCondition<Array> {
     }
         
     void applyTo(Array& a, Time t) const {
-        PyObject* pyArray 
-            = SWIG_NewPointerObj(SWIG_as_voidptr(&a), SWIGTYPE_p_Array, 0);
+        PyObject* pyArray = SWIG_NewPointerObj(
+        	SWIG_as_voidptr(&a), SWIGTYPE_p_Array, SWIG_BUILTIN_INIT | 0);
             
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, "applyTo", "Od",pyArray, t);
@@ -1326,13 +1326,13 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
     
   private: 
       Real getValue(const FdmLinearOpIterator& iter, Time t, const std::string& methodName) {
-        PyObject* pyIter 
-            = SWIG_NewPointerObj(SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, 0);
+        PyObject* pyIter = SWIG_NewPointerObj(
+        	SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, SWIG_BUILTIN_INIT | 0);
             
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, methodName.c_str(), "Od",pyIter, t);
-            
-        QL_ENSURE(pyResult != NULL, "failed to call innValue function on Python object");
+                    
+        QL_ENSURE(pyResult != NULL, "failed to call innerValue function on Python object");
         
         const Real result = PyFloat_AsDouble(pyResult);
 
