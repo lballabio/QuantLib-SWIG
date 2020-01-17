@@ -422,8 +422,32 @@ class FdmTest(unittest.TestCase):
             innerValueCalculator, todaysDate, dc
         )
             
+        # only to test purpose to test 
+        # an Operator defined in Python    
+        class OperatorProxy:
+            def __init__(self, op):
+                self.op = op
+                
+            def size(self):
+                return self.op.size()
+            
+            def setTime(self, t1, t2):
+                return self.op.setTime(t1, t2)
+            
+            def apply(self, r):
+                return self.op.apply(r)
+
+            def apply_direction(self, i, r):
+                return self.op.apply_direction(i, r)
+
+            def solve_splitting(self, i, r, s):
+                return self.op.solve_splitting(i, r, s)
+            
+            
+        proxyOp = ql.FdmLinearOpCompositeProxy(OperatorProxy(op))
+            
         solver = ql.FdmBackwardSolver(
-            op, bcSet, stepCondition, ql.FdmSchemeDesc.Douglas()
+            proxyOp, bcSet, stepCondition, ql.FdmSchemeDesc.Douglas()
         )
 
         solver.rollback(rhs, maturity, 0.0, tSteps, dampingSteps)
