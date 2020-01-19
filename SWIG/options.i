@@ -1147,8 +1147,8 @@ using QuantLib::FdmQuantoHelper;
 %shared_ptr(FdmQuantoHelper)
 class FdmQuantoHelper {
   public:
-	FdmQuantoHelper(
-	    const boost::shared_ptr<YieldTermStructure>& rTS,
+    FdmQuantoHelper(
+        const boost::shared_ptr<YieldTermStructure>& rTS,
         const boost::shared_ptr<YieldTermStructure>& fTS,
         const boost::shared_ptr<BlackVolTermStructure>& fxVolTS,
         Real equityFxCorrelation,
@@ -1212,7 +1212,7 @@ class FdOrnsteinUhlenbeckVanillaEngine : public PricingEngine {
   public:
     #if !defined(SWIGPYTHON)
     %feature("kwargs") FdOrnsteinUhlenbeckVanillaEngine;
-	#endif
+    #endif
     FdOrnsteinUhlenbeckVanillaEngine(
         const boost::shared_ptr<OrnsteinUhlenbeckProcess>&,
         const boost::shared_ptr<YieldTermStructure>& rTS,
