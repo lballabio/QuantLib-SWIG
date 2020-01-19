@@ -422,8 +422,7 @@ class FdmTest(unittest.TestCase):
             innerValueCalculator, todaysDate, dc
         )
             
-        # only to test purpose to test 
-        # an Operator defined in Python    
+        # only to test an Operator defined in python    
         class OperatorProxy:
             def __init__(self, op):
                 self.op = op
