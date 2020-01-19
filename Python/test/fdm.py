@@ -291,7 +291,7 @@ class FdmTest(unittest.TestCase):
         
         self.assertEqual(len(s), 1)
         
-        ql.BoundaryConditionFdmLinearOp.NoSide # None is replaced by _None
+        ql.BoundaryConditionFdmLinearOp.NoSide
         
     def testFdmStepConditionCallBack(self):
         """Testing step condition call back function"""

@@ -12,7 +12,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>FiniteDiffernceMethods</AssemblyName>
+    <AssemblyName>FiniteDifferenceMethods</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -20,7 +20,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Exe</OutputType>
-    <RootNamespace>FiniteDiffernceMethods</RootNamespace>
+    <RootNamespace>FiniteDifferenceMethods</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>
     </StartupObject>
@@ -153,7 +153,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FiniteDiffernceMethods.cs">
+    <Compile Include="FiniteDifferenceMethods.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
