@@ -15,6 +15,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EquityOption", "examples\Eq
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FiniteDifferenceMethods", "examples\FiniteDifferenceMethods.csproj", "{EF2AFADF-B632-4E95-BEB5-7B7109A9E4FD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{21183104-9963-4D4F-B7E8-C8A6169FD053} = {21183104-9963-4D4F-B7E8-C8A6169FD053}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -87,8 +90,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {02D00091-249C-4A9A-B389-CD1BBD5E15C4}
 	EndGlobalSection
 EndGlobal
