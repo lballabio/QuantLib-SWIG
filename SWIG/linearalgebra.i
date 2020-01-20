@@ -61,6 +61,7 @@ bool extractArray(PyObject* source, Array* target) {
     }
 }
 %}
+
 %typemap(in) Array (Array* v) {
     if (extractArray($input,&$1)) {
         ;
