@@ -621,6 +621,7 @@ class Matrix {
 // functions
 
 %{
+using QuantLib::inverse;
 using QuantLib::pseudoSqrt;
 using QuantLib::SalvagingAlgorithm;
 %}
@@ -632,6 +633,7 @@ struct SalvagingAlgorithm {
     enum Type { None, Spectral };
 };
 
+Matrix inverse(const Matrix& m);
 Matrix transpose(const Matrix& m);
 Matrix outerProduct(const Array& v1, const Array& v2);
 Matrix pseudoSqrt(const Matrix& m, SalvagingAlgorithm::Type a);
@@ -644,6 +646,186 @@ class SVD {
     Matrix S() const;
     const Array& singularValues() const;
 };
+
+%{
+using QuantLib::BiCGstab;
+using QuantLib::GMRES;
+%}
+
+%{
+Disposable<Array> extractArray(
+    PyObject* source, const std::string& methodName) {
+      
+    QL_ENSURE(source != NULL,
+              "failed to call " + methodName + " on Python object");
+
+    QL_ENSURE(source != Py_None, methodName + " returned None");
+        
+    Array* ptr;            
+    const int err = SWIG_ConvertPtr(
+        source, (void **) &ptr, SWIGTYPE_p_Array, SWIG_POINTER_EXCEPTION);
+
+    if (err != 0) {
+        Py_XDECREF(source);
+        QL_FAIL("return type must be of type QuantLib Array in " 
+            + methodName);
+    }
+    
+    Array tmp(*ptr);          
+    Py_XDECREF(source);
+     
+    return tmp;
+}
+%}
+
+#if defined(SWIGPYTHON)
+%{
+class MatrixMultiplicationProxy {
+  public:
+    MatrixMultiplicationProxy(PyObject* matrixMult)
+    : matrixMult_(matrixMult) {
+    	Py_XINCREF(matrixMult_);    
+    }
+    
+    MatrixMultiplicationProxy(const MatrixMultiplicationProxy& p) 
+    : matrixMult_(p.matrixMult_) {
+        Py_XINCREF(matrixMult_);
+    }
+        
+    MatrixMultiplicationProxy& operator=(const MatrixMultiplicationProxy& f) {
+        if ((this != &f) && (matrixMult_ != f.matrixMult_)) {
+            Py_XDECREF(matrixMult_);
+            matrixMult_ = f.matrixMult_;
+            Py_XINCREF(matrixMult_);
+        }
+        return *this;
+    }
+        
+    ~MatrixMultiplicationProxy() {
+        Py_XDECREF(matrixMult_);    
+    }
+    
+    Disposable<Array> operator()(const Array& x) const {
+    	PyObject* pyArray = SWIG_NewPointerObj(
+        	SWIG_as_voidptr(&x), SWIGTYPE_p_Array, 0);
+        	
+        PyObject* pyResult 
+        	= PyObject_CallFunction(matrixMult_, "O", pyArray);
+		
+		Py_XDECREF(pyArray);
+		
+		return extractArray(pyResult, "matrix multiplication");     	
+    }
+    
+  private:
+    PyObject* matrixMult_;      
+};
+%}
+
+class MatrixMultiplicationProxy {
+  public:
+    MatrixMultiplicationProxy(PyObject* matrixMult);
+    
+    Disposable<Array> operator()(const Array& x) const;    
+};
+
+#elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+
+%{
+class MatrixMultiplicationDelegate {
+  public:
+    virtual ~MatrixMultiplicationDelegate() {}
+      
+    virtual Array apply(const Array& x) const {
+        QL_FAIL("implementation of MatrixMultiplicationDelegate.apply is missing");        
+    }
+};
+
+class MatrixMultiplicationProxy {
+  public:
+    MatrixMultiplicationProxy(MatrixMultiplicationDelegate* delegate)
+    : delegate_(delegate) {}
+    
+    Disposable<Array> operator()(const Array& x) const {
+    	return delegate_->apply(x);
+    }
+               
+  private:
+      MatrixMultiplicationProxy* const delegate_; 
+};
+%}
+
+class MatrixMultiplicationDelegate {
+  public:
+    virtual ~MatrixMultiplicationDelegate();
+      
+    virtual Array apply(const Array& x) const;
+};
+
+class MatrixMultiplicationProxy {
+  public:
+    MatrixMultiplicationProxy(MatrixMultiplicationDelegate* delegate);
+    
+    Disposable<Array> operator()(const Array& x) const;
+};
+#endif
+
+
+%shared_ptr(BiCGstab)
+class BiCGstab  {
+  public:
+    %extend {
+	    Array solve(const Array& b, const Array& x0 = Array()) const {
+	    		return self->solve(b, x0).x; 
+	    }
+	}
+#if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGCSHARP)
+	%extend {
+	    BiCGstab(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol) {	  		
+			return new BiCGstab(BiCGstab::MatrixMult(proxy), maxIter, relTol); 		  		    
+	    }
+	    
+	    BiCGstab(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol,
+	    		 const MatrixMultiplicationProxy& preconditioner) {	  		
+			return new BiCGstab(
+				BiCGstab::MatrixMult(proxy), maxIter, relTol,
+				BiCGstab::MatrixMult(preconditioner)); 		  		    
+	    }
+	}
+#endif    
+};
+
+
+
+%shared_ptr(GMRES)
+class GMRES  {
+  public:
+    %extend {
+	    Array solve(const Array& b, const Array& x0 = Array()) const {
+	    	return self->solve(b, x0).x;
+	    }
+	    Array solveWithRestart(
+	        Size restart, const Array& b, const Array& x0 = Array()) const {
+	        return self->solveWithRestart(restart, b, x0).x;
+	    }
+    }
+
+#if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGCSHARP)
+	%extend {
+	    GMRES(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol) {	  		
+			return new GMRES(GMRES::MatrixMult(proxy), maxIter, relTol); 		  		    
+	    }
+	    
+	    GMRES(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol,
+	    	  const MatrixMultiplicationProxy& preconditioner) {	  		
+			return new GMRES(
+				GMRES::MatrixMult(proxy), maxIter, relTol,
+				GMRES::MatrixMult(preconditioner)); 		  		    
+	    }
+	}    
+#endif 
+};
+
 
 %{
 using QuantLib::close;

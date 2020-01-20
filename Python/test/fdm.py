@@ -593,7 +593,45 @@ class FdmTest(unittest.TestCase):
         )
 
         self.assertAlmostEqual(calculated, expected, 2)
+
+
+    def testSparseLinearMatrixSolver(self):
+        """Testing sparse linear matrix solver"""
         
+        A = ql.Matrix([
+            [1.0, 0.0, 1.0],
+            [0.0, 1.0, 0.5], 
+            [1.0, 0.5, 1.0]
+        ])
+        
+        b = ql.Array([ 1.0, 0.2, 0.5 ])
+        
+        expected = ql.inverse(A)*b
+        
+        def foo(x):
+            return A*x
+        
+        calculated = ql.BiCGstab(
+            ql.MatrixMultiplicationProxy(foo), 100, 1e-6).solve(b)
+            
+        for i in range(3):
+            self.assertAlmostEqual(expected[i], calculated[i], 4)
+
+        calculated = ql.GMRES(
+            ql.MatrixMultiplicationProxy(foo), 100, 1e-6).solve(b)
+        
+        for i in range(3):
+            self.assertAlmostEqual(expected[i], calculated[i], 4)
+
+        def preconditioner(x):
+            return ql.inverse(A)*x
+        
+        calculated = ql.BiCGstab(
+            ql.MatrixMultiplicationProxy(foo), 100, 1e-6,
+            ql.MatrixMultiplicationProxy(preconditioner)).solve(b)
+        
+        for i in range(3):
+            self.assertAlmostEqual(expected[i], calculated[i], 4)
         
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)

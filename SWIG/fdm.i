@@ -426,6 +426,11 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         return *this;
     }
     
+    FdmLinearOpCompositeProxy(const FdmLinearOpCompositeProxy& p) 
+    : callback_(p.callback_) {
+        Py_XINCREF(callback_);
+    }
+        
     ~FdmLinearOpCompositeProxy() {
         Py_XDECREF(callback_);
     }
@@ -501,30 +506,6 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
   private:
-    Disposable<Array> extractArray(
-        PyObject* pyResult, const std::string& methodName) const {
-          
-        QL_ENSURE(pyResult != NULL,
-                  "failed to call " + methodName + " on Python object");
-
-        QL_ENSURE(pyResult != Py_None, methodName + " returned None");
-            
-        Array* ptr;            
-        const int err = SWIG_ConvertPtr(
-            pyResult, (void **) &ptr, SWIGTYPE_p_Array, SWIG_POINTER_EXCEPTION);
-
-        if (err != 0) {
-            Py_XDECREF(pyResult);
-            QL_FAIL("return type must be of type QuantLib Array in " 
-                + methodName);
-        }
-        
-        Array tmp(*ptr);          
-        Py_XDECREF(pyResult);
-         
-        return tmp;
-    }
-      
     Disposable<Array> apply(
         const Array& r, const std::string& methodName) const {
 
@@ -538,7 +519,8 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         
         return extractArray(pyResult, methodName);        
     }
-        
+
+  private:        
     PyObject* callback_;    
 };
 %}
@@ -980,6 +962,8 @@ using QuantLib::TripleBandLinearOp;
 using QuantLib::FirstDerivativeOp;
 using QuantLib::SecondDerivativeOp;
 using QuantLib::NinePointLinearOp;
+using QuantLib::SecondOrderMixedDerivativeOp;
+using QuantLib::NthOrderDerivativeOp;
 %}
 
 %shared_ptr(TripleBandLinearOp)
@@ -1036,6 +1020,25 @@ class NinePointLinearOp : public FdmLinearOp {
 
     Disposable<Array> apply(const Array& r) const;
 };
+
+%shared_ptr(SecondOrderMixedDerivativeOp)
+class SecondOrderMixedDerivativeOp : public NinePointLinearOp {
+public:
+    SecondOrderMixedDerivativeOp(
+        Size d0, Size d1, 
+        const boost::shared_ptr<FdmMesher>& mesher);
+};
+
+%shared_ptr(NthOrderDerivativeOp)
+class NthOrderDerivativeOp : public FdmLinearOp {
+  public:
+    NthOrderDerivativeOp(
+        Size direction, Size order, Integer nPoints,
+        const boost::shared_ptr<FdmMesher>& mesher);
+
+    Disposable<Array> apply(const Array& r) const;
+};
+
 
 %shared_ptr(Disposable<NinePointLinearOp>)
 %template(DisposableNinePointLinearOp) Disposable<NinePointLinearOp>;
@@ -1203,6 +1206,11 @@ class FdmStepConditionProxy : public StepCondition<Array> {
         Py_XINCREF(callback_);
     }
     
+    FdmStepConditionProxy(const FdmStepConditionProxy& p) 
+    : callback_(p.callback_) {
+        Py_XINCREF(callback_);
+    }
+        
     FdmStepConditionProxy& operator=(const FdmStepConditionProxy& f) {
         if ((this != &f) && (callback_ != f.callback_)) {
             Py_XDECREF(callback_);
@@ -1303,6 +1311,11 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
         Py_XINCREF(callback_);
     }
     
+    FdmInnerValueCalculatorProxy(const FdmInnerValueCalculatorProxy& p) 
+    : callback_(p.callback_) {
+        Py_XINCREF(callback_);
+    }
+        
     FdmInnerValueCalculatorProxy& operator=(const FdmInnerValueCalculatorProxy& f) {
         if ((this != &f) && (callback_ != f.callback_)) {
             Py_XDECREF(callback_);
