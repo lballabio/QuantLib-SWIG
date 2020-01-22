@@ -325,7 +325,7 @@ class FdmTest(unittest.TestCase):
             def innerValue(self, opIter, t):
                 return opIter.index() + t
             
-            @classmethod  
+            @classmethod
             def avgInnerValue(self, opIter, t):
                 return opIter.index() + 2*t
 
@@ -628,7 +628,7 @@ class FdmTest(unittest.TestCase):
 
         calculated = ql.GMRES(
             ql.MatrixMultiplicationProxy(foo), 100, 1e-6).solve(b)
-        
+
         for i in range(3):
             self.assertAlmostEqual(expected[i], calculated[i], 4)
 
