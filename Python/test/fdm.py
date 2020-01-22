@@ -40,8 +40,8 @@ class FdmTest(unittest.TestCase):
         self.assertEqual([1,2,3,4], list(c))
         self.assertEqual(len(b), 0)
 
-        with self.assertRaises(TypeError) as context:
-            a + 1
+        with self.assertRaises(TypeError):
+            a = a + 1
         
         
     def test1dMesher(self):
@@ -77,19 +77,19 @@ class FdmTest(unittest.TestCase):
         dim = ql.UnsignedIntVector([2,2,3])
         pos = ql.UnsignedIntVector([0,0,0])
         idx = 0
-        iter = ql.FdmLinearOpIterator(dim, pos, idx)
+        opIter = ql.FdmLinearOpIterator(dim, pos, idx)
         
-        self.assertEqual(iter.index(), 0)
+        self.assertEqual(opIter.index(), 0)
         
-        iter.increment()
-        self.assertEqual(iter.index(), 1)        
-        self.assertEqual(iter.coordinates(), (1, 0, 0))
-        iter.increment()
-        self.assertEqual(iter.coordinates(), (0, 1, 0))
+        opIter.increment()
+        self.assertEqual(opIter.index(), 1)
+        self.assertEqual(opIter.coordinates(), (1, 0, 0))
+        opIter.increment()
+        self.assertEqual(opIter.coordinates(), (0, 1, 0))
 
-        iter2 = ql.FdmLinearOpIterator(dim, pos, idx)
-        self.assertEqual(iter.notEqual(iter2), True)
-        self.assertEqual(iter.notEqual(iter), False)
+        opIter2 = ql.FdmLinearOpIterator(dim, pos, idx)
+        self.assertEqual(opIter.notEqual(opIter2), True)
+        self.assertEqual(opIter.notEqual(opIter), False)
 
 
     def testFdmLinearOpLayout(self):
@@ -107,7 +107,7 @@ class FdmTest(unittest.TestCase):
         self.assertEqual(m.neighbourhood(m.begin(), 2, 2), 8)
         self.assertEqual(m.neighbourhood(m.begin(), 0, 1, 2, 2), 9)
         
-        n = m.iter_neighbourhood(m.begin(), 0, 1)        
+        n = m.iter_neighbourhood(m.begin(), 0, 1)
         iter = m.begin()
         iter.increment()
         
@@ -146,7 +146,7 @@ class FdmTest(unittest.TestCase):
             def apply(self, r):
                 return 2*r
 
-            def apply_mixed(self, r):            
+            def apply_mixed(self, r):
                 return 3*r
 
             def apply_direction(self, direction , r):
@@ -175,7 +175,7 @@ class FdmTest(unittest.TestCase):
         self.assertEqual(list(c.apply_direction(7, r)), list(7*r))
         
         s = list(c.solve_splitting(7, r, 0.5))
-        self.assertEqual(len(s), len(r))        
+        self.assertEqual(len(s), len(r))
         for i, x in enumerate(s):
             self.assertAlmostEqual(x, 3.5*r[i], 14)
             
@@ -188,10 +188,10 @@ class FdmTest(unittest.TestCase):
             def apply_mixed(self, r):
                 pass
            
-        with self.assertRaises(RuntimeError) as context:
+        with self.assertRaises(RuntimeError):
             ql.FdmLinearOpCompositeProxy(Bar()).apply(r)
 
-        with self.assertRaises(RuntimeError) as context:            
+        with self.assertRaises(RuntimeError):
             ql.FdmLinearOpCompositeProxy(Bar()).apply_mixed(r)
         
             
@@ -249,7 +249,7 @@ class FdmTest(unittest.TestCase):
         
         l = mesher.locations()
         
-        x = list(map(lambda x: math.sin(x), l))
+        x = list(map(math.sin, l))
         
         y = op.apply(x)
         
@@ -264,7 +264,7 @@ class FdmTest(unittest.TestCase):
             
         op = ql.SecondDerivativeOp(0, ql.FdmMesherComposite(mesher))
         
-        x = list(map(lambda x: math.sin(x), mesher.locations()))
+        x = list(map(math.sin, mesher.locations()))
         
         y = op.apply(x)
         
@@ -297,8 +297,8 @@ class FdmTest(unittest.TestCase):
         """Testing step condition call back function"""
 
         class Foo:
-            def applyTo(self, a, t):                
-                for i,x in enumerate(a):
+            def applyTo(self, a, t):
+                for i in range(len(a)):
                     a[i] = t+1.0
             
         m = ql.FdmStepConditionProxy(Foo())
@@ -308,32 +308,32 @@ class FdmTest(unittest.TestCase):
         m.applyTo(x, 2.0)
         
         self.assertEqual(len(x), 5)
-        self.assertEqual(list(x), [3.0, 3.0, 3.0, 3.0, 3.0])       
+        self.assertEqual(list(x), [3.0, 3.0, 3.0, 3.0, 3.0])
         
     def testFdmInnerValueCalculatorCallBack(self):
         """Testing inner value call back function"""
 
         class Foo:
-            def innerValue(self, iter, t):                
-                return iter.index() + t
+            def innerValue(self, opIter, t):
+                return opIter.index() + t
               
-            def avgInnerValue(self, iter, t):                
-                return iter.index() + 2*t
+            def avgInnerValue(self, opIter, t):
+                return opIter.index() + 2*t
 
         m = ql.FdmInnerValueCalculatorProxy(Foo())
         
         dim = ql.UnsignedIntVector([2,2,3])
         pos = ql.UnsignedIntVector([0,0,0])
         
-        iter = ql.FdmLinearOpIterator(dim, pos, 0)
+        opIter = ql.FdmLinearOpIterator(dim, pos, 0)
         
-        for i in range(2*2*3):
-            idx = iter.index()
+        while (opIter.index() < 2*2*3):
+            idx = opIter.index()
             
-            self.assertEqual(m.innerValue(iter, 2.0), idx + 2.0)
-            self.assertEqual(m.avgInnerValue(iter, 2.0), idx + 4.0)
+            self.assertEqual(m.innerValue(opIter, 2.0), idx + 2.0)
+            self.assertEqual(m.avgInnerValue(opIter, 2.0), idx + 4.0)
             
-            iter.increment()
+            opIter.increment()
     
     
     def testFdmLogInnerValueCalculator(self):
@@ -346,11 +346,11 @@ class FdmTest(unittest.TestCase):
         
         v = ql.FdmLogInnerValue(p, m, 0)
         
-        iter = m.layout().begin()
-        for i in range(m.layout().size()):
-            x = math.exp(m.location(iter, 0));
-            self.assertAlmostEqual(p(x), v.innerValue(iter, 1.0), 14)
-            iter.increment()
+        opIter = m.layout().begin()
+        while opIter.notEqual(m.layout().end()):
+            x = math.exp(m.location(opIter, 0));
+            self.assertAlmostEqual(p(x), v.innerValue(opIter, 1.0), 14)
+            opIter.increment()
 
             
     def testAmericanOptionPricing(self):
@@ -388,14 +388,14 @@ class FdmTest(unittest.TestCase):
 
         option = ql.VanillaOption(payoff, exercise)
         option.setPricingEngine(ql.FdBlackScholesVanillaEngine.make(
-            process, xGrid = xSteps, tGrid = tSteps, 
+            process, xGrid = xSteps, tGrid = tSteps,
             dampingSteps = dampingSteps)
         )
         
         expected = option.NPV()
             
         equityMesher = ql.FdmBlackScholesMesher(
-            xSteps, process, maturity, 
+            xSteps, process, maturity,
             strike, cPoint = (strike, 0.1)
         )
         
@@ -408,13 +408,13 @@ class FdmTest(unittest.TestCase):
         x = []
         rhs = []
         layout = mesher.layout()        
-        iter = layout.begin()
-        while (iter.notEqual(layout.end())):
-            x.append(mesher.location(iter, 0))
-            rhs.append(innerValueCalculator.avgInnerValue(iter, maturity))
-            iter.increment()
+        opIter = layout.begin()
+        while (opIter.notEqual(layout.end())):
+            x.append(mesher.location(opIter, 0))
+            rhs.append(innerValueCalculator.avgInnerValue(opIter, maturity))
+            opIter.increment()
             
-        rhs = ql.Array(rhs)    
+        rhs = ql.Array(rhs)
         
         bcSet = ql.FdmBoundaryConditionSet()
         stepCondition = ql.FdmStepConditionComposite.vanillaComposite(
@@ -422,7 +422,7 @@ class FdmTest(unittest.TestCase):
             innerValueCalculator, todaysDate, dc
         )
             
-        # only to test an Operator defined in python    
+        # only to test an Operator defined in python
         class OperatorProxy:
             def __init__(self, op):
                 self.op = op
@@ -475,7 +475,7 @@ class FdmTest(unittest.TestCase):
         rho = 0.0
         
         hestonProcess = ql.HestonProcess(
-            riskFreeRate, dividendYield,  
+            riskFreeRate, dividendYield,
             spot, v0, kappa, theta, sigma, rho)
         
         leverageFct = ql.LocalVolSurface(
@@ -505,7 +505,7 @@ class FdmTest(unittest.TestCase):
         )
 
         solverDesc = ql.FdmSolverDesc(
-            mesher, bcSet, stepCondition, innerValueCalculator, 
+            mesher, bcSet, stepCondition, innerValueCalculator,
             maturity, tSteps, dampingSteps)
                             
         calculated = ql.FdmHestonSolver(
@@ -527,9 +527,9 @@ class FdmTest(unittest.TestCase):
         s0  = 100
         
         process = ql.BlackScholesMertonProcess(
-            ql.QuoteHandle(ql.SimpleQuote(s0)), 
+            ql.QuoteHandle(ql.SimpleQuote(s0)),
             ql.YieldTermStructureHandle(
-                ql.FlatForward(todaysDate, q, dc)), 
+                ql.FlatForward(todaysDate, q, dc)),
             ql.YieldTermStructureHandle(
                 ql.FlatForward(todaysDate, r, dc)),
             ql.BlackVolTermStructureHandle(
@@ -547,7 +547,7 @@ class FdmTest(unittest.TestCase):
         
         stdev = vol * math.sqrt(t)
         
-        expected = (1.0/(math.sqrt(2*math.pi)*stdev) * 
+        expected = (1.0/(math.sqrt(2*math.pi)*stdev) *
             math.exp( -0.5*math.pow((x-mu)/stdev, 2.0) ))
         
         self.assertAlmostEqual(calculated, expected, 8)
@@ -587,7 +587,7 @@ class FdmTest(unittest.TestCase):
         stdev = math.sqrt(sigma*sigma/(2*speed))
         
         expected = ql.bachelierBlackFormula(
-            ql.Option.Put, 
+            ql.Option.Put,
             strike, x0, stdev,
             rTS.discount(maturityDate)
         )
@@ -600,7 +600,7 @@ class FdmTest(unittest.TestCase):
         
         A = ql.Matrix([
             [1.0, 0.0, 1.0],
-            [0.0, 1.0, 0.5], 
+            [0.0, 1.0, 0.5],
             [1.0, 0.5, 1.0]
         ])
         
@@ -632,7 +632,7 @@ class FdmTest(unittest.TestCase):
         
         for i in range(3):
             self.assertAlmostEqual(expected[i], calculated[i], 4)
-        
+
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
