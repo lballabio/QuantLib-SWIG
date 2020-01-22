@@ -20,13 +20,14 @@
 
 %{
 using QuantLib::Futures;
+using QuantLib::OvernightIndexFuture;
 %}
 
 struct Futures {
     enum Type { IMM, ASX };
 };
 
-struct NettingType {
-    enum Type { Averaging, Compounding };
-};
+
+enum NettingType { Averaging, Compounding };
+
 #endif
