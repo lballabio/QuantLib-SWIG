@@ -165,7 +165,7 @@ class FdmTest(unittest.TestCase):
             def preconditioner(self, r, s):
                 return s*r
 
-          
+
         foo = Foo()
 
         c = ql.FdmLinearOpCompositeProxy(foo)
