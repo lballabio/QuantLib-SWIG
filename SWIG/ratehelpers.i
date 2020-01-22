@@ -43,6 +43,7 @@ using QuantLib::FixedRateBondHelper;
 using QuantLib::OISRateHelper;
 using QuantLib::DatedOISRateHelper;
 using QuantLib::FxSwapRateHelper;
+using QuantLib::OvernightIndexFutureRateHelper;
 %}
 
 struct Pillar {
@@ -323,6 +324,17 @@ class FxSwapRateHelper : public RateHelper {
             const Calendar& tradingCalendar = Calendar());
 };
 
+%shared_ptr(OvernightIndexFutureRateHelper)
+class OvernightIndexFutureRateHelper : public RateHelper {
+  public:
+    OvernightIndexFutureRateHelper(
+            const Handle<Quote>& price,
+            const Date& valueDate,
+            const Date& maturityDate,
+            const boost::shared_ptr<OvernightIndex>& index,
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+            Futures::Type type = NettingType::Compounding);
+};
 
 // allow use of RateHelper vectors
 #if defined(SWIGCSHARP)

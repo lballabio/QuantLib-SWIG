@@ -26,4 +26,7 @@ struct Futures {
     enum Type { IMM, ASX };
 };
 
+struct NettingType {
+    enum Type { Averaging, Compounding };
+};
 #endif
