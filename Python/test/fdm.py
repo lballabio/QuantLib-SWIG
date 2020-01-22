@@ -136,6 +136,8 @@ class FdmTest(unittest.TestCase):
         class Foo:
             t1 = 0.0
             t2 = 0.0
+            
+            @classmethod
             def size(self):
                 return 42
 
@@ -143,18 +145,23 @@ class FdmTest(unittest.TestCase):
                 self.t1 = t1
                 self.t2 = t2
                 
+            @classmethod
             def apply(self, r):
                 return 2*r
 
+            @classmethod
             def apply_mixed(self, r):
                 return 3*r
 
+            @classmethod
             def apply_direction(self, direction , r):
                 return direction*r
 
+            @classmethod
             def solve_splitting(self, direction , r, s):
                 return direction*s*r
 
+            @classmethod
             def preconditioner(self, r, s):
                 return s*r
                              
@@ -182,6 +189,7 @@ class FdmTest(unittest.TestCase):
         self.assertEqual(list(c.preconditioner(r, 4)), list(4*r))
         
         class Bar:
+            @classmethod
             def apply(self, r):
                 return 1
             
@@ -295,8 +303,9 @@ class FdmTest(unittest.TestCase):
         """Testing step condition call back function"""
 
         class Foo:
+            @classmethod
             def applyTo(self, a, t):
-                for i in range(len(a)):
+                for i in range(5):
                     a[i] = t+1.0
             
         m = ql.FdmStepConditionProxy(Foo())
@@ -312,9 +321,11 @@ class FdmTest(unittest.TestCase):
         """Testing inner value call back function"""
 
         class Foo:
+            @classmethod
             def innerValue(self, opIter, t):
                 return opIter.index() + t
-              
+            
+            @classmethod  
             def avgInnerValue(self, opIter, t):
                 return opIter.index() + 2*t
 
@@ -458,7 +469,7 @@ class FdmTest(unittest.TestCase):
         self.assertAlmostEqual(calculated, expected, 1)
 
         solverDesc = ql.FdmSolverDesc(
-            mesher, bcSet, stepCondition, innerValueCalculator, 
+            mesher, bcSet, stepCondition, innerValueCalculator,
             maturity, tSteps, dampingSteps)
                 
         calculated = ql.Fdm1DimSolver(
@@ -623,7 +634,7 @@ class FdmTest(unittest.TestCase):
 
         def preconditioner(x):
             return ql.inverse(A)*x
-        
+
         calculated = ql.BiCGstab(
             ql.MatrixMultiplicationProxy(foo), 100, 1e-6,
             ql.MatrixMultiplicationProxy(preconditioner)).solve(b)
