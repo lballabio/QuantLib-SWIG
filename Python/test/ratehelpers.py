@@ -152,7 +152,7 @@ class OISRateHelperTest(unittest.TestCase):
     def test_ois_ratehelper_impliedquote(self):
         """Test if OISRateHelper.impliedQuote provides original quote from curve"""
         # initiate curves - required due to lazy evaluation
-        df = self.discounting_yts_handle.discount(0.0)
+        self.discounting_yts_handle.discount(0.0)
 
         for key, rate_helper in zip(self.ois.keys(), self.oisHelpers):
             expected = self.ois[key].value()
@@ -413,9 +413,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         spot_df = self.eur_ois_curve.discount(
             spot_date) / self.pln_eur_implied_curve.discount(spot_date)
 
-        for n in range(len(original_quotes)):
-            original_quote = original_quotes[n]
-            maturity = self.maturities[n]
+        for original_quote, maturity in zip(original_quotes, self.maturities):
             original_forward = self.fx_spot_quote_EURPLN + original_quote
             curve_impl_forward = (
                     self.fx_spot_quote_EURPLN
@@ -515,9 +513,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         maturities = [settlement_calendar.adjust(date) for date in maturities]
 
-        for n in range(len(maturities)):
-            self.assertEqual(maturities[n],
-                             self.eur_pln_fx_swap_helpers[n].latestDate())
+        for helper, maturity in zip(self.eur_pln_fx_swap_helpers, maturities):
+            self.assertEqual(maturity, helper.latestDate())
 
     def testFxMarketConventionsForDatesInEURUSD_ON_Period(self):
         """

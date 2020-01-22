@@ -93,13 +93,13 @@ class CapFloorTest(unittest.TestCase):
         bachelier_engine = ql.BachelierCapFloorEngine(self.term_structure_handle,
                                                       ql.QuoteHandle(
                                                          ql.SimpleQuote(bpvol)))
-                                                                    
+
         self.cap.setPricingEngine(bachelier_engine)
 
         # 50 bps
         vol_guess = 50 / 1e4
 
-        imp_vol = self.cap.impliedVolatility(self.cap_npv, 
+        imp_vol = self.cap.impliedVolatility(self.cap_npv,
                                              self.term_structure_handle,
                                              vol_guess,
                                              type=ql.Normal)

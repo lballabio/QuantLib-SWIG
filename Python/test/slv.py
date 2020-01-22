@@ -94,7 +94,7 @@ class SlvTest(unittest.TestCase):
                 leverageFct,
             )
         )
-        
+
         slvNPV = option.NPV()
 
         bsmProcess = ql.BlackScholesMertonProcess(self.underlying, self.dividendYield, self.riskFreeRate, self.constVol(0.2))
@@ -109,10 +109,10 @@ class SlvTest(unittest.TestCase):
             2,
             msg="Unable to reproduce Heston plus constant local vol option price with Black-Scholes formula",
         )
-        
+
         barrier_lo = 70.0
         barrier_hi = 130.0
-        
+
         barrierOption = ql.DoubleBarrierOption(
             ql.DoubleBarrier.KnockOut,
             barrier_lo,
@@ -120,7 +120,7 @@ class SlvTest(unittest.TestCase):
             0.0,
             ql.CashOrNothingPayoff(ql.Option.Call, 0.0, 1.0),
             exercise);
-            
+
         barrierOption.setPricingEngine(
             ql.FdHestonDoubleBarrierEngine(
                 hestonModel,
@@ -132,21 +132,21 @@ class SlvTest(unittest.TestCase):
                 leverageFct,
             )
         )
-        
+
         slvBarrierNPV = barrierOption.NPV()
-        
+
         barrierOption.setPricingEngine(ql.AnalyticDoubleBarrierBinaryEngine(bsmProcess))
-        
+
         bsmBarrierNPV = barrierOption.NPV()
-        
+
         self.assertAlmostEqual(
             slvBarrierNPV,
             bsmBarrierNPV,
             2,
-            msg="Unable to reproduce Heston plus constant local vol " 
+            msg="Unable to reproduce Heston plus constant local vol "
             "double barrier option price with Black-Scholes Double Barrier Binary Engine",
         )
-        
+
 
     def testSlvMonteCarloCalibration(self):
         """ Testing Monte-Carlo calibration of a HestonSLVProcess """
