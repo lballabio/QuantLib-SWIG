@@ -108,10 +108,10 @@ class FdmTest(unittest.TestCase):
         self.assertEqual(m.neighbourhood(m.begin(), 0, 1, 2, 2), 9)
         
         n = m.iter_neighbourhood(m.begin(), 0, 1)
-        iter = m.begin()
-        iter.increment()
+        opIter = m.begin()
+        opIter.increment()
         
-        self.assertEqual(iter.notEqual(n), False)
+        self.assertEqual(opIter.notEqual(n), False)
 
     def testFdmMesherComposite(self):
         """Testing mesher composites"""
@@ -127,7 +127,7 @@ class FdmTest(unittest.TestCase):
                 
         self.assertEqual(list(map(lambda x: int(x+0.5), locations)), [0, 1, 0, 1, 0, 1])
         
-        locations = m.locations(1)        
+        locations = m.locations(1)
         self.assertEqual(list(map(lambda x: int(x+0.5), locations)), [0, 0, 1, 1, 2, 2])
 
     def testFdmLinearOpComposite(self):
@@ -233,7 +233,7 @@ class FdmTest(unittest.TestCase):
         c = list(map(lambda x: payoff(math.exp(x)), mesher.locations(0)))
         p = op.apply(c)
         
-        e = [ 0.0, 0.0, 0.0, 0.0, 0.0, 
+        e = [ 0.0, 0.0, 0.0, 0.0, 0.0,
               3.18353, 0.755402, -1.30583, -2.19881, -4.0271 ]
         
         for i, x in enumerate(e):
@@ -290,8 +290,6 @@ class FdmTest(unittest.TestCase):
         s.push_back(b)
         
         self.assertEqual(len(s), 1)
-        
-        ql.BoundaryConditionFdmLinearOp.NoSide
         
     def testFdmStepConditionCallBack(self):
         """Testing step condition call back function"""
@@ -407,7 +405,7 @@ class FdmTest(unittest.TestCase):
 
         x = []
         rhs = []
-        layout = mesher.layout()        
+        layout = mesher.layout()
         opIter = layout.begin()
         while (opIter.notEqual(layout.end())):
             x.append(mesher.location(opIter, 0))
@@ -629,7 +627,7 @@ class FdmTest(unittest.TestCase):
         calculated = ql.BiCGstab(
             ql.MatrixMultiplicationProxy(foo), 100, 1e-6,
             ql.MatrixMultiplicationProxy(preconditioner)).solve(b)
-        
+
         for i in range(3):
             self.assertAlmostEqual(expected[i], calculated[i], 4)
 
