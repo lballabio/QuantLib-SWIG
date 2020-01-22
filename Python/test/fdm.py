@@ -622,7 +622,7 @@ class FdmTest(unittest.TestCase):
         
         calculated = ql.BiCGstab(
             ql.MatrixMultiplicationProxy(foo), 100, 1e-6).solve(b)
-            
+
         for i in range(3):
             self.assertAlmostEqual(expected[i], calculated[i], 4)
 
