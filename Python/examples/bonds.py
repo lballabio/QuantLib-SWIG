@@ -274,17 +274,17 @@ liborTermStructure.linkTo(depoSwapTermStructure)
 
 # write column headings
 def formatPrice(p, digits=2):
-    format = "%%.%df" % digits
-    return format % p
+    fmt = "%%.%df" % digits
+    return fmt % p
 
 
 def formatRate(r, digits=2):
-    format = "%%.%df %%%%" % digits
-    return format % (r * 100)
+    fmt = "%%.%df %%%%" % digits
+    return fmt % (r * 100)
 
 
-def report(Info, Zc, Fix, Frn, format):
-    if format == "Price":
+def report(Info, Zc, Fix, Frn, fmt):
+    if fmt == "Price":
         Zc = formatPrice(Zc)
         Fix = formatPrice(Fix)
         Frn = formatPrice(Frn)

@@ -21,28 +21,28 @@ import unittest
 import QuantLib as ql
 
 class OdeTest(unittest.TestCase):
-    
+
     def test1dODE(self):
         """ Testing one dimesnional ODE """
-        
+
         yEnd = ql.RungeKutta(1e-8)(lambda x, y : y, 1, 0, 1)
-        
-        self.assertAlmostEqual(yEnd, math.exp(1), 5, 
+
+        self.assertAlmostEqual(yEnd, math.exp(1), 5,
             msg="Unable to reproduce one dimensional ODE solution.")
 
 
     def test2dODE(self):
         """ Testing multi-dimesnional ODE """
-        
-        yEnd = ql.RungeKutta(1e-8)(lambda x, y : [y[1], -y[0]], 
+
+        yEnd = ql.RungeKutta(1e-8)(lambda x, y : [y[1], -y[0]],
                                    [0, 1], 0, 0.5*math.pi)[0]
 
-        self.assertAlmostEqual(yEnd, 1.0, 5, 
+        self.assertAlmostEqual(yEnd, 1.0, 5,
             msg="Unable to reproduce multi-dimensional ODE solution.")
 
-        
+
 if __name__ == '__main__':
     print('testing QuantLib ' + ql.__version__)
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(OdeTest,'test'))
-    unittest.TextTestRunner(verbosity=2).run(suite)        
+    unittest.TextTestRunner(verbosity=2).run(suite)

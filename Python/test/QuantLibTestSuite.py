@@ -73,7 +73,7 @@ def test():
     suite.addTest(unittest.makeSuite(ExtrapolationTest, 'test'))
     suite.addTest(unittest.makeSuite(GJRGARCHEngineTest, "test"))
     suite.addTest(unittest.makeSuite(GJRGARCHCalibrationTest, "test"))
-        
+
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
     if not result.wasSuccessful:

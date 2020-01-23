@@ -92,7 +92,7 @@ class GJRGARCHCalibrationTest(unittest.TestCase):
         self.days = [0, 13, 41, 75, 165, 256, 345, 524, 703]
         self.rates = [0.0357, 0.0357, 0.0349, 0.0341, 0.0355, 0.0359, 0.0368, 0.0386, 0.0401]
         dates = list()
-        for day, rate in zip(self.days, self.rates):
+        for day in self.days:
             date = self.settle_date + ql.Period(day, ql.Days)
             dates.append(date)
         self.risk_free_ts = ql.YieldTermStructureHandle(ql.ZeroCurve(dates, self.rates, self.dayCounter))
