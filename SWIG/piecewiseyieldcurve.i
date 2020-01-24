@@ -130,6 +130,6 @@ export_piecewise_curve(PiecewiseLinearZero,ZeroYield,Linear);
 export_piecewise_curve(PiecewiseCubicZero,ZeroYield,Cubic);
 export_piecewise_curve(PiecewiseLogCubicDiscount,Discount,MonotonicLogCubic);
 export_piecewise_curve(PiecewiseSplineCubicDiscount,Discount,SplineCubic);
-export_piecewise_curve(PiecewiseKrugerZero,ZeroYield,KrugerCubicInterpolation);
+export_piecewise_curve(PiecewiseKrugerZero,ZeroYield,Kruger);
 
 #endif
