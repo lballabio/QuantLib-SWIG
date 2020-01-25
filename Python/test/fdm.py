@@ -647,7 +647,9 @@ class FdmTest(unittest.TestCase):
         m1 = ql.Uniform1dMesher(0, 2, 3)
         m2 = ql.Uniform1dMesher(2, 4, 3)
 
-        self.assertEqual(locations, (0,1,2,3,4))
+        m3 = ql.Glued1dMesher(m1, m2)
+
+        self.assertEqual(m3.locations(), (0,1,2,3,4))
 
 
 if __name__ == "__main__":
