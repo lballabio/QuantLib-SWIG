@@ -386,7 +386,7 @@ using QuantLib::FdmLinearOpComposite;
 class FdmLinearOp {
   public:
     %extend {
-        Array apply(const Array& r) const = 0 {
+        Array apply(const Array& r) const {
             Array retVal = self->apply(r);
             return retVal;
         }
@@ -405,7 +405,7 @@ class FdmLinearOpComposite : public FdmLinearOp {
         void setTime(Time t1, Time t2) {
             self->setTime(t1,t2);
         }
-        Array apply(const Array& r) const = 0 {
+        Array apply(const Array& r) const {
             Array retVal = self->apply(r);
             return retVal;
         }
@@ -562,7 +562,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     void setTime(Time t1, Time t2);
     
     %extend {
-        Array apply(const Array& r) const = 0 {
+        Array apply(const Array& r) const {
             Array retVal = self->apply(r);
             return retVal;
         }
@@ -664,7 +664,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     Size size() const;
     void setTime(Time t1, Time t2);
     %extend {    
-        Array apply(const Array& r) const = 0 {
+        Array apply(const Array& r) const {
             Array retVal = self->apply(r);
             return retVal;
         }
@@ -845,7 +845,7 @@ class OperatorName : public FdmLinearOpComposite {
     Size size() const;
     void setTime(Time t1, Time t2);
     %extend {    
-        Array apply(const Array& r) const = 0 {
+        Array apply(const Array& r) const {
             Array retVal = self->apply(r);
             return retVal;
         }
