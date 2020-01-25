@@ -191,14 +191,9 @@ class Predefined1dMesher : public Fdm1dMesher {
 %shared_ptr(Glued1dMesher)
 class Glued1dMesher : public Fdm1dMesher {
   public:
-    %extend {
-        Glued1dMesher(
-            const boost::shared_ptr<Fdm1dMesher>& leftMesher,
-            const boost::shared_ptr<Fdm1dMesher>& rightMesher) {
-            
-            return new Glued1dMesher(*leftMesher, *rightMesher);
-        }
-    }
+    Glued1dMesher(
+        const Fdm1dMesher& leftMesher,
+        const Fdm1dMesher& rightMesher);
 };
 
 
@@ -512,9 +507,15 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
+#if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
+		std::vector<char> cstr(
+			methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
+        PyObject* pyResult 
+            = PyObject_CallMethod(callback_, &cstr[0], "O", pyArray);
+#else
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, methodName.c_str(), "O", pyArray);
-            
+#endif            
         Py_XDECREF(pyArray); 
         
         return extractArray(pyResult, methodName);        
@@ -1341,10 +1342,17 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
       Real getValue(const FdmLinearOpIterator& iter, Time t, const std::string& methodName) {
         PyObject* pyIter = SWIG_NewPointerObj(
             SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, 0);
-            
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, methodName.c_str(), "Od",pyIter, t);
 
+#if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
+		std::vector<char> cstr(
+			methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
+        PyObject* pyResult 
+            = PyObject_CallMethod(callback_, &cstr[0], "Od",pyIter, t);
+#else
+        PyObject* pyResult 
+            = PyObject_CallMethod(callback_, methodName.c_str(), "Od", pyIter, t);
+#endif            
+            
         Py_XDECREF(pyIter);
                             
         QL_ENSURE(pyResult != NULL, "failed to call innerValue function on Python object");
@@ -1500,12 +1508,39 @@ class FdmZeroInnerValue : public FdmInnerValueCalculator {
 %shared_ptr(FdmAffineModelSwapInnerValue<G2>)
 %shared_ptr(FdmAffineModelSwapInnerValue<HullWhite>)
 
+
 #if !defined(SWIGR)
+
+#if !defined(SWIGJAVA)
 %template(TimeToDateMap) std::map<Time, Date>;
+#endif
 
 template <class ModelType>
 class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
   public:
+#if defined(SWIGJAVA)
+	%extend {
+	    FdmAffineModelSwapInnerValue(
+	        const boost::shared_ptr<ModelType>& disModel,
+	        const boost::shared_ptr<ModelType>& fwdModel,
+	        const boost::shared_ptr<VanillaSwap>& swap,
+	        const std::vector<Time>& exerciseTimes,
+	        const std::vector<Date>& exerciseDates,
+	        const boost::shared_ptr<FdmMesher>& mesher,
+	        Size direction) {
+			
+			QL_REQUIRE(exerciseTimes.size() == exerciseDates.size(),
+				"different exercise dates and times length");
+				
+			std::map<Time, Date> t2d;
+			for (Size i=0; i < exerciseTimes.size(); ++i) 
+				t2d[ exerciseTimes[i] ] = exerciseDates[i];
+					        
+	        return new FdmAffineModelSwapInnerValue<ModelType>(
+	        	disModel, fwdModel, swap, t2d, mesher, direction);
+	    }
+	}
+#else
     FdmAffineModelSwapInnerValue(
         const boost::shared_ptr<ModelType>& disModel,
         const boost::shared_ptr<ModelType>& fwdModel,
@@ -1513,6 +1548,7 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
         const std::map<Time, Date>& exerciseDates,
         const boost::shared_ptr<FdmMesher>& mesher,
         Size direction);
+#endif
 
     Real innerValue(const FdmLinearOpIterator& iter, Time t);
     Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);

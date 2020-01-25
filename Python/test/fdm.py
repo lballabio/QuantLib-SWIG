@@ -641,6 +641,15 @@ class FdmTest(unittest.TestCase):
         for i in range(3):
             self.assertAlmostEqual(expected[i], calculated[i], 4)
 
+    def testGlued1dMesher(self):
+        """Testing sparse linear matrix solver"""
+
+        m1 = ql.Uniform1dMesher(0, 2, 3)
+        m2 = ql.Uniform1dMesher(2, 4, 3)
+
+        self.assertEqual(locations, (0,1,2,3,4))
+
+
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
