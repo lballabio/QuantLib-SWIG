@@ -385,22 +385,49 @@ using QuantLib::FdmLinearOpComposite;
 %shared_ptr(FdmLinearOp)
 class FdmLinearOp {
   public:
-    virtual ~FdmLinearOp();
-    virtual Disposable<Array> apply(const Array& r) const = 0;
+    %extend {
+        Array apply(const Array& r) const = 0 {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+    }
+  private:
+    FdmLinearOp();
 };
 
 %shared_ptr(FdmLinearOpComposite)
 class FdmLinearOpComposite : public FdmLinearOp {
-  public:
-    virtual Size size() const = 0;
-    virtual void setTime(Time t1, Time t2) = 0;
-    virtual Disposable<Array> apply_mixed(const Array& r) const = 0;    
-    virtual Disposable<Array> 
-        apply_direction(Size direction, const Array& r) const = 0;
-    virtual Disposable<Array> 
-        solve_splitting(Size direction, const Array& r, Real s) const = 0;
-    virtual Disposable<Array> 
-        preconditioner(const Array& r, Real s) const = 0;
+  public:    
+    %extend {    
+        Size size() const {
+            return self->size();
+        }
+        void setTime(Time t1, Time t2) {
+            self->setTime(t1,t2);
+        }
+        Array apply(const Array& r) const = 0 {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+        Array apply_mixed(const Array& r) const {
+            Array retVal = self->apply_mixed(r);
+            return retVal;
+        }    
+        Array apply_direction(Size direction, const Array& r) const {
+            Array retVal = self->apply_direction(direction, r);
+            return retVal;
+        }
+        Array solve_splitting(Size direction, const Array& r, Real s) const {
+            Array retVal = self->solve_splitting(direction, r, s);
+            return retVal;
+        }           
+        Array preconditioner(const Array& r, Real s) const {
+            Array retVal = self->preconditioner(r, s);
+            return retVal;
+        }
+    }
+  private:
+      FdmLinearOpComposite();
 };
 
 
@@ -508,8 +535,8 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
 #if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
-		std::vector<char> cstr(
-			methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
+        std::vector<char> cstr(
+            methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, &cstr[0], "O", pyArray);
 #else
@@ -533,12 +560,29 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     
     Size size() const;
     void setTime(Time t1, Time t2);
-      
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> apply_mixed(const Array& r) const;    
-    Disposable<Array> apply_direction(Size direction, const Array& r) const;
-    Disposable<Array> solve_splitting(Size direction, const Array& r, Real s) const;
-    Disposable<Array> preconditioner(const Array& r, Real s) const;
+    
+    %extend {
+        Array apply(const Array& r) const = 0 {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+        Array apply_mixed(const Array& r) const {
+            Array retVal = self->apply_mixed(r);
+            return retVal;
+        }    
+        Array apply_direction(Size direction, const Array& r) const {
+            Array retVal = self->apply_direction(direction, r);
+            return retVal;
+        }
+        Array solve_splitting(Size direction, const Array& r, Real s) const {
+            Array retVal = self->solve_splitting(direction, r, s);
+            return retVal;
+        }           
+        Array preconditioner(const Array& r, Real s) const {
+            Array retVal = self->preconditioner(r, s);
+            return retVal;
+        }
+    }
 };
 
 #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -619,13 +663,28 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
       
     Size size() const;
     void setTime(Time t1, Time t2);
-    
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> apply_mixed(const Array& r) const;
-    Disposable<Array> apply_direction(Size direction, const Array& r) const;
-    Disposable<Array> solve_splitting(
-        Size direction, const Array& r, Real s) const;
-    Disposable<Array> preconditioner(const Array& r, Real s) const;
+    %extend {    
+        Array apply(const Array& r) const = 0 {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+        Array apply_mixed(const Array& r) const {
+            Array retVal = self->apply_mixed(r);
+            return retVal;
+        }    
+        Array apply_direction(Size direction, const Array& r) const {
+            Array retVal = self->apply_direction(direction, r);
+            return retVal;
+        }
+        Array solve_splitting(Size direction, const Array& r, Real s) const {
+            Array retVal = self->solve_splitting(direction, r, s);
+            return retVal;
+        }           
+        Array preconditioner(const Array& r, Real s) const {
+            Array retVal = self->preconditioner(r, s);
+            return retVal;
+        }
+    }
 };
 
 
@@ -633,7 +692,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 
 class FdmLinearOpCompositeDelegate {
   public:
-      virtual ~FdmLinearOpCompositeDelegate();
+    virtual ~FdmLinearOpCompositeDelegate();
       
     virtual Size size() const;
     virtual void setTime(Time t1, Time t2);
@@ -785,13 +844,28 @@ class OperatorName : public FdmLinearOpComposite {
     
     Size size() const;
     void setTime(Time t1, Time t2);
-
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> apply_mixed(const Array& r) const;
-    Disposable<Array> apply_direction(Size direction, const Array& r) const;
-    Disposable<Array>
-        solve_splitting(Size direction, const Array& r, Real s) const;
-    Disposable<Array> preconditioner(const Array& r, Real s) const;    
+    %extend {    
+        Array apply(const Array& r) const = 0 {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+        Array apply_mixed(const Array& r) const {
+            Array retVal = self->apply_mixed(r);
+            return retVal;
+        }    
+        Array apply_direction(Size direction, const Array& r) const {
+            Array retVal = self->apply_direction(direction, r);
+            return retVal;
+        }
+        Array solve_splitting(Size direction, const Array& r, Real s) const {
+            Array retVal = self->solve_splitting(direction, r, s);
+            return retVal;
+        }           
+        Array preconditioner(const Array& r, Real s) const {
+            Array retVal = self->preconditioner(r, s);
+            return retVal;
+        }
+    }
 };
 %enddef
 
@@ -924,14 +998,6 @@ class FdmSquareRootFwdOp : public FdmLinearOpComposite {
 
     Size size()    const;
     void setTime(Time t1, Time t2);
-
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> apply_mixed(const Array& r) const;
-    Disposable<Array> apply_direction(Size direction,
-                                      const Array& r) const;
-    Disposable<Array> solve_splitting(Size direction,
-                                      const Array& r, Real s) const;
-    Disposable<Array> preconditioner(const Array& r, Real s) const;
 };
 
 %shared_ptr(FdmHestonFwdOp)
@@ -947,15 +1013,6 @@ class FdmHestonFwdOp : public FdmLinearOpComposite {
 
     Size size() const;
     void setTime(Time t1, Time t2);
-
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> apply_mixed(const Array& r) const;
-
-    Disposable<Array> apply_direction(Size direction,
-                                      const Array& r) const;
-    Disposable<Array> solve_splitting(Size direction,
-                                      const Array& r, Real s) const;
-    Disposable<Array> preconditioner(const Array& r, Real s) const;
 };
 
 %{
@@ -973,33 +1030,56 @@ class TripleBandLinearOp : public FdmLinearOp {
     TripleBandLinearOp(Size direction,
                        const boost::shared_ptr<FdmMesher>& mesher);
 
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> solve_splitting(const Array& r, Real a,
-                                      Real b = 1.0) const;
-
-    Disposable<TripleBandLinearOp> mult(const Array& u) const;
-    Disposable<TripleBandLinearOp> multR(const Array& u) const;
-    Disposable<TripleBandLinearOp> add(const TripleBandLinearOp& m) const;
-    Disposable<TripleBandLinearOp> add(const Array& u) const;
-
+    %extend {
+        Array apply(const Array& r) const {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+        Array solve_splitting(const Array& r, Real a,
+                                          Real b = 1.0) const {
+            Array retVal = self->solve_splitting(r, a, b);
+            return retVal;
+        }    
+        TripleBandLinearOp mult(const Array& u) const {
+            TripleBandLinearOp op = self->mult(u);
+            return op;
+        }
+        TripleBandLinearOp multR(const Array& u) const {
+            TripleBandLinearOp op = self->multR(u);
+            return op;
+        }
+        TripleBandLinearOp add(const TripleBandLinearOp& m) const {
+            TripleBandLinearOp op = self->add(m);
+            return op;
+        }
+        TripleBandLinearOp add(const Array& u) const {
+            TripleBandLinearOp op = self->add(u);
+            return op;
+        }    
+    }
+    
     void axpyb(const Array& a, const TripleBandLinearOp& x,
                const TripleBandLinearOp& y, const Array& b);
-
     void swap(TripleBandLinearOp& m);
 };
 
-%shared_ptr(Disposable<TripleBandLinearOp>)
-%template(DisposableTripleBandLinearOp) Disposable<TripleBandLinearOp>;
 
 %shared_ptr(FirstDerivativeOp)
 class FirstDerivativeOp : public TripleBandLinearOp {
   public:
     FirstDerivativeOp(Size direction,
                       const boost::shared_ptr<FdmMesher>& mesher);
-                          
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> solve_splitting(
-        const Array& r, Real a, Real b = 1.0) const;                     
+           
+    %extend {                          
+        Array apply(const Array& r) const {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+        Array solve_splitting(const Array& r, Real a, Real b = 1.0) const {
+            Array retVal = self->solve_splitting(r, a, b);
+            return retVal;
+        }
+    }                     
 };
 
 %shared_ptr(SecondDerivativeOp)
@@ -1008,9 +1088,16 @@ class SecondDerivativeOp : public TripleBandLinearOp {
     SecondDerivativeOp(Size direction,
         const boost::shared_ptr<FdmMesher>& mesher);
 
-    Disposable<Array> apply(const Array& r) const;
-    Disposable<Array> solve_splitting(
-        const Array& r, Real a, Real b = 1.0) const;                     
+    %extend {                          
+        Array apply(const Array& r) const {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+        Array solve_splitting(const Array& r, Real a, Real b = 1.0) const {
+            Array retVal = self->solve_splitting(r, a, b);
+            return retVal;
+        }
+    }                     
 };
 
 %shared_ptr(NinePointLinearOp)
@@ -1019,7 +1106,12 @@ class NinePointLinearOp : public FdmLinearOp {
     NinePointLinearOp(Size d0, Size d1,
         const boost::shared_ptr<FdmMesher>& mesher);
 
-    Disposable<Array> apply(const Array& r) const;
+    %extend {
+        Array apply(const Array& r) const {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+    }
 };
 
 %shared_ptr(SecondOrderMixedDerivativeOp)
@@ -1028,6 +1120,13 @@ public:
     SecondOrderMixedDerivativeOp(
         Size d0, Size d1, 
         const boost::shared_ptr<FdmMesher>& mesher);
+
+    %extend {
+        Array apply(const Array& r) const {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+    }
 };
 
 %shared_ptr(NthOrderDerivativeOp)
@@ -1037,12 +1136,13 @@ class NthOrderDerivativeOp : public FdmLinearOp {
         Size direction, Size order, Integer nPoints,
         const boost::shared_ptr<FdmMesher>& mesher);
 
-    Disposable<Array> apply(const Array& r) const;
+    %extend {
+        Array apply(const Array& r) const {
+            Array retVal = self->apply(r);
+            return retVal;
+        }
+    }
 };
-
-
-%shared_ptr(Disposable<NinePointLinearOp>)
-%template(DisposableNinePointLinearOp) Disposable<NinePointLinearOp>;
 
 
 // fdm schemes
@@ -1344,8 +1444,8 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
             SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, 0);
 
 #if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
-		std::vector<char> cstr(
-			methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
+        std::vector<char> cstr(
+            methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, &cstr[0], "Od",pyIter, t);
 #else
@@ -1519,27 +1619,27 @@ template <class ModelType>
 class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
   public:
 #if defined(SWIGJAVA)
-	%extend {
-	    FdmAffineModelSwapInnerValue(
-	        const boost::shared_ptr<ModelType>& disModel,
-	        const boost::shared_ptr<ModelType>& fwdModel,
-	        const boost::shared_ptr<VanillaSwap>& swap,
-	        const std::vector<Time>& exerciseTimes,
-	        const std::vector<Date>& exerciseDates,
-	        const boost::shared_ptr<FdmMesher>& mesher,
-	        Size direction) {
-			
-			QL_REQUIRE(exerciseTimes.size() == exerciseDates.size(),
-				"different exercise dates and times length");
-				
-			std::map<Time, Date> t2d;
-			for (Size i=0; i < exerciseTimes.size(); ++i) 
-				t2d[ exerciseTimes[i] ] = exerciseDates[i];
-					        
-	        return new FdmAffineModelSwapInnerValue<ModelType>(
-	        	disModel, fwdModel, swap, t2d, mesher, direction);
-	    }
-	}
+    %extend {
+        FdmAffineModelSwapInnerValue(
+            const boost::shared_ptr<ModelType>& disModel,
+            const boost::shared_ptr<ModelType>& fwdModel,
+            const boost::shared_ptr<VanillaSwap>& swap,
+            const std::vector<Time>& exerciseTimes,
+            const std::vector<Date>& exerciseDates,
+            const boost::shared_ptr<FdmMesher>& mesher,
+            Size direction) {
+            
+            QL_REQUIRE(exerciseTimes.size() == exerciseDates.size(),
+                "different exercise dates and times length");
+                
+            std::map<Time, Date> t2d;
+            for (Size i=0; i < exerciseTimes.size(); ++i) 
+                t2d[ exerciseTimes[i] ] = exerciseDates[i];
+                            
+            return new FdmAffineModelSwapInnerValue<ModelType>(
+                disModel, fwdModel, swap, t2d, mesher, direction);
+        }
+    }
 #else
     FdmAffineModelSwapInnerValue(
         const boost::shared_ptr<ModelType>& disModel,

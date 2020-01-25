@@ -29,20 +29,6 @@ class FdmTest(unittest.TestCase):
     def tearDown(self):
         ql.Settings.instance().setEvaluationDate(ql.Date())
 
-    def testDisposableArray(self):
-        """Testing disposable array"""
-        a = ql.Array([1,2,3,4])
-        b = ql.DisposableArray(a)
-        self.assertEqual([1,2,3,4], list(b))
-        self.assertEqual(len(a), 0)
-
-        c = ql.Array(b)
-        self.assertEqual([1,2,3,4], list(c))
-        self.assertEqual(len(b), 0)
-
-        with self.assertRaises(TypeError):
-            a = a + 1
-
 
     def test1dMesher(self):
         """Testing one dimensional mesher"""

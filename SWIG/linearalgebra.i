@@ -315,17 +315,6 @@ function(x,y) plot(as.data.frame(x)))
 %}
 #endif
 
-%{
-using QuantLib::Disposable;
-%}
-
-template <class T>
-class Disposable : public T {
-  public:
-    Disposable(T& t);
-    Disposable(const Disposable<T>& t);
-};
-
 #if defined(SWIGCSHARP)
 %rename(QlArray) Array;
 #endif
@@ -337,7 +326,6 @@ class Array {
     Array();
     Array(Size n, Real fill = 0.0);
     Array(const Array&);
-    Array(const Disposable<Array>&);
     Size size() const;
     %extend {
         std::string __str__() {
@@ -454,8 +442,6 @@ class Array {
         #endif
     }
 };
-
-%template(DisposableArray) Disposable<Array>;
 
 // 2-D view
 
@@ -649,6 +635,7 @@ class SVD {
 };
 
 %{
+using QuantLib::Disposable;
 using QuantLib::BiCGstab;
 using QuantLib::GMRES;
 %}
@@ -725,7 +712,12 @@ class MatrixMultiplicationProxy {
   public:
     MatrixMultiplicationProxy(PyObject* matrixMult);
     
-    Disposable<Array> operator()(const Array& x) const;    
+    %extend {
+	    Array operator()(const Array& x) const {
+	    	Array retVal = self->operator()(x);
+	    	return retVal;
+	    }
+	}    
 };
 
 #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -762,10 +754,6 @@ class MatrixMultiplicationDelegate {
     virtual Array apply(const Array& x) const;
 };
 
-class MatrixMultiplicationProxy {
-  public:
-    MatrixMultiplicationProxy(MatrixMultiplicationDelegate* delegate);
-};
 #endif
 
 #if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -777,7 +765,7 @@ class BiCGstab  {
         Array solve(const Array& b, const Array& x0 = Array()) const {
                 return self->solve(b, x0).x; 
         }
-
+#if defined(SWIGPYTHON)
         BiCGstab(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol) {              
             return new BiCGstab(BiCGstab::MatrixMult(proxy), maxIter, relTol);                       
         }
@@ -788,6 +776,20 @@ class BiCGstab  {
                 BiCGstab::MatrixMult(proxy), maxIter, relTol,
                 BiCGstab::MatrixMult(preconditioner));                       
         }
+#else
+        BiCGstab(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol) {
+        	MatrixMultiplicationProxy proxy(delegate);          
+            return new BiCGstab(BiCGstab::MatrixMult(proxy), maxIter, relTol);                       
+        }
+        
+        BiCGstab(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol,
+                 MatrixMultiplicationDelegate* preconditioner) {              
+        	MatrixMultiplicationProxy p1(delegate); 
+        	MatrixMultiplicationProxy p2(preconditioner);
+            return new BiCGstab(
+                BiCGstab::MatrixMult(p1), maxIter, relTol, BiCGstab::MatrixMult(p2));                       
+        }
+#endif        
     }
 };
 
@@ -803,6 +805,8 @@ class GMRES  {
             Size restart, const Array& b, const Array& x0 = Array()) const {
             return self->solveWithRestart(restart, b, x0).x;
         }
+
+#if defined(SWIGPYTHON)
         GMRES(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol) {              
             return new GMRES(GMRES::MatrixMult(proxy), maxIter, relTol);                       
         }
@@ -813,6 +817,20 @@ class GMRES  {
                 GMRES::MatrixMult(proxy), maxIter, relTol,
                 GMRES::MatrixMult(preconditioner));                       
         }
+#else
+        GMRES(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol) {
+        	MatrixMultiplicationProxy proxy(delegate);              
+            return new GMRES(GMRES::MatrixMult(proxy), maxIter, relTol);                       
+        }
+        
+        GMRES(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol,
+              const MatrixMultiplicationProxy& preconditioner) {
+        	MatrixMultiplicationProxy p1(delegate); 
+        	MatrixMultiplicationProxy p2(preconditioner);                                      
+            return new GMRES(
+                GMRES::MatrixMult(p1), maxIter, relTol, GMRES::MatrixMult(p2));                       
+        }
+#endif        
     }    
 };
 
