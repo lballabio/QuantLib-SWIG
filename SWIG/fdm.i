@@ -385,7 +385,7 @@ using QuantLib::FdmLinearOpComposite;
 %shared_ptr(FdmLinearOp)
 class FdmLinearOp {
   public:
-     virtual Array apply(const Array& r) const = 0;
+    virtual Array apply(const Array& r) const;
      
   private:
     FdmLinearOp();
@@ -394,14 +394,14 @@ class FdmLinearOp {
 %shared_ptr(FdmLinearOpComposite)
 class FdmLinearOpComposite : public FdmLinearOp {
   public:    
-    virtual Size size() const = 0;
-    virtual setTime(Time t1, Time t2) = 0;
+    virtual Size size() const;
+    virtual void setTime(Time t1, Time t2);
     
-    virtual Array apply(const Array& r) const = 0;
-    virtual Array apply_mixed(const Array& r) const = 0;
-    virtual Array apply_direction(Size direction, const Array& r) const = 0;
-    virtual Array solve_splitting(Size direction, const Array& r, Real s) const = 0;
-    virtual Array preconditioner(const Array& r, Real s) const = 0;
+    virtual Array apply(const Array& r) const;
+    virtual Array apply_mixed(const Array& r) const;
+    virtual Array apply_direction(Size direction, const Array& r) const;
+    virtual Array solve_splitting(Size direction, const Array& r, Real s) const;
+    virtual Array preconditioner(const Array& r, Real s) const;
 
   private:
       FdmLinearOpComposite();
@@ -567,7 +567,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 %{
 class FdmLinearOpCompositeDelegate {
   public:
-      virtual ~FdmLinearOpCompositeDelegate() {}
+    virtual ~FdmLinearOpCompositeDelegate() {}
       
     virtual Size size() const {
         QL_FAIL("implementation of FdmLinearOpCompositeDelegate.size is missing");        
@@ -652,8 +652,6 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 
 class FdmLinearOpCompositeDelegate {
   public:
-    virtual ~FdmLinearOpCompositeDelegate();
-      
     virtual Size size() const;
     virtual void setTime(Time t1, Time t2);
       
@@ -701,12 +699,14 @@ class BoundaryCondition {
   public:    
     enum Side { None, Upper, Lower }; 
 
-    virtual ~BoundaryCondition();
-    virtual void applyBeforeApplying(Operator&) const = 0;
-    virtual void applyAfterApplying(Array&) const = 0;
-    virtual void applyBeforeSolving(Operator&, Array& rhs) const = 0;
-    virtual void applyAfterSolving(Array&) const = 0;
-    virtual void setTime(Time t) = 0;
+    virtual void applyBeforeApplying(Operator&) const;
+    virtual void applyAfterApplying(Array&) const;
+    virtual void applyBeforeSolving(Operator&, Array& rhs) const;
+    virtual void applyAfterSolving(Array&) const;
+    virtual void setTime(Time t);
+    
+  private:
+  	BoundaryCondition();
 };
 
 
@@ -1186,7 +1186,10 @@ using QuantLib::FdmStepConditionComposite;
 template <class array_type>
 class StepCondition {
   public:
-    virtual void applyTo(array_type& a, Time t) const = 0;
+    virtual void applyTo(array_type& a, Time t) const;
+    
+  private:
+  	StepCondition();
 };
 
 %template(FdmStepCondition) StepCondition<Array>;
@@ -1278,9 +1281,7 @@ class FdmStepConditionProxy : public StepCondition<Array> {
 %feature("director") FdmStepConditionDelegate;
 
 class FdmStepConditionDelegate {
-  public:
-      virtual ~FdmStepConditionDelegate();
-      
+  public:      
     virtual void applyTo(Array& a, Time t) const;
 };
     
@@ -1290,10 +1291,11 @@ class FdmStepConditionDelegate {
 %shared_ptr(FdmInnerValueCalculator)
 class FdmInnerValueCalculator {
   public:
-    virtual ~FdmInnerValueCalculator();
-
-    virtual Real innerValue(const FdmLinearOpIterator& iter, Time t) = 0;
-    virtual Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) = 0;
+    virtual Real innerValue(const FdmLinearOpIterator& iter, Time t);
+    virtual Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
+    
+  private:
+  	FdmInnerValueCalculator();
 };
 
 #if defined(SWIGPYTHON)
@@ -1415,8 +1417,6 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
 
 class FdmInnerValueCalculatorDelegate {
   public:
-      virtual ~FdmInnerValueCalculatorDelegate();
-      
     virtual Real innerValue(const FdmLinearOpIterator& iter, Time t);
     virtual Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
 };
@@ -1959,11 +1959,12 @@ class FdmIndicesOnBoundary {
 %shared_ptr(RiskNeutralDensityCalculator)
 class RiskNeutralDensityCalculator {
   public:
-    virtual Real pdf(Real x, Time t) const = 0;
-    virtual Real cdf(Real x, Time t) const = 0;
-    virtual Real invcdf(Real p, Time t) const = 0;
+    virtual Real pdf(Real x, Time t) const;
+    virtual Real cdf(Real x, Time t) const;
+    virtual Real invcdf(Real p, Time t) const;
 
-    virtual ~RiskNeutralDensityCalculator() {}
+  private:
+    RiskNeutralDensityCalculator();
 };
 
 %shared_ptr(BSMRNDCalculator)
