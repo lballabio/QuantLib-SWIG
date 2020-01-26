@@ -749,8 +749,7 @@ class MatrixMultiplicationProxy {
 
 class MatrixMultiplicationDelegate {
   public:
-    virtual ~MatrixMultiplicationDelegate();
-      
+    virtual ~MatrixMultiplicationDelegate();      
     virtual Array apply(const Array& x) const;
 };
 
