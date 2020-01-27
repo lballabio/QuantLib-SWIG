@@ -652,6 +652,8 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 
 class FdmLinearOpCompositeDelegate {
   public:
+  	virtual ~FdmLinearOpCompositeDelegate();
+  
     virtual Size size() const;
     virtual void setTime(Time t1, Time t2);
       
@@ -733,7 +735,7 @@ class FdmDirichletBoundary : public BoundaryCondition<FdmLinearOp> {
     void applyAfterApplying(Array&) const;
     void applyAfterSolving(Array&) const;
     void setTime(Time);
-    
+   
     Real applyAfterApplying(Real x, Real value) const;
 };
 
@@ -1282,6 +1284,7 @@ class FdmStepConditionProxy : public StepCondition<Array> {
 
 class FdmStepConditionDelegate {
   public:      
+  	virtual ~FdmStepConditionDelegate();
     virtual void applyTo(Array& a, Time t) const;
 };
     
@@ -1417,6 +1420,8 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
 
 class FdmInnerValueCalculatorDelegate {
   public:
+  	virtual ~FdmInnerValueCalculatorDelegate();
+  	
     virtual Real innerValue(const FdmLinearOpIterator& iter, Time t);
     virtual Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
 };
