@@ -689,43 +689,40 @@ using QuantLib::FdmBlackScholesFwdOp;
 using QuantLib::FdmHestonFwdOp;
 using QuantLib::FdmSquareRootFwdOp;
 
-typedef std::vector<boost::shared_ptr<BoundaryCondition<FdmLinearOp> > > FdmBoundaryConditionSet;
+typedef BoundaryCondition<FdmLinearOp> FdmBoundaryCondition;
+typedef std::vector<boost::shared_ptr<FdmBoundaryCondition> > FdmBoundaryConditionSet;
 %}
 
-%shared_ptr(BoundaryCondition<FdmLinearOp>);
-
-template <class Operator>
-class BoundaryCondition {
+%shared_ptr(FdmBoundaryCondition);
+class FdmBoundaryCondition {
    %rename(NoSide) None;
 
   public:    
     enum Side { None, Upper, Lower }; 
 
-    virtual void applyBeforeApplying(Operator&) const;
+    virtual void applyBeforeApplying(FdmLinearOp&) const;
     virtual void applyAfterApplying(Array&) const;
-    virtual void applyBeforeSolving(Operator&, Array& rhs) const;
+    virtual void applyBeforeSolving(FdmLinearOp&, Array& rhs) const;
     virtual void applyAfterSolving(Array&) const;
     virtual void setTime(Time t);
     
   private:
-  	BoundaryCondition();
+  	FdmBoundaryCondition();
 };
 
 
-typedef std::vector<boost::shared_ptr<BoundaryCondition<FdmLinearOp> > > FdmBoundaryConditionSet;
-
-%template(BoundaryConditionFdmLinearOp) BoundaryCondition<FdmLinearOp>; 
+typedef std::vector<boost::shared_ptr<FdmBoundaryCondition> > FdmBoundaryConditionSet;
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BoundaryCondition<FdmLinearOp> > )
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<FdmBoundaryCondition> )
 #endif
 
-%template(FdmBoundaryConditionSet) std::vector<boost::shared_ptr<BoundaryCondition<FdmLinearOp> > >;
+%template(FdmBoundaryConditionSet) std::vector<boost::shared_ptr<FdmBoundaryCondition> >;
 
 %shared_ptr(FdmDirichletBoundary)
-class FdmDirichletBoundary : public BoundaryCondition<FdmLinearOp> {
+class FdmDirichletBoundary : public FdmBoundaryCondition {
   public:
-    typedef BoundaryCondition<FdmLinearOp>::Side Side;
+    typedef FdmBoundaryCondition::Side Side;
 
     FdmDirichletBoundary(const boost::shared_ptr<FdmMesher>& mesher,
                          Real valueOnBoundary, Size direction, Side side);
@@ -740,10 +737,9 @@ class FdmDirichletBoundary : public BoundaryCondition<FdmLinearOp> {
 };
 
 %shared_ptr(FdmDiscountDirichletBoundary)
-class FdmDiscountDirichletBoundary
-        : public BoundaryCondition<FdmLinearOp> {
+class FdmDiscountDirichletBoundary : public FdmBoundaryCondition {
   public:
-    typedef BoundaryCondition<FdmLinearOp>::Side Side;
+    typedef FdmBoundaryCondition::Side Side;
 
     FdmDiscountDirichletBoundary(
         const boost::shared_ptr<FdmMesher>& mesher,
@@ -761,9 +757,9 @@ class FdmDiscountDirichletBoundary
 
 #if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGCSHARP)
 %shared_ptr(FdmTimeDepDirichletBoundary)
-class FdmTimeDepDirichletBoundary : public BoundaryCondition<FdmLinearOp> {
+class FdmTimeDepDirichletBoundary : public FdmBoundaryCondition {
   public:
-    typedef BoundaryCondition<FdmLinearOp>::Side Side;
+    typedef FdmBoundaryCondition::Side Side;
 
     %extend {
 #if defined(SWIGPYTHON)
