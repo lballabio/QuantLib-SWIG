@@ -60,8 +60,8 @@ class FdmTest(unittest.TestCase):
     def testFdmLinearOpIterator(self):
         """Testing iterators for linear operators"""
 
-        dim = ql.UnsignedIntVector([2,2,3])
-        pos = ql.UnsignedIntVector([0,0,0])
+        dim = [2,2,3]
+        pos = [0,0,0]
         idx = 0
         opIter = ql.FdmLinearOpIterator(dim, pos, idx)
 
@@ -81,7 +81,7 @@ class FdmTest(unittest.TestCase):
     def testFdmLinearOpLayout(self):
         """Testing memory layout for linear operators"""
 
-        dim = ql.UnsignedIntVector([2,2,3])
+        dim = [2,2,3]
 
         m = ql.FdmLinearOpLayout(dim)
 
@@ -317,8 +317,8 @@ class FdmTest(unittest.TestCase):
 
         m = ql.FdmInnerValueCalculatorProxy(Foo())
 
-        dim = ql.UnsignedIntVector([2,2,3])
-        pos = ql.UnsignedIntVector([0,0,0])
+        dim = [2,2,3]
+        pos = [0,0,0]
 
         opIter = ql.FdmLinearOpIterator(dim, pos, 0)
 

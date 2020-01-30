@@ -22,6 +22,7 @@
 #define quantlib_vectors_i
 
 %include stl.i
+%include common.i
 %include date.i
 
 #if defined(SWIGCSHARP)
@@ -39,10 +40,10 @@ namespace std {
     %template(DoublePair) pair<double,double>;
     %template(DoublePairVector) vector<pair<double,double> >;
 
-#if !defined(SWIGPYTHON) && !defined(SWIGR) 
+#if !defined(SWIGR) 
     // various versions of SWIG seem to have  
-    // problems with Python/R and std::vector<std::size_t> 
-    %template(SizeVector) vector<Size>;
+    // problems with R and std::vector<std::size_t> 
+    %template(SizeVector) vector<size_t>;
 #endif
 
 #if !defined(SWIGR)

@@ -59,7 +59,10 @@ typedef Real Probability;
 }
 #endif
 
+#if defined(SWIGPYTHON)
+typedef size_t Size;
+#else
 typedef std::size_t Size;
-
+#endif
 
 #endif

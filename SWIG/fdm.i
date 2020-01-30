@@ -208,7 +208,7 @@ using QuantLib::FdmMesherComposite;
 class FdmLinearOpIterator {
   public:
   
-#if defined(SWIGPYTHON) || defined(SWIGR)
+#if defined(SWIGR)
     %extend {
         FdmLinearOpIterator(
             const std::vector<unsigned int>& dim,
@@ -256,7 +256,7 @@ class FdmLinearOpIterator {
 class FdmLinearOpLayout {
   public:
   
-#if defined(SWIGPYTHON) || defined(SWIGR)
+#if defined(SWIGR)
     %extend {
         FdmLinearOpLayout(const std::vector<unsigned int>& dim) {
             std::vector<Size> _dim(dim.size());
@@ -2041,7 +2041,7 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
     Real invcdf(Real p, Time t) const;
 
     boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
-#if defined(SWIGPYTHON) || defined(SWIGR)
+#if defined(SWIGR)
     %extend {
         std::vector<unsigned int> rescaleTimeSteps() const {
             const std::vector<Size> s = self->rescaleTimeSteps();
