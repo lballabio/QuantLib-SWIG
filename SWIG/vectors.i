@@ -36,15 +36,10 @@ namespace std {
     %template(DoubleVector) vector<double>;
     %template(StrVector) vector<std::string>;
     %template(BoolVector) vector<bool>;
+    %template(SizeVector) vector<size_t>;
 
     %template(DoublePair) pair<double,double>;
     %template(DoublePairVector) vector<pair<double,double> >;
-
-#if !defined(SWIGR) 
-    // various versions of SWIG seem to have  
-    // problems with R and std::vector<std::size_t> 
-    %template(SizeVector) vector<size_t>;
-#endif
 
 #if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;

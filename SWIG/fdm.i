@@ -207,38 +207,11 @@ using QuantLib::FdmMesherComposite;
 
 class FdmLinearOpIterator {
   public:
-  
-#if defined(SWIGR)
-    %extend {
-        FdmLinearOpIterator(
-            const std::vector<unsigned int>& dim,
-            const std::vector<unsigned int>& coordinates, Size index) {
-            
-            std::vector<Size> _dim(dim.size());
-            std::copy(dim.begin(), dim.end(), _dim.begin());
-            
-            std::vector<Size> _coordinates(coordinates.size());
-            std::copy(coordinates.begin(), coordinates.end(), 
-                _coordinates.begin());
-            
-            return new FdmLinearOpIterator(_dim, _coordinates, index);
-         }
-         
-         std::vector<unsigned int> coordinates() {
-            const std::vector<Size>& c = self->coordinates();
-             std::vector<unsigned int> tmp(c.size());
-             std::copy(c.begin(), c.end(), tmp.begin());
-             
-             return tmp;
-         }
-     }
-#else  
     FdmLinearOpIterator(
         const std::vector<Size>& dim,
         const std::vector<Size>& coordinates, Size index);
 
     const std::vector<Size>& coordinates();
-#endif
 
     %extend {
         void increment() {
@@ -255,47 +228,12 @@ class FdmLinearOpIterator {
 %shared_ptr(FdmLinearOpLayout)
 class FdmLinearOpLayout {
   public:
-  
-#if defined(SWIGR)
-    %extend {
-        FdmLinearOpLayout(const std::vector<unsigned int>& dim) {
-            std::vector<Size> _dim(dim.size());
-            std::copy(dim.begin(), dim.end(), _dim.begin());
-            
-            return new FdmLinearOpLayout(_dim);
-        }
-
-        Size index(const std::vector<unsigned int>& coordinates) const {
-            std::vector<Size> tmp(coordinates.size());
-            std::copy(coordinates.begin(), coordinates.end(), tmp.begin());
-            
-            return self->index(tmp);
-        }
-        
-        const std::vector<unsigned int> spacing() {        
-            std::vector<unsigned int> tmp(self->spacing().size());
-            std::copy(self->spacing().begin(), self->spacing().end(),
-                tmp.begin());
-                
-             return tmp;
-        }
-        const std::vector<unsigned int> dim() const {
-            std::vector<unsigned int> tmp(self->dim().size());
-            std::copy(self->dim().begin(), self->dim().end(),
-                tmp.begin());
-                
-             return tmp;
-        }        
-    }
-#else  
     explicit FdmLinearOpLayout(const std::vector<Size>& dim);
 
     const std::vector<Size>& spacing();
     const std::vector<Size>& dim() const;
 
     Size index(const std::vector<Size>& coordinates) const;
-    
-#endif
     
     FdmLinearOpIterator begin() const;
     FdmLinearOpIterator end() const;
@@ -2022,7 +1960,7 @@ public:
 class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
   public:
 #if defined(SWIGPYTHON)
-%feature("kwargs") FdmHestonSolver;
+%feature("kwargs") LocalVolRNDCalculator;
 #endif
   
     LocalVolRNDCalculator(
@@ -2041,23 +1979,7 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
     Real invcdf(Real p, Time t) const;
 
     boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
-#if defined(SWIGR)
-    %extend {
-        std::vector<unsigned int> rescaleTimeSteps() const {
-            const std::vector<Size> s = self->rescaleTimeSteps();
-            std::vector<unsigned int> tmp(s.size());
-            std::copy(s.begin(), s.end(), tmp.begin());
-            
-            return tmp;
-        }
-    }
-#else 
-    %extend {
-        std::vector<Size> rescaleTimeSteps() const {
-            return self->rescaleTimeSteps();
-        }
-    }
-#endif    
+    std::vector<Size> rescaleTimeSteps() const;
 };
 
 %shared_ptr(SquareRootProcessRNDCalculator)
