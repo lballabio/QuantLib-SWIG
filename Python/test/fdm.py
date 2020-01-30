@@ -266,13 +266,13 @@ class FdmTest(unittest.TestCase):
             self.assertAlmostEqual(v, -u, 4)
 
     def testFdmBoundaryCondition(self):
-        """Testing Diriclet Boundary conditions"""
+        """Testing Dirichlet Boundary conditions"""
 
         m = ql.FdmMesherComposite(
             ql.Uniform1dMesher(0.0, 1.0, 5))
 
         b = ql.FdmDirichletBoundary(
-            m, math.pi, 0, ql.BoundaryConditionFdmLinearOp.Upper)
+            m, math.pi, 0, ql.FdmBoundaryCondition.Upper)
 
         x = ql.Array(len(m.locations(0)), 0.0)
 
