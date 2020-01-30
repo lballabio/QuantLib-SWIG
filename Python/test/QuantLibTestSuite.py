@@ -78,7 +78,7 @@ def test():
         
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
-    if not result.wasSuccessful:
+    if not result.wasSuccessful():
         sys.exit(1)
 
 
