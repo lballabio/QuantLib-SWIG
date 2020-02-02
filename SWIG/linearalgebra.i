@@ -315,6 +315,22 @@ function(x,y) plot(as.data.frame(x)))
 %}
 #endif
 
+#if defined(SWIGR)
+%Rruntime %{
+setMethod("+", c("_p_Array", "_p_Array"),
+    function(e1,e2) Array___add__(e1,e2))
+setMethod("-", c("_p_Array", "_p_Array"),
+    function(e1,e2) Array___sub__(e1,e2))
+setMethod("*", c("_p_Array", "_p_Array"),
+    function(e1,e2) Array___mul__(e1,e2))
+setMethod("*", c("_p_Array", "numeric"),
+    function(e1,e2) Array___mul__(e1,e2))
+setMethod("/", c("_p_Array", "numeric"),
+    function(e1,e2) Array___div__(e1,e2))    
+%}
+#endif
+
+
 #if defined(SWIGCSHARP)
 %rename(QlArray) Array;
 #endif
