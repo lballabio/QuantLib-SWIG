@@ -25,6 +25,7 @@
 #ifndef quantlib_options_i
 #define quantlib_options_i
 
+%include complex.i
 %include common.i
 %include exercise.i
 %include stochasticprocess.i
@@ -381,6 +382,9 @@ class AnalyticHestonEngine : public PricingEngine {
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                      ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
                      Real andersenPiterbargEpsilon = 1e-8);
+                     
+    std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
+    std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;                    
 };
 
 %{
