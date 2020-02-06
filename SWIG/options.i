@@ -386,7 +386,7 @@ class AnalyticHestonEngine : public PricingEngine {
     	std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
     		const std::complex<Real> tmp 
     			= self->chF(std::complex<Real>(real, imag), t);
-    		return std::pair<Real>(tmp.real(), tmp.imag());
+    		return std::pair<Real, Real>(tmp.real(), tmp.imag());
     	}
     }
 };
