@@ -427,9 +427,38 @@ class CappedFlooredCmsSpreadCoupon: public CappedFlooredCoupon {
                   const Date& exCouponDate = Date());
 };
 
+%rename (LinearTsrPricerSettings) LinearTsrPricer::Settings;
+%feature ("flatnested") Settings;
+
 %shared_ptr(LinearTsrPricer)
 class LinearTsrPricer : public CmsCouponPricer {
   public:
+    struct Settings {
+
+        Settings();
+        Settings &withRateBound(const Real lowerRateBound = 0.0001,
+                                const Real upperRateBound = 2.0000);
+        Settings &withVegaRatio(const Real vegaRatio = 0.01);                                
+        Settings &withVegaRatio(const Real vegaRatio,
+                                const Real lowerRateBound,
+                                const Real upperRateBound);
+        Settings &withPriceThreshold(const Real priceThreshold = 1.0E-8);
+        Settings &withPriceThreshold(const Real priceThreshold,
+                                     const Real lowerRateBound,
+                                     const Real upperRateBound);
+        Settings &withBSStdDevs(const Real stdDevs = 3.0);
+        Settings &withBSStdDevs(const Real stdDevs,
+                        const Real lowerRateBound,
+                        const Real upperRateBound);
+        enum Strategy {
+            RateBound,
+            VegaRatio,
+            PriceThreshold,
+            BSStdDevs
+        };
+        
+    };
+  
     LinearTsrPricer(
             const Handle<SwaptionVolatilityStructure> &swaptionVol,
             const Handle<Quote> &meanReversion,
