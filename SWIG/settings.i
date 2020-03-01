@@ -44,12 +44,12 @@ class Settings {
         void includeTodaysCashFlows(bool b) {
             self->includeTodaysCashFlows() = b;
         }
-	void setEnforcesTodaysHistoricFixings(bool b) {
-  	    self->enforcesTodaysHistoricFixings() = b;
-	}
-	void getEnforcesTodaysHistoricFixings() {
- 	    return self->enforcesTodaysHistoricFixings();
-	}
+        void setEnforcesTodaysHistoricFixings(bool b) {
+            self->enforcesTodaysHistoricFixings() = b;
+        }
+        bool getEnforcesTodaysHistoricFixings() {
+            return self->enforcesTodaysHistoricFixings();
+        }
     }
     #if defined(SWIGPYTHON)
     %pythoncode %{
