@@ -22,6 +22,7 @@
 #define quantlib_vectors_i
 
 %include stl.i
+%include common.i
 %include date.i
 
 #if defined(SWIGCSHARP)
@@ -35,6 +36,7 @@ namespace std {
     %template(DoubleVector) vector<double>;
     %template(StrVector) vector<std::string>;
     %template(BoolVector) vector<bool>;
+    %template(SizeVector) vector<size_t>;
 
     %template(DoublePair) pair<double,double>;
     %template(DoublePairVector) vector<pair<double,double> >;

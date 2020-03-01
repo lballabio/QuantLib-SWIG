@@ -24,6 +24,7 @@
 %include volatilities.i
 %include stochasticprocess.i
 %include calibrationhelpers.i
+%include fdm.i
 
 %{
 using QuantLib::HestonSLVProcess;
@@ -98,17 +99,10 @@ class HestonSLVMCModel {
 
 
 %{
-using QuantLib::FdmSquareRootFwdOp;
 using QuantLib::FdmHestonGreensFct;
 using QuantLib::HestonSLVFDMModel;
 using QuantLib::HestonSLVFokkerPlanckFdmParams;
 %}
-
-struct FdmSquareRootFwdOp {
-    enum TransformationType { Plain, Power, Log };
-  private:
-    FdmSquareRootFwdOp();
-};
 
 struct FdmHestonGreensFct {
     enum Algorithm { ZeroCorrelation, Gaussian, SemiAnalytical };

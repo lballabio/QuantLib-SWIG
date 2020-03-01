@@ -61,19 +61,27 @@ bool extractArray(PyObject* source, Array* target) {
     }
 }
 %}
+
 %typemap(in) Array (Array* v) {
     if (extractArray($input,&$1)) {
         ;
     } else {
-        SWIG_ConvertPtr($input,(void **) &v, $&1_descriptor,1);
-        $1 = *v;
+        if (SWIG_ConvertPtr($input,(void **) &v, $&1_descriptor,1) != -1)
+            $1 = *v;
+        else {
+            PyErr_SetString(PyExc_TypeError, "Array expected");
+            return NULL;
+        }
     }
 };
 %typemap(in) const Array& (Array temp) {
     if (extractArray($input,&temp)) {
         $1 = &temp;
     } else {
-        SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1);
+        if (SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1) == -1) {
+            PyErr_SetString(PyExc_TypeError, "Array expected");
+            return NULL;
+        }
     }
 };
 %typecheck(QL_TYPECHECK_ARRAY) Array {
@@ -306,6 +314,22 @@ function(x,y) plot(as.data.frame(x)))
 
 %}
 #endif
+
+#if defined(SWIGR)
+%Rruntime %{
+setMethod("+", c("_p_Array", "_p_Array"),
+    function(e1,e2) Array___add__(e1,e2))
+setMethod("-", c("_p_Array", "_p_Array"),
+    function(e1,e2) Array___sub__(e1,e2))
+setMethod("*", c("_p_Array", "_p_Array"),
+    function(e1,e2) Array___mul__(e1,e2))
+setMethod("*", c("_p_Array", "numeric"),
+    function(e1,e2) Array___mul__(e1,e2))
+setMethod("/", c("_p_Array", "numeric"),
+    function(e1,e2) Array___div__(e1,e2))    
+%}
+#endif
+
 
 #if defined(SWIGCSHARP)
 %rename(QlArray) Array;
@@ -596,9 +620,11 @@ class Matrix {
     }
 };
 
+
 // functions
 
 %{
+using QuantLib::inverse;
 using QuantLib::pseudoSqrt;
 using QuantLib::SalvagingAlgorithm;
 %}
@@ -610,6 +636,7 @@ struct SalvagingAlgorithm {
     enum Type { None, Spectral };
 };
 
+Matrix inverse(const Matrix& m);
 Matrix transpose(const Matrix& m);
 Matrix outerProduct(const Array& v1, const Array& v2);
 Matrix pseudoSqrt(const Matrix& m, SalvagingAlgorithm::Type a);
@@ -622,5 +649,217 @@ class SVD {
     Matrix S() const;
     const Array& singularValues() const;
 };
+
+%{
+using QuantLib::Disposable;
+using QuantLib::BiCGstab;
+using QuantLib::GMRES;
+%}
+
+#if defined(SWIGPYTHON)
+%{
+Disposable<Array> extractArray(
+    PyObject* source, const std::string& methodName) {
+      
+    QL_ENSURE(source != NULL,
+              "failed to call " + methodName + " on Python object");
+
+    QL_ENSURE(source != Py_None, methodName + " returned None");
+        
+    Array* ptr;            
+    const int err = SWIG_ConvertPtr(
+        source, (void **) &ptr, SWIGTYPE_p_Array, SWIG_POINTER_EXCEPTION);
+
+    if (err != 0) {
+        Py_XDECREF(source);
+        QL_FAIL("return type must be of type QuantLib Array in " 
+            + methodName);
+    }
+    
+    Array tmp(*ptr);          
+    Py_XDECREF(source);
+     
+    return tmp;
+}
+
+class MatrixMultiplicationProxy {
+  public:
+    MatrixMultiplicationProxy(PyObject* matrixMult)
+    : matrixMult_(matrixMult) {
+        Py_XINCREF(matrixMult_);    
+    }
+    
+    MatrixMultiplicationProxy(const MatrixMultiplicationProxy& p) 
+    : matrixMult_(p.matrixMult_) {
+        Py_XINCREF(matrixMult_);
+    }
+        
+    MatrixMultiplicationProxy& operator=(const MatrixMultiplicationProxy& f) {
+        if ((this != &f) && (matrixMult_ != f.matrixMult_)) {
+            Py_XDECREF(matrixMult_);
+            matrixMult_ = f.matrixMult_;
+            Py_XINCREF(matrixMult_);
+        }
+        return *this;
+    }
+        
+    ~MatrixMultiplicationProxy() {
+        Py_XDECREF(matrixMult_);    
+    }
+    
+    Disposable<Array> operator()(const Array& x) const {
+        PyObject* pyArray = SWIG_NewPointerObj(
+            SWIG_as_voidptr(&x), SWIGTYPE_p_Array, 0);
+            
+        PyObject* pyResult 
+            = PyObject_CallFunction(matrixMult_, "O", pyArray);
+        
+        Py_XDECREF(pyArray);
+        
+        return extractArray(pyResult, "matrix multiplication");         
+    }
+    
+  private:
+    PyObject* matrixMult_;      
+};
+%}
+
+class MatrixMultiplicationProxy {
+  public:
+    MatrixMultiplicationProxy(PyObject* matrixMult);
+    
+    %extend {
+	    Array operator()(const Array& x) const {
+	    	Array retVal = self->operator()(x);
+	    	return retVal;
+	    }
+	}    
+};
+
+#elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+
+%{
+class MatrixMultiplicationDelegate {
+  public:
+    virtual ~MatrixMultiplicationDelegate() {}
+      
+    virtual Array apply(const Array& x) const {
+        QL_FAIL("implementation of MatrixMultiplicationDelegate.apply is missing");        
+    }
+};
+
+class MatrixMultiplicationProxy {
+  public:
+    MatrixMultiplicationProxy(MatrixMultiplicationDelegate* delegate)
+    : delegate_(delegate) {}
+    
+    Disposable<Array> operator()(const Array& x) const {
+        Array retVal = delegate_->apply(x);        
+        return retVal;
+    }
+               
+  private:
+      MatrixMultiplicationDelegate* const delegate_; 
+};
+%}
+
+class MatrixMultiplicationDelegate {
+  public:
+    virtual ~MatrixMultiplicationDelegate();      
+    virtual Array apply(const Array& x) const;
+};
+
+#endif
+
+#if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGCSHARP)
+
+%shared_ptr(BiCGstab)
+class BiCGstab  {
+  public:
+    %extend {
+        Array solve(const Array& b, const Array& x0 = Array()) const {
+                return self->solve(b, x0).x; 
+        }
+#if defined(SWIGPYTHON)
+        BiCGstab(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol) {              
+            return new BiCGstab(BiCGstab::MatrixMult(proxy), maxIter, relTol);                       
+        }
+        
+        BiCGstab(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol,
+                 const MatrixMultiplicationProxy& preconditioner) {              
+            return new BiCGstab(
+                BiCGstab::MatrixMult(proxy), maxIter, relTol,
+                BiCGstab::MatrixMult(preconditioner));                       
+        }
+#else
+        BiCGstab(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol) {
+        	MatrixMultiplicationProxy proxy(delegate);          
+            return new BiCGstab(BiCGstab::MatrixMult(proxy), maxIter, relTol);                       
+        }
+        
+        BiCGstab(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol,
+                 MatrixMultiplicationDelegate* preconditioner) {              
+        	MatrixMultiplicationProxy p1(delegate); 
+        	MatrixMultiplicationProxy p2(preconditioner);
+            return new BiCGstab(
+                BiCGstab::MatrixMult(p1), maxIter, relTol, BiCGstab::MatrixMult(p2));                       
+        }
+#endif        
+    }
+};
+
+
+%shared_ptr(GMRES)
+class GMRES  {
+  public:
+    %extend {
+        Array solve(const Array& b, const Array& x0 = Array()) const {
+            return self->solve(b, x0).x;
+        }
+        Array solveWithRestart(
+            Size restart, const Array& b, const Array& x0 = Array()) const {
+            return self->solveWithRestart(restart, b, x0).x;
+        }
+
+#if defined(SWIGPYTHON)
+        GMRES(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol) {              
+            return new GMRES(GMRES::MatrixMult(proxy), maxIter, relTol);                       
+        }
+        
+        GMRES(const MatrixMultiplicationProxy& proxy, Size maxIter, Real relTol,
+              const MatrixMultiplicationProxy& preconditioner) {              
+            return new GMRES(
+                GMRES::MatrixMult(proxy), maxIter, relTol,
+                GMRES::MatrixMult(preconditioner));                       
+        }
+#else
+        GMRES(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol) {
+        	MatrixMultiplicationProxy proxy(delegate);              
+            return new GMRES(GMRES::MatrixMult(proxy), maxIter, relTol);                       
+        }
+        
+        GMRES(MatrixMultiplicationDelegate* delegate, Size maxIter, Real relTol,
+              const MatrixMultiplicationProxy& preconditioner) {
+        	MatrixMultiplicationProxy p1(delegate); 
+        	MatrixMultiplicationProxy p2(preconditioner);                                      
+            return new GMRES(
+                GMRES::MatrixMult(p1), maxIter, relTol, GMRES::MatrixMult(p2));                       
+        }
+#endif        
+    }    
+};
+
+#endif 
+
+%{
+using QuantLib::close;
+using QuantLib::close_enough;
+%}
+
+bool close(Real x, Real y);
+bool close(Real x, Real y, Size n);
+
+bool close_enough(Real x, Real y);
+bool close_enough(Real x, Real y, Size n);
 
 #endif
