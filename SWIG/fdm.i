@@ -472,31 +472,6 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
     FdmLinearOpCompositeProxy(PyObject* callback);
     
-    Size size() const;
-    void setTime(Time t1, Time t2);
-    
-    %extend {
-        Array apply(const Array& r) const {
-            Array retVal = self->apply(r);
-            return retVal;
-        }
-        Array apply_mixed(const Array& r) const {
-            Array retVal = self->apply_mixed(r);
-            return retVal;
-        }    
-        Array apply_direction(Size direction, const Array& r) const {
-            Array retVal = self->apply_direction(direction, r);
-            return retVal;
-        }
-        Array solve_splitting(Size direction, const Array& r, Real s) const {
-            Array retVal = self->solve_splitting(direction, r, s);
-            return retVal;
-        }           
-        Array preconditioner(const Array& r, Real s) const {
-            Array retVal = self->preconditioner(r, s);
-            return retVal;
-        }
-    }
 };
 
 #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -574,14 +549,6 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
     FdmLinearOpCompositeProxy(FdmLinearOpCompositeDelegate* delegate);
-      
-    Size size() const;
-    void setTime(Time t1, Time t2);
-    Array apply(const Array& r) const;
-    Array apply_mixed(const Array& r) const;
-    Array apply_direction(Size direction, const Array& r) const;
-    Array solve_splitting(Size direction, const Array& r, Real s) const;
-    Array preconditioner(const Array& r, Real s) const;
 };
 
 
@@ -879,9 +846,6 @@ class FdmSquareRootFwdOp : public FdmLinearOpComposite {
         Real kappa, Real theta, Real sigma,
         Size direction,
         TransformationType type = Plain);
-
-    Size size()    const;
-    void setTime(Time t1, Time t2);
 };
 
 %shared_ptr(FdmHestonFwdOp)
@@ -894,9 +858,6 @@ class FdmHestonFwdOp : public FdmLinearOpComposite {
             = FdmSquareRootFwdOp::Plain,
         const boost::shared_ptr<LocalVolTermStructure> & leverageFct
             = boost::shared_ptr<LocalVolTermStructure>());
-
-    Size size() const;
-    void setTime(Time t1, Time t2);
 };
 
 %{
@@ -933,9 +894,6 @@ class FirstDerivativeOp : public TripleBandLinearOp {
   public:
     FirstDerivativeOp(Size direction,
                       const boost::shared_ptr<FdmMesher>& mesher);
-           
-    Array apply(const Array& r) const;
-    Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;                 
 };
 
 %shared_ptr(SecondDerivativeOp)
@@ -943,9 +901,6 @@ class SecondDerivativeOp : public TripleBandLinearOp {
   public:
     SecondDerivativeOp(Size direction,
         const boost::shared_ptr<FdmMesher>& mesher);
-
-    Array apply(const Array& r) const;
-    Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;                 
 };
 
 %shared_ptr(NinePointLinearOp)
@@ -953,8 +908,6 @@ class NinePointLinearOp : public FdmLinearOp {
   public:
     NinePointLinearOp(Size d0, Size d1,
         const boost::shared_ptr<FdmMesher>& mesher);
-
-    Array apply(const Array& r) const;
 };
 
 %shared_ptr(SecondOrderMixedDerivativeOp)
@@ -963,8 +916,6 @@ public:
     SecondOrderMixedDerivativeOp(
         Size d0, Size d1, 
         const boost::shared_ptr<FdmMesher>& mesher);
-
-    Array apply(const Array& r) const;
 };
 
 %shared_ptr(NthOrderDerivativeOp)
@@ -973,8 +924,6 @@ class NthOrderDerivativeOp : public FdmLinearOp {
     NthOrderDerivativeOp(
         Size direction, Size order, Integer nPoints,
         const boost::shared_ptr<FdmMesher>& mesher);
-
-    Array apply(const Array& r) const;
 };
 
 
@@ -1463,9 +1412,6 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
         const boost::shared_ptr<FdmMesher>& mesher,
         Size direction);
 #endif
-
-    Real innerValue(const FdmLinearOpIterator& iter, Time t);
-    Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
 };
 
 %template(FdmAffineG2ModelSwapInnerValue) FdmAffineModelSwapInnerValue<G2>;
@@ -1477,7 +1423,6 @@ class FdmSnapshotCondition : public StepCondition<Array> {
 public:
     explicit FdmSnapshotCondition(Time t);
 
-    void applyTo(Array& a, Time t) const;
     Time getTime() const;       
     const Array& getValues() const;
 };
@@ -1503,7 +1448,6 @@ public:
         }
     }
     
-    void applyTo(Array& a, Time t) const;
     const std::vector<Time>& stoppingTimes() const;
     const std::vector<boost::shared_ptr<StepCondition<Array> > > & conditions() const;
 
@@ -1527,8 +1471,6 @@ class FdmAmericanStepCondition : public StepCondition<Array> {
     FdmAmericanStepCondition(
         const boost::shared_ptr<FdmMesher> & mesher,
         const boost::shared_ptr<FdmInnerValueCalculator> & calculator);
-
-    void applyTo(Array& a, Time) const;
 };
 
 %shared_ptr(FdmArithmeticAverageCondition)
@@ -1539,8 +1481,6 @@ class FdmArithmeticAverageCondition : public StepCondition<Array> {
         Real, Size pastFixings,
         const boost::shared_ptr<FdmMesher> & mesher,
         Size equityDirection);
-
-    void applyTo(Array& a, Time t) const;
 };
 
 %shared_ptr(FdmBermudanStepCondition)
@@ -1553,7 +1493,6 @@ class FdmBermudanStepCondition : public StepCondition<Array> {
         const boost::shared_ptr<FdmMesher> & mesher,
         const boost::shared_ptr<FdmInnerValueCalculator> & calculator);
 
-    void applyTo(Array& a, Time t) const;
     const std::vector<Time>& exerciseTimes() const;
 };
 
@@ -1565,8 +1504,6 @@ class FdmSimpleStorageCondition : public StepCondition<Array> {
         const boost::shared_ptr<FdmMesher>& mesher,
         const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
         Real changeRate);
-
-    void applyTo(Array& a, Time t) const;
 };
 
 %shared_ptr(FdmSimpleSwingCondition)
@@ -1578,8 +1515,6 @@ class FdmSimpleSwingCondition : public StepCondition<Array> {
               const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
               Size swingDirection,
               Size minExercises = 0);
-
-    void applyTo(Array& a, Time t) const;
 };
 
 %shared_ptr(FdmDividendHandler)
@@ -1590,8 +1525,6 @@ class FdmDividendHandler : public StepCondition<Array> {
                        const Date& referenceDate,
                        const DayCounter& dayCounter,
                        Size equityDirection);
-        
-    void applyTo(Array& a, Time t) const;
  
     const std::vector<Time>& dividendTimes() const;
     const std::vector<Date>& dividendDates() const;
