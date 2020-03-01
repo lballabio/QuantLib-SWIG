@@ -44,6 +44,12 @@ class Settings {
         void includeTodaysCashFlows(bool b) {
             self->includeTodaysCashFlows() = b;
         }
+        void setEnforcesTodaysHistoricFixings(bool b) {
+            self->enforcesTodaysHistoricFixings() = b;
+        }
+        bool getEnforcesTodaysHistoricFixings() {
+            return self->enforcesTodaysHistoricFixings();
+        }
     }
     #if defined(SWIGPYTHON)
     %pythoncode %{
@@ -51,6 +57,7 @@ class Settings {
     includeReferenceDateCashFlows = property(None,includeReferenceDateEvents,None)
     includeReferenceDateEvents = property(None,includeReferenceDateEvents,None)
     includeTodaysCashFlows = property(None,includeTodaysCashFlows,None)
+    enforcesTodaysHistoricFixings = property(getEnforcesTodaysHistoricFixings, setEnforcesTodaysHistoricFixings, None)
     %}
     #endif
 };
