@@ -168,6 +168,12 @@ class SplineCubic : public Cubic {
             QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
+class Kruger : public Cubic {
+  public:
+    Kruger()
+    : Cubic(QuantLib::CubicInterpolation::Kruger) {}
+};
+
 class DefaultLogCubic : public QuantLib::LogCubic {
   public:
     DefaultLogCubic()
@@ -178,6 +184,14 @@ class MonotonicLogCubic : public QuantLib::LogCubic {
   public:
     MonotonicLogCubic()
     : QuantLib::LogCubic(QuantLib::CubicInterpolation::Spline, true,
+                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
+                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
+class KrugerLog : public QuantLib::LogCubic {
+  public:
+    KrugerLog()
+    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger, false,
                          QuantLib::CubicInterpolation::SecondDerivative, 0.0,
                          QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
@@ -200,6 +214,8 @@ struct MonotonicCubic {};
 struct DefaultLogCubic {};
 struct MonotonicLogCubic {};
 struct SplineCubic {};
+struct Kruger {};
+struct KrugerLog {};
 struct ConvexMonotone{};
 
 %{

@@ -26,19 +26,19 @@ swaptionVols = [
 
 
 def formatVol(v, digits=2):
-    format = "%%.%df %%%%" % digits
-    return format % (v * 100)
+    fmt = "%%.%df %%%%" % digits
+    return fmt % (v * 100)
 
 
 def formatPrice(p, digits=2):
-    format = "%%.%df" % digits
-    return format % p
+    fmt = "%%.%df" % digits
+    return fmt % p
 
 
 def calibrate(model, helpers, l, name):
 
-    format = "%12s |%12s |%12s |%12s |%12s"
-    header = format % ("maturity", "length", "volatility", "implied", "error")
+    fmt = "%12s |%12s |%12s |%12s |%12s"
+    header = fmt % ("maturity", "length", "volatility", "implied", "error")
     rule = "-" * len(header)
     dblrule = "=" * len(header)
 
@@ -63,12 +63,12 @@ def calibrate(model, helpers, l, name):
         implied = helper.impliedVolatility(NPV, 1.0e-4, 1000, 0.05, 0.50)
         error = implied - vol
         totalError += abs(error)
-        print(format % (maturity, length, formatVol(vol, 4), formatVol(implied, 4), formatVol(error, 4)))
+        print(fmt % (maturity, length, formatVol(vol, 4), formatVol(implied, 4), formatVol(error, 4)))
     averageError = totalError / len(helpers)
 
     print(rule)
-    format = "%%%ds" % len(header)
-    print(format % ("Average error: " + formatVol(averageError, 4)))
+    fmt = "%%%ds" % len(header)
+    print(fmt % ("Average error: " + formatVol(averageError, 4)))
     print(dblrule)
 
 
@@ -208,8 +208,8 @@ calibrate(BKmodel, helpers, 0.05, "Black-Karasinski (numerical calibration)")
 bermudanDates = [d for d in fixedSchedule][:-1]
 exercise = ql.BermudanExercise(bermudanDates)
 
-format = "%17s |%17s |%17s |%17s"
-header = format % ("model", "in-the-money", "at-the-money", "out-of-the-money")
+fmt = "%17s |%17s |%17s |%17s"
+header = fmt % ("model", "in-the-money", "at-the-money", "out-of-the-money")
 rule = "-" * len(header)
 dblrule = "=" * len(header)
 
@@ -229,7 +229,7 @@ otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(G2model, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(G2model, 50))
 
 print(
-    format
+    fmt
     % ("G2 analytic", formatPrice(itmSwaption.NPV()), formatPrice(atmSwaption.NPV()), formatPrice(otmSwaption.NPV()))
 )
 
@@ -238,7 +238,7 @@ otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel, 50))
 
 print(
-    format
+    fmt
     % ("HW analytic", formatPrice(itmSwaption.NPV()), formatPrice(atmSwaption.NPV()), formatPrice(otmSwaption.NPV()))
 )
 
@@ -247,7 +247,7 @@ otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel2, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel2, 50))
 
 print(
-    format
+    fmt
     % ("HW numerical", formatPrice(itmSwaption.NPV()), formatPrice(atmSwaption.NPV()), formatPrice(otmSwaption.NPV()))
 )
 
@@ -256,7 +256,7 @@ otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(BKmodel, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(BKmodel, 50))
 
 print(
-    format
+    fmt
     % ("BK numerical", formatPrice(itmSwaption.NPV()), formatPrice(atmSwaption.NPV()), formatPrice(otmSwaption.NPV()))
 )
 

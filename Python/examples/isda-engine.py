@@ -1,4 +1,3 @@
-
 # coding: utf-8
 
 import QuantLib as ql
@@ -90,39 +89,39 @@ else:
 l = 0;
 distance = 0
 
-for i in range(0,len(termDates)):
-    for j in range(0,2):
-        for k in range(0,2):
+for termDate in termDates:
+    for spread in spreads:
+        for recovery in recoveries:
 
-            cdsSchedule = ql.Schedule(tradeDate+1,termDates[i],
+            cdsSchedule = ql.Schedule(tradeDate+1, termDate,
                                       3*ql.Period(ql.Monthly),
                                       ql.WeekendsOnly(),
-                                      ql.Following,ql.Unadjusted,
-                                      ql.DateGeneration.CDS,False)
-            
+                                      ql.Following, ql.Unadjusted,
+                                      ql.DateGeneration.CDS, False)
+
             quotedTrade = ql.CreditDefaultSwap(
-                ql.Protection.Buyer,10000000,0,spreads[j],cdsSchedule,
+                ql.Protection.Buyer,10000000,0,spread,cdsSchedule,
                 ql.Following,ql.Actual360(),True,True,tradeDate+1,
                 ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
                 ql.FaceValueClaim(), ql.Actual360(True))
 
             h = quotedTrade.impliedHazardRate(0,discountCurve,ql.Actual365Fixed(),
-                                              recoveries[k],1e-10,
+                                              recovery,1e-10,
                                               ql.CreditDefaultSwap.ISDA)
-            
+
             probabilityCurve.linkTo(
                 ql.FlatHazardRate(0,ql.WeekendsOnly(),
                                   ql.QuoteHandle(ql.SimpleQuote(h)),
                                   ql.Actual365Fixed()))
-            
-            engine = ql.IsdaCdsEngine(probabilityCurve,recoveries[k],discountCurve)
+
+            engine = ql.IsdaCdsEngine(probabilityCurve,recovery,discountCurve)
             conventionalTrade = ql.CreditDefaultSwap(
                 ql.Protection.Buyer,10000000,0,0.01,cdsSchedule,
                 ql.Following,ql.Actual360(),True,True,tradeDate+1,
                 ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
                 ql.FaceValueClaim(), ql.Actual360(True))
             conventionalTrade.setPricingEngine(engine)
-            
+
             upfront = conventionalTrade.notional() * conventionalTrade.fairUpfront()
             print("Hazard:",h)
             print("Upfront:",upfront)
@@ -130,8 +129,7 @@ for i in range(0,len(termDates)):
             print("Tolerance:",tolerance)
             print(abs(upfront-markitValues[l])<tolerance)
             distance = distance + abs(upfront-markitValues[l])
-            
-            l = l + 1
-            
-print('total distance:',distance)
 
+            l = l + 1
+
+print('total distance:',distance)

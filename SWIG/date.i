@@ -289,16 +289,14 @@ import datetime as _datetime
 #endif
 
 #if defined(SWIGR)
+%rename(__add__) Date::operator+;
+%rename(__sub__) Date::operator-;
 %Rruntime %{
 setAs("_p_Date", "character",
 function(from) {from$ISO()})
 
 setAs("character", "_p_Date",
 function(from) { DateParser_parseISO(from) })
-
-
-setMethod("as.numeric", "_p_Date",
-    function(x) x$serialNumber())
 setMethod("+", c("_p_Date", "numeric"),
     function(e1,e2) Date___add__(e1,e2))
 setMethod("-", c("_p_Date", "numeric"),
@@ -307,6 +305,9 @@ setMethod("+", c("_p_Date", "_p_Period"),
     function(e1,e2) Date___add__(e1,e2))
 setMethod("-", c("_p_Date", "_p_Period"),
     function(e1,e2) Date___sub__(e1,e2))
+
+setMethod("as.numeric", "_p_Date",
+    function(x) x$serialNumber())
 
 setAs("character", "_p_Period",
 function(from) {Period(from)})

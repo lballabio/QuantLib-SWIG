@@ -86,9 +86,9 @@ for maturity, s in zip(maturities, quoted_spreads):
     all_cds.append(cds)
 
 print("Repricing of quoted CDSs employed for calibration: ")
-for i in range(len(tenors)):
-    print("%s fair spread: %.7g" % (tenors[i], all_cds[i].fairSpread()))
-    print("   NPV: %g" % all_cds[i].NPV())
-    print("   default leg: %.7g" % all_cds[i].defaultLegNPV())
-    print("   coupon leg: %.7g" % all_cds[i].couponLegNPV())
+for cds, tenor in zip(all_cds, tenors):
+    print("%s fair spread: %.7g" % (tenor, cds.fairSpread()))
+    print("   NPV: %g" % cds.NPV())
+    print("   default leg: %.7g" % cds.defaultLegNPV())
+    print("   coupon leg: %.7g" % cds.couponLegNPV())
     print("")

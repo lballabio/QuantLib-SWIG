@@ -99,10 +99,11 @@ class Calendar {
                                    const Date& to,
                                    bool includeFirst = true,
                                    bool includeLast = false);
-    static std::vector<Date> holidayList(const Calendar& calendar,
-                                   const Date& from,
-                                   const Date& to,
-                                   bool includeWeekEnds = false);
+    std::vector<Date> holidayList(const Date& from,
+                                  const Date& to,
+                                  bool includeWeekEnds = false);
+    std::vector<Date> businessDayList(const Date& from,
+                                      const Date& to);
     std::string name();
     %extend {
         std::string __str__() {

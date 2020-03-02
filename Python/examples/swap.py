@@ -233,25 +233,25 @@ forward.setPricingEngine(swapEngine)
 
 
 def formatPrice(p, digits=2):
-    format = "%%.%df" % digits
-    return format % p
+    fmt = "%%.%df" % digits
+    return fmt % p
 
 
 def formatRate(r, digits=2):
-    format = "%%.%df %%%%" % digits
-    return format % (r * 100)
+    fmt = "%%.%df %%%%" % digits
+    return fmt % (r * 100)
 
 
 headers = ("term structure", "net present value", "fair spread", "fair fixed rate")
 separator = " | "
 
-format = ""
+fmt = ""
 width = 0
 for h in headers[:-1]:
-    format += "%%%ds" % len(h)
-    format += separator
+    fmt += "%%%ds" % len(h)
+    fmt += separator
     width += len(h) + len(separator)
-format += "%%%ds" % len(headers[-1])
+fmt += "%%%ds" % len(headers[-1])
 width += len(headers[-1])
 
 rule = "-" * width
@@ -260,7 +260,7 @@ tab = " " * 8
 
 
 def report(swap, name):
-    print(format % (name, formatPrice(swap.NPV(), 2), formatRate(swap.fairSpread(), 4), formatRate(swap.fairRate(), 4)))
+    print(fmt % (name, formatPrice(swap.NPV(), 2), formatRate(swap.fairSpread(), 4), formatRate(swap.fairRate(), 4)))
 
 
 print(dblrule)

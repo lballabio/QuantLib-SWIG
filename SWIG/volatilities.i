@@ -4,7 +4,7 @@
  Copyright (C) 2011 Lluis Pujol Bajador
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
- Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2018, 2019, 2020 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -161,6 +161,42 @@ class SwaptionVolatilityStructure : public VolatilityTermStructure {
     Real blackVariance(Time start, Time length,
                        Rate strike, bool extrapolate = false) const;
     Date optionDateFromTenor(const Period& p) const;
+    Real shift(const Period& optionTenor,
+               const Period& swapTenor,
+               bool extrapolate = false) const;
+    Real shift(const Date& optionDate,
+               const Period& swapTenor,
+               bool extrapolate = false) const;
+    Real shift(Time optionTime,
+               const Period& swapTenor,
+               bool extrapolate = false) const;
+    Real shift(const Period& optionTenor,
+               Time swapLength,
+               bool extrapolate = false) const;
+    Real shift(const Date& optionDate,
+               Time swapLength,
+               bool extrapolate = false) const;
+    Real shift(Time optionTime,
+               Time swapLength,
+               bool extrapolate = false) const;
+    boost::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
+                                                 const Period& swapTenor,
+                                                 bool extr = false) const;
+    boost::shared_ptr<SmileSection> smileSection(const Date& optionDate,
+                                                 const Period& swapTenor,
+                                                 bool extr = false) const;
+    boost::shared_ptr<SmileSection> smileSection(Time optionTime,
+                                                 const Period& swapTenor,
+                                                 bool extr = false) const;
+    boost::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
+                                                 Time swapLength,
+                                                 bool extr = false) const;
+    boost::shared_ptr<SmileSection> smileSection(const Date& optionDate,
+                                                 Time swapLength,
+                                                 bool extr = false) const;
+    boost::shared_ptr<SmileSection> smileSection(Time optionTime,
+                                                 Time swapLength,
+                                                 bool extr = false) const;
 };
 
 %template(SwaptionVolatilityStructureHandle) Handle<SwaptionVolatilityStructure>;
@@ -482,7 +518,12 @@ class SwaptionVolCube1 : public SwaptionVolatilityDiscrete {
                                            = boost::shared_ptr<EndCriteria>(),
              Real maxErrorTolerance = Null<Real>(),
              const boost::shared_ptr<OptimizationMethod>& optMethod
-                                  = boost::shared_ptr<OptimizationMethod>());
+                                  = boost::shared_ptr<OptimizationMethod>(),
+             const Real errorAccept = Null<Real>(),
+             const bool useMaxError = false,
+             const Size maxGuesses = 50,
+             const bool backwardFlat = false,
+             const Real cutoffStrike = 0.0001);
     Matrix sparseSabrParameters() const;
     Matrix denseSabrParameters() const;
     Matrix marketVolCube() const;

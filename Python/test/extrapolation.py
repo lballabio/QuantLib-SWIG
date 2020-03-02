@@ -26,7 +26,7 @@ class ExtrapolationTest(unittest.TestCase):
         """Testing Richardson extrapolation of e^x at x->1 with known order of convergence"""
         f = lambda x: math.exp(1+x)
         x = ql.RichardsonExtrapolation(f, 0.01, 1.0)(4.0)
-        
+
         self.assertAlmostEqual(x, math.exp(1), 4,
             msg="Unable to extrapolate exp(x) at x->1")
 
@@ -34,7 +34,7 @@ class ExtrapolationTest(unittest.TestCase):
         """Testing Richardson extrapolation of e^x at x->1 with unknown order of convergence"""
         f = lambda x: math.exp(1+x)
         x = ql.RichardsonExtrapolation(f, 0.01)(4.0, 2.0)
-        
+
         self.assertAlmostEqual(x, math.exp(1), 4,
             msg="Unable to extrapolate exp(x) at x->1")
 

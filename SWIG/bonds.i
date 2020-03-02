@@ -165,7 +165,7 @@ class FixedRateBond : public Bond {
             const Calendar& exCouponCalendar = Calendar(),
             BusinessDayConvention exCouponConvention = Unadjusted,
             bool exCouponEndOfMonth = false);
-    //! generic compounding and frequency InterestRate coupons 
+    //! generic compounding and frequency InterestRate coupons
     FixedRateBond(
           Integer settlementDays,
           Real faceAmount,
@@ -179,7 +179,7 @@ class FixedRateBond : public Bond {
           const Calendar& exCouponCalendar = Calendar(),
           BusinessDayConvention exCouponConvention = Unadjusted,
           bool exCouponEndOfMonth = false);
-    //! simple annual compounding coupon rates with internal schedule calculation 
+    //! simple annual compounding coupon rates with internal schedule calculation
     FixedRateBond(
           Integer settlementDays,
           const Calendar& couponCalendar,
@@ -401,22 +401,19 @@ using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
 %}
 
-%shared_ptr(CallableFixedRateBond)
-class CallableFixedRateBond : public Bond {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") CallableFixedRateBond;
-    #endif
+%shared_ptr(CallableBond)
+class CallableBond : public Bond {
+  private:
+    CallableBond();
   public:
-    CallableFixedRateBond(
-            Integer settlementDays,
-            Real faceAmount,
-            const Schedule &schedule,
-            const std::vector<Rate>& coupons,
-            const DayCounter& accrualDayCounter,
-            BusinessDayConvention paymentConvention,
-            Real redemption,
-            Date issueDate,
-            const std::vector<boost::shared_ptr<Callability> > &putCallSchedule);
+    const std::vector<boost::shared_ptr<Callability> >& callability() const;
+
+    Volatility impliedVolatility(Real targetValue,
+                                 const Handle<YieldTermStructure>& discountCurve,
+                                 Real accuracy,
+                                 Size maxEvaluations,
+                                 Volatility minVol,
+                                 Volatility maxVol) const;
 
     Real OAS(Real cleanPrice,
              const Handle<YieldTermStructure>& engineTS,
@@ -448,6 +445,25 @@ class CallableFixedRateBond : public Bond {
                             Compounding compounding,
                             Frequency frequency,
                             Real bump=2e-4);
+};
+
+
+%shared_ptr(CallableFixedRateBond)
+class CallableFixedRateBond : public CallableBond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CallableFixedRateBond;
+    #endif
+  public:
+    CallableFixedRateBond(
+            Integer settlementDays,
+            Real faceAmount,
+            const Schedule &schedule,
+            const std::vector<Rate>& coupons,
+            const DayCounter& accrualDayCounter,
+            BusinessDayConvention paymentConvention,
+            Real redemption,
+            Date issueDate,
+            const std::vector<boost::shared_ptr<Callability> >& putCallSchedule);
 };
 
 %shared_ptr(TreeCallableFixedRateBondEngine)

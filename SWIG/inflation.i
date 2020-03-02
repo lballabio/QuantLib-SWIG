@@ -219,8 +219,55 @@ struct CPI {
     enum InterpolationType { AsIndex, Flat, Linear };
 };
 
-// bootstrapped curves
 
+// cashflows
+
+%{
+using QuantLib::InflationCoupon;
+using QuantLib::CPICoupon;
+%}
+
+%shared_ptr(InflationCoupon)
+class InflationCoupon : public Coupon {
+  private:
+    InflationCoupon();
+  public:
+    Date fixingDate() const;
+    Integer fixingDays() const;
+    Period observationLag() const;
+    Rate indexFixing() const;
+    boost::shared_ptr<InflationIndex> index() const;
+};
+
+%inline %{
+    boost::shared_ptr<InflationCoupon> as_inflation_coupon(
+                                      const boost::shared_ptr<CashFlow>& cf) {
+        return boost::dynamic_pointer_cast<InflationCoupon>(cf);
+    }
+%}
+
+%shared_ptr(CPICoupon)
+class CPICoupon : public InflationCoupon {
+  private:
+    CPICoupon();
+  public:
+    Rate fixedRate() const;
+    Spread spread() const;
+    Rate adjustedFixing() const;
+    Rate baseCPI() const;
+    CPI::InterpolationType observationInterpolation() const;
+    boost::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+};
+
+%inline %{
+    boost::shared_ptr<CPICoupon> as_cpi_coupon(
+                                      const boost::shared_ptr<CashFlow>& cf) {
+        return boost::dynamic_pointer_cast<CPICoupon>(cf);
+    }
+%}
+
+
+// bootstrapped curves
 
 %{
 
