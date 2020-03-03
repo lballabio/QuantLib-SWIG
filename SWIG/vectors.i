@@ -32,7 +32,6 @@ SWIG_STD_VECTOR_ENHANCED( std::pair<Date,double> )
 namespace std {
 
     %template(IntVector) vector<int>;
-    %template(UnsignedIntVector) vector<unsigned int>;
     %template(DoubleVector) vector<double>;
     %template(StrVector) vector<std::string>;
     %template(BoolVector) vector<bool>;

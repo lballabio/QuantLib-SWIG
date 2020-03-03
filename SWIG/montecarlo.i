@@ -173,29 +173,14 @@ public:
   std::vector<Real> leftWeight()   const;
   std::vector<Real> rightWeight()  const;
   std::vector<Real> stdDeviation() const;
+  std::vector<Size> bridgeIndex()  const;
+  std::vector<Size> leftIndex()    const;
+  std::vector<Size> rightIndex()   const;
   %extend{
     std::vector<Real> transform(const std::vector<Real> &input){
       std::vector<Real> outp(input.size());
       $self->transform(input.begin(),input.end(),outp.begin());
       return outp;
-    }
-    std::vector<unsigned int> bridgeIndex() const{
-    	const std::vector<Size> &tmp = $self->bridgeIndex();
-    	std::vector<unsigned int> outp(tmp.size());
-    	std::copy(tmp.begin(), tmp.end(), outp.begin());
-    	return outp;
-    }
-    std::vector<unsigned int> leftIndex() const{
-    	const std::vector<Size> &tmp = $self->leftIndex();
-    	std::vector<unsigned int> outp(tmp.size());
-    	std::copy(tmp.begin(), tmp.end(), outp.begin());
-    	return outp;
-    }
-    std::vector<unsigned int> rightIndex() const{
-    	const std::vector<Size> &tmp = $self->rightIndex();
-    	std::vector<unsigned int> outp(tmp.size());
-    	std::copy(tmp.begin(), tmp.end(), outp.begin());
-    	return outp;
     }
   }
 };

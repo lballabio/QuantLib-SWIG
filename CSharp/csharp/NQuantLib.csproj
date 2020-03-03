@@ -958,6 +958,7 @@
     <Compile Include="SimpsonIntegral.cs" />
     <Compile Include="Singapore.cs" />
     <Compile Include="SITCurrency.cs" />
+    <Compile Include="SizeVector.cs" />
     <Compile Include="SKKCurrency.cs" />
     <Compile Include="Slovakia.cs" />
     <Compile Include="SmileSection.cs" />
@@ -1058,7 +1059,6 @@
     <Compile Include="UniformRandomSequenceGenerator.cs" />
     <Compile Include="UnitedKingdom.cs" />
     <Compile Include="UnitedStates.cs" />
-    <Compile Include="UnsignedIntVector.cs" />
     <Compile Include="UpfrontCdsHelper.cs" />
     <Compile Include="UpRounding.cs" />
     <Compile Include="USCPI.cs" />

@@ -194,9 +194,9 @@ class SobolRsg {
     Size dimension() const;
     void skipTo(Size n);
     %extend{
-      std::vector<unsigned int> nextInt32Sequence(){
+      std::vector<Size> nextInt32Sequence(){
         const std::vector<boost::uint_least32_t> &tmp = $self->nextInt32Sequence();
-        std::vector<unsigned int> outp(tmp.size());
+        std::vector<Size> outp(tmp.size());
         std::copy(tmp.begin(),tmp.end(),outp.begin());
         return outp;
       }
