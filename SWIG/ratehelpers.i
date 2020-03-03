@@ -44,7 +44,7 @@ using QuantLib::OISRateHelper;
 using QuantLib::DatedOISRateHelper;
 using QuantLib::FxSwapRateHelper;
 using QuantLib::OvernightIndexFutureRateHelper;
-using QuantLib::SoftFutureRateHelper;
+using QuantLib::SofrFutureRateHelper;
 %}
 
 struct Pillar {
