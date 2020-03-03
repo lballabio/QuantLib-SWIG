@@ -44,6 +44,7 @@ using QuantLib::OISRateHelper;
 using QuantLib::DatedOISRateHelper;
 using QuantLib::FxSwapRateHelper;
 using QuantLib::OvernightIndexFutureRateHelper;
+using QuantLib::SoftFutureRateHelper;
 %}
 
 struct Pillar {
@@ -333,6 +334,27 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& maturityDate,
             const boost::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+            OvernightIndexFuture::NettingType type = OvernightIndexFuture::Compounding);
+};
+
+%shared_ptr(SofrFutureRateHelper)
+class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
+  public:
+    SofrFutureRateHelper(
+            const Handle<Quote>& price,
+            Month referenceMonth,
+            Year referenceYear,
+            Frequency referenceFreq,
+            const boost::shared_ptr<OvernightIndex>& index,
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+            OvernightIndexFuture::NettingType type = OvernightIndexFuture::Compounding);
+    SofrFutureRateHelper(
+            Real price,
+            Month referenceMonth,
+            Year referenceYear,
+            Frequency referenceFreq,
+            const boost::shared_ptr<OvernightIndex>& index,
+            Real convexityAdjustment = 0.0,
             OvernightIndexFuture::NettingType type = OvernightIndexFuture::Compounding);
 };
 
