@@ -151,6 +151,7 @@ using QuantLib::ForwardFlat;
 using QuantLib::Linear;
 using QuantLib::LogLinear;
 using QuantLib::Cubic;
+using QuantLib::ConvexMonotone;
 
 class MonotonicCubic : public Cubic {
   public:
@@ -208,6 +209,11 @@ struct MonotonicLogCubic {};
 struct SplineCubic {};
 struct Kruger {};
 struct KrugerLog {};
+struct ConvexMonotone {
+    ConvexMonotone(Real quadraticity = 0.3,
+                   Real monotonicity = 0.7,
+                   bool forcePositive = true);
+};
 
 %{
 using QuantLib::RichardsonExtrapolation;
