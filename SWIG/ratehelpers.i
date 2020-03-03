@@ -333,8 +333,9 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& maturityDate,
             const boost::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            Futures::Type type = NettingType::Compounding);
+            OvernightIndexFuture::NettingType type = OvernightIndexFuture::Compounding);
 };
+
 
 // allow use of RateHelper vectors
 #if defined(SWIGCSHARP)

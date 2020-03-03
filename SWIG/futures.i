@@ -27,7 +27,12 @@ struct Futures {
     enum Type { IMM, ASX };
 };
 
+class OvernightIndexFuture {
+  private:
+    OvernightIndexFuture();
+  public:
+    enum NettingType { Averaging, Compounding };
+};
 
-enum NettingType { Averaging, Compounding };
 
 #endif
