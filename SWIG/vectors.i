@@ -29,6 +29,15 @@
 SWIG_STD_VECTOR_ENHANCED( std::pair<Date,double> )
 #endif
 
+%{
+template <class T, class U>
+std::vector<T> to_vector(const std::vector<U>& v) {
+    std::vector<T> out(v.size());
+    std::copy(v.begin(), v.end(), out.begin());
+    return out;
+}
+%}
+
 namespace std {
 
     %template(IntVector) vector<int>;
@@ -36,7 +45,6 @@ namespace std {
     %template(DoubleVector) vector<double>;
     %template(StrVector) vector<std::string>;
     %template(BoolVector) vector<bool>;
-    %template(SizeVector) vector<size_t>;
 
     %template(DoublePair) pair<double,double>;
     %template(DoublePairVector) vector<pair<double,double> >;
