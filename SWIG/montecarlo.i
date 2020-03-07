@@ -180,22 +180,13 @@ public:
       return outp;
     }
     std::vector<unsigned int> bridgeIndex() const{
-    	const std::vector<Size> &tmp = $self->bridgeIndex();
-    	std::vector<unsigned int> outp(tmp.size());
-    	std::copy(tmp.begin(), tmp.end(), outp.begin());
-    	return outp;
+        return to_vector<unsigned int>($self->bridgeIndex());
     }
     std::vector<unsigned int> leftIndex() const{
-    	const std::vector<Size> &tmp = $self->leftIndex();
-    	std::vector<unsigned int> outp(tmp.size());
-    	std::copy(tmp.begin(), tmp.end(), outp.begin());
-    	return outp;
+        return to_vector<unsigned int>($self->leftIndex());
     }
     std::vector<unsigned int> rightIndex() const{
-    	const std::vector<Size> &tmp = $self->rightIndex();
-    	std::vector<unsigned int> outp(tmp.size());
-    	std::copy(tmp.begin(), tmp.end(), outp.begin());
-    	return outp;
+        return to_vector<unsigned int>($self->rightIndex());
     }
   }
 };

@@ -54,7 +54,7 @@ using QuantLib::Glued1dMesher;
 class Fdm1dMesher {
   public:
     explicit Fdm1dMesher(Size size);
-    
+
     Size size() const;
     Real dplus(Size index) const;
     Real dminus(Size index) const;
@@ -75,7 +75,7 @@ class FdmBlackScholesMesher : public Fdm1dMesher {
     #if defined(SWIGPYTHON)
     %feature("kwargs") FdmBlackScholesMesher;
     #endif
-      
+
     FdmBlackScholesMesher(
         Size size,
         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
@@ -207,39 +207,54 @@ using QuantLib::FdmMesherComposite;
 
 class FdmLinearOpIterator {
   public:
-    FdmLinearOpIterator(
-        const std::vector<Size>& dim,
-        const std::vector<Size>& coordinates, Size index);
-
-    const std::vector<Size>& coordinates();
-
     %extend {
+        FdmLinearOpIterator(const std::vector<unsigned int>& dim,
+                            const std::vector<unsigned int>& coordinates,
+                            Size index) {
+            return new FdmLinearOpIterator(to_vector<Size>(dim),
+                                           to_vector<Size>(coordinates),
+                                           index);
+        }
+        std::vector<unsigned int> coordinates() {
+            return to_vector<unsigned int>($self->coordinates());
+        }
         void increment() {
             ++(*$self);
         }
         bool notEqual(const FdmLinearOpIterator& iterator) {
             return self->operator!=(iterator);
         }
-    }    
-    
+    }
+
     Size index() const;
 };
 
 %shared_ptr(FdmLinearOpLayout)
 class FdmLinearOpLayout {
   public:
-    explicit FdmLinearOpLayout(const std::vector<Size>& dim);
+    %extend {
+        FdmLinearOpLayout(const std::vector<unsigned int>& dim) {
+            return new FdmLinearOpLayout(to_vector<Size>(dim));
+        }
 
-    const std::vector<Size>& spacing();
-    const std::vector<Size>& dim() const;
+        std::vector<unsigned int> spacing() {
+            return to_vector<unsigned int>($self->spacing());
+        }
 
-    Size index(const std::vector<Size>& coordinates) const;
-    
+        std::vector<unsigned int> dim() const {
+            return to_vector<unsigned int>($self->dim());
+        }
+
+        Size index(const std::vector<unsigned int>& coordinates) const {
+            return $self->index(to_vector<Size>(coordinates));
+        }
+    }
+
     FdmLinearOpIterator begin() const;
     FdmLinearOpIterator end() const;
-    
+
     Size size() const;
-    
+
     Size neighbourhood(const FdmLinearOpIterator& iterator,
                        Size i, Integer offset) const;
 
@@ -247,13 +262,8 @@ class FdmLinearOpLayout {
                        Size i1, Integer offset1,
                        Size i2, Integer offset2) const;
 
-    %extend {
-        FdmLinearOpIterator iter_neighbourhood(
-            const FdmLinearOpIterator& iterator, Size i, Integer offset) const {
-            
-            return self->iter_neighbourhood(iterator, i, offset);
-        }
-    }
+    FdmLinearOpIterator iter_neighbourhood(
+        const FdmLinearOpIterator& iterator, Size i, Integer offset) const;
 };
 
 
@@ -324,7 +334,7 @@ using QuantLib::FdmLinearOpComposite;
 class FdmLinearOp {
   public:
     virtual Array apply(const Array& r) const;
-     
+
   private:
     FdmLinearOp();
 };
@@ -334,7 +344,7 @@ class FdmLinearOpComposite : public FdmLinearOp {
   public:    
     virtual Size size() const;
     virtual void setTime(Time t1, Time t2);
-    
+
     virtual Array apply_mixed(const Array& r) const;
     virtual Array apply_direction(Size direction, const Array& r) const;
     virtual Array solve_splitting(Size direction, const Array& r, Real s) const;
@@ -352,7 +362,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
       FdmLinearOpCompositeProxy(PyObject* callback) : callback_(callback) {
         Py_XINCREF(callback_);
     }
-    
+
     FdmLinearOpCompositeProxy& operator=(const FdmLinearOpCompositeProxy& f) {
         if ((this != &f) && (callback_ != f.callback_)) {
             Py_XDECREF(callback_);
@@ -366,17 +376,17 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     : callback_(p.callback_) {
         Py_XINCREF(callback_);
     }
-        
+
     ~FdmLinearOpCompositeProxy() {
         Py_XDECREF(callback_);
     }
-        
+
     Size size() const {
         PyObject* pyResult = PyObject_CallMethod(callback_,"size", NULL);
-        
+
         QL_ENSURE(pyResult != NULL,
                   "failed to call size() on Python object");
-                  
+
         Size result = PyInt_AsLong(pyResult);
         Py_XDECREF(pyResult);
         
@@ -386,10 +396,10 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     void setTime(Time t1, Time t2) {
         PyObject* pyResult 
             = PyObject_CallMethod(callback_,"setTime","dd", t1, t2);
-            
+
         QL_ENSURE(pyResult != NULL,
                   "failed to call setTime() on Python object");
-                                    
+
         Py_XDECREF(pyResult);
     }
 
@@ -400,7 +410,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     Disposable<Array> apply_mixed(const Array& r) const {
         return apply(r, "apply_mixed");        
     }
-    
+
     Disposable<Array> apply_direction(Size direction, const Array& r) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
@@ -413,7 +423,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
             
         return extractArray(pyResult, "apply_direction");        
     }
-    
+
     Disposable<Array> solve_splitting(
         Size direction, const Array& r, Real s) const {
 
@@ -428,7 +438,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
             
         return extractArray(pyResult, "solve_splitting");        
     }
-    
+
     Disposable<Array> preconditioner(const Array& r, Real s) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
@@ -471,7 +481,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
     FdmLinearOpCompositeProxy(PyObject* callback);
-    
+
 };
 
 #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
@@ -480,19 +490,19 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 class FdmLinearOpCompositeDelegate {
   public:
     virtual ~FdmLinearOpCompositeDelegate() {}
-      
+
     virtual Size size() const {
         QL_FAIL("implementation of FdmLinearOpCompositeDelegate.size is missing");        
     }
-    
+
     virtual void setTime(Time t1, Time t2) {
         QL_FAIL("implementation of FdmLinearOpCompositeDelegate.setTime is missing");    
     }
-      
+
     virtual Array apply(const Array& r) const {
         QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply is missing");    
     }
-    
+
     virtual Array apply_mixed(const Array& r) const {
         QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply_mixed is missing");    
     }    
@@ -500,7 +510,7 @@ class FdmLinearOpCompositeDelegate {
     virtual Array apply_direction(Size direction, const Array& r) const {
         QL_FAIL("implementation of FdmLinearOpCompositeDelegate.apply_direction is missing");    
     }
-    
+
     virtual Array solve_splitting(Size direction, const Array& r, Real s) const {
         QL_FAIL("implementation of FdmLinearOpCompositeDelegate.solve_splitting is missing");        
     }    
@@ -514,10 +524,10 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
     FdmLinearOpCompositeProxy(FdmLinearOpCompositeDelegate* delegate)
     : delegate_(delegate) {}
-      
+
     Size size() const { return delegate_->size(); }
     void setTime(Time t1, Time t2) { delegate_->setTime(t1, t2); }
-    
+
     Disposable<Array> apply(const Array& r) const {
         Array retVal = delegate_->apply(r);
         return retVal;
@@ -557,10 +567,10 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 class FdmLinearOpCompositeDelegate {
   public:
     virtual ~FdmLinearOpCompositeDelegate();
-  
+
     virtual Size size() const;
     virtual void setTime(Time t1, Time t2);
-      
+
     virtual Array apply(const Array& r) const;
     virtual Array apply_mixed(const Array& r) const;    
     virtual Array apply_direction(Size direction, const Array& r) const;
@@ -568,7 +578,7 @@ class FdmLinearOpCompositeDelegate {
         Size direction, const Array& r, Real s) const;    
     virtual Array preconditioner(const Array& r, Real dt) const;
 };
-    
+
 #endif
 
 %{
@@ -609,7 +619,7 @@ class FdmBoundaryCondition {
     virtual void applyBeforeSolving(FdmLinearOp&, Array& rhs) const;
     virtual void applyAfterSolving(Array&) const;
     virtual void setTime(Time t);
-    
+
   private:
     FdmBoundaryCondition();
 };
@@ -660,7 +670,7 @@ class FdmTimeDepDirichletBoundary : public FdmBoundaryCondition {
             const boost::shared_ptr<FdmMesher>& mesher,
             PyObject* function,
             Size direction, Side side) {
-            
+
             const boost::function<Real(Real)> f = UnaryFunction(function);
             return new FdmTimeDepDirichletBoundary(
                 mesher, f, direction, side);
@@ -670,7 +680,7 @@ class FdmTimeDepDirichletBoundary : public FdmBoundaryCondition {
             const boost::shared_ptr<FdmMesher>& mesher,
             UnaryFunctionDelegate* function,
             Size direction, Side side) {
-            
+
             const boost::function<Real(Real)> f = UnaryFunction(function);
             return new FdmTimeDepDirichletBoundary(
                 mesher, f, direction, side);        
@@ -877,12 +887,12 @@ class TripleBandLinearOp : public FdmLinearOp {
 
     Array apply(const Array& r) const;
     Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;
-    
+
     TripleBandLinearOp mult(const Array& u) const;
     TripleBandLinearOp multR(const Array& u) const;
     TripleBandLinearOp add(const TripleBandLinearOp& m) const;
     TripleBandLinearOp add(const Array& u) const;
-    
+
     void axpyb(const Array& a, const TripleBandLinearOp& x,
                const TripleBandLinearOp& y, const Array& b);
     void swap(TripleBandLinearOp& m);
@@ -978,7 +988,7 @@ class CrankNicolsonScheme  {
     #if defined(SWIGPYTHON)
         %feature("kwargs") CrankNicolsonScheme;
     #endif
-  
+
     CrankNicolsonScheme(
         Real theta,
         const boost::shared_ptr<FdmLinearOpComposite>& map,
@@ -1077,7 +1087,7 @@ template <class array_type>
 class StepCondition {
   public:
     virtual void applyTo(array_type& a, Time t) const;
-    
+
   private:
     StepCondition();
 };
@@ -1096,7 +1106,7 @@ class FdmStepConditionProxy : public StepCondition<Array> {
     : callback_(p.callback_) {
         Py_XINCREF(callback_);
     }
-        
+
     FdmStepConditionProxy& operator=(const FdmStepConditionProxy& f) {
         if ((this != &f) && (callback_ != f.callback_)) {
             Py_XDECREF(callback_);
@@ -1105,18 +1115,18 @@ class FdmStepConditionProxy : public StepCondition<Array> {
         }
         return *this;
     }
-    
+
     ~FdmStepConditionProxy() {
         Py_XDECREF(callback_);
     }
-        
+
     void applyTo(Array& a, Time t) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&a), SWIGTYPE_p_Array, 0);
             
         PyObject* pyResult 
             = PyObject_CallMethod(callback_, "applyTo", "Od",pyArray, t);
-            
+
         Py_XDECREF(pyArray);
     }
     
@@ -1137,7 +1147,7 @@ class FdmStepConditionProxy : public StepCondition<Array> {
 class FdmStepConditionDelegate {
   public:
     virtual ~FdmStepConditionDelegate() {}
-      
+
     virtual void applyTo(Array& a, Time t) const {
         QL_FAIL("implementation of FdmStepCondition.applyTo is missing");        
     }
@@ -1147,7 +1157,7 @@ class FdmStepConditionProxy : public StepCondition<Array> {
   public:
     FdmStepConditionProxy(FdmStepConditionDelegate* delegate)
     : delegate_(delegate) {}
-    
+
     void applyTo(Array& a, Time t) const {
         delegate_->applyTo(a, t);
     }
@@ -1171,7 +1181,7 @@ class FdmStepConditionDelegate {
     virtual ~FdmStepConditionDelegate();
     virtual void applyTo(Array& a, Time t) const;
 };
-    
+
 #endif
 
 
@@ -1180,7 +1190,7 @@ class FdmInnerValueCalculator {
   public:
     virtual Real innerValue(const FdmLinearOpIterator& iter, Time t);
     virtual Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
-    
+
   private:
     FdmInnerValueCalculator();
 };
@@ -1197,7 +1207,7 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
     : callback_(p.callback_) {
         Py_XINCREF(callback_);
     }
-        
+
     FdmInnerValueCalculatorProxy& operator=(const FdmInnerValueCalculatorProxy& f) {
         if ((this != &f) && (callback_ != f.callback_)) {
             Py_XDECREF(callback_);
@@ -1206,11 +1216,11 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
         }
         return *this;
     }
-    
+
     ~FdmInnerValueCalculatorProxy() {
         Py_XDECREF(callback_);
     }
-        
+
     Real innerValue(const FdmLinearOpIterator& iter, Time t) {
         return getValue(iter, t, "innerValue");
     }
@@ -1235,13 +1245,13 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
 #endif            
             
         Py_XDECREF(pyIter);
-                            
+
         QL_ENSURE(pyResult != NULL, "failed to call innerValue function on Python object");
-        
+
         const Real result = PyFloat_AsDouble(pyResult);
 
         Py_XDECREF(pyResult);
-        
+
         return result;
       }
             
@@ -1274,7 +1284,7 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
   public:
     FdmInnerValueCalculatorProxy(FdmInnerValueCalculatorDelegate* delegate)
     : delegate_(delegate) {}
-    
+
     Real innerValue(const FdmLinearOpIterator& iter, Time t) {
         delegate_->innerValue(iter, t);        
     }
@@ -1299,7 +1309,7 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
 class FdmInnerValueCalculatorDelegate {
   public:
     virtual ~FdmInnerValueCalculatorDelegate();
-      
+
     virtual Real innerValue(const FdmLinearOpIterator& iter, Time t);
     virtual Real avgInnerValue(const FdmLinearOpIterator& iter, Time t);
 };
@@ -1309,7 +1319,7 @@ class FdmInnerValueCalculatorDelegate {
 %shared_ptr(FdmCellAveragingInnerValue)
 class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
   public:
-  
+
 #if defined(SWIGPYTHON)
     %extend {
         FdmCellAveragingInnerValue(
@@ -1317,7 +1327,7 @@ class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
             const boost::shared_ptr<FdmMesher>& mesher,
             Size direction,
             PyObject* gridMapping) {
-            
+
                 UnaryFunction f(gridMapping);
                 return new FdmCellAveragingInnerValue(payoff, mesher, direction, f);
         }
@@ -1391,14 +1401,14 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
             const std::vector<Date>& exerciseDates,
             const boost::shared_ptr<FdmMesher>& mesher,
             Size direction) {
-            
+
             QL_REQUIRE(exerciseTimes.size() == exerciseDates.size(),
                 "different exercise dates and times length");
-                
+
             std::map<Time, Date> t2d;
             for (Size i=0; i < exerciseTimes.size(); ++i) 
                 t2d[ exerciseTimes[i] ] = exerciseDates[i];
-                            
+
             return new FdmAffineModelSwapInnerValue<ModelType>(
                 disModel, fwdModel, swap, t2d, mesher, direction);
         }
@@ -1447,7 +1457,7 @@ public:
                     conditions.begin(), conditions.end()));
         }
     }
-    
+
     const std::vector<Time>& stoppingTimes() const;
     const std::vector<boost::shared_ptr<StepCondition<Array> > > & conditions() const;
 
@@ -1525,7 +1535,7 @@ class FdmDividendHandler : public StepCondition<Array> {
                        const Date& referenceDate,
                        const DayCounter& dayCounter,
                        Size equityDirection);
- 
+
     const std::vector<Time>& dividendTimes() const;
     const std::vector<Date>& dividendDates() const;
     const std::vector<Real>& dividends() const;
@@ -1706,10 +1716,10 @@ class FdmHestonHullWhiteSolver {
                     corrEquityShortRate, solverDesc, schemeDesc);                    
         }
     }
-    
+
     Real valueAt(Real s, Real v, Rate r) const;
     Real thetaAt(Real s, Real v, Rate r) const;
-    
+
     Real deltaAt(Real s, Real v, Rate r, Real eps) const;
     Real gammaAt(Real s, Real v, Rate r, Real eps) const;
 };
@@ -1731,7 +1741,7 @@ class FdmHestonSolver {
                 = boost::shared_ptr<FdmQuantoHelper>(),
             const boost::shared_ptr<LocalVolTermStructure>& leverageFct
                 = boost::shared_ptr<LocalVolTermStructure>()) {
-                
+
                 return new FdmHestonSolver(
                     Handle<HestonProcess>(process),
                     solverDesc, schemeDesc, 
@@ -1739,7 +1749,7 @@ class FdmHestonSolver {
                     leverageFct);
         }
     }
-    
+
     Real valueAt(Real s, Real v) const;
     Real thetaAt(Real s, Real v) const;
 
@@ -1807,7 +1817,11 @@ class FdmIndicesOnBoundary {
     FdmIndicesOnBoundary(const boost::shared_ptr<FdmLinearOpLayout>& l,
                           Size direction, FdmDirichletBoundary::Side side);
 
-    const std::vector<Size>& getIndices() const;
+    %extend {
+        std::vector<unsigned int> getIndices() const {
+            return to_vector<unsigned int>($self->getIndices());
+        }
+    }
 };
 
 
@@ -1860,7 +1874,7 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
 #if defined(SWIGPYTHON)
 %feature("kwargs") LocalVolRNDCalculator;
 #endif
-  
+
     LocalVolRNDCalculator(
         const boost::shared_ptr<Quote>& spot,
         const boost::shared_ptr<YieldTermStructure>& rTS,
@@ -1873,7 +1887,11 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
         Time gaussianStepSize = -Null<Time>());
 
     boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
-    std::vector<Size> rescaleTimeSteps() const;
+    %extend {
+        std::vector<unsigned int> rescaleTimeSteps() const {
+            return to_vector<unsigned int>($self->rescaleTimeSteps());
+        }
+    }
 };
 
 %shared_ptr(SquareRootProcessRNDCalculator)
