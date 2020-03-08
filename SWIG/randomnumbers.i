@@ -188,7 +188,7 @@ class SobolRsg {
             JoeKuoD5, JoeKuoD6, JoeKuoD7,
             Kuo, Kuo2, Kuo3 };
     SobolRsg(Size dimensionality, BigInteger seed=0,
-            DirectionIntegers directionIntegers = QuantLib::SobolRsg::Jaeckel);
+             DirectionIntegers directionIntegers = QuantLib::SobolRsg::Jaeckel);
     const Sample<std::vector<Real> >& nextSequence() const;
     const Sample<std::vector<Real> >& lastSequence() const;
     Size dimension() const;
@@ -236,7 +236,10 @@ class UniformRandomSequenceGenerator {
 
 class UniformLowDiscrepancySequenceGenerator {
   public:
-    UniformLowDiscrepancySequenceGenerator(Size dimensionality);
+    UniformLowDiscrepancySequenceGenerator(
+        Size dimensionality,
+        BigInteger seed=0,
+        SobolRsg::DirectionIntegers directionIntegers = QuantLib::SobolRsg::Jaeckel);
     const Sample<std::vector<Real> >& nextSequence() const;
     Size dimension() const;
 };
