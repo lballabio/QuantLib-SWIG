@@ -135,4 +135,93 @@ export_piecewise_curve(PiecewiseKrugerLogDiscount,Discount,KrugerLog);
 export_piecewise_curve(PiecewiseConvexMonotoneZero,ZeroYield,ConvexMonotone);
 
 
+// global boostrapper
+// hard-coded to linearly-interpolated, simply-compounded zero rates for now
+
+%{
+class AdditionalErrors {
+    std::vector<boost::shared_ptr<RateHelper> > additionalHelpers_;
+  public:
+    AdditionalErrors(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers)
+    : additionalHelpers_(additionalHelpers) {}
+    Array operator()() const {
+        Array errors(additionalHelpers_.size() - 2);
+        Real a = additionalHelpers_.front()->impliedQuote();
+        Real b = additionalHelpers_.back()->impliedQuote();
+        for (Size k = 0; k < errors.size(); ++k) {
+            errors[k] = (static_cast<Real>(errors.size()-k) * a + static_cast<Real>(1+k) * b) / static_cast<Real>(errors.size()+1)
+                - additionalHelpers_.at(1+k)->impliedQuote();
+        }
+        return errors;
+    }
+};
+
+class AdditionalDates {
+    std::vector<Date> additionalDates_;
+  public:
+    AdditionalDates(const std::vector<Date>& additionalDates)
+    : additionalDates_(additionalDates) {}
+    std::vector<Date> operator()() const {
+        return additionalDates_;
+    }
+};
+
+struct GlobalBootstrap {
+    std::vector<boost::shared_ptr<RateHelper> > additionalHelpers;
+    std::vector<Date> additionalDates;
+    double accuracy;
+    GlobalBootstrap(double accuracy = Null<double>())
+    : accuracy(accuracy) {}
+    GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+                    const std::vector<Date>& additionalDates,
+                    double accuracy = Null<double>())
+    : additionalHelpers(additionalHelpers), additionalDates(additionalDates), accuracy(accuracy) {}
+};
+%}
+
+struct GlobalBootstrap {
+    GlobalBootstrap(doubleOrNull accuracy = Null<double>());
+    GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+                    const std::vector<Date>& additionalDates,
+                    doubleOrNull accuracy = Null<double>());
+};
+
+
+%{
+using QuantLib::SimpleZeroYield;
+typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, QuantLib::GlobalBootstrap>
+    GlobalLinearSimpleZeroCurve;
+%}
+
+%shared_ptr(GlobalLinearSimpleZeroCurve);
+class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
+  public:
+    %extend {
+        GlobalLinearSimpleZeroCurve(
+             const Date& referenceDate,
+             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const GlobalBootstrap& b) {
+            if (b.additionalHelpers.empty()) {
+                return new GlobalLinearSimpleZeroCurve(
+                    referenceDate, instruments, dayCounter, Linear(),
+                    GlobalLinearSimpleZeroCurve::bootstrap_type(b.accuracy));
+            } else {
+                return new GlobalLinearSimpleZeroCurve(
+                    referenceDate, instruments, dayCounter, Linear(),
+                    GlobalLinearSimpleZeroCurve::bootstrap_type(b.additionalHelpers,
+                                                                AdditionalDates(b.additionalDates),
+                                                                AdditionalErrors(b.additionalHelpers),
+                                                                b.accuracy));
+            }
+        }
+    }
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
+};
+
+
 #endif
