@@ -1,49 +1,50 @@
 
-Main changes for QuantLib-SWIG 1.17
+Main changes for QuantLib-SWIG 1.18
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/10?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/11?closed=1>.
 
-- The Python module is now available on PyPI as simply `QuantLib`.
-  The old name `QuantLib-Python` will still be provided for a while
-  but it will cause the new module to be installed.
+- As announced in the past release, the Ruby wrappers were removed.
+  They have been broken for a while, and nobody expressed any interest
+  in fixing them.
 
-- As of this release, the Ruby wrappers are deprecated.  They will be
-  removed in next release.  They have been broken for a while, and
-  nobody expressed any interest in fixing them.
+- Exported most of the inner machinery (meshers, operators, boundary
+  conditions, schemes, solvers...) of the finite-difference framework
+  (thanks to Klaus Spanderen).
 
-- It is now possible to specify at run time whether to use indexed
-  coupons (thanks to Ralf Konrad).  This makes it possible to enable
-  them using prebuilt binaries without having to recompile them.  You
-  can call either of the static methods `IborCoupon::createAtParCoupons` or
-  `IborCoupon::createIndexedCoupons` to specify your preference.  For
-  the time being, the methods above must necessarily be called before
-  creating any instance of `IborCoupon` or of its derived classes.
+- Exported GJR-GARCH process, model, analytic engine and MC engine
+  (thanks to Pedro Coelho).
 
-- Exported `MakeOIS` class (thanks to Wojciech Slusarski).
+- The accuracy of piecewise curve can now be passed as an argument
+  to the `IterativeBootstrap` class, which in turn can be passed to
+  the curve.  The new class also allows to set minimum and maximum
+  values explicitly.
 
-- Exported American quanto dividend option engine (thanks to Klaus
-  Spanderen).
+- Exported the new `GlobalBootstrap` class and the corresponding
+  `GlobalLinearSimpleZeroCurve` curve.
 
-- Exported `legBPS` method for swaps (thanks to Mike DelMedico).
+- Exported the `CmsMarket` class (thanks to Matthias Lungwitz).
 
-- Exported cubic spline variant of piecewise discount curve,
-  interpolated discount curve and interpolated zero-rate curve (thanks
-  to Mike DelMedico).
+- Exported convex monotone and Kruger cubic and log-cubic
+  interpolation (thanks to Miguel Villasmil).
 
-- Exported interpolated zero and YoY inflation curves (thanks to
-  Matthias Lungwitz).
+- Exported `InflationCoupon` and `CPICoupon` classes with
+  corresponding functions `as_inflation_coupon` and `as_cpi_coupon`.
 
-- Exported overnight-indexed coupon and leg (thanks to Matthias
-  Lungwitz).
+- Exported missing methods of the `SwaptionVolatilityStructure` class
+  (thanks to Matthias Lungwitz).
 
-- Exported a few overnight LIBOR indexes.
+- Exported the `CallableFixedRateBond` class and a few missing methods
+  of the `CallableBond` class.
 
-- Exposed ex-coupon functionality for floaters.
+- Exported the `enforcesTodaysHistoricFixings` flag from the
+  `Settings` class (thanks to Tomáš Křehlík).
 
-- Added static convenience methods to call different fixed-rate bond
-  constructors using Python keyword arguments (thanks to Prasad
-  Somwanshi).
+- Exported the `OvernightIndexFutureRateHelper` class (thanks to
+  Miguel Villasmil).
 
-- Exported Newton solver to Java and C++ (thanks to Klaus Spanderen).
+- Exported the `SofrFutureRateHelper` class.
+
+- Allowed use of normal volatility with the `CapHelper` class.
+
