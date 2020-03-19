@@ -1,3 +1,21 @@
+commit 5d10cd7b2815e82968903de686156e3c7fa25cf9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Mar 2020 23:07:01 +0100
+
+    Add missing return statements.
+
+ SWIG/fdm.i | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 252af823321ca8fc22b4619cd299ffef70d01578
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 18 Mar 2020 16:54:52 +0100
+
+    Update changelog.
+
+ ChangeLog.txt | 1396 ++++++++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 883 insertions(+), 513 deletions(-)
+
 commit ea9e7f805cb8d9dfcdfb8dd3979424269bf7c566
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Wed, 18 Mar 2020 16:35:47 +0100
