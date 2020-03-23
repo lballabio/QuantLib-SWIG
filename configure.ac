@@ -77,6 +77,8 @@ AC_ARG_ENABLE([r],
               [build_r=$enableval],
               [build_r=yes])
 AM_CONDITIONAL(BUILD_R, test "$build_r" != "no")
+# sanitized version for stricter R checks
+AC_SUBST([PACKAGE_VERSION_FOR_R],["${PACKAGE_VERSION%-*}"])
 
 AC_PATH_PROG([JAVAC], [javac])
 AC_PATH_PROG([JAR], [jar])
