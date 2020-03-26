@@ -777,6 +777,38 @@ class CashFlows {
                          Date settlementDate = Date());
 
     %extend {
+
+        static boost::shared_ptr<CashFlow>
+        previousCashFlow(const Leg& leg,
+                         bool includeSettlementDateFlows,
+                         Date settlementDate = Date()) {
+            Leg::const_reverse_iterator i =
+                QuantLib::CashFlows::previousCashFlow(
+                    leg, includeSettlementDateFlows, settlementDate);
+
+            if (i == leg.rend())
+                return boost::shared_ptr<CashFlow>();
+            else
+                return *i;
+        }
+
+        static boost::shared_ptr<CashFlow>
+        nextCashFlow(const Leg& leg,
+                     bool includeSettlementDateFlows,
+                     Date settlementDate = Date()) {
+            Leg::const_iterator i =
+                QuantLib::CashFlows::nextCashFlow(
+                    leg, includeSettlementDateFlows, settlementDate);
+
+            if (i == leg.end())
+                return boost::shared_ptr<CashFlow>();
+            else
+                return *i;
+        }
+
+    }
+
+    %extend {
         static Real npv(
                    const Leg& leg,
                    const boost::shared_ptr<YieldTermStructure>& discountCurve,
