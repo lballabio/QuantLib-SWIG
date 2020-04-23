@@ -25,7 +25,7 @@ namespace BermudanSwaption
         private const int numRows = 5;
         private const int numCols = 5;
 
-        private static int[] swapLenghts = { 1, 2, 3, 4, 5 };
+        private static int[] swapLengths = { 1, 2, 3, 4, 5 };
         private static double[] swaptionVols = {
             0.1490, 0.1340, 0.1228, 0.1189, 0.1148,
             0.1290, 0.1201, 0.1146, 0.1108, 0.1040,
@@ -59,7 +59,7 @@ namespace BermudanSwaption
                 double diff = implied - swaptionVols[k];
 
                 Console.WriteLine( "{0}x{1}: model {2}, market {3} ({4})",
-                    i+1, swapLenghts[j], implied, swaptionVols[k], diff );
+                    i+1, swapLengths[j], implied, swaptionVols[k], diff );
             }
         }
 
@@ -158,7 +158,7 @@ namespace BermudanSwaption
                 Quote vol = new SimpleQuote( swaptionVols[k] );
                 SwaptionHelper helper = new SwaptionHelper(
                                 swaptionMaturities[i],
-                               new Period(swapLenghts[j], TimeUnit.Years),
+                               new Period(swapLengths[j], TimeUnit.Years),
                                new QuoteHandle(vol),
                                indexSixMonths,
                                indexSixMonths.tenor(),
