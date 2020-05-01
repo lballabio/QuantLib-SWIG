@@ -195,5 +195,8 @@
 %include zerocurve.i
 %include forward.i
 
+%include spread_option.i
+%include kirk_spread_option_engine.i
+
 // to be deprecated
 %include old_volatility.i
