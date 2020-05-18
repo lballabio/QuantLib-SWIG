@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2010, 2011 Lluis Pujol Bajador
- Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2017, 2018, 2019, 2020 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -140,6 +140,13 @@ using QuantLib::FloatingRateCouponPricer;
 class FloatingRateCouponPricer {
   private:
     FloatingRateCouponPricer();
+  public:
+    virtual Real swapletPrice() const;
+    virtual Rate swapletRate() const;
+    virtual Real capletPrice(Rate effectiveCap) const;
+    virtual Rate capletRate(Rate effectiveCap) const;
+    virtual Real floorletPrice(Rate effectiveFloor) const;
+    virtual Rate floorletRate(Rate effectiveFloor) const;
 };
 
 void setCouponPricer(const Leg&,
@@ -280,8 +287,12 @@ class IborCouponPricer : public FloatingRateCouponPricer {
 %shared_ptr(BlackIborCouponPricer)
 class BlackIborCouponPricer : public IborCouponPricer {
   public:
+    enum TimingAdjustment { Black76, BivariateLognormal };
     BlackIborCouponPricer(const Handle<OptionletVolatilityStructure>& v =
-                                     Handle<OptionletVolatilityStructure>());
+                                    Handle<OptionletVolatilityStructure>(),
+                                    const TimingAdjustment timingAdjustment = Black76,
+                                    const Handle<Quote> correlation =
+                                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(1.0))));
 };
 
 %{
