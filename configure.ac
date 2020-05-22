@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib-SWIG], [1.18],
+AC_INIT([QuantLib-SWIG], [1.19-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib-SWIG])
 AC_PREREQ(2.50)
@@ -77,6 +77,8 @@ AC_ARG_ENABLE([r],
               [build_r=$enableval],
               [build_r=yes])
 AM_CONDITIONAL(BUILD_R, test "$build_r" != "no")
+# sanitized version for stricter R checks
+AC_SUBST([PACKAGE_VERSION_FOR_R],["${PACKAGE_VERSION%-*}"])
 
 AC_PATH_PROG([JAVAC], [javac])
 AC_PATH_PROG([JAR], [jar])
@@ -161,7 +163,6 @@ AC_CONFIG_FILES([
     Java/Makefile
     Python/Makefile
     Python/setup.py
-    Python/setup-old.py
     R/Makefile
     R/DESCRIPTION
     Scala/Makefile])

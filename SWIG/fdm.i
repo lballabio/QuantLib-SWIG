@@ -1286,10 +1286,10 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
     : delegate_(delegate) {}
 
     Real innerValue(const FdmLinearOpIterator& iter, Time t) {
-        delegate_->innerValue(iter, t);        
+        return delegate_->innerValue(iter, t);
     }
     Real avgInnerValue(const FdmLinearOpIterator& iter, Time t) {
-        delegate_->avgInnerValue(iter, t);        
+        return delegate_->avgInnerValue(iter, t);
     }
     
   private:  

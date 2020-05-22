@@ -2,6 +2,11 @@
 QuantLib-SWIG: language bindings for QuantLib
 =============================================
 
+[![Build Status](https://travis-ci.com/lballabio/QuantLib-SWIG.svg?branch=master)](https://travis-ci.com/lballabio/QuantLib-SWIG)
+[![PyPI version](https://badge.fury.io/py/QuantLib.svg)](https://badge.fury.io/py/QuantLib)
+
+---
+
 QuantLib-SWIG provides the means to use QuantLib from a number of
 languages including Python, Ruby, Perl, C# and Java.
 
