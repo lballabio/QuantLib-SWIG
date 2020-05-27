@@ -640,7 +640,7 @@ class FdmTest(unittest.TestCase):
     def testFdmZeroInnverValue(self):
         """Testing FdmZeroInnverValue"""
         iter = ql.FdmLinearOpIterator([1], [0], 0)
-        
+
         self.assertEqual(ql.FdmZeroInnerValue().innerValue(iter, 1.0), 0.0)
 
 
