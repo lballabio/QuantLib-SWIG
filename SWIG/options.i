@@ -372,7 +372,9 @@ class AnalyticHestonEngine : public PricingEngine {
       Integration(Algorithm intAlgo,
                 const boost::shared_ptr<Integrator>& integrator);
     };
-    enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
+    enum ComplexLogFormula { 
+        Gatheral, BranchCorrection, AndersenPiterbarg, AndersenPiterbargOptCV
+    };
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
@@ -400,6 +402,21 @@ class COSHestonEngine : public PricingEngine {
   public:
     COSHestonEngine(const boost::shared_ptr<HestonModel>& model,
                     Real L = 16, Size N = 200);
+};
+
+%{
+using QuantLib::ExponentialFittingHestonEngine;
+%}
+
+%shared_ptr(ExponentialFittingHestonEngine)
+class ExponentialFittingHestonEngine : public PricingEngine {
+  public:
+    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
+    
+    ExponentialFittingHestonEngine(
+        const ext::shared_ptr<HestonModel>& model,
+        ControlVariate cv = AndersenPiterbargOptCV,
+        Real scaling = Null<Real>());
 };
 
 

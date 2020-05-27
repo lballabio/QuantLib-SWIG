@@ -86,6 +86,10 @@ report("Heston analytic", option.NPV())
 option.setPricingEngine(ql.COSHestonEngine(hestonModel))
 report("Heston COS Method", option.NPV())
 
+# method: Heston Exponentially-Fitted Gauss-Laguerre quadrature rule
+option.setPricingEngine(ql.ExponentialFittingHestonEngine(hestonModel))
+report("Heston ExpFitting", option.NPV())
+
 # method: integral
 option.setPricingEngine(ql.IntegralEngine(process))
 report("integral", option.NPV())
