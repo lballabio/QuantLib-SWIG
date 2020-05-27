@@ -354,7 +354,7 @@ class AnalyticHestonEngine : public PricingEngine {
 
         Real calculate(Real c_inf,
                        const boost::function<Real(Real)>& f,
-                       Real maxBound = Null<Real>()) const;
+                       doubleOrNull maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
@@ -385,11 +385,11 @@ class AnalyticHestonEngine : public PricingEngine {
                      Real andersenPiterbargEpsilon = 1e-8);
 
     %extend {                     
-    	std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
-    		const std::complex<Real> tmp 
-    			= self->chF(std::complex<Real>(real, imag), t);
-    		return std::pair<Real, Real>(tmp.real(), tmp.imag());
-    	}
+        std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
+            const std::complex<Real> tmp 
+                = self->chF(std::complex<Real>(real, imag), t);
+            return std::pair<Real, Real>(tmp.real(), tmp.imag());
+        }
     }
 };
 
@@ -414,9 +414,9 @@ class ExponentialFittingHestonEngine : public PricingEngine {
     enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
     
     ExponentialFittingHestonEngine(
-        const ext::shared_ptr<HestonModel>& model,
+        const boost::shared_ptr<HestonModel>& model,
         ControlVariate cv = AndersenPiterbargOptCV,
-        Real scaling = Null<Real>());
+        doubleOrNull scaling = Null<Real>());
 };
 
 
