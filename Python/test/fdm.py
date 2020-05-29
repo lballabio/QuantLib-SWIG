@@ -637,6 +637,12 @@ class FdmTest(unittest.TestCase):
 
         self.assertEqual(m3.locations(), (0,1,2,3,4))
 
+    def testFdmZeroInnerValue(self):
+        """Testing FdmZeroInnerValue"""
+        opIter = ql.FdmLinearOpIterator([1], [0], 0)
+
+        self.assertEqual(ql.FdmZeroInnerValue().innerValue(opIter, 1.0), 0.0)
+
 
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)

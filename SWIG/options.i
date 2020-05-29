@@ -354,7 +354,7 @@ class AnalyticHestonEngine : public PricingEngine {
 
         Real calculate(Real c_inf,
                        const boost::function<Real(Real)>& f,
-                       Real maxBound = Null<Real>()) const;
+                       doubleOrNull maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
@@ -372,7 +372,9 @@ class AnalyticHestonEngine : public PricingEngine {
       Integration(Algorithm intAlgo,
                 const boost::shared_ptr<Integrator>& integrator);
     };
-    enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
+    enum ComplexLogFormula { 
+        Gatheral, BranchCorrection, AndersenPiterbarg, AndersenPiterbargOptCV
+    };
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
@@ -383,11 +385,11 @@ class AnalyticHestonEngine : public PricingEngine {
                      Real andersenPiterbargEpsilon = 1e-8);
 
     %extend {                     
-    	std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
-    		const std::complex<Real> tmp 
-    			= self->chF(std::complex<Real>(real, imag), t);
-    		return std::pair<Real, Real>(tmp.real(), tmp.imag());
-    	}
+        std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
+            const std::complex<Real> tmp 
+                = self->chF(std::complex<Real>(real, imag), t);
+            return std::pair<Real, Real>(tmp.real(), tmp.imag());
+        }
     }
 };
 
@@ -400,6 +402,21 @@ class COSHestonEngine : public PricingEngine {
   public:
     COSHestonEngine(const boost::shared_ptr<HestonModel>& model,
                     Real L = 16, Size N = 200);
+};
+
+%{
+using QuantLib::ExponentialFittingHestonEngine;
+%}
+
+%shared_ptr(ExponentialFittingHestonEngine)
+class ExponentialFittingHestonEngine : public PricingEngine {
+  public:
+    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
+    
+    ExponentialFittingHestonEngine(
+        const boost::shared_ptr<HestonModel>& model,
+        ControlVariate cv = AndersenPiterbargOptCV,
+        doubleOrNull scaling = Null<Real>());
 };
 
 
