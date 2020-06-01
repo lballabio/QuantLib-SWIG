@@ -1,54 +1,52 @@
----
-jupyter:
-  jupytext:
-    formats: ipynb,md,py:percent
-    text_representation:
-      extension: .md
-      format_name: markdown
-      format_version: '1.2'
-      jupytext_version: 1.4.2
-  kernelspec:
-    display_name: Python 3
-    language: python
-    name: python3
----
+# ---
+# jupyter:
+#   jupytext:
+#     formats: ipynb,md,py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
 
-# Heston SLV model in QuantLib
+# %% [markdown]
+# # Leverage function for the Heston SLV model
+#
+# Copyright (&copy;) 2019 Klaus Spanderen
+#
+# This file is part of QuantLib, a free-software/open-source library for financial quantitative analysts and developers - https://www.quantlib.org/
+#
+# QuantLib is free software: you can redistribute it and/or modify it under the
+# terms of the QuantLib license.  You should have received a copy of the
+# license along with this program; if not, please email
+# <quantlib-dev@lists.sf.net>. The license is also available online at
+# <https://www.quantlib.org/license.shtml>.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-Copyright (&copy;) 2019 Klaus Spanderen
-
-This file is part of QuantLib, a free-software/open-source library for financial quantitative analysts and developers - https://www.quantlib.org/
-
-QuantLib is free software: you can redistribute it and/or modify it under the
-terms of the QuantLib license.  You should have received a copy of the
-license along with this program; if not, please email
-<quantlib-dev@lists.sf.net>. The license is also available online at
-<https://www.quantlib.org/license.shtml>.
-
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the license for more details.
-
-```python
+# %%
 import QuantLib as ql
 from matplotlib import pyplot as plt
 import numpy as np
 import math
 
-%matplotlib inline
-```
+# %matplotlib inline
 
-```python
+# %%
 todaysDate = ql.Date(15, ql.May, 2019)
 ql.Settings.instance().evaluationDate = todaysDate
-```
 
-```python
+# %%
 settlementDate = todaysDate + ql.Period(2, ql.Days)
 exerciseDate = todaysDate + ql.Period(4, ql.Years)
-```
 
-```python
+# %%
 dc = ql.Actual365Fixed()
 
 spot = 100
@@ -59,9 +57,8 @@ dividendYield = ql.YieldTermStructureHandle(ql.FlatForward(settlementDate, 0.025
 
 vol = 0.30
 blackVol = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(settlementDate, ql.TARGET(), vol, dc))
-```
 
-```python
+# %%
 localVol = ql.LocalVolSurface(
     blackVol,
     riskFreeRate,
@@ -72,15 +69,13 @@ localVol = ql.LocalVolSurface(
 hestonProcess = ql.HestonProcess(riskFreeRate, dividendYield, underlying, 0.09, 1.0, 0.06, 0.4, -0.75)
 
 hestonModel = ql.HestonModel(hestonProcess)
-```
 
-```python
+# %%
 leverageFct = ql.HestonSLVMCModel(
     localVol, hestonModel, ql.MTBrownianGeneratorFactory(1234), exerciseDate, 91
 ).leverageFunction()
-```
 
-```python
+# %%
 tSteps = 40
 uSteps = 30
 
@@ -99,9 +94,8 @@ for i in range(0, tSteps):
         t[idx] = tv[i]
         s[idx] = math.log(sv[j])
         z[idx] = leverageFct.localVol(t[idx], sv[j])
-```
 
-```python
+# %%
 fig = plt.figure(figsize=(12,8))
 ax = plt.axes(projection="3d")
 
@@ -115,11 +109,10 @@ ax.text2D(0.225, 0.985, "Leverage Function with $\eta=1.0$", transform=ax.transA
 fig.colorbar(surf, shrink=0.75, aspect=14)
 
 plt.show(block=False)
-```
 
-When this is run as a Python script (i.e., from Travis), we need to close the figure in order to terminate.
+# %% [markdown]
+# When this is run as a Python script (i.e., from Travis), we need to close the figure in order to terminate.
 
-```python
+# %%
 plt.pause(3)
 plt.close()
-```

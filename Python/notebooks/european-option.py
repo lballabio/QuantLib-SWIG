@@ -14,7 +14,7 @@
 # ---
 
 # %% [markdown]
-# # European options in QuantLib
+# # European options
 #
 # Copyright (&copy;) 2004, 2005, 2006, 2007, 2020 StatPro Italia srl
 #
