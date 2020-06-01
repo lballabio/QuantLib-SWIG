@@ -1,0 +1,5 @@
+# Requirements for the example notebooks
+QuantLib
+jupyter
+jupytext
+pandas
