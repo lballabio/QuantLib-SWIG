@@ -5,5 +5,8 @@
 && make -C Python \
 && make -C Python check \
 && make -C Python install \
-&& for i in Python/examples/*.py ; do echo $i && /usr/bin/python2 $i || break -1 ; done
+&& for i in Python/examples/*.py ; do echo $i && /usr/bin/python2 $i || break -1 ; done \
+&& grep -v QuantLib requirements.txt > Python/notebooks/requirements.txt \
+&& pip install -r Python/notebooks/requirements.txt \
+&& for i in Python/notebooks/*.py ; do echo "$i" && /usr/bin/python2 "$i" || break -1 ; done
 
