@@ -42,7 +42,7 @@ ql.Settings.instance().evaluationDate = todaysDate
 ```
 
 ```python
-is_interactive = 'get_ipython' in globals()
+interactive = 'get_ipython' in globals()
 ```
 
 ### Option construction
@@ -196,6 +196,6 @@ df.style.hide_index()
 The following displays the results when this is run as a Python script (in which case the cell above is not displayed).
 
 ```python
-if not is_interactive:
+if not interactive:
     print(df)
 ```

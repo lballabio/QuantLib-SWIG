@@ -42,7 +42,7 @@ todaysDate = ql.Date(15, ql.May, 1998)
 ql.Settings.instance().evaluationDate = todaysDate
 
 # %%
-is_interactive = 'get_ipython' in globals()
+interactive = 'get_ipython' in globals()
 
 # %% [markdown]
 # ### Option construction
@@ -190,5 +190,5 @@ df.style.hide_index()
 # The following displays the results when this is run as a Python script (in which case the cell above is not displayed).
 
 # %%
-if not is_interactive:
+if not interactive:
     print(df)
