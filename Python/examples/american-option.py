@@ -1,7 +1,22 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: md,py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
+
 # %% [markdown]
 # # American options
 #
-# Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+# Copyright (&copy;) 2004, 2005, 2006, 2007 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
 # for financial quantitative analysts and developers - https://www.quantlib.org/
@@ -28,7 +43,7 @@ todaysDate = ql.Date(15, ql.May, 1998)
 ql.Settings.instance().evaluationDate = todaysDate
 
 # %%
-interactive = 'get_ipython' in globals()
+interactive = "get_ipython" in globals()
 
 # %% [markdown]
 # ### Option construction
@@ -96,7 +111,7 @@ timeSteps = 801
 # %%
 for tree in ["JR", "CRR", "EQP", "Trigeorgis", "Tian", "LR", "Joshi4"]:
     option.setPricingEngine(ql.BinomialVanillaEngine(process, tree, timeSteps))
-    results.append(('Binomial (%s)' % tree, option.NPV()))
+    results.append(("Binomial (%s)" % tree, option.NPV()))
 
 # %% [markdown]
 # ### Results

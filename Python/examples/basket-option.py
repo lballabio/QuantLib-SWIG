@@ -1,6 +1,21 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:light
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
+
 # # Basket options
 #
-# Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+# Copyright (&copy;) 2004, 2005, 2006 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
 # for financial quantitative analysts and developers - https://www.quantlib.org/

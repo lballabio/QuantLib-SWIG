@@ -1,4 +1,17 @@
-# -*- mode: python; tab-width: 4;
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:light
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
 
 # Copyright (C) 2014 Thema Consulting SA
 #

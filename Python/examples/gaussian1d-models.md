@@ -1,3 +1,18 @@
+---
+jupyter:
+  jupytext:
+    formats: md,py:percent
+    text_representation:
+      extension: .md
+      format_name: markdown
+      format_version: '1.2'
+      jupytext_version: 1.4.2
+  kernelspec:
+    display_name: Python 3
+    language: python
+    name: python3
+---
+
 # Gaussian 1D models
 
 Copyright (&copy;) 2018 Angus Lee
@@ -24,7 +39,8 @@ import pandas as pd
 ```
 
 ```python
-interactive = 'get_ipython' in globals()
+interactive = "get_ipython" in globals()
+
 
 def show(x):
     if not interactive:
@@ -37,13 +53,16 @@ def basket_data(basket):
     data = []
     for helper in basket:
         h = ql.as_swaption_helper(helper)
-        data.append((h.swaptionExpiryDate().to_date(),
-                     h.swaptionMaturityDate().to_date(),
-                     h.swaptionNominal(),
-                     h.volatility().value(),
-                     h.swaptionStrike()))
-    return pd.DataFrame(data,
-                        columns = ["Expiry", "Maturity", "Nominal", "Rate", "Market vol"])
+        data.append(
+            (
+                h.swaptionExpiryDate().to_date(),
+                h.swaptionMaturityDate().to_date(),
+                h.swaptionNominal(),
+                h.volatility().value(),
+                h.swaptionStrike(),
+            )
+        )
+    return pd.DataFrame(data, columns=["Expiry", "Maturity", "Nominal", "Rate", "Market vol"])
 ```
 
 ```python
@@ -52,15 +71,19 @@ def calibration_data(basket, volatilities):
     for helper, sigma in zip(basket, volatilities):
         h = ql.as_swaption_helper(helper)
         modelValue = h.modelValue()
-        data.append((h.swaptionExpiryDate().to_date(),
-                     sigma,
-                     modelValue,
-                     h.marketValue(),
-                     h.impliedVolatility(modelValue, 1e-6, 1000, 0.0, 2.0),
-                     h.volatility().value()))
-    return pd.DataFrame(data,
-                        columns=["Expiry", "Model sigma", "Model price", "Market price",
-                                 "Model imp.vol", "Market imp.vol"])
+        data.append(
+            (
+                h.swaptionExpiryDate().to_date(),
+                sigma,
+                modelValue,
+                h.marketValue(),
+                h.impliedVolatility(modelValue, 1e-6, 1000, 0.0, 2.0),
+                h.volatility().value(),
+            )
+        )
+    return pd.DataFrame(
+        data, columns=["Expiry", "Model sigma", "Model price", "Market price", "Model imp.vol", "Market imp.vol"]
+    )
 ```
 
 ### Calculations
@@ -88,7 +111,7 @@ volQuote = ql.QuoteHandle(ql.SimpleQuote(0.2))
 ```python
 dc = ql.Actual365Fixed()
 yts6m = ql.FlatForward(refDate, forward6mQuote, dc)
-ytsOis= ql.FlatForward(refDate, oisQuote, dc)
+ytsOis = ql.FlatForward(refDate, oisQuote, dc)
 yts6m.enableExtrapolation()
 ytsOis.enableExtrapolation()
 hyts6m = ql.RelinkableYieldTermStructureHandle(yts6m)

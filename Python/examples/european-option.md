@@ -15,7 +15,7 @@ jupyter:
 
 # European options
 
-Copyright (&copy;) 2004, 2005, 2006, 2007, 2020 StatPro Italia srl
+Copyright (&copy;) 2004, 2005, 2006, 2007 StatPro Italia srl
 
 This file is part of QuantLib, a free-software/open-source library for financial quantitative analysts and developers - https://www.quantlib.org/
 
@@ -92,14 +92,13 @@ hestonModel = ql.HestonModel(hestonProcess)
 
 ### Pricing
 
-
 We'll collect tuples of method name, option value, estimated error, and discrepancy from the analytic formula.
 
 ```python
 results = []
 ```
 
-#### analytic formula
+#### Analytic formula
 
 ```python
 option.setPricingEngine(ql.AnalyticEuropeanEngine(process))
@@ -182,7 +181,7 @@ value = option.NPV()
 results.append(("Monte Carlo (low-discrepancy)", value, None, abs(value - refValue)))
 ```
 
-#### Results
+### Results
 
 ```python
 df = pd.DataFrame(results,

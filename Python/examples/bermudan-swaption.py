@@ -1,6 +1,21 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:light
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
+
 # # Bermudan swaptions
 #
-# Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+# Copyright (&copy;) 2004, 2005, 2006, 2007 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
 # for financial quantitative analysts and developers - https://www.quantlib.org/
@@ -194,36 +209,28 @@ atmSwaption.setPricingEngine(ql.TreeSwaptionEngine(G2model, 50))
 otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(G2model, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(G2model, 50))
 
-data.append(
-    ("G2 analytic", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV())
-)
+data.append(("G2 analytic", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV()))
 
 # +
 atmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel, 50))
 otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel, 50))
 
-data.append(
-    ("HW analytic", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV())
-)
+data.append(("HW analytic", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV()))
 
 # +
 atmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel2, 50))
 otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel2, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(HWmodel2, 50))
 
-data.append(
-    ("HW numerical", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV())
-)
+data.append(("HW numerical", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV()))
 
 # +
 atmSwaption.setPricingEngine(ql.TreeSwaptionEngine(BKmodel, 50))
 otmSwaption.setPricingEngine(ql.TreeSwaptionEngine(BKmodel, 50))
 itmSwaption.setPricingEngine(ql.TreeSwaptionEngine(BKmodel, 50))
 
-data.append(
-    ("BK numerical", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV())
-)
+data.append(("BK numerical", itmSwaption.NPV(), atmSwaption.NPV(), otmSwaption.NPV()))
 # -
 
 print(pd.DataFrame(data, columns=["model", "in-the-money", "at-the-money", "out-of-the-money"]))
