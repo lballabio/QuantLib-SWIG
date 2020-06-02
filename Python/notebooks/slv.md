@@ -29,6 +29,16 @@ This program is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 FOR A PARTICULAR PURPOSE.  See the license for more details.
 
+
+This notebook only works with Python 3, at least on Travis.
+
+```python
+import sys
+
+if sys.version_info.major < 3:
+    sys.exit()
+```
+
 ```python
 import QuantLib as ql
 from matplotlib import pyplot as plt

@@ -30,6 +30,15 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
+# %% [markdown]
+# This notebook only works with Python 3, at least on Travis.
+
+# %%
+import sys
+
+if sys.version_info.major < 3:
+    sys.exit()
+
 # %%
 import QuantLib as ql
 from matplotlib import pyplot as plt
