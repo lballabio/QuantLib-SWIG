@@ -157,7 +157,7 @@ for tree in ["JR", "CRR", "EQP", "Trigeorgis", "Tian", "LR", "Joshi4"]:
     option.setPricingEngine(ql.BinomialVanillaEngine(process, tree, timeSteps))
     value = option.NPV()
 
-    results.append((f'Binomial ({tree})', value, None, abs(value - refValue)))
+    results.append(('Binomial (%s)' % tree, value, None, abs(value - refValue)))
 
 # %% [markdown]
 # #### Monte Carlo method
