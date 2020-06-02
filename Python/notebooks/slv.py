@@ -1,7 +1,7 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: ipynb,md,py:percent
+#     formats: md,py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
@@ -37,6 +37,9 @@ import numpy as np
 import math
 
 # %matplotlib inline
+
+# %%
+is_interactive = 'get_ipython' in globals()
 
 # %%
 todaysDate = ql.Date(15, ql.May, 2019)
@@ -114,5 +117,6 @@ plt.show(block=False)
 # When this is run as a Python script (i.e., from Travis), we need to close the figure in order to terminate.
 
 # %%
-plt.pause(3)
-plt.close()
+if not is_interactive:
+    plt.pause(3)
+    plt.close()

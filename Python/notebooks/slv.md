@@ -1,7 +1,7 @@
 ---
 jupyter:
   jupytext:
-    formats: ipynb,md,py:percent
+    formats: md,py:percent
     text_representation:
       extension: .md
       format_name: markdown
@@ -36,6 +36,10 @@ import numpy as np
 import math
 
 %matplotlib inline
+```
+
+```python
+is_interactive = 'get_ipython' in globals()
 ```
 
 ```python
@@ -120,6 +124,7 @@ plt.show(block=False)
 When this is run as a Python script (i.e., from Travis), we need to close the figure in order to terminate.
 
 ```python
-plt.pause(3)
-plt.close()
+if not is_interactive:
+    plt.pause(3)
+    plt.close()
 ```

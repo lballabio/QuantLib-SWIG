@@ -1,7 +1,7 @@
 ---
 jupyter:
   jupytext:
-    formats: ipynb,md,py:percent
+    formats: md,py:percent
     text_representation:
       extension: .md
       format_name: markdown
@@ -39,6 +39,10 @@ import pandas as pd
 ```python
 todaysDate = ql.Date(15, ql.May, 1998)
 ql.Settings.instance().evaluationDate = todaysDate
+```
+
+```python
+is_interactive = 'get_ipython' in globals()
 ```
 
 ### Option construction
@@ -192,6 +196,6 @@ df.style.hide_index()
 The following displays the results when this is run as a Python script (in which case the cell above is not displayed).
 
 ```python
-if 'get_ipython' not in globals():
+if not is_interactive:
     print(df)
 ```
