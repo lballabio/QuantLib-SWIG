@@ -1,0 +1,7 @@
+# Requirements for the example Python notebooks. Used by mybinder.org.
+QuantLib
+jupyter
+jupytext
+pandas
+numpy
+matplotlib

@@ -27,6 +27,8 @@ Python/.cache/
 Python/QuantLib.egg-info
 Python/QuantLib_Python.egg-info
 Python/dist
+Python/examples/*.ipynb
+Python/examples/.ipynb_checkpoints
 R/src/QuantLib.cpp
 R/makeRData.Rout
 R/src/symbols.rds

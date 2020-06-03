@@ -5,7 +5,7 @@ EXTRA_DIST = \
 	ChangeLog.txt \
 	LICENSE.TXT \
 	News.md \
-	Readme.txt \
+	README.md \
 	autogen.sh
 
 
