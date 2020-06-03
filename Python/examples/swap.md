@@ -32,7 +32,6 @@ FOR A PARTICULAR PURPOSE.  See the license for more details.
 
 ```python
 import QuantLib as ql
-import pandas as pd
 ```
 
 ### Global data

@@ -33,7 +33,6 @@
 
 # %%
 import QuantLib as ql
-import pandas as pd
 
 # %% [markdown]
 # ### Global data
