@@ -31,12 +31,12 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
+import pandas as pd
 # %%
 import QuantLib as ql
-import pandas as pd
 
 # %%
-interactive = 'get_ipython' in globals()
+interactive = "get_ipython" in globals()
 
 # %% [markdown]
 # ### Setup
@@ -51,46 +51,10 @@ ql.Settings.instance().evaluationDate = today
 # %% [markdown]
 # ### Data
 #
-# We'll use the following data as input...
+# We'll use the following data as input:
 
 # %%
-bbgDates = [
-    ql.Date(31, 3, 2020),
-    ql.Date(30, 4, 2020),
-    ql.Date(29, 5, 2020),
-    ql.Date(30, 6, 2020),
-    ql.Date(31, 7, 2020),
-    ql.Date(31, 8, 2020),
-    ql.Date(30, 9, 2020),
-    ql.Date(30, 10, 2020),
-    ql.Date(30, 11, 2020),
-    ql.Date(31, 12, 2020),
-    ql.Date(29, 1, 2021),
-    ql.Date(26, 2, 2021),
-    ql.Date(31, 3, 2021),
-    ql.Date(30, 9, 2021),
-    ql.Date(30, 9, 2022),
-    ql.Date(29, 9, 2023),
-    ql.Date(30, 9, 2024),
-    ql.Date(30, 9, 2025),
-    ql.Date(30, 9, 2026),
-    ql.Date(30, 9, 2027),
-    ql.Date(29, 9, 2028),
-    ql.Date(28, 9, 2029),
-    ql.Date(30, 9, 2030),
-    ql.Date(30, 9, 2031),
-    ql.Date(29, 9, 2034),
-    ql.Date(30, 9, 2039),
-    ql.Date(30, 9, 2044),
-    ql.Date(30, 9, 2049),
-    ql.Date(30, 9, 2054),
-    ql.Date(30, 9, 2059),
-    ql.Date(30, 9, 2064),
-    ql.Date(30, 9, 2069),
-]
-
-# %%
-bbgMktRates = [
+refMktRates = [
     -0.373,
     -0.388,
     -0.402,
@@ -126,45 +90,6 @@ bbgMktRates = [
 ]
 
 # %% [markdown]
-# ...and try to reproduce the following outputs.
-
-# %%
-bbgZeroRates = [
-    -0.373,
-    -0.38058,
-    -0.38718,
-    -0.39353,
-    -0.407,
-    -0.41274,
-    -0.41107,
-    -0.41542,
-    -0.41951,
-    -0.42329,
-    -0.42658,
-    -0.42959,
-    -0.43297,
-    -0.45103,
-    -0.4541,
-    -0.43905,
-    -0.41266,
-    -0.3775,
-    -0.33434,
-    -0.2828,
-    -0.2285,
-    -0.17582,
-    -0.1254,
-    -0.0783,
-    0.03913,
-    0.14646,
-    0.17874,
-    0.17556,
-    0.1531,
-    0.12299,
-    0.0948,
-    0.06383,
-]
-
-# %% [markdown]
 # ### Market instruments
 
 # %%
@@ -176,7 +101,7 @@ index = ql.Euribor6M()
 # %%
 helpers = [
     ql.DepositRateHelper(
-        bbgMktRates[0] / 100.0, ql.Period(6, ql.Months), 2, ql.TARGET(), ql.ModifiedFollowing, True, ql.Actual360()
+        refMktRates[0] / 100.0, ql.Period(6, ql.Months), 2, ql.TARGET(), ql.ModifiedFollowing, True, ql.Actual360()
     )
 ]
 
@@ -184,7 +109,7 @@ helpers = [
 # ...the next 12 are for FRAs...
 
 # %%
-helpers += [ql.FraRateHelper(r / 100.0, i + 1, index) for i, r in enumerate(bbgMktRates[1:13])]
+helpers += [ql.FraRateHelper(r / 100.0, i + 1, index) for i, r in enumerate(refMktRates[1:13])]
 
 # %% [markdown]
 # ...and the others are swap rates.
@@ -195,7 +120,7 @@ helpers += [
     ql.SwapRateHelper(
         r / 100.0, ql.Period(T, ql.Years), ql.TARGET(), ql.Annual, ql.ModifiedFollowing, ql.Thirty360(), index
     )
-    for r, T in zip(bbgMktRates[13:32], swapTenors)
+    for r, T in zip(refMktRates[13:32], swapTenors)
 ]
 
 # %% [markdown]
@@ -223,7 +148,7 @@ curve.enableExtrapolation()
 
 # %%
 data = []
-for i, (d, h, R) in enumerate(zip(bbgDates, helpers, bbgZeroRates)):
+for i, h in enumerate(helpers):
     pillar = h.pillarDate()
 
     if i < 13:
@@ -233,13 +158,11 @@ for i, (d, h, R) in enumerate(zip(bbgDates, helpers, bbgZeroRates)):
         day_counter = ql.Thirty360()
         compounding = ql.SimpleThenCompounded
 
-    r = curve.zeroRate(d, day_counter, compounding, ql.Annual).rate()
-    data.append(
-        (d.to_date(), pillar.to_date(), R, r * 100, (r * 100 - R) * 100)
-    )
+    r = curve.zeroRate(pillar, day_counter, compounding, ql.Annual).rate()
+    data.append((pillar.to_date(), r * 100))
 
 # %%
-df = pd.DataFrame(data, columns=["target date", "pillar", "target rate", "calculated", "discrepancy [bps]"])
+df = pd.DataFrame(data, columns=["pillar", "zero rate"])
 if not interactive:
     print(df)
 df
