@@ -1,7 +1,7 @@
 # ---
 # jupyter:
 #   jupytext:
-#     formats: py:percent,md
+#     formats: py:percent
 #     text_representation:
 #       extension: .py
 #       format_name: percent
@@ -31,9 +31,9 @@
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-import pandas as pd
 # %%
 import QuantLib as ql
+import pandas as pd
 
 # %%
 interactive = "get_ipython" in globals()
