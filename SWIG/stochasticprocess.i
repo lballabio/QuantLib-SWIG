@@ -222,13 +222,24 @@ using QuantLib::HestonProcess;
 %shared_ptr(HestonProcess)
 class HestonProcess : public StochasticProcess {
   public:
-      HestonProcess(const Handle<YieldTermStructure>& riskFreeTS,
+        enum Discretization { PartialTruncation,
+                    FullTruncation,
+                    Reflection,
+                    NonCentralChiSquareVariance,
+                    QuadraticExponential,
+                    QuadraticExponentialMartingale,
+                    BroadieKayaExactSchemeLobatto,
+                    BroadieKayaExactSchemeLaguerre,
+                    BroadieKayaExactSchemeTrapezoidal };
+
+        HestonProcess(const Handle<YieldTermStructure>& riskFreeTS,
 					   const Handle<YieldTermStructure>& dividendTS,
 					   const Handle<Quote>& s0,
 					   Real v0, Real kappa,
-                       Real theta, Real sigma, Real rho);
-                       
-      Handle<Quote> s0();
+                       Real theta, Real sigma, Real rho,
+                       Discretization d = QuadraticExponentialMartingale);
+
+        Handle<Quote> s0();
       Handle<YieldTermStructure> dividendYield();
       Handle<YieldTermStructure> riskFreeRate();
 };
