@@ -468,6 +468,7 @@
     <Compile Include="ExchangeRateManager.cs" />
     <Compile Include="Exercise.cs" />
     <Compile Include="ExplicitEulerScheme.cs" />
+    <Compile Include="ExponentialFittingHestonEngine.cs" />
     <Compile Include="ExponentialJump1dMesher.cs" />
     <Compile Include="ExponentialSplinesFitting.cs" />
     <Compile Include="ExtOUWithJumpsProcess.cs" />
@@ -750,6 +751,7 @@
     <Compile Include="JuQuadraticApproximationEngine.cs" />
     <Compile Include="KahaleSmileSection.cs" />
     <Compile Include="KirkEngine.cs" />
+    <Compile Include="KirkSpreadOptionEngine.cs" />
     <Compile Include="KlugeExtOUProcess.cs" />
     <Compile Include="KnuthUniformRng.cs" />
     <Compile Include="KnuthUniformRsg.cs" />
@@ -1048,6 +1050,7 @@
     <Compile Include="SplineCubicInterpolatedSmileSection.cs" />
     <Compile Include="SpreadBasketPayoff.cs" />
     <Compile Include="SpreadCdsHelper.cs" />
+    <Compile Include="SpreadOption.cs" />
     <Compile Include="SpreadedBackwardFlatZeroInterpolatedTermStructure.cs" />
     <Compile Include="SpreadedLinearZeroInterpolatedTermStructure.cs" />
     <Compile Include="SquareRootProcessRNDCalculator.cs" />
@@ -1087,6 +1090,7 @@
     <Compile Include="SWIGTYPE_p_boost__optionalT_bool_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_VolatilityType_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_Bond_t.cs" />
+    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_PlainVanillaPayoff_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SmileSection_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SwaptionHelper_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__shared_ptrT_Swaption_t.cs" />
