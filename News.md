@@ -5,6 +5,11 @@ Main changes for QuantLib-SWIG 1.19
 More details on the changes are available in ChangeLog.txt and at
 <https://github.com/lballabio/QuantLib-SWIG/milestone/12?closed=1>.
 
+- We're sunsetting support for Python 2.7, which reached end of life
+  in January 2020.  For the next couple of releases, we'll still check
+  that the wrappers work with 2.7.  After that, we'll make no further
+  effort to keep it working.
+
 - Python examples can now be run as scripts as before, or as live
   notebooks on Binder.  They are available at
   <https://mybinder.org/v2/gh/lballabio/QuantLib-SWIG/binder?filepath=Python%2Fexamples>.
