@@ -384,6 +384,7 @@
     <Compile Include="DiscountingSwapEngine.cs" />
     <Compile Include="DiscreteAveragingAsianOption.cs" />
     <Compile Include="Dividend.cs" />
+    <Compile Include="DividendBarrierOption.cs" />
     <Compile Include="DividendSchedule.cs" />
     <Compile Include="DividendVanillaOption.cs" />
     <Compile Include="DKKCurrency.cs" />
@@ -482,6 +483,7 @@
     <Compile Include="FDBermudanEngine.cs" />
     <Compile Include="FdBlackScholesAsianEngine.cs" />
     <Compile Include="FdBlackScholesBarrierEngine.cs" />
+    <Compile Include="FdBlackScholesRebateEngine.cs" />
     <Compile Include="FdBlackScholesVanillaEngine.cs" />
     <Compile Include="FdCEVVanillaEngine.cs" />
     <Compile Include="FDDividendAmericanEngine.cs" />
@@ -490,6 +492,7 @@
     <Compile Include="FdG2SwaptionEngine.cs" />
     <Compile Include="FdHestonBarrierEngine.cs" />
     <Compile Include="FdHestonDoubleBarrierEngine.cs" />
+    <Compile Include="FdHestonRebateEngine.cs" />
     <Compile Include="FdHestonVanillaEngine.cs" />
     <Compile Include="FdHullWhiteSwaptionEngine.cs" />
     <Compile Include="Fdm1DimSolver.cs" />
