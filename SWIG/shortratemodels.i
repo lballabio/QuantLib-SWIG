@@ -196,4 +196,20 @@ class FdHullWhiteSwaptionEngine : public PricingEngine {
                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 };
 
+// other engines
+
+%{
+using QuantLib::AnalyticBSMHullWhiteEngine;
+%}
+
+%shared_ptr(AnalyticBSMHullWhiteEngine)
+class AnalyticBSMHullWhiteEngine : public PricingEngine {
+  public:
+    AnalyticBSMHullWhiteEngine(
+                     Real equityShortRateCorrelation,
+                     const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+                     const boost::shared_ptr<HullWhite>&);
+};
+
+
 #endif
