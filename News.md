@@ -28,6 +28,8 @@ More details on the changes are available in ChangeLog.txt and at
 - Exported spread options and Kirk spread option engine (thanks to
   Gorazd Brumen).
 
+- Exported `AnalyticBSMHullWhiteEngine` class.
+
 - Exported choice of timing adjustment for `BlackIborCouponPricer`
   (thanks to Matthias Lungwitz).
 

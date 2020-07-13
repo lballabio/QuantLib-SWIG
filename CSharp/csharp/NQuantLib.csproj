@@ -110,6 +110,7 @@
     <Compile Include="AmortizingFloatingRateBond.cs" />
     <Compile Include="AnalyticBarrierEngine.cs" />
     <Compile Include="AnalyticBinaryBarrierEngine.cs" />
+    <Compile Include="AnalyticBSMHullWhiteEngine.cs" />
     <Compile Include="AnalyticCapFloorEngine.cs" />
     <Compile Include="AnalyticCEVEngine.cs" />
     <Compile Include="AnalyticContinuousGeometricAveragePriceAsianEngine.cs" />
