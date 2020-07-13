@@ -14,6 +14,8 @@ More details on the changes are available in ChangeLog.txt and at
   notebooks on Binder.  They are available at
   <https://mybinder.org/v2/gh/lballabio/QuantLib-SWIG/binder?filepath=Python%2Fexamples>.
 
+- Exported dividend barrier option and related engines.
+
 - Exported choice of discretization for Heston process (thanks to
   GitHub user `feribg`).
 

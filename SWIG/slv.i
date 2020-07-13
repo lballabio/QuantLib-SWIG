@@ -170,34 +170,4 @@ class HestonSLVFDMModel {
 };
 
 
-%{
-using QuantLib::FdHestonBarrierEngine;
-using QuantLib::FdHestonDoubleBarrierEngine;
-%}
-
-%shared_ptr(FdHestonBarrierEngine);
-class FdHestonBarrierEngine : public PricingEngine {
-  public:
-    FdHestonBarrierEngine(
-            const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100,
-            Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
-};
-
-%shared_ptr(FdHestonDoubleBarrierEngine);
-class FdHestonDoubleBarrierEngine : public PricingEngine {
-  public:
-    FdHestonDoubleBarrierEngine(
-            const boost::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100,
-            Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
-};
-
-
 #endif
