@@ -1,3 +1,74 @@
+commit 0bb97112758a570bc6ad89b43ee7f393dba4fd93
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Jul 2020 17:21:54 +0200
+
+    Set version to 1.19 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 817c4989f03ea663d3b29d258209d1ccc41a6e8e
+Merge: 70f7de2 08ae1ce
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 13 Jul 2020 13:41:36 +0200
+
+    Merge pull request #288.
+    
+    Export analytic BSM/HW engine.
+
+commit 08ae1ce43f7ba5a0714d780d0f7b2ea0e44c748c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 13 Jul 2020 12:09:20 +0200
+
+    Export analytic BSM/HW engine.
+
+ CSharp/csharp/NQuantLib.csproj |  1 +
+ News.md                        |  2 ++
+ SWIG/shortratemodels.i         | 16 ++++++++++++++++
+ 3 files changed, 19 insertions(+)
+
+commit 70f7de23833470c6744f4ed6f1a06f977132b81f
+Merge: c38d102 434f8d1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 13 Jul 2020 11:40:17 +0200
+
+    Merge pull request #287.
+    
+    Export dividend barrier option.
+
+commit 434f8d13b43aabc0d642114c4dcc6eb2f83521c1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 13 Jul 2020 10:56:05 +0200
+
+    Export dividend barrier option.
+
+ CSharp/csharp/NQuantLib.csproj |  3 ++
+ News.md                        |  2 ++
+ SWIG/options.i                 | 63 ++++++++++++++++++++++++++++++++++++++++++
+ SWIG/slv.i                     | 30 --------------------
+ 4 files changed, 68 insertions(+), 30 deletions(-)
+
+commit c38d102f73b7172f1a96f67a58574cece91040db
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2020 17:42:59 +0200
+
+    Sunset Python 2.7.
+
+ News.md | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit 95f057896c7e8bb7b71791c28f8348648b07fe1d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2020 16:54:05 +0200
+
+    Update News and ChangeLog.
+
+ .misspell-fixer.ignore |    2 +
+ ChangeLog.txt          | 1397 +++++++++++++++---------------------------------
+ News.md                |   56 +-
+ 3 files changed, 460 insertions(+), 995 deletions(-)
+
 commit 6345ab362588b7f1b28f237ab2332788b559aafb
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 30 Jun 2020 22:25:53 +0200
