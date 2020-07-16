@@ -12,4 +12,4 @@ EXTRA_DIST = \
 dist-hook:
 	mkdir -p $(distdir)/SWIG
 	cp -p ./SWIG/*.i $(distdir)/SWIG
-
+	cp -p ./requirements.txt $(distdir)/Python/examples/
