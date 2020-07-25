@@ -28,7 +28,7 @@ using QuantLib::TimeBasket;
 %}
 
 class TimeBasket {
-    #if defined (SWIGPYTHON) || defined(SWIGRUBY)
+    #if defined (SWIGPYTHON)
     %rename(__len__) size;
     #endif
   public:
@@ -37,15 +37,13 @@ class TimeBasket {
     Size size();
     TimeBasket rebin(const std::vector<Date>&) const;
     %extend {
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         Real __getitem__(const Date& d) {
             return (*self)[d];
         }
         void __setitem__(const Date& d, Real value) {
             (*self)[d] = value;
         }
-        #endif
-        #if defined(SWIGPYTHON)
         PyObject* items() {
             PyObject* itemList = PyList_New(self->size());
             TimeBasket::iterator i;
@@ -84,21 +82,6 @@ class TimeBasket {
                                      " for iterator support");
             %#endif
             }
-        #endif
-        #if defined(SWIGRUBY)
-        void each() {
-            TimeBasket::iterator i;
-            for (i=self->begin(); i!=self->end(); ++i) {
-                    Date* d = new Date(i->first);
-                    VALUE entry = rb_ary_new2(2);
-                    VALUE k = SWIG_NewPointerObj((void *) d,
-                                                 $descriptor(Date *),1);
-                    VALUE x = rb_float_new(i->second);
-                    rb_ary_store(entry,0,k);
-                    rb_ary_store(entry,1,x);
-                    rb_yield(entry);
-            }
-        }
         #endif
     }
 };

@@ -28,59 +28,29 @@
 using QuantLib::InterpolatedDiscountCurve;
 %}
 
-%define export_discount_curve(Name,Interpolator)
+%shared_ptr(InterpolatedDiscountCurve<LogLinear>);
+%shared_ptr(InterpolatedDiscountCurve<MonotonicLogCubic>);
+%shared_ptr(InterpolatedDiscountCurve<SplineCubic>);
 
-%{
-typedef boost::shared_ptr<YieldTermStructure> Name##Ptr;
-%}
-
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
+template <class Interpolator>
+class InterpolatedDiscountCurve : public YieldTermStructure {
   public:
-    %extend {
-        Name##Ptr(const std::vector<Date>& dates,
-                  const std::vector<DiscountFactor>& discounts,
-                  const DayCounter& dayCounter,
-                  const Calendar& calendar = Calendar(),
-                  const Interpolator& i = Interpolator()) {
-            return new Name##Ptr(
-                new InterpolatedDiscountCurve<Interpolator>(dates,discounts,
-                                                            dayCounter,
-                                                            calendar,i));
-        }
-        const std::vector<Time>& times() {
-            typedef InterpolatedDiscountCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->times();
-        }
-        const std::vector<Real>& data() {
-            typedef InterpolatedDiscountCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->data();
-        }
-        const std::vector<Date>& dates() {
-            typedef InterpolatedDiscountCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<DiscountFactor>& discounts() {
-            typedef InterpolatedDiscountCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->discounts();
-        }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
-        std::vector<std::pair<Date,DiscountFactor> > nodes() {
-            typedef InterpolatedDiscountCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+    InterpolatedDiscountCurve(const std::vector<Date>& dates,
+                              const std::vector<DiscountFactor>& discounts,
+                              const DayCounter& dayCounter,
+                              const Calendar& calendar = Calendar(),
+                              const Interpolator& i = Interpolator());
+    const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
+    const std::vector<Date>& dates() const;
+    const std::vector<DiscountFactor>& discounts() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,DiscountFactor> > nodes() const;
+    #endif
 };
 
-%enddef
-
-
-export_discount_curve(DiscountCurve,LogLinear);
-
-// add interpolations as you wish, e.g.,
-// export_discount_curve(LinearDiscountCurve,Linear);
-
-
+%template(DiscountCurve) InterpolatedDiscountCurve<LogLinear>;
+%template(MonotonicLogCubicDiscountCurve) InterpolatedDiscountCurve<MonotonicLogCubic>;
+%template(NaturalCubicDiscountCurve) InterpolatedDiscountCurve<SplineCubic>;
 
 #endif

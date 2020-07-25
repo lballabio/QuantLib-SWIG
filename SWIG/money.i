@@ -27,13 +27,7 @@ using QuantLib::Money;
 %}
 
 class Money {
-    #if defined(SWIGRUBY)
-    %rename("conversionType=") setConversionType;
-    %rename("baseCurrency=")   setBaseCurrency;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("conversion-type-set!") setConversionType;
-    %rename("base-currency-set!")   setBaseCurrency;
-    #elif defined(SWIGJAVA)
+    #if defined(SWIGJAVA)
     %rename("compare") __cmp__;
     #endif
   public:
@@ -43,7 +37,7 @@ class Money {
     Decimal value() const;
     Money rounded() const;
 
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA)
+    #if defined(SWIGPYTHON) || defined(SWIGJAVA)
     Money operator+() const;
     Money operator-() const;
     %extend {
@@ -56,6 +50,15 @@ class Money {
         Money __rmul__(Decimal x) { return *self*x; }
         bool __lt__(const Money& other) {
             return *self < other;
+        }
+        bool __gt__(const Money& other) {
+            return other < *self;
+        }
+        bool __le__(const Money& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Money& other) {
+            return !(*self < other);
         }
         #endif
         int __cmp__(const Money& other) {
@@ -86,53 +89,6 @@ class Money {
         }
     }
 };
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Money+")  Money_plus;
-%rename("Money-")  Money_minus;
-%rename("Money*")  Money_times;
-%rename("Money/")  Money_divided;
-%rename("Money=?")  Money_equal;
-%rename("Money<?")  Money_less;
-%rename("Money<=?") Money_less_equal;
-%rename("Money>?")  Money_greater;
-%rename("Money>=?") Money_greater_equal;
-%inline %{
-    Money Money_plus(const Money& m1, const Money& m2) {
-        return m1+m2;
-    }
-    Money Money_minus(const Money& m1, const Money& m2) {
-        return m1-m2;
-    }
-    Money Money_times(const Money& m1, Decimal x) {
-        return m1*x;
-    }
-    Money Money_times(Decimal x, const Money& m2) {
-        return m2*x;
-    }
-    Money Money_divided(const Money& m1, Decimal x) {
-        return m1/x;
-    }
-    Decimal Money_divided(const Money& m1, const Money& m2) {
-        return m1/m2;
-    }
-    bool Money_equal(const Money& d1, const Money& d2) {
-        return d1 == d2;
-    }
-    bool Money_less(const Money& d1, const Money& d2) {
-        return d1 < d2;
-    }
-    bool Money_less_equal(const Money& d1, const Money& d2) {
-        return d1 <= d2;
-    }
-    bool Money_greater(const Money& d1, const Money& d2) {
-        return d1 > d2;
-    }
-    bool Money_greater_equal(const Money& d1, const Money& d2) {
-        return d1 >= d2;
-    }
-%}
-#endif
 
 
 #endif

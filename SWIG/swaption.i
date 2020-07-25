@@ -1,6 +1,8 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,57 +27,164 @@
 %include volatilities.i
 %include swap.i
 %include old_volatility.i
+%include daycounters.i
 
 %{
+using QuantLib::Actual365Fixed;
 using QuantLib::Swaption;
+using QuantLib::NonstandardSwaption;
 using QuantLib::Settlement;
-typedef boost::shared_ptr<Instrument> SwaptionPtr;
+using QuantLib::FloatFloatSwaption;
 %}
 
 struct Settlement {
-   enum Type { Physical, Cash };
+    enum Type { Physical, Cash };
+    enum Method { PhysicalOTC, PhysicalCleared, CollateralizedCashPrice, ParYieldCurve };
 };
-
-%rename(Swaption) SwaptionPtr;
-class SwaptionPtr : public boost::shared_ptr<Instrument> {
+    
+%shared_ptr(Swaption)
+class Swaption : public Option {
   public:
+    Swaption(const boost::shared_ptr<VanillaSwap>& swap,
+             const boost::shared_ptr<Exercise>& exercise,
+             Settlement::Type type = Settlement::Physical,
+             Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+    
+    Settlement::Type settlementType() const;       
+    Settlement::Method settlementMethod() const;
+    VanillaSwap::Type type() const;
+    const boost::shared_ptr<VanillaSwap>& underlyingSwap() const;
+    
+    //! implied volatility
+    Volatility impliedVolatility(
+                          Real price,
+                          const Handle<YieldTermStructure>& discountCurve,
+                          Volatility guess,
+                          Real accuracy = 1.0e-4,
+                          Natural maxEvaluations = 100,
+                          Volatility minVol = 1.0e-7,
+                          Volatility maxVol = 4.0,
+                          VolatilityType type = ShiftedLognormal,
+                          Real displacement = 0.0) const;
     %extend {
-        SwaptionPtr(const VanillaSwapPtr& simpleSwap,
-                    const boost::shared_ptr<Exercise>& exercise,
-                    Settlement::Type type = Settlement::Physical) {
-            boost::shared_ptr<VanillaSwap> swap =
-                 boost::dynamic_pointer_cast<VanillaSwap>(simpleSwap);
-            QL_REQUIRE(swap, "simple swap required");
-            return new SwaptionPtr(new Swaption(swap,exercise,type));
+        Real vega() {
+            return self->result<Real>("vega");
         }
     }
 };
 
+%{
+using QuantLib::BasketGeneratingEngine;
+%}
+
+%shared_ptr(NonstandardSwaption)
+class NonstandardSwaption : public Instrument {
+  public:
+    NonstandardSwaption(const boost::shared_ptr<NonstandardSwap>& swap,
+                const boost::shared_ptr<Exercise>& exercise,
+                Settlement::Type type = Settlement::Physical,
+                Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+                
+    const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const;
+
+    %extend {                
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+            boost::shared_ptr<SwapIndex> swapIndex,
+            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+            std::string typeStr) {
+
+            BasketGeneratingEngine::CalibrationBasketType type;
+            if(typeStr == "Naive")
+                type = BasketGeneratingEngine::Naive;
+            else if(typeStr == "MaturityStrikeByDeltaGamma")
+                type = BasketGeneratingEngine::MaturityStrikeByDeltaGamma;
+            else
+                QL_FAIL("type " << typeStr << "unknown.");
+
+            std::vector<boost::shared_ptr<BlackCalibrationHelper> > hs =
+                self->calibrationBasket(swapIndex, swaptionVolatility, type);
+            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+            for (Size i=0; i<hs.size(); ++i)
+                helpers[i] = hs[i];
+            return helpers;
+        }
+
+
+        std::vector<Real> probabilities() {
+            return self->result<std::vector<Real> >("probabilities");
+        }
+    }
+};
+
+%shared_ptr(FloatFloatSwaption)
+class FloatFloatSwaption : public Instrument {
+public:
+    FloatFloatSwaption(const boost::shared_ptr<FloatFloatSwap>& swap,
+                const boost::shared_ptr<Exercise>& exercise,
+                Settlement::Type delivery = Settlement::Physical,
+                Settlement::Method settlementMethod = Settlement::PhysicalOTC);
+
+    const boost::shared_ptr<FloatFloatSwap> &underlyingSwap();
+    
+    %extend {
+
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+        boost::shared_ptr<SwapIndex> swapIndex,
+        boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        std::string typeStr) {
+
+        BasketGeneratingEngine::CalibrationBasketType type;
+        if(typeStr == "Naive")
+            type = BasketGeneratingEngine::Naive;
+        else if(typeStr == "MaturityStrikeByDeltaGamma")
+            type = BasketGeneratingEngine::MaturityStrikeByDeltaGamma;
+        else
+            QL_FAIL("type " << typeStr << "unknown.");
+
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > hs =
+            self->calibrationBasket(swapIndex, swaptionVolatility, type);
+        std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+        for (Size i=0; i<hs.size(); ++i)
+            helpers[i] = hs[i];
+        return helpers;
+        }
+
+        Real underlyingValue() {
+            return self->result<Real>("underlyingValue");
+        }
+
+        std::vector<Real> probabilities() {
+            return self->result<std::vector<Real> >("probabilities");
+        }
+    }
+};
 
 // pricing engines
 
 %{
 using QuantLib::BlackSwaptionEngine;
-typedef boost::shared_ptr<PricingEngine> BlackSwaptionEnginePtr;
+using QuantLib::BachelierSwaptionEngine;
 %}
 
-%rename(BlackSwaptionEngine) BlackSwaptionEnginePtr;
-class BlackSwaptionEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BlackSwaptionEngine)
+class BlackSwaptionEngine : public PricingEngine {
   public:
-    %extend {
-        BlackSwaptionEnginePtr(
-                           const Handle<YieldTermStructure> & discountCurve,
-                           const Handle<Quote>& vol) {
-            return new BlackSwaptionEnginePtr(
-                                 new BlackSwaptionEngine(discountCurve, vol));
-        }
-        BlackSwaptionEnginePtr(
-                           const Handle<YieldTermStructure> & discountCurve,
-                           const Handle<SwaptionVolatilityStructure>& v) {
-            return new BlackSwaptionEnginePtr(
-                                   new BlackSwaptionEngine(discountCurve, v));
-        }
-    }
+    BlackSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                        const Handle<Quote>& vol,
+                        const DayCounter& dc = Actual365Fixed(),
+                        Real displacement = 0.0);
+    BlackSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                        const Handle<SwaptionVolatilityStructure>& v);
+};
+
+%shared_ptr(BachelierSwaptionEngine)
+class BachelierSwaptionEngine : public PricingEngine {
+  public:
+    BachelierSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                            const Handle<Quote>& vol,
+                            const DayCounter& dc = Actual365Fixed());
+    BachelierSwaptionEngine(const Handle<YieldTermStructure> & discountCurve,
+                            const Handle<SwaptionVolatilityStructure>& v);
 };
 
 #endif

@@ -32,14 +32,6 @@ using QuantLib::GenericSequenceStatistics;
 %}
 
 class Statistics {
-    #if defined(SWIGRUBY)
-    %rename("reset!")                reset;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("weight-sum")            weightSum;
-    %rename("standard-deviation")    standardDeviation;
-    %rename("error-estimate")        errorEstimate;
-    %rename("reset!")                reset;
-    #endif
   public:
     Size samples() const;
     Real weightSum() const;
@@ -67,14 +59,6 @@ class Statistics {
 
 
 class IncrementalStatistics {
-    #if defined(SWIGRUBY)
-    %rename("reset!")                reset;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("weight-sum")            weightSum;
-    %rename("standard-deviation")    standardDeviation;
-    %rename("error-estimate")        errorEstimate;
-    %rename("reset!")                reset;
-    #endif
   public:
     Size samples() const;
     Real weightSum() const;
@@ -102,16 +86,6 @@ class IncrementalStatistics {
 
 
 class RiskStatistics : public Statistics {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("semi-variance")         semiVariance;
-    %rename("semi-deviation")        semiDeviation;
-    %rename("downside-variance")     downsideVariance;
-    %rename("downside-deviation")    downsideDeviation;
-    %rename("potential-upside")      potentialUpside;
-    %rename("value-at-risk")         valueAtRisk;
-    %rename("expected-shortfall")    expectedShortfall;
-    %rename("average-shortfall")     averageShortfall;
-    #endif
   public:
     Real semiVariance() const;
     Real semiDeviation() const;
@@ -127,14 +101,6 @@ class RiskStatistics : public Statistics {
 
 template <class S>
 class GenericSequenceStatistics {
-    #if defined(SWIGRUBY)
-    %rename("reset!")                reset;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("weight-sum")            weightSum;
-    %rename("standard-deviation")    standardDeviation;
-    %rename("error-estimate")        errorEstimate;
-    %rename("reset!")                reset;
-    #endif
   public:
     GenericSequenceStatistics(Size dimension);
     Size size() const;

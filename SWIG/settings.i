@@ -26,17 +26,6 @@ using QuantLib::Settings;
 %}
 
 class Settings {
-    #if defined(SWIGRUBY)
-    %rename("evaluationDate") getEvaluationDate;
-    %rename("evaluationDate=") setEvaluationDate;
-    %rename("includeReferenceDateCashFlows=") includeReferenceDateCashFlows;
-    %rename("includeTodaysCashFlows=") includeTodaysCashFlows;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("evaluation-date-get")  evaluationDate;
-    %rename("evaluation-date-set!") setEvaluationDate;
-    %rename("include-reference-date-cash-flows!") includeReferenceDateCashFlows;
-    %rename("include-todays-cash-flows!") includeTodaysCashFlows;
-    #endif
   private:
     Settings();
   public:
@@ -55,6 +44,12 @@ class Settings {
         void includeTodaysCashFlows(bool b) {
             self->includeTodaysCashFlows() = b;
         }
+        void setEnforcesTodaysHistoricFixings(bool b) {
+            self->enforcesTodaysHistoricFixings() = b;
+        }
+        bool getEnforcesTodaysHistoricFixings() {
+            return self->enforcesTodaysHistoricFixings();
+        }
     }
     #if defined(SWIGPYTHON)
     %pythoncode %{
@@ -62,6 +57,7 @@ class Settings {
     includeReferenceDateCashFlows = property(None,includeReferenceDateEvents,None)
     includeReferenceDateEvents = property(None,includeReferenceDateEvents,None)
     includeTodaysCashFlows = property(None,includeTodaysCashFlows,None)
+    enforcesTodaysHistoricFixings = property(getEnforcesTodaysHistoricFixings, setEnforcesTodaysHistoricFixings, None)
     %}
     #endif
 };

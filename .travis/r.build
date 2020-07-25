@@ -1,0 +1,10 @@
+#!/bin/bash
+
+mkdir -p ~/.R
+echo 'CC=clang' > ~/.R/Makevars
+echo 'CXX=clang++' >> ~/.R/Makevars
+
+./autogen.sh \
+&& ./configure CXXFLAGS='-O0' \
+&& make -C R \
+&& make -C R check

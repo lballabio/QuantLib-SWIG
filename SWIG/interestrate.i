@@ -22,6 +22,7 @@
 %include common.i
 %include types.i
 %include daycounters.i
+%include stl.i
 
 %{
 using QuantLib::Compounding;
@@ -29,13 +30,15 @@ using QuantLib::Simple;
 using QuantLib::Compounded;
 using QuantLib::Continuous;
 using QuantLib::SimpleThenCompounded;
+using QuantLib::CompoundedThenSimple;
 %}
 
 enum Compounding {
     Simple,
     Compounded,
     Continuous,
-    SimpleThenCompounded
+    SimpleThenCompounded,
+    CompoundedThenSimple    
 };
 
 
@@ -44,15 +47,6 @@ using QuantLib::InterestRate;
 %}
 
 class InterestRate {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")              dayCounter;
-    %rename("discount-factor")          discountFactor;
-    %rename("compound-factor")          compoundFactor;
-    %rename("implied-rate")             impliedRate;
-    %rename("implied-interest-rate")    impliedInterestRate;
-    %rename("equivalent-rate")          equivalentRate;
-    %rename("equivalent-interest-rate") equivalentInterestRate;
-    #endif
   public:
     InterestRate();
     InterestRate(Rate r,
@@ -102,6 +96,11 @@ class InterestRate {
         }
     }
 };
+
+
+namespace std {
+    %template(InterestRateVector) vector<InterestRate>;
+}
 
 
 #endif

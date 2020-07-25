@@ -6,7 +6,7 @@
  Copyright (C) 2013 Simon Shakeshaft
  Copyright (C) 2014 Bitquant Research Laboratories (Asia) Ltd.
  Copyright (C) 2015 Klaus Spanderen
- 
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -28,6 +28,8 @@
 %include common.i
 %include types.i
 %include stl.i
+
+%define QL_TYPECHECK_PERIOD                      5220    %enddef
 
 %{
 #ifndef QL_HIGH_RESOLUTION_DATE
@@ -117,7 +119,6 @@ enum Month {
     December  = 12
 };
 
-
 %{
 using QuantLib::TimeUnit;
 using QuantLib::Days;
@@ -204,7 +205,7 @@ class Period {
             out << "Period(\"" << QuantLib::io::short_period(*self) << "\")";
             return out.str();
         }
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGR)
+        #if defined(SWIGPYTHON) || defined(SWIGR)
         Period __neg__() {
             return -(*self);
         }
@@ -217,6 +218,15 @@ class Period {
         }
         bool __lt__(const Period& other) {
             return *self < other;
+        }
+        bool __gt__(const Period& other) {
+            return other < *self;
+        }
+        bool __le__(const Period& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Period& other) {
+            return !(*self < other);
         }
         #endif
         bool __eq__(const Period& other) {
@@ -237,6 +247,30 @@ class Period {
     #endif
 };
 
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<Period> %{
+    if($input == Py_None)
+        $1 = boost::none;
+    else
+    {
+        Period *temp;
+        if (!SWIG_IsOK(SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0)))
+            SWIG_exception_fail(SWIG_TypeError, "in method '$symname', expecting type Period");
+        $1 = (boost::optional<Period>) *temp;
+    }
+%}
+%typecheck (QL_TYPECHECK_PERIOD) boost::optional<Period> {
+    if($input == Py_None)
+        $1 = 1;
+    else {
+        Period *temp;
+        int res = SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0);
+        $1 = SWIG_IsOK(res) ? 1 : 0;
+    }
+
+}
+#endif
+
 namespace std {
     %template(PeriodVector) vector<Period>;
 }
@@ -248,17 +282,21 @@ using QuantLib::Date;
 using QuantLib::DateParser;
 %}
 
+#if defined(SWIGPYTHON)
+%pythoncode %{
+import datetime as _datetime
+%}
+#endif
+
 #if defined(SWIGR)
+%rename(__add__) Date::operator+;
+%rename(__sub__) Date::operator-;
 %Rruntime %{
 setAs("_p_Date", "character",
 function(from) {from$ISO()})
 
 setAs("character", "_p_Date",
 function(from) { DateParser_parseISO(from) })
-
-
-setMethod("as.numeric", "_p_Date",
-    function(x) x$serialNumber())
 setMethod("+", c("_p_Date", "numeric"),
     function(e1,e2) Date___add__(e1,e2))
 setMethod("-", c("_p_Date", "numeric"),
@@ -268,13 +306,12 @@ setMethod("+", c("_p_Date", "_p_Period"),
 setMethod("-", c("_p_Date", "_p_Period"),
     function(e1,e2) Date___sub__(e1,e2))
 
+setMethod("as.numeric", "_p_Date",
+    function(x) x$serialNumber())
+
 setAs("character", "_p_Period",
 function(from) {Period(from)})
 %}
-#endif
-
-#if defined(SWIGRUBY)
-%mixin Date "Comparable";
 #endif
 
 #if defined(SWIGCSHARP)
@@ -347,23 +384,6 @@ function(from) {Period(from)})
 %}
 
 class Date {
-    #if defined(SWIGRUBY)
-    %rename("isLeap?")        isLeap;
-    %rename("isEndOfMonth?")         isEndOfMonth;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-of-month")   dayOfMonth;
-    %rename("day-of-year")    dayOfYear;
-    %rename("weekday-number") weekdayNumber;
-    %rename("serial-number")  serialNumber;
-    %rename("is-leap?")       isLeap;
-    %rename("min-date")       minDate;
-    %rename("max-date")       maxDate;
-    %rename("todays-date")    todaysDate;
-    %rename("end-of-month")   endOfMonth;
-    %rename("is-eom?")        isEndOfMonth;
-    %rename("next-weekday")   nextWeekday;
-    %rename("nth-weekday")    nthWeekday;
-    #endif
   public:
     Date();
     Date(Day d, Month m, Year y);
@@ -475,8 +495,7 @@ class Date {
     static bool isEndOfMonth(const Date&);
     static Date nextWeekday(const Date&, Weekday);
     static Date nthWeekday(Size n, Weekday, Month m, Year y);
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA) \
-     || defined(SWIGR) || defined(SWIGCSHARP)
+    #if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGR) || defined(SWIGCSHARP)
     Date operator+(BigInteger days) const;
     Date operator-(BigInteger days) const;
     Date operator+(const Period&) const;
@@ -500,7 +519,11 @@ class Date {
         }
         std::string __str__() {
             std::ostringstream out;
+        %#ifdef QL_HIGH_RESOLUTION_DATE
+            out << QuantLib::io::iso_datetime(*self);
+        %#else
             out << *self;
+        %#endif
             return out.str();
         }
         std::string __repr__() {
@@ -508,8 +531,16 @@ class Date {
             if (*self == Date())
                 out << "Date()";
             else
+        %#ifdef QL_HIGH_RESOLUTION_DATE
+                out << "Date(" << self->dayOfMonth() << ","
+                    << int(self->month()) << "," << self->year() << ","
+                    << self->hours() << "," << self->minutes() << ","
+                    << self->seconds() << "," << self->milliseconds() << ","
+                    << self->microseconds() << ")";
+        %#else
                 out << "Date(" << self->dayOfMonth() << ","
                     << int(self->month()) << "," << self->year() << ")";
+        %#endif
             return out.str();
         }
         std::string ISO() {
@@ -517,7 +548,7 @@ class Date {
             out << QuantLib::io::iso_date(*self);
             return out.str();
         }
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGR)
+        #if defined(SWIGPYTHON) || defined(SWIGR)
         BigInteger operator-(const Date& other) {
             return *self - other;
         }
@@ -537,24 +568,39 @@ class Date {
         bool __nonzero__() {
             return (*self != Date());
         }
+        bool __bool__() {
+            return (*self != Date());
+        }
         int __hash__() {
             return self->serialNumber();
         }
         bool __lt__(const Date& other) {
             return *self < other;
         }
-        #endif
-        #if defined(SWIGRUBY)
-        Date succ() {
-            return *self + 1;
+        bool __gt__(const Date& other) {
+            return other < *self;
         }
-        #endif
-        #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-        Date advance(Integer n, TimeUnit units) {
-            return *self + n*units;
+        bool __le__(const Date& other) {
+            return !(other < *self);
+        }
+        bool __ge__(const Date& other) {
+            return !(*self < other);
+        }
+        bool __ne__(const Date& other) {
+            return *self != other;
         }
         #endif
     }
+    #if defined(SWIGPYTHON)
+    %pythoncode %{
+    def to_date(self):
+        return _datetime.date(self.year(), self.month(), self.dayOfMonth())
+
+    @staticmethod
+    def from_date(date):
+        return Date(date.day, date.month, date.year)
+    %}
+    #endif
 };
 
 class DateParser {
@@ -606,6 +652,8 @@ namespace std {
     %template(DateVector) vector<Date>;
 }
 
+Time daysBetween(const Date&, const Date&);
+
 #if defined(SWIGR)
 
 
@@ -625,7 +673,6 @@ a
 %}
 
 
-Time daysBetween(const Date&, const Date&);
 bool operator==(const Date&, const Date&);
 bool operator!=(const Date&, const Date&);
 bool operator<(const Date&, const Date&);
@@ -635,49 +682,11 @@ bool operator>=(const Date&, const Date&);
 
 #endif
 
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Date=?")  Date_equal;
-%rename("Date<?")  Date_less;
-%rename("Date<=?") Date_less_equal;
-%rename("Date>?")  Date_greater;
-%rename("Date>=?") Date_greater_equal;
-%inline %{
-    // difference - comparison
-    BigInteger Date_days_between(const Date& d1, const Date& d2) {
-        return d2-d1;
-    }
-    bool Date_equal(const Date& d1, const Date& d2) {
-        return d1 == d2;
-    }
-    bool Date_less(const Date& d1, const Date& d2) {
-        return d1 < d2;
-    }
-    bool Date_less_equal(const Date& d1, const Date& d2) {
-        return d1 <= d2;
-    }
-    bool Date_greater(const Date& d1, const Date& d2) {
-        return d1 > d2;
-    }
-    bool Date_greater_equal(const Date& d1, const Date& d2) {
-        return d1 >= d2;
-    }
-%}
-#endif
-
 %{
 using QuantLib::IMM;
 %}
 
 struct IMM {
-    #if defined(SWIGRUBY)
-    %rename("isIMMdate?")        isIMMdate;
-    %rename("isIMMcode?")        isIMMcode;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-imm-date?")      isIMMdate;
-    %rename("is-imm-code?")      isIMMcode;
-    %rename("next-date")         nextDate;
-    %rename("next-code")         nextCode;
-    #endif
     enum Month { F =  1, G =  2, H =  3,
                  J =  4, K =  5, M =  6,
                  N =  7, Q =  8, U =  9,
@@ -702,5 +711,33 @@ struct IMM {
                                 const Date& referenceDate = Date());
 };
 
+%{
+using QuantLib::ASX;
+%}
+
+struct ASX {
+    enum Month { F =  1, G =  2, H =  3,
+                 J =  4, K =  5, M =  6,
+                 N =  7, Q =  8, U =  9,
+                 V = 10, X = 11, Z = 12 };
+
+    static bool isASXdate(const Date& d,
+                          bool mainCycle = true);
+    static bool isASXcode(const std::string& code,
+                          bool mainCycle = true);
+    static std::string code(const Date& asxDate);
+    static Date date(const std::string& asxCode,
+                     const Date& referenceDate = Date());
+    static Date nextDate(const Date& d = Date(),
+                         bool mainCycle = true);
+    static Date nextDate(const std::string& asxCode,
+                         bool mainCycle = true,
+                         const Date& referenceDate = Date());
+    static std::string nextCode(const Date& d = Date(),
+                                bool mainCycle = true);
+    static std::string nextCode(const std::string& asxCode,
+                                bool mainCycle = true,
+                                const Date& referenceDate = Date());
+};
 
 #endif

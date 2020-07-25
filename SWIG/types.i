@@ -57,25 +57,12 @@ typedef Real Probability;
 %typecheck(SWIG_TYPECHECK_INTEGER) std::size_t {
     $1 = (PyInt_Check($input) || PyLong_Check($input)) ? 1 : 0;
 }
-#elif defined(SWIGMZSCHEME)
-%typecheck(SWIG_TYPECHECK_INTEGER) std::size_t {
-    $1 = (SCHEME_INTP($input)) ? 1 : 0;
-}
-#elif defined(SWIGOCAML)
-%typecheck(SWIG_TYPECHECK_INTEGER) std::size_t {
-    if( !Is_block($input) ) $1 = 0;
-    else {
-        switch( SWIG_Tag_val($input) ) {
-          case C_int64: $1 = 1; break;
-          default: $1 = 0; break;
-        }
-    }
-}
 #endif
 
+#if defined(SWIGPYTHON)
+typedef size_t Size;
+#else
 typedef std::size_t Size;
-
-
-
+#endif
 
 #endif

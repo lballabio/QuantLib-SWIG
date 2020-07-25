@@ -2,6 +2,8 @@
 /*
  Copyright (C) 2003 Ferdinando Ametrano
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2016 Gouthaman Balaraman
+ Copyright (C) 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,10 +24,6 @@
 
 %include distributions.i
 
-#if defined(SWIGRUBY)
-#pragma SWIG nowarn=314
-#endif
-
 %{
 using QuantLib::Sample;
 
@@ -44,9 +42,11 @@ typedef QuantLib::PseudoRandom::rng_type GaussianRandomGenerator;
 using QuantLib::RandomSequenceGenerator;
 
 typedef QuantLib::PseudoRandom::ursg_type UniformRandomSequenceGenerator;
+using QuantLib::SobolBrownianGenerator;
 
 using QuantLib::HaltonRsg;
 using QuantLib::SobolRsg;
+using QuantLib::SobolBrownianBridgeRsg;
 
 typedef QuantLib::LowDiscrepancy::ursg_type
     UniformLowDiscrepancySequenceGenerator;
@@ -74,6 +74,10 @@ class Sample {
 %template(SampleRealVector) Sample<std::vector<Real> >; 
 
 /************* Uniform number generators *************/
+
+#if defined(SWIGR)
+%rename(nextSample) next;
+#endif
 
 class LecuyerUniformRng {
   public:
@@ -170,15 +174,38 @@ class GaussianRandomGenerator {
 
 class HaltonRsg {
   public:
-    HaltonRsg(Size dimensionality);
+    HaltonRsg(Size dimensionality, unsigned long seed = 0,
+                  bool randomStart = true, bool randomShift = false);
     const Sample<std::vector<Real> >& nextSequence() const;
+    const Sample<std::vector<Real> >& lastSequence() const;
     Size dimension() const;
 };
 
 class SobolRsg {
   public:
-    SobolRsg(Size dimensionality, BigInteger seed=0);
+    enum DirectionIntegers {
+            Unit, Jaeckel, SobolLevitan, SobolLevitanLemieux,
+            JoeKuoD5, JoeKuoD6, JoeKuoD7,
+            Kuo, Kuo2, Kuo3 };
+    SobolRsg(Size dimensionality, BigInteger seed=0,
+             DirectionIntegers directionIntegers = QuantLib::SobolRsg::Jaeckel);
     const Sample<std::vector<Real> >& nextSequence() const;
+    const Sample<std::vector<Real> >& lastSequence() const;
+    Size dimension() const;
+    void skipTo(Size n);
+    %extend{
+      std::vector<unsigned int> nextInt32Sequence(){
+          return to_vector<unsigned int>($self->nextInt32Sequence());
+      }
+    }
+};
+
+
+class SobolBrownianBridgeRsg {
+  public:
+    SobolBrownianBridgeRsg(Size factors, Size steps);
+    const Sample<std::vector<Real> >&  nextSequence() const;
+    const Sample<std::vector<Real> >&  lastSequence() const;
     Size dimension() const;
 };
 
@@ -186,6 +213,8 @@ template<class RNG> class RandomSequenceGenerator {
   public:
     RandomSequenceGenerator(Size dimensionality,
                             const RNG& rng);
+    RandomSequenceGenerator(Size dimensionality,
+                                BigNatural seed = 0);
     const Sample<std::vector<Real> >& nextSequence() const;
     Size dimension() const;
 };
@@ -207,7 +236,10 @@ class UniformRandomSequenceGenerator {
 
 class UniformLowDiscrepancySequenceGenerator {
   public:
-    UniformLowDiscrepancySequenceGenerator(Size dimensionality);
+    UniformLowDiscrepancySequenceGenerator(
+        Size dimensionality,
+        BigInteger seed=0,
+        SobolRsg::DirectionIntegers directionIntegers = QuantLib::SobolRsg::Jaeckel);
     const Sample<std::vector<Real> >& nextSequence() const;
     Size dimension() const;
 };
@@ -218,6 +250,8 @@ template <class U, class I>
 class InverseCumulativeRsg {
   public:
     InverseCumulativeRsg(const U& uniformSequenceGenerator);
+    InverseCumulativeRsg(const U& uniformSequenceGenerator,
+                             const I& inverseCumulative);
     const Sample<std::vector<Real> >& nextSequence() const;
     Size dimension() const;
 };
@@ -234,6 +268,8 @@ class InverseCumulativeRsg {
                          MoroInverseCumulativeNormal>;
 %template(MoroInvCumulativeHaltonGaussianRsg)
     InverseCumulativeRsg<HaltonRsg,MoroInverseCumulativeNormal>;
+%template(MoroInvCumulativeSobolGaussianRsg)
+    InverseCumulativeRsg<SobolRsg,MoroInverseCumulativeNormal>;
 
 %template(InvCumulativeLecuyerGaussianRsg)
     InverseCumulativeRsg<RandomSequenceGenerator<LecuyerUniformRng>,
@@ -246,7 +282,9 @@ class InverseCumulativeRsg {
                          InverseCumulativeNormal>;
 %template(InvCumulativeHaltonGaussianRsg)
     InverseCumulativeRsg<HaltonRsg,InverseCumulativeNormal>;
-
+%template(InvCumulativeSobolGaussianRsg)
+    InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal>;
+    
 class GaussianRandomSequenceGenerator {
   public:
     GaussianRandomSequenceGenerator(

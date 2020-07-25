@@ -18,9 +18,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-#if defined(SWIGRUBY)
-%module QuantLibc
-#elif defined(SWIGCSHARP)
+#if defined(SWIGCSHARP)
 %module(directors="1") NQuantLibc
 #elif defined(SWIGJAVA)
 %module(directors="1") QuantLib
@@ -29,9 +27,6 @@
 #endif
 
 %include exception.i
-#if defined(SWIGMZSCHEME)
-%include std_except.i
-#endif
 
 %exception {
     try {
@@ -58,28 +53,34 @@ const char* __version__;
 %mutable;
 #endif
 
-#if defined(SWIGGUILE)
-// code for loading shared library
-%scheme%{
-    (define (load-quantlibc-in path)
-      (if (null? path)
-          (error "QuantLibc.so not found")
-          (let ((so-name (string-append (car path) "/QuantLibc.so")))
-            (if (file-exists? so-name)
-                (dynamic-call
-                 "scm_init_QuantLib_module"
-                 (dynamic-link so-name))
-                (load-quantlibc-in (cdr path))))))
-    (load-quantlibc-in %load-path)
+#if defined(JAVA_AUTOLOAD)
+// Automatically load the shared library for JAVA binding
+%pragma(java) jniclasscode=%{
+  /// Load the JNI library
+  static {
+    System.loadLibrary("QuantLibJNI");
+  }
 %}
 #endif
 
-#if defined(SWIGCSHARP)
-%{
-#define SWIGSTDCALL
+
+#if defined(JAVA_AUTOCLOSEABLE)
+%typemap(javaimports) SWIGTYPE %{
+import java.lang.AutoCloseable;
+%}
+%typemap(javainterfaces) SWIGTYPE "AutoCloseable";
+%typemap(javacode) SWIGTYPE %{
+  @Override
+  public void close() {
+   this.delete();
+  }
 %}
 #endif
 
+
+#if !defined(JAVA_FINALIZER)
+%typemap(javafinalize) SWIGTYPE %{%}
+#endif
 
 //#if defined(SWIGPYTHON)
 //%feature("autodoc");

@@ -71,25 +71,7 @@ object HestonModelCalibration {
             
         val strikes = Vector( 
             3400,3600,3800,4000,4200,4400,4500,4600,4800,5000,5200,5400,5600)
-            
-        val calibrationHelpers = new CalibrationHelperVector()    
-            
-        for (s <- (0 to 12)) {
-            for (m <- (1 to 8)) {
-                val vol = new QuoteHandle(new SimpleQuote(vols(s*8+m-1)))
-                val maturityInWeeks = ((maturityInDays(m)+3)/7.).toInt
-                val maturity = new Period(maturityInWeeks, TimeUnit.Weeks)
 
-                calibrationHelpers.add(
-                    new HestonModelHelper(maturity, calendar, s0.value, 
-                                          strikes(s), vol, rTS, divTS, 
-                                          CalibrationHelper.ImpliedVolError))
-            }
-        }
-        
-        val helpers = for (i <- 0 until calibrationHelpers.size().toInt)
-            yield(calibrationHelpers.get(i))
-        
         val v0   =  0.1
         val kappa=  1.0
         val theta=  0.1
@@ -101,8 +83,29 @@ object HestonModelCalibration {
         
         val hestonModel = new HestonModel(hestonProcess) 
         val analyticHestonEngine = new AnalyticHestonEngine(hestonModel, 64);
+
+
+        val calibrationHelpers = new CalibrationHelperVector()
+
+        for (s <- (0 to 12)) {
+            for (m <- (1 to 8)) {
+                val vol = new QuoteHandle(new SimpleQuote(vols(s*8+m-1)))
+                val maturityInWeeks = ((maturityInDays(m)+3)/7d).toInt
+                val maturity = new Period(maturityInWeeks, TimeUnit.Weeks)
+
+                val helper = new HestonModelHelper(
+                    maturity, calendar, s0.value,
+                    strikes(s), vol, rTS, divTS,
+                    BlackCalibrationHelper.CalibrationErrorType.ImpliedVolError)
+
+                helper setPricingEngine(analyticHestonEngine)
+
+                calibrationHelpers.add(helper)
+            }
+        }
         
-        helpers.foreach(h => h setPricingEngine analyticHestonEngine)
+        val helpers = for (i <- 0 until calibrationHelpers.size().toInt)
+            yield(calibrationHelpers.get(i))
         
         val optimizerMethod = new LevenbergMarquardt(1e-8, 1e-8, 1e-8)
         hestonModel.calibrate(calibrationHelpers, optimizerMethod, 

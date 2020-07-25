@@ -11,12 +11,10 @@ CSharp/cpp/build
 CSharp/csharp/obj
 CSharp/examples/bin
 CSharp/examples/obj
-Guile/quantlib_wrap.cpp
+CSharp/.vs/
 Java/bin/
 Java/quantlib_wrap.cpp
 Java/quantlib_wrap.h
-MzScheme/quantlib_wrap.cpp
-OCaml/quantlib_wrap.c
 Perl/Makefile.quantlib
 Perl/QuantLib.bs
 Perl/blib/
@@ -25,6 +23,12 @@ Perl/quantlib_wrap.cpp
 Perl/MYMETA.yml
 Perl/MYMETA.json
 Python/QuantLib/quantlib_wrap.cpp
+Python/.cache/
+Python/QuantLib.egg-info
+Python/QuantLib_Python.egg-info
+Python/dist
+Python/examples/*.ipynb
+Python/examples/.ipynb_checkpoints
 R/src/QuantLib.cpp
 R/makeRData.Rout
 R/src/symbols.rds
@@ -39,6 +43,10 @@ Ruby/quantlib_wrap.cpp
 **/Release
 **/bin/*.xml
 **/bin/*.manifest
+
+# CLion
+.idea
+cmake-build-debug
 
 # Artifacts created in multiple directories
 Makefile
@@ -64,6 +72,8 @@ testCaseCollection.xml
 *.suo
 *.vcproj.*.user
 *.vcxproj.user
+*.VC.db
+*.VC.opendb
 *.log
 *.sdf
 *.opensdf
@@ -74,16 +84,13 @@ testCaseCollection.xml
 # Outputs
 CSharp/csharp/*.cs
 CSharp/NQuantLib.dll
-Guile/QuantLib.scm
 Java/QuantLib.jar
+Java/*.jnilib
 Java/org/
-OCaml/*.cmi
-OCaml/*.cmo
-OCaml/*.ml
-OCaml/*.mli
 Perl/QuantLib.pm
 Python/QuantLib/QuantLib.py
 Python/build
 R/R/QuantLib.R
 R/QuantLib.RData
 
+.vscode

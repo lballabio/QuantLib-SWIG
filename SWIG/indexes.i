@@ -2,7 +2,9 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
- Copyright (C) 2015 Matthias Groncki
+ Copyright (C) 2015, 2018 Matthias Groncki
+ Copyright (C) 2016 Peter Caspers
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,19 +31,13 @@
 %include termstructures.i
 %include timeseries.i
 %include vectors.i
+%include boost_shared_ptr.i
 
 %{
 using QuantLib::IndexManager;
 %}
 
 class IndexManager {
-    #if defined(SWIGRUBY)
-    %rename("hasHistory?")  hasHistory;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("has-history?") hasHistory;
-    %rename("history-get")  getHistory;
-    %rename("history-set!") setHistory;
-    #endif
   private:
     IndexManager();
   public:
@@ -61,98 +57,55 @@ class IndexManager {
 using QuantLib::Index;
 %}
 
-%ignore Index;
-class Index {
-    #if defined(SWIGRUBY)
-    %rename("isValidFixingDate?") isValidFixingDate;
-    %rename("addFixing!") addFixing;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("fixing-calendar") addFixing;
-    %rename("is-valid-fixing-date?") isValidFixingDate;
-    %rename("add-fixing") addFixing;
-    #endif
+%shared_ptr(Index)
+
+class Index : public Observable {
+  private:
+    Index();
   public:
     std::string name() const;
     Calendar fixingCalendar() const;
     bool isValidFixingDate(const Date& fixingDate) const;
     Real fixing(const Date& fixingDate,
                 bool forecastTodaysFixing = false) const;
-    void addFixing(const Date& fixingDate, Rate fixing);
+    void addFixing(const Date& fixingDate, Rate fixing,
+                   bool forceOverwrite = false);
+    const TimeSeries<Real>& timeSeries() const;
+    void clearFixings();
+    %extend {
+        void addFixings(const std::vector<Date>& fixingDates,
+                        const std::vector<Rate>& fixings,
+                        bool forceOverwrite = false) {
+            self->addFixings(fixingDates.begin(),fixingDates.end(),
+                             fixings.begin(),
+                             forceOverwrite);
+        }
+        std::string __str__() {
+            return self->name()+" index";
+        }
+    }
 };
 
-%template(Index) boost::shared_ptr<Index>;
-%extend boost::shared_ptr<Index> {
-    #if defined(SWIGRUBY)
-    %rename("addFixings!") addFixings;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("add-fixings") addFixings;
-    #endif
-    void addFixings(const std::vector<Date>& fixingDates,
-                    const std::vector<Rate>& fixings) {
-        (*self)->addFixings(fixingDates.begin(),fixingDates.end(),
-                            fixings.begin());
-    }
-    #if !defined(SWIGPERL)
-    std::string __str__() {
-        if (*self)
-            return (*self)->name()+" index";
-        else
-            return "Null index";
-    }
-    #endif
-}
-IsObservable(boost::shared_ptr<Index>);
 
 // interest-rate indexes
 %{
 using QuantLib::InterestRateIndex;
-typedef boost::shared_ptr<Index> InterestRateIndexPtr;
 %}
 
-%rename(InterestRateIndex) InterestRateIndexPtr;
-class InterestRateIndexPtr : public boost::shared_ptr<Index> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("family-name")     familyName;
-    %rename("settlement-days") settlementDays;
-    %rename("day-counter")     dayCounter;
-    #endif
+%shared_ptr(InterestRateIndex)
+
+class InterestRateIndex : public Index {
   protected:
-    InterestRateIndexPtr();
+    InterestRateIndex();
   public:
-    %extend {
-        std::string familyName() {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->familyName();
-        }
-        Period tenor() {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->tenor();
-        }
-        Natural fixingDays() {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->fixingDays();
-        }
-        Date fixingDate(const Date& valueDate) {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->fixingDate(valueDate);
-        }
-        Currency currency() {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->currency();
-        }
-        DayCounter dayCounter() {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->dayCounter();
-        }
-        Date maturityDate(const Date& valueDate) {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->maturityDate(valueDate);
-        }
-        Date valueDate(const Date& fixingDate) {
-            return boost::dynamic_pointer_cast<InterestRateIndex>(*self)
-                ->valueDate(fixingDate);
-        }
-    }
+    std::string familyName() const;
+    Period tenor() const;
+    Natural fixingDays() const;
+    Date fixingDate(const Date& valueDate) const;
+    Currency currency() const;
+    DayCounter dayCounter() const;
+    Date maturityDate(const Date& valueDate) const;
+    Date valueDate(const Date& fixingDate) const;
 };
 
 
@@ -160,278 +113,264 @@ class InterestRateIndexPtr : public boost::shared_ptr<Index> {
 %{
 using QuantLib::IborIndex;
 using QuantLib::OvernightIndex;
-typedef boost::shared_ptr<Index> IborIndexPtr;
-typedef boost::shared_ptr<Index> OvernightIndexPtr;
 %}
 
-%rename(IborIndex) IborIndexPtr;
-class IborIndexPtr : public InterestRateIndexPtr {
-    #if defined(SWIGRUBY)
-    %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-adjusted?")            isAdjusted;
-    %rename("business-day-convention") businessDayConvention;
-    #endif
+%shared_ptr(IborIndex)
+
+class IborIndex : public InterestRateIndex {
   public:
-    %extend {
-        IborIndexPtr(const std::string& familyName,
-                     const Period& tenor,
-                     Integer settlementDays,
-                     const Currency& currency,
-                     const Calendar& calendar,
-                     BusinessDayConvention convention,
-                     bool endOfMonth,
-                     const DayCounter& dayCounter,
-                     const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>()) {
-            return new IborIndexPtr(new IborIndex(familyName, tenor,
-                                                  settlementDays,
-                                                  currency, calendar,
-                                                  convention,
-                                                  endOfMonth,
-                                                  dayCounter, h));
-        }
-        BusinessDayConvention businessDayConvention() {
-            return boost::dynamic_pointer_cast<IborIndex>(*self)
-                ->businessDayConvention();
-        }
-        bool endOfMonth() {
-            return boost::dynamic_pointer_cast<IborIndex>(*self)->endOfMonth();
-        }
-        Handle<YieldTermStructure> forwardingTermStructure() {
-            return boost::dynamic_pointer_cast<IborIndex>(*self)
-                ->forwardingTermStructure();
-        }
-        IborIndexPtr clone(const Handle<YieldTermStructure>& h){
-            return boost::dynamic_pointer_cast<IborIndex>(*self)
-                ->clone(h);
-    }
-    }
+    IborIndex(const std::string& familyName,
+              const Period& tenor,
+              Integer settlementDays,
+              const Currency& currency,
+              const Calendar& calendar,
+              BusinessDayConvention convention,
+              bool endOfMonth,
+              const DayCounter& dayCounter,
+              const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+    BusinessDayConvention businessDayConvention() const;
+    bool endOfMonth() const;
+    Handle<YieldTermStructure> forwardingTermStructure() const;
+    boost::shared_ptr<IborIndex> clone(
+                                   const Handle<YieldTermStructure>&) const;
 };
 
 %inline %{
-    IborIndexPtr as_iborindex(const InterestRateIndexPtr& index) {
+    boost::shared_ptr<IborIndex> as_iborindex(
+                          const boost::shared_ptr<InterestRateIndex>& index) {
         return boost::dynamic_pointer_cast<IborIndex>(index);
     }
 %}
 
-%rename(OvernightIndex) OvernightIndexPtr;
-class OvernightIndexPtr : public IborIndexPtr {
+%shared_ptr(OvernightIndex)
+
+class OvernightIndex : public IborIndex {
   public:
-    %extend {
-        OvernightIndexPtr(const std::string& familyName,
-                          Integer settlementDays,
-                          const Currency& currency,
-                          const Calendar& calendar,
-                          const DayCounter& dayCounter,
-                          const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>()) {
-            return new OvernightIndexPtr(
-                new OvernightIndex(familyName, settlementDays,
-                                   currency, calendar,
-                                   dayCounter, h));
-        }
-    }
+    OvernightIndex(const std::string& familyName,
+                   Integer settlementDays,
+                   const Currency& currency,
+                   const Calendar& calendar,
+                   const DayCounter& dayCounter,
+                   const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
 };
 
 %{
 using QuantLib::Libor;
-typedef boost::shared_ptr<Index> LiborPtr;
+using QuantLib::DailyTenorLibor;
 %}
 
-%rename(Libor) LiborPtr;
-class LiborPtr : public IborIndexPtr {
+%shared_ptr(Libor)
+
+class Libor : public IborIndex {
   public:
-    %extend{
-        LiborPtr(const std::string& familyName,
-              const Period& tenor,
-              Natural settlementDays,
-              const Currency& currency,
-              const Calendar& financialCenterCalendar,
-              const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h =
-                Handle<YieldTermStructure>()){
-            return new LiborPtr(
-                new Libor(familyName,
-                          tenor,
-                          settlementDays,
-                          currency,
-                          financialCenterCalendar,
-                          dayCounter,
-                          h));
-        }
-    }
+    Libor(const std::string& familyName,
+          const Period& tenor,
+          Natural settlementDays,
+          const Currency& currency,
+          const Calendar& financialCenterCalendar,
+          const DayCounter& dayCounter,
+          const Handle<YieldTermStructure>& h =
+                                     Handle<YieldTermStructure>());
+};
+
+%shared_ptr(DailyTenorLibor)
+
+class DailyTenorLibor : public IborIndex {
+  public:
+    DailyTenorLibor(const std::string& familyName,
+                    Natural settlementDays,
+                    const Currency& currency,
+                    const Calendar& financialCenterCalendar,
+                    const DayCounter& dayCounter,
+                    const Handle<YieldTermStructure>& h =
+                                     Handle<YieldTermStructure>());
 };
 
 
 %define export_xibor_instance(Name)
 %{
 using QuantLib::Name;
-typedef boost::shared_ptr<Index> Name##Ptr;
 %}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public IborIndexPtr {
+%shared_ptr(Name)
+
+class Name : public IborIndex {
   public:
-    %extend {
-      Name##Ptr(const Period& tenor,
-                const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>()) {
-          return new Name##Ptr(new Name(tenor,h));
-      }
-    }
+      Name(const Period& tenor,
+           const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
 };
 %enddef
 
 %define export_quoted_xibor_instance(Name,Base)
 %{
 using QuantLib::Name;
-typedef boost::shared_ptr<Index> Name##Ptr;
 %}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public Base##Ptr {
+%shared_ptr(Name)
+
+class Name : public Base {
   public:
-    %extend {
-      Name##Ptr(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>()) {
-          return new Name##Ptr(new Name(h));
-      }
-    }
+      Name(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
 };
 %enddef
 
 %define export_overnight_instance(Name)
 %{
 using QuantLib::Name;
-typedef boost::shared_ptr<Index> Name##Ptr;
 %}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public OvernightIndexPtr {
+%shared_ptr(Name)
+
+class Name : public OvernightIndex {
   public:
-    %extend {
-      Name##Ptr(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>()) {
-          return new Name##Ptr(new Name(h));
-      }
-    }
+      Name(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+};
+%enddef
+
+%define export_daily_libor_instance(Name)
+%{
+using QuantLib::Name;
+%}
+%shared_ptr(Name)
+
+class Name : public DailyTenorLibor {
+  public:
+      Name(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
 };
 %enddef
 
 
 %{
 using QuantLib::SwapIndex;
-typedef boost::shared_ptr<Index> SwapIndexPtr;
 %}
 
-%rename(SwapIndex) SwapIndexPtr;
-class SwapIndexPtr : public InterestRateIndexPtr {
-    #if defined(SWIGRUBY)
-    %rename("isAdjusted?") isAdjusted;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-adjusted?")            isAdjusted;
-    %rename("business-day-convention") businessDayConvention;
-    #endif
+%shared_ptr(SwapIndex)
+
+class SwapIndex : public InterestRateIndex {
   public:
-    %extend {
-        SwapIndexPtr(const std::string& familyName,
-                     const Period& tenor,
-                     Integer settlementDays,
-                     const Currency& currency,
-                     const Calendar& calendar,
-                     const Period& fixedLegTenor,
-                     BusinessDayConvention fixedLegConvention,
-                     const DayCounter& fixedLegDayCounter,
-                     const IborIndexPtr& iborIndex) {
-            boost::shared_ptr<IborIndex> xibor =
-                boost::dynamic_pointer_cast<IborIndex>(iborIndex);
-            return new SwapIndexPtr(new SwapIndex(familyName,
-                                                  tenor, settlementDays,
-                                                  currency, calendar,
-                                                  fixedLegTenor,
-                                                  fixedLegConvention,
-                                                  fixedLegDayCounter,
-                                                  xibor));
-        }
-        SwapIndexPtr(const std::string& familyName,
-                     const Period& tenor,
-                     Integer settlementDays,
-                     const Currency& currency,
-                     const Calendar& calendar,
-                     const Period& fixedLegTenor,
-                     BusinessDayConvention fixedLegConvention,
-                     const DayCounter& fixedLegDayCounter,
-                     const IborIndexPtr& iborIndex,
-                     const Handle<YieldTermStructure>& discountCurve) {
-            boost::shared_ptr<IborIndex> xibor =
-                boost::dynamic_pointer_cast<IborIndex>(iborIndex);
-            return new SwapIndexPtr(new SwapIndex(familyName,
-                                                  tenor, settlementDays,
-                                                  currency, calendar,
-                                                  fixedLegTenor,
-                                                  fixedLegConvention,
-                                                  fixedLegDayCounter,
-                                                  xibor, discountCurve));
-        }
-        Period fixedLegTenor() {
-            return boost::dynamic_pointer_cast<SwapIndex>(*self)
-                ->fixedLegTenor();
-        }
-        BusinessDayConvention fixedLegConvention() {
-            return boost::dynamic_pointer_cast<SwapIndex>(*self)
-                 ->fixedLegConvention();
-        }
-        IborIndexPtr iborIndex() {
-            return boost::dynamic_pointer_cast<SwapIndex>(*self)
-                ->iborIndex();
-        }
-        Handle<YieldTermStructure> forwardingTermStructure() {
-            return boost::dynamic_pointer_cast<SwapIndex>(*self)
-                ->forwardingTermStructure();
-        }
-    }
+    SwapIndex(const std::string& familyName,
+              const Period& tenor,
+              Integer settlementDays,
+              const Currency& currency,
+              const Calendar& calendar,
+              const Period& fixedLegTenor,
+              BusinessDayConvention fixedLegConvention,
+              const DayCounter& fixedLegDayCounter,
+              const boost::shared_ptr<IborIndex>& iborIndex);
+    SwapIndex(const std::string& familyName,
+              const Period& tenor,
+              Integer settlementDays,
+              const Currency& currency,
+              const Calendar& calendar,
+              const Period& fixedLegTenor,
+              BusinessDayConvention fixedLegConvention,
+              const DayCounter& fixedLegDayCounter,
+              const boost::shared_ptr<IborIndex>& iborIndex,
+              const Handle<YieldTermStructure>& discountCurve);
+    Period fixedLegTenor() const;
+    BusinessDayConvention fixedLegConvention() const;
+    boost::shared_ptr<IborIndex> iborIndex() const;
+    Handle<YieldTermStructure> forwardingTermStructure() const;
+    Handle<YieldTermStructure> discountingTermStructure() const;
+    boost::shared_ptr<SwapIndex> clone(const Handle<YieldTermStructure>& h) const;
+    boost::shared_ptr<SwapIndex> clone(const Handle<YieldTermStructure>& forwarding,
+                                       const Handle<YieldTermStructure>& discounting) const;
+    boost::shared_ptr<SwapIndex> clone(const Period& tenor) const;
 };
+
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<SwapIndex> )
+#endif
+namespace std {
+    %template(SwapIndexVector)
+        vector<boost::shared_ptr<SwapIndex> >;     
+}
 
 %define export_swap_instance(Name)
 %{
 using QuantLib::Name;
-typedef boost::shared_ptr<Index> Name##Ptr;
 %}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public SwapIndexPtr {
+%shared_ptr(Name)
+class Name : public SwapIndex {
   public:
-    %extend {
-      Name##Ptr(const Period &tenor,
-                const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>()) {
-          return new Name##Ptr(new Name(tenor,h));
-      }
-    }
+    Name(const Period &tenor,
+         const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+    Name(const Period &tenor,
+         const Handle<YieldTermStructure>& h1,
+         const Handle<YieldTermStructure>& h2);
 };
 %enddef
 
 %define export_quoted_swap_instance(Name,Base)
 %{
 using QuantLib::Name;
-typedef boost::shared_ptr<Index> Name##Ptr;
 %}
-%rename(Name) Name##Ptr;
-class Name##Ptr : public Base##Ptr {
+%shared_ptr(Name)
+class Name : public Base {
   public:
-    %extend {
-      Name##Ptr(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>()) {
-          return new Name##Ptr(new Name(h));
-      }
-    }
+    Name(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+    Name(const Handle<YieldTermStructure>& h1,
+         const Handle<YieldTermStructure>& h2);
 };
 %enddef
 
+%inline %{
+    boost::shared_ptr<SwapIndex> as_swap_index(
+                          const boost::shared_ptr<InterestRateIndex>& index) {
+        return boost::dynamic_pointer_cast<SwapIndex>(index);
+    }
+%}
 
+%{
+using QuantLib::SwapSpreadIndex;
+%}
+
+%shared_ptr(SwapSpreadIndex)
+
+class SwapSpreadIndex : public InterestRateIndex {
+  public:
+    SwapSpreadIndex(const std::string& familyName,
+                    const boost::shared_ptr<SwapIndex>& swapIndex1,
+                    const boost::shared_ptr<SwapIndex>& swapIndex2,
+                    const Real gearing1 = 1.0,
+                    const Real gearing2 = -1.0);
+    Rate forecastFixing(const Date& fixingDate) const;
+    Rate pastFixing(const Date& fixingDate) const;
+    boost::shared_ptr<SwapIndex> swapIndex1();
+    boost::shared_ptr<SwapIndex> swapIndex2();
+    Real gearing1();
+    Real gearing2();
+};
 
 export_xibor_instance(AUDLibor);
+
 export_xibor_instance(CADLibor);
+export_daily_libor_instance(CADLiborON);
+
 export_xibor_instance(Cdor);
 export_xibor_instance(CHFLibor);
 export_xibor_instance(DKKLibor);
+
+export_xibor_instance(Bbsw);
+export_quoted_xibor_instance(Bbsw1M,Bbsw);
+export_quoted_xibor_instance(Bbsw2M,Bbsw);
+export_quoted_xibor_instance(Bbsw3M,Bbsw);
+export_quoted_xibor_instance(Bbsw4M,Bbsw);
+export_quoted_xibor_instance(Bbsw5M,Bbsw);
+export_quoted_xibor_instance(Bbsw6M,Bbsw);
+
+export_xibor_instance(Bkbm);
+export_quoted_xibor_instance(Bkbm1M,Bkbm);
+export_quoted_xibor_instance(Bkbm2M,Bkbm);
+export_quoted_xibor_instance(Bkbm3M,Bkbm);
+export_quoted_xibor_instance(Bkbm4M,Bkbm);
+export_quoted_xibor_instance(Bkbm5M,Bkbm);
+export_quoted_xibor_instance(Bkbm6M,Bkbm);
 
 export_xibor_instance(Euribor);
 export_quoted_xibor_instance(EuriborSW,Euribor);
@@ -484,18 +423,32 @@ export_quoted_xibor_instance(EURLibor11M,EURLibor);
 export_quoted_xibor_instance(EURLibor1Y,EURLibor);
 
 export_xibor_instance(GBPLibor);
+export_daily_libor_instance(GBPLiborON);
+
 export_xibor_instance(Jibar);
 export_xibor_instance(JPYLibor);
+export_xibor_instance(Mosprime);
 export_xibor_instance(NZDLibor);
+export_xibor_instance(Pribor);
+export_xibor_instance(Robor);
 export_xibor_instance(SEKLibor);
+export_xibor_instance(Shibor);
 export_xibor_instance(Tibor);
+export_xibor_instance(THBFIX);
 export_xibor_instance(TRLibor);
+
 export_xibor_instance(USDLibor);
+export_daily_libor_instance(USDLiborON);
+
+export_xibor_instance(Wibor);
 export_xibor_instance(Zibor);
 
+export_overnight_instance(Aonia);
 export_overnight_instance(Eonia);
 export_overnight_instance(Sonia);
 export_overnight_instance(FedFunds);
+export_overnight_instance(Nzocr);
+export_overnight_instance(Sofr);
 
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);
@@ -505,5 +458,20 @@ export_swap_instance(EurLiborSwapIsdaFixA);
 export_swap_instance(EurLiborSwapIsdaFixB);
 export_swap_instance(EurLiborSwapIfrFix);
 
+export_swap_instance(ChfLiborSwapIsdaFix);
+export_swap_instance(GbpLiborSwapIsdaFix);
+export_swap_instance(JpyLiborSwapIsdaFixAm);
+export_swap_instance(JpyLiborSwapIsdaFixPm);
+export_swap_instance(UsdLiborSwapIsdaFixAm);
+export_swap_instance(UsdLiborSwapIsdaFixPm);
+
+export_xibor_instance(Bibor);
+export_quoted_xibor_instance(BiborSW,Bibor);
+export_quoted_xibor_instance(Bibor1M,Bibor);
+export_quoted_xibor_instance(Bibor2M,Bibor);
+export_quoted_xibor_instance(Bibor3M,Bibor);
+export_quoted_xibor_instance(Bibor6M,Bibor);
+export_quoted_xibor_instance(Bibor9M,Bibor);
+export_quoted_xibor_instance(Bibor1Y,Bibor);
 
 #endif

@@ -29,10 +29,8 @@ using QuantLib::TimeGrid;
 %}
 
 class TimeGrid {
-    #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+    #if defined(SWIGPYTHON)
     %rename(__len__)   size;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("length")  size;
     #elif defined(SWIGJAVA)
     %rename("getSize")   size;
     %rename("elementAt") ref;
@@ -54,7 +52,7 @@ class TimeGrid {
     }
     Size size() const;
     %extend {
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY)
+        #if defined(SWIGPYTHON)
         Time __getitem__(Integer i) {
             Integer size_ = static_cast<Integer>(self->size());
             if (i>=0 && i<size_) {
@@ -75,7 +73,7 @@ class TimeGrid {
                 throw std::out_of_range("time-grid index out of range");
             }
         }
-        #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE) || defined(SWIGJAVA)
+        #elif defined(SWIGJAVA)
         Time ref(Size i) {
             if (i<self->size())
                 return (*self)[i];

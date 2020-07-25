@@ -1,291 +1,730 @@
-commit bcc9dc72ea937c9b8c651df70b689c4fd6e6b26e
+commit 0bb97112758a570bc6ad89b43ee7f393dba4fd93
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Apr 2016 15:50:27 +0200
+Date:   Tue, 14 Jul 2020 17:21:54 +0200
 
-    Update Visual C# projects.
+    Set version to 1.19 final.
 
- CSharp/csharp/NQuantLib.csproj     | 13 +++++++++++--
- CSharp/csharp/NQuantLib_vc8.csproj | 13 +++++++++++--
- CSharp/csharp/NQuantLib_vc9.csproj | 13 +++++++++++--
- tools/sync_csharp_projects.sh      | 23 ++++++++++-------------
- 4 files changed, 43 insertions(+), 19 deletions(-)
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-commit 87e7752e3e2fe760afd974685d5b97d0ed370d20
-Merge: b82581c d63b022
+commit 817c4989f03ea663d3b29d258209d1ccc41a6e8e
+Merge: 70f7de2 08ae1ce
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 30 Mar 2016 12:27:02 +0200
+Date:   Mon, 13 Jul 2020 13:41:36 +0200
 
-    Merge pull request #15.
-
-commit d63b02255f532704c49a6b00f2e4672674d4b10f
-Author: alexsbromberg <bromberg.alex@gmail.com>
-Date:   Mon, 28 Mar 2016 16:07:02 -0400
-
-    Update scheduler.i
+    Merge pull request #288.
     
-    The 'until' function isn't exposed by SWIG. Added a line to do that.
+    Export analytic BSM/HW engine.
 
- SWIG/scheduler.i | 1 +
- 1 file changed, 1 insertion(+)
-
-commit b82581c923278669e57eff9633eb059fcdef0ec7
-Merge: 4357cdb cdfcfc3
+commit 08ae1ce43f7ba5a0714d780d0f7b2ea0e44c748c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 25 Mar 2016 10:27:46 +0100
+Date:   Mon, 13 Jul 2020 12:09:20 +0200
 
-    Merge pull request #13.
+    Export analytic BSM/HW engine.
 
-commit cdfcfc369e417c406d4f0666e2127774cbfdaa0a
-Author: Gouthaman Balaraman <gouthambs@gmail.com>
-Date:   Fri, 18 Mar 2016 22:23:41 -0700
+ CSharp/csharp/NQuantLib.csproj |  1 +
+ News.md                        |  2 ++
+ SWIG/shortratemodels.i         | 16 ++++++++++++++++
+ 3 files changed, 19 insertions(+)
 
-    CallabilitySchedule datatype change
+commit 70f7de23833470c6744f4ed6f1a06f977132b81f
+Merge: c38d102 434f8d1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 13 Jul 2020 11:40:17 +0200
 
- SWIG/bonds.i | 2 +-
+    Merge pull request #287.
+    
+    Export dividend barrier option.
+
+commit 434f8d13b43aabc0d642114c4dcc6eb2f83521c1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 13 Jul 2020 10:56:05 +0200
+
+    Export dividend barrier option.
+
+ CSharp/csharp/NQuantLib.csproj |  3 ++
+ News.md                        |  2 ++
+ SWIG/options.i                 | 63 ++++++++++++++++++++++++++++++++++++++++++
+ SWIG/slv.i                     | 30 --------------------
+ 4 files changed, 68 insertions(+), 30 deletions(-)
+
+commit c38d102f73b7172f1a96f67a58574cece91040db
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2020 17:42:59 +0200
+
+    Sunset Python 2.7.
+
+ News.md | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit 95f057896c7e8bb7b71791c28f8348648b07fe1d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2020 16:54:05 +0200
+
+    Update News and ChangeLog.
+
+ .misspell-fixer.ignore |    2 +
+ ChangeLog.txt          | 1397 +++++++++++++++---------------------------------
+ News.md                |   56 +-
+ 3 files changed, 460 insertions(+), 995 deletions(-)
+
+commit 6345ab362588b7f1b28f237ab2332788b559aafb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 30 Jun 2020 22:25:53 +0200
+
+    Set version to 1.19-rc.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 076f2f45903bf491f95d6c319d553adea5195f89
+Merge: 5313e76 75d8ca9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 30 Jun 2020 13:05:45 +0200
+
+    Merge pull request #283.
+    
+    Update copyright list in license
+
+commit 75d8ca975f2e54920640cb62065b2e1a56fa2753
+Author: lballabio <lballabio@users.noreply.github.com>
+Date:   Tue, 30 Jun 2020 08:01:43 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 5313e7648398c830148dcd52b46db06976d8fdba
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 30 Jun 2020 09:45:15 +0200
+
+    Add workflow to update copyright list.
+
+ .github/workflows/copyrights.yml | 18 +++++++++++++
+ Python/QuantLib/__init__.py      | 33 -----------------------
+ tools/check_copyrights.sh        |  2 +-
+ tools/collect_copyrights.py      | 58 +++++++++++++++++++++++++++++++---------
+ 4 files changed, 64 insertions(+), 47 deletions(-)
+
+commit 15d16bbb983edb20f0c3151f3c65026c3044c06f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 29 Jun 2020 17:37:51 +0200
+
+    Add new classes to C# project.
+
+ CSharp/csharp/NQuantLib.csproj | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+commit db28d3d16af9758f921814e1d838661f79d4cc5c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 25 Jun 2020 18:27:29 +0200
+
+    Add configuration for automatic workflow updates.
+
+ .github/dependabot.yml | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+commit d73ace2a2756ac8ee13184896945859a85084e43
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 25 Jun 2020 18:18:59 +0200
+
+    Avoid pinning specific action version.
+
+ .github/workflows/misspell.yml | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 4357cdbbc34f26bf658d427f8923e3cf480c141d
+commit 9e79ec194587d2ca9cb4f5af5ed4b40826f149da
+Merge: 682fb5f 4d515fe
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 8 Mar 2016 16:03:48 +0100
+Date:   Sat, 20 Jun 2020 11:23:24 +0200
 
-    Define __hash__ for Python classes that define __eq__.
+    Merge pull request #281.
     
-    This is required for them to work correctly as dict keys.
+    Add support for discretization scheme in SWIG interface
+
+commit 4d515fe1d8cc176092a39df77012f3153e5b59cf
+Author: Feras <feribg@gmail.com>
+Date:   Fri, 19 Jun 2020 16:21:42 -0400
+
+    Add support for discretization scheme in SWIG interface
+
+ SWIG/stochasticprocess.i | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
+
+commit 682fb5f101a1f08819aae2909d2b4594b590b222
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jun 2020 14:09:01 +0200
+
+    Remove alternate markdown format.
+
+ Python/examples/american-option.md   | 134 ---------
+ Python/examples/american-option.py   |   2 +-
+ Python/examples/european-option.md   | 200 -------------
+ Python/examples/european-option.py   |   2 +-
+ Python/examples/gaussian1d-models.md | 524 -----------------------------------
+ Python/examples/gaussian1d-models.py |   2 +-
+ Python/examples/global-bootstrap.md  | 249 -----------------
+ Python/examples/global-bootstrap.py  |   4 +-
+ Python/examples/slv.md               | 140 ----------
+ Python/examples/slv.py               |   2 +-
+ Python/examples/swap.md              | 372 -------------------------
+ Python/examples/swap.py              |   2 +-
+ 12 files changed, 7 insertions(+), 1626 deletions(-)
+
+commit 5c59fb78bf69a1e385d8137f8368444ddf8bba5b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jun 2020 12:13:47 +0200
+
+    Simplify script.
+
+ Python/examples/global-bootstrap.py | 99 +++++--------------------------------
+ 1 file changed, 11 insertions(+), 88 deletions(-)
+
+commit da85da8a6ae69bb3d6b174913978eccd7f1885f2
+Merge: 339878f e48e334
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jun 2020 14:59:46 +0200
+
+    Merge pull request #278.
     
-    Closes #11.
+    Added displacement parameter in BlackCapFloorEngine
 
- SWIG/calendars.i   | 6 ++++++
- SWIG/currencies.i  | 6 ++++++
- SWIG/date.i        | 6 ++++++
- SWIG/daycounters.i | 6 ++++++
- 4 files changed, 24 insertions(+)
+commit e48e334ca2f15c51bf35cb128efd6d3fda471a27
+Author: RalfKonrad <bitbucket@eckel-consulting.de>
+Date:   Mon, 15 Jun 2020 13:09:57 +0200
 
-commit 144bf3924228a3236f7682807936d303bf9b1494
-Merge: 1e65d3b 15d09b7
+    Added displacement parameter in BlackCapFloorEngine
+
+ SWIG/capfloor.i | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
+
+commit 339878fee0ac1176b0add11066aefcd61fe20aa9
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 3 Mar 2016 17:39:14 +0100
+Date:   Thu, 11 Jun 2020 10:47:23 +0200
 
-    Merge pull request #10.
+    Add Zenodo DOI badge.
 
-commit 15d09b7fedcc1ad7bfd30e28ae0fff5a2a211ea8
+ README.md | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit ab15e33d7feb23b5f204037e16b64c6d1ea7a05f
+Merge: a504adb 6740f1f
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 3 Mar 2016 14:52:44 +0100
+Date:   Fri, 5 Jun 2020 17:42:16 +0200
 
-    Manage new generated source file.
+    Merge pull request #275.
+    
+    CSharp Solution - Platform "Any CPU" not working
 
- .gitignore         | 1 +
- CSharp/Makefile.am | 7 ++++---
- 2 files changed, 5 insertions(+), 3 deletions(-)
+commit 6740f1fa3629d14538f487d0af0068079763ed23
+Author: RalfKonrad <bitbucket@eckel-consulting.de>
+Date:   Thu, 4 Jun 2020 21:58:00 +0200
 
-commit f082330c08fcb16d4e8b49bdfd70d41418c9c707
+    * removed platform "Any CPU"
+    * removed unnesseccary copy in prebuild (NQuantLib.dll is referenced and will be copied anyhow)
+    * reordered QuantLib.sln so an executable project is the default startup project
+
+ CSharp/QuantLib.sln                            | 31 +++-----------
+ CSharp/csharp/NQuantLib.csproj                 | 56 +-----------------------
+ CSharp/examples/BermudanSwaption.csproj        | 59 ++------------------------
+ CSharp/examples/EquityOption.csproj            | 59 ++------------------------
+ CSharp/examples/FiniteDifferenceMethods.csproj | 55 +-----------------------
+ 5 files changed, 16 insertions(+), 244 deletions(-)
+
+commit a504adb8d04d2e84b49bbac4a9a41313d676d350
+Merge: 80fab1f 029f3b8
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 3 Mar 2016 14:34:16 +0100
+Date:   Thu, 4 Jun 2020 18:37:15 +0200
 
-    Collapse identical #elif clauses.
+    Merge pull request #273.
+    
+    QuantLib.props including support for Visual Studio 2019
 
- SWIG/optimizers.i | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
+commit 029f3b89a5bb2c24ae130d8732bd51c7cf98e795
+Author: RalfKonrad <bitbucket@eckel-consulting.de>
+Date:   Thu, 4 Jun 2020 17:03:54 +0200
 
-commit 8b87946a6a6941316088aa3047e594a226541922
+    Added missing header file "quantlib_wrap.h" to project.
+
+ CSharp/cpp/QuantLibWrapper.vcxproj         | 1 +
+ CSharp/cpp/QuantLibWrapper.vcxproj.filters | 3 +++
+ 2 files changed, 4 insertions(+)
+
+commit 3c686c51e550a0cc05525d5f4c2a869032835242
+Author: RalfKonrad <bitbucket@eckel-consulting.de>
+Date:   Thu, 4 Jun 2020 16:21:25 +0200
+
+    Removed $(qlCompilerTag) as it is no longer needed.
+
+ CSharp/cpp/QuantLibWrapper.vcxproj             |  8 ++++----
+ CSharp/csharp/NQuantLib.csproj                 | 12 ++++++------
+ CSharp/examples/BermudanSwaption.csproj        | 16 ++++++++--------
+ CSharp/examples/EquityOption.csproj            | 16 ++++++++--------
+ CSharp/examples/FiniteDifferenceMethods.csproj | 16 ++++++++--------
+ 5 files changed, 34 insertions(+), 34 deletions(-)
+
+commit c839b41f5e35bee8a77c53c86767c7ad798cf331
+Author: RalfKonrad <bitbucket@eckel-consulting.de>
+Date:   Thu, 4 Jun 2020 15:19:47 +0200
+
+    Bring the QuantLib.props inline with the one from https://github.com/lballabio/QuantLib/blob/master/QuantLib.props incl. VS 2019 support
+
+ CSharp/QuantLib.props | 12 +-----------
+ 1 file changed, 1 insertion(+), 11 deletions(-)
+
+commit 80fab1f47ba2d1d9d82e4e74039a6363443e25bd
+Merge: 3000b4d 27a8d7e
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 3 Mar 2016 14:33:43 +0100
+Date:   Wed, 3 Jun 2020 14:26:34 +0200
 
-    Add director support to main module declaration.
+    Merge pull request #271.
+    
+    Enable running Python examples on mybinder.org
 
- SWIG/functions.i | 3 +--
- SWIG/quantlib.i  | 2 +-
- 2 files changed, 2 insertions(+), 3 deletions(-)
-
-commit 0eb11b57adef8ab8c28bffb984bea058e26f5e4e
-Author: david-wolf <david.terk@gmail.com>
-Date:   Wed, 2 Mar 2016 09:46:47 -0500
-
-    Added .NET bindings for Optimizer functionality.
-
- SWIG/functions.i  | 105 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
- SWIG/optimizers.i |  23 +++++++++++-
- 2 files changed, 124 insertions(+), 4 deletions(-)
-
-commit 1e65d3b97276294cd9a428008db134ec554d6795
-Merge: b73a99b fe6fd59
+commit 27a8d7e9bf68d02ac6d2290814b06e77426b46de
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Feb 2016 13:07:49 +0100
+Date:   Wed, 3 Jun 2020 12:19:05 +0200
 
-    Merge pull request #8.
+    Remove unused import.
 
-commit b73a99b9924257281c4efab248e84089c234f4af
-Merge: 1ce3912 93443f8
+ Python/examples/swap.md | 1 -
+ Python/examples/swap.py | 1 -
+ 2 files changed, 2 deletions(-)
+
+commit 9c7550927ccb39b1041b8112f2246d3f8bcd14b1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Feb 2016 12:58:12 +0100
+Date:   Wed, 3 Jun 2020 10:52:43 +0200
 
-    Merge pull request #6.
+    Last notebooks.
 
-commit 1ce3912c9a3bf766d48619388c304593c32896da
-Merge: 05cede5 b14a50c
+ Python/examples/global-bootstrap.md | 249 ++++++++++++++++++++++++
+ Python/examples/global-bootstrap.py |  78 ++++++--
+ Python/examples/swap.md             | 373 ++++++++++++++++++++++++++++++++++++
+ Python/examples/swap.py             | 213 ++++++++++----------
+ 4 files changed, 798 insertions(+), 115 deletions(-)
+
+commit 4743b3221d9ce2f815b33460e496ed6f14d12db1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Feb 2016 12:55:19 +0100
+Date:   Wed, 3 Jun 2020 00:29:58 +0200
 
-    Merge pull request #4.
+    Add badge to README.
 
-commit 05cede5fccbb966b1ebd15f808c503bb8bc7436f
-Merge: 4b232fe 89f441e
+ Makefile.am |  2 +-
+ README.md   |  1 +
+ Readme.txt  | 74 -------------------------------------------------------------
+ 3 files changed, 2 insertions(+), 75 deletions(-)
+
+commit 1e5188b002bb8286f297b622e9727bf32c66d1c8
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Feb 2016 12:25:56 +0100
+Date:   Wed, 3 Jun 2020 00:23:23 +0200
 
-    Merge pull request #3.
+    More notebooks.
 
-commit 4b232fe35d00113912f3b29bac51686189eb3dfb
-Merge: c428d31 1e0abc8
+ Python/examples/bonds.py       | 210 +++++++++++++++--------------------------
+ Python/examples/cds.py         |  21 +++--
+ Python/examples/isda-engine.py |  64 ++++++++++---
+ Python/examples/swing.py       |   8 +-
+ 4 files changed, 146 insertions(+), 157 deletions(-)
+
+commit 900ce8a325272797e3fdf9d8a05f6550a8a6a8ef
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Feb 2016 12:04:59 +0100
+Date:   Tue, 2 Jun 2020 23:35:11 +0200
 
-    Merge pull request #2.
+    Add missing metadata.
 
-commit c428d318319430cef0998d899973930f52f83803
+ Python/examples/american-option.md   | 21 +++++++++++--
+ Python/examples/american-option.py   | 21 +++++++++++--
+ Python/examples/basket-option.py     | 17 +++++++++-
+ Python/examples/bermudan-swaption.py | 33 +++++++++++--------
+ Python/examples/bonds.py             | 15 +++++++++
+ Python/examples/cds.py               | 15 ++++++++-
+ Python/examples/european-option.md   |  7 ++---
+ Python/examples/european-option.py   |  9 +++---
+ Python/examples/gaussian1d-models.md | 59 +++++++++++++++++++++++-----------
+ Python/examples/gaussian1d-models.py | 61 +++++++++++++++++++++++++-----------
+ Python/examples/global-bootstrap.py  | 15 +++++++++
+ Python/examples/swap.py              | 15 +++++++++
+ Python/examples/swing.py             | 15 +++++++++
+ 13 files changed, 237 insertions(+), 66 deletions(-)
+
+commit 410bd43868f8b8721309092b912d44af29881478
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Feb 2016 22:55:51 +0100
+Date:   Tue, 2 Jun 2020 19:31:56 +0200
 
-    Add part of the old dev_tools module as subfolder.
+    More scripts converted into notebooks.
 
- tools/sync_csharp_projects.sh | 50 +++++++++++++++++++++++++++++++++++++++++++
- tools/version_number.txt      | 11 ++++++++++
- 2 files changed, 61 insertions(+)
+ .gitignore                           |   4 +-
+ Python/examples/american-option.md   | 119 ++++++++++++++++++++++++++++
+ Python/examples/american-option.py   | 118 +++++++++++++++-------------
+ Python/examples/basket-option.py     |  19 +++--
+ Python/examples/bermudan-swaption.py | 146 ++++++++++++++---------------------
+ Python/examples/european-option.md   |   4 +-
+ Python/examples/european-option.py   |   4 +-
+ 7 files changed, 259 insertions(+), 155 deletions(-)
 
-commit a72e6a1f3713b0ea70d06ea4eeaedd5d9f9974c4
+commit a9c69093ce9d0aed727c6c9ccfb35f749d19afc5
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 27 Jan 2016 16:01:28 +0100
+Date:   Tue, 2 Jun 2020 18:40:20 +0200
 
-    Export StochasticProcess interface.
+    Moved notebooks back to Python/examples folder.
 
- SWIG/stochasticprocess.i | 31 ++++++++++++++++++++-----------
- 1 file changed, 20 insertions(+), 11 deletions(-)
+ .travis/python2.build                              |   7 +-
+ .travis/python3.build                              |   7 +-
+ Python/{notebooks => examples}/README.md           |   4 +-
+ Python/{notebooks => examples}/european-option.md  |   0
+ Python/examples/european-option.py                 | 190 ++++++---
+ .../{notebooks => examples}/gaussian1d-models.md   |   0
+ Python/examples/gaussian1d-models.py               | 444 +++++++++++---------
+ Python/{notebooks => examples}/slv.md              |   0
+ Python/{notebooks => examples}/slv.py              |   0
+ Python/examples/visualization/README.txt           |  14 -
+ Python/examples/visualization/basketoption.py      |  69 ---
+ Python/examples/visualization/eurooption.py        |  41 --
+ Python/examples/visualization/option.basket.py     |  29 --
+ Python/examples/visualization/option.mayavi.py     |  82 ----
+ Python/examples/visualization/option.plotspace.py  |  30 --
+ Python/examples/visualization/plotspace.py         |  78 ----
+ Python/examples/visualization/slv.py               | 111 -----
+ Python/notebooks/european-option.py                | 194 ---------
+ Python/notebooks/gaussian1d-models.py              | 464 ---------------------
+ 19 files changed, 378 insertions(+), 1386 deletions(-)
 
-commit fe6fd59d07f9e6c8e0c9605367e8f694cb478be0
-Author: Ethical Banker <ethical.banker@gmail.com>
-Date:   Tue, 26 Jan 2016 14:47:13 +0000
+commit c915ad1fde4f2f8ca2264a9ff543512341022c3a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 2 Jun 2020 14:46:24 +0200
 
-    Fixed typo.
+    Bail out early on Python 2.
 
- Python/Makefile.am | 2 +-
+ Python/notebooks/README.md | 21 +++++++++++++++++++++
+ Python/notebooks/slv.md    | 10 ++++++++++
+ Python/notebooks/slv.py    |  9 +++++++++
+ 3 files changed, 40 insertions(+)
+
+commit e7efa81590be0c7730f357c60c3a38ef724874de
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 2 Jun 2020 13:18:20 +0200
+
+    Old-school formatting.
+
+ Python/notebooks/european-option.md | 2 +-
+ Python/notebooks/european-option.py | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 271ebf89049e1528c4bdd2a35d57a9f539eda495
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 2 Jun 2020 11:47:11 +0200
+
+    Check notebooks in Python 2 build.
+
+ .travis/python2.build | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit f7255acfc8aacb823e57bebe9c1801e4225e6c51
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 2 Jun 2020 11:46:51 +0200
+
+    Another notebook.
+
+ Python/notebooks/european-option.md   |   8 +-
+ Python/notebooks/european-option.py   |   7 +-
+ Python/notebooks/gaussian1d-models.md | 501 ++++++++++++++++++++++++++++++++++
+ Python/notebooks/gaussian1d-models.py | 464 +++++++++++++++++++++++++++++++
+ Python/notebooks/slv.md               |  11 +-
+ Python/notebooks/slv.py               |  10 +-
+ 6 files changed, 991 insertions(+), 10 deletions(-)
+
+commit 9e7688215e3e2ad2e6349a020a6b83ded0262713
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 1 Jun 2020 23:42:49 +0200
+
+    More standard naming.
+
+ Python/notebooks/{European options.md => european-option.md} | 2 +-
+ Python/notebooks/{European options.py => european-option.py} | 2 +-
+ Python/notebooks/{SLV.md => slv.md}                          | 2 +-
+ Python/notebooks/{SLV.py => slv.py}                          | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 8160caa67b4b5e7bdafb120a661e5e7487eed89d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 1 Jun 2020 20:51:21 +0200
+
+    Add another notebook with visualization.
+
+ Python/notebooks/SLV.md | 125 ++++++++++++++++++++++++++++++++++++++++++++++++
+ Python/notebooks/SLV.py | 118 +++++++++++++++++++++++++++++++++++++++++++++
+ requirements.txt        |   4 +-
+ 3 files changed, 246 insertions(+), 1 deletion(-)
+
+commit 6d69e9361a95d2e2d1b84103d00ba8dd5dfc6885
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 1 Jun 2020 14:29:45 +0200
+
+    Check notebooks during Travis run.
+
+ .travis/python3.build | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+commit a647bed09421d01eef67cc9572fc2602ec966b0c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 1 Jun 2020 13:47:27 +0200
+
+    Add notebooks for mybinder.org.
+
+ .gitignore                           |   2 +
+ Python/notebooks/European options.md | 197 +++++++++++++++++++++++++++++++++++
+ Python/notebooks/European options.py | 191 +++++++++++++++++++++++++++++++++
+ requirements.txt                     |   5 +
+ 4 files changed, 395 insertions(+)
+
+commit 3000b4df536efddf560c79a262987a9c8a9da6b1
+Merge: 9e53617 1078e5c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 29 May 2020 20:28:24 +0200
+
+    Merge pull request #267.
+    
+    added Exponentially-Fitted Gauss-Laguerre quadrature rule
+
+commit 9e536172ef01ffb8465aed8254e7ff1981d473bc
+Merge: 67528f5 6d7e8cc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 29 May 2020 08:47:00 +0200
+
+    Merge pull request #268.
+    
+    Use quantlib-config for include directory locations for CSharp
+
+commit 6d7e8ccd4b0842992bffb2197586ebf7c8e9f07d
+Author: Ari Cooperman <aricooperman@gmail.com>
+Date:   Thu, 28 May 2020 20:03:13 -0600
+
+    Use quantlib-config for include directory locations as well when not installed in standard location
+
+ CSharp/Makefile.am | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit ea950c95af600adb6ddf8bbe70c91dc4ae50fdc8
-Author: Ethical Banker <ethical.banker@gmail.com>
-Date:   Fri, 22 Jan 2016 08:17:39 +0000
+commit 9a9df46da0296c8cde07947c4454707261f8e1e5
+Author: Klaus Spanderen <klaus@spanderen.de>
+Date:   Thu, 28 May 2020 21:23:48 +0200
 
-    Fix to Python Makefile so that same compiler is used as when building QuantLib
+    fixed typos
 
- Python/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 93443f8319e1de1ba5295f9e0f2d4458132bd9e4
-Author: Richard Gomes <rgomes.info@gmail.com>
-Date:   Sat, 9 Jan 2016 13:19:47 +0000
-
-    Support for cross compilation in Java. https://github.com/lballabio/QuantLib-SWIG/issues/5
-
- Java/Makefile.am | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit 1c36512f6d4ad2aa066517ff8a131472cfc81ca4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 8 Jan 2016 10:08:31 +0100
-
-    Revamp README.
-
- README.md  | 74 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- Readme.txt | 66 ++++++++++++++++++++++++++++++++++++++++++++++++++-----
- 2 files changed, 135 insertions(+), 5 deletions(-)
-
-commit 5465db3bf34bcb0600125322495c2d4c528cffc2
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 22 Dec 2015 17:44:30 +0100
-
-    Prevent generation of default constructor.
-
- SWIG/options.i | 4 ++++
- 1 file changed, 4 insertions(+)
-
-commit 46a6dc79698e909ca914c172af6c53de12c3f851
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 22 Dec 2015 15:05:34 +0100
-
-    Complete the definition of DeltaVolQuote.
-
- SWIG/options.i | 49 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-commit b80ba2b6690ab89f7fea9e178fc1a551315dd96b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 17 Dec 2015 18:29:11 +0100
-
-    Add .gitignore file after splitting.
-
- .gitignore | 88 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 88 insertions(+)
-
-commit b14a50c380fd5c3171ff0d005253ba7831aa2e69
-Author: Alex Cooper <alex@acooper.org>
-Date:   Sun, 13 Dec 2015 16:05:59 +1100
-
-    Fixes compile error in SWIG/Python that appears on clang/OSX 10.11.1
-    when <valarray> has been included. To build the Python module, I  no
-    longer need to fiddle with libstdc++ as recommended on the web site at
-    http://quantlib.org/install/macosx.shtml.
-
- SWIG/linearalgebra.i | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-commit 89f441e117e38491b86426661d219be95e47a311
-Author: Gouthaman Balaraman <gouthambs@gmail.com>
-Date:   Fri, 27 Nov 2015 22:29:05 -0800
-
-    Added FixedRateBondForward and BondFunctions::zSpread to SWIG wrapper
-
- SWIG/bondfunctions.i |  24 +++++++++++
- SWIG/forward.i       | 116 +++++++++++++++++++++++++++++++++++++++++++++++++++
- SWIG/ql.i            |   1 +
- 3 files changed, 141 insertions(+)
-
-commit 1e0abc8fa31b9a5004eb2447ebb7688dfe330c6e
-Author: Prof. Jayanth R Varma <jrvarma@gmail.com>
-Date:   Tue, 24 Nov 2015 18:11:47 +0530
-
-    Expose FD Barrier Engine (no rename)
-    
-    Added SWIG code to expose the FdBlackScholesBarrierEngine to other languages (Python)
-
- SWIG/options.i | 52 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
-
-commit 7b49b5a6b0cd2bca7b5206236ef8d29347074a64
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 23 Nov 2015 12:56:28 +0100
-
-    Bump version number to 1.7.1.
-
- Guile/setup.scm    | 2 +-
- MzScheme/setup.scm | 2 +-
- Perl/Makefile.PL   | 2 +-
- Python/setup.py    | 2 +-
- R/DESCRIPTION      | 2 +-
- Ruby/setup.rb      | 2 +-
+ Python/test/fdm.py | 8 ++++----
  SWIG/ql.i          | 2 +-
- configure.ac       | 2 +-
- 8 files changed, 8 insertions(+), 8 deletions(-)
+ 2 files changed, 5 insertions(+), 5 deletions(-)
 
-commit ed809777915fb83871d8c6868273297290bb93ba
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 23 Nov 2015 13:41:45 +0100
+commit 104533d9fa284e63a87586913e092997c3513c04
+Author: Klaus Spanderen <klaus@spanderen.de>
+Date:   Thu, 28 May 2020 21:23:48 +0200
 
-    Bump version number to 1.8.
+    fixed typos
 
- Guile/setup.scm    | 2 +-
- MzScheme/setup.scm | 2 +-
- Perl/Makefile.PL   | 2 +-
- Python/setup.py    | 2 +-
- R/DESCRIPTION      | 2 +-
- Ruby/setup.rb      | 2 +-
+ Python/test/fdm.py | 4 ++--
  SWIG/ql.i          | 2 +-
- configure.ac       | 2 +-
- 8 files changed, 8 insertions(+), 8 deletions(-)
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 14c5dac7f5b4ee1999bccf75f6305040e65ff06e
+Author: Klaus Spanderen <klaus@spanderen.de>
+Date:   Wed, 27 May 2020 21:58:05 +0200
+
+    fixed formatting
+
+ Python/test/fdm.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit fabce2712cd6e143286f4da1de91cf4843cb1080
+Author: Klaus Spanderen <klaus@spanderen.de>
+Date:   Wed, 27 May 2020 21:46:09 +0200
+
+    fixed boost namespace
+
+ SWIG/options.i | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+commit 31900d0127a6262c07ff2bdacf35d98c03f519f0
+Author: Klaus Spanderen <klaus@spanderen.de>
+Date:   Wed, 27 May 2020 21:44:07 +0200
+
+    added Exponentially-Fitted Gauss-Laguerre quadrature rule
+
+ Python/examples/european-option.py |  4 ++++
+ Python/test/fdm.py                 |  6 ++++++
+ SWIG/fdm.i                         |  2 ++
+ SWIG/options.i                     | 19 ++++++++++++++++++-
+ 4 files changed, 30 insertions(+), 1 deletion(-)
+
+commit 67528f5c63d3aa94855fc15dc38193527365a452
+Merge: 73003e7 aff5752
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 23 May 2020 19:04:47 +0200
+
+    Merge pull request #262.
+    
+    Adding spread options & Kirk spread option engine to swig.
+
+commit aff5752434da864ed41fe563783c55cbd7fa9a66
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 23 May 2020 16:11:32 +0200
+
+    Move new classes into SWIG/options.i
+
+ SWIG/kirk_spread_option_engine.i | 33 ---------------------------------
+ SWIG/options.i                   | 21 +++++++++++++++++++++
+ SWIG/ql.i                        |  3 ---
+ SWIG/spread_option.i             | 39 ---------------------------------------
+ 4 files changed, 21 insertions(+), 75 deletions(-)
+
+commit 73003e7231bfb06d6c316b91995b442b3df2f6a0
+Merge: 7616dd7 d5f55fa
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 18 May 2020 23:15:53 +0200
+
+    Merge pull request #264.
+    
+    Add Libor timing adjustments for BlackIborCouponPricer.
+
+commit d5f55fa6feb6bcafef8e306fbdbf6ea7f84c412d
+Author: Matthias Lungwitz <lungwitz@gmail.com>
+Date:   Mon, 18 May 2020 22:47:50 +0200
+
+    Add Libor timing adjustments for BlackIborCouponPricer. Extend FloatingRateCouponPricer.
+
+ SWIG/cashflows.i | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+commit c4cb138fb1d4e86fcae6f19fe1cc8e657ad4d2fa
+Author: brumen <gorazd.brumen@gmail.com>
+Date:   Fri, 1 May 2020 13:33:31 -0400
+
+    adding ql changes
+
+ SWIG/ql.i | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit da790098041931438ac1b70783d1de6498e052f3
+Author: brumen <gorazd.brumen@gmail.com>
+Date:   Fri, 1 May 2020 13:32:38 -0400
+
+    Adding spread options
+
+ SWIG/kirk_spread_option_engine.i | 33 +++++++++++++++++++++++++++++++++
+ SWIG/spread_option.i             | 39 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 72 insertions(+)
+
+commit 7616dd7128a7e2f16208d8f99ccd961e026bb76c
+Merge: bc2aff6 0911935
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 23 Apr 2020 16:48:33 +0200
+
+    Merge pull request #260.
+    
+    Typos fixed by misspell-fixer
+
+commit 0911935981c6d94e5f21dddf9c4e37ff1e87aabd
+Author: lballabio <lballabio@users.noreply.github.com>
+Date:   Thu, 23 Apr 2020 13:03:42 +0000
+
+    Fixes by misspell-fixer
+
+ CSharp/examples/BermudanSwaption.cs | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit bc2aff6ba24fe92495392d345208c2173f9f9c6f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 23 Apr 2020 14:56:22 +0200
+
+    Add action to detect misspellings.
+
+ .github/workflows/misspell.yml | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
+
+commit 558fd5c24042265b3795e95c01be28d2652804d1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 23 Apr 2020 15:00:18 +0200
+
+    Add welcome messages for first-time contributors.
+
+ .github/boring-cyborg.yml | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+commit 0dca37d291bf5c6c566f77ff5d225422f3ffc0f3
+Merge: 2228683 4dff9c8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 6 Apr 2020 16:09:24 +0200
+
+    Merge pull request #257.
+    
+    Fix typo in function argument name.
+
+commit 4dff9c88a62cc7e0250482146eb83557fe5cf2b6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 6 Apr 2020 15:00:06 +0200
+
+    Fix typo in function argument name.
+
+ SWIG/volatilities.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 2228683270379843c92b9e1de6ae7db348cc07c7
+Merge: ee7a322 cb12979
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 26 Mar 2020 18:32:02 +0100
+
+    Merge pull request #255.
+    
+    Export methods for previous and next cash flow.
+
+commit cb12979578c5d607bca1625e67510e32596d9bd7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 26 Mar 2020 15:49:55 +0100
+
+    Export methods for previous and next cash flow.
+
+ SWIG/cashflows.i | 32 ++++++++++++++++++++++++++++++++
+ 1 file changed, 32 insertions(+)
+
+commit ee7a322fcdf27850455a24f15167605919b90c23
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 26 Mar 2020 14:16:41 +0100
+
+    Add badges to README.
+
+ README.md | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+commit 09fb17473c88c440c2f045506e7d2c3c13d85f0d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 23 Mar 2020 18:38:02 +0100
+
+    Sanitize version for R requirements.
+
+ R/DESCRIPTION    | 2 +-
+ R/DESCRIPTION.in | 2 +-
+ configure.ac     | 2 ++
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+
+commit 157afd98685ce7c9c02ac59ccb83526c03057664
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 23 Mar 2020 15:37:44 +0100
+
+    Set version to 1.19-dev.
+
+ Python/setup.py | 2 +-
+ R/DESCRIPTION   | 2 +-
+ configure.ac    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 259589a05f82581ae73f5d3bc43e426e36644d4b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 23 Mar 2020 14:24:43 +0100
+
+    Remove obsolete meta-package.
+
+ Python/setup-old.py    | 37 -------------------------------------
+ Python/setup-old.py.in | 37 -------------------------------------
+ configure.ac           |  1 -
+ 3 files changed, 75 deletions(-)

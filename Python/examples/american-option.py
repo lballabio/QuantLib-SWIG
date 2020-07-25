@@ -1,100 +1,128 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
 
-# Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+# %% [markdown]
+# # American options
+#
+# Copyright (&copy;) 2004, 2005, 2006, 2007 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
-# for financial quantitative analysts and developers - http://quantlib.org/
+# for financial quantitative analysts and developers - https://www.quantlib.org/
 #
 # QuantLib is free software: you can redistribute it and/or modify it under the
 # terms of the QuantLib license.  You should have received a copy of the
 # license along with this program; if not, please email
 # <quantlib-dev@lists.sf.net>. The license is also available online at
-# <http://quantlib.org/license.shtml>.
+# <https://www.quantlib.org/license.shtml>.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-from QuantLib import *
+# %%
+import QuantLib as ql
+import pandas as pd
 
-# global data
-todaysDate = Date(15,May,1998)
-Settings.instance().evaluationDate = todaysDate
-settlementDate = Date(17,May,1998)
-riskFreeRate = FlatForward(settlementDate, 0.06, Actual365Fixed())
+# %% [markdown]
+# ### Global parameters
 
-# option parameters
-exercise = AmericanExercise(settlementDate, Date(17,May,1999))
-payoff = PlainVanillaPayoff(Option.Put, 40.0)
+# %%
+todaysDate = ql.Date(15, ql.May, 1998)
+ql.Settings.instance().evaluationDate = todaysDate
 
-# market data
-underlying = SimpleQuote(36.0)
-volatility = BlackConstantVol(todaysDate, TARGET(), 0.20, Actual365Fixed())
-dividendYield = FlatForward(settlementDate, 0.00, Actual365Fixed())
+# %%
+interactive = "get_ipython" in globals()
 
-# report
-header = '%19s' % 'method' + ' |' + \
-         ' |'.join(['%17s' % tag for tag in ['value',
-                                            'estimated error',
-                                            'actual error' ] ])
-print('')
-print(header)
-print('-'*len(header))
+# %% [markdown]
+# ### Option construction
 
-refValue = None
-def report(method, x, dx = None):
-    e = '%.4f' % abs(x-refValue)
-    x = '%.5f' % x
-    if dx:
-        dx = '%.4f' % dx
-    else:
-        dx = 'n/a'
-    print('%19s' % method + ' |' +
-          ' |'.join(['%17s' % y for y in [x, dx, e] ]))
+# %%
+exercise = ql.AmericanExercise(todaysDate, ql.Date(17, ql.May, 1999))
+payoff = ql.PlainVanillaPayoff(ql.Option.Put, 40.0)
 
-# good to go
+# %%
+option = ql.VanillaOption(payoff, exercise)
 
-process = BlackScholesMertonProcess(QuoteHandle(underlying),
-                                    YieldTermStructureHandle(dividendYield),
-                                    YieldTermStructureHandle(riskFreeRate),
-                                    BlackVolTermStructureHandle(volatility))
+# %% [markdown]
+# ### Market data
 
-option = VanillaOption(payoff, exercise)
+# %%
+underlying = ql.SimpleQuote(36.0)
+dividendYield = ql.FlatForward(todaysDate, 0.00, ql.Actual365Fixed())
+volatility = ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.20, ql.Actual365Fixed())
+riskFreeRate = ql.FlatForward(todaysDate, 0.06, ql.Actual365Fixed())
 
-refValue = 4.48667344
-report('reference value',refValue)
+# %%
+process = ql.BlackScholesMertonProcess(
+    ql.QuoteHandle(underlying),
+    ql.YieldTermStructureHandle(dividendYield),
+    ql.YieldTermStructureHandle(riskFreeRate),
+    ql.BlackVolTermStructureHandle(volatility),
+)
 
-# method: analytic
+# %% [markdown]
+# ### Pricing
+#
+# We'll collect tuples of method name, option value, and estimated error from the analytic formula.
 
-option.setPricingEngine(BaroneAdesiWhaleyEngine(process))
-report('Barone-Adesi-Whaley',option.NPV())
+# %%
+results = []
 
-option.setPricingEngine(BjerksundStenslandEngine(process))
-report('Bjerksund-Stensland',option.NPV())
+# %% [markdown]
+# #### Analytic approximations
 
-# method: finite differences
+# %%
+option.setPricingEngine(ql.BaroneAdesiWhaleyEngine(process))
+results.append(("Barone-Adesi-Whaley", option.NPV()))
+
+# %%
+option.setPricingEngine(ql.BjerksundStenslandEngine(process))
+results.append(("Bjerksund-Stensland", option.NPV()))
+
+# %% [markdown]
+# #### Finite-difference method
+
+# %%
 timeSteps = 801
 gridPoints = 800
 
-option.setPricingEngine(FDAmericanEngine(process,timeSteps,gridPoints))
-report('finite differences',option.NPV())
+# %%
+option.setPricingEngine(ql.FdBlackScholesVanillaEngine(process, timeSteps, gridPoints))
+results.append(("finite differences", option.NPV()))
 
-# method: binomial
+# %% [markdown]
+# #### Binomial method
+
+# %%
 timeSteps = 801
 
-option.setPricingEngine(BinomialVanillaEngine(process,'jr',timeSteps))
-report('binomial (JR)',option.NPV())
+# %%
+for tree in ["JR", "CRR", "EQP", "Trigeorgis", "Tian", "LR", "Joshi4"]:
+    option.setPricingEngine(ql.BinomialVanillaEngine(process, tree, timeSteps))
+    results.append(("Binomial (%s)" % tree, option.NPV()))
 
-option.setPricingEngine(BinomialVanillaEngine(process,'crr',timeSteps))
-report('binomial (CRR)',option.NPV())
+# %% [markdown]
+# ### Results
 
-option.setPricingEngine(BinomialVanillaEngine(process,'eqp',timeSteps))
-report('binomial (EQP)',option.NPV())
+# %%
+df = pd.DataFrame(results, columns=["Method", "Option value"])
+df.style.hide_index()
 
-option.setPricingEngine(BinomialVanillaEngine(process,'trigeorgis',timeSteps))
-report('bin. (Trigeorgis)',option.NPV())
+# %% [markdown]
+# The following displays the results when this is run as a Python script (in which case the cell above is not displayed).
 
-option.setPricingEngine(BinomialVanillaEngine(process,'tian',timeSteps))
-report('binomial (Tian)',option.NPV())
-
-option.setPricingEngine(BinomialVanillaEngine(process,'lr',timeSteps))
-report('binomial (LR)',option.NPV())
+# %%
+if not interactive:
+    print(df)

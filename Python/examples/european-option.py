@@ -1,116 +1,193 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
 
-# Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+# %% [markdown]
+# # European options
 #
-# This file is part of QuantLib, a free-software/open-source library
-# for financial quantitative analysts and developers - http://quantlib.org/
+# Copyright (&copy;) 2004, 2005, 2006, 2007 StatPro Italia srl
+#
+# This file is part of QuantLib, a free-software/open-source library for financial quantitative analysts and developers - https://www.quantlib.org/
 #
 # QuantLib is free software: you can redistribute it and/or modify it under the
 # terms of the QuantLib license.  You should have received a copy of the
 # license along with this program; if not, please email
 # <quantlib-dev@lists.sf.net>. The license is also available online at
-# <http://quantlib.org/license.shtml>.
+# <https://www.quantlib.org/license.shtml>.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-from QuantLib import *
+# %%
+import QuantLib as ql
+import pandas as pd
 
-# global data
-todaysDate = Date(15,May,1998)
-Settings.instance().evaluationDate = todaysDate
-settlementDate = Date(17,May,1998)
-riskFreeRate = FlatForward(settlementDate, 0.05, Actual365Fixed())
+# %% [markdown]
+# ### Global parameters
 
-# option parameters
-exercise = EuropeanExercise(Date(17,May,1999))
-payoff = PlainVanillaPayoff(Option.Call, 8.0)
+# %%
+todaysDate = ql.Date(15, ql.May, 1998)
+ql.Settings.instance().evaluationDate = todaysDate
 
-# market data
-underlying = SimpleQuote(7.0)
-volatility = BlackConstantVol(todaysDate, TARGET(), 0.10, Actual365Fixed())
-dividendYield = FlatForward(settlementDate, 0.05, Actual365Fixed())
+# %%
+interactive = 'get_ipython' in globals()
 
-# report
-header = ' |'.join(['%17s' % tag for tag in ['method','value',
-                                            'estimated error',
-                                            'actual error' ] ])
-print('')
-print(header)
-print('-'*len(header))
+# %% [markdown]
+# ### Option construction
 
-refValue = None
-def report(method, x, dx = None):
-    e = '%.4f' % abs(x-refValue)
-    x = '%.5f' % x
-    if dx:
-        dx = '%.4f' % dx
-    else:
-        dx = 'n/a'
-    print(' |'.join(['%17s' % y for y in [method, x, dx, e] ]))
+# %%
+exercise = ql.EuropeanExercise(ql.Date(17, ql.May, 1999))
+payoff = ql.PlainVanillaPayoff(ql.Option.Call, 8.0)
 
+# %%
+option = ql.VanillaOption(payoff, exercise)
 
-# good to go
+# %% [markdown]
+# ### Market data
 
-process = BlackScholesMertonProcess(QuoteHandle(underlying),
-                                    YieldTermStructureHandle(dividendYield),
-                                    YieldTermStructureHandle(riskFreeRate),
-                                    BlackVolTermStructureHandle(volatility))
+# %%
+underlying = ql.SimpleQuote(7.0)
+dividendYield = ql.FlatForward(todaysDate, 0.05, ql.Actual365Fixed())
+volatility = ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.10, ql.Actual365Fixed())
+riskFreeRate = ql.FlatForward(todaysDate, 0.05, ql.Actual365Fixed())
 
-option = VanillaOption(payoff, exercise)
+# %% [markdown]
+# ### Processes and models
 
-# method: analytic
-option.setPricingEngine(AnalyticEuropeanEngine(process))
+# %%
+process = ql.BlackScholesMertonProcess(
+    ql.QuoteHandle(underlying),
+    ql.YieldTermStructureHandle(dividendYield),
+    ql.YieldTermStructureHandle(riskFreeRate),
+    ql.BlackVolTermStructureHandle(volatility),
+)
+
+# %%
+hestonProcess = ql.HestonProcess(
+    ql.YieldTermStructureHandle(riskFreeRate),
+    ql.YieldTermStructureHandle(dividendYield),
+    ql.QuoteHandle(underlying),
+    0.1 * 0.1,
+    1.0,
+    0.1 * 0.1,
+    0.0001,
+    0.0,
+)
+hestonModel = ql.HestonModel(hestonProcess)
+
+# %% [markdown]
+# ### Pricing
+#
+# We'll collect tuples of method name, option value, estimated error, and discrepancy from the analytic formula.
+
+# %%
+results = []
+
+# %% [markdown]
+# #### Analytic formula
+
+# %%
+option.setPricingEngine(ql.AnalyticEuropeanEngine(process))
 value = option.NPV()
 refValue = value
-report('analytic',value)
 
-# method: integral
-option.setPricingEngine(IntegralEngine(process))
-report('integral',option.NPV())
+results.append(('Analytic', value, None, None))
 
-# method: finite differences
+# %% [markdown]
+# #### Heston semi-analytic formula
+
+# %%
+option.setPricingEngine(ql.AnalyticHestonEngine(hestonModel))
+value = option.NPV()
+
+results.append(('Heston analytic', value, None, abs(value - refValue)))
+
+# %% [markdown]
+# #### Heston COS method
+
+# %%
+option.setPricingEngine(ql.COSHestonEngine(hestonModel))
+value = option.NPV()
+
+results.append(('Heston COS', value, None, abs(value - refValue)))
+
+# %% [markdown]
+# #### Integral method
+
+# %%
+option.setPricingEngine(ql.IntegralEngine(process))
+value = option.NPV()
+
+results.append(('Integral', value, None, abs(value - refValue)))
+
+# %% [markdown]
+# #### Finite-difference method
+
+# %%
 timeSteps = 801
 gridPoints = 800
 
-option.setPricingEngine(FDEuropeanEngine(process,timeSteps,gridPoints))
-report('finite diff.',option.NPV())
+# %%
+option.setPricingEngine(ql.FdBlackScholesVanillaEngine(process, timeSteps, gridPoints))
+value = option.NPV()
 
-# method: binomial
+results.append(('Finite diff.', value, None, abs(value - refValue)))
+
+# %% [markdown]
+# #### Binomial method
+
+# %%
 timeSteps = 801
 
-option.setPricingEngine(BinomialVanillaEngine(process,'jr',timeSteps))
-report('binomial (JR)',option.NPV())
+# %%
+for tree in ["JR", "CRR", "EQP", "Trigeorgis", "Tian", "LR", "Joshi4"]:
+    option.setPricingEngine(ql.BinomialVanillaEngine(process, tree, timeSteps))
+    value = option.NPV()
 
-option.setPricingEngine(BinomialVanillaEngine(process,'crr',timeSteps))
-report('binomial (CRR)',option.NPV())
+    results.append(('Binomial (%s)' % tree, value, None, abs(value - refValue)))
 
-option.setPricingEngine(BinomialVanillaEngine(process,'eqp',timeSteps))
-report('binomial (EQP)',option.NPV())
+# %% [markdown]
+# #### Monte Carlo method
 
-option.setPricingEngine(BinomialVanillaEngine(process,'trigeorgis',timeSteps))
-report('bin. (Trigeorgis)',option.NPV())
+# %%
+option.setPricingEngine(ql.MCEuropeanEngine(process, "pseudorandom", timeSteps=1,
+                                            requiredTolerance=0.02, seed=42))
+value = option.NPV()
 
-option.setPricingEngine(BinomialVanillaEngine(process,'tian',timeSteps))
-report('binomial (Tian)',option.NPV())
+results.append(("Monte Carlo (pseudo-random)", value, option.errorEstimate(), abs(value - refValue)))
 
-option.setPricingEngine(BinomialVanillaEngine(process,'lr',timeSteps))
-report('binomial (LR)',option.NPV())
+# %%
+option.setPricingEngine(ql.MCEuropeanEngine(process, "lowdiscrepancy", timeSteps=1,
+                                            requiredSamples=32768))
+value = option.NPV()
 
-# method: finite differences
-# not yet implemented
+results.append(("Monte Carlo (low-discrepancy)", value, None, abs(value - refValue)))
 
-# method: Monte Carlo
-option.setPricingEngine(MCEuropeanEngine(process,
-                                         'pseudorandom',
-                                         timeSteps = 1,
-                                         requiredTolerance = 0.02,
-                                         seed = 42))
-report('MC (crude)', option.NPV(), option.errorEstimate())
+# %% [markdown]
+# ### Results
 
-option.setPricingEngine(MCEuropeanEngine(process,
-                                         'lowdiscrepancy',
-                                         timeSteps = 1,
-                                         requiredSamples = 32768))
-report('MC (Sobol)', option.NPV())
+# %%
+df = pd.DataFrame(results,
+                  columns=["Method", "Option value", "Error estimate", "Actual error"])
 
+# %%
+df.style.hide_index()
+
+# %% [markdown]
+# The following displays the results when this is run as a Python script (in which case the cell above is not displayed).
+
+# %%
+if not interactive:
+    print(df)

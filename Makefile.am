@@ -1,15 +1,15 @@
 
-SUBDIRS = CSharp Guile Java MzScheme OCaml Perl Python R Ruby Scala
+SUBDIRS = CSharp Java Python R Scala
 
 EXTRA_DIST = \
 	ChangeLog.txt \
 	LICENSE.TXT \
-	News.txt \
-	Readme.txt \
+	News.md \
+	README.md \
 	autogen.sh
 
 
 dist-hook:
 	mkdir -p $(distdir)/SWIG
 	cp -p ./SWIG/*.i $(distdir)/SWIG
-
+	cp -p ./requirements.txt $(distdir)/Python/examples/

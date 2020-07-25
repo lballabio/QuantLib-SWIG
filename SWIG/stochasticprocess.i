@@ -3,6 +3,7 @@
  Copyright (C) 2004, 2005, 2007, 2008 StatPro Italia srl
  Copyright (C) 2010 Klaus Spanderen
  Copyright (C) 2015 Matthias Groncki
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,27 +25,28 @@
 %include marketelements.i
 %include termstructures.i
 %include volatilities.i
+%include observer.i
 
 %{
 using QuantLib::StochasticProcess;
 %}
 
-%ignore StochasticProcess;
-class StochasticProcess {
+%shared_ptr(StochasticProcess)
+class StochasticProcess : public Observable {
+  private:
+    StochasticProcess();
   public:
-    virtual Size size() const = 0;
-    virtual Size factors() const;
-    virtual Array initialValues() const = 0;
-    virtual Array drift(Time t, const Array& x) const = 0;
-    virtual Matrix diffusion(Time t, const Array& x) const = 0;
-    virtual Array expectation(Time t0, const Array& x0, Time dt) const;
-    virtual Matrix stdDeviation(Time t0, const Array& x0, Time dt) const;
-    virtual Matrix covariance(Time t0, const Array& x0, Time dt) const;
-    virtual Array evolve(Time t0, const Array& x0,
-                         Time dt, const Array& dw) const;
+    Size size() const;
+    Size factors() const;
+    Array initialValues() const;
+    Array drift(Time t, const Array& x) const;
+    Matrix diffusion(Time t, const Array& x) const;
+    Array expectation(Time t0, const Array& x0, Time dt) const;
+    Matrix stdDeviation(Time t0, const Array& x0, Time dt) const;
+    Matrix covariance(Time t0, const Array& x0, Time dt) const;
+    Array evolve(Time t0, const Array& x0,
+                 Time dt, const Array& dw) const;
 };
-%template(StochasticProcess) boost::shared_ptr<StochasticProcess>;
-IsObservable(boost::shared_ptr<StochasticProcess>);
 
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<StochasticProcess> )
@@ -55,363 +57,386 @@ std::vector<boost::shared_ptr<StochasticProcess> >;
 
 %{
 using QuantLib::StochasticProcess1D;
-typedef boost::shared_ptr<StochasticProcess> StochasticProcess1DPtr;
 %}
 
-%rename(StochasticProcess1D) StochasticProcess1DPtr;
-class StochasticProcess1DPtr
-    : public boost::shared_ptr<StochasticProcess> {
+%shared_ptr(StochasticProcess1D)
+class StochasticProcess1D
+    : public StochasticProcess {
   public:
-    %extend {
-      Real x0() {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)->x0();
-      }
-      Real drift(Time t, Real x) {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)
-              ->drift(t, x);
-      }
-      Real diffusion(Time t, Real x) {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)
-              ->diffusion(t, x);
-      }
-      Real expectation(Time t0, Real x0, Time dt) {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)
-              ->expectation(t0, x0, dt);
-      }
-      Real stdDeviation(Time t0, Real x0, Time dt) {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)
-              ->stdDeviation(t0, x0, dt);
-      }
-      Real variance(Time t0, Real x0, Time dt)  {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)
-              ->variance(t0, x0, dt);
-      }
-      Real evolve(Time t0, Real x0, Time dt, Real dw) {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)
-              ->evolve(t0, x0, dt, dw);
-      }
-      Real apply(Real x0, Real dx)  {
-          return boost::dynamic_pointer_cast<StochasticProcess1D>(*self)
-              ->apply(x0, dx);
-      }
-    }
-  private:
-    StochasticProcess1DPtr();
+      Real x0() const;
+      Real drift(Time t, Real x) const;
+      Real diffusion(Time t, Real x) const;
+      Real expectation(Time t0, Real x0, Time dt) const;
+      Real stdDeviation(Time t0, Real x0, Time dt) const;
+      Real variance(Time t0, Real x0, Time dt) const;
+      Real evolve(Time t0, Real x0, Time dt, Real dw) const;
+      Real apply(Real x0, Real dx) const;
 };
+
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<StochasticProcess1D> )
+#endif
+%template(StochasticProcess1DVector)
+std::vector<boost::shared_ptr<StochasticProcess1D> >;
 
 
 %{
 using QuantLib::GeneralizedBlackScholesProcess;
-typedef boost::shared_ptr<StochasticProcess> GeneralizedBlackScholesProcessPtr;
 %}
 
-%rename(GeneralizedBlackScholesProcess) GeneralizedBlackScholesProcessPtr;
-class GeneralizedBlackScholesProcessPtr : public StochasticProcess1DPtr {
+%shared_ptr(GeneralizedBlackScholesProcess)
+class GeneralizedBlackScholesProcess : public StochasticProcess1D {
   public:
-    %extend {
-      GeneralizedBlackScholesProcessPtr(
+      GeneralizedBlackScholesProcess(
                              const Handle<Quote>& s0,
                              const Handle<YieldTermStructure>& dividendTS,
                              const Handle<YieldTermStructure>& riskFreeTS,
-                             const Handle<BlackVolTermStructure>& volTS) {
-          return new GeneralizedBlackScholesProcessPtr(
-                       new GeneralizedBlackScholesProcess(s0, dividendTS,
-                                                          riskFreeTS, volTS));
-      }
-      Handle<Quote> stateVariable() {
-          return boost::dynamic_pointer_cast<
-                      GeneralizedBlackScholesProcess>(*self)->stateVariable();
-      }
-      Handle<YieldTermStructure> dividendYield() {
-          return boost::dynamic_pointer_cast<
-                      GeneralizedBlackScholesProcess>(*self)->dividendYield();
-      }
-      Handle<YieldTermStructure> riskFreeRate() {
-          return boost::dynamic_pointer_cast<
-                      GeneralizedBlackScholesProcess>(*self)->riskFreeRate();
-      }
-      Handle<BlackVolTermStructure> blackVolatility() const {
-          return boost::dynamic_pointer_cast<
-                      GeneralizedBlackScholesProcess>(*self)->blackVolatility();
-      }
-    }
+                             const Handle<BlackVolTermStructure>& volTS);
+
+      GeneralizedBlackScholesProcess(
+            const Handle<Quote>& x0,
+            const Handle<YieldTermStructure>& dividendTS,
+            const Handle<YieldTermStructure>& riskFreeTS,
+            const Handle<BlackVolTermStructure>& blackVolTS,
+            const Handle<LocalVolTermStructure>& localVolTS);
+
+      Handle<Quote> stateVariable();
+      Handle<YieldTermStructure> dividendYield();
+      Handle<YieldTermStructure> riskFreeRate();
+      Handle<BlackVolTermStructure> blackVolatility();
 };
 
 %{
 using QuantLib::BlackScholesProcess;
-typedef boost::shared_ptr<StochasticProcess> BlackScholesProcessPtr;
 %}
 
-%rename(BlackScholesProcess) BlackScholesProcessPtr;
-class BlackScholesProcessPtr : public GeneralizedBlackScholesProcessPtr {
+%shared_ptr(BlackScholesProcess)
+class BlackScholesProcess : public GeneralizedBlackScholesProcess {
   public:
-    %extend {
-      BlackScholesProcessPtr(const Handle<Quote>& s0,
-                               const Handle<YieldTermStructure>& riskFreeTS,
-                               const Handle<BlackVolTermStructure>& volTS) {
-          return new BlackScholesProcessPtr(
-                            new BlackScholesProcess(s0, riskFreeTS, volTS));
-      }
-    }
+  BlackScholesProcess(const Handle<Quote>& s0,
+                           const Handle<YieldTermStructure>& riskFreeTS,
+                           const Handle<BlackVolTermStructure>& volTS);
 };
 
 %{
 using QuantLib::BlackScholesMertonProcess;
-typedef boost::shared_ptr<StochasticProcess> BlackScholesMertonProcessPtr;
 %}
 
-%rename(BlackScholesMertonProcess) BlackScholesMertonProcessPtr;
-class BlackScholesMertonProcessPtr : public GeneralizedBlackScholesProcessPtr {
+%shared_ptr(BlackScholesMertonProcess)
+class BlackScholesMertonProcess : public GeneralizedBlackScholesProcess {
   public:
-    %extend {
-      BlackScholesMertonProcessPtr(
+      BlackScholesMertonProcess(
                              const Handle<Quote>& s0,
                              const Handle<YieldTermStructure>& dividendTS,
                              const Handle<YieldTermStructure>& riskFreeTS,
-                             const Handle<BlackVolTermStructure>& volTS) {
-          return new BlackScholesMertonProcessPtr(
-                            new BlackScholesMertonProcess(s0, dividendTS,
-                                                          riskFreeTS, volTS));
-      }
-    }
+                             const Handle<BlackVolTermStructure>& volTS);
 };
 
 %{
 using QuantLib::BlackProcess;
-typedef boost::shared_ptr<StochasticProcess> BlackProcessPtr;
 %}
 
-%rename(BlackProcess) BlackProcessPtr;
-class BlackProcessPtr : public GeneralizedBlackScholesProcessPtr {
+%shared_ptr(BlackProcess)
+class BlackProcess : public GeneralizedBlackScholesProcess {
   public:
-    %extend {
-      BlackProcessPtr(const Handle<Quote>& s0,
+      BlackProcess(const Handle<Quote>& s0,
                       const Handle<YieldTermStructure>& riskFreeTS,
-                      const Handle<BlackVolTermStructure>& volTS) {
-          return new BlackProcessPtr(new BlackProcess(s0, riskFreeTS, volTS));
-      }
-    }
+                      const Handle<BlackVolTermStructure>& volTS);
 };
 
 %{
 using QuantLib::GarmanKohlagenProcess;
-typedef boost::shared_ptr<StochasticProcess> GarmanKohlagenProcessPtr;
 %}
 
-%rename(GarmanKohlagenProcess) GarmanKohlagenProcessPtr;
-class GarmanKohlagenProcessPtr : public GeneralizedBlackScholesProcessPtr {
+%shared_ptr(GarmanKohlagenProcess)
+class GarmanKohlagenProcess : public GeneralizedBlackScholesProcess {
   public:
-    %extend {
-      GarmanKohlagenProcessPtr(
+      GarmanKohlagenProcess(
                          const Handle<Quote>& s0,
                          const Handle<YieldTermStructure>& foreignRiskFreeTS,
                          const Handle<YieldTermStructure>& domesticRiskFreeTS,
-                         const Handle<BlackVolTermStructure>& volTS) {
-          return new GarmanKohlagenProcessPtr(
-                        new GarmanKohlagenProcess(s0, foreignRiskFreeTS,
-                                                  domesticRiskFreeTS, volTS));
-      }
-    }
+                         const Handle<BlackVolTermStructure>& volTS);
 };
 
 
 
 %{
 using QuantLib::Merton76Process;
-typedef boost::shared_ptr<StochasticProcess> Merton76ProcessPtr;
 %}
 
-%rename(Merton76Process) Merton76ProcessPtr;
-class Merton76ProcessPtr : public StochasticProcess1DPtr {
+%shared_ptr(Merton76Process)
+class Merton76Process : public StochasticProcess1D {
   public:
-    %extend {
-      Merton76ProcessPtr(const Handle<Quote>& stateVariable,
+      Merton76Process(const Handle<Quote>& stateVariable,
                          const Handle<YieldTermStructure>& dividendTS,
                          const Handle<YieldTermStructure>& riskFreeTS,
                          const Handle<BlackVolTermStructure>& volTS,
                          const Handle<Quote>& jumpIntensity,
                          const Handle<Quote>& meanLogJump,
-                         const Handle<Quote>& jumpVolatility) {
-            return new Merton76ProcessPtr(
-                              new Merton76Process(stateVariable, dividendTS,
-                                                  riskFreeTS, volTS,
-                                                  jumpIntensity, meanLogJump,
-                                                  jumpVolatility));
-      }
-    }
+                         const Handle<Quote>& jumpVolatility);
 };
 
 %{
 using QuantLib::StochasticProcessArray;
-typedef boost::shared_ptr<StochasticProcess> StochasticProcessArrayPtr;
 %}
 
-%rename(StochasticProcessArray) StochasticProcessArrayPtr;
-class StochasticProcessArrayPtr : public boost::shared_ptr<StochasticProcess> {
+%shared_ptr(StochasticProcessArray)
+class StochasticProcessArray : public StochasticProcess {
   public:
-    %extend {
-      StochasticProcessArrayPtr(
-               const std::vector<boost::shared_ptr<StochasticProcess> >&array,
-               const Matrix &correlation) {
-          std::vector<boost::shared_ptr<StochasticProcess1D> > in_array;
-          for (Size j=0; j < array.size(); j++)
-              in_array.push_back(
-                  boost::dynamic_pointer_cast<StochasticProcess1D>(array[j]));
-          return new StochasticProcessArrayPtr(
-                           new StochasticProcessArray(in_array, correlation));
-      }
-    }
+      StochasticProcessArray(
+               const std::vector<boost::shared_ptr<StochasticProcess1D> >&array,
+               const Matrix &correlation);
 };
 
 
 %{
 using QuantLib::GeometricBrownianMotionProcess;
-typedef boost::shared_ptr<StochasticProcess> GeometricBrownianMotionProcessPtr;
 %}
 
-%rename(GeometricBrownianMotionProcess) GeometricBrownianMotionProcessPtr;
-class GeometricBrownianMotionProcessPtr : public StochasticProcess1DPtr {
+%shared_ptr(GeometricBrownianMotionProcess)
+class GeometricBrownianMotionProcess : public StochasticProcess1D {
   public:
-    %extend {
-      GeometricBrownianMotionProcessPtr(Real initialValue,
+      GeometricBrownianMotionProcess(Real initialValue,
                                         Real mu,
-                                        Real sigma) {
-          return new GeometricBrownianMotionProcessPtr(
-                 new GeometricBrownianMotionProcess(initialValue, mu, sigma));
-      }
-    }
+                                        Real sigma);
 };
 
 %{
 using QuantLib::VarianceGammaProcess;
-typedef boost::shared_ptr<StochasticProcess> VarianceGammaProcessPtr;
 %}
 
-%rename(VarianceGammaProcess) VarianceGammaProcessPtr;
-class VarianceGammaProcessPtr : public StochasticProcess1DPtr {
+%shared_ptr(VarianceGammaProcess)
+class VarianceGammaProcess : public StochasticProcess1D {
   public:
-    %extend {
-      VarianceGammaProcessPtr(const Handle<Quote>& s0,
+      VarianceGammaProcess(const Handle<Quote>& s0,
             const Handle<YieldTermStructure>& dividendYield,
             const Handle<YieldTermStructure>& riskFreeRate,
-            Real sigma, Real nu, Real theta) {
-          return new VarianceGammaProcessPtr(
-                 new VarianceGammaProcess(s0,dividendYield,riskFreeRate,sigma,nu,theta));
-      }
-    }
+            Real sigma, Real nu, Real theta);
 };
 
 
 %{
 using QuantLib::HestonProcess;
-typedef boost::shared_ptr<StochasticProcess> HestonProcessPtr;
 %}
 
-%rename(HestonProcess) HestonProcessPtr;
-class HestonProcessPtr : public boost::shared_ptr<StochasticProcess> {
+%shared_ptr(HestonProcess)
+class HestonProcess : public StochasticProcess {
   public:
-    %extend {
-      HestonProcessPtr(const Handle<YieldTermStructure>& riskFreeTS,
+        enum Discretization { PartialTruncation,
+                    FullTruncation,
+                    Reflection,
+                    NonCentralChiSquareVariance,
+                    QuadraticExponential,
+                    QuadraticExponentialMartingale,
+                    BroadieKayaExactSchemeLobatto,
+                    BroadieKayaExactSchemeLaguerre,
+                    BroadieKayaExactSchemeTrapezoidal };
+
+        HestonProcess(const Handle<YieldTermStructure>& riskFreeTS,
 					   const Handle<YieldTermStructure>& dividendTS,
 					   const Handle<Quote>& s0,
 					   Real v0, Real kappa,
-                       Real theta, Real sigma, Real rho) {
-		return new HestonProcessPtr(
-			new HestonProcess(riskFreeTS, dividendTS, s0, v0, 
-						      kappa, theta, sigma, rho));	
-      }
-                       
-      Handle<Quote> s0() {
-          return boost::dynamic_pointer_cast<
-                      HestonProcess>(*self)->s0();
-      }
-      Handle<YieldTermStructure> dividendYield() {
-          return boost::dynamic_pointer_cast<
-                      HestonProcess>(*self)->dividendYield();
-      }
-      Handle<YieldTermStructure> riskFreeRate() {
-          return boost::dynamic_pointer_cast<
-                      HestonProcess>(*self)->riskFreeRate();
-      }
-    }
+                       Real theta, Real sigma, Real rho,
+                       Discretization d = QuadraticExponentialMartingale);
+
+        Handle<Quote> s0();
+      Handle<YieldTermStructure> dividendYield();
+      Handle<YieldTermStructure> riskFreeRate();
 };
 
 %{
 using QuantLib::BatesProcess;
-typedef boost::shared_ptr<StochasticProcess> BatesProcessPtr;
 %}
 
-%rename(BatesProcess) BatesProcessPtr;
-class BatesProcessPtr : public HestonProcessPtr {
+%shared_ptr(BatesProcess)
+class BatesProcess : public HestonProcess {
   public:
-    %extend {
-      BatesProcessPtr(const Handle<YieldTermStructure>& riskFreeRate,
+      BatesProcess(const Handle<YieldTermStructure>& riskFreeRate,
                       const Handle<YieldTermStructure>& dividendYield,
                       const Handle<Quote>& s0,
                       Real v0, Real kappa,
                       Real theta, Real sigma, Real rho,
-                      Real lambda, Real nu, Real delta) {
-		return new BatesProcessPtr(
-			new BatesProcess(riskFreeRate, dividendYield, s0, v0, 
-							 kappa, theta, sigma, rho, 
-							 lambda, nu, delta));
-	  }
-    }
+                      Real lambda, Real nu, Real delta);
 };
 
 %{
 using QuantLib::HullWhiteProcess;
-typedef boost::shared_ptr<StochasticProcess> HullWhiteProcessPtr;
 %}
 
-%rename(HullWhiteProcess) HullWhiteProcessPtr;
-class HullWhiteProcessPtr : public StochasticProcess1DPtr {
+%shared_ptr(HullWhiteProcess)
+class HullWhiteProcess : public StochasticProcess1D {
   public:
-    %extend {
-      HullWhiteProcessPtr(const Handle<YieldTermStructure>& riskFreeTS,
-                          Real a, Real sigma) {
-            return new HullWhiteProcessPtr(new HullWhiteProcess(riskFreeTS, a, sigma));	
-        }
-    }
+      HullWhiteProcess(const Handle<YieldTermStructure>& riskFreeTS,
+                          Real a, Real sigma);
+};
+
+%{
+using QuantLib::HullWhiteForwardProcess;
+%}
+
+%shared_ptr(HullWhiteForwardProcess)
+class HullWhiteForwardProcess : public StochasticProcess1D {
+  public:
+    HullWhiteForwardProcess(const Handle<YieldTermStructure>& riskFreeTS,
+                             Real a,
+                             Real sigma);
+    Real alpha(Time t) const;
+    Real M_T(Real s, Real t, Real T) const;
+    Real B(Time t, Time T) const;
+    void setForwardMeasureTime(Time t);
+};
+
+%{
+using QuantLib::G2Process;
+%}
+
+%shared_ptr(G2Process)
+class G2Process : public StochasticProcess {
+  public:
+    G2Process(Real a, Real sigma, Real b, Real eta, Real rho);
+};
+
+%{
+using QuantLib::G2ForwardProcess;
+%}
+
+%shared_ptr(G2ForwardProcess)
+class G2ForwardProcess : public StochasticProcess {
+  public:
+    G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho);
+    void setForwardMeasureTime(Time t);
 };
 
 %{
 using QuantLib::GsrProcess;
-typedef boost::shared_ptr<StochasticProcess> GsrProcessPtr;
 %}
 
-%rename(GsrProcess) GsrProcessPtr;
-class GsrProcessPtr : public StochasticProcess1DPtr {
+%shared_ptr(GsrProcess)
+class GsrProcess : public StochasticProcess1D {
     public:
-    %extend {
-        GsrProcessPtr(const Array &times, const Array &vols,
-                   const Array &reversions, const Real T = 60.0) {
-            return new GsrProcessPtr(new GsrProcess(times, vols, reversions, T));
-        }
-        Real sigma(Time t) {
-            return boost::dynamic_pointer_cast<GsrProcess>(*self)->sigma(t);
-        }
-        Real reversion(Time t){
-            return boost::dynamic_pointer_cast<GsrProcess>(*self)->reversion(t);
-        }
-        Real y(Time t) {
-            return boost::dynamic_pointer_cast<GsrProcess>(*self)->y(t);
-        }
-        Real G(Time t, Time T, Real x){
-            return boost::dynamic_pointer_cast<GsrProcess>(*self)->G(t, T, x);
-        }
-        void setForwardMeasureTime(Time t) {
-            boost::dynamic_pointer_cast<GsrProcess>(*self)->setForwardMeasureTime(t);
-        }
-    }
+    GsrProcess(const Array &times, const Array &vols,
+               const Array &reversions, const Real T = 60.0);
+    Real sigma(Time t);
+    Real reversion(Time t);
+    Real y(Time t);
+    Real G(Time t, Time T, Real x);
+    void setForwardMeasureTime(Time t);
 };
 
 %inline %{
-    GsrProcessPtr as_gsr_process(
+    const boost::shared_ptr<GsrProcess> as_gsr_process(
                            const boost::shared_ptr<StochasticProcess>& proc) {
         return boost::dynamic_pointer_cast<GsrProcess>(proc);
     }
 %}
+
+
+%{
+using QuantLib::OrnsteinUhlenbeckProcess;
+%}
+
+%shared_ptr(OrnsteinUhlenbeckProcess)
+class OrnsteinUhlenbeckProcess : public StochasticProcess1D {
+  public:
+    OrnsteinUhlenbeckProcess(
+    	Real speed, Volatility vol, Real x0 = 0.0, Real level = 0.0);
+    	    	
+    Real speed() const;
+    Real volatility() const;
+    Real level() const;
+};
+
+
+%{
+using QuantLib::KlugeExtOUProcess;
+using QuantLib::ExtendedOrnsteinUhlenbeckProcess;
+using QuantLib::ExtOUWithJumpsProcess;
+%}
+
+%shared_ptr(ExtendedOrnsteinUhlenbeckProcess)
+class ExtendedOrnsteinUhlenbeckProcess : public StochasticProcess1D {
+    public:
+        enum Discretization { MidPoint, Trapezodial, GaussLobatto };
+
+        ExtendedOrnsteinUhlenbeckProcess(
+                                Real speed, Volatility sigma, Real x0,
+                                const boost::function<Real (Real)>& b,
+                                Discretization discretization = MidPoint,
+                                Real intEps = 1e-4);
+    %extend{                            
+        #if defined(SWIGPYTHON)    
+        ExtendedOrnsteinUhlenbeckProcess(
+            Real speed, Volatility sigma, Real x0, 
+            PyObject* function, 
+            Real intEps = 1e-4) {
+            
+            const UnaryFunction f(function);
+            return new ExtendedOrnsteinUhlenbeckProcess(
+            	    speed, sigma, x0, f, 
+            	    ExtendedOrnsteinUhlenbeckProcess::MidPoint, intEps);
+        }
+        #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+        ExtendedOrnsteinUhlenbeckProcess(
+            Real speed, Volatility sigma, Real x0, 
+            UnaryFunctionDelegate* function,
+            Real intEps = 1e-4) {
+            
+            const UnaryFunction f(function);
+            return new ExtendedOrnsteinUhlenbeckProcess(
+            	    speed, sigma, x0, f, 
+            	    ExtendedOrnsteinUhlenbeckProcess::MidPoint, intEps);
+        }
+		#endif
+    }
+};
+
+%shared_ptr(ExtOUWithJumpsProcess)
+class ExtOUWithJumpsProcess : public StochasticProcess {
+    public:
+        ExtOUWithJumpsProcess(
+            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
+            Real Y0, Real beta, Real jumpIntensity, Real eta) {
+                        
+			return new ExtOUWithJumpsProcess(
+				new ExtOUWithJumpsProcess(
+					process, Y0, beta, jumpIntensity, eta));
+        }
+};
+
+%shared_ptr(KlugeExtOUProcess)
+class KlugeExtOUProcess : public StochasticProcess {
+    public:
+        KlugeExtOUProcess(
+            Real rho,
+            const boost::shared_ptr<ExtOUWithJumpsProcess>& kluge,
+            const boost::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU) {
+	                            	
+            return new KlugeExtOUProcess(new KlugeExtOUProcess(
+            	rho, kluge, extOU));
+        }
+};
+
+%{
+using QuantLib::GJRGARCHProcess;
+%}
+
+%shared_ptr(GJRGARCHProcess)
+class GJRGARCHProcess : public StochasticProcess {
+  public:
+      enum Discretization { PartialTruncation, FullTruncation, Reflection};
+
+      GJRGARCHProcess(const Handle<YieldTermStructure>& riskFreeRate,
+                      const Handle<YieldTermStructure>& dividendYield,
+                      const Handle<Quote>& s0,
+                      Real v0, Real omega, Real alpha, Real beta,
+                      Real gamma, Real lambda, Real daysPerYear = 252.0,
+                      Discretization d = FullTruncation);
+
+  Handle<Quote> s0();
+  Handle<YieldTermStructure> dividendYield();
+  Handle<YieldTermStructure> riskFreeRate();
+};
+
 
 
 #endif

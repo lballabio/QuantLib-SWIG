@@ -16,66 +16,78 @@
 """
 
 import unittest
-from QuantLib import *
+import QuantLib as ql
+
 
 class Foo:
-    def __call__(self,x):
-        return x*x-1.0
-    def derivative(self,x):
-        return 2.0*x
+    def __call__(self, x):
+        return x * x - 1.0
+
+    def derivative(self, x):
+        return 2.0 * x
+
 
 class Solver1DTest(unittest.TestCase):
     def runTest(self):
         "Testing 1-D solvers"
-        for factory in [Brent,Bisection,FalsePosition,Ridder,Secant]:
+        for factory in [ql.Brent, ql.Bisection, ql.FalsePosition, ql.Ridder, ql.Secant]:
             solver = factory()
             for accuracy in [1.0e-4, 1.0e-6, 1.0e-8]:
-                root = solver.solve(lambda x:x*x-1.0,
-                                    accuracy,1.5,0.1)
-                if not (abs(root-1.0)<accuracy):
-                    self.fail("""
+                root = solver.solve(lambda x: x * x - 1.0, accuracy, 1.5, 0.1)
+                if not (abs(root - 1.0) < accuracy):
+                    self.fail(
+                        """
 %(factory)s
     solve():
     expected:         1.0
     calculated root:  %(root)g
     accuracy:         %(accuracy)s
-                          """ % locals())
-                root = solver.solve(lambda x:x*x-1.0,
-                                    accuracy,1.5,0.0,1.0)
-                if not (abs(root-1.0)<accuracy):
-                    self.fail("""
+                          """
+                        % locals()
+                    )
+                root = solver.solve(lambda x: x * x - 1.0, accuracy, 1.5, 0.0, 1.0)
+                if not (abs(root - 1.0) < accuracy):
+                    self.fail(
+                        """
 %(factory)s
     bracketed solve():
     expected:         1.0
     calculated root:  %(root)g
     accuracy:         %(accuracy)s
-                          """ % locals())
-        for factory in [Newton,NewtonSafe]:
+                          """
+                        % locals()
+                    )
+        for factory in [ql.Newton, ql.NewtonSafe]:
             solver = factory()
             for accuracy in [1.0e-4, 1.0e-6, 1.0e-8]:
-                root = solver.solve(Foo(),accuracy,1.5,0.1)
-                if not (abs(root-1.0)<accuracy):
-                    self.fail("""
+                root = solver.solve(Foo(), accuracy, 1.5, 0.1)
+                if not (abs(root - 1.0) < accuracy):
+                    self.fail(
+                        """
 %(factory)s
     solve():
     expected:         1.0
     calculated root:  %(root)g
     accuracy:         %(accuracy)s
-                          """ % locals())
-                root = solver.solve(Foo(),accuracy,1.5,0.0,1.0)
-                if not (abs(root-1.0)<accuracy):
-                    self.fail("""
+                          """
+                        % locals()
+                    )
+                root = solver.solve(Foo(), accuracy, 1.5, 0.0, 1.0)
+                if not (abs(root - 1.0) < accuracy):
+                    self.fail(
+                        """
 %(factory)s
     bracketed solve():
     expected:         1.0
     calculated root:  %(root)g
     accuracy:         %(accuracy)s
-                          """ % locals())
-            
+                          """
+                        % locals()
+                    )
 
-if __name__ == '__main__':
-    import QuantLib
-    print('testing QuantLib ' + QuantLib.__version__)
+
+if __name__ == "__main__":
+    print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
     suite.addTest(Solver1DTest())
     unittest.TextTestRunner(verbosity=2).run(suite)

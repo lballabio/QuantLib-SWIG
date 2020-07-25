@@ -1,267 +1,353 @@
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
 
-# Copyright (C) 2004, 2005, 2006, 2007 StatPro Italia srl
+# %% [markdown]
+# # Interest-rate swaps
+#
+# Copyright (&copy;) 2004, 2005, 2006, 2007 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
-# for financial quantitative analysts and developers - http://quantlib.org/
+# for financial quantitative analysts and developers - https://www.quantlib.org/
 #
 # QuantLib is free software: you can redistribute it and/or modify it under the
 # terms of the QuantLib license.  You should have received a copy of the
 # license along with this program; if not, please email
 # <quantlib-dev@lists.sf.net>. The license is also available online at
-# <http://quantlib.org/license.shtml>.
+# <https://www.quantlib.org/license.shtml>.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
-from QuantLib import *
+# %%
+import QuantLib as ql
 
-# global data
-calendar = TARGET()
-todaysDate = Date(6,November,2001);
-Settings.instance().evaluationDate = todaysDate
-settlementDate = Date(8,November,2001);
+# %% [markdown]
+# ### Global data
 
-# market quotes
-deposits = { (1,Weeks): 0.0382,
-             (1,Months): 0.0372,
-             (3,Months): 0.0363,
-             (6,Months): 0.0353,
-             (9,Months): 0.0348,
-             (1,Years): 0.0345 }
+# %%
+calendar = ql.TARGET()
+todaysDate = ql.Date(6, ql.November, 2001)
+ql.Settings.instance().evaluationDate = todaysDate
+settlementDate = ql.Date(8, ql.November, 2001)
 
-FRAs = { (3,6): 0.037125,
-         (6,9): 0.037125,
-         (9,12): 0.037125 }
+# %% [markdown]
+# ### Market quotes
 
-futures = { Date(19,12,2001): 96.2875,
-            Date(20,3,2002): 96.7875,
-            Date(19,6,2002): 96.9875,
-            Date(18,9,2002): 96.6875,
-            Date(18,12,2002): 96.4875,
-            Date(19,3,2003): 96.3875,
-            Date(18,6,2003): 96.2875,
-            Date(17,9,2003): 96.0875 }
+# %%
+deposits = {
+    (3, ql.Months): 0.0363,
+}
 
-swaps = { (2,Years): 0.037125,
-          (3,Years): 0.0398,
-          (5,Years): 0.0443,
-          (10,Years): 0.05165,
-          (15,Years): 0.055175 }
+# %%
+FRAs = {(3, 6): 0.037125, (6, 9): 0.037125, (9, 12): 0.037125}
 
-# convert them to Quote objects
-for n,unit in deposits.keys():
-    deposits[(n,unit)] = SimpleQuote(deposits[(n,unit)])
-for n,m in FRAs.keys():
-    FRAs[(n,m)] = SimpleQuote(FRAs[(n,m)])
+# %%
+futures = {
+    ql.Date(19, 12, 2001): 96.2875,
+    ql.Date(20, 3, 2002): 96.7875,
+    ql.Date(19, 6, 2002): 96.9875,
+    ql.Date(18, 9, 2002): 96.6875,
+    ql.Date(18, 12, 2002): 96.4875,
+    ql.Date(19, 3, 2003): 96.3875,
+    ql.Date(18, 6, 2003): 96.2875,
+    ql.Date(17, 9, 2003): 96.0875,
+}
+
+# %%
+swaps = {
+    (2, ql.Years): 0.037125,
+    (3, ql.Years): 0.0398,
+    (5, ql.Years): 0.0443,
+    (10, ql.Years): 0.05165,
+    (15, ql.Years): 0.055175,
+}
+
+# %% [markdown]
+# We'll convert them to `Quote` objects...
+
+# %%
+for n, unit in deposits.keys():
+    deposits[(n, unit)] = ql.SimpleQuote(deposits[(n, unit)])
+for n, m in FRAs.keys():
+    FRAs[(n, m)] = ql.SimpleQuote(FRAs[(n, m)])
 for d in futures.keys():
-    futures[d] = SimpleQuote(futures[d])
-for n,unit in swaps.keys():
-    swaps[(n,unit)] = SimpleQuote(swaps[(n,unit)])
+    futures[d] = ql.SimpleQuote(futures[d])
+for n, unit in swaps.keys():
+    swaps[(n, unit)] = ql.SimpleQuote(swaps[(n, unit)])
 
-# build rate helpers
+# %% [markdown]
+# ...and build rate helpers.
 
-dayCounter = Actual360()
+# %%
+dayCounter = ql.Actual360()
 settlementDays = 2
-depositHelpers = [ DepositRateHelper(QuoteHandle(deposits[(n,unit)]),
-                                     Period(n,unit), settlementDays,
-                                     calendar, ModifiedFollowing,
-                                     False, dayCounter)
-                   for n, unit in [(1,Weeks),(1,Months),(3,Months),
-                                   (6,Months),(9,Months),(1,Years)] ]
+depositHelpers = [
+    ql.DepositRateHelper(
+        ql.QuoteHandle(deposits[(n, unit)]),
+        ql.Period(n, unit),
+        settlementDays,
+        calendar,
+        ql.ModifiedFollowing,
+        False,
+        dayCounter,
+    )
+    for n, unit in deposits.keys()
+]
 
-dayCounter = Actual360()
+# %%
+dayCounter = ql.Actual360()
 settlementDays = 2
-fraHelpers = [ FraRateHelper(QuoteHandle(FRAs[(n,m)]),
-                             n, m, settlementDays,
-                             calendar, ModifiedFollowing,
-                             False, dayCounter)
-               for n, m in FRAs.keys() ]
+fraHelpers = [
+    ql.FraRateHelper(
+        ql.QuoteHandle(FRAs[(n, m)]), n, m, settlementDays, calendar, ql.ModifiedFollowing, False, dayCounter
+    )
+    for n, m in FRAs.keys()
+]
 
-dayCounter = Actual360()
+# %%
+dayCounter = ql.Actual360()
 months = 3
-futuresHelpers = [ FuturesRateHelper(QuoteHandle(futures[d]),
-                                     d, months,
-                                     calendar, ModifiedFollowing,
-                                     True, dayCounter,
-                                     QuoteHandle(SimpleQuote(0.0)))
-                   for d in futures.keys() ]
+futuresHelpers = [
+    ql.FuturesRateHelper(
+        ql.QuoteHandle(futures[d]),
+        d,
+        months,
+        calendar,
+        ql.ModifiedFollowing,
+        True,
+        dayCounter,
+        ql.QuoteHandle(ql.SimpleQuote(0.0)),
+    )
+    for d in futures.keys()
+]
 
+# %% [markdown]
+# The discount curve for the swaps will come from elsewhere. A real application would use some kind of risk-free curve; here we're using a flat one for convenience.
+
+# %%
+discountTermStructure = ql.YieldTermStructureHandle(
+    ql.FlatForward(settlementDate, 0.04, ql.Actual360()))
+
+# %%
 settlementDays = 2
-fixedLegFrequency = Annual
-fixedLegTenor = Period(1,Years)
-fixedLegAdjustment = Unadjusted
-fixedLegDayCounter = Thirty360()
-floatingLegFrequency = Semiannual
-floatingLegTenor = Period(6,Months)
-floatingLegAdjustment = ModifiedFollowing
-swapHelpers = [ SwapRateHelper(QuoteHandle(swaps[(n,unit)]),
-                               Period(n,unit), calendar,
-                               fixedLegFrequency, fixedLegAdjustment,
-                               fixedLegDayCounter, Euribor6M())
-                for n, unit in swaps.keys() ]
+fixedLegFrequency = ql.Annual
+fixedLegTenor = ql.Period(1, ql.Years)
+fixedLegAdjustment = ql.Unadjusted
+fixedLegDayCounter = ql.Thirty360()
+floatingLegFrequency = ql.Quarterly
+floatingLegTenor = ql.Period(3, ql.Months)
+floatingLegAdjustment = ql.ModifiedFollowing
+swapHelpers = [
+    ql.SwapRateHelper(
+        ql.QuoteHandle(swaps[(n, unit)]),
+        ql.Period(n, unit),
+        calendar,
+        fixedLegFrequency,
+        fixedLegAdjustment,
+        fixedLegDayCounter,
+        ql.Euribor3M(),
+        ql.QuoteHandle(),
+        ql.Period("0D"),
+        discountTermStructure,
+    )
+    for n, unit in swaps.keys()
+]
 
-# term structure handles
+# %% [markdown]
+# ### Term structure construction
 
-discountTermStructure = RelinkableYieldTermStructureHandle()
-forecastTermStructure = RelinkableYieldTermStructureHandle()
+# %%
+forecastTermStructure = ql.RelinkableYieldTermStructureHandle()
 
-# term-structure construction
+# %%
+helpers = depositHelpers + futuresHelpers + swapHelpers[1:]
+depoFuturesSwapCurve = ql.PiecewiseFlatForward(settlementDate, helpers, ql.Actual360())
 
-helpers = depositHelpers[:2] + futuresHelpers + swapHelpers[1:]
-depoFuturesSwapCurve = PiecewiseFlatForward(settlementDate, helpers,
-                                            Actual360())
+# %%
+helpers = depositHelpers + fraHelpers + swapHelpers
+depoFraSwapCurve = ql.PiecewiseFlatForward(settlementDate, helpers, ql.Actual360())
 
-helpers = depositHelpers[:3] + fraHelpers + swapHelpers
-depoFraSwapCurve = PiecewiseFlatForward(settlementDate, helpers, Actual360())
+# %% [markdown]
+# ### Swap pricing
 
-# swaps to be priced
+# %%
+swapEngine = ql.DiscountingSwapEngine(discountTermStructure)
 
-swapEngine = DiscountingSwapEngine(discountTermStructure)
-
+# %%
 nominal = 1000000
 length = 5
-maturity = calendar.advance(settlementDate,length,Years)
+maturity = calendar.advance(settlementDate, length, ql.Years)
 payFixed = True
 
-fixedLegFrequency = Annual
-fixedLegAdjustment = Unadjusted
-fixedLegDayCounter = Thirty360()
+# %%
+fixedLegFrequency = ql.Annual
+fixedLegAdjustment = ql.Unadjusted
+fixedLegDayCounter = ql.Thirty360()
 fixedRate = 0.04
 
-floatingLegFrequency = Semiannual
+# %%
+floatingLegFrequency = ql.Quarterly
 spread = 0.0
 fixingDays = 2
-index = Euribor6M(forecastTermStructure)
-floatingLegAdjustment = ModifiedFollowing
+index = ql.Euribor3M(forecastTermStructure)
+floatingLegAdjustment = ql.ModifiedFollowing
 floatingLegDayCounter = index.dayCounter()
 
-fixedSchedule = Schedule(settlementDate, maturity,
-                         fixedLegTenor, calendar,
-                         fixedLegAdjustment, fixedLegAdjustment,
-                         DateGeneration.Forward, False)
-floatingSchedule = Schedule(settlementDate, maturity,
-                            floatingLegTenor, calendar,
-                            floatingLegAdjustment, floatingLegAdjustment,
-                            DateGeneration.Forward, False)
+# %%
+fixedSchedule = ql.Schedule(
+    settlementDate,
+    maturity,
+    fixedLegTenor,
+    calendar,
+    fixedLegAdjustment,
+    fixedLegAdjustment,
+    ql.DateGeneration.Forward,
+    False,
+)
+floatingSchedule = ql.Schedule(
+    settlementDate,
+    maturity,
+    floatingLegTenor,
+    calendar,
+    floatingLegAdjustment,
+    floatingLegAdjustment,
+    ql.DateGeneration.Forward,
+    False,
+)
 
-spot = VanillaSwap(VanillaSwap.Payer, nominal,
-                   fixedSchedule, fixedRate, fixedLegDayCounter,
-                   floatingSchedule, index, spread,
-                   floatingLegDayCounter)
+# %% [markdown]
+# We'll build a 5-years swap starting spot...
+
+# %%
+spot = ql.VanillaSwap(
+    ql.VanillaSwap.Payer,
+    nominal,
+    fixedSchedule,
+    fixedRate,
+    fixedLegDayCounter,
+    floatingSchedule,
+    index,
+    spread,
+    floatingLegDayCounter,
+)
 spot.setPricingEngine(swapEngine)
 
-forwardStart = calendar.advance(settlementDate,1,Years)
-forwardEnd = calendar.advance(forwardStart,length,Years)
-fixedSchedule = Schedule(forwardStart, forwardEnd,
-                         fixedLegTenor, calendar,
-                         fixedLegAdjustment, fixedLegAdjustment,
-                         DateGeneration.Forward, False)
-floatingSchedule = Schedule(forwardStart, forwardEnd,
-                            floatingLegTenor, calendar,
-                            floatingLegAdjustment, floatingLegAdjustment,
-                            DateGeneration.Forward, False)
+# %% [markdown]
+# ...and one starting 1 year forward.
 
-forward = VanillaSwap(VanillaSwap.Payer, nominal,
-                      fixedSchedule, fixedRate, fixedLegDayCounter,
-                      floatingSchedule, index, spread,
-                      floatingLegDayCounter)
+# %%
+forwardStart = calendar.advance(settlementDate, 1, ql.Years)
+forwardEnd = calendar.advance(forwardStart, length, ql.Years)
+fixedSchedule = ql.Schedule(
+    forwardStart,
+    forwardEnd,
+    fixedLegTenor,
+    calendar,
+    fixedLegAdjustment,
+    fixedLegAdjustment,
+    ql.DateGeneration.Forward,
+    False,
+)
+floatingSchedule = ql.Schedule(
+    forwardStart,
+    forwardEnd,
+    floatingLegTenor,
+    calendar,
+    floatingLegAdjustment,
+    floatingLegAdjustment,
+    ql.DateGeneration.Forward,
+    False,
+)
+
+# %%
+forward = ql.VanillaSwap(
+    ql.VanillaSwap.Payer,
+    nominal,
+    fixedSchedule,
+    fixedRate,
+    fixedLegDayCounter,
+    floatingSchedule,
+    index,
+    spread,
+    floatingLegDayCounter,
+)
 forward.setPricingEngine(swapEngine)
 
-# price on the bootstrapped curves
+# %% [markdown]
+# We'll price them both on the bootstrapped curves.
+#
+# This is the quoted 5-years market rate; we expect the fair rate of the spot swap to match it.
 
-def formatPrice(p,digits=2):
-    format = '%%.%df' % digits
-    return format % p
 
-def formatRate(r,digits=2):
-    format = '%%.%df %%%%' % digits
-    return format % (r*100)
+# %%
+print(swaps[(5, ql.Years)].value())
 
-headers = ("term structure", "net present value",
-           "fair spread", "fair fixed rate" )
-separator = " | "
 
-format = ''
-width = 0
-for h in headers[:-1]:
-    format += '%%%ds' % len(h)
-    format += separator
-    width += len(h) + len(separator)
-format += '%%%ds' % len(headers[-1])
-width += len(headers[-1])
+# %%
+def show(swap):
+    print("NPV         = %.2f" % swap.NPV())
+    print("Fair spread = %.4f %%" % (swap.fairSpread()*100))
+    print("Fair rate   =  %.4f %%" % (swap.fairRate()*100))
 
-rule = "-" * width
-dblrule = "=" * width
-tab = " " * 8
 
-def report(swap, name):
-    print(format % (name, formatPrice(swap.NPV(),2),
-                    formatRate(swap.fairSpread(),4),
-                    formatRate(swap.fairRate(),4)))
+# %% [markdown]
+# These are the results for the 5-years spot swap on the deposit/futures/swap curve...
 
-print(dblrule)
-print("5-year market swap-rate = %s" % formatRate(swaps[(5,Years)].value()))
-print(dblrule)
-
-# price on two different term structures
-
-print(tab + "5-years swap paying %s" % formatRate(fixedRate))
-print(separator.join(headers))
-print(rule)
-
-discountTermStructure.linkTo(depoFuturesSwapCurve)
+# %%
 forecastTermStructure.linkTo(depoFuturesSwapCurve)
-report(spot,'depo-fut-swap')
+show(spot)
 
-discountTermStructure.linkTo(depoFraSwapCurve)
+# %% [markdown]
+# ...and these are on the deposit/fra/swap curve.
+
+# %%
 forecastTermStructure.linkTo(depoFraSwapCurve)
-report(spot,'depo-FRA-swap')
+show(spot)
 
-print(rule)
+# %% [markdown]
+# The same goes for the 1-year forward swap, except for the fair rate not matching the spot rate.
 
-# price the 1-year forward swap
-
-print(tab + "5-years, 1-year forward swap paying %s" % formatRate(fixedRate))
-print(rule)
-
-discountTermStructure.linkTo(depoFuturesSwapCurve)
+# %%
 forecastTermStructure.linkTo(depoFuturesSwapCurve)
-report(forward,'depo-fut-swap')
+show(forward)
 
-discountTermStructure.linkTo(depoFraSwapCurve)
+# %%
 forecastTermStructure.linkTo(depoFraSwapCurve)
-report(forward,'depo-FRA-swap')
+show(forward)
 
-# modify the 5-years swap rate and reprice
+# %% [markdown]
+# Modifying the 5-years swap rate and repricing will change the results:
 
-swaps[(5,Years)].setValue(0.046)
+# %%
+swaps[(5, ql.Years)].setValue(0.046)
 
-print(dblrule)
-print("5-year market swap-rate = %s" % formatRate(swaps[(5,Years)].value()))
-print(dblrule)
-
-print(tab + "5-years swap paying %s" % formatRate(fixedRate))
-print(separator.join(headers))
-print(rule)
-
-discountTermStructure.linkTo(depoFuturesSwapCurve)
+# %%
 forecastTermStructure.linkTo(depoFuturesSwapCurve)
-report(spot,'depo-fut-swap')
 
-discountTermStructure.linkTo(depoFraSwapCurve)
+# %%
+show(spot)
+
+# %%
+show(forward)
+
+# %%
 forecastTermStructure.linkTo(depoFraSwapCurve)
-report(spot,'depo-FRA-swap')
 
-print(rule)
+# %%
+show(spot)
 
-print(tab + "5-years, 1-year forward swap paying %s" % formatRate(fixedRate))
-print(rule)
-
-discountTermStructure.linkTo(depoFuturesSwapCurve)
-forecastTermStructure.linkTo(depoFuturesSwapCurve)
-report(forward,'depo-fut-swap')
-
-discountTermStructure.linkTo(depoFraSwapCurve)
-forecastTermStructure.linkTo(depoFraSwapCurve)
-report(forward,'depo-FRA-swap')
+# %%
+show(forward)

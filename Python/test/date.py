@@ -15,42 +15,61 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import QuantLib
+import QuantLib as ql
 import unittest
 
+
 class DateTest(unittest.TestCase):
-    def runTest(self):
+    def setUp(self):
+        pass
+
+    def testArithmetics(self):
         "Testing date arithmetics"
-        date = QuantLib.Date_minDate()
+        date = ql.Date_minDate()
 
-        dold   = date.dayOfMonth()
-        mold   = date.month()
-        yold   = date.year()
+        dold = date.dayOfMonth()
+        mold = date.month()
+        yold = date.year()
 
-        while date < QuantLib.Date_maxDate():
+        while date < ql.Date_maxDate():
             date += 1
 
-            d   = date.dayOfMonth()
-            m   = date.month()
-            y   = date.year()
+            d = date.dayOfMonth()
+            m = date.month()
+            y = date.year()
 
             # check if skipping any date
-            if not ((d==dold+1 and m==mold      and y==yold  ) or
-                    (d==1      and m==mold+1    and y==yold  ) or
-                    (d==1      and m==1         and y==yold+1)):
-                self.fail("""
+            if not (
+                (d == dold + 1 and m == mold and y == yold)
+                or (d == 1 and m == mold + 1 and y == yold)
+                or (d == 1 and m == 1 and y == yold + 1)
+            ):
+                self.fail(
+                    """
 wrong day, month, year increment
     date: %(t)s
     day, month, year: %(d)d, %(m)d, %(y)d
     previous:         %(dold)d, %(mold)d, %(yold)d
-                """ % locals())
+                """
+                    % locals()
+                )
             dold = d
             mold = m
             yold = y
 
+    def testHolidayList(self):
+        """ Testing Calendar testHolidayList() method. """
+        holidayLstFunction = ql.Calendar.holidayList(ql.Poland(), ql.Date(31, 12, 2014), ql.Date(3, 4, 2015), False)
+        holidayLstManual = (ql.Date(1, 1, 2015), ql.Date(6, 1, 2015))
+        # check if dates both from function and from manual imput are the same
+        self.assertTrue(all([(a == b) for a, b in zip(holidayLstFunction, holidayLstManual)]))
 
-if __name__ == '__main__':
-    print('testing QuantLib ' + QuantLib.__version__) 
+    def tearDown(self):
+        pass
+
+
+if __name__ == "__main__":
+    print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
-    suite.addTest(DateTest())
+    suite.addTest(unittest.makeSuite(DateTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)

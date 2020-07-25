@@ -50,21 +50,6 @@ using QuantLib::GaussGegenbauerIntegration;
             UnaryFunction f(pyFunction);
             return (*self)(f, a, b);
         }
-        #elif defined(SWIGRUBY)
-        Real __call__(Real a, Real b) {
-            UnaryFunction f;
-            return (*self)(f, a, b);
-        }
-        #elif defined(SWIGMZSCHEME)
-        Real calculate(Scheme_Object* mzFunction, Real a, Real b) {
-            UnaryFunction f(mzFunction);
-            return (*self)(f, a, b);
-        }
-        #elif defined(SWIGGUILE)
-        Real calculate(SCM ghFunction, Real a, Real b) {
-            UnaryFunction f(ghFunction);
-            return (*self)(f, a, b);
-        }
         #elif defined(SWIGJAVA)
         Real calculate(UnaryFunctionDelegate* f, Real a, Real b) {
             return (*self)(UnaryFunction(f), a, b);		
@@ -78,21 +63,6 @@ using QuantLib::GaussGegenbauerIntegration;
         #if defined(SWIGPYTHON)
         Real __call__(PyObject* pyFunction) {
             UnaryFunction f(pyFunction);
-            return (*self)(f);
-        }
-        #elif defined(SWIGRUBY)
-        Real __call__() {
-            UnaryFunction f;
-            return (*self)(f);
-        }
-        #elif defined(SWIGMZSCHEME)
-        Real calculate(Scheme_Object* mzFunction) {
-            UnaryFunction f(mzFunction);
-            return (*self)(f);
-        }
-        #elif defined(SWIGGUILE)
-        Real calculate(SCM ghFunction) {
-            UnaryFunction f(ghFunction);
             return (*self)(f);
         }
         #elif defined(SWIGJAVA)

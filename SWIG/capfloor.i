@@ -1,5 +1,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
+ Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2019 Wojciech Ślusarski
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -29,93 +31,106 @@ using QuantLib::CapFloor;
 using QuantLib::Cap;
 using QuantLib::Floor;
 using QuantLib::Collar;
-
-typedef boost::shared_ptr<Instrument> CapFloorPtr;
-typedef boost::shared_ptr<Instrument> CapPtr;
-typedef boost::shared_ptr<Instrument> FloorPtr;
-typedef boost::shared_ptr<Instrument> CollarPtr;
 %}
 
-%rename(CapFloor) CapFloorPtr;
-class CapFloorPtr : public boost::shared_ptr<Instrument> {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("implied-volatility") impliedVolatility;
-    #endif
+%shared_ptr(CapFloor)
+class CapFloor : public Instrument {
   public:
-     %extend {
-        Volatility impliedVolatility(Real price,
-                                     const Handle<YieldTermStructure>& curve,
-                                     Volatility guess,
-                                     Real accuracy = 1.0e-4,
-                                     Size maxEvaluations = 100,
-                                     Volatility minVol = 1.0e-7,
-                                     Volatility maxVol = 4.0) const {
-            return boost::dynamic_pointer_cast<CapFloor>(*self)->
-                impliedVolatility(price, curve, guess, accuracy,
-                                  maxEvaluations, minVol, maxVol);
-        }
+    Volatility impliedVolatility(Real price,
+                                 const Handle<YieldTermStructure>& disc,
+                                 Volatility guess,
+                                 Real accuracy = 1.0e-4,
+                                 Natural maxEvaluations = 100,
+                                 Volatility minVol = 1.0e-7,
+                                 Volatility maxVol = 4.0,
+                                 VolatilityType type = ShiftedLognormal,
+                                 Real displacement = 0.0) const;
+    enum Type { Cap, Floor, Collar };
+    const Leg& floatingLeg() const;
+
+    const std::vector<Rate>& capRates();
+    const std::vector<Rate>& floorRates();
+    Date startDate() const;
+    Date maturityDate() const;
+    Type type() const;
+    
+    Rate atmRate(const YieldTermStructure& discountCurve) const;
+
+    %extend {
+      const Real vega() {
+        return self->result<Real>("vega");
+      }
+      const std::vector<Real> optionletsPrice() {
+        return self->result<std::vector<Real> >("optionletsPrice");
+      }
+      const std::vector<Real> optionletsVega() {
+        return self->result<std::vector<Real> >("optionletsVega");
+      }
+      const std::vector<Real> optionletsDelta() {
+        return self->result<std::vector<Real> >("optionletsDelta");
+      }
+      const std::vector<DiscountFactor> optionletsDiscountFactor() {
+        return self->result<std::vector<DiscountFactor> >("optionletsDiscountFactor");
+      }
+      const std::vector<Rate> optionletsAtmForward(){
+        return self->result<std::vector<Real> >("optionletsAtmForward");
+      }
+      const std::vector<Rate> optionletsStdDev(){
+        return self->result<std::vector<Real> >("optionletsStdDev");
+      }
     }
 };
 
 
-
-%rename(Cap) CapPtr;
-class CapPtr : public CapFloorPtr {
+%shared_ptr(Cap)
+class Cap : public CapFloor {
   public:
-    %extend {
-        CapPtr(const std::vector<boost::shared_ptr<CashFlow> >& leg,
-               const std::vector<Rate>& capRates) {
-            return new CapPtr(new Cap(leg,capRates));
-        }
-    }
+    Cap(const std::vector<boost::shared_ptr<CashFlow> >& leg,
+           const std::vector<Rate>& capRates);
 };
 
-%rename(Floor) FloorPtr;
-class FloorPtr : public CapFloorPtr {
+%shared_ptr(Floor)
+class Floor : public CapFloor {
   public:
-    %extend {
-        FloorPtr(const std::vector<boost::shared_ptr<CashFlow> >& leg,
-                 const std::vector<Rate>& floorRates) {
-            return new FloorPtr(new Floor(leg,floorRates));
-        }
-    }
+    Floor(const std::vector<boost::shared_ptr<CashFlow> >& leg,
+             const std::vector<Rate>& floorRates);
 };
 
-%rename(Collar) CollarPtr;
-class CollarPtr : public CapFloorPtr {
+%shared_ptr(Collar)
+class Collar : public CapFloor {
   public:
-    %extend {
-        CollarPtr(const std::vector<boost::shared_ptr<CashFlow> >& leg,
-                  const std::vector<Rate>& capRates,
-                  const std::vector<Rate>& floorRates) {
-            return new CollarPtr(new Collar(leg,capRates,floorRates));
-        }
-    }
+    Collar(const std::vector<boost::shared_ptr<CashFlow> >& leg,
+              const std::vector<Rate>& capRates,
+              const std::vector<Rate>& floorRates);
 };
 
 %{
 using QuantLib::BlackCapFloorEngine;
-typedef boost::shared_ptr<PricingEngine> BlackCapFloorEnginePtr;
 %}
 
-%rename(BlackCapFloorEngine) BlackCapFloorEnginePtr;
-class BlackCapFloorEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(BlackCapFloorEngine)
+class BlackCapFloorEngine : public PricingEngine {
   public:
-    %extend {
-        BlackCapFloorEnginePtr(
-                           const Handle<YieldTermStructure>& termStructure,
-                           const Handle<Quote>& vol) {
-            return new BlackCapFloorEnginePtr(
-                                  new BlackCapFloorEngine(termStructure,vol));
-        }
-        BlackCapFloorEnginePtr(
-                           const Handle<YieldTermStructure>& termStructure,
-                           const Handle<OptionletVolatilityStructure>& vol) {
-            return new BlackCapFloorEnginePtr(
-                                  new BlackCapFloorEngine(termStructure,vol));
-        }
-    }
+    BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                        const Handle<Quote>& vol,
+                        const DayCounter& dc = Actual365Fixed(),
+                        Real displacement = 0.0);
+    BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                        const Handle<OptionletVolatilityStructure>& vol,
+                        Real displacement = Null<Real>());
 };
 
+%{
+using QuantLib::BachelierCapFloorEngine;
+%}
+
+%shared_ptr(BachelierCapFloorEngine)
+class BachelierCapFloorEngine : public PricingEngine {
+  public:
+    BachelierCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                            const Handle<Quote>& vol);
+    BachelierCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
+                            const Handle<OptionletVolatilityStructure>& vol);
+};
 
 #endif

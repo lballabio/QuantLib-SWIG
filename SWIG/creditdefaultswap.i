@@ -1,5 +1,6 @@
 /*
  Copyright (C) 2008, 2009 StatPro Italia srl
+ Copyright (C) 2018, 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,156 +22,178 @@
 %include instruments.i
 %include credit.i
 %include termstructures.i
+%include bonds.i
 %include null.i
+%include options.i
+%include exercise.i
 
 %{
 using QuantLib::CreditDefaultSwap;
 using QuantLib::MidPointCdsEngine;
 using QuantLib::IntegralCdsEngine;
-
-typedef boost::shared_ptr<Instrument> CreditDefaultSwapPtr;
-typedef boost::shared_ptr<PricingEngine> MidPointCdsEnginePtr;
-typedef boost::shared_ptr<PricingEngine> IntegralCdsEnginePtr;
+using QuantLib::IsdaCdsEngine;
+using QuantLib::Claim;
+using QuantLib::FaceValueClaim;
+using QuantLib::FaceValueAccrualClaim;
+using QuantLib::CdsOption;
+using QuantLib::BlackCdsOptionEngine;
 %}
 
-%rename(CreditDefaultSwap) CreditDefaultSwapPtr;
-class CreditDefaultSwapPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(Claim);
+class Claim {
+  private:
+    Claim();
   public:
+    Real amount(const Date& defaultDate,
+                Real notional,
+                Real recoveryRate) const;
+};
+
+%shared_ptr(FaceValueClaim)
+class FaceValueClaim : public Claim {
+  public:
+    FaceValueClaim();
+};
+
+%shared_ptr(FaceValueAccrualClaim)
+class FaceValueAccrualClaim : public Claim {
+  public:
+    FaceValueAccrualClaim(const boost::shared_ptr<Bond>& bond);
+};
+
+
+%shared_ptr(CreditDefaultSwap)
+class CreditDefaultSwap : public Instrument {
+  public:
+    enum PricingModel {
+        Midpoint,
+        ISDA
+    };
+
+    CreditDefaultSwap(Protection::Side side,
+                         Real notional,
+                         Rate spread,
+                         const Schedule& schedule,
+                         BusinessDayConvention paymentConvention,
+                         const DayCounter& dayCounter,
+                         bool settlesAccrual = true,
+                         bool paysAtDefaultTime = true,
+                         const Date& protectionStart = Date());
+    CreditDefaultSwap(Protection::Side side,
+                         Real notional,
+                         Rate upfront,
+                         Rate spread,
+                         const Schedule& schedule,
+                         BusinessDayConvention paymentConvention,
+                         const DayCounter& dayCounter,
+                         bool settlesAccrual = true,
+                         bool paysAtDefaultTime = true,
+                         const Date& protectionStart = Date(),
+                         const Date& upfrontDate = Date(),
+                         const boost::shared_ptr<Claim>& claim =
+                                                    boost::shared_ptr<Claim>(),
+                         const DayCounter& lastPeriodDayCounter = DayCounter(),
+                         const bool rebatesAccrual = true);
+    Protection::Side side() const;
+    Real notional() const;
+    Rate runningSpread() const;
     %extend {
-        CreditDefaultSwapPtr(Protection::Side side,
-                             Real notional,
-                             Rate spread,
-                             const Schedule& schedule,
-                             BusinessDayConvention paymentConvention,
-                             const DayCounter& dayCounter,
-                             bool settlesAccrual = true,
-                             bool paysAtDefaultTime = true) {
-            return new CreditDefaultSwapPtr(
-                    new CreditDefaultSwap(side, notional, spread, schedule,
-                                          paymentConvention, dayCounter,
-                                          settlesAccrual, paysAtDefaultTime));
-        }
-        CreditDefaultSwapPtr(Protection::Side side,
-                             Real notional,
-                             Rate upfront,
-                             Rate spread,
-                             const Schedule& schedule,
-                             BusinessDayConvention paymentConvention,
-                             const DayCounter& dayCounter,
-                             bool settlesAccrual = true,
-                             bool paysAtDefaultTime = true) {
-            return new CreditDefaultSwapPtr(
-                    new CreditDefaultSwap(side, notional, upfront, spread,
-                                          schedule, paymentConvention,
-                                          dayCounter, settlesAccrual,
-                                          paysAtDefaultTime));
-        }
-        Protection::Side side() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->side();
-        }
-        Real notional() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->notional();
-        }
-        Rate runningSpread() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->runningSpread();
-        }
-        doubleOrNull upfront() const {
+    doubleOrNull upfront() const {
             boost::optional<Rate> result =
-                boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->upfront();
+                self->upfront();
             if (result)
                 return *result;
             else
                 return Null<double>();
         }
-        bool settlesAccrual() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->settlesAccrual();
-        }
-        bool paysAtDefaultTime() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->paysAtDefaultTime();
-        }
-        Rate fairSpread() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->fairSpread();
-        }
-        Rate fairUpfront() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->fairUpfront();
-        }
-        Real couponLegBPS() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->couponLegBPS();
-        }
-        Real couponLegNPV() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->couponLegNPV();
-        }
-        Real defaultLegNPV() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->defaultLegNPV();
-        }
-        Real upfrontBPS() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->upfrontBPS();
-        }
-        Real upfrontNPV() const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->upfrontNPV();
-        }
-        Rate impliedHazardRate(Real targetNPV,
-                               const Handle<YieldTermStructure>& discountCurve,
-                               const DayCounter& dayCounter,
-                               Real recoveryRate = 0.4,
-                               Real accuracy = 1.0e-6) const {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->impliedHazardRate(targetNPV, discountCurve, dayCounter,
-                                    recoveryRate, accuracy);
-        }
-        std::vector<boost::shared_ptr<CashFlow> > coupons() {
-            return boost::dynamic_pointer_cast<CreditDefaultSwap>(*self)
-                ->coupons();
-        }
     }
+    bool settlesAccrual() const;
+    bool paysAtDefaultTime() const;
+    Rate fairSpread() const;
+    Rate fairUpfront() const;
+    Real couponLegBPS() const;
+    Real couponLegNPV() const;
+    Real defaultLegNPV() const;
+    Real upfrontBPS() const;
+    Real upfrontNPV() const;
+    Rate impliedHazardRate(Real targetNPV,
+                           const Handle<YieldTermStructure>& discountCurve,
+                           const DayCounter& dayCounter,
+                           Real recoveryRate = 0.4,
+                           Real accuracy = 1.0e-6,
+               CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const;
+    Rate conventionalSpread(Real conventionalRecovery,
+            const Handle<YieldTermStructure>& discountCurve,
+            const DayCounter& dayCounter) const;
+    std::vector<boost::shared_ptr<CashFlow> > coupons();
 };
 
 
-%rename(MidPointCdsEngine) MidPointCdsEnginePtr;
-class MidPointCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(MidPointCdsEngine)
+class MidPointCdsEngine : public PricingEngine {
   public:
-    %extend {
-        MidPointCdsEnginePtr(
-                   const Handle<DefaultProbabilityTermStructure>& probability,
-                   Real recoveryRate,
-                   const Handle<YieldTermStructure>& discountCurve) {
-            return new MidPointCdsEnginePtr(
-                              new MidPointCdsEngine(probability, recoveryRate,
-                                                    discountCurve));
-        }
-    }
+    MidPointCdsEngine(const Handle<DefaultProbabilityTermStructure>& probability,
+                      Real recoveryRate,
+                      const Handle<YieldTermStructure>& discountCurve);
 };
 
-%rename(IntegralCdsEngine) IntegralCdsEnginePtr;
-class IntegralCdsEnginePtr : public boost::shared_ptr<PricingEngine> {
+%shared_ptr(IntegralCdsEngine)
+class IntegralCdsEngine : public PricingEngine {
   public:
-    %extend {
-        IntegralCdsEnginePtr(
-				   const Period &integrationStep,
-                   const Handle<DefaultProbabilityTermStructure>& probability,
-                   Real recoveryRate,
-                   const Handle<YieldTermStructure>& discountCurve,
-				   bool includeSettlementDateFlows = false) {
-            return new IntegralCdsEnginePtr(
-                              new IntegralCdsEngine(integrationStep, probability,
-                                                    recoveryRate, discountCurve,
-													includeSettlementDateFlows));
-        }
-    }
+    IntegralCdsEngine(const Period &integrationStep,
+                      const Handle<DefaultProbabilityTermStructure>& probability,
+                      Real recoveryRate,
+                      const Handle<YieldTermStructure>& discountCurve,
+                      bool includeSettlementDateFlows = false);
 };
 
+%shared_ptr(IsdaCdsEngine)
+class IsdaCdsEngine : public PricingEngine {
+    #if defined(SWIGPYTHON)
+    %rename(NoFix) None;
+    #endif
+  public:
+    enum NumericalFix {None, Taylor};
+    enum AccrualBias {HalfDayBias, NoBias};
+    enum ForwardsInCouponPeriod {Flat, Piecewise};
+    IsdaCdsEngine(
+            const Handle<DefaultProbabilityTermStructure> &probability,
+            Real recoveryRate,
+            const Handle<YieldTermStructure> &discountCurve,
+            bool includeSettlementDateFlows = false,
+            const IsdaCdsEngine::NumericalFix numericalFix = IsdaCdsEngine::Taylor,
+            const IsdaCdsEngine::AccrualBias accrualBias = IsdaCdsEngine::HalfDayBias,
+            const IsdaCdsEngine::ForwardsInCouponPeriod forwardsInCouponPeriod = IsdaCdsEngine::Piecewise);
+};
+
+%shared_ptr(CdsOption)
+class CdsOption : public Option {
+    public:
+        CdsOption(const boost::shared_ptr<CreditDefaultSwap>& swap,
+                  const boost::shared_ptr<Exercise>& exercise,
+                  bool knocksOut = true);
+        Rate atmRate() const;
+        Real riskyAnnuity() const;
+        Volatility impliedVolatility(
+                              Real price,
+                              const Handle<YieldTermStructure>& termStructure,
+                              const Handle<DefaultProbabilityTermStructure>&,
+                              Real recoveryRate,
+                              Real accuracy = 1.e-4,
+                              Size maxEvaluations = 100,
+                              Volatility minVol = 1.0e-7,
+                              Volatility maxVol = 4.0) const;
+};
+
+%shared_ptr(BlackCdsOptionEngine)
+class BlackCdsOptionEngine : public PricingEngine {
+    public:
+        BlackCdsOptionEngine(const Handle<DefaultProbabilityTermStructure>&,
+                             Real recoveryRate,
+                             const Handle<YieldTermStructure>& termStructure,
+                             const Handle<Quote>& vol);
+        Handle<YieldTermStructure> termStructure();
+        Handle<Quote> volatility();
+};
 
 #endif

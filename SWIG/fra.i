@@ -1,6 +1,7 @@
 /*
  Copyright (C) 2012 Tawanda Gwena
  Copyright (C) 2012 Francis Duffy
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,52 +23,35 @@
 %include instruments.i
 %include termstructures.i
 %include interestrate.i
+%include forward.i
 
 %{
 using QuantLib::Position;
 using QuantLib::ForwardRateAgreement;
-typedef boost::shared_ptr<Instrument> ForwardRateAgreementPtr;
 %}
  
 struct Position {
     enum Type { Long, Short };
 };
 
-%rename(ForwardRateAgreement) ForwardRateAgreementPtr;
-class ForwardRateAgreementPtr : public boost::shared_ptr<Instrument> {
+%shared_ptr(ForwardRateAgreement)
+class ForwardRateAgreement : public Forward {
   public:
-    %extend {
-        ForwardRateAgreementPtr(
-                        const Date& valueDate,
-                        const Date& maturityDate,
-                        Position::Type type,
-                        Rate strikeForwardRate,
-                        Real notionalAmount,
-                        const IborIndexPtr& index,
-                        const Handle<YieldTermStructure>& discountCurve =
-                                               Handle<YieldTermStructure>()) {
-             
-            boost::shared_ptr<IborIndex> libor =
-                boost::dynamic_pointer_cast<IborIndex>(index);
+    ForwardRateAgreement(
+                    const Date& valueDate,
+                    const Date& maturityDate,
+                    Position::Type type,
+                    Rate strikeForwardRate,
+                    Real notionalAmount,
+                    const boost::shared_ptr<IborIndex>& index,
+                    const Handle<YieldTermStructure>& discountCurve =
+                                           Handle<YieldTermStructure>(),
+                    bool useIndexedCoupon = true);
 
-            return new ForwardRateAgreementPtr(
-                   new ForwardRateAgreement(valueDate, maturityDate, type,
-                                            strikeForwardRate, notionalAmount,
-                                            libor, discountCurve));
-        }
-        Real spotIncome(const Handle<YieldTermStructure>& discount) const {
-            return boost::dynamic_pointer_cast<ForwardRateAgreement>(*self)
-                ->spotIncome(discount);
-        }
-        Real spotValue() const {
-            return boost::dynamic_pointer_cast<ForwardRateAgreement>(*self)
-                ->spotValue();
-        }
-        InterestRate forwardRate() const {
-            return boost::dynamic_pointer_cast<ForwardRateAgreement>(*self)
-                ->forwardRate();
-        }
-    }
+    Date fixingDate() const;
+    Real spotIncome(const Handle<YieldTermStructure>& discount) const;
+    Real spotValue() const;
+    InterestRate forwardRate() const;
 };
  
 

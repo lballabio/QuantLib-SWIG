@@ -156,14 +156,14 @@ namespace EquityOptionTest
             // Finite differences
             try {
                 europeanOption.setPricingEngine(
-                              new FDEuropeanEngine(stochasticProcess,
-                                                   timeSteps, timeSteps - 1));
+                    new FdBlackScholesVanillaEngine(stochasticProcess,
+                                                    timeSteps, timeSteps - 1));
                 bermudanOption.setPricingEngine(
-                              new FDBermudanEngine(stochasticProcess,
-                                                   timeSteps, timeSteps - 1));
+                    new FdBlackScholesVanillaEngine(stochasticProcess,
+                                                    timeSteps, timeSteps - 1));
                 americanOption.setPricingEngine(
-                              new FDAmericanEngine(stochasticProcess,
-                                                   timeSteps, timeSteps - 1));
+                    new FdBlackScholesVanillaEngine(stochasticProcess,
+                                                    timeSteps, timeSteps - 1));
                 ReportResults("Finite differences",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -198,14 +198,11 @@ namespace EquityOptionTest
             // Binomial Jarrow-Rudd
             try {
                 europeanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "jarrowrudd", timeSteps));
+                          new BinomialJRVanillaEngine(stochasticProcess, timeSteps));
                 bermudanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "jarrowrudd", timeSteps));
+                          new BinomialJRVanillaEngine(stochasticProcess, timeSteps));
                 americanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "jarrowrudd", timeSteps));
+                          new BinomialJRVanillaEngine(stochasticProcess, timeSteps));
                 ReportResults("Binomial Jarrow-Rudd",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -218,14 +215,11 @@ namespace EquityOptionTest
             // Binomial Cox-Ross-Rubinstein
             try {
                 europeanOption.setPricingEngine(
-                   new BinomialVanillaEngine(stochasticProcess,
-                                             "coxrossrubinstein", timeSteps));
+                   new BinomialCRRVanillaEngine(stochasticProcess, timeSteps));
                 bermudanOption.setPricingEngine(
-                   new BinomialVanillaEngine(stochasticProcess,
-                                             "coxrossrubinstein", timeSteps));
+                   new BinomialCRRVanillaEngine(stochasticProcess, timeSteps));
                 americanOption.setPricingEngine(
-                   new BinomialVanillaEngine(stochasticProcess,
-                                             "coxrossrubinstein", timeSteps));
+                   new BinomialCRRVanillaEngine(stochasticProcess, timeSteps));
                 ReportResults("Binomial Cox-Ross-Rubinstein",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -238,14 +232,11 @@ namespace EquityOptionTest
             // Additive Equiprobabilities
             try {
                 europeanOption.setPricingEngine(
-                                 new BinomialVanillaEngine(stochasticProcess,
-                                                           "eqp", timeSteps));
+                                 new BinomialEQPVanillaEngine(stochasticProcess, timeSteps));
                 bermudanOption.setPricingEngine(
-                                 new BinomialVanillaEngine(stochasticProcess,
-                                                           "eqp", timeSteps));
+                                 new BinomialEQPVanillaEngine(stochasticProcess, timeSteps));
                 americanOption.setPricingEngine(
-                                 new BinomialVanillaEngine(stochasticProcess,
-                                                           "eqp", timeSteps));
+                                 new BinomialEQPVanillaEngine(stochasticProcess, timeSteps));
                 ReportResults("Additive Equiprobabilities",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -258,14 +249,11 @@ namespace EquityOptionTest
             // Binomial Trigeorgis
             try {
                 europeanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "trigeorgis", timeSteps));
+                          new BinomialTrigeorgisVanillaEngine(stochasticProcess, timeSteps));
                 bermudanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "trigeorgis", timeSteps));
+                          new BinomialTrigeorgisVanillaEngine(stochasticProcess, timeSteps));
                 americanOption.setPricingEngine(
-                          new BinomialVanillaEngine(stochasticProcess,
-                                                    "trigeorgis", timeSteps));
+                          new BinomialTrigeorgisVanillaEngine(stochasticProcess, timeSteps));
                 ReportResults("Binomial Trigeorgis",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -278,14 +266,11 @@ namespace EquityOptionTest
             // Binomial Tian
             try {
                 europeanOption.setPricingEngine(
-                                new BinomialVanillaEngine(stochasticProcess,
-                                                          "tian", timeSteps));
+                                new BinomialTianVanillaEngine(stochasticProcess, timeSteps));
                 bermudanOption.setPricingEngine(
-                                new BinomialVanillaEngine(stochasticProcess,
-                                                          "tian", timeSteps));
+                                new BinomialTianVanillaEngine(stochasticProcess, timeSteps));
                 americanOption.setPricingEngine(
-                                new BinomialVanillaEngine(stochasticProcess,
-                                                          "tian", timeSteps));
+                                new BinomialTianVanillaEngine(stochasticProcess, timeSteps));
                 ReportResults("Binomial Tian",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -298,14 +283,11 @@ namespace EquityOptionTest
             // Binomial Leisen-Reimer
             try {
                 europeanOption.setPricingEngine(
-                        new BinomialVanillaEngine(stochasticProcess,
-                                                  "leisenreimer", timeSteps));
+                        new BinomialLRVanillaEngine(stochasticProcess, timeSteps));
                 bermudanOption.setPricingEngine(
-                        new BinomialVanillaEngine(stochasticProcess,
-                                                  "leisenreimer", timeSteps));
+                        new BinomialLRVanillaEngine(stochasticProcess, timeSteps));
                 americanOption.setPricingEngine(
-                        new BinomialVanillaEngine(stochasticProcess,
-                                                  "leisenreimer", timeSteps));
+                        new BinomialLRVanillaEngine(stochasticProcess, timeSteps));
                 ReportResults("Binomial Leisen-Reimer",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -318,14 +300,11 @@ namespace EquityOptionTest
             // Binomial Joshi
             try {
                 europeanOption.setPricingEngine(
-                              new BinomialVanillaEngine(stochasticProcess,
-                                                        "joshi4", timeSteps));
+                              new BinomialJ4VanillaEngine(stochasticProcess, timeSteps));
                 bermudanOption.setPricingEngine(
-                              new BinomialVanillaEngine(stochasticProcess,
-                                                        "joshi4", timeSteps));
+                              new BinomialJ4VanillaEngine(stochasticProcess, timeSteps));
                 americanOption.setPricingEngine(
-                              new BinomialVanillaEngine(stochasticProcess,
-                                                        "joshi4", timeSteps));
+                              new BinomialJ4VanillaEngine(stochasticProcess, timeSteps));
                 ReportResults("Binomial Joshi",
                               europeanOption.NPV(),
                               bermudanOption.NPV(),
@@ -343,7 +322,6 @@ namespace EquityOptionTest
 
             // MC (crude)
             try {
-                string traits = "pseudorandom";
                 int mcTimeSteps = 1;
                 int timeStepsPerYear = int.MaxValue;
                 bool brownianBridge = false;
@@ -353,14 +331,14 @@ namespace EquityOptionTest
                 int maxSamples = int.MaxValue;
                 int seed = 42;
                 europeanOption.setPricingEngine(
-                    new MCEuropeanEngine(stochasticProcess,
-                                         traits, mcTimeSteps,
-                                         timeStepsPerYear,
-                                         brownianBridge,
-                                         antitheticVariate,
-                                         requiredSamples,
-                                         requiredTolerance,
-                                         maxSamples, seed));
+                    new MCPREuropeanEngine(stochasticProcess,
+                                           mcTimeSteps,
+                                           timeStepsPerYear,
+                                           brownianBridge,
+                                           antitheticVariate,
+                                           requiredSamples,
+                                           requiredTolerance,
+                                           maxSamples, seed));
                 ReportResults("MC (crude)", europeanOption.NPV(), null, null);
             }
             catch (Exception e) {
@@ -369,7 +347,6 @@ namespace EquityOptionTest
 
             // MC (Sobol)
             try {
-                string traits = "lowdiscrepancy";
                 int mcTimeSteps = 1;
                 int timeStepsPerYear = int.MaxValue;
                 bool brownianBridge = false;
@@ -379,30 +356,19 @@ namespace EquityOptionTest
                 int maxSamples = int.MaxValue;
                 int seed = 0;
                 europeanOption.setPricingEngine(
-                    new MCEuropeanEngine(stochasticProcess,
-                                         traits, mcTimeSteps,
-                                         timeStepsPerYear,
-                                         brownianBridge,
-                                         antitheticVariate,
-                                         requiredSamples,
-                                         requiredTolerance, maxSamples, seed));
+                    new MCLDEuropeanEngine(stochasticProcess,
+                                           mcTimeSteps,
+                                           timeStepsPerYear,
+                                           brownianBridge,
+                                           antitheticVariate,
+                                           requiredSamples,
+                                           requiredTolerance,
+                                           maxSamples, seed));
                 ReportResults("MC (Sobol)", europeanOption.NPV(), null, null);
             }
             catch (Exception e) {
                 Console.WriteLine(e.ToString());
             }
-
-            // MC (Longstaff Schwartz)
-            /*
-            try {
-                // MCAmericanEngine is not currently exposed in SWIG
-                //americanOption.setPricingEngine(new MCAmericanEngine());
-                ReportResults("MC (Longstaff Schwartz)", null, null, null);
-            }
-            catch (Exception e) {
-                Console.WriteLine(e.ToString());
-            }
-            */
 
             #endregion Monte Carlo Methods
 

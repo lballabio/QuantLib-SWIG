@@ -22,7 +22,10 @@ from distutils.cmd import Command
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build
 from distutils.ccompiler import get_default_compiler
-from distutils.core import setup, Extension
+try:
+    from setuptools import setup, Extension
+except:
+    from distutils.core import setup, Extension
 from distutils import sysconfig
 
 class test(Command):
@@ -68,6 +71,12 @@ class my_wrap(Command):
     def finalize_options(self): pass
     def run(self):
         print('Generating Python bindings for QuantLib...')
+        swig_version = os.popen("swig -version").read().split()[2]
+        major_swig_version = swig_version[0]
+        if major_swig_version < '4':
+           print('Warning: You have SWIG {} installed, but at least SWIG 4.0.1'
+                 ' is recommended. \nSome features may not work.'
+                 .format(swig_version))
         swig_dir = os.path.join("..","SWIG")
         if sys.version_info.major >= 3:
             os.system('swig -python -py3 -c++ -modern ' +
@@ -157,8 +166,10 @@ class my_build_ext(build_ext):
                 os.popen('quantlib-config --cflags').read()[:-1].split()
             ql_link_args = \
                 os.popen('quantlib-config --libs').read()[:-1].split()
+
             self.define += [ (arg[2:],None) for arg in ql_compile_args
                              if arg.startswith('-D') ]
+            self.define += [('NDEBUG', None)]
             self.include_dirs += [ arg[2:] for arg in ql_compile_args
                                    if arg.startswith('-I') ]
             self.library_dirs += [ arg[2:] for arg in ql_link_args
@@ -176,6 +187,8 @@ class my_build_ext(build_ext):
             extra_link_args = [ arg for arg in ql_link_args
                                 if not arg.startswith('-L')
                                 if not arg.startswith('-l') ]
+            if 'LDFLAGS' in os.environ:
+                extra_link_args += os.environ['LDFLAGS'].split()
 
         else:
             pass
@@ -204,29 +217,25 @@ if os.name == 'posix':
             g['LDSHARED'] = g['CC'] + ' -shared'
     sysconfig._init_posix = my_init_posix
 
-datafiles  = []
-
-# patch distutils if it can't cope with the "classifiers" or
-# "download_url" keywords
-if sys.version < '2.2.3':
-    from distutils.dist import DistributionMetadata
-    DistributionMetadata.classifiers = None
-    DistributionMetadata.download_url = None
-
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Environment :: Console',
     'Intended Audience :: Developers',
+    'Intended Audience :: Science/Research',
     'Intended Audience :: End Users/Desktop',
     'License :: OSI Approved :: BSD License',
     'Natural Language :: English',
-    'Operating System :: OS Independent',
+    'Programming Language :: C++',
     'Programming Language :: Python',
     'Topic :: Scientific/Engineering',
+    'Operating System :: Microsoft :: Windows',
+    'Operating System :: POSIX',
+    'Operating System :: Unix',
+    'Operating System :: MacOS',
 ]
 
-setup(name             = "QuantLib-Python",
-      version          = "1.9",
+setup(name             = "QuantLib",
+      version          = "1.20-dev",
       description      = "Python bindings for the QuantLib library",
       long_description = """
 QuantLib (http://quantlib.org/) is a C++ library for financial quantitative
@@ -236,13 +245,13 @@ framework for quantitative finance.
       author           = "QuantLib Team",
       author_email     = "quantlib-users@lists.sourceforge.net",
       url              = "http://quantlib.org",
-      license          = open('../LICENSE.TXT','r+').read(),
+      license          = "BSD 3-Clause",
       classifiers      = classifiers,
       py_modules       = ['QuantLib.__init__','QuantLib.QuantLib'],
       ext_modules      = [Extension("QuantLib._QuantLib",
                                     ["QuantLib/quantlib_wrap.cpp"])
                          ],
-      data_files       = datafiles,
+      data_files       = [('share/doc/quantlib', ['../LICENSE.TXT'])],
       cmdclass         = {'test': test,
                           'wrap': my_wrap,
                           'build': my_build,

@@ -46,9 +46,6 @@ class ExchangeRate {
 
 
 class ExchangeRateManager {
-    #if defined(SWIGRUBY) || defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("clear!")  clear;
-    #endif
   private:
     ExchangeRateManager();
   public:

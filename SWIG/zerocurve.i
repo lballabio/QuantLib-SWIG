@@ -27,68 +27,38 @@
 using QuantLib::InterpolatedZeroCurve;
 %}
 
-%define export_zero_curve(Name,Interpolator)
+%shared_ptr(InterpolatedZeroCurve<Linear>);
+%shared_ptr(InterpolatedZeroCurve<LogLinear>);
+%shared_ptr(InterpolatedZeroCurve<Cubic>);
+%shared_ptr(InterpolatedZeroCurve<SplineCubic>);
+%shared_ptr(InterpolatedZeroCurve<DefaultLogCubic>);
+%shared_ptr(InterpolatedZeroCurve<MonotonicCubic>);
 
-%{
-typedef boost::shared_ptr<YieldTermStructure> Name##Ptr;
-%}
-
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
+template <class Interpolator>
+class InterpolatedZeroCurve : public YieldTermStructure {
   public:
-    %extend {
-        Name##Ptr(const std::vector<Date>& dates,
-                  const std::vector<Rate>& yields,
-                  const DayCounter& dayCounter,
-                  const Calendar& calendar = Calendar(),
-                  const Interpolator& i = Interpolator(),
-                  Compounding compounding = Continuous,
-                  Frequency frequency = Annual) {
-            return new Name##Ptr(
-                new InterpolatedZeroCurve<Interpolator>(dates,yields,
-                                                        dayCounter,
-                                                        calendar,i,
-                                                        compounding,
-                                                        frequency));
-        }
-        const std::vector<Time>& times() {
-            typedef InterpolatedZeroCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->times();
-        }
-        const std::vector<Real>& data() {
-            typedef InterpolatedZeroCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->data();
-        }
-        const std::vector<Date>& dates() {
-            typedef InterpolatedZeroCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->dates();
-        }
-        const std::vector<Rate>& zeroRates() {
-            typedef InterpolatedZeroCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->zeroRates();
-        }
-        #if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
-        std::vector<std::pair<Date,Rate> > nodes() {
-            typedef InterpolatedZeroCurve<Interpolator> Name;
-            return boost::dynamic_pointer_cast<Name>(*self)->nodes();
-        }
-        #endif
-    }
+    InterpolatedZeroCurve(const std::vector<Date>& dates,
+                          const std::vector<Rate>& yields,
+                          const DayCounter& dayCounter,
+                          const Calendar& calendar = Calendar(),
+                          const Interpolator& i = Interpolator(),
+                          Compounding compounding = Continuous,
+                          Frequency frequency = Annual);
+    const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
+    const std::vector<Date>& dates() const;
+    const std::vector<Rate>& zeroRates() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Rate> > nodes() const;
+    #endif
 };
 
-%enddef
-
-
-export_zero_curve(ZeroCurve,Linear);
-
-// add interpolations as you wish, e.g.,
-// export_zero_curve(CubicZeroCurve,Cubic);
-
-%inline %{
-    ZeroCurvePtr as_zerocurve(const boost::shared_ptr<YieldTermStructure> & curve) {
-        return boost::dynamic_pointer_cast<QuantLib::ZeroCurve>(curve);
-    }
-%}
+%template(ZeroCurve) InterpolatedZeroCurve<Linear>;
+%template(LogLinearZeroCurve) InterpolatedZeroCurve<LogLinear>;
+%template(CubicZeroCurve) InterpolatedZeroCurve<Cubic>;
+%template(NaturalCubicZeroCurve) InterpolatedZeroCurve<SplineCubic>;
+%template(LogCubicZeroCurve) InterpolatedZeroCurve<DefaultLogCubic>;
+%template(MonotonicCubicZeroCurve) InterpolatedZeroCurve<MonotonicCubic>;
 
 
 #endif

@@ -2,7 +2,8 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2014 StatPro Italia srl
-
+ Copyright (C) 2018, 2019 Matthias Lungwitz
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -31,26 +32,39 @@
 %include marketelements.i
 %include interpolation.i
 
+
 %{
-using QuantLib::YieldTermStructure;
+using QuantLib::TermStructure;
 %}
 
-%ignore YieldTermStructure;
-class YieldTermStructure : public Extrapolator {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("day-counter")     dayCounter;
-    %rename("reference-date")  referenceDate;
-    %rename("max-date")        maxDate;
-    %rename("max-time")        maxTime;
-    %rename("zero-rate")       zeroRate;
-    %rename("forward-rate")    forwardRate;
-    #endif
+%shared_ptr(TermStructure);
+class TermStructure : public Observable {
+  private:
+    TermStructure();
   public:
     DayCounter dayCounter() const;
+    Time timeFromReference(const Date& date) const;
     Calendar calendar() const;
     Date referenceDate() const;
     Date maxDate() const;
     Time maxTime() const;
+    // from Extrapolator, since we can't use multiple inheritance
+    // and we're already inheriting from Observable
+    void enableExtrapolation();
+    void disableExtrapolation();
+    bool allowsExtrapolation();
+};
+
+
+%{
+using QuantLib::YieldTermStructure;
+%}
+
+%shared_ptr(YieldTermStructure);
+class YieldTermStructure : public TermStructure {
+  private:
+    YieldTermStructure();
+  public:
     DiscountFactor discount(const Date&, bool extrapolate = false);
     DiscountFactor discount(Time, bool extrapolate = false);
     InterestRate zeroRate(const Date& d,
@@ -68,32 +82,21 @@ class YieldTermStructure : public Extrapolator {
                              bool extrapolate = false) const;
 };
 
-%template(YieldTermStructure) boost::shared_ptr<YieldTermStructure>;
-IsObservable(boost::shared_ptr<YieldTermStructure>);
-
 %template(YieldTermStructureHandle) Handle<YieldTermStructure>;
-IsObservable(Handle<YieldTermStructure>);
-%template(RelinkableYieldTermStructureHandle)
-RelinkableHandle<YieldTermStructure>;
+%template(RelinkableYieldTermStructureHandle) RelinkableHandle<YieldTermStructure>;
 
 
 // implied term structure
 
 %{
 using QuantLib::ImpliedTermStructure;
-typedef boost::shared_ptr<YieldTermStructure> ImpliedTermStructurePtr;
 %}
 
-%rename(ImpliedTermStructure) ImpliedTermStructurePtr;
-class ImpliedTermStructurePtr: public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(ImpliedTermStructure);
+class ImpliedTermStructure : public YieldTermStructure {
   public:
-    %extend {
-        ImpliedTermStructurePtr(const Handle<YieldTermStructure>& curveHandle,
-                                const Date& referenceDate) {
-            return new ImpliedTermStructurePtr(
-                new ImpliedTermStructure(curveHandle, referenceDate));
-        }
-    }
+    ImpliedTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                         const Date& referenceDate);
 };
 
 // spreaded term structures
@@ -101,117 +104,78 @@ class ImpliedTermStructurePtr: public boost::shared_ptr<YieldTermStructure> {
 %{
 using QuantLib::ZeroSpreadedTermStructure;
 using QuantLib::ForwardSpreadedTermStructure;
-typedef boost::shared_ptr<YieldTermStructure> ZeroSpreadedTermStructurePtr;
-typedef boost::shared_ptr<YieldTermStructure> ForwardSpreadedTermStructurePtr;
 %}
 
-%rename(ZeroSpreadedTermStructure) ZeroSpreadedTermStructurePtr;
-class ZeroSpreadedTermStructurePtr
-    : public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(ZeroSpreadedTermStructure);
+class ZeroSpreadedTermStructure : public YieldTermStructure {
   public:
-    %extend {
-        ZeroSpreadedTermStructurePtr(
-                                const Handle<YieldTermStructure>& curveHandle,
-                                const Handle<Quote>& spreadHandle) {
-            return new ZeroSpreadedTermStructurePtr(
-                new ZeroSpreadedTermStructure(curveHandle,spreadHandle));
-        }
-    }
+    ZeroSpreadedTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                              const Handle<Quote>& spreadHandle,
+                              Compounding comp = QuantLib::Continuous,
+                              Frequency freq = QuantLib::NoFrequency,
+                              const DayCounter& dc = DayCounter());
 };
 
-%rename(ForwardSpreadedTermStructure) ForwardSpreadedTermStructurePtr;
-class ForwardSpreadedTermStructurePtr
-    : public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(ForwardSpreadedTermStructure);
+class ForwardSpreadedTermStructure : public YieldTermStructure {
   public:
-    %extend {
-        ForwardSpreadedTermStructurePtr(
-                                const Handle<YieldTermStructure>& curveHandle,
-                                const Handle<Quote>& spreadHandle) {
-            return new ForwardSpreadedTermStructurePtr(
-                new ForwardSpreadedTermStructure(curveHandle,spreadHandle));
-        }
-    }
+    ForwardSpreadedTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                                 const Handle<Quote>& spreadHandle);
 };
 
 %{
 using QuantLib::InterpolatedPiecewiseZeroSpreadedTermStructure;
 %}
 
-%define export_piecewise_zero_spreaded_term_structure(Name,Interpolator)
+%shared_ptr(InterpolatedPiecewiseZeroSpreadedTermStructure<Linear>);
+%shared_ptr(InterpolatedPiecewiseZeroSpreadedTermStructure<BackwardFlat>);
 
-%fragment("Name","header") {
-typedef boost::shared_ptr<YieldTermStructure> Name##Ptr;
-}
-%fragment("Name");
-
-%rename(Name) Name##Ptr;
-class Name##Ptr : public boost::shared_ptr<YieldTermStructure> {
+template <class Interpolator>
+class InterpolatedPiecewiseZeroSpreadedTermStructure : public YieldTermStructure {
   public:
-    %extend {
-        Name##Ptr(
+    InterpolatedPiecewiseZeroSpreadedTermStructure(
                 const Handle<YieldTermStructure>& curveHandle,
                 const std::vector< Handle<Quote> >& spreadHandles,
-                const std::vector<Date>& dates) {
-            return new Name##Ptr(
-                new InterpolatedPiecewiseZeroSpreadedTermStructure<Interpolator>(
-                          curveHandle,spreadHandles,dates));
-        }
-    }
+                const std::vector<Date>& dates,
+                Compounding comp = QuantLib::Continuous,
+                Frequency freq = QuantLib::NoFrequency,
+                const DayCounter& dc = DayCounter(),
+                const Interpolator& factory = Interpolator());
 };
 
-%enddef
-
-export_piecewise_zero_spreaded_term_structure(SpreadedLinearZeroInterpolatedTermStructure,Linear);
+%template(SpreadedLinearZeroInterpolatedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<Linear>;
+%template(SpreadedBackwardFlatZeroInterpolatedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<BackwardFlat>;
 
 
 // flat forward curve
 
 %{
 using QuantLib::FlatForward;
-typedef boost::shared_ptr<YieldTermStructure> FlatForwardPtr;
 %}
 
-%rename(FlatForward) FlatForwardPtr;
-class FlatForwardPtr : public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(FlatForward);
+class FlatForward : public YieldTermStructure {
   public:
-    %extend {
-        FlatForwardPtr(const Date& referenceDate,
-                       const Handle<Quote>& forward,
-                       const DayCounter& dayCounter,
-                       Compounding compounding = QuantLib::Continuous,
-                       Frequency frequency = QuantLib::Annual) {
-            return new FlatForwardPtr(
-                           new FlatForward(referenceDate,forward,dayCounter,
-                                           compounding,frequency));
-        }
-        FlatForwardPtr(const Date& referenceDate,
-                       Rate forward,
-                       const DayCounter& dayCounter,
-                       Compounding compounding = QuantLib::Continuous,
-                       Frequency frequency = QuantLib::Annual) {
-            return new FlatForwardPtr(
-                           new FlatForward(referenceDate,forward,dayCounter,
-                                           compounding,frequency));
-        }
-        FlatForwardPtr(Integer settlementDays, const Calendar& calendar,
-                       const Handle<Quote>& forward,
-                       const DayCounter& dayCounter,
-                       Compounding compounding = QuantLib::Continuous,
-                       Frequency frequency = QuantLib::Annual) {
-            return new FlatForwardPtr(
-                 new FlatForward(settlementDays,calendar,forward,dayCounter,
-                                 compounding,frequency));
-        }
-        FlatForwardPtr(Integer settlementDays, const Calendar& calendar,
-                       Rate forward,
-                       const DayCounter& dayCounter,
-                       Compounding compounding = QuantLib::Continuous,
-                       Frequency frequency = QuantLib::Annual) {
-            return new FlatForwardPtr(
-                 new FlatForward(settlementDays,calendar,forward,dayCounter,
-                                 compounding,frequency));
-        }
-    }
+    FlatForward(const Date& referenceDate,
+                const Handle<Quote>& forward,
+                const DayCounter& dayCounter,
+                Compounding compounding = QuantLib::Continuous,
+                Frequency frequency = QuantLib::Annual);
+    FlatForward(const Date& referenceDate,
+                Rate forward,
+                const DayCounter& dayCounter,
+                Compounding compounding = QuantLib::Continuous,
+                Frequency frequency = QuantLib::Annual);
+    FlatForward(Integer settlementDays, const Calendar& calendar,
+                const Handle<Quote>& forward,
+                const DayCounter& dayCounter,
+                Compounding compounding = QuantLib::Continuous,
+                Frequency frequency = QuantLib::Annual);
+    FlatForward(Integer settlementDays, const Calendar& calendar,
+                Rate forward,
+                const DayCounter& dayCounter,
+                Compounding compounding = QuantLib::Continuous,
+                Frequency frequency = QuantLib::Annual);
 };
 
 

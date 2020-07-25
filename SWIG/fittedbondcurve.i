@@ -31,7 +31,7 @@ typedef QuantLib::FittedBondDiscountCurve::FittingMethod FittingMethod;
 std::vector<boost::shared_ptr<BondHelper> > convert_bond_helpers(
                  const std::vector<boost::shared_ptr<RateHelper> >& helpers) {
     std::vector<boost::shared_ptr<BondHelper> > result(helpers.size());
-    for (int i=0; i<helpers.size(); ++i)
+    for (Size i=0; i<helpers.size(); ++i)
         result[i] = boost::dynamic_pointer_cast<BondHelper>(helpers[i]);
     return result;
 }
@@ -40,61 +40,37 @@ std::vector<boost::shared_ptr<BondHelper> > convert_bond_helpers(
 class FittingMethod {
   public:
     virtual ~FittingMethod() = 0;
+    Size size() const;
     Array solution() const;
+    Integer numberOfIterations() const;
+    Real minimumCostValue() const;
+    bool constrainAtZero() const;
+    Array weights() const;
 };
 
-%rename(FittedBondDiscountCurve) FittedBondDiscountCurvePtr;
-class FittedBondDiscountCurvePtr
-    : public boost::shared_ptr<YieldTermStructure> {
+%shared_ptr(FittedBondDiscountCurve);
+class FittedBondDiscountCurve : public YieldTermStructure {
   public:
-    %extend {
-        FittedBondDiscountCurvePtr(
+    FittedBondDiscountCurve(
                    Natural settlementDays,
                    const Calendar& calendar,
-                   const std::vector<boost::shared_ptr<RateHelper> >& helpers,
+                   const std::vector<boost::shared_ptr<BondHelper> >& helpers,
                    const DayCounter& dayCounter,
                    const FittingMethod& fittingMethod,
                    Real accuracy = 1.0e-10,
                    Size maxEvaluations = 10000,
                    const Array& guess = Array(),
-                   Real simplexLambda = 1.0) {
-            return new FittedBondDiscountCurvePtr(
-                new FittedBondDiscountCurve(settlementDays,
-                                            calendar,
-                                            convert_bond_helpers(helpers),
-                                            dayCounter,
-                                            fittingMethod,
-                                            accuracy,
-                                            maxEvaluations,
-                                            guess,
-                                            simplexLambda));
-        }
-
-        FittedBondDiscountCurvePtr(
+                   Real simplexLambda = 1.0);
+    FittedBondDiscountCurve(
                    const Date &referenceDate,
-                   const std::vector<boost::shared_ptr<RateHelper> >& helpers,
+                   const std::vector<boost::shared_ptr<BondHelper> >& helpers,
                    const DayCounter& dayCounter,
                    const FittingMethod& fittingMethod,
                    Real accuracy = 1.0e-10,
                    Size maxEvaluations = 10000,
                    const Array &guess = Array(),
-                   Real simplexLambda = 1.0) {
-            return new FittedBondDiscountCurvePtr(
-                new FittedBondDiscountCurve(referenceDate,
-                                            convert_bond_helpers(helpers),
-                                            dayCounter,
-                                            fittingMethod,
-                                            accuracy,
-                                            maxEvaluations,
-                                            guess,
-                                            simplexLambda));
-        }
-
-        const FittingMethod& fitResults() const {
-            return boost::dynamic_pointer_cast<FittedBondDiscountCurve>(*self)
-                ->fitResults();
-        }
-    }
+                   Real simplexLambda = 1.0);
+    const FittingMethod& fitResults() const;
 };
 
 
@@ -108,23 +84,26 @@ using QuantLib::SimplePolynomialFitting;
 
 class ExponentialSplinesFitting : public FittingMethod {
   public:
-    ExponentialSplinesFitting(bool constrainAtZero = true);
+    ExponentialSplinesFitting(bool constrainAtZero = true,
+                              const Array& weights = Array());
 };
 
 class NelsonSiegelFitting : public FittingMethod {
   public:
-    NelsonSiegelFitting();
+    NelsonSiegelFitting(const Array& weights = Array());
 };
 
 class SvenssonFitting : public FittingMethod {
   public:
-    SvenssonFitting();
+    SvenssonFitting(const Array& weights = Array());
 };
 
 class CubicBSplinesFitting : public FittingMethod {
   public:
     CubicBSplinesFitting(const std::vector<Time>& knotVector,
-                         bool constrainAtZero = true);
+                         bool constrainAtZero = true,
+                         const Array& weights = Array());
+    Real basisFunction(Integer i, Time t);
 };
 
 class SimplePolynomialFitting : public FittingMethod {
@@ -133,7 +112,8 @@ class SimplePolynomialFitting : public FittingMethod {
     SimplePolynomialFitting(Natural degree);
     #else
     SimplePolynomialFitting(Natural degree,
-                            bool constrainAtZero = true);
+                            bool constrainAtZero = true,
+                            const Array& weights = Array());
     #endif
 };
 

@@ -33,17 +33,6 @@ using QuantLib::Money;
 %}
 
 class Currency {
-    #if defined(SWIGPYTHON)
-    %rename(__nonzero__) empty;
-    #elif defined(SWIGRUBY)
-    %rename("empty?") empty;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("numeric-code")           numericCode;
-    %rename("fraction-symbol")        fractionSymbol;
-    %rename("fractions-per-unit")     fractionsPerUnit;
-    %rename("empty?")              empty;
-    %rename("triangulation-currency") triangulationCurrency;
-    #endif
   public:
     const std::string& name() const;
     const std::string& code() const;
@@ -56,17 +45,13 @@ class Currency {
     bool empty() const;
     const Currency& triangulationCurrency() const;
     %extend {
-        #if !defined(SWIGPERL)
         std::string __str__() {
             return self->name();
         }
-        #endif
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA)
+        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __eq__(const Currency& other) {
             return (*self) == other;
         }
-        #endif
-        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __ne__(const Currency& other) {
             return (*self) != other;
         }
@@ -78,6 +63,12 @@ class Currency {
         Money __rmul__(Decimal x) {
             return *self*x;
         }
+        bool __nonzero__() {
+            return !self->empty();
+        }
+        bool __bool__() {
+            return !self->empty();
+        }
         #endif
     }
     #if defined(SWIGPYTHON)
@@ -88,15 +79,6 @@ class Currency {
     #endif
 };
 
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Currency=?") Currency_equal;
-%inline %{
-    bool Currency_equal(const Currency& c1, const Currency& c2) {
-        return c1 == c2;
-    }
-%}
-#endif
 
 namespace QuantLib {
 class ARSCurrency : public Currency {};

@@ -2,6 +2,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
+ Copyright (C) 2019 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -21,11 +22,21 @@
 #define quantlib_vectors_i
 
 %include stl.i
+%include common.i
 %include date.i
 
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( std::pair<Date,double> )
 #endif
+
+%{
+template <class T, class U>
+std::vector<T> to_vector(const std::vector<U>& v) {
+    std::vector<T> out(v.size());
+    std::copy(v.begin(), v.end(), out.begin());
+    return out;
+}
+%}
 
 namespace std {
 
@@ -35,7 +46,10 @@ namespace std {
     %template(StrVector) vector<std::string>;
     %template(BoolVector) vector<bool>;
 
-#if !defined(SWIGR) && !defined(SWIGGUILE) && !defined(SWIGMZSCHEME)
+    %template(DoublePair) pair<double,double>;
+    %template(DoublePairVector) vector<pair<double,double> >;
+
+#if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;
     %template(NodeVector) vector<pair<Date,double> >;
 #endif
@@ -55,5 +69,56 @@ namespace std {
 #endif
 }
 
+%{
+#include <boost/tuple/tuple.hpp>
+%}
+
+namespace boost {
+  template <typename T1=void, typename T2=void, typename T3=void>
+  struct tuple;
+
+  template <>
+  struct tuple<void,void,void> {
+  };
+
+  template <typename T1>
+  struct tuple<T1, void, void> {
+    tuple(T1);
+    %extend {
+      T1 first() const {
+        return boost::get<0>(*$self);
+      }
+    }
+  };
+
+  template <typename T1, typename T2>
+  struct tuple <T1, T2, void> {
+    tuple(T1,T2);
+    %extend {
+      T1 first() const {
+        return boost::get<0>(*$self);
+      }
+      T2 second() const {
+        return boost::get<1>(*$self);
+      }
+    }
+  };
+
+  template <typename T1, typename T2, typename T3>
+  struct tuple <T1,T2,T3> {
+    tuple(T1,T2,T3);
+    %extend {
+      T1 first() const {
+        return boost::get<0>(*$self);
+      }
+      T2 second() const {
+        return boost::get<1>(*$self);
+      }
+      T3 third() const {
+        return boost::get<2>(*$self);
+      }
+    }
+  };
+}
 
 #endif

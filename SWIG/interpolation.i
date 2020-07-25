@@ -4,7 +4,8 @@
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2003, 2004, 2008 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
-
+ Copyright (C) 2018 Matthias Lungwitz
+ 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
 
@@ -23,29 +24,6 @@
 #define quantlib_interpolation_i
 
 %include linearalgebra.i
-
-%{
-using QuantLib::Extrapolator;
-%}
-
-%ignore Extrapolator;
-class Extrapolator {
-    #if defined(SWIGRUBY)
-    %rename("enableExtrapolation!")  enableExtrapolation;
-    %rename("disableExtrapolation!") disableExtrapolation;
-    %rename("allowsExtrapolation?")  allowsExtrapolation;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("enable-extrapolation")  enableExtrapolation;
-    %rename("disable-extrapolation") disableExtrapolation;
-    %rename("allows-extrapolation")  allowsExtrapolation;
-    #endif
-  public:
-    void enableExtrapolation();
-    void disableExtrapolation();
-    bool allowsExtrapolation();
-};
-
-// interpolations
 
 %{
 // safe versions which copy their arguments
@@ -68,8 +46,7 @@ typedef SafeInterpolation<QuantLib::T> Safe##T;
 %}
 %rename(Alias) Safe##T;
 class Safe##T {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
-     || defined(SWIGCSHARP) || defined(SWIGPERL)
+    #if defined(SWIGCSHARP)
     %rename(call) operator();
     #endif
   public:
@@ -153,8 +130,7 @@ typedef SafeInterpolation2D<QuantLib::T> Safe##T;
 %}
 %rename(Alias) Safe##T;
 class Safe##T {
-    #if defined(SWIGMZSCHEME) || defined(SWIGGUILE) \
-     || defined(SWIGCSHARP) || defined(SWIGPERL)
+    #if defined(SWIGCSHARP)
     %rename(call) operator();
     #endif
   public:
@@ -175,6 +151,7 @@ using QuantLib::ForwardFlat;
 using QuantLib::Linear;
 using QuantLib::LogLinear;
 using QuantLib::Cubic;
+using QuantLib::ConvexMonotone;
 
 class MonotonicCubic : public Cubic {
   public:
@@ -184,9 +161,23 @@ class MonotonicCubic : public Cubic {
             QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
-class LogCubic : QuantLib::LogCubic {
+class SplineCubic : public Cubic {
   public:
-    LogCubic()
+    SplineCubic()
+    : Cubic(QuantLib::CubicInterpolation::Spline, false,
+            QuantLib::CubicInterpolation::SecondDerivative, 0.0,
+            QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
+class Kruger : public Cubic {
+  public:
+    Kruger()
+    : Cubic(QuantLib::CubicInterpolation::Kruger) {}
+};
+
+class DefaultLogCubic : public QuantLib::LogCubic {
+  public:
+    DefaultLogCubic()
     : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger) {}
 };
 
@@ -194,6 +185,14 @@ class MonotonicLogCubic : public QuantLib::LogCubic {
   public:
     MonotonicLogCubic()
     : QuantLib::LogCubic(QuantLib::CubicInterpolation::Spline, true,
+                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
+                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
+class KrugerLog : public QuantLib::LogCubic {
+  public:
+    KrugerLog()
+    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger, false,
                          QuantLib::CubicInterpolation::SecondDerivative, 0.0,
                          QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
@@ -205,8 +204,80 @@ struct Linear {};
 struct LogLinear {};
 struct Cubic {};
 struct MonotonicCubic {};
-struct LogCubic {};
+struct DefaultLogCubic {};
 struct MonotonicLogCubic {};
+struct SplineCubic {};
+struct Kruger {};
+struct KrugerLog {};
+struct ConvexMonotone {
+    ConvexMonotone(Real quadraticity = 0.3,
+                   Real monotonicity = 0.7,
+                   bool forcePositive = true);
+};
 
+%{
+using QuantLib::RichardsonExtrapolation;
+%}
+
+class RichardsonExtrapolation {
+  public:
+    Real operator()(Real t=2.0) const;
+    Real operator()(Real t, Real s) const;
+    
+#if defined(SWIGPYTHON)
+    %extend {
+        RichardsonExtrapolation(
+            PyObject* fct, Real delta_h, Real n = Null<Real>()) {
+        
+            UnaryFunction f(fct);
+            return new RichardsonExtrapolation(f, delta_h, n); 
+        }
+    }
+#elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+    %extend {
+        RichardsonExtrapolation(
+            UnaryFunctionDelegate* fct, Real delta_h, Real n = Null<Real>()) {
+        
+            UnaryFunction f(fct);
+            return new RichardsonExtrapolation(f, delta_h, n); 
+        }
+    }
+#else
+  private:
+    RichardsonExtrapolation();
+#endif
+};
 
 #endif
+
+
+%{
+class SafeConvexMonotoneInterpolation {
+  public:
+    SafeConvexMonotoneInterpolation(const Array& x, const Array& y,
+                                    Real quadraticity = 0.3,
+                                    Real monotonicity = 0.7,
+                                    bool forcePositive = true)
+    : x_(x), y_(y), f_(x_.begin(), x_.end(), y_.begin(),
+                       quadraticity, monotonicity, forcePositive) {}
+    Real operator()(Real x, bool allowExtrapolation=false) {
+        return f_(x, allowExtrapolation);
+    }
+    Array x_, y_;
+    QuantLib::ConvexMonotoneInterpolation<Array::const_iterator, Array::const_iterator> f_;
+};
+%}
+
+%rename(ConvexMonotoneInterpolation) SafeConvexMonotoneInterpolation;
+class SafeConvexMonotoneInterpolation {
+    #if defined(SWIGCSHARP)
+    %rename(call) operator();
+    #endif
+  public:
+    SafeConvexMonotoneInterpolation(const Array& x, const Array& y,
+                                    Real quadraticity = 0.3,
+                                    Real monotonicity = 0.7,
+                                    bool forcePositive = true);
+    Real operator()(Real x, bool allowExtrapolation=false);
+};
+

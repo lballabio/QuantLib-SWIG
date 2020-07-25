@@ -25,7 +25,7 @@ namespace BermudanSwaption
         private const int numRows = 5;
         private const int numCols = 5;
 
-        private static int[] swapLenghts = { 1, 2, 3, 4, 5 };
+        private static int[] swapLengths = { 1, 2, 3, 4, 5 };
         private static double[] swaptionVols = {
             0.1490, 0.1340, 0.1228, 0.1189, 0.1148,
             0.1290, 0.1201, 0.1146, 0.1108, 0.1040,
@@ -47,17 +47,19 @@ namespace BermudanSwaption
             {
                 int j = numCols - i -1; // 1x5, 2x4, 3x3, 4x2, 5x1
                 int k = i*numCols + j;
-                double npv = helpers[i].modelValue();
-                double implied = helpers[i].impliedVolatility(
-                    npv,
-                    1e-4,
-                    1000,
-                    0.05,
-                    0.50 );
+                double npv =
+                    NQuantLibc.as_black_helper(helpers[i]).modelValue();
+                double implied =
+                    NQuantLibc.as_black_helper(helpers[i]).impliedVolatility(
+                        npv,
+                        1e-4,
+                        1000,
+                        0.05,
+                        0.50 );
                 double diff = implied - swaptionVols[k];
 
                 Console.WriteLine( "{0}x{1}: model {2}, market {3} ({4})",
-                    i+1, swapLenghts[j], implied, swaptionVols[k], diff );
+                    i+1, swapLengths[j], implied, swaptionVols[k], diff );
             }
         }
 
@@ -107,7 +109,7 @@ namespace BermudanSwaption
                 floatingLegTenor,calendar,floatingLegConvention,
                 floatingLegConvention,DateGeneration.Rule.Forward,false);
             VanillaSwap swap = new VanillaSwap(
-                       VanillaSwap.Payer, 1000.0,
+                       VanillaSwap.Type.Payer, 1000.0,
                        fixedSchedule, dummyFixedRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter());
@@ -119,17 +121,17 @@ namespace BermudanSwaption
             double fixedITMRate = fixedATMRate * 0.8;
 
             VanillaSwap atmSwap = new VanillaSwap(
-                       VanillaSwap.Payer, 1000.0,
+                       VanillaSwap.Type.Payer, 1000.0,
                        fixedSchedule, fixedATMRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter() );
             VanillaSwap otmSwap = new VanillaSwap(
-                       VanillaSwap.Payer, 1000.0,
+                       VanillaSwap.Type.Payer, 1000.0,
                        fixedSchedule, fixedOTMRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter());
             VanillaSwap itmSwap = new VanillaSwap(
-                       VanillaSwap.Payer, 1000.0,
+                       VanillaSwap.Type.Payer, 1000.0,
                        fixedSchedule, fixedITMRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter());
@@ -156,7 +158,7 @@ namespace BermudanSwaption
                 Quote vol = new SimpleQuote( swaptionVols[k] );
                 SwaptionHelper helper = new SwaptionHelper(
                                 swaptionMaturities[i],
-                               new Period(swapLenghts[j], TimeUnit.Years),
+                               new Period(swapLengths[j], TimeUnit.Years),
                                new QuoteHandle(vol),
                                indexSixMonths,
                                indexSixMonths.tenor(),
@@ -180,7 +182,8 @@ namespace BermudanSwaption
 
 //          Console.WriteLine( "G2 (analytic formulae) calibration" );
 //          for (int i=0; i<swaptions.Count; i++)
-//              swaptions[i].setPricingEngine( new G2SwaptionEngine( modelG2, 6.0, 16 ) );
+//              NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
+//                  new G2SwaptionEngine( modelG2, 6.0, 16 ) );
 //
 //          calibrateModel( modelG2, swaptions, 0.05);
 //          Console.WriteLine( "calibrated to:" );
@@ -192,7 +195,7 @@ namespace BermudanSwaption
 
             Console.WriteLine( "Hull-White (analytic formulae) calibration" );
             for (int i=0; i<swaptions.Count; i++)
-                swaptions[i].setPricingEngine(
+                NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
                                        new JamshidianSwaptionEngine(modelHW));
 
             calibrateModel( modelHW, swaptions, 0.05);
@@ -203,7 +206,7 @@ namespace BermudanSwaption
 
             Console.WriteLine( "Hull-White (numerical) calibration" );
             for (int i=0; i<swaptions.Count; i++)
-                swaptions[i].setPricingEngine(
+                NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
                                        new TreeSwaptionEngine(modelHW2,grid));
 
             calibrateModel(modelHW2, swaptions, 0.05);
@@ -215,7 +218,7 @@ namespace BermudanSwaption
 
             Console.WriteLine( "Black-Karasinski (numerical) calibration" );
             for (int i=0; i<swaptions.Count; i++)
-                swaptions[i].setPricingEngine(
+                NQuantLibc.as_black_helper(swaptions[i]).setPricingEngine(
                                         new TreeSwaptionEngine(modelBK,grid));
 
             calibrateModel(modelBK, swaptions, 0.05);

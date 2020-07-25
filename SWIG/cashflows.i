@@ -3,6 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2010, 2011 Lluis Pujol Bajador
+ Copyright (C) 2017, 2018, 2019, 2020 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -36,15 +37,14 @@
 using QuantLib::CashFlow;
 %}
 
-%ignore CashFlow;
-class CashFlow {
+%shared_ptr(CashFlow)
+class CashFlow : public Observable {
+  private:
+    CashFlow();
   public:
     Real amount() const;
     Date date() const;
 };
-
-%template(CashFlow) boost::shared_ptr<CashFlow>;
-IsObservable(boost::shared_ptr<CashFlow>);
 
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<CashFlow> )
@@ -61,135 +61,71 @@ using QuantLib::Redemption;
 using QuantLib::AmortizingPayment;
 using QuantLib::Coupon;
 using QuantLib::FixedRateCoupon;
-using QuantLib::IborCoupon;
 using QuantLib::Leg;
 using QuantLib::FloatingRateCoupon;
-
-typedef boost::shared_ptr<CashFlow> SimpleCashFlowPtr;
-typedef boost::shared_ptr<CashFlow> RedemptionPtr;
-typedef boost::shared_ptr<CashFlow> AmortizingPaymentPtr;
-typedef boost::shared_ptr<CashFlow> CouponPtr;
-typedef boost::shared_ptr<CashFlow> IborCouponPtr;
-typedef boost::shared_ptr<CashFlow> FixedRateCouponPtr;
-typedef boost::shared_ptr<CashFlow> FloatingRateCouponPtr;
+using QuantLib::OvernightIndexedCoupon;
 %}
 
-%rename(SimpleCashFlow) SimpleCashFlowPtr;
-class SimpleCashFlowPtr : public boost::shared_ptr<CashFlow> {
+%shared_ptr(SimpleCashFlow)
+class SimpleCashFlow : public CashFlow {
   public:
-    %extend {
-        SimpleCashFlowPtr(Real amount, const Date& date) {
-            return new SimpleCashFlowPtr(new SimpleCashFlow(amount,date));
-        }
-    }
+    SimpleCashFlow(Real amount, const Date& date);
 };
 
-%rename(Redemption) RedemptionPtr;
-class RedemptionPtr : public boost::shared_ptr<CashFlow> {
+%shared_ptr(Redemption)
+class Redemption : public CashFlow {
   public:
-    %extend {
-        RedemptionPtr(Real amount, const Date& date) {
-            return new RedemptionPtr(new Redemption(amount,date));
-        }
-    }
+    Redemption(Real amount, const Date& date);
 };
 
-%rename(AmortizingPayment) AmortizingPaymentPtr;
-class AmortizingPaymentPtr : public boost::shared_ptr<CashFlow> {
+%shared_ptr(AmortizingPayment)
+class AmortizingPayment : public CashFlow {
   public:
-    %extend {
-        AmortizingPaymentPtr(Real amount, const Date& date) {
-            return new AmortizingPaymentPtr(new AmortizingPayment(amount,date));
-        }
-    }
+    AmortizingPayment(Real amount, const Date& date);
 };
 
-%rename(Coupon) CouponPtr;
-class CouponPtr : public boost::shared_ptr<CashFlow> {
+%shared_ptr(Coupon)
+class Coupon : public CashFlow {
   private:
-    CouponPtr();
+    Coupon();
   public:
-    %extend {
-        Real nominal() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)->nominal();
-        }
-        Date accrualStartDate() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->accrualStartDate();
-        }
-        Date accrualEndDate() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->accrualEndDate();
-        }
-        Date referencePeriodStart() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->referencePeriodStart();
-        }
-        Date referencePeriodEnd() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->referencePeriodEnd();
-        }
-        Date exCouponDate() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->exCouponDate();
-        }
-        Real rate() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)->rate();
-        }
-        Time accrualPeriod() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->accrualPeriod();
-        }
-        BigInteger accrualDays() {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->accrualDays();
-        }
-        DayCounter dayCounter() const {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->dayCounter();
-        }
-        Real accruedAmount(const Date& date) {
-            return boost::dynamic_pointer_cast<Coupon>(*self)
-                ->accruedAmount(date);
-        }
-    }
+    Real nominal() const;
+    Date accrualStartDate() const;
+    Date accrualEndDate() const;
+    Date referencePeriodStart() const;
+    Date referencePeriodEnd() const;
+    Date exCouponDate() const;
+    Real rate() const;
+    Time accrualPeriod() const;
+    BigInteger accrualDays() const;
+    DayCounter dayCounter() const;
+    Real accruedAmount(const Date& date) const;
 };
 
 %inline %{
-    CouponPtr as_coupon(const boost::shared_ptr<CashFlow>& cf) {
+    boost::shared_ptr<Coupon> as_coupon(const boost::shared_ptr<CashFlow>& cf) {
         return boost::dynamic_pointer_cast<Coupon>(cf);
     }
 %}
 
 
-%rename(FixedRateCoupon) FixedRateCouponPtr;
-class FixedRateCouponPtr : public CouponPtr {
+%shared_ptr(FixedRateCoupon)
+class FixedRateCoupon : public Coupon {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") FixedRateCouponPtr;
+    %feature("kwargs") FixedRateCoupon;
     #endif
   public:
-    %extend {
-        FixedRateCouponPtr(const Date& paymentDate, Real nominal,
-                           Rate rate, const DayCounter& dayCounter,
-                           const Date& startDate, const Date& endDate,
-                           const Date& refPeriodStart = Date(),
-                           const Date& refPeriodEnd = Date(),
-                           const Date& exCouponDate = Date()) {
-            return new FixedRateCouponPtr(
-                new FixedRateCoupon(paymentDate, nominal, rate,
-                                    dayCounter, startDate, endDate,
-                                    refPeriodStart, refPeriodEnd,
-                                    exCouponDate));
-        }
-        InterestRate interestRate() {
-            return boost::dynamic_pointer_cast<FixedRateCoupon>(*self)
-                ->interestRate();
-        }
-    }
+    FixedRateCoupon(const Date& paymentDate, Real nominal,
+                    Rate rate, const DayCounter& dayCounter,
+                    const Date& startDate, const Date& endDate,
+                    const Date& refPeriodStart = Date(),
+                    const Date& refPeriodEnd = Date(),
+                    const Date& exCouponDate = Date());
+    InterestRate interestRate() const;
 };
 
 %inline %{
-    FixedRateCouponPtr as_fixed_rate_coupon(
+    boost::shared_ptr<FixedRateCoupon> as_fixed_rate_coupon(
                                       const boost::shared_ptr<CashFlow>& cf) {
         return boost::dynamic_pointer_cast<FixedRateCoupon>(cf);
     }
@@ -200,221 +136,208 @@ class FixedRateCouponPtr : public CouponPtr {
 using QuantLib::FloatingRateCouponPricer;
 %}
 
-%ignore FloatingRateCouponPricer;
-class FloatingRateCouponPricer {};
-
-%template(FloatingRateCouponPricer) boost::shared_ptr<FloatingRateCouponPricer>;
+%shared_ptr(FloatingRateCouponPricer)
+class FloatingRateCouponPricer {
+  private:
+    FloatingRateCouponPricer();
+  public:
+    virtual Real swapletPrice() const;
+    virtual Rate swapletRate() const;
+    virtual Real capletPrice(Rate effectiveCap) const;
+    virtual Rate capletRate(Rate effectiveCap) const;
+    virtual Real floorletPrice(Rate effectiveFloor) const;
+    virtual Rate floorletRate(Rate effectiveFloor) const;
+};
 
 void setCouponPricer(const Leg&,
                      const boost::shared_ptr<FloatingRateCouponPricer>&);
 
-%rename(FloatingRateCoupon) FloatingRateCouponPtr;
-class FloatingRateCouponPtr : public CouponPtr {
+%shared_ptr(FloatingRateCoupon)
+class FloatingRateCoupon : public Coupon {
   private:
-    FloatingRateCouponPtr();
+    FloatingRateCoupon();
   public:
-    %extend {
-        Date fixingDate() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->fixingDate();
-        }
-        Integer fixingDays() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->fixingDays();
-        }
-        bool isInArrears() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->isInArrears();
-        }
-        Real gearing() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->gearing();
-        }
-        Rate spread() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->spread();
-        }
-        Rate indexFixing() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->indexFixing();
-        }
-        Rate adjustedFixing() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->adjustedFixing();
-        }
-        Rate convexityAdjustment() {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->convexityAdjustment();
-        }
-        Real price(const Handle<YieldTermStructure>& discountCurve) {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->price(discountCurve);
-        }
-        InterestRateIndexPtr index() const {
-            return boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->index();
-        }
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& p) {
-            boost::dynamic_pointer_cast<FloatingRateCoupon>(*self)
-                ->setPricer(p);
-        }
-    }
+    Date fixingDate() const;
+    Integer fixingDays() const;
+    bool isInArrears() const;
+    Real gearing() const;
+    Rate spread() const;
+    Rate indexFixing() const;
+    Rate adjustedFixing() const;
+    Rate convexityAdjustment() const;
+    Real price(const Handle<YieldTermStructure>& discountCurve) const;
+    boost::shared_ptr<InterestRateIndex> index() const;
+    void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& p);
 };
 
 %inline %{
-    FloatingRateCouponPtr as_floating_rate_coupon(
+    boost::shared_ptr<FloatingRateCoupon> as_floating_rate_coupon(
                                       const boost::shared_ptr<CashFlow>& cf) {
         return boost::dynamic_pointer_cast<FloatingRateCoupon>(cf);
     }
 %}
 
+%shared_ptr(OvernightIndexedCoupon)
+class OvernightIndexedCoupon : public FloatingRateCoupon {
+  public:
+    OvernightIndexedCoupon(
+                const Date& paymentDate,
+                Real nominal,
+                const Date& startDate,
+                const Date& endDate,
+                const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                Real gearing = 1.0,
+                Spread spread = 0.0,
+                const Date& refPeriodStart = Date(),
+                const Date& refPeriodEnd = Date(),
+                const DayCounter& dayCounter = DayCounter(),
+                bool telescopicValueDates = false);
+    const std::vector<Date>& fixingDates() const;
+    const std::vector<Time>& dt() const;
+    const std::vector<Rate>& indexFixings() const;
+    const std::vector<Date>& valueDates() const;
+};
 
 %{
 using QuantLib::CappedFlooredCoupon;
-typedef boost::shared_ptr<CashFlow> CappedFlooredCouponPtr;
 %}
 
-%rename(CappedFlooredCoupon) CappedFlooredCouponPtr;
-class CappedFlooredCouponPtr : public FloatingRateCouponPtr {
+%shared_ptr(CappedFlooredCoupon)
+class CappedFlooredCoupon : public FloatingRateCoupon {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") CappedFlooredCouponPtr;
+    %feature("kwargs") CappedFlooredCoupon;
     #endif
   public:
-    %extend {
-        CappedFlooredCouponPtr(const FloatingRateCouponPtr& underlying,
-                               Rate cap = Null<Rate>(),
-                               Rate floor = Null<Rate>()) {
-            boost::shared_ptr<FloatingRateCoupon> u =
-                boost::dynamic_pointer_cast<FloatingRateCoupon>(underlying);
-            return new CappedFlooredCouponPtr(
-                new CappedFlooredCoupon(u,cap,floor));
-        }
-        Rate cap() {
-           return boost::dynamic_pointer_cast<CappedFlooredCoupon>(*self)
-                ->cap();
-        }
-        Rate floor() {
-           return boost::dynamic_pointer_cast<CappedFlooredCoupon>(*self)
-                ->floor();
-        }
-        Rate effectiveCap() {
-           return boost::dynamic_pointer_cast<CappedFlooredCoupon>(*self)
-                ->effectiveCap();
-        }
-        Rate effectiveFloor() {
-           return boost::dynamic_pointer_cast<CappedFlooredCoupon>(*self)
-                ->effectiveFloor();
-        }
-        bool isCapped() {
-           return boost::dynamic_pointer_cast<CappedFlooredCoupon>(*self)
-                ->isCapped();
-        }
-        bool isFloored() {
-           return boost::dynamic_pointer_cast<CappedFlooredCoupon>(*self)
-                ->isFloored();
-        }
-        void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& p) {
-            boost::dynamic_pointer_cast<CappedFlooredCoupon>(*self)
-                ->setPricer(p);
-        }
-    }
+    CappedFlooredCoupon(const boost::shared_ptr<FloatingRateCoupon>& underlying,
+                        Rate cap = Null<Rate>(),
+                        Rate floor = Null<Rate>());
+    Rate cap() const;
+    Rate floor() const;
+    Rate effectiveCap() const;
+    Rate effectiveFloor() const;
+    bool isCapped() const;
+    bool isFloored() const;
+    void setPricer(const boost::shared_ptr<FloatingRateCouponPricer>& p);
 };
 
 
 // specialized floating-rate coupons
 
-%rename(IborCoupon) IborCouponPtr;
-class IborCouponPtr : public FloatingRateCouponPtr {
+%{
+using QuantLib::IborCoupon;
+using QuantLib::CappedFlooredIborCoupon;
+%}
+
+%shared_ptr(IborCoupon)
+class IborCoupon : public FloatingRateCoupon {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") IborCouponPtr;
+    %feature("kwargs") IborCoupon;
     #endif
   public:
-    %extend {
-        IborCouponPtr(const Date& paymentDate, Real nominal,
-                      const Date& startDate, const Date& endDate,
-                      Integer fixingDays, InterestRateIndexPtr& index,
-                      Real gearing = 1.0, Spread spread = 0.0,
-                      const Date& refPeriodStart = Date(),
-                      const Date& refPeriodEnd = Date(),
-                      const DayCounter& dayCounter = DayCounter()) {
-            const boost::shared_ptr<IborIndex> iri =
-                boost::dynamic_pointer_cast<IborIndex>(index);
-            return new IborCouponPtr(
-                new IborCoupon(paymentDate, nominal, startDate, endDate,
-                               fixingDays, iri, gearing, spread,
-                               refPeriodStart, refPeriodEnd, dayCounter));
-        }
-    }
+    IborCoupon(const Date& paymentDate, Real nominal,
+               const Date& startDate, const Date& endDate,
+               Integer fixingDays,
+               boost::shared_ptr<IborIndex>& index,
+               Real gearing = 1.0, Spread spread = 0.0,
+               const Date& refPeriodStart = Date(),
+               const Date& refPeriodEnd = Date(),
+               const DayCounter& dayCounter = DayCounter(),
+               bool isInArrears = false,
+               const Date& exCouponDate = Date());
+    static void createAtParCoupons();
+    static void createIndexedCoupons();
+    static bool usingAtParCoupons();
 };
 
+%shared_ptr(CappedFlooredIborCoupon)
+class CappedFlooredIborCoupon : public CappedFlooredCoupon {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CappedFlooredIborCoupon;
+    #endif
+  public:
+    CappedFlooredIborCoupon(const Date& paymentDate, Real nominal,
+                            const Date& startDate, const Date& endDate,
+                            Integer fixingDays,
+                            boost::shared_ptr<IborIndex>& index,
+                            Real gearing = 1.0, Spread spread = 0.0,
+                            const Rate cap = Null<Rate>(),
+                            const Rate floor = Null<Rate>(),
+                            const Date& refPeriodStart = Date(),
+                            const Date& refPeriodEnd = Date(),
+                            const DayCounter& dayCounter = DayCounter(),
+                            bool isInArrears = false,
+                            const Date& exCouponDate = Date());
+};
 
 %{
 using QuantLib::IborCouponPricer;
 using QuantLib::BlackIborCouponPricer;
-typedef boost::shared_ptr<FloatingRateCouponPricer> IborCouponPricerPtr;
-typedef boost::shared_ptr<FloatingRateCouponPricer> BlackIborCouponPricerPtr;
 %}
 
-%rename(IborCouponPricer) IborCouponPricerPtr;
-class IborCouponPricerPtr : public boost::shared_ptr<FloatingRateCouponPricer> {
+%shared_ptr(IborCouponPricer)
+class IborCouponPricer : public FloatingRateCouponPricer {
   private:
-    IborCouponPricerPtr();
+    IborCouponPricer();
   public:
-    %extend {
-        Handle<OptionletVolatilityStructure> capletVolatility() {
-            return boost::dynamic_pointer_cast<IborCouponPricer>(*self)
-                ->capletVolatility();
-        }
-        void setCapletVolatility(const Handle<OptionletVolatilityStructure>& v =
-                                     Handle<OptionletVolatilityStructure>()) {
-            boost::dynamic_pointer_cast<IborCouponPricer>(*self)
-                ->setCapletVolatility(v);
-        }
-    }
+    Handle<OptionletVolatilityStructure> capletVolatility() const;
+    void setCapletVolatility(const Handle<OptionletVolatilityStructure>& v =
+                                     Handle<OptionletVolatilityStructure>());
 };
 
-%rename(BlackIborCouponPricer) BlackIborCouponPricerPtr;
-class BlackIborCouponPricerPtr : public IborCouponPricerPtr {
+%shared_ptr(BlackIborCouponPricer)
+class BlackIborCouponPricer : public IborCouponPricer {
   public:
-    %extend {
-        BlackIborCouponPricerPtr(const Handle<OptionletVolatilityStructure>& v =
-                                     Handle<OptionletVolatilityStructure>()) {
-            return new BlackIborCouponPricerPtr(new BlackIborCouponPricer(v));
-        }
-    }
+    enum TimingAdjustment { Black76, BivariateLognormal };
+    BlackIborCouponPricer(const Handle<OptionletVolatilityStructure>& v =
+                                    Handle<OptionletVolatilityStructure>(),
+                                    const TimingAdjustment timingAdjustment = Black76,
+                                    const Handle<Quote> correlation =
+                                    Handle<Quote>(boost::shared_ptr<Quote>(new SimpleQuote(1.0))));
 };
 
 %{
 using QuantLib::CmsCoupon;
 using QuantLib::CappedFlooredCmsCoupon;
-typedef boost::shared_ptr<CashFlow> CmsCouponPtr;
-typedef boost::shared_ptr<CashFlow> CappedFlooredCmsCouponPtr;
+using QuantLib::CmsSpreadCoupon;
+using QuantLib::CappedFlooredCmsSpreadCoupon;
 %}
 
-%rename(CmsCoupon) CmsCouponPtr;
-class CmsCouponPtr : public FloatingRateCouponPtr {
+%shared_ptr(CmsCoupon)
+class CmsCoupon : public FloatingRateCoupon {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") CmsCouponPtr;
+    %feature("kwargs") CmsCoupon;
     #endif
   public:
-    %extend {
-        CmsCouponPtr(const Date& paymentDate, Real nominal,
-                     const Date& startDate, const Date& endDate,
-                     Integer fixingDays, const SwapIndexPtr& index,
-                     Real gearing = 1.0, Spread spread = 0.0,
-                     const Date& refPeriodStart = Date(),
-                     const Date& refPeriodEnd = Date(),
-                     const DayCounter& dayCounter = DayCounter(),
-                     bool isInArrears = false) {
-            const boost::shared_ptr<SwapIndex> swi =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
-            return new CmsCouponPtr(
-                new CmsCoupon(paymentDate,nominal,startDate,endDate,
-                              fixingDays,swi,gearing,spread,
-                              refPeriodStart,refPeriodEnd,
-                              dayCounter,isInArrears));
-        }
-    }
+    CmsCoupon(const Date& paymentDate, Real nominal,
+              const Date& startDate, const Date& endDate,
+              Integer fixingDays, const boost::shared_ptr<SwapIndex>& index,
+              Real gearing = 1.0, Spread spread = 0.0,
+              const Date& refPeriodStart = Date(),
+              const Date& refPeriodEnd = Date(),
+              const DayCounter& dayCounter = DayCounter(),
+              bool isInArrears = false,
+              const Date& exCouponDate = Date());
+};
+
+%shared_ptr(CmsSpreadCoupon)
+class CmsSpreadCoupon : public FloatingRateCoupon {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CmsSpreadCoupon;
+    #endif
+  public:
+    CmsSpreadCoupon(const Date& paymentDate,
+                    Real nominal,
+                    const Date& startDate,
+                    const Date& endDate,
+                    Natural fixingDays,
+                    const boost::shared_ptr<SwapSpreadIndex>& index,
+                    Real gearing = 1.0,
+                    Spread spread = 0.0,
+                    const Date& refPeriodStart = Date(),
+                    const Date& refPeriodEnd = Date(),
+                    const DayCounter& dayCounter = DayCounter(),
+                    bool isInArrears = false,
+                    const Date& exCouponDate = Date());
 };
 
 %{
@@ -422,29 +345,28 @@ using QuantLib::CmsCouponPricer;
 using QuantLib::AnalyticHaganPricer;
 using QuantLib::NumericHaganPricer;
 using QuantLib::GFunctionFactory;
-typedef boost::shared_ptr<FloatingRateCouponPricer> CmsCouponPricerPtr;
-typedef boost::shared_ptr<FloatingRateCouponPricer> AnalyticHaganPricerPtr;
-typedef boost::shared_ptr<FloatingRateCouponPricer> NumericHaganPricerPtr;
+using QuantLib::LinearTsrPricer;
+using QuantLib::CmsSpreadCouponPricer;
+using QuantLib::LognormalCmsSpreadPricer;
 %}
 
-%rename(CmsCouponPricer) CmsCouponPricerPtr;
-class CmsCouponPricerPtr : public boost::shared_ptr<FloatingRateCouponPricer> {
+%shared_ptr(CmsCouponPricer)
+class CmsCouponPricer : public FloatingRateCouponPricer {
   private:
-    CmsCouponPricerPtr();
+    CmsCouponPricer();
   public:
-    %extend {
-        Handle<SwaptionVolatilityStructure> swaptionVolatility() {
-            return boost::dynamic_pointer_cast<CmsCouponPricer>(*self)
-                ->swaptionVolatility();
-        }
-        void setSwaptionVolatility(
-                                const Handle<SwaptionVolatilityStructure>& v =
-                                      Handle<SwaptionVolatilityStructure>()) {
-            boost::dynamic_pointer_cast<CmsCouponPricer>(*self)
-                ->setSwaptionVolatility(v);
-        }
-    }
+    Handle<SwaptionVolatilityStructure> swaptionVolatility() const;
+    void setSwaptionVolatility(const Handle<SwaptionVolatilityStructure>& v =
+                                      Handle<SwaptionVolatilityStructure>());
 };
+
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<CmsCouponPricer> )
+#endif
+namespace std {
+    %template(CmsCouponPricerVector)
+        vector<boost::shared_ptr<CmsCouponPricer> >;     
+}
 
 class GFunctionFactory {
   private:
@@ -456,65 +378,134 @@ class GFunctionFactory {
                            NonParallelShifts };
 };
 
-%rename(AnalyticHaganPricer) AnalyticHaganPricerPtr;
-class AnalyticHaganPricerPtr : public CmsCouponPricerPtr {
+%shared_ptr(AnalyticHaganPricer)
+class AnalyticHaganPricer : public CmsCouponPricer {
   public:
-    %extend {
-        AnalyticHaganPricerPtr(const Handle<SwaptionVolatilityStructure>& v,
-                               GFunctionFactory::YieldCurveModel model,
-                               const Handle<Quote>& meanReversion) {
-            return new AnalyticHaganPricerPtr(
-                            new AnalyticHaganPricer(v, model, meanReversion));
-        }
-    }
+    AnalyticHaganPricer(const Handle<SwaptionVolatilityStructure>& v,
+                        GFunctionFactory::YieldCurveModel model,
+                        const Handle<Quote>& meanReversion);
 };
 
-%rename(NumericHaganPricer) NumericHaganPricerPtr;
-class NumericHaganPricerPtr : public CmsCouponPricerPtr {
+%shared_ptr(NumericHaganPricer)
+class NumericHaganPricer : public CmsCouponPricer {
   public:
-    %extend {
-        NumericHaganPricerPtr(const Handle<SwaptionVolatilityStructure>& v,
-                              GFunctionFactory::YieldCurveModel model,
-                              const Handle<Quote>& meanReversion,
-                              Rate lowerLimit = 0.0,
-                              Rate upperLimit = 1.0,
-                              Real precision = 1.0e-6) {
-             return new NumericHaganPricerPtr(
-                 new NumericHaganPricer(v, model, meanReversion,
-                                        lowerLimit, upperLimit, precision));
-        }
-    }
+    NumericHaganPricer(const Handle<SwaptionVolatilityStructure>& v,
+                       GFunctionFactory::YieldCurveModel model,
+                       const Handle<Quote>& meanReversion,
+                       Rate lowerLimit = 0.0,
+                       Rate upperLimit = 1.0,
+                       Real precision = 1.0e-6);
 };
 
-%rename(CappedFlooredCmsCoupon) CappedFlooredCmsCouponPtr;
-class CappedFlooredCmsCouponPtr: public CappedFlooredCouponPtr {
+%shared_ptr(CappedFlooredCmsCoupon)
+class CappedFlooredCmsCoupon: public CappedFlooredCoupon {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") CappedFlooredCouponPtr;
+    %feature("kwargs") CappedFlooredCoupon;
     #endif
   public:
-    %extend {
-        CappedFlooredCmsCouponPtr(
+    CappedFlooredCmsCoupon(
                   const Date& paymentDate, Real nominal,
                   const Date& startDate, const Date& endDate,
-                  Natural fixingDays, const SwapIndexPtr& index,
+                  Natural fixingDays, const boost::shared_ptr<SwapIndex>& index,
                   Real gearing = 1.0, Spread spread = 0.0,
                   const Rate cap = Null<Rate>(),
                   const Rate floor = Null<Rate>(),
                   const Date& refPeriodStart = Date(),
                   const Date& refPeriodEnd = Date(),
                   const DayCounter& dayCounter = DayCounter(),
-                  bool isInArrears = false) {
-            const boost::shared_ptr<SwapIndex> swi =
-                boost::dynamic_pointer_cast<SwapIndex>(index);
-            return new CappedFlooredCmsCouponPtr(
-                new CappedFlooredCmsCoupon(
-                      paymentDate, nominal, startDate, endDate, fixingDays,
-                      swi, gearing, spread, cap, floor, refPeriodStart,
-                      refPeriodEnd, dayCounter, isInArrears));
-        }
-    }
+                  bool isInArrears = false,
+                  const Date& exCouponDate = Date());
 };
 
+%shared_ptr(CappedFlooredCmsSpreadCoupon)
+class CappedFlooredCmsSpreadCoupon: public CappedFlooredCoupon {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CappedFlooredCoupon;
+    #endif
+  public:
+    CappedFlooredCmsSpreadCoupon(
+                  const Date& paymentDate, Real nominal,
+                  const Date& startDate, const Date& endDate,
+                  Natural fixingDays,
+                  const boost::shared_ptr<SwapSpreadIndex>& index,
+                  Real gearing = 1.0, Spread spread = 0.0,
+                  const Rate cap = Null<Rate>(),
+                  const Rate floor = Null<Rate>(),
+                  const Date& refPeriodStart = Date(),
+                  const Date& refPeriodEnd = Date(),
+                  const DayCounter& dayCounter = DayCounter(),
+                  bool isInArrears = false,
+                  const Date& exCouponDate = Date());
+};
+
+%rename (LinearTsrPricerSettings) LinearTsrPricer::Settings;
+%feature ("flatnested") Settings;
+
+%shared_ptr(LinearTsrPricer)
+class LinearTsrPricer : public CmsCouponPricer {
+  public:
+    struct Settings {
+
+        Settings();
+        Settings &withRateBound(const Real lowerRateBound = 0.0001,
+                                const Real upperRateBound = 2.0000);
+        Settings &withVegaRatio(const Real vegaRatio = 0.01);                                
+        Settings &withVegaRatio(const Real vegaRatio,
+                                const Real lowerRateBound,
+                                const Real upperRateBound);
+        Settings &withPriceThreshold(const Real priceThreshold = 1.0E-8);
+        Settings &withPriceThreshold(const Real priceThreshold,
+                                     const Real lowerRateBound,
+                                     const Real upperRateBound);
+        Settings &withBSStdDevs(const Real stdDevs = 3.0);
+        Settings &withBSStdDevs(const Real stdDevs,
+                        const Real lowerRateBound,
+                        const Real upperRateBound);
+        enum Strategy {
+            RateBound,
+            VegaRatio,
+            PriceThreshold,
+            BSStdDevs
+        };
+        
+    };
+  
+    LinearTsrPricer(
+            const Handle<SwaptionVolatilityStructure> &swaptionVol,
+            const Handle<Quote> &meanReversion,
+            const Handle<YieldTermStructure> &couponDiscountCurve =
+                                                 Handle<YieldTermStructure>(),
+            const LinearTsrPricer::Settings &settings =
+                                                LinearTsrPricer::Settings());
+};
+
+%shared_ptr(CmsSpreadCouponPricer)
+class CmsSpreadCouponPricer : public FloatingRateCouponPricer {
+  private:
+    CmsSpreadCouponPricer();
+  public:
+    Handle<Quote> correlation() const;
+    void setCorrelation(const Handle<Quote> &correlation = Handle<Quote>());
+};
+
+%shared_ptr(LognormalCmsSpreadPricer)
+class LognormalCmsSpreadPricer : public CmsSpreadCouponPricer {
+  public:
+    LognormalCmsSpreadPricer(
+            const boost::shared_ptr<CmsCouponPricer>& cmsPricer,
+            const Handle<Quote> &correlation,
+            const Handle<YieldTermStructure> &couponDiscountCurve =
+                Handle<YieldTermStructure>(),
+            const Size IntegrationPoints = 16,
+            const boost::optional<VolatilityType> volatilityType = boost::none,
+            const Real shift1 = Null<Real>(), const Real shift2 = Null<Real>());
+    Real swapletPrice() const;
+    Rate swapletRate() const;
+    Real capletPrice(Rate effectiveCap) const;
+    Rate capletRate(Rate effectiveCap) const;
+    Real floorletPrice(Rate effectiveFloor) const;
+    Rate floorletRate(Rate effectiveFloor) const;
+};
 
 // cash flow vector builders
 
@@ -524,12 +515,20 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   const std::vector<Real>& nominals,
                   const std::vector<Rate>& couponRates,
                   BusinessDayConvention paymentAdjustment = Following,
-                  const DayCounter& firstPeriodDayCount = DayCounter()) {
+                  const DayCounter& firstPeriodDayCount = DayCounter(),
+                  const Period& exCouponPeriod = Period(),
+                  const Calendar& exCouponCalendar = Calendar(),
+                  BusinessDayConvention exCouponConvention = Unadjusted,
+                  bool exCouponEndOfMonth = false) {
     return QuantLib::FixedRateLeg(schedule)
         .withNotionals(nominals)
         .withCouponRates(couponRates,dayCount)
         .withPaymentAdjustment(paymentAdjustment)
-        .withFirstPeriodDayCounter(firstPeriodDayCount);
+        .withFirstPeriodDayCounter(firstPeriodDayCount)
+        .withExCouponPeriod(exCouponPeriod,
+                            exCouponCalendar,
+                            exCouponConvention,
+                            exCouponEndOfMonth);
 }
 %}
 #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -541,7 +540,11 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   const std::vector<Real>& nominals,
                   const std::vector<Rate>& couponRates,
                   BusinessDayConvention paymentAdjustment = Following,
-                  const DayCounter& firstPeriodDayCount = DayCounter());
+                  const DayCounter& firstPeriodDayCount = DayCounter(),
+                  const Period& exCouponPeriod = Period(),
+                  const Calendar& exCouponCalendar = Calendar(),
+                  BusinessDayConvention exCouponConvention = Unadjusted,
+                  bool exCouponEndOfMonth = false);
 
 %{
 Leg _IborLeg(const std::vector<Real>& nominals,
@@ -554,7 +557,11 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              const std::vector<Spread>& spreads = std::vector<Spread>(),
              const std::vector<Rate>& caps = std::vector<Rate>(),
              const std::vector<Rate>& floors = std::vector<Rate>(),
-             bool isInArrears = false) {
+             bool isInArrears = false,
+             const Period& exCouponPeriod = Period(),
+             const Calendar& exCouponCalendar = Calendar(),
+             BusinessDayConvention exCouponConvention = Unadjusted,
+             bool exCouponEndOfMonth = false) {
     boost::shared_ptr<IborIndex> libor =
         boost::dynamic_pointer_cast<IborIndex>(index);
     return QuantLib::IborLeg(schedule, libor)
@@ -566,7 +573,11 @@ Leg _IborLeg(const std::vector<Real>& nominals,
         .withSpreads(spreads)
         .withCaps(caps)
         .withFloors(floors)
-        .inArrears(isInArrears);
+        .inArrears(isInArrears)
+        .withExCouponPeriod(exCouponPeriod,
+                            exCouponCalendar,
+                            exCouponConvention,
+                            exCouponEndOfMonth);
 }
 %}
 #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -575,7 +586,7 @@ Leg _IborLeg(const std::vector<Real>& nominals,
 %rename(IborLeg) _IborLeg;
 Leg _IborLeg(const std::vector<Real>& nominals,
              const Schedule& schedule,
-             const IborIndexPtr& index,
+             const boost::shared_ptr<IborIndex>& index,
              const DayCounter& paymentDayCounter = DayCounter(),
              const BusinessDayConvention paymentConvention = Following,
              const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -583,7 +594,44 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              const std::vector<Spread>& spreads = std::vector<Spread>(),
              const std::vector<Rate>& caps = std::vector<Rate>(),
              const std::vector<Rate>& floors = std::vector<Rate>(),
-             bool isInArrears = false);
+             bool isInArrears = false,
+             const Period& exCouponPeriod = Period(),
+             const Calendar& exCouponCalendar = Calendar(),
+             BusinessDayConvention exCouponConvention = Unadjusted,
+             bool exCouponEndOfMonth = false);
+
+%{
+Leg _OvernightLeg(const std::vector<Real>& nominals,
+             const Schedule& schedule,
+             const boost::shared_ptr<Index>& index,
+             const DayCounter& paymentDayCounter = DayCounter(),
+             const BusinessDayConvention paymentConvention = Following,
+             const std::vector<Real>& gearings = std::vector<Real>(),
+             const std::vector<Spread>& spreads = std::vector<Spread>(),
+             bool telescopicValueDates = false) {
+    boost::shared_ptr<OvernightIndex> overnightindex =
+        boost::dynamic_pointer_cast<OvernightIndex>(index);
+    return QuantLib::OvernightLeg(schedule, overnightindex)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(paymentDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withGearings(gearings)
+        .withSpreads(spreads)
+        .withTelescopicValueDates(telescopicValueDates);
+}
+%}
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+%feature("kwargs") _OvernightLeg;
+#endif
+%rename(OvernightLeg) _OvernightLeg;
+Leg _OvernightLeg(const std::vector<Real>& nominals,
+             const Schedule& schedule,
+             const boost::shared_ptr<Index>& index,
+             const DayCounter& paymentDayCounter = DayCounter(),
+             const BusinessDayConvention paymentConvention = Following,
+             const std::vector<Real>& gearings = std::vector<Real>(),
+             const std::vector<Spread>& spreads = std::vector<Spread>(),
+             bool telescopicValueDates = false);
 
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,
@@ -617,7 +665,7 @@ Leg _CmsLeg(const std::vector<Real>& nominals,
 %rename(CmsLeg) _CmsLeg;
 Leg _CmsLeg(const std::vector<Real>& nominals,
             const Schedule& schedule,
-            const SwapIndexPtr& index,
+            const boost::shared_ptr<SwapIndex>& index,
             const DayCounter& paymentDayCounter = DayCounter(),
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -658,7 +706,7 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
 %rename(CmsZeroLeg) _CmsZeroLeg;
 Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const Schedule& schedule,
-                const SwapIndexPtr& index,
+                const boost::shared_ptr<SwapIndex>& index,
                 const DayCounter& paymentDayCounter = DayCounter(),
                 const BusinessDayConvention paymentConvention = Following,
                 const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -667,7 +715,48 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const std::vector<Rate>& caps = std::vector<Rate>(),
                 const std::vector<Rate>& floors = std::vector<Rate>());
 
-
+%{
+Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
+            const Schedule& schedule,
+            const boost::shared_ptr<Index>& index,
+            const DayCounter& paymentDayCounter = DayCounter(),
+            const BusinessDayConvention paymentConvention = Following,
+            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+            const std::vector<Real>& gearings = std::vector<Real>(),
+            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            bool isInArrears = false) {
+    boost::shared_ptr<SwapSpreadIndex> swapSpreadIndex =
+        boost::dynamic_pointer_cast<SwapSpreadIndex>(index);
+    return QuantLib::CmsSpreadLeg(schedule, swapSpreadIndex)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(paymentDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withFixingDays(fixingDays)
+        .withGearings(gearings)
+        .withSpreads(spreads)
+        .withCaps(caps)
+        .withFloors(floors)
+        .inArrears(isInArrears);
+}
+%}
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+%feature("kwargs") _CmsSpreadLeg;
+#endif
+%rename(CmsSpreadLeg) _CmsSpreadLeg;
+Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
+            const Schedule& schedule,
+            const boost::shared_ptr<SwapSpreadIndex>& index,
+            const DayCounter& paymentDayCounter = DayCounter(),
+            const BusinessDayConvention paymentConvention = Following,
+            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+            const std::vector<Real>& gearings = std::vector<Real>(),
+            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            bool isInArrears = false);
+                
 // cash-flow analysis
 
 %{
@@ -689,6 +778,47 @@ class CashFlows {
   public:
     static Date startDate(const Leg &);
     static Date maturityDate(const Leg &);
+    static Date
+        previousCashFlowDate(const Leg& leg,
+                             bool includeSettlementDateFlows,
+                             Date settlementDate = Date());
+    static Date
+        nextCashFlowDate(const Leg& leg,
+                         bool includeSettlementDateFlows,
+                         Date settlementDate = Date());
+
+    %extend {
+
+        static boost::shared_ptr<CashFlow>
+        previousCashFlow(const Leg& leg,
+                         bool includeSettlementDateFlows,
+                         Date settlementDate = Date()) {
+            Leg::const_reverse_iterator i =
+                QuantLib::CashFlows::previousCashFlow(
+                    leg, includeSettlementDateFlows, settlementDate);
+
+            if (i == leg.rend())
+                return boost::shared_ptr<CashFlow>();
+            else
+                return *i;
+        }
+
+        static boost::shared_ptr<CashFlow>
+        nextCashFlow(const Leg& leg,
+                     bool includeSettlementDateFlows,
+                     Date settlementDate = Date()) {
+            Leg::const_iterator i =
+                QuantLib::CashFlows::nextCashFlow(
+                    leg, includeSettlementDateFlows, settlementDate);
+
+            if (i == leg.end())
+                return boost::shared_ptr<CashFlow>();
+            else
+                return *i;
+        }
+
+    }
+
     %extend {
         static Real npv(
                    const Leg& leg,

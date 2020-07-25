@@ -44,34 +44,33 @@ report('integral', option$NPV())
 timeSteps <- 801
 gridPoints <- 800
 
-invisible(option$setPricingEngine(FDEuropeanEngine(process,timeSteps,gridPoints)))
+invisible(option$setPricingEngine(FdBlackScholesVanillaEngine(process,timeSteps,gridPoints)))
 report('finite diff.', option$NPV())
 
 
 ## method: binomial
 timeSteps <- 801
 
-invisible(option$setPricingEngine(BinomialVanillaEngine(process,'jr',timeSteps)))
+invisible(option$setPricingEngine(BinomialJRVanillaEngine(process,timeSteps)))
 report('binomial (JR)', option$NPV())
 
-invisible(option$setPricingEngine(BinomialVanillaEngine(process,'crr',timeSteps)))
+invisible(option$setPricingEngine(BinomialCRRVanillaEngine(process,timeSteps)))
 report('binomial (CRR)', option$NPV())
 
-invisible(option$setPricingEngine(BinomialVanillaEngine(process,'eqp',timeSteps)))
+invisible(option$setPricingEngine(BinomialEQPVanillaEngine(process,timeSteps)))
 report('binomial (EQP)', option$NPV())
 
-invisible(option$setPricingEngine(BinomialVanillaEngine(process,'trigeorgis',timeSteps)))
+invisible(option$setPricingEngine(BinomialTrigeorgisVanillaEngine(process,timeSteps)))
 report('bin. (Trigeorgis)', option$NPV())
 
-invisible(option$setPricingEngine(BinomialVanillaEngine(process,'tian',timeSteps)))
+invisible(option$setPricingEngine(BinomialTianVanillaEngine(process,timeSteps)))
 report('binomial (Tian)', option$NPV())
 
-invisible(option$setPricingEngine(BinomialVanillaEngine(process,'lr',timeSteps)))
+invisible(option$setPricingEngine(BinomialLRVanillaEngine(process,timeSteps)))
 report('binomial (LR)', option$NPV())
 
 ## method: Monte Carlo
-invisible(option$setPricingEngine(MCEuropeanEngine(process,
-                                  'pseudorandom',
+invisible(option$setPricingEngine(MCPREuropeanEngine(process,
                                   timeSteps = 1,
                                   timeStepsPerYear=NA,
                                   brownianBridge=FALSE,
@@ -82,10 +81,10 @@ invisible(option$setPricingEngine(MCEuropeanEngine(process,
                                   seed = 42)))
 report('MC (crude)', option$NPV(), option$errorEstimate())
 
-invisible(option$setPricingEngine(MCEuropeanEngine(process,
-                                  'lowdiscrepancy',
+invisible(option$setPricingEngine(MCLDEuropeanEngine(process,
                                   timeSteps = 1,
-                                  timeStepsPerYear=NA,                                                                             brownianBridge=FALSE,
+                                  timeStepsPerYear=NA,
+                                  brownianBridge=FALSE,
                                   antitheticVariate=FALSE,
                                   requiredSamples = 32768,
                                   requiredTolerance = 0.02,

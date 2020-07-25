@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2005 Johan Witters
+ Copyright (C) 2018 Matthias Groncki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -24,6 +25,8 @@
 %include common.i
 %include date.i
 %include stl.i
+
+%define QL_TYPECHECK_BUSINESSDAYCONVENTION       6210    %enddef
 
 %{
 using QuantLib::Calendar;
@@ -56,24 +59,24 @@ using QuantLib::JoinBusinessDays;
 
 enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
 
-
-#if defined(SWIGRUBY)
-%mixin Calendar "Comparable";
+#if defined(SWIGPYTHON)
+%typemap(in) boost::optional<BusinessDayConvention> %{
+	if($input == Py_None)
+		$1 = boost::none;
+    else if (PyInt_Check($input))
+        $1 = (BusinessDayConvention) PyInt_AsLong($input);
+	else
+		$1 = (BusinessDayConvention) PyLong_AsLong($input);
+%}
+%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) boost::optional<BusinessDayConvention> {
+if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
+	$1 = 1;
+else
+	$1 = 0;
+}
 #endif
+
 class Calendar {
-    #if defined(SWIGRUBY)
-    %rename("isBusinessDay?")   isBusinessDay;
-    %rename("isHoliday?")       isHoliday;
-    %rename("isEndOfMonth?")    isEndOfMonth;
-    %rename("addHoliday!")      addHoliday;
-    %rename("removeHoliday!")   removeHoliday;
-    #elif defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-    %rename("is-business-day?") isBusinessDay;
-    %rename("is-holiday?")      isHoliday;
-    %rename("is-end-of-month?") isEndOfMonth;
-    %rename("add-holiday")      addHoliday;
-    %rename("remove-holiday")   removeHoliday;
-    #endif
   protected:
     Calendar();
   public:
@@ -96,22 +99,23 @@ class Calendar {
                                    const Date& to,
                                    bool includeFirst = true,
                                    bool includeLast = false);
+    std::vector<Date> holidayList(const Date& from,
+                                  const Date& to,
+                                  bool includeWeekEnds = false);
+    std::vector<Date> businessDayList(const Date& from,
+                                      const Date& to);
     std::string name();
     %extend {
-        #if !defined(SWIGPERL)
         std::string __str__() {
             return self->name()+" calendar";
         }
-        #endif
-        #if defined(SWIGPYTHON) || defined(SWIGRUBY) || defined(SWIGJAVA)
+        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __eq__(const Calendar& other) {
             return (*self) == other;
         }
-        #if defined(SWIGPYTHON) || defined(SWIGJAVA)
         bool __ne__(const Calendar& other) {
             return (*self) != other;
         }
-        #endif
         #endif
     }
     #if defined(SWIGPYTHON)
@@ -121,15 +125,6 @@ class Calendar {
     %}
     #endif
 };
-
-#if defined(SWIGMZSCHEME) || defined(SWIGGUILE)
-%rename("Calendar=?") Calendar_equal;
-%inline %{
-    bool Calendar_equal(const Calendar& c1, const Calendar& c2) {
-        return c1 == c2;
-    }
-%}
-#endif
 
 namespace QuantLib {
 
@@ -167,6 +162,12 @@ namespace QuantLib {
 
     class Denmark : public Calendar {};
     class Finland : public Calendar {};
+
+    class France : public Calendar {
+      public:
+        enum Market { Settlement, Exchange };
+        France(Market m = Settlement);
+    };
 
     class Germany : public Calendar {
       public:
@@ -268,6 +269,7 @@ namespace QuantLib {
     };
 
     class TARGET : public Calendar {};
+    class Thailand : public Calendar {};
     class Turkey : public Calendar {};
 
     class Ukraine : public Calendar {
@@ -284,7 +286,8 @@ namespace QuantLib {
 
     class UnitedStates : public Calendar {
       public:
-        enum Market { Settlement, NYSE, GovernmentBond, NERC };
+        enum Market { Settlement, NYSE, GovernmentBond,
+                      NERC, LiborImpact, FederalReserve };
         UnitedStates(Market m = Settlement);
     };
 

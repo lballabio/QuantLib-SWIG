@@ -3,13 +3,27 @@ CLEANFILES = quantlib_wrap.cpp libQuantLibJNI.@JNILIB_EXTENSION@ QuantLib.jar
 
 BUILT_SOURCES = quantlib_wrap.cpp quantlib_wrap.h
 
-EXAMPLES = Bonds DiscreteHedging EquityOptions FRA UnaryFunctions
+EXAMPLES = Bonds CallableBonds CallableBondsOAS DiscreteHedging EquityOptions FRA FunctionDelegates
+
+SWIGFLAGS =
+
+if JAVA_AUTOLOAD
+SWIGFLAGS += -DJAVA_AUTOLOAD
+endif
+
+if JAVA_FINALIZER
+SWIGFLAGS += -DJAVA_FINALIZER
+endif
+
+if JAVA_AUTOCLOSEABLE
+SWIGFLAGS += -DJAVA_AUTOCLOSEABLE
+endif
 
 if HAVE_JAVA
 if BUILD_JAVA
 
 examples/%.class: examples/%.java QuantLib.jar
-	$(JAVAC) -source 1.5 -cp QuantLib.jar examples/$*.java
+	$(JAVAC)  -cp QuantLib.jar examples/$*.java
 
 .PHONY: $(EXAMPLES)
 
@@ -19,14 +33,15 @@ quantlib_wrap.o: quantlib_wrap.cpp quantlib_wrap.h
 	$(CXX) -c quantlib_wrap.cpp -fno-strict-aliasing -fPIC $(CXXFLAGS) @JDK_INCLUDE@ @JDK_SYSTEM_INCLUDE@ `quantlib-config --cflags` -o quantlib_wrap.o
 
 libQuantLibJNI.@JNILIB_EXTENSION@: quantlib_wrap.o
-	$(CXX) @SHARED_LIB@ quantlib_wrap.o -o libQuantLibJNI.@JNILIB_EXTENSION@ `quantlib-config --libs`
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) @SHARED_LIB@ quantlib_wrap.o -o libQuantLibJNI.@JNILIB_EXTENSION@ `quantlib-config --libs`
 
 QuantLib.jar: quantlib_wrap.cpp org/quantlib/*.java
 	mkdir -p bin
-	find org/quantlib -name '*.java' | xargs $(JAVAC) -d bin
+	find org/quantlib -name '*.java' | xargs $(JAVAC) -g -d bin
 	$(JAR) cf QuantLib.jar -C bin org
 
 install-exec-local:
+	mkdir -p $(DESTDIR)/$(libdir)
 	cp -p libQuantLibJNI.@JNILIB_EXTENSION@ $(DESTDIR)/$(libdir)/libQuantLibJNI.@JNILIB_EXTENSION@
 	cp -p QuantLib.jar $(DESTDIR)/$(libdir)/QuantLib.jar
 
@@ -41,7 +56,7 @@ endif
 
 quantlib_wrap.cpp: ../SWIG/*.i
 	mkdir -p org/quantlib
-	$(SWIG) -java -c++ -outdir org/quantlib \
+	$(SWIG) $(SWIGFLAGS) -java -c++ -outdir org/quantlib \
             -package org.quantlib -o quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook:
