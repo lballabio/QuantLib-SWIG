@@ -33,8 +33,8 @@ using QuantLib::HestonSLVProcess;
 %shared_ptr(HestonSLVProcess);
 class HestonSLVProcess : public StochasticProcess {
   public:
-    HestonSLVProcess(const boost::shared_ptr<HestonProcess>& hestonProcess,
-                     const boost::shared_ptr<LocalVolTermStructure>& leverageFct);
+    HestonSLVProcess(const QuantLib::ext::shared_ptr<HestonProcess>& hestonProcess,
+                     const QuantLib::ext::shared_ptr<LocalVolTermStructure>& leverageFct);
 };
 
 
@@ -78,9 +78,9 @@ class HestonSLVMCModel {
   public:
     %extend {
         HestonSLVMCModel(
-           const boost::shared_ptr<LocalVolTermStructure>& localVol,
-           const boost::shared_ptr<HestonModel>& model,
-           const boost::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
+           const QuantLib::ext::shared_ptr<LocalVolTermStructure>& localVol,
+           const QuantLib::ext::shared_ptr<HestonModel>& model,
+           const QuantLib::ext::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
            const Date& endDate,
            Size timeStepsPerYear = 365,
            Size nBins = 201,
@@ -92,9 +92,9 @@ class HestonSLVMCModel {
                 nBins, calibrationPaths, mandatoryDates);
         }
     }
-    boost::shared_ptr<HestonProcess> hestonProcess() const;
-    boost::shared_ptr<LocalVolTermStructure> localVol() const;
-    boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
+    QuantLib::ext::shared_ptr<HestonProcess> hestonProcess() const;
+    QuantLib::ext::shared_ptr<LocalVolTermStructure> localVol() const;
+    QuantLib::ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 };
 
 
@@ -153,8 +153,8 @@ class HestonSLVFDMModel {
   public:
     %extend {
         HestonSLVFDMModel(
-            const boost::shared_ptr<LocalVolTermStructure>& localVol,
-            const boost::shared_ptr<HestonModel>& model,
+            const QuantLib::ext::shared_ptr<LocalVolTermStructure>& localVol,
+            const QuantLib::ext::shared_ptr<HestonModel>& model,
             const Date& endDate,
             const HestonSLVFokkerPlanckFdmParams& params,
             const bool logging = false,
@@ -164,9 +164,9 @@ class HestonSLVFDMModel {
                 endDate, params, logging, mandatoryDates);
         }
     }
-    boost::shared_ptr<HestonProcess> hestonProcess() const;
-    boost::shared_ptr<LocalVolTermStructure> localVol() const;
-    boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
+    QuantLib::ext::shared_ptr<HestonProcess> hestonProcess() const;
+    QuantLib::ext::shared_ptr<LocalVolTermStructure> localVol() const;
+    QuantLib::ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 };
 
 

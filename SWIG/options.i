@@ -67,8 +67,8 @@ class Option : public Instrument {
     enum Type { Put = -1,
                 Call = 1
     };
-    boost::shared_ptr<Payoff> payoff();
-    boost::shared_ptr<Exercise> exercise();
+    QuantLib::ext::shared_ptr<Payoff> payoff();
+    QuantLib::ext::shared_ptr<Exercise> exercise();
   private:
     Option();
 };
@@ -156,12 +156,12 @@ class OneAssetOption : public Option {
 class VanillaOption : public OneAssetOption {
   public:
     VanillaOption(
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise);
 
     Volatility impliedVolatility(
                          Real targetValue,
-                         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                          Real accuracy = 1.0e-4,
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
@@ -173,8 +173,8 @@ class VanillaOption : public OneAssetOption {
     }
 };
 
-%template(CalibrationPair) std::pair< boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> >;
-%template(CalibrationSet) std::vector<std::pair< boost::shared_ptr<VanillaOption>, boost::shared_ptr<Quote> > >;
+%template(CalibrationPair) std::pair< QuantLib::ext::shared_ptr<VanillaOption>, QuantLib::ext::shared_ptr<Quote> >;
+%template(CalibrationSet) std::vector<std::pair< QuantLib::ext::shared_ptr<VanillaOption>, QuantLib::ext::shared_ptr<Quote> > >;
 
 %{
 using QuantLib::EuropeanOption;
@@ -185,8 +185,8 @@ using QuantLib::EuropeanOption;
 class EuropeanOption : public VanillaOption {
   public:
     EuropeanOption(
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise);
 };
 
 // ForwardVanillaOption
@@ -201,8 +201,8 @@ class ForwardVanillaOption : public OneAssetOption {
         ForwardVanillaOption(
                 Real moneyness,
                 Date resetDate,
-                const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                const boost::shared_ptr<Exercise>& exercise);
+                const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+                const QuantLib::ext::shared_ptr<Exercise>& exercise);
 };
 
 // QuantoVanillaOption
@@ -215,8 +215,8 @@ using QuantLib::QuantoVanillaOption;
 class QuantoVanillaOption : public OneAssetOption {
   public:
     QuantoVanillaOption(
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise);
     Real qvega();
     Real qrho();
     Real qlambda();
@@ -232,8 +232,8 @@ class QuantoForwardVanillaOption : public ForwardVanillaOption {
     QuantoForwardVanillaOption(
             Real moneyness,
             Date resetDate,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise);
 };
 
 %{
@@ -259,7 +259,7 @@ using QuantLib::AnalyticEuropeanEngine;
 %shared_ptr(AnalyticEuropeanEngine)
 class AnalyticEuropeanEngine : public PricingEngine {
   public:
-    AnalyticEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+    AnalyticEuropeanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
 
@@ -270,7 +270,7 @@ using QuantLib::HestonModel;
 %shared_ptr(HestonModel)
 class HestonModel : public CalibratedModel {
   public:
-    HestonModel(const boost::shared_ptr<HestonProcess>&  process);
+    HestonModel(const QuantLib::ext::shared_ptr<HestonProcess>&  process);
     Real theta() const;
     Real kappa() const;
     Real sigma() const;
@@ -353,7 +353,7 @@ class AnalyticHestonEngine : public PricingEngine {
             Real c_inf, Real epsilon, Real v0, Real t);
 
         Real calculate(Real c_inf,
-                       const boost::function<Real(Real)>& f,
+                       const QuantLib::ext::function<Real(Real)>& f,
                        doubleOrNull maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;
@@ -367,20 +367,20 @@ class AnalyticHestonEngine : public PricingEngine {
           GaussChebyshev, GaussChebyshev2nd };
 
       Integration(Algorithm intAlgo,
-                const boost::shared_ptr<GaussianQuadrature>& quadrature);
+                const QuantLib::ext::shared_ptr<GaussianQuadrature>& quadrature);
 
       Integration(Algorithm intAlgo,
-                const boost::shared_ptr<Integrator>& integrator);
+                const QuantLib::ext::shared_ptr<Integrator>& integrator);
     };
     enum ComplexLogFormula { 
         Gatheral, BranchCorrection, AndersenPiterbarg, AndersenPiterbargOptCV
     };
-    AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+    AnalyticHestonEngine(const QuantLib::ext::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
-    AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+    AnalyticHestonEngine(const QuantLib::ext::shared_ptr<HestonModel>& model,
                          Real relTolerance,
                          Size maxEvaluations);
-    AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
+    AnalyticHestonEngine(const QuantLib::ext::shared_ptr<HestonModel>& model,
                      ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
                      Real andersenPiterbargEpsilon = 1e-8);
 
@@ -400,7 +400,7 @@ using QuantLib::COSHestonEngine;
 %shared_ptr(COSHestonEngine)
 class COSHestonEngine : public PricingEngine {
   public:
-    COSHestonEngine(const boost::shared_ptr<HestonModel>& model,
+    COSHestonEngine(const QuantLib::ext::shared_ptr<HestonModel>& model,
                     Real L = 16, Size N = 200);
 };
 
@@ -414,7 +414,7 @@ class ExponentialFittingHestonEngine : public PricingEngine {
     enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
     
     ExponentialFittingHestonEngine(
-        const boost::shared_ptr<HestonModel>& model,
+        const QuantLib::ext::shared_ptr<HestonModel>& model,
         ControlVariate cv = AndersenPiterbargOptCV,
         doubleOrNull scaling = Null<Real>());
 };
@@ -431,17 +431,17 @@ class AnalyticPTDHestonEngine : public PricingEngine {
     typedef AnalyticHestonEngine::Integration Integration;
     
     AnalyticPTDHestonEngine(
-            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            const QuantLib::ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Real relTolerance, Size maxEvaluations);
     // Constructor using Laguerre integration
     // and Gatheral's version of complex log.
     AnalyticPTDHestonEngine(
-            const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+            const QuantLib::ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
             Size integrationOrder = 144);
             
     // Constructor giving full control over Fourier integration algorithm
     AnalyticPTDHestonEngine(
-        const boost::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
+        const QuantLib::ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         ComplexLogFormula cpxLog,
         const Integration& itg,
         Real andersenPiterbargEpsilon = 1e-8);            
@@ -459,7 +459,7 @@ using QuantLib::BatesModel;
 %shared_ptr(BatesModel)
 class BatesModel : public HestonModel {
   public:
-    BatesModel(const boost::shared_ptr<BatesProcess>&  process);
+    BatesModel(const QuantLib::ext::shared_ptr<BatesProcess>&  process);
     Real nu() const;
     Real delta() const;
     Real lambda() const;
@@ -473,9 +473,9 @@ using QuantLib::BatesEngine;
 %shared_ptr(BatesEngine)
 class BatesEngine : public PricingEngine {
   public:
-    BatesEngine(const boost::shared_ptr<BatesModel>& model,
+    BatesEngine(const QuantLib::ext::shared_ptr<BatesModel>& model,
                 Size integrationOrder = 144);
-    BatesEngine(const boost::shared_ptr<BatesModel>& model,
+    BatesEngine(const QuantLib::ext::shared_ptr<BatesModel>& model,
                 Real relTolerance,
                 Size maxEvaluations);
 };
@@ -488,7 +488,7 @@ using QuantLib::IntegralEngine;
 %shared_ptr(IntegralEngine)
 class IntegralEngine : public PricingEngine {
   public:
-    IntegralEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+    IntegralEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
 
@@ -506,7 +506,7 @@ class FDBermudanEngine : public PricingEngine {
     %}
     #endif
   public:
-    FDBermudanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FDBermudanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                      Size timeSteps = 100, Size gridPoints = 100,
                      bool timeDependent = false);
 };
@@ -524,7 +524,7 @@ class FDEuropeanEngine : public PricingEngine {
     %}
     #endif
   public:
-    FDEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess> process,
+    FDEuropeanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess> process,
                      Size timeSteps = 100, Size gridPoints = 100,
                      bool timeDependent = false);
 };
@@ -551,7 +551,7 @@ using QuantLib::Joshi4;
 template <class T>
 class BinomialVanillaEngine : public PricingEngine {
   public:
-    BinomialVanillaEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+    BinomialVanillaEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                           Size steps);
 };
 
@@ -612,7 +612,7 @@ class MCEuropeanEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        MCEuropeanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                          intOrNull timeSteps = Null<Size>(),
                          intOrNull timeStepsPerYear = Null<Size>(),
                          bool brownianBridge = false,
@@ -682,7 +682,7 @@ class MCAmericanEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        MCAmericanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                          intOrNull timeSteps = Null<Size>(),
                          intOrNull timeStepsPerYear = Null<Size>(),
                          bool antitheticVariate = false,
@@ -769,7 +769,7 @@ class MCEuropeanHestonEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCEuropeanHestonEngine(const boost::shared_ptr<HestonProcess>& process,
+        MCEuropeanHestonEngine(const QuantLib::ext::shared_ptr<HestonProcess>& process,
                                intOrNull timeSteps = Null<Size>(),
                                intOrNull timeStepsPerYear = Null<Size>(),
                                bool antitheticVariate = false,
@@ -841,7 +841,7 @@ class FDAmericanEngine : public PricingEngine {
     %}
     #endif
   public:
-    FDAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FDAmericanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                      Size timeSteps = 100, Size gridPoints = 100,
                      bool timeDependent = false);
 };
@@ -849,7 +849,7 @@ class FDAmericanEngine : public PricingEngine {
 %shared_ptr(FDShoutEngine)
 class FDShoutEngine : public PricingEngine {
   public:
-    FDShoutEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FDShoutEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                   Size timeSteps = 100, Size gridPoints = 100,
                   bool timeDependent = false);
 };
@@ -862,7 +862,7 @@ using QuantLib::ContinuousArithmeticAsianLevyEngine;
 %shared_ptr(ContinuousArithmeticAsianLevyEngine)
 class ContinuousArithmeticAsianLevyEngine : public PricingEngine {
   public:
-    ContinuousArithmeticAsianLevyEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    ContinuousArithmeticAsianLevyEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                                         const Handle<Quote>& runningAverage,
                                         const Date& startDate);
 };
@@ -874,7 +874,7 @@ using QuantLib::FdBlackScholesAsianEngine;
 %shared_ptr(FdBlackScholesAsianEngine)
 class FdBlackScholesAsianEngine : public PricingEngine {
   public:
-    FdBlackScholesAsianEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FdBlackScholesAsianEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                               Size tGrid, Size xGrid, Size aGrid);
 };
 
@@ -887,7 +887,7 @@ using QuantLib::BaroneAdesiWhaleyApproximationEngine;
 class BaroneAdesiWhaleyApproximationEngine : public PricingEngine {
   public:
     BaroneAdesiWhaleyApproximationEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
@@ -900,7 +900,7 @@ using QuantLib::BjerksundStenslandApproximationEngine;
 class BjerksundStenslandApproximationEngine : public PricingEngine {
   public:
     BjerksundStenslandApproximationEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
@@ -912,7 +912,7 @@ using QuantLib::JuQuadraticApproximationEngine;
 class JuQuadraticApproximationEngine : public PricingEngine {
   public:
     JuQuadraticApproximationEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
@@ -923,7 +923,7 @@ using QuantLib::AnalyticDigitalAmericanEngine;
 class AnalyticDigitalAmericanEngine : public PricingEngine {
   public:
     AnalyticDigitalAmericanEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
@@ -934,7 +934,7 @@ using QuantLib::AnalyticDigitalAmericanKOEngine;
 class AnalyticDigitalAmericanKOEngine : public PricingEngine {
   public:
     AnalyticDigitalAmericanKOEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 // Dividend option
@@ -948,18 +948,18 @@ using QuantLib::DividendVanillaOption;
 class DividendVanillaOption : public OneAssetOption {
   public:
     DividendVanillaOption(
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise,
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise,
             const std::vector<Date>& dividendDates,
             const std::vector<Real>& dividends);
     Volatility impliedVolatility(
                          Real targetValue,
-                         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                          Real accuracy = 1.0e-4,
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
                          Volatility maxVol = 4.0) {
-        return boost::dynamic_pointer_cast<DividendVanillaOption>(*self)
+        return QuantLib::ext::dynamic_pointer_cast<DividendVanillaOption>(*self)
             ->impliedVolatility(targetValue, process, accuracy,
                                 maxEvaluations, minVol, maxVol);
     }
@@ -974,7 +974,7 @@ using QuantLib::AnalyticDividendEuropeanEngine;
 class AnalyticDividendEuropeanEngine : public PricingEngine {
   public:
     AnalyticDividendEuropeanEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
@@ -994,7 +994,7 @@ class FDDividendEuropeanEngine : public PricingEngine {
     %}
     #endif
   public:
-    FDDividendEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FDDividendEuropeanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                              Size timeSteps = 100,
                              Size gridPoints = 100,
                              bool timeDependent = false);
@@ -1015,7 +1015,7 @@ class FDDividendAmericanEngine : public PricingEngine {
     %}
     #endif
   public:
-    FDDividendAmericanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FDDividendAmericanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                              Size timeSteps = 100,
                              Size gridPoints = 100,
                              bool timeDependent = false);
@@ -1038,16 +1038,16 @@ class BarrierOption : public OneAssetOption {
                Barrier::Type barrierType,
                Real barrier,
                Real rebate,
-               const boost::shared_ptr<StrikedTypePayoff>& payoff,
-               const boost::shared_ptr<Exercise>& exercise);
+               const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+               const QuantLib::ext::shared_ptr<Exercise>& exercise);
     Volatility impliedVolatility(
                          Real targetValue,
-                         const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                          Real accuracy = 1.0e-4,
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
                          Volatility maxVol = 4.0) {
-        return boost::dynamic_pointer_cast<BarrierOption>(*self)
+        return QuantLib::ext::dynamic_pointer_cast<BarrierOption>(*self)
              ->impliedVolatility(targetValue, process, accuracy,
                                  maxEvaluations, minVol, maxVol);
     }
@@ -1059,8 +1059,8 @@ class DividendBarrierOption : public BarrierOption {
     DividendBarrierOption(Barrier::Type barrierType,
                           Real barrier,
                           Real rebate,
-                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
-                          const boost::shared_ptr<Exercise>& exercise,
+                          const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+                          const QuantLib::ext::shared_ptr<Exercise>& exercise,
                           const std::vector<Date>& dividendDates,
                           const std::vector<Real>& dividends);
 };
@@ -1076,7 +1076,7 @@ using QuantLib::MCBarrierEngine;
 %shared_ptr(AnalyticBarrierEngine)
 class AnalyticBarrierEngine : public PricingEngine {
   public:
-    AnalyticBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+    AnalyticBarrierEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
 
@@ -1090,7 +1090,7 @@ class MCBarrierEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        MCBarrierEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                         intOrNull timeSteps = Null<Size>(),
                         intOrNull timeStepsPerYear = Null<Size>(),
                         bool brownianBridge = false,
@@ -1187,9 +1187,9 @@ using QuantLib::FdmQuantoHelper;
 class FdmQuantoHelper {
   public:
     FdmQuantoHelper(
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& fTS,
-        const boost::shared_ptr<BlackVolTermStructure>& fxVolTS,
+        const QuantLib::ext::shared_ptr<YieldTermStructure>& rTS,
+        const QuantLib::ext::shared_ptr<YieldTermStructure>& fTS,
+        const QuantLib::ext::shared_ptr<BlackVolTermStructure>& fxVolTS,
         Real equityFxCorrelation,
         Real exchRateATMlevel);
 };
@@ -1208,7 +1208,7 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
     enum CashDividendModel { Spot, Escrowed };
 
     FdBlackScholesVanillaEngine(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
         bool localVol = false,
@@ -1216,8 +1216,8 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
         CashDividendModel cashDividendModel = Spot);
 
     FdBlackScholesVanillaEngine(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
-        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&,
+        const QuantLib::ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
         Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
         bool localVol = false,
@@ -1227,16 +1227,16 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") make;
     %extend {
-        static boost::shared_ptr<FdBlackScholesVanillaEngine> make(
-                    const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                    const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
-                        = boost::shared_ptr<FdmQuantoHelper>(),
+        static QuantLib::ext::shared_ptr<FdBlackScholesVanillaEngine> make(
+                    const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                    const QuantLib::ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+                        = QuantLib::ext::shared_ptr<FdmQuantoHelper>(),
                     Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                     const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                     bool localVol = false,
                     Real illegalLocalVolOverwrite = -Null<Real>(),
                     CashDividendModel cashDividendModel = Spot) {
-            return boost::shared_ptr<FdBlackScholesVanillaEngine>(
+            return QuantLib::ext::shared_ptr<FdBlackScholesVanillaEngine>(
                 new FdBlackScholesVanillaEngine(process, quantoHelper, tGrid, xGrid,
                                                 dampingSteps, schemeDesc,
                                                 localVol, illegalLocalVolOverwrite,
@@ -1253,8 +1253,8 @@ class FdOrnsteinUhlenbeckVanillaEngine : public PricingEngine {
     %feature("kwargs") FdOrnsteinUhlenbeckVanillaEngine;
     #endif
     FdOrnsteinUhlenbeckVanillaEngine(
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess>&,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
+        const QuantLib::ext::shared_ptr<OrnsteinUhlenbeckProcess>&,
+        const QuantLib::ext::shared_ptr<YieldTermStructure>& rTS,
         Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
         Real epsilon = 0.0001,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
@@ -1264,7 +1264,7 @@ class FdOrnsteinUhlenbeckVanillaEngine : public PricingEngine {
 class FdBatesVanillaEngine : public PricingEngine {
   public:
     FdBatesVanillaEngine(
-            const boost::shared_ptr<BatesModel>& model,
+            const QuantLib::ext::shared_ptr<BatesModel>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid=50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
@@ -1274,37 +1274,37 @@ class FdBatesVanillaEngine : public PricingEngine {
 class FdHestonVanillaEngine : public PricingEngine {
   public:
     FdHestonVanillaEngine(
-        const boost::shared_ptr<HestonModel>& model,
+        const QuantLib::ext::shared_ptr<HestonModel>& model,
         Size tGrid = 100, Size xGrid = 100,
         Size vGrid = 50, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-        const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-            = boost::shared_ptr<LocalVolTermStructure>());
+        const QuantLib::ext::shared_ptr<LocalVolTermStructure>& leverageFct
+            = QuantLib::ext::shared_ptr<LocalVolTermStructure>());
 
     FdHestonVanillaEngine(
-        const boost::shared_ptr<HestonModel>& model,
-        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        const QuantLib::ext::shared_ptr<HestonModel>& model,
+        const QuantLib::ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
         Size tGrid = 100, 
         Size xGrid = 100,
         Size vGrid = 50, 
         Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-        const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-            = boost::shared_ptr<LocalVolTermStructure>());
+        const QuantLib::ext::shared_ptr<LocalVolTermStructure>& leverageFct
+            = QuantLib::ext::shared_ptr<LocalVolTermStructure>());
 
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") make;
     %extend {
-        static boost::shared_ptr<FdHestonVanillaEngine> make(
-                    const boost::shared_ptr<HestonModel>& model,
-                    const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
-                        = boost::shared_ptr<FdmQuantoHelper>(),
+        static QuantLib::ext::shared_ptr<FdHestonVanillaEngine> make(
+                    const QuantLib::ext::shared_ptr<HestonModel>& model,
+                    const QuantLib::ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+                        = QuantLib::ext::shared_ptr<FdmQuantoHelper>(),
                     Size tGrid = 100, Size xGrid = 100, Size vGrid = 50,
                     Size dampingSteps = 0,
                     const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                    const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                        = boost::shared_ptr<LocalVolTermStructure>()) {
-            return boost::shared_ptr<FdHestonVanillaEngine>(
+                    const QuantLib::ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                        = QuantLib::ext::shared_ptr<LocalVolTermStructure>()) {
+            return QuantLib::ext::shared_ptr<FdHestonVanillaEngine>(
                 new FdHestonVanillaEngine(model, quantoHelper, tGrid, xGrid, vGrid,
                                           dampingSteps, schemeDesc, leverageFct));
         }
@@ -1366,7 +1366,7 @@ using QuantLib::FdHestonRebateEngine;
 %shared_ptr(FdBlackScholesBarrierEngine)
 class FdBlackScholesBarrierEngine : public PricingEngine {
   public:
-    FdBlackScholesBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FdBlackScholesBarrierEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                                 Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                                 const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                                 bool localVol = false,
@@ -1376,7 +1376,7 @@ class FdBlackScholesBarrierEngine : public PricingEngine {
 %shared_ptr(FdBlackScholesRebateEngine)
 class FdBlackScholesRebateEngine : public PricingEngine {
   public:
-    FdBlackScholesRebateEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    FdBlackScholesRebateEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                                bool localVol = false,
@@ -1386,21 +1386,21 @@ class FdBlackScholesRebateEngine : public PricingEngine {
 %shared_ptr(FdHestonBarrierEngine)
 class FdHestonBarrierEngine : public PricingEngine {
   public:
-    FdHestonBarrierEngine(const boost::shared_ptr<HestonModel>& model,
+    FdHestonBarrierEngine(const QuantLib::ext::shared_ptr<HestonModel>& model,
                           Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                          const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                              = boost::shared_ptr<LocalVolTermStructure>());
+                          const QuantLib::ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                              = QuantLib::ext::shared_ptr<LocalVolTermStructure>());
 };
 
 %shared_ptr(FdHestonRebateEngine)
 class FdHestonRebateEngine : public PricingEngine {
   public:
-    FdHestonRebateEngine(const boost::shared_ptr<HestonModel>& model,
+    FdHestonRebateEngine(const QuantLib::ext::shared_ptr<HestonModel>& model,
                          Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
                          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                         const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                             = boost::shared_ptr<LocalVolTermStructure>());
+                         const QuantLib::ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                             = QuantLib::ext::shared_ptr<LocalVolTermStructure>());
 };
 
 
@@ -1412,7 +1412,7 @@ using QuantLib::AnalyticBinaryBarrierEngine;
 class AnalyticBinaryBarrierEngine : public PricingEngine {
   public:
     AnalyticBinaryBarrierEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
@@ -1456,7 +1456,7 @@ If max_steps is specified, it would limit binomial steps to this value.
 template <class T, class U>
 class BinomialBarrierEngine : public PricingEngine {
   public:
-    BinomialBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+    BinomialBarrierEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                           Size steps,
                           Size max_steps = 0);
 };
@@ -1508,13 +1508,13 @@ typedef QuantoEngine<ForwardVanillaOption,AnalyticEuropeanEngine> QuantoForwardE
 %shared_ptr(ForwardEuropeanEngine)
 class ForwardEuropeanEngine: public PricingEngine {
   public:
-    ForwardEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&);
+    ForwardEuropeanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
 %shared_ptr(QuantoEuropeanEngine)
 class QuantoEuropeanEngine : public PricingEngine {
   public:
-    QuantoEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    QuantoEuropeanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                          const Handle<YieldTermStructure>& foreignRiskFreeRate,
                          const Handle<BlackVolTermStructure>& exchangeRateVolatility,
                          const Handle<Quote>& correlation);
@@ -1523,7 +1523,7 @@ class QuantoEuropeanEngine : public PricingEngine {
 %shared_ptr(QuantoForwardEuropeanEngine)
 class QuantoForwardEuropeanEngine : public PricingEngine {
   public:
-    QuantoForwardEuropeanEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+    QuantoForwardEuropeanEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                                 const Handle<YieldTermStructure>& foreignRiskFreeRate,
                                 const Handle<BlackVolTermStructure>& exchangeRateVolatility,
                                 const Handle<Quote>& correlation);
@@ -1536,7 +1536,7 @@ using QuantLib::BlackCalculator;
 
 class BlackCalculator {
   public:
-    BlackCalculator(const boost::shared_ptr<StrikedTypePayoff>& payoff,
+    BlackCalculator(const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
                     Real forward,
                     Real stdDev,
                     Real discount = 1.0);
@@ -1578,8 +1578,8 @@ class ContinuousAveragingAsianOption : public OneAssetOption {
   public:
     ContinuousAveragingAsianOption(
             Average::Type averageType,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise);
 };
 
 %shared_ptr(DiscreteAveragingAsianOption)
@@ -1590,8 +1590,8 @@ class DiscreteAveragingAsianOption : public OneAssetOption {
             Real runningAccumulator,
             Size pastFixings,
             const std::vector<Date>& fixingDates,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise);
 };
 
 // Asian engines
@@ -1605,7 +1605,7 @@ using QuantLib::AnalyticContinuousGeometricAveragePriceAsianEngine;
 class AnalyticContinuousGeometricAveragePriceAsianEngine : public PricingEngine {
   public:
     AnalyticContinuousGeometricAveragePriceAsianEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
@@ -1617,7 +1617,7 @@ using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianEngine;
 class AnalyticDiscreteGeometricAveragePriceAsianEngine : public PricingEngine {
   public:
     AnalyticDiscreteGeometricAveragePriceAsianEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
@@ -1629,7 +1629,7 @@ using QuantLib::AnalyticDiscreteGeometricAverageStrikeAsianEngine;
 class AnalyticDiscreteGeometricAverageStrikeAsianEngine : public PricingEngine {
   public:
     AnalyticDiscreteGeometricAverageStrikeAsianEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
@@ -1649,7 +1649,7 @@ class MCDiscreteArithmeticAPEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCDiscreteArithmeticAPEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        MCDiscreteArithmeticAPEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                                      bool brownianBridge = false,
                                      bool antitheticVariate = false,
                                      bool controlVariate = false,
@@ -1713,7 +1713,7 @@ class MCDiscreteArithmeticASEngine : public PricingEngine {
   public:
     %extend {
         MCDiscreteArithmeticASEngine(
-                            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                             bool brownianBridge = false,
                             bool antitheticVariate = false,
                             intOrNull requiredSamples = Null<Size>(),
@@ -1773,7 +1773,7 @@ class MCDiscreteGeometricAPEngine : public PricingEngine {
   public:
     %extend {
         MCDiscreteGeometricAPEngine(
-                            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                             bool brownianBridge = false,
                             bool antitheticVariate = false,
                             intOrNull requiredSamples = Null<Size>(),
@@ -1830,7 +1830,7 @@ using QuantLib::VarianceGammaEngine;
 %shared_ptr(VarianceGammaEngine)
 class VarianceGammaEngine : public PricingEngine {
   public:
-    VarianceGammaEngine(const boost::shared_ptr<VarianceGammaProcess>& process);
+    VarianceGammaEngine(const QuantLib::ext::shared_ptr<VarianceGammaProcess>& process);
 };
 
 %{
@@ -1840,9 +1840,9 @@ using QuantLib::FFTVarianceGammaEngine;
 %shared_ptr(FFTVarianceGammaEngine)
 class FFTVarianceGammaEngine : public PricingEngine {
   public:
-    FFTVarianceGammaEngine(const boost::shared_ptr<VarianceGammaProcess>& process,
+    FFTVarianceGammaEngine(const QuantLib::ext::shared_ptr<VarianceGammaProcess>& process,
                            Real logStrikeSpacing = 0.001);
-    void precalculate(const std::vector<boost::shared_ptr<Instrument> >& optionList);
+    void precalculate(const std::vector<QuantLib::ext::shared_ptr<Instrument> >& optionList);
 };
 
 // Double barrier options
@@ -1863,8 +1863,8 @@ class DoubleBarrierOption : public OneAssetOption {
                Real barrier_lo,
                Real barrier_hi,
                Real rebate,
-               const boost::shared_ptr<StrikedTypePayoff>& payoff,
-               const boost::shared_ptr<Exercise>& exercise);
+               const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+               const QuantLib::ext::shared_ptr<Exercise>& exercise);
 };
 
 // QuantoVanillaOption
@@ -1881,8 +1881,8 @@ class QuantoDoubleBarrierOption : public DoubleBarrierOption {
             Real barrier_lo,
             Real barrier_hi,
             Real rebate,
-            const boost::shared_ptr<StrikedTypePayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const QuantLib::ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const QuantLib::ext::shared_ptr<Exercise>& exercise);
     Real qvega();
     Real qrho();
     Real qlambda();
@@ -1901,7 +1901,7 @@ using QuantLib::AnalyticDoubleBarrierEngine;
 class AnalyticDoubleBarrierEngine : public PricingEngine {
   public:
     AnalyticDoubleBarrierEngine(
-                           const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                           const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                            int series = 5);
 };
 
@@ -1913,12 +1913,12 @@ using QuantLib::FdHestonDoubleBarrierEngine;
 class FdHestonDoubleBarrierEngine : public PricingEngine {
   public:
     FdHestonDoubleBarrierEngine(
-            const boost::shared_ptr<HestonModel>& model,
+            const QuantLib::ext::shared_ptr<HestonModel>& model,
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>());
+            const QuantLib::ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                = QuantLib::ext::shared_ptr<LocalVolTermStructure>());
 };
 
 %{
@@ -1929,7 +1929,7 @@ using QuantLib::WulinYongDoubleBarrierEngine;
 class WulinYongDoubleBarrierEngine : public PricingEngine {
   public:
     WulinYongDoubleBarrierEngine(
-                           const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                           const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                            int series = 5);
 };
 
@@ -2016,7 +2016,7 @@ using QuantLib::AnalyticDoubleBarrierBinaryEngine;
 class AnalyticDoubleBarrierBinaryEngine : public PricingEngine {
   public:
     AnalyticDoubleBarrierBinaryEngine(
-                           const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+                           const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %{
@@ -2052,7 +2052,7 @@ Type values:
 template <class T, class U>
 class BinomialDoubleBarrierEngine : public PricingEngine {
   public:
-    BinomialDoubleBarrierEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>&,
+    BinomialDoubleBarrierEngine(const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                                 Size steps);
 };
 
@@ -2101,8 +2101,8 @@ using QuantLib::VanillaSwingOption;
 class VanillaSwingOption : public OneAssetOption {
   public:
     VanillaSwingOption(
-        const boost::shared_ptr<Payoff>& payoff,
-        const boost::shared_ptr<SwingExercise>& ex,
+        const QuantLib::ext::shared_ptr<Payoff>& payoff,
+        const QuantLib::ext::shared_ptr<SwingExercise>& ex,
         Size minExerciseRights, Size maxExerciseRights);
 };
 
@@ -2117,7 +2117,7 @@ using QuantLib::FdSimpleExtOUJumpSwingEngine;
 class FdSimpleBSSwingEngine : public PricingEngine {
   public:
     FdSimpleBSSwingEngine(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            const QuantLib::ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             Size tGrid = 50, Size xGrid = 100,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 };
@@ -2127,14 +2127,14 @@ class FdSimpleExtOUJumpSwingEngine : public PricingEngine {
   public:
     %extend {
         FdSimpleExtOUJumpSwingEngine(
-            const boost::shared_ptr<ExtOUWithJumpsProcess>& process,
-            const boost::shared_ptr<YieldTermStructure>& rTS,
+            const QuantLib::ext::shared_ptr<ExtOUWithJumpsProcess>& process,
+            const QuantLib::ext::shared_ptr<YieldTermStructure>& rTS,
             Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
             const std::vector<std::pair<Time,Real> >& shape =
                                          std::vector<std::pair<Time,Real> >(),
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
 
-            boost::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> curve(
+            QuantLib::ext::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> curve(
                               new FdSimpleExtOUJumpSwingEngine::Shape(shape));
 
             return new FdSimpleExtOUJumpSwingEngine(
@@ -2152,7 +2152,7 @@ using QuantLib::GJRGARCHModel;
 %shared_ptr(GJRGARCHModel)
 class GJRGARCHModel : public CalibratedModel {
       public:
-        GJRGARCHModel(const boost::shared_ptr<GJRGARCHProcess>& process);
+        GJRGARCHModel(const QuantLib::ext::shared_ptr<GJRGARCHProcess>& process);
         Real omega() const;
         Real alpha() const;
         Real beta() const;
@@ -2169,7 +2169,7 @@ using QuantLib::AnalyticGJRGARCHEngine;
 %shared_ptr(AnalyticGJRGARCHEngine)
 class AnalyticGJRGARCHEngine : public PricingEngine {
   public:
-    AnalyticGJRGARCHEngine(const boost::shared_ptr<GJRGARCHModel>& process);
+    AnalyticGJRGARCHEngine(const QuantLib::ext::shared_ptr<GJRGARCHModel>& process);
 };
 
 %{
@@ -2186,7 +2186,7 @@ class MCEuropeanGJRGARCHEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCEuropeanGJRGARCHEngine(const boost::shared_ptr<GJRGARCHProcess>& process,
+        MCEuropeanGJRGARCHEngine(const QuantLib::ext::shared_ptr<GJRGARCHProcess>& process,
                                  intOrNull timeSteps = Null<Size>(),
                                  intOrNull timeStepsPerYear = Null<Size>(),
                                  bool antitheticVariate = false,
@@ -2250,15 +2250,15 @@ using QuantLib::KirkSpreadOptionEngine;
 %shared_ptr(SpreadOption);
 class SpreadOption : public MultiAssetOption {
 public:
-  SpreadOption(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
-               const boost::shared_ptr<Exercise>& exercise);
+  SpreadOption(const QuantLib::ext::shared_ptr<PlainVanillaPayoff>& payoff,
+               const QuantLib::ext::shared_ptr<Exercise>& exercise);
 };
 
 %shared_ptr(KirkSpreadOptionEngine);
 class KirkSpreadOptionEngine : public PricingEngine {
 public:
-  KirkSpreadOptionEngine(const boost::shared_ptr<BlackProcess>& process1,
-                         const boost::shared_ptr<BlackProcess>& process2,
+  KirkSpreadOptionEngine(const QuantLib::ext::shared_ptr<BlackProcess>& process1,
+                         const QuantLib::ext::shared_ptr<BlackProcess>& process2,
                          const Handle<Quote>& correlation);
 };
 

@@ -70,10 +70,26 @@ namespace std {
 }
 
 %{
+#if defined(QL_USE_STD_SHARED_PTR)
+#include <tuple>
+#else
 #include <boost/tuple/tuple.hpp>
+#endif
+  namespace QuantLib {
+    namespace ext {
+#if defined(QL_USE_STD_SHARED_PTR)
+		   using std::tuple;
+		   using std::get;
+#else
+		   using boost::tuple;
+		   using boost::get;
+#endif
+		   }
+  };
 %}
 
-namespace boost {
+namespace QuantLib {
+  namespace ext {
   template <typename T1=void, typename T2=void, typename T3=void>
   struct tuple;
 
@@ -86,7 +102,7 @@ namespace boost {
     tuple(T1);
     %extend {
       T1 first() const {
-        return boost::get<0>(*$self);
+        return QuantLib::ext::get<0>(*$self);
       }
     }
   };
@@ -96,10 +112,10 @@ namespace boost {
     tuple(T1,T2);
     %extend {
       T1 first() const {
-        return boost::get<0>(*$self);
+        return QuantLib::ext::get<0>(*$self);
       }
       T2 second() const {
-        return boost::get<1>(*$self);
+        return QuantLib::ext::get<1>(*$self);
       }
     }
   };
@@ -109,16 +125,17 @@ namespace boost {
     tuple(T1,T2,T3);
     %extend {
       T1 first() const {
-        return boost::get<0>(*$self);
+        return QuantLib::ext::get<0>(*$self);
       }
       T2 second() const {
-        return boost::get<1>(*$self);
+        return QuantLib::ext::get<1>(*$self);
       }
       T3 third() const {
-        return boost::get<2>(*$self);
+        return QuantLib::ext::get<2>(*$self);
       }
     }
   };
+  }
 }
 
 #endif

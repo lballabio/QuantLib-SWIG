@@ -76,7 +76,7 @@ class Name : public YieldTermStructure {
   public:
     %extend {
         Name(const Date& referenceDate,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
              const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -87,7 +87,7 @@ class Name : public YieldTermStructure {
                             accuracy, i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
              const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -99,14 +99,14 @@ class Name : public YieldTermStructure {
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(const Date& referenceDate,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const IterativeBootstrap& b) {
             return new Name(referenceDate, instruments, dayCounter, Interpolator(),
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const IterativeBootstrap& b) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
@@ -140,9 +140,9 @@ export_piecewise_curve(PiecewiseConvexMonotoneZero,ZeroYield,ConvexMonotone);
 
 %{
 class AdditionalErrors {
-    std::vector<boost::shared_ptr<RateHelper> > additionalHelpers_;
+    std::vector<QuantLib::ext::shared_ptr<RateHelper> > additionalHelpers_;
   public:
-    AdditionalErrors(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers)
+    AdditionalErrors(const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& additionalHelpers)
     : additionalHelpers_(additionalHelpers) {}
     Array operator()() const {
         Array errors(additionalHelpers_.size() - 2);
@@ -167,12 +167,12 @@ class AdditionalDates {
 };
 
 struct GlobalBootstrap {
-    std::vector<boost::shared_ptr<RateHelper> > additionalHelpers;
+    std::vector<QuantLib::ext::shared_ptr<RateHelper> > additionalHelpers;
     std::vector<Date> additionalDates;
     double accuracy;
     GlobalBootstrap(double accuracy = Null<double>())
     : accuracy(accuracy) {}
-    GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+    GlobalBootstrap(const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& additionalHelpers,
                     const std::vector<Date>& additionalDates,
                     double accuracy = Null<double>())
     : additionalHelpers(additionalHelpers), additionalDates(additionalDates), accuracy(accuracy) {}
@@ -181,7 +181,7 @@ struct GlobalBootstrap {
 
 struct GlobalBootstrap {
     GlobalBootstrap(doubleOrNull accuracy = Null<double>());
-    GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+    GlobalBootstrap(const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& additionalHelpers,
                     const std::vector<Date>& additionalDates,
                     doubleOrNull accuracy = Null<double>());
 };
@@ -199,7 +199,7 @@ class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
     %extend {
         GlobalLinearSimpleZeroCurve(
              const Date& referenceDate,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<QuantLib::ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const GlobalBootstrap& b) {
             if (b.additionalHelpers.empty()) {

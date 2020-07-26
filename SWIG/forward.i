@@ -76,7 +76,7 @@ class FixedRateBondForward : public Forward {
                 const DayCounter& dayCounter,
                 const Calendar& calendar,
                 BusinessDayConvention businessDayConvention,
-                const boost::shared_ptr<FixedRateBond>& fixedBond,
+                const QuantLib::ext::shared_ptr<FixedRateBond>& fixedBond,
                 const Handle<YieldTermStructure>& discountCurve =
                                             Handle<YieldTermStructure>(),
                 const Handle<YieldTermStructure>& incomeDiscountCurve =
