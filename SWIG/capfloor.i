@@ -112,9 +112,12 @@ using QuantLib::BlackCapFloorEngine;
 class BlackCapFloorEngine : public PricingEngine {
   public:
     BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
-                        const Handle<Quote>& vol);
+                        const Handle<Quote>& vol,
+                        const DayCounter& dc = Actual365Fixed(),
+                        Real displacement = 0.0);
     BlackCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
-                        const Handle<OptionletVolatilityStructure>& vol);
+                        const Handle<OptionletVolatilityStructure>& vol,
+                        Real displacement = Null<Real>());
 };
 
 %{

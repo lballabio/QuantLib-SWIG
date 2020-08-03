@@ -1,32 +1,48 @@
-# -*- mode: python; tab-width: 4;
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:light
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
 
-# Copyright (C) 2014 Thema Consulting SA
+# # Credit default swaps
+#
+# Copyright (&copy;) 2014 Thema Consulting SA
 #
 # This file is part of QuantLib, a free-software/open-source library
-# for financial quantitative analysts and developers - http://quantlib.org/
+# for financial quantitative analysts and developers - https://www.quantlib.org/
 #
 # QuantLib is free software: you can redistribute it and/or modify it under the
 # terms of the QuantLib license.  You should have received a copy of the
 # license along with this program; if not, please email
 # <quantlib-dev@lists.sf.net>. The license is also available online at
-# <http://quantlib.org/license.shtml>.
+# <https://www.quantlib.org/license.shtml>.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
+# ### Setup
+
 import QuantLib as ql
 
 calendar = ql.TARGET()
 
-# set evaluation date
 todaysDate = ql.Date(15, ql.May, 2007)
-todaysDate = calendar.adjust(todaysDate)
 ql.Settings.instance().evaluationDate = todaysDate
 
 risk_free_rate = ql.YieldTermStructureHandle(ql.FlatForward(todaysDate, 0.01, ql.Actual365Fixed()))
 
-# CDS parameters
+# ### CDS parameters
+
 recovery_rate = 0.5
 quoted_spreads = [0.0150, 0.0150, 0.0150, 0.0150]
 tenors = [ql.Period(3, ql.Months), ql.Period(6, ql.Months), ql.Period(1, ql.Years), ql.Period(2, ql.Years)]
@@ -63,11 +79,13 @@ print(
     % (hazard_curve.survivalProbability(todaysDate + ql.Period("2Y")), 0.9418)
 )
 
-# reprice instruments
+# ### Reprice instruments
+
 nominal = 1000000.0
 probability = ql.DefaultProbabilityTermStructureHandle(hazard_curve)
 
-# create a cds for every maturity
+# We'll create a cds for every maturity:
+
 all_cds = []
 for maturity, s in zip(maturities, quoted_spreads):
     schedule = ql.Schedule(

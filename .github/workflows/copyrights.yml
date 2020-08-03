@@ -1,16 +1,18 @@
-name: Misspell fixer
+name: Update copyright list
 on:
   - push
 jobs:
-  check:
+  copyrights:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: sobolevn/misspell-fixer-action@master
+    - name: Check
+      run: |
+        ./tools/check_copyrights.sh
     - uses: peter-evans/create-pull-request@v2
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: misspell-fixes-${{ github.ref }}
-        commit-message: 'Fixes by misspell-fixer'
-        title: 'Typos fixed by misspell-fixer'
+        branch: update-copyright-list-${{ github.ref }}
+        commit-message: 'Update copyright list in license'
+        title: 'Update copyright list in license'
         author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>

@@ -60,11 +60,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)'=='Debug'">bin\$(qlCompilerTag)\$(Platform)\Debug\</OutDir>
-    <IntDir Condition="'$(Configuration)'=='Debug'">build\$(qlCompilerTag)\$(Platform)\Debug\</IntDir>
+    <OutDir Condition="'$(Configuration)'=='Debug'">bin\$(Platform)\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)'=='Debug'">build\$(Platform)\Debug\</IntDir>
     <LinkIncremental Condition="'$(Configuration)'=='Debug'">true</LinkIncremental>
-    <OutDir Condition="'$(Configuration)'=='Release'">bin\$(qlCompilerTag)\$(Platform)\Release\</OutDir>
-    <IntDir Condition="'$(Configuration)'=='Release'">build\$(qlCompilerTag)\$(Platform)\Release\</IntDir>
+    <OutDir Condition="'$(Configuration)'=='Release'">bin\$(Platform)\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)'=='Release'">build\$(Platform)\Release\</IntDir>
     <LinkIncremental Condition="'$(Configuration)'=='Release'">false</LinkIncremental>
     <CodeAnalysisRuleSet Condition="'$(Configuration)'=='Debug'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)'=='Debug'" />
@@ -187,6 +187,7 @@
     <ClCompile Include="QuantlibWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="quantlib_wrap.h" />
     <ClInclude Include="QuantlibWrapper.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

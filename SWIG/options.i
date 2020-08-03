@@ -354,7 +354,7 @@ class AnalyticHestonEngine : public PricingEngine {
 
         Real calculate(Real c_inf,
                        const boost::function<Real(Real)>& f,
-                       Real maxBound = Null<Real>()) const;
+                       doubleOrNull maxBound = Null<Real>()) const;
 
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
@@ -372,7 +372,9 @@ class AnalyticHestonEngine : public PricingEngine {
       Integration(Algorithm intAlgo,
                 const boost::shared_ptr<Integrator>& integrator);
     };
-    enum ComplexLogFormula { Gatheral, BranchCorrection, AndersenPiterbarg };
+    enum ComplexLogFormula { 
+        Gatheral, BranchCorrection, AndersenPiterbarg, AndersenPiterbargOptCV
+    };
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
     AnalyticHestonEngine(const boost::shared_ptr<HestonModel>& model,
@@ -383,11 +385,11 @@ class AnalyticHestonEngine : public PricingEngine {
                      Real andersenPiterbargEpsilon = 1e-8);
 
     %extend {                     
-    	std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
-    		const std::complex<Real> tmp 
-    			= self->chF(std::complex<Real>(real, imag), t);
-    		return std::pair<Real, Real>(tmp.real(), tmp.imag());
-    	}
+        std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
+            const std::complex<Real> tmp 
+                = self->chF(std::complex<Real>(real, imag), t);
+            return std::pair<Real, Real>(tmp.real(), tmp.imag());
+        }
     }
 };
 
@@ -400,6 +402,21 @@ class COSHestonEngine : public PricingEngine {
   public:
     COSHestonEngine(const boost::shared_ptr<HestonModel>& model,
                     Real L = 16, Size N = 200);
+};
+
+%{
+using QuantLib::ExponentialFittingHestonEngine;
+%}
+
+%shared_ptr(ExponentialFittingHestonEngine)
+class ExponentialFittingHestonEngine : public PricingEngine {
+  public:
+    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
+    
+    ExponentialFittingHestonEngine(
+        const boost::shared_ptr<HestonModel>& model,
+        ControlVariate cv = AndersenPiterbargOptCV,
+        doubleOrNull scaling = Null<Real>());
 };
 
 
@@ -1011,6 +1028,7 @@ class FDDividendAmericanEngine : public PricingEngine {
 
 %{
 using QuantLib::BarrierOption;
+using QuantLib::DividendBarrierOption;
 %}
 
 %shared_ptr(BarrierOption)
@@ -1034,6 +1052,19 @@ class BarrierOption : public OneAssetOption {
                                  maxEvaluations, minVol, maxVol);
     }
 };
+
+%shared_ptr(DividendBarrierOption)
+class DividendBarrierOption : public BarrierOption {
+  public:
+    DividendBarrierOption(Barrier::Type barrierType,
+                          Real barrier,
+                          Real rebate,
+                          const boost::shared_ptr<StrikedTypePayoff>& payoff,
+                          const boost::shared_ptr<Exercise>& exercise,
+                          const std::vector<Date>& dividendDates,
+                          const std::vector<Real>& dividends);
+};
+
 
 // Barrier engines
 
@@ -1327,6 +1358,9 @@ class FdSabrVanillaEngine : public PricingEngine {
 
 %{
 using QuantLib::FdBlackScholesBarrierEngine;
+using QuantLib::FdBlackScholesRebateEngine;
+using QuantLib::FdHestonBarrierEngine;
+using QuantLib::FdHestonRebateEngine;
 %}
 
 %shared_ptr(FdBlackScholesBarrierEngine)
@@ -1337,6 +1371,36 @@ class FdBlackScholesBarrierEngine : public PricingEngine {
                                 const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                                 bool localVol = false,
                                 Real illegalLocalVolOverwrite = -Null<Real>());
+};
+
+%shared_ptr(FdBlackScholesRebateEngine)
+class FdBlackScholesRebateEngine : public PricingEngine {
+  public:
+    FdBlackScholesRebateEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                               Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                               bool localVol = false,
+                               Real illegalLocalVolOverwrite = -Null<Real>());
+};
+
+%shared_ptr(FdHestonBarrierEngine)
+class FdHestonBarrierEngine : public PricingEngine {
+  public:
+    FdHestonBarrierEngine(const boost::shared_ptr<HestonModel>& model,
+                          Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
+                          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                          const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                              = boost::shared_ptr<LocalVolTermStructure>());
+};
+
+%shared_ptr(FdHestonRebateEngine)
+class FdHestonRebateEngine : public PricingEngine {
+  public:
+    FdHestonRebateEngine(const boost::shared_ptr<HestonModel>& model,
+                         Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
+                         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                         const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                             = boost::shared_ptr<LocalVolTermStructure>());
 };
 
 
@@ -1842,6 +1906,22 @@ class AnalyticDoubleBarrierEngine : public PricingEngine {
 };
 
 %{
+using QuantLib::FdHestonDoubleBarrierEngine;
+%}
+
+%shared_ptr(FdHestonDoubleBarrierEngine);
+class FdHestonDoubleBarrierEngine : public PricingEngine {
+  public:
+    FdHestonDoubleBarrierEngine(
+            const boost::shared_ptr<HestonModel>& model,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid = 50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
+                = boost::shared_ptr<LocalVolTermStructure>());
+};
+
+%{
 using QuantLib::WulinYongDoubleBarrierEngine;
 %}
 
@@ -2160,5 +2240,26 @@ class MCEuropeanGJRGARCHEngine : public PricingEngine {
                    seed)
 %}
 #endif
+
+
+%{
+using QuantLib::SpreadOption;
+using QuantLib::KirkSpreadOptionEngine;
+%}
+
+%shared_ptr(SpreadOption);
+class SpreadOption : public MultiAssetOption {
+public:
+  SpreadOption(const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+               const boost::shared_ptr<Exercise>& exercise);
+};
+
+%shared_ptr(KirkSpreadOptionEngine);
+class KirkSpreadOptionEngine : public PricingEngine {
+public:
+  KirkSpreadOptionEngine(const boost::shared_ptr<BlackProcess>& process1,
+                         const boost::shared_ptr<BlackProcess>& process2,
+                         const Handle<Quote>& correlation);
+};
 
 #endif

@@ -1,41 +1,78 @@
-# Copyright (C) 2019 Klaus Spanderen
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:percent
+#     text_representation:
+#       extension: .py
+#       format_name: percent
+#       format_version: '1.3'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
+
+# %% [markdown]
+# # Leverage function for the Heston SLV model
 #
-# This file is part of QuantLib, a free-software/open-source library
-# for financial quantitative analysts and developers - http://quantlib.org/
+# Copyright (&copy;) 2019 Klaus Spanderen
+#
+# This file is part of QuantLib, a free-software/open-source library for financial quantitative analysts and developers - https://www.quantlib.org/
 #
 # QuantLib is free software: you can redistribute it and/or modify it under the
 # terms of the QuantLib license.  You should have received a copy of the
 # license along with this program; if not, please email
 # <quantlib-dev@lists.sf.net>. The license is also available online at
-# <http://quantlib.org/license.shtml>.
+# <https://www.quantlib.org/license.shtml>.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
 # FOR A PARTICULAR PURPOSE.  See the license for more details.
 
+# %% [markdown]
+# This notebook only works with Python 3, at least on Travis.
+
+# %%
+import sys
+
+if sys.version_info.major < 3:
+    sys.exit()
+
+# %%
+import QuantLib as ql
+from matplotlib import pyplot as plt
+import numpy as np
 import math
 
-import QuantLib as ql
+# %matplotlib inline
 
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
-import numpy as np
+# %%
+is_interactive = 'get_ipython' in globals()
 
+# %%
 todaysDate = ql.Date(15, ql.May, 2019)
-exerciseDate = todaysDate + ql.Period(4, ql.Years)
 ql.Settings.instance().evaluationDate = todaysDate
+
+# %%
 settlementDate = todaysDate + ql.Period(2, ql.Days)
+exerciseDate = todaysDate + ql.Period(4, ql.Years)
+
+# %%
 dc = ql.Actual365Fixed()
-riskFreeRate = ql.YieldTermStructureHandle(ql.FlatForward(settlementDate, 0.05, dc))
-dividendYield = ql.YieldTermStructureHandle(ql.FlatForward(settlementDate, 0.025, dc))
 
 spot = 100
 underlying = ql.QuoteHandle(ql.SimpleQuote(spot))
 
-vol = 0.30
+riskFreeRate = ql.YieldTermStructureHandle(ql.FlatForward(settlementDate, 0.05, dc))
+dividendYield = ql.YieldTermStructureHandle(ql.FlatForward(settlementDate, 0.025, dc))
 
+vol = 0.30
+blackVol = ql.BlackVolTermStructureHandle(ql.BlackConstantVol(settlementDate, ql.TARGET(), vol, dc))
+
+# %%
 localVol = ql.LocalVolSurface(
-    ql.BlackVolTermStructureHandle(ql.BlackConstantVol(settlementDate, ql.TARGET(), vol, dc)),
+    blackVol,
     riskFreeRate,
     dividendYield,
     underlying,
@@ -45,37 +82,12 @@ hestonProcess = ql.HestonProcess(riskFreeRate, dividendYield, underlying, 0.09, 
 
 hestonModel = ql.HestonModel(hestonProcess)
 
+# %%
 leverageFct = ql.HestonSLVMCModel(
     localVol, hestonModel, ql.MTBrownianGeneratorFactory(1234), exerciseDate, 91
 ).leverageFunction()
 
-
-# uncomment this if you want to use PDE calibration instead of Monte-Carlo
-
-# fdmParams = ql.HestonSLVFokkerPlanckFdmParams(
-#     201,
-#     101,
-#     200,
-#     30,
-#     2.0,
-#     0,
-#     2,
-#     0.01,
-#     1e-4,
-#     10000,
-#     1e-5,
-#     1e-5,
-#     0.0000025,
-#     1.0,
-#     0.1,
-#     0.9,
-#     1e-4,
-#     ql.FdmHestonGreensFct.Gaussian,
-#     ql.FdmSquareRootFwdOp.Log,
-#     ql.FdmSchemeDesc.Hundsdorfer(),
-# )
-# leverageFct = ql.HestonSLVFDMModel(localVol, hestonModel, exerciseDate, fdmParams).leverageFunction()
-
+# %%
 tSteps = 40
 uSteps = 30
 
@@ -95,8 +107,8 @@ for i in range(0, tSteps):
         s[idx] = math.log(sv[j])
         z[idx] = leverageFct.localVol(t[idx], sv[j])
 
-
-fig = plt.figure()
+# %%
+fig = plt.figure(figsize=(12,8))
 ax = plt.axes(projection="3d")
 
 surf = ax.plot_trisurf(s, t, z, cmap=plt.cm.viridis, linewidth=0, antialiased=False, edgecolor="none")
@@ -108,4 +120,12 @@ ax.text2D(0.225, 0.985, "Leverage Function with $\eta=1.0$", transform=ax.transA
 
 fig.colorbar(surf, shrink=0.75, aspect=14)
 
-plt.show()
+plt.show(block=False)
+
+# %% [markdown]
+# When this is run as a Python script (i.e., from Travis), we need to close the figure in order to terminate.
+
+# %%
+if not is_interactive:
+    plt.pause(3)
+    plt.close()

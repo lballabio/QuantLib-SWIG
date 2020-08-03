@@ -1375,6 +1375,8 @@ class FdmLogBasketInnerValue : public FdmInnerValueCalculator {
 
 %shared_ptr(FdmZeroInnerValue)
 class FdmZeroInnerValue : public FdmInnerValueCalculator {
+  public:
+    FdmZeroInnerValue();
 };
 
 

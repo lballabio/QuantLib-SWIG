@@ -1,13 +1,30 @@
-# Copyright (C) 2004, 2005, 2006 StatPro Italia srl
+# ---
+# jupyter:
+#   jupytext:
+#     formats: py:light
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.4.2
+#   kernelspec:
+#     display_name: Python 3
+#     language: python
+#     name: python3
+# ---
+
+# # Basket options
+#
+# Copyright (&copy;) 2004, 2005, 2006 StatPro Italia srl
 #
 # This file is part of QuantLib, a free-software/open-source library
-# for financial quantitative analysts and developers - http://quantlib.org/
+# for financial quantitative analysts and developers - https://www.quantlib.org/
 #
 # QuantLib is free software: you can redistribute it and/or modify it under the
 # terms of the QuantLib license.  You should have received a copy of the
 # license along with this program; if not, please email
 # <quantlib-dev@lists.sf.net>. The license is also available online at
-# <http://quantlib.org/license.shtml>.
+# <https://www.quantlib.org/license.shtml>.
 #
 # This program is distributed in the hope that it will be useful, but WITHOUT
 # ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
@@ -15,17 +32,21 @@
 
 import QuantLib as ql
 
-# global data
+# ### Global data
+
 todaysDate = ql.Date(15, ql.May, 1998)
 ql.Settings.instance().evaluationDate = todaysDate
 settlementDate = ql.Date(17, ql.May, 1998)
 riskFreeRate = ql.FlatForward(settlementDate, 0.05, ql.Actual365Fixed())
 
-# option parameters
+# ### Option parameters
+
 exercise = ql.EuropeanExercise(ql.Date(17, ql.May, 1999))
 payoff = ql.PlainVanillaPayoff(ql.Option.Call, 8.0)
 
-# market data
+# ### Market data
+
+
 underlying1 = ql.SimpleQuote(7.0)
 volatility1 = ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.10, ql.Actual365Fixed())
 dividendYield1 = ql.FlatForward(settlementDate, 0.05, ql.Actual365Fixed())
@@ -55,6 +76,9 @@ matrix[0][1] = 0.5
 matrix[1][0] = 0.5
 
 process = ql.StochasticProcessArray([process1, process2], matrix)
+
+# ### Pricing
+
 basketoption = ql.BasketOption(ql.MaxBasketPayoff(payoff), exercise)
 basketoption.setPricingEngine(
     ql.MCEuropeanBasketEngine(process, "pseudorandom", timeStepsPerYear=1, requiredTolerance=0.02, seed=42)
