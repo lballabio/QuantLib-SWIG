@@ -70,6 +70,10 @@ class Swaption : public Option {
         Real vega() {
             return self->result<Real>("vega");
         }
+
+        Real delta() {
+            return self->result<Real>("delta");
+        }
     }
 };
 
