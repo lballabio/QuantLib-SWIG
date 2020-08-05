@@ -128,13 +128,13 @@ class SwaptionTest(unittest.TestCase):
                             self.assertTrue(check_is_correct)
 
     def test_swaption_delta_black_volatility(self):
-        """Testing swaption delta in Black model..."""
+        """Testing swaption delta in Black model"""
         self._assert_swaption_delta(
             swaption_pricer_func=make_const_black_vol_engine,
             use_bachelier_vol=False)
 
     def test_swaption_delta_bachelier_volatility(self):
-        """Testing swaption delta in Bachelier model..."""
+        """Testing swaption delta in Bachelier model"""
         self._assert_swaption_delta(
             swaption_pricer_func=make_const_bachelier_vol_engine,
             use_bachelier_vol=True)
