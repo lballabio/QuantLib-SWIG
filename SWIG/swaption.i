@@ -74,6 +74,10 @@ class Swaption : public Option {
         Real delta() {
             return self->result<Real>("delta");
         }
+
+        Real annuity() {
+            return self->result<Real>("annuity");
+        }
     }
 };
 
