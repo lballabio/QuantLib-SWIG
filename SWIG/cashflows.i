@@ -644,7 +644,11 @@ Leg _CmsLeg(const std::vector<Real>& nominals,
             const std::vector<Spread>& spreads = std::vector<Spread>(),
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
-            bool isInArrears = false) {
+            bool isInArrears = false,
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            const BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false) {
     boost::shared_ptr<SwapIndex> swapIndex =
         boost::dynamic_pointer_cast<SwapIndex>(index);
     return QuantLib::CmsLeg(schedule, swapIndex)
@@ -656,6 +660,8 @@ Leg _CmsLeg(const std::vector<Real>& nominals,
         .withSpreads(spreads)
         .withCaps(caps)
         .withFloors(floors)
+        .withExCouponPeriod(exCouponPeriod, exCouponCalendar,
+                            exCouponConvention, exCouponEndOfMonth)
         .inArrears(isInArrears);
 }
 %}
@@ -673,7 +679,11 @@ Leg _CmsLeg(const std::vector<Real>& nominals,
             const std::vector<Spread>& spreads = std::vector<Spread>(),
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
-            bool isInArrears = false);
+            bool isInArrears = false,
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            const BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false);
 
 %{
 Leg _CmsZeroLeg(const std::vector<Real>& nominals,
@@ -685,7 +695,11 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const std::vector<Real>& gearings = std::vector<Real>(),
                 const std::vector<Spread>& spreads = std::vector<Spread>(),
                 const std::vector<Rate>& caps = std::vector<Rate>(),
-                const std::vector<Rate>& floors = std::vector<Rate>()) {
+                const std::vector<Rate>& floors = std::vector<Rate>(),
+                const Period& exCouponPeriod = Period(),
+                const Calendar& exCouponCalendar = Calendar(),
+                const BusinessDayConvention exCouponConvention = Unadjusted,
+                bool exCouponEndOfMonth = false) {
     boost::shared_ptr<SwapIndex> swapIndex =
         boost::dynamic_pointer_cast<SwapIndex>(index);
     return QuantLib::CmsLeg(schedule, swapIndex)
@@ -697,6 +711,8 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
         .withSpreads(spreads)
         .withCaps(caps)
         .withFloors(floors)
+        .withExCouponPeriod(exCouponPeriod, exCouponCalendar,
+                            exCouponConvention, exCouponEndOfMonth)
         .withZeroPayments();
 }
 %}
@@ -713,7 +729,11 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const std::vector<Real>& gearings = std::vector<Real>(),
                 const std::vector<Spread>& spreads = std::vector<Spread>(),
                 const std::vector<Rate>& caps = std::vector<Rate>(),
-                const std::vector<Rate>& floors = std::vector<Rate>());
+                const std::vector<Rate>& floors = std::vector<Rate>(),
+                const Period& exCouponPeriod = Period(),
+                const Calendar& exCouponCalendar = Calendar(),
+                const BusinessDayConvention exCouponConvention = Unadjusted,
+                bool exCouponEndOfMonth = false);
 
 %{
 Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
