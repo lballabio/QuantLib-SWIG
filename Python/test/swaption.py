@@ -111,8 +111,7 @@ class SwaptionTest(unittest.TestCase):
         vols = [0.01, 0.10, 0.20, 0.30, 0.70, 0.90]
 
         settle_map = {ql.Settlement.PhysicalOTC: ql.Settlement.Physical,
-                      ql.Settlement.CollateralizedCashPrice: ql.Settlement.Cash,
-                      ql.Settlement.ParYieldCurve: ql.Settlement.Cash}
+                      ql.Settlement.CollateralizedCashPrice: ql.Settlement.Cash}
 
         for v in vols:
             for e in self.exercises:
