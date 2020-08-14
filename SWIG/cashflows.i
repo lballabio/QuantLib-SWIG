@@ -65,7 +65,6 @@ using QuantLib::FixedRateCoupon;
 using QuantLib::Leg;
 using QuantLib::FloatingRateCoupon;
 using QuantLib::OvernightIndexedCoupon;
-using QuantLib::IndexedCashFlow;
 %}
 
 %shared_ptr(SimpleCashFlow)
@@ -223,25 +222,6 @@ class OvernightIndexedCoupon : public FloatingRateCoupon {
     const std::vector<Rate>& indexFixings() const;
     const std::vector<Date>& valueDates() const;
 };
-
-%shared_ptr(IndexedCashFlow)
-class IndexedCashFlow : public CashFlow {
-  private:
-    IndexedCashFlow();
-  public:
-    Real notional() const;
-    Date baseDate() const;
-    Date fixingDate() const;
-    boost::shared_ptr<Index> index() const;
-    bool growthOnly() const;
-};
-
-%inline %{
-    boost::shared_ptr<IndexedCashFlow> as_indexed_cash_flow(
-                                      const boost::shared_ptr<CashFlow>& cf) {
-        return boost::dynamic_pointer_cast<IndexedCashFlow>(cf);
-    }
-%}
 
 %{
 using QuantLib::CappedFlooredCoupon;
