@@ -57,6 +57,7 @@ typedef std::vector<boost::shared_ptr<CashFlow> > Leg;
 
 %{
 using QuantLib::SimpleCashFlow;
+using QuantLib::IndexedCashFlow;
 using QuantLib::Redemption;
 using QuantLib::AmortizingPayment;
 using QuantLib::Coupon;
@@ -83,6 +84,30 @@ class AmortizingPayment : public CashFlow {
   public:
     AmortizingPayment(Real amount, const Date& date);
 };
+
+
+%shared_ptr(IndexedCashFlow)
+class IndexedCashFlow : public CashFlow {
+  public:
+    IndexedCashFlow(Real notional,
+                    const boost::shared_ptr<Index>& index,
+                    const Date& baseDate,
+                    const Date& fixingDate,
+                    const Date& paymentDate,
+                    bool growthOnly = false);
+    Real notional() const;
+    Date baseDate() const;
+    Date fixingDate() const;
+    boost::shared_ptr<Index> index() const;
+    bool growthOnly() const;
+};
+
+%inline %{
+    boost::shared_ptr<IndexedCashFlow> as_indexed_cashflow(const boost::shared_ptr<CashFlow>& cf) {
+        return boost::dynamic_pointer_cast<IndexedCashFlow>(cf);
+    }
+%}
+
 
 %shared_ptr(Coupon)
 class Coupon : public CashFlow {
