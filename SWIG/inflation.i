@@ -140,6 +140,9 @@ class InflationIndex : public Index {
   protected:
     InflationIndex();
   public:
+    std::string familyName() const;
+    Region region() const;
+    bool revised() const;
     bool interpolated() const;
     Frequency frequency() const;
     Period availabilityLag() const;
@@ -159,6 +162,8 @@ class ZeroInflationIndex : public InflationIndex {
                          const Currency& currency,
                          const Handle<ZeroInflationTermStructure>& h =
                                        Handle<ZeroInflationTermStructure>());
+      Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
+      boost::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
 };
 
 %shared_ptr(YoYInflationIndex)

@@ -251,6 +251,10 @@ class ConjugateGradient : public OptimizationMethod {
 class Simplex : public OptimizationMethod {
   public:
     Simplex(Real lambda);
+    #if defined(SWIGPYTHON)
+    %rename(getLambda) lambda;
+    #endif
+    Real lambda();
 };
 
 %shared_ptr(SteepestDescent)

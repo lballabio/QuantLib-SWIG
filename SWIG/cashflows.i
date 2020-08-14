@@ -44,6 +44,7 @@ class CashFlow : public Observable {
   public:
     Real amount() const;
     Date date() const;
+    bool hasOccurred(const Date& refDate = Date()) const;
 };
 
 #if defined(SWIGCSHARP)

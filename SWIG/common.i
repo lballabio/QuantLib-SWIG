@@ -89,6 +89,7 @@ class Handle {
   public:
     Handle(const boost::shared_ptr<T>& = boost::shared_ptr<T>());
     boost::shared_ptr<T> operator->();
+    boost::shared_ptr<T> currentLink();
     #if defined(SWIGPYTHON)
     %extend {
         bool __nonzero__() {
