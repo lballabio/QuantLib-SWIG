@@ -292,7 +292,11 @@ class AmortizingFixedRateBond : public Bond {
             const std::vector<Rate>& coupons,
             const DayCounter& accrualDayCounter,
             BusinessDayConvention paymentConvention = QuantLib::Following,
-            Date issueDate = Date());
+            Date issueDate = Date(),
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            const BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false);
     AmortizingFixedRateBond(
             Integer settlementDays,
             const Calendar& paymentCalendar,
@@ -328,7 +332,11 @@ class AmortizingFloatingRateBond : public Bond {
         const std::vector<Rate>& caps = std::vector<Rate>(),
         const std::vector<Rate>& floors = std::vector<Rate>(),
         bool inArrears = false,
-        const Date& issueDate = Date());
+        const Date& issueDate = Date(),
+        const Period& exCouponPeriod = Period(),
+        const Calendar& exCouponCalendar = Calendar(),
+        const BusinessDayConvention exCouponConvention = Unadjusted,
+        bool exCouponEndOfMonth = false);
 };
 
 
@@ -397,6 +405,7 @@ class DiscountingBondEngine : public PricingEngine {
 %{
 using QuantLib::CallableBond;
 using QuantLib::CallableFixedRateBond;
+using QuantLib::CallableZeroCouponBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
 %}
@@ -463,8 +472,33 @@ class CallableFixedRateBond : public CallableBond {
             BusinessDayConvention paymentConvention,
             Real redemption,
             Date issueDate,
-            const std::vector<boost::shared_ptr<Callability> >& putCallSchedule);
+            const std::vector<boost::shared_ptr<Callability> >& putCallSchedule,
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false);
 };
+
+
+%shared_ptr(CallableZeroCouponBond)
+class CallableZeroCouponBond : public CallableBond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CallableZeroCouponBond;
+    #endif
+  public:
+    CallableZeroCouponBond(
+            Integer settlementDays,
+            Real faceAmount,
+            const Calendar& calendar,
+            const Date& maturityDate,
+            const DayCounter& dayCounter,
+            BusinessDayConvention paymentConvention = Following,
+            Real redemption = 100.0,
+            const Date& issueDate = Date(),
+            const std::vector<boost::shared_ptr<Callability> >& putCallSchedule
+                           = std::vector<boost::shared_ptr<Callability> >());
+};
+
 
 %shared_ptr(TreeCallableFixedRateBondEngine)
 class TreeCallableFixedRateBondEngine : public PricingEngine {

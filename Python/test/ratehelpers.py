@@ -64,6 +64,9 @@ class FixedRateBondHelperTest(unittest.TestCase):
         self.assertEqual(bond.issueDate(), self.issue_date)
         self.assertEqual(bond.nextCouponRate(), self.coupons[0])
 
+    def tearDown(self):
+        ql.Settings.instance().setEvaluationDate(ql.Date())
+
 
 class OISRateHelperTest(unittest.TestCase):
     def setUp(self):
@@ -202,6 +205,9 @@ class OISRateHelperTest(unittest.TestCase):
         ois = ql.MakeOIS(ql.Period('1Y'), eonia, -0.003, ql.Period(0, ql.Days))
         print(ois.startDate())
         self.assertEqual(expected_date, ois.startDate())
+
+    def tearDown(self):
+        ql.Settings.instance().setEvaluationDate(ql.Date())
 
 
 class FxSwapRateHelperTest(unittest.TestCase):
