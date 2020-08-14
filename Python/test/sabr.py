@@ -40,20 +40,20 @@ class SabrTest(unittest.TestCase):
         sabrVol = ql.sabrVolatility(strike, f0, maturityTime, alpha, beta, nu, rho)
 
         self.assertAlmostEqual(sabrVol, 0.205953, 6,
-                               msg="Unable to reproduce Hagen et al. SABR volalatility")
+                               msg="Unable to reproduce Hagen et al. SABR volatility")
 
         flochKennedyVol = ql.sabrFlochKennedyVolatility(
             strike, f0, maturityTime, alpha, beta, nu, rho)
 
         self.assertAlmostEqual(flochKennedyVol, 0.205447, 6,
-                               msg="Unable to reproduce Le Floc'h-Kennedy SABR volalatility")
+                               msg="Unable to reproduce Le Floc'h-Kennedy SABR volatility")
 
     def testPdeSolver(self):
         """ Testing BENCHOP-SLV SABR example value """
 
         today = ql.Date(8, 1, 2019)
         dc = ql.Actual365Fixed()
-        maturityDate = today + ql.Period(10*365, ql.Days)
+        maturityDate = today + ql.Period(10 * 365, ql.Days)
         maturityTime = dc.yearFraction(today, maturityDate)
 
         f0 = 0.07
@@ -61,7 +61,7 @@ class SabrTest(unittest.TestCase):
         nu = 0.8
         beta = 0.5
         rho = -0.6
-        strike = f0*math.exp(-0.1*math.sqrt(maturityTime))
+        strike = f0 * math.exp(-0.1 * math.sqrt(maturityTime))
 
         rTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.0, dc))
 
@@ -77,7 +77,7 @@ class SabrTest(unittest.TestCase):
         calculated = option.NPV()
 
         self.assertAlmostEqual(calculated, expected, 4,
-                               msg="Unable to reproduce Le Floc'h-Kennedy SABR volalatility")
+                               msg="Unable to reproduce Le Floc'h-Kennedy SABR volatility")
 
 
     def testSabrPdeVsCevPdeVsAnalyticCev(self):
@@ -118,5 +118,5 @@ class SabrTest(unittest.TestCase):
 if __name__ == '__main__':
     print('testing QuantLib ' + ql.__version__)
     suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SabrTest,'test'))
+    suite.addTest(unittest.makeSuite(SabrTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)

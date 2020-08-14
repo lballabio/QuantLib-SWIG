@@ -58,34 +58,40 @@ class SimpleQuote : public Quote {
 
 #if defined(SWIGPYTHON)
 %{
-typedef QuantLib::DerivedQuote<UnaryFunction> DerivedQuote;
-typedef QuantLib::CompositeQuote<BinaryFunction> CompositeQuote;
+using QuantLib::DerivedQuote;
+using QuantLib::CompositeQuote;
 %}
 
-%shared_ptr(DerivedQuote)
+%shared_ptr(DerivedQuote<UnaryFunction>)
 
+template <class F>
 class DerivedQuote : public Quote {
   public:
     %extend {
         DerivedQuote(const Handle<Quote>& h,
                      PyObject* function) {
-            return new DerivedQuote(h,UnaryFunction(function));
+            return new DerivedQuote<F>(h,F(function));
         }
     }
 };
 
-%shared_ptr(CompositeQuote)
+%template(DerivedQuote) DerivedQuote<UnaryFunction>;
 
+%shared_ptr(CompositeQuote<BinaryFunction>)
+
+template <class F>
 class CompositeQuote : public Quote {
   public:
     %extend {
         CompositeQuote(const Handle<Quote>& h1,
                        const Handle<Quote>& h2,
                        PyObject* function) {
-            return new CompositeQuote(h1,h2,BinaryFunction(function));
+            return new CompositeQuote<F>(h1,h2,F(function));
         }
     }
 };
+
+%template(CompositeQuote) CompositeQuote<BinaryFunction>;
 
 #endif
 
