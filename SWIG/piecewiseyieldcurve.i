@@ -47,22 +47,23 @@ using QuantLib::PiecewiseYieldCurve;
    can't take class templates with two or more template arguments. */
 
 %{
-struct IterativeBootstrap {
+struct _IterativeBootstrap {
     double accuracy, minValue, maxValue;
-    IterativeBootstrap(double accuracy = Null<double>(),
-                       double minValue = Null<double>(),
-                       double maxValue = Null<double>())
+    _IterativeBootstrap(double accuracy = Null<double>(),
+                        double minValue = Null<double>(),
+                        double maxValue = Null<double>())
     : accuracy(accuracy), minValue(minValue), maxValue(maxValue) {}
 };
 %}
 
-struct IterativeBootstrap {
+%rename(IterativeBootstrap) _IterativeBootstrap;
+struct _IterativeBootstrap {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") IterativeBootstrap;
+    %feature("kwargs") _IterativeBootstrap;
     #endif
-    IterativeBootstrap(doubleOrNull accuracy = Null<double>(),
-                       doubleOrNull minValue = Null<double>(),
-                       doubleOrNull maxValue = Null<double>());
+    _IterativeBootstrap(doubleOrNull accuracy = Null<double>(),
+                        doubleOrNull minValue = Null<double>(),
+                        doubleOrNull maxValue = Null<double>());
 };
 
 %define export_piecewise_curve(Name,Traits,Interpolator)
@@ -82,7 +83,7 @@ class Name : public YieldTermStructure {
              const std::vector<Date>& jumpDates = std::vector<Date>(),
              Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
-             const IterativeBootstrap& b = IterativeBootstrap()) {
+             const _IterativeBootstrap& b = _IterativeBootstrap()) {
             return new Name(referenceDate, instruments, dayCounter, jumps, jumpDates,
                             accuracy, i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
@@ -93,7 +94,7 @@ class Name : public YieldTermStructure {
              const std::vector<Date>& jumpDates = std::vector<Date>(),
              Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
-             const IterativeBootstrap& b = IterativeBootstrap()) {
+             const _IterativeBootstrap& b = _IterativeBootstrap()) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
                             jumps, jumpDates, accuracy, Interpolator(),
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
@@ -101,14 +102,14 @@ class Name : public YieldTermStructure {
         Name(const Date& referenceDate,
              const std::vector<boost::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const IterativeBootstrap& b) {
+             const _IterativeBootstrap& b) {
             return new Name(referenceDate, instruments, dayCounter, Interpolator(),
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
              const std::vector<boost::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const IterativeBootstrap& b) {
+             const _IterativeBootstrap& b) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
                             Interpolator(), Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
@@ -166,24 +167,25 @@ class AdditionalDates {
     }
 };
 
-struct GlobalBootstrap {
+struct _GlobalBootstrap {
     std::vector<boost::shared_ptr<RateHelper> > additionalHelpers;
     std::vector<Date> additionalDates;
     double accuracy;
-    GlobalBootstrap(double accuracy = Null<double>())
+    _GlobalBootstrap(double accuracy = Null<double>())
     : accuracy(accuracy) {}
-    GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
-                    const std::vector<Date>& additionalDates,
-                    double accuracy = Null<double>())
+    _GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+                     const std::vector<Date>& additionalDates,
+                     double accuracy = Null<double>())
     : additionalHelpers(additionalHelpers), additionalDates(additionalDates), accuracy(accuracy) {}
 };
 %}
 
-struct GlobalBootstrap {
-    GlobalBootstrap(doubleOrNull accuracy = Null<double>());
-    GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
-                    const std::vector<Date>& additionalDates,
-                    doubleOrNull accuracy = Null<double>());
+%rename(GlobalBootstrap) _GlobalBootstrap;
+struct _GlobalBootstrap {
+    _GlobalBootstrap(doubleOrNull accuracy = Null<double>());
+    _GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+                     const std::vector<Date>& additionalDates,
+                     doubleOrNull accuracy = Null<double>());
 };
 
 
@@ -201,7 +203,7 @@ class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
              const Date& referenceDate,
              const std::vector<boost::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const GlobalBootstrap& b) {
+             const _GlobalBootstrap& b) {
             if (b.additionalHelpers.empty()) {
                 return new GlobalLinearSimpleZeroCurve(
                     referenceDate, instruments, dayCounter, Linear(),

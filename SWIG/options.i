@@ -494,10 +494,13 @@ class IntegralEngine : public PricingEngine {
 
 %{
 using QuantLib::CrankNicolson;
-typedef QuantLib::FDBermudanEngine<CrankNicolson> FDBermudanEngine;
+using QuantLib::FDBermudanEngine;
+using QuantLib::FDEuropeanEngine;
 %}
 
-%shared_ptr(FDBermudanEngine)
+%shared_ptr(FDBermudanEngine<CrankNicolson>);
+
+template <class S>
 class FDBermudanEngine : public PricingEngine {
     #if defined(SWIGPYTHON)
     %pythonprepend FDBermudanEngine %{
@@ -511,11 +514,11 @@ class FDBermudanEngine : public PricingEngine {
                      bool timeDependent = false);
 };
 
-%{
-typedef QuantLib::FDEuropeanEngine<CrankNicolson> FDEuropeanEngine;
-%}
+%template(FDBermudanEngine) FDBermudanEngine<CrankNicolson>;
 
-%shared_ptr(FDEuropeanEngine)
+%shared_ptr(FDEuropeanEngine<CrankNicolson>);
+
+template <class S>
 class FDEuropeanEngine : public PricingEngine {
     #if defined(SWIGPYTHON)
     %pythonprepend FDEuropeanEngine %{
@@ -528,6 +531,9 @@ class FDEuropeanEngine : public PricingEngine {
                      Size timeSteps = 100, Size gridPoints = 100,
                      bool timeDependent = false);
 };
+
+%template(FDEuropeanEngine) FDEuropeanEngine<CrankNicolson>;
+
 
 %{
 using QuantLib::BinomialVanillaEngine;
@@ -828,11 +834,13 @@ class MCEuropeanHestonEngine : public PricingEngine {
 // American engines
 
 %{
-typedef QuantLib::FDAmericanEngine<CrankNicolson> FDAmericanEngine;
-typedef QuantLib::FDShoutEngine<CrankNicolson> FDShoutEngine;
+using QuantLib::FDAmericanEngine;
+using QuantLib::FDShoutEngine;
 %}
 
-%shared_ptr(FDAmericanEngine)
+%shared_ptr(FDAmericanEngine<CrankNicolson>);
+
+template <class S>
 class FDAmericanEngine : public PricingEngine {
     #if defined(SWIGPYTHON)
     %pythonprepend FDAmericanEngine %{
@@ -846,13 +854,20 @@ class FDAmericanEngine : public PricingEngine {
                      bool timeDependent = false);
 };
 
-%shared_ptr(FDShoutEngine)
+%template(FDAmericanEngine) FDAmericanEngine<CrankNicolson>;
+
+
+%shared_ptr(FDShoutEngine<CrankNicolson>);
+
+template <class S>
 class FDShoutEngine : public PricingEngine {
   public:
     FDShoutEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
                   Size timeSteps = 100, Size gridPoints = 100,
                   bool timeDependent = false);
 };
+
+%template(FDShoutEngine) FDShoutEngine<CrankNicolson>;
 
 
 %{
@@ -1849,10 +1864,6 @@ class FFTVarianceGammaEngine : public PricingEngine {
 %{
 using QuantLib::DoubleBarrierOption;
 using QuantLib::DoubleBarrier;
-%}
-
-%{
-using QuantLib::DoubleBarrierOption;
 %}
 
 %shared_ptr(DoubleBarrierOption)

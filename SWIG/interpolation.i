@@ -248,8 +248,6 @@ class RichardsonExtrapolation {
 #endif
 };
 
-#endif
-
 
 %{
 class SafeConvexMonotoneInterpolation {
@@ -281,3 +279,5 @@ class SafeConvexMonotoneInterpolation {
     Real operator()(Real x, bool allowExtrapolation=false);
 };
 
+
+#endif
