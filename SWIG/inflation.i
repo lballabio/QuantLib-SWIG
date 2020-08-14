@@ -1,7 +1,7 @@
 /*
  Copyright (C) 2010 Joseph Wang
  Copyright (C) 2010, 2011, 2014 StatPro Italia srl
- Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2018, 2019, 2020 Matthias Lungwitz
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -22,6 +22,7 @@
 
 %include termstructures.i
 %include swap.i
+%include interpolation.i
 
 %{
   using QuantLib::Seasonality;
@@ -209,10 +210,15 @@ export_zii_instance(ZACPI);
 
 export_yii_instance(YYEUHICP);
 export_yii_instance(YYEUHICPXT);
+export_yii_instance(YYEUHICPr);
 export_yii_instance(YYFRHICP);
+export_yii_instance(YYFRHICPr);
 export_yii_instance(YYUKRPI);
+export_yii_instance(YYUKRPIr);
 export_yii_instance(YYUSCPI);
+export_yii_instance(YYUSCPIr);
 export_yii_instance(YYZACPI);
+export_yii_instance(YYZACPIr);
 
 // utilities
 
@@ -597,7 +603,6 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
                                    const Period& lag,
                                    Frequency frequency,
                                    bool indexIsInterpolated,
-                                   const Handle<YieldTermStructure>& yTS,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator &interpolator
@@ -620,7 +625,6 @@ class InterpolatedYoYInflationCurve : public YoYInflationTermStructure {
                                    const Period& lag,
                                    Frequency frequency,
                                    bool indexIsInterpolated,
-                                   const Handle<YieldTermStructure>& yTS,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator &interpolator
@@ -636,5 +640,87 @@ class InterpolatedYoYInflationCurve : public YoYInflationTermStructure {
 
 %template(ZeroInflationCurve) InterpolatedZeroInflationCurve<Linear>;
 %template(YoYInflationCurve) InterpolatedYoYInflationCurve<Linear>;
+
+%{
+using QuantLib::YoYCapFloorTermPriceSurface;
+using QuantLib::InterpolatedYoYCapFloorTermPriceSurface;
+%}
+
+%shared_ptr(YoYCapFloorTermPriceSurface)
+class YoYCapFloorTermPriceSurface : public InflationTermStructure {
+  private:
+    YoYCapFloorTermPriceSurface();
+  public:
+    virtual std::pair<std::vector<Time>, std::vector<Rate> > atmYoYSwapTimeRates() const;
+    virtual std::pair<std::vector<Date>, std::vector<Rate> > atmYoYSwapDateRates() const;
+    virtual boost::shared_ptr<YoYInflationTermStructure> YoYTS() const;
+    boost::shared_ptr<YoYInflationIndex> yoyIndex();
+    virtual BusinessDayConvention businessDayConvention() const;
+    virtual Natural fixingDays() const;
+    virtual Real price(const Date& d, Rate k);
+    virtual Real capPrice(const Date& d, Rate k);
+    virtual Real floorPrice(const Date& d, Rate k);
+    virtual Rate atmYoYSwapRate(const Date &d,
+                                bool extrapolate = true);
+    virtual Rate atmYoYRate(const Date &d,
+                            const Period &obsLag = Period(-1,Days),
+                            bool extrapolate = true);
+
+    virtual Real price(const Period& d, Rate k) const;
+    virtual Real capPrice(const Period& d, Rate k) const;
+    virtual Real floorPrice(const Period& d, Rate k) const;
+    virtual Rate atmYoYSwapRate(const Period &d,
+                                bool extrapolate = true) const;
+    virtual Rate atmYoYRate(const Period &d,
+                            const Period &obsLag = Period(-1,Days),
+                            bool extrapolate = true) const;
+
+    virtual std::vector<Rate> strikes();
+    virtual std::vector<Rate> capStrikes();
+    virtual std::vector<Rate> floorStrikes();
+    virtual std::vector<Period> maturities();
+    virtual Rate minStrike() const;
+    virtual Rate maxStrike() const;
+    virtual Date minMaturity() const;
+    virtual Date maxMaturity() const;
+
+    virtual Date yoyOptionDateFromTenor(const Period& p) const;
+};
+
+%define export_yoy_capfloor_termpricesurface(Name,Interpolator2D, Interpolator1D)
+
+%{
+typedef InterpolatedYoYCapFloorTermPriceSurface<Interpolator2D, Interpolator1D> Name;
+%}
+
+%shared_ptr(Name);
+class Name : public YoYCapFloorTermPriceSurface {
+  public:
+    %extend {
+        Name(Natural fixingDays,
+          const Period &yyLag,  // observation lag
+          const boost::shared_ptr<YoYInflationIndex>& yii,
+          Rate baseRate,
+          const Handle<YieldTermStructure> &nominal,
+          const DayCounter &dc,
+          const Calendar &cal,
+          const BusinessDayConvention &bdc,
+          const std::vector<Rate> &cStrikes,
+          const std::vector<Rate> &fStrikes,
+          const std::vector<Period> &cfMaturities,
+          const Matrix &cPrice,
+          const Matrix &fPrice,
+          const Interpolator2D &interpolator2d = Interpolator2D(),
+          const Interpolator1D &interpolator1d = Interpolator1D()) {
+            return new Name(fixingDays, yyLag, yii, baseRate, nominal,
+                            dc, cal, bdc, cStrikes, fStrikes, cfMaturities,
+                            cPrice, fPrice);
+        }
+    }
+};
+%enddef
+
+export_yoy_capfloor_termpricesurface(YoYInflationCapFloorTermPriceSurface,Bicubic,Cubic);
+
 
 #endif
