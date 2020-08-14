@@ -63,7 +63,11 @@ class ConvertibleFixedCouponBond : public Bond {
           const std::vector<Rate>& coupons,
           const DayCounter& dayCounter,
           const Schedule& schedule,
-          Real redemption = 100.0);
+          Real redemption = 100.0,
+          const Period& exCouponPeriod = Period(),
+          const Calendar& exCouponCalendar = Calendar(),
+          const BusinessDayConvention exCouponConvention = Unadjusted,
+          bool exCouponEndOfMonth = false);
 };
 
 
@@ -83,7 +87,11 @@ class ConvertibleFloatingRateBond : public Bond {
           const std::vector<Spread>& spreads,
           const DayCounter& dayCounter,
           const Schedule& schedule,
-          Real redemption = 100.0);
+          Real redemption = 100.0,
+          const Period& exCouponPeriod = Period(),
+          const Calendar& exCouponCalendar = Calendar(),
+          const BusinessDayConvention exCouponConvention = Unadjusted,
+          bool exCouponEndOfMonth = false);
 };
 
 

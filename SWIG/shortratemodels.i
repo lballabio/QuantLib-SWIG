@@ -51,6 +51,8 @@ using QuantLib::Vasicek;
 using QuantLib::HullWhite;
 using QuantLib::BlackKarasinski;
 using QuantLib::G2;
+using QuantLib::CoxIngersollRoss;
+using QuantLib::ExtendedCoxIngersollRoss;
 %}
 
 %shared_ptr(OneFactorAffineModel)
@@ -98,6 +100,23 @@ class BlackKarasinski : public ShortRateModel {
 
     // TermStructureConsistentModel
     const Handle<YieldTermStructure>& termStructure() const;
+};
+
+%shared_ptr(CoxIngersollRoss)
+class CoxIngersollRoss : public ShortRateModel {
+  public:
+    CoxIngersollRoss(Rate r0= 0.01, Real theta = 0.1, Real k = 0.1,
+                     Real sigma = 0.1);
+    DiscountFactor discount(Time t) const;
+};
+
+%shared_ptr(ExtendedCoxIngersollRoss)
+class ExtendedCoxIngersollRoss : public ShortRateModel {
+  public:
+    ExtendedCoxIngersollRoss(const Handle<YieldTermStructure>& termStructure,
+                             Real theta = 0.1, Real k = 0.1,
+                             Real sigma = 0.1, Real x0 = 0.05);
+    DiscountFactor discount(Time t) const;
 };
 
 %shared_ptr(G2)
