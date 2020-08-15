@@ -321,6 +321,7 @@ function(from) {Period(from)})
 #endif
 
 #if defined(SWIGCSHARP)
+%typemap(csinterfaces) Date "global::System.IDisposable, global::System.IComparable";
 %typemap(cscode) Date %{
     public static Date operator+(Date d, int i) {
         return d.Add(i);
@@ -391,7 +392,20 @@ function(from) {Period(from)})
         {
            return false;
         }
-   }
+    }
+    public override string ToString()
+    {
+        return this.__str__();
+    }
+    public int CompareTo(object obj) {
+        if (obj == null) return 1;
+
+        Date other = obj as Date;
+        if (other != null)
+            return this.serialNumber().CompareTo(other.serialNumber());
+        else
+           throw new global::System.ArgumentException("Object is not a Date");
+    }
    public override int GetHashCode()
    {
        return this.serialNumber();
