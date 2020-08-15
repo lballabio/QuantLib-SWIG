@@ -278,15 +278,70 @@ class CPICoupon : public InflationCoupon {
 %}
 
 
+%{
+using QuantLib::YoYOptionletVolatilitySurface;
+using QuantLib::ConstantYoYOptionletVolatility;
+%}
+
+%shared_ptr(YoYOptionletVolatilitySurface);
+class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
+    private:
+        YoYOptionletVolatilitySurface();
+    public:
+        Volatility volatility(const Date& maturityDate,
+                              Rate strike,
+                              const Period &obsLag = Period(-1,Days),
+                              bool extrapolate = false) const;
+        Volatility volatility(const Period& optionTenor,
+                              Rate strike,
+                              const Period &obsLag = Period(-1,Days),
+                              bool extrapolate = false) const;
+        virtual Volatility totalVariance(const Date& exerciseDate,
+                                         Rate strike,
+                                         const Period &obsLag = Period(-1,Days),
+                                         bool extrapolate = false) const;
+        virtual Volatility totalVariance(const Period& optionTenor,
+                                         Rate strike,
+                                         const Period &obsLag = Period(-1,Days),
+                                         bool extrapolate = false) const;
+        virtual Period observationLag() const;
+        virtual Frequency frequency() const;
+        virtual bool indexIsInterpolated();
+        virtual Date baseDate();
+        virtual Time timeFromBase(const Date &date,
+                                  const Period& obsLag = Period(-1,Days)) const;
+        virtual Volatility baseLevel() const;
+};
+
+%template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
+
+%shared_ptr(ConstantYoYOptionletVolatility);
+class ConstantYoYOptionletVolatility
+    : public YoYOptionletVolatilitySurface {
+    public:
+      ConstantYoYOptionletVolatility(Volatility v,
+                                     Natural settlementDays,
+                                     const Calendar&,
+                                     BusinessDayConvention bdc,
+                                     const DayCounter& dc,
+                                     const Period& observationLag,
+                                     Frequency frequency,
+                                     bool indexIsInterpolated,
+                                     Rate minStrike = -1.0,
+                                     Rate maxStrike = 100.0);
+};
+
 // bootstrapped curves
 %{
 using QuantLib::BootstrapHelper;
 using QuantLib::ZeroCouponInflationSwapHelper;
 using QuantLib::YearOnYearInflationSwapHelper;
+using QuantLib::YoYOptionletHelper;
 %}
 
 %shared_ptr(BootstrapHelper<ZeroInflationTermStructure>)
 %shared_ptr(BootstrapHelper<YoYInflationTermStructure>)
+%shared_ptr(BootstrapHelper<YoYOptionletVolatilitySurface>)
 
 template <class TS>
 class BootstrapHelper : public Observable {
@@ -305,15 +360,18 @@ class BootstrapHelper : public Observable {
 
 %template(ZeroHelper) BootstrapHelper<ZeroInflationTermStructure>;
 %template(YoYHelper) BootstrapHelper<YoYInflationTermStructure>;
+%template(YoYOptionHelper) BootstrapHelper<YoYOptionletVolatilitySurface>;
 
  
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > )
 SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > )
+SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > )
 #endif
 namespace std {
     %template(ZeroHelperVector) vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >;
     %template(YoYHelperVector) vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >;
+    %template(YoYOptionHelperVector) vector<boost::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > >;
 }
 
 %shared_ptr(ZeroCouponInflationSwapHelper)
@@ -547,6 +605,7 @@ using QuantLib::YoYInflationCollar;
 %shared_ptr(YoYInflationCapFloor)
 class YoYInflationCapFloor : public Instrument {
   public:
+     enum Type { Cap = 1, Floor = -1, Collar = 0};
      Volatility impliedVolatility(
                            Real price,
                            const Handle<YoYInflationTermStructure>& curve,
@@ -720,58 +779,6 @@ class Name : public YoYCapFloorTermPriceSurface {
 
 export_yoy_capfloor_termpricesurface(YoYInflationCapFloorTermPriceSurface,Bicubic,Cubic);
 
-%{
-using QuantLib::YoYOptionletVolatilitySurface;
-using QuantLib::ConstantYoYOptionletVolatility;
-%}
-
-%shared_ptr(YoYOptionletVolatilitySurface);
-class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
-    private:
-        YoYOptionletVolatilitySurface();
-    public:
-        Volatility volatility(const Date& maturityDate,
-                              Rate strike,
-                              const Period &obsLag = Period(-1,Days),
-                              bool extrapolate = false) const;
-        Volatility volatility(const Period& optionTenor,
-                              Rate strike,
-                              const Period &obsLag = Period(-1,Days),
-                              bool extrapolate = false) const;
-        virtual Volatility totalVariance(const Date& exerciseDate,
-                                         Rate strike,
-                                         const Period &obsLag = Period(-1,Days),
-                                         bool extrapolate = false) const;
-        virtual Volatility totalVariance(const Period& optionTenor,
-                                         Rate strike,
-                                         const Period &obsLag = Period(-1,Days),
-                                         bool extrapolate = false) const;
-        virtual Period observationLag() const;
-        virtual Frequency frequency() const;
-        virtual bool indexIsInterpolated();
-        virtual Date baseDate();
-        virtual Time timeFromBase(const Date &date,
-                                  const Period& obsLag = Period(-1,Days)) const;
-        virtual Volatility baseLevel() const;
-};
-
-%template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
-
-%shared_ptr(ConstantYoYOptionletVolatility);
-class ConstantYoYOptionletVolatility
-    : public YoYOptionletVolatilitySurface {
-    public:
-      ConstantYoYOptionletVolatility(Volatility v,
-                                     Natural settlementDays,
-                                     const Calendar&,
-                                     BusinessDayConvention bdc,
-                                     const DayCounter& dc,
-                                     const Period& observationLag,
-                                     Frequency frequency,
-                                     bool indexIsInterpolated,
-                                     Rate minStrike = -1.0,
-                                     Rate maxStrike = 100.0);
-};
 
 %{
 using QuantLib::YoYInflationCapFloorEngine;
@@ -802,6 +809,27 @@ class YoYInflationBachelierCapFloorEngine : public PricingEngine {
     YoYInflationBachelierCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
                                     const Handle<YoYOptionletVolatilitySurface>& vol,
                                     const Handle<YieldTermStructure>& nominalTermStructure);
+};
+
+%shared_ptr(YoYOptionletHelper)
+class YoYOptionletHelper : public BootstrapHelper<YoYOptionletVolatilitySurface> {
+  public:
+      %extend {
+        YoYOptionletHelper(
+         const Handle<Quote>& price,
+         Real notional,
+         YoYInflationCapFloor::Type capFloorType,
+         Period &lag,
+         const DayCounter& yoyDayCounter,
+         const Calendar& paymentCalendar,
+         Natural fixingDays,
+         const boost::shared_ptr<YoYInflationIndex>& index,
+         Rate strike, Size n,
+         const boost::shared_ptr<PricingEngine> &pricer) {
+            boost::shared_ptr<QuantLib::YoYInflationCapFloorEngine> engine = boost::dynamic_pointer_cast<YoYInflationCapFloorEngine>(pricer);
+            return new YoYOptionletHelper(price, notional, capFloorType, lag, yoyDayCounter, paymentCalendar, fixingDays, index, strike, n, engine);
+         }
+     }
 };
 
 %{
