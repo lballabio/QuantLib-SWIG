@@ -830,6 +830,7 @@ class YoYOptionletHelper : public BootstrapHelper<YoYOptionletVolatilitySurface>
             return new YoYOptionletHelper(price, notional, capFloorType, lag, yoyDayCounter, paymentCalendar, fixingDays, index, strike, n, engine);
          }
      }
+    void setTermStructure(YoYOptionletVolatilitySurface*);
 };
 
 %{
@@ -865,9 +866,32 @@ class InterpolatedYoYOptionletStripper: public YoYOptionletStripper {
 %template(InterpolatedYoYInflationOptionletStripper) InterpolatedYoYOptionletStripper<Linear>;
 
 %{
+using QuantLib::InterpolatedYoYOptionletVolatilityCurve;
 using QuantLib::KInterpolatedYoYOptionletVolatilitySurface;
 using QuantLib::YoYInflationCapFloorEngine;
 %}
+
+%shared_ptr(InterpolatedYoYOptionletVolatilityCurve<Linear>);
+
+template <class Interpolator1D>
+class InterpolatedYoYOptionletVolatilityCurve : public YoYOptionletVolatilitySurface {
+  public:
+    InterpolatedYoYOptionletVolatilityCurve(Natural settlementDays,
+                                            const Calendar&,
+                                            BusinessDayConvention bdc,
+                                            const DayCounter& dc,
+                                            const Period &lag,
+                                            Frequency frequency,
+                                            bool indexIsInterpolated,
+                                            const std::vector<Date> &d,
+                                            const std::vector<Volatility> &v,
+                                            Rate minStrike,
+                                            Rate maxStrike,
+                                            const Interpolator1D &i =
+                                                        Interpolator1D());
+};
+
+%template(InterpolatedYoYInflationOptionletVolatilityCurve) InterpolatedYoYOptionletVolatilityCurve<Linear>;
 
 %shared_ptr(KInterpolatedYoYOptionletVolatilitySurface<Linear>);
 template <class Interpolator1D>
