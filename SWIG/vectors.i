@@ -2,7 +2,7 @@
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
- Copyright (C) 2019 Matthias Lungwitz
+ Copyright (C) 2019, 2020 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -48,6 +48,7 @@ namespace std {
 
     %template(DoublePair) pair<double,double>;
     %template(DoublePairVector) vector<pair<double,double> >;
+    %template(PairDoubleVector) pair<vector<double>,vector<double> >;
 
 #if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;
