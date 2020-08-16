@@ -310,60 +310,6 @@ class CPICoupon : public InflationCoupon {
     }
 %}
 
-
-%{
-using QuantLib::YoYOptionletVolatilitySurface;
-using QuantLib::ConstantYoYOptionletVolatility;
-%}
-
-%shared_ptr(YoYOptionletVolatilitySurface);
-class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
-    private:
-        YoYOptionletVolatilitySurface();
-    public:
-        Volatility volatility(const Date& maturityDate,
-                              Rate strike,
-                              const Period &obsLag = Period(-1,Days),
-                              bool extrapolate = false) const;
-        Volatility volatility(const Period& optionTenor,
-                              Rate strike,
-                              const Period &obsLag = Period(-1,Days),
-                              bool extrapolate = false) const;
-        virtual Volatility totalVariance(const Date& exerciseDate,
-                                         Rate strike,
-                                         const Period &obsLag = Period(-1,Days),
-                                         bool extrapolate = false) const;
-        virtual Volatility totalVariance(const Period& optionTenor,
-                                         Rate strike,
-                                         const Period &obsLag = Period(-1,Days),
-                                         bool extrapolate = false) const;
-        virtual Period observationLag() const;
-        virtual Frequency frequency() const;
-        virtual bool indexIsInterpolated();
-        virtual Date baseDate();
-        virtual Time timeFromBase(const Date &date,
-                                  const Period& obsLag = Period(-1,Days)) const;
-        virtual Volatility baseLevel() const;
-};
-
-%template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
-
-%shared_ptr(ConstantYoYOptionletVolatility);
-class ConstantYoYOptionletVolatility
-    : public YoYOptionletVolatilitySurface {
-    public:
-      ConstantYoYOptionletVolatility(Volatility v,
-                                     Natural settlementDays,
-                                     const Calendar&,
-                                     BusinessDayConvention bdc,
-                                     const DayCounter& dc,
-                                     const Period& observationLag,
-                                     Frequency frequency,
-                                     bool indexIsInterpolated,
-                                     Rate minStrike = -1.0,
-                                     Rate maxStrike = 100.0);
-};
-
 // bootstrapped curves
 %{
 using QuantLib::BootstrapHelper;
