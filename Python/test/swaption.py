@@ -1,5 +1,5 @@
 """
- Copyright (C) 2020 tbd
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
