@@ -170,8 +170,8 @@ class SwaptionTest(unittest.TestCase):
                                 # Based on the Mean Value Theorem, the below inequality
                                 # should hold for any function that is monotonic in the
                                 # area of the bump.
-                                check_is_correct = (lower_bound <= approx_delta) and (
-                                    approx_delta <= upper_bound)
+                                check_is_correct = (lower_bound < approx_delta) and (
+                                    approx_delta < upper_bound)
 
                                 fail_msg = f""" Swaption delta test failed for:
                                                     option tenor: {e}
