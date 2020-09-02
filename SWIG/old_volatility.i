@@ -115,6 +115,13 @@ class CapFloorTermVolSurface : public CapFloorTermVolatilityStructure {
                            const std::vector<Rate>& strikes,
                            const Matrix& volatilities,
                            const DayCounter& dc = QuantLib::Actual365Fixed());
+    Date maxDate() const;
+    Real minStrike() const;
+    Real maxStrike() const;
+    const std::vector<Period>& optionTenors() const;
+    const std::vector<Date>& optionDates() const;
+    const std::vector<Time>& optionTimes() const;
+    const std::vector<Rate>& strikes() const;
 };
 
 %{

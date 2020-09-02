@@ -209,12 +209,18 @@ class Period {
         Period __neg__() {
             return -(*self);
         }
+        Period __add__(const Period& p) {
+            return *self + p;
+        }
+        Period __sub__(const Period& p) {
+            return *self - p;
+        }
         Period __mul__(Integer n) {
-            return *self*n;
+            return *self * n;
         }
         #if defined(SWIGPYTHON)
         Period __rmul__(Integer n) {
-            return *self*n;
+            return *self * n;
         }
         bool __lt__(const Period& other) {
             return *self < other;
@@ -315,12 +321,19 @@ function(from) {Period(from)})
 #endif
 
 #if defined(SWIGCSHARP)
+%typemap(csinterfaces) Date "global::System.IDisposable, global::System.IComparable";
 %typemap(cscode) Date %{
     public static Date operator+(Date d, int i) {
-        return new Date(d.serialNumber() + i);
+        return d.Add(i);
     }
     public static Date operator-(Date d, int i) {
-        return new Date(d.serialNumber() - i);
+        return d.Subtract(i);
+    }
+    public static Date operator+(Date d, Period p) {
+        return d.Add(p);
+    }
+    public static Date operator-(Date d, Period p) {
+        return d.Subtract(p);
     }
     public static bool operator==(Date d1, Date d2) {
         object o1 = (object)d1;
@@ -347,12 +360,26 @@ function(from) {Period(from)})
             return false;
         return d1.serialNumber() > d2.serialNumber();
     }
+    public static bool operator>=(Date d1, Date d2) {
+        object o1 = (object)d1;
+        object o2 = (object)d2;
+        if (o1 == null || o2 == null)
+            return false;
+        return d1.serialNumber() >= d2.serialNumber();
+    }
     public static bool operator<(Date d1, Date d2) {
         object o1 = (object)d1;
         object o2 = (object)d2;
         if (o1 == null || o2 == null)
             return false;
         return d1.serialNumber() < d2.serialNumber();
+    }
+    public static bool operator<=(Date d1, Date d2) {
+        object o1 = (object)d1;
+        object o2 = (object)d2;
+        if (o1 == null || o2 == null)
+            return false;
+        return d1.serialNumber() <= d2.serialNumber();
     }
     public override bool Equals(object o)
     {
@@ -365,7 +392,20 @@ function(from) {Period(from)})
         {
            return false;
         }
-   }
+    }
+    public override string ToString()
+    {
+        return this.__str__();
+    }
+    public int CompareTo(object obj) {
+        if (obj == null) return 1;
+
+        Date other = obj as Date;
+        if (other != null)
+            return this.serialNumber().CompareTo(other.serialNumber());
+        else
+           throw new global::System.ArgumentException("Object is not a Date");
+    }
    public override int GetHashCode()
    {
        return this.serialNumber();
