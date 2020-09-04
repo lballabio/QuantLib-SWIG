@@ -26,10 +26,8 @@ EPSILON = 1.e-10
 OPTION_TYPE_MAP = {ql.VanillaSwap.Receiver: 'Receiver',
                    ql.VanillaSwap.Payer: 'Payer'}
 
-
 SETTLEMENT_TYPE_MAP = {ql.Settlement.Physical: 'Physical',
                        ql.Settlement.Cash: 'Cash'}
-
 
 SETTLEMENT_METHOD_MAP = {ql.Settlement.PhysicalOTC: 'Physical OTC',
                          ql.Settlement.CollateralizedCashPrice: (
@@ -38,16 +36,16 @@ SETTLEMENT_METHOD_MAP = {ql.Settlement.PhysicalOTC: 'Physical OTC',
 
 
 def compounded_annual_constant_rate_discount(
-        rate: float,
-        day_counter: ql.DayCounter):
-    def _calc(start: ql.Date, end: ql.Date):
+        rate,
+        day_counter):
+    def _calc(start, end):
         time = day_counter.yearFraction(start, end)
         return (1.0 + rate) ** (-time)
     return _calc
 
 
-def par_yield_bps(underlying: ql.VanillaSwap,
-                  discount_handle: ql.YieldTermStructureHandle):
+def par_yield_bps(underlying,
+                  discount_handle):
     fixed_leg = underlying.fixedLeg()
     first_coupon = ql.as_fixed_rate_coupon(fixed_leg[0])
     discount_date = first_coupon.accrualStartDate()
@@ -62,7 +60,7 @@ def par_yield_bps(underlying: ql.VanillaSwap,
     return abs(bps) * discount
 
 
-def swap_pv01(underlying: ql.VanillaSwap):
+def swap_pv01(underlying):
     return abs(underlying.fixedLegBPS()) / BASIS_POINT
 
 
@@ -106,7 +104,7 @@ class SwaptionTest(unittest.TestCase):
 
     def _assert_swaption_delta(self,
                                swaption_pricer_func,
-                               use_bachelier_vol: bool):
+                               use_bachelier_vol):
         strikes = [0.03, 0.04, 0.05, 0.06, 0.07]
         vols = [0.01, 0.10, 0.20, 0.30, 0.70, 0.90]
 
@@ -188,7 +186,7 @@ class SwaptionTest(unittest.TestCase):
 
     def _assert_swaption_annuity(self,
                                  swaption_pricer_func,
-                                 use_bachelier_vol: bool):
+                                 use_bachelier_vol):
         self.projection_quote_handle.linkTo(
             ql.SimpleQuote(self.projection_rate))
 
