@@ -171,17 +171,25 @@ class SwaptionTest(unittest.TestCase):
                                 check_is_correct = (lower_bound < approx_delta) and (
                                     approx_delta < upper_bound)
 
-                                fail_msg = f""" Swaption delta test failed for:
-                                                    option tenor: {e}
+                                fail_msg = """ Swaption delta test failed for:
+                                                    option tenor: {option_tenor}
                                                     volatility : {volatility}
-                                                    option type: {OPTION_TYPE_MAP[t]}
-                                                    swap tenor: {l}
-                                                    strike: {s}
-                                                    settlement: {SETTLEMENT_TYPE_MAP[s_t]}
-                                                    method: {SETTLEMENT_METHOD_MAP[s_m]}
+                                                    option type: {option_type}
+                                                    swap tenor: {swap_tenor}
+                                                    strike: {strike}
+                                                    settlement: {settle_type}
+                                                    method: {method}
                                                     delta: {delta}
                                                     approx delta: {approx_delta}
-                                            """
+                                           """.format(option_tenor=e,
+                                                      volatility=volatility,
+                                                      option_type=OPTION_TYPE_MAP[t],
+                                                      swap_tenor=l,
+                                                      strike=s,
+                                                      settle_type=SETTLEMENT_TYPE_MAP[s_t],
+                                                      method=SETTLEMENT_METHOD_MAP[s_m],
+                                                      delta=delta,
+                                                      approx_delta=approx_delta)
                                 self.assertTrue(check_is_correct, msg=fail_msg)
 
     def _assert_swaption_annuity(self,
@@ -231,17 +239,25 @@ class SwaptionTest(unittest.TestCase):
                             expected_annuity = par_yield_bps(
                                 underlying, self.discount_handle)
 
-                        fail_msg = f""" Swaption annuity test failed for:
-                                            option tenor: {e}
+                        fail_msg = """ Swaption annuity test failed for:
+                                            option tenor: {option_tenor}
                                             volatility : {volatility}
-                                            option type: {OPTION_TYPE_MAP[t]}
-                                            swap tenor: {l}
+                                            option type: {option_type}
+                                            swap tenor: {swap_tenor}
                                             strike: {strike}
-                                            settlement: {SETTLEMENT_TYPE_MAP[settle_type]}
-                                            method: {SETTLEMENT_METHOD_MAP[m]}
+                                            settlement: {settle_type}
+                                            method: {method}
                                             annuity: {annuity}
                                             replicated annuity: {expected_annuity}
-                                        """
+                                   """.format(option_tenor=e,
+                                              volatility=volatility,
+                                              option_type=OPTION_TYPE_MAP[t],
+                                              swap_tenor=l,
+                                              strike=strike,
+                                              settle_type=SETTLEMENT_TYPE_MAP[settle_type],
+                                              method=SETTLEMENT_METHOD_MAP[m],
+                                              annuity=annuity,
+                                              expected_annuity=expected_annuity)
                         self.assertAlmostEquals(
                             first=annuity,
                             second=expected_annuity,
