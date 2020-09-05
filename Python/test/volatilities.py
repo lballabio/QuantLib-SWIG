@@ -96,6 +96,18 @@ NORM_VOL_SPREADS = (
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
     (-0.0003, 0.0005, 0.0, 0.0003, 0.0003))
 
+ZERO_COUPON_DATA = (
+    (ql.Period(1, ql.Years), -0.003),
+    (ql.Period(2, ql.Years), 0.0001),
+    (ql.Period(3, ql.Years), 0.001),
+    (ql.Period(4, ql.Years), 0.0013),
+    (ql.Period(5, ql.Years), 0.0015),
+    (ql.Period(6, ql.Years), 0.0019),
+    (ql.Period(7, ql.Years), 0.0021),
+    (ql.Period(8, ql.Years), 0.0025),
+    (ql.Period(9, ql.Years), 0.003),
+    (ql.Period(10, ql.Years), 0.005))
+
 NORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
     CAL,
     ql.ModifiedFollowing,
@@ -111,6 +123,12 @@ def create_euribor_swap_idx(
         projectionCurveHandle):
     return ql.EuriborSwapIsdaFixA(ql.Period(1, ql.Years),
                                   projectionCurveHandle)
+
+
+def build_nominal_term_structure(valuation_date, nominal_quotes):
+    dates, rates = zip(*[(CAL.advance(valuation_date, x[0]), x[1])
+                         for x in nominal_quotes])
+    return ql.ZeroCurve(dates, rates, ql.Actual365Fixed())
 
 
 def create_linear_swaption_cube(
