@@ -275,7 +275,7 @@ class InflationTest(unittest.TestCase):
             abs(zciis.NPV() < 1.e-5),
             msg="Failed to price zero coupon inflation swap to par.")
 
-        inflation_cf = ql.as_indexed_cash_flow(
+        inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
 
         # Obtaining base index for the inflation swap
@@ -337,7 +337,7 @@ class InflationTest(unittest.TestCase):
             observation_lag)
         zciis.setPricingEngine(discount_engine)
 
-        inflation_cf = ql.as_indexed_cash_flow(
+        inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
 
         # Replicate base index for the inflation swap
@@ -422,7 +422,7 @@ class InflationTest(unittest.TestCase):
             observation_lag)
         zciis.setPricingEngine(discount_engine)
 
-        inflation_cf = ql.as_indexed_cash_flow(
+        inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
 
         # Obtaining base index for the inflation swap
