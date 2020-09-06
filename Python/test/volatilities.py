@@ -223,13 +223,13 @@ def build_sabr_swaption_cube(
         vol_spreads,
         swap_index_base,
         short_swap_index_base=None,
-        vega_weighted_smile_fit=False):
+        vega_weighted_smile_fit=False,
+        is_parameter_fixed=(False, False, False, False),
+        is_atm_calibrated=True):
     v_spreads = [[ql.QuoteHandle(ql.SimpleQuote(v)) for v in row]
                  for row in vol_spreads]
     guess = sabr_parameters_guess(
         len(spread_opt_tenors), len(spread_swap_tenors))
-    is_parameter_fixed = [False, False, False, False]
-    is_atm_calibrated = True
     cube = ql.SwaptionVolCube1(
         ql.SwaptionVolatilityStructureHandle(volatility_matrix),
         spread_opt_tenors,
@@ -319,14 +319,16 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
                         swap tenor: {swap_tenor}
                         strike: {strike}
                         volatility: {vol}
-                        replicated volatility: {replicated_vol}
+                        expected volatility: {expected_vol}
+                        epsilon: {eps}
                    """.format(interpolation=interpolation,
                               vol_type=vol_type,
                               option_tenor=opt_tenor,
                               swap_tenor=swap_tenor,
                               strike=strike,
                               vol=actual_vol,
-                              replicated_vol=expected_vol)
+                              expected_vol=expected_vol,
+                              eps=epsilon)
         self.assertAlmostEquals(
             first=actual_vol,
             second=expected_vol,
@@ -354,14 +356,16 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
                         swap tenor: {swap_tenor}
                         strike: {strike}
                         volatility: {vol}
-                        replicated volatility: {replicated_vol}
+                        expected volatility: {expected_vol}
+                        epsilon: {eps}
                    """.format(interpolation=interpolation,
                               vol_type=vol_type,
                               option_tenor=opt_tenor,
                               swap_tenor=swap_tenor,
                               strike=strike,
                               vol=actual_vol,
-                              replicated_vol=expected_vol)
+                              expected_vol=expected_vol,
+                              eps=epsilon)
         self.assertAlmostEquals(
             first=actual_vol,
             second=expected_vol,
@@ -395,7 +399,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             cube=linear_cube,
             interpolation='linear',
             vol_type='log-normal')
-    
+
     def test_sabr_lognormal_cube_at_the_money_strike(self):
         """Testing ATM strike for SABR interpolated log-normal vol cube"""
         sabr_cube = build_sabr_swaption_cube(
@@ -475,8 +479,8 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             cube=linear_cube,
             opt_tenor=ql.Period(1, ql.Years),
             swap_tenor=ql.Period(10, ql.Years),
-            strike_spread=0.005,
-            expected_vol=0.00453 + 0.00065,
+            strike_spread=-0.02,
+            expected_vol=0.00453 - 0.0006,
             interpolation='linear',
             vol_type='normal')
 
@@ -493,8 +497,8 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             cube=linear_cube,
             opt_tenor=ql.Period(10, ql.Years),
             swap_tenor=ql.Period(10, ql.Years),
-            strike_spread=0.005,
-            expected_vol=0.125 - 0.005,
+            strike_spread=-0.02,
+            expected_vol=0.125 + 0.0558,
             interpolation='linear',
             vol_type='log-normal')
 
@@ -511,8 +515,8 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             cube=sabr_cube,
             opt_tenor=ql.Period(10, ql.Years),
             swap_tenor=ql.Period(10, ql.Years),
-            strike_spread=0.005,
-            expected_vol=0.125 - 0.005,
+            strike_spread=-0.02,
+            expected_vol=0.125 + 0.0558,
             interpolation='SABR',
             vol_type='log-normal',
             epsilon=SABR_SPREAD_TOLERANCE)
