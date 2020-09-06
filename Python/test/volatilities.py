@@ -105,40 +105,40 @@ SMILE_SWAP_TENORS = (ql.Period(2, ql.Years),
                      ql.Period(10, ql.Years),
                      ql.Period(30, ql.Years))
 
-STRIKE_SPREADS = (-0.02, -0.005, 0.0, 0.005, 0.02)
+STRIKE_SPREADS = (-0.01, -0.005, 0.0, 0.005, 0.01)
 
 NORM_VOL_SPREADS = (
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
-    (-0.0006, 0.0005, 0.0, 0.00065, 0.0006),
+    (-0.0006, 0.0005, 0.0, 0.00065, 0.00066),
     (-0.0006, 0.0001, 0.0, 0.0006, 0.0006),
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
-    (-0.0003, 0.0005, 0.0, 0.0003, 0.0003),
+    (-0.0003, 0.0005, 0.0, 0.0003, 0.0006),
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
-    (-0.0003, 0.0005, 0.0, 0.0003, 0.0003))
+    (-0.0003, 0.0005, 0.0, 0.0003, 0.0006))
 
 LOGNORM_VOL_SPREADS = (
-    (0.0599, 0.0049, 0.0000, -0.0001, 0.0127),
-    (0.0729, 0.0086, 0.0000, -0.0024, 0.0098),
-    (0.0738, 0.0102, 0.0000, -0.0039, 0.0065),
-    (0.0465, 0.0063, 0.0000, -0.0032, -0.0010),
-    (0.0558, 0.0084, 0.0000, -0.0050, -0.0057),
-    (0.0576, 0.0083, 0.0000, -0.0043, -0.0014),
-    (0.0437, 0.0059, 0.0000, -0.0030, -0.0006),
-    (0.0533, 0.0078, 0.0000, -0.0045, -0.0046),
-    (0.0545, 0.0079, 0.0000, -0.0042, -0.0020))
+    (0.00599, 0.0049, 0.0000, -0.0001, -0.0049),
+    (0.00729, 0.0086, 0.0000, -0.0024, -0.0049),
+    (0.00738, 0.0102, 0.0000, -0.0039, -0.0049),
+    (0.00465, 0.0063, 0.0000, -0.0032, -0.0049),
+    (0.00558, 0.0084, 0.0000, -0.0050, -0.0049),
+    (0.00576, 0.0083, 0.0000, -0.0043, -0.0049),
+    (0.0049, 0.0059, 0.0000, -0.0030, -0.0049),
+    (0.0049, 0.0078, 0.0000, -0.0045, -0.0049),
+    (0.0049, 0.0079, 0.0000, -0.0042, -0.0049))
 
 ZERO_COUPON_DATA = (
-    (ql.Period(1, ql.Years), -0.003),
-    (ql.Period(2, ql.Years), 0.0001),
-    (ql.Period(3, ql.Years), 0.001),
-    (ql.Period(4, ql.Years), 0.0013),
-    (ql.Period(5, ql.Years), 0.0015),
-    (ql.Period(10, ql.Years), 0.005),
-    (ql.Period(15, ql.Years), 0.009),
-    (ql.Period(20, ql.Years), 0.01),
-    (ql.Period(30, ql.Years), 0.015))
+    (ql.Period(1, ql.Years), 0.003),
+    (ql.Period(2, ql.Years), 0.005),
+    (ql.Period(3, ql.Years), 0.006),
+    (ql.Period(4, ql.Years), 0.007),
+    (ql.Period(5, ql.Years), 0.009),
+    (ql.Period(10, ql.Years), 0.011),
+    (ql.Period(15, ql.Years), 0.014),
+    (ql.Period(20, ql.Years), 0.016),
+    (ql.Period(30, ql.Years), 0.019))
 
 NORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
     CAL,
@@ -168,9 +168,12 @@ def build_euribor_swap_idx(
 
 
 def build_nominal_term_structure(valuation_date, nominal_quotes):
-    dates, rates = zip(*[(CAL.advance(valuation_date, x[0]), x[1])
+    settle_date = CAL.advance(valuation_date, ql.Period(2, ql.Days))
+    dates, rates = zip(*[(CAL.advance(settle_date, x[0]), x[1])
                          for x in nominal_quotes])
-    return ql.ZeroCurve(dates, rates, ql.Actual365Fixed())
+    crv = ql.ZeroCurve(dates, rates, ql.Actual365Fixed())
+    crv.enableExtrapolation()
+    return crv
 
 
 def build_linear_swaption_cube(
@@ -184,7 +187,7 @@ def build_linear_swaption_cube(
         vega_weighted_smile_fit=False):
     vol_spreads = [[ql.QuoteHandle(ql.SimpleQuote(v)) for v in row]
                    for row in vol_spreads]
-    return ql.SwaptionVolCube2(
+    cube = ql.SwaptionVolCube2(
         ql.SwaptionVolatilityStructureHandle(volatility_matrix),
         spread_opt_tenors,
         spread_swap_tenors,
@@ -193,6 +196,8 @@ def build_linear_swaption_cube(
         swap_index_base,
         short_swap_index_base if short_swap_index_base else swap_index_base,
         vega_weighted_smile_fit)
+    cube.enableExtrapolation()
+    return cube
 
 
 class SwaptionVolatilityCubeTest(unittest.TestCase):
@@ -359,7 +364,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             expected_vol=0.00453,
             interpolation='linear',
             vol_type='normal')
-        
+
     def test_linear_lognormal_cube_at_the_money_vol(self):
         """Testing ATM volatility for linearly interpolated log-normal vol cube"""
         linear_cube = build_linear_swaption_cube(
@@ -394,7 +399,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             expected_vol=0.00453 + 0.00065,
             interpolation='linear',
             vol_type='normal')
-    
+
     def test_linear_lognormal_cube_spread_vol(self):
         """Testing spread volatility for linearly interpolated log-normal cube"""
         linear_cube = build_linear_swaption_cube(
