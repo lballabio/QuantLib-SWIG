@@ -77,6 +77,26 @@ ATM_NORM_VOL_SWAP_TENORS = (ql.Period(1, ql.Years), ql.Period(2, ql.Years),
                             ql.Period(15, ql.Years), ql.Period(20, ql.Years),
                             ql.Period(25, ql.Years), ql.Period(30, ql.Years))
 
+ATM_LOGNORM_VOLS = (
+    (0.1300, 0.1560, 0.1390, 0.1220),
+    (0.1440, 0.1580, 0.1460, 0.1260),
+    (0.1600, 0.1590, 0.1470, 0.1290),
+    (0.1640, 0.1470, 0.1370, 0.1220),
+    (0.1400, 0.1300, 0.1250, 0.1100),
+    (0.1130, 0.1090, 0.1070, 0.0930))
+
+ATM_LOGNORM_VOL_OPT_TENORS = (ql.Period(1, ql.Months),
+                              ql.Period(6, ql.Months),
+                              ql.Period(3, ql.Years),
+                              ql.Period(5, ql.Years),
+                              ql.Period(10, ql.Years),
+                              ql.Period(25, ql.Years))
+
+ATM_LOGNORM_VOL_SWAP_TENORS = (ql.Period(1, ql.Years),
+                               ql.Period(3, ql.Years),
+                               ql.Period(10, ql.Years),
+                               ql.Period(25, ql.Years))
+
 SMILE_OPT_TENORS = (ql.Period(1, ql.Years),
                     ql.Period(10, ql.Years),
                     ql.Period(30, ql.Years))
@@ -85,7 +105,7 @@ SMILE_SWAP_TENORS = (ql.Period(2, ql.Years),
                      ql.Period(10, ql.Years),
                      ql.Period(30, ql.Years))
 
-NORM_STRIKE_SPREADS = (-0.02, -0.005, 0.0, 0.005, 0.02)
+STRIKE_SPREADS = (-0.02, -0.005, 0.0, 0.005, 0.02)
 
 NORM_VOL_SPREADS = (
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
@@ -97,6 +117,17 @@ NORM_VOL_SPREADS = (
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
     (-0.0003, 0.0005, 0.0, 0.0003, 0.0003))
+
+LOGNORM_VOL_SPREADS = (
+    (0.0599, 0.0049, 0.0000, -0.0001, 0.0127),
+    (0.0729, 0.0086, 0.0000, -0.0024, 0.0098),
+    (0.0738, 0.0102, 0.0000, -0.0039, 0.0065),
+    (0.0465, 0.0063, 0.0000, -0.0032, -0.0010),
+    (0.0558, 0.0084, 0.0000, -0.0050, -0.0057),
+    (0.0576, 0.0083, 0.0000, -0.0043, -0.0014),
+    (0.0437, 0.0059, 0.0000, -0.0030, -0.0006),
+    (0.0533, 0.0078, 0.0000, -0.0045, -0.0046),
+    (0.0545, 0.0079, 0.0000, -0.0042, -0.0020))
 
 ZERO_COUPON_DATA = (
     (ql.Period(1, ql.Years), -0.003),
@@ -118,6 +149,16 @@ NORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
     ql.Actual365Fixed(),
     False,
     ql.Normal)
+
+LOGNORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
+    CAL,
+    ql.ModifiedFollowing,
+    ATM_LOGNORM_VOL_OPT_TENORS,
+    ATM_LOGNORM_VOL_SWAP_TENORS,
+    ql.Matrix(ATM_LOGNORM_VOLS),
+    ql.Actual365Fixed(),
+    False,
+    ql.ShiftedLognormal)
 
 
 def build_euribor_swap_idx(
@@ -239,7 +280,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             second=expected_vol,
             delta=EPSILON,
             msg=fail_msg)
-    
+
     def _assert_vol_spread(
             self,
             cube,
@@ -280,7 +321,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             NORM_VOL_MATRIX,
             SMILE_OPT_TENORS,
             SMILE_SWAP_TENORS,
-            NORM_STRIKE_SPREADS,
+            STRIKE_SPREADS,
             NORM_VOL_SPREADS,
             self.swap_idx)
         self._assert_atm_strike(
@@ -288,13 +329,27 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             interpolation='linear',
             vol_type='normal')
 
+    def test_linear_lognormal_cube_at_the_money_strike(self):
+        """Testing ATM strike for linearly interpolated log-normal vol cube"""
+        linear_cube = build_linear_swaption_cube(
+            LOGNORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            STRIKE_SPREADS,
+            LOGNORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_atm_strike(
+            cube=linear_cube,
+            interpolation='linear',
+            vol_type='log-normal')
+
     def test_linear_normal_cube_at_the_money_vol(self):
         """Testing ATM volatility for linearly interpolated normal vol cube"""
         linear_cube = build_linear_swaption_cube(
             NORM_VOL_MATRIX,
             SMILE_OPT_TENORS,
             SMILE_SWAP_TENORS,
-            NORM_STRIKE_SPREADS,
+            STRIKE_SPREADS,
             NORM_VOL_SPREADS,
             self.swap_idx)
         self._assert_atm_vol(
@@ -304,14 +359,31 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             expected_vol=0.00453,
             interpolation='linear',
             vol_type='normal')
-    
+        
+    def test_linear_lognormal_cube_at_the_money_vol(self):
+        """Testing ATM volatility for linearly interpolated log-normal vol cube"""
+        linear_cube = build_linear_swaption_cube(
+            LOGNORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            STRIKE_SPREADS,
+            LOGNORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_atm_vol(
+            cube=linear_cube,
+            opt_tenor=ql.Period(10, ql.Years),
+            swap_tenor=ql.Period(10, ql.Years),
+            expected_vol=0.1250,
+            interpolation='linear',
+            vol_type='log-normal')
+
     def test_linear_normal_cube_spread_vol(self):
         """Testing spread volatility for linearly interpolated normal cube"""
         linear_cube = build_linear_swaption_cube(
             NORM_VOL_MATRIX,
             SMILE_OPT_TENORS,
             SMILE_SWAP_TENORS,
-            NORM_STRIKE_SPREADS,
+            STRIKE_SPREADS,
             NORM_VOL_SPREADS,
             self.swap_idx)
         self._assert_vol_spread(
@@ -322,6 +394,24 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             expected_vol=0.00453 + 0.00065,
             interpolation='linear',
             vol_type='normal')
+    
+    def test_linear_lognormal_cube_spread_vol(self):
+        """Testing spread volatility for linearly interpolated log-normal cube"""
+        linear_cube = build_linear_swaption_cube(
+            LOGNORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            STRIKE_SPREADS,
+            LOGNORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_vol_spread(
+            cube=linear_cube,
+            opt_tenor=ql.Period(10, ql.Years),
+            swap_tenor=ql.Period(10, ql.Years),
+            strike_spread=0.005,
+            expected_vol=0.125 - 0.005,
+            interpolation='linear',
+            vol_type='log-normal')
 
 
 if __name__ == "__main__":
