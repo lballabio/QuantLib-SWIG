@@ -279,8 +279,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         expected_atm_strike = self._get_fair_rate(opt_tenor, swap_tenor)
         actual_atm_strike = cube.atmStrike(
             cube.optionDateFromTenor(opt_tenor), swap_tenor)
-        fail_msg = """ 
-                    ATM strike test failed for:
+        fail_msg = """ ATM strike test failed for:
                         cube interpolation: {interpolation}
                         volatility_type: {vol_type}
                         option tenor: {option_tenor}
@@ -311,8 +310,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         option_date = cube.optionDateFromTenor(opt_tenor)
         strike = cube.atmStrike(option_date, swap_tenor)
         actual_vol = cube.volatility(option_date, swap_tenor, strike)
-        fail_msg = """ 
-                    ATM vol test failed for:
+        fail_msg = """ ATM vol test failed for:
                         cube interpolation: {interpolation}
                         volatility_type: {vol_type}
                         option tenor: {option_tenor}
@@ -348,8 +346,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         option_date = cube.optionDateFromTenor(opt_tenor)
         strike = cube.atmStrike(option_date, swap_tenor) + strike_spread
         actual_vol = cube.volatility(option_date, swap_tenor, strike)
-        fail_msg = """ 
-                    Vol spread test failed for:
+        fail_msg = """ Vol spread test failed for:
                         cube interpolation: {interpolation}
                         volatility_type: {vol_type}
                         option tenor: {option_tenor}
