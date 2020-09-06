@@ -239,6 +239,40 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             second=expected_vol,
             delta=EPSILON,
             msg=fail_msg)
+    
+    def _assert_vol_spread(
+            self,
+            cube,
+            opt_tenor,
+            swap_tenor,
+            strike_spread,
+            expected_vol,
+            interpolation,
+            vol_type):
+        option_date = cube.optionDateFromTenor(opt_tenor)
+        strike = cube.atmStrike(option_date, swap_tenor) + strike_spread
+        actual_vol = cube.volatility(option_date, swap_tenor, strike)
+        fail_msg = """ 
+                    Vol spread test failed for:
+                        cube interpolation: {interpolation}
+                        volatility_type: {vol_type}
+                        option tenor: {option_tenor}
+                        swap tenor: {swap_tenor}
+                        strike: {strike}
+                        volatility: {vol}
+                        replicated volatility: {replicated_vol}
+                   """.format(interpolation=interpolation,
+                              vol_type=vol_type,
+                              option_tenor=opt_tenor,
+                              swap_tenor=swap_tenor,
+                              strike=strike,
+                              vol=actual_vol,
+                              replicated_vol=expected_vol)
+        self.assertAlmostEquals(
+            first=actual_vol,
+            second=expected_vol,
+            delta=EPSILON,
+            msg=fail_msg)
 
     def test_linear_normal_cube_at_the_money_strike(self):
         """Testing ATM strike for linearly interpolated normal vol cube"""
@@ -268,6 +302,24 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             opt_tenor=ql.Period(1, ql.Years),
             swap_tenor=ql.Period(10, ql.Years),
             expected_vol=0.00453,
+            interpolation='linear',
+            vol_type='normal')
+    
+    def test_linear_normal_cube_spread_vol(self):
+        """Testing spread volatility for linearly interpolated normal cube"""
+        linear_cube = build_linear_swaption_cube(
+            NORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            NORM_STRIKE_SPREADS,
+            NORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_vol_spread(
+            cube=linear_cube,
+            opt_tenor=ql.Period(1, ql.Years),
+            swap_tenor=ql.Period(10, ql.Years),
+            strike_spread=0.005,
+            expected_vol=0.00453 + 0.00065,
             interpolation='linear',
             vol_type='normal')
 
