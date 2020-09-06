@@ -19,7 +19,7 @@ import unittest
 import QuantLib as ql
 
 
-EURIBOR_IDX = ql.Euribor6M()
+EPSILON = 1.e-10
 
 CAL = ql.TARGET()
 
@@ -85,6 +85,8 @@ SMILE_SWAP_TENORS = (ql.Period(2, ql.Years),
                      ql.Period(10, ql.Years),
                      ql.Period(30, ql.Years))
 
+NORM_STRIKE_SPREADS = (-0.02, -0.005, 0.0, 0.005, 0.02)
+
 NORM_VOL_SPREADS = (
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
     (-0.0006, 0.0005, 0.0, 0.00065, 0.0006),
@@ -102,11 +104,10 @@ ZERO_COUPON_DATA = (
     (ql.Period(3, ql.Years), 0.001),
     (ql.Period(4, ql.Years), 0.0013),
     (ql.Period(5, ql.Years), 0.0015),
-    (ql.Period(6, ql.Years), 0.0019),
-    (ql.Period(7, ql.Years), 0.0021),
-    (ql.Period(8, ql.Years), 0.0025),
-    (ql.Period(9, ql.Years), 0.003),
-    (ql.Period(10, ql.Years), 0.005))
+    (ql.Period(10, ql.Years), 0.005),
+    (ql.Period(15, ql.Years), 0.009),
+    (ql.Period(20, ql.Years), 0.01),
+    (ql.Period(30, ql.Years), 0.015))
 
 NORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
     CAL,
@@ -119,7 +120,7 @@ NORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
     ql.Normal)
 
 
-def create_euribor_swap_idx(
+def build_euribor_swap_idx(
         projectionCurveHandle):
     return ql.EuriborSwapIsdaFixA(ql.Period(1, ql.Years),
                                   projectionCurveHandle)
@@ -131,9 +132,148 @@ def build_nominal_term_structure(valuation_date, nominal_quotes):
     return ql.ZeroCurve(dates, rates, ql.Actual365Fixed())
 
 
-def create_linear_swaption_cube(
+def build_linear_swaption_cube(
         volatility_matrix,
         spread_opt_tenors,
         spread_swap_tenors,
-        vol_spreads):
-    return
+        strike_spreads,
+        vol_spreads,
+        swap_index_base,
+        short_swap_index_base=None,
+        vega_weighted_smile_fit=False):
+    vol_spreads = [[ql.QuoteHandle(ql.SimpleQuote(v)) for v in row]
+                   for row in vol_spreads]
+    return ql.SwaptionVolCube2(
+        ql.SwaptionVolatilityStructureHandle(volatility_matrix),
+        spread_opt_tenors,
+        spread_swap_tenors,
+        strike_spreads,
+        vol_spreads,
+        swap_index_base,
+        short_swap_index_base if short_swap_index_base else swap_index_base,
+        vega_weighted_smile_fit)
+
+
+class SwaptionVolatilityCubeTest(unittest.TestCase):
+    def setUp(self):
+        self.today = CAL.adjust(ql.Date.todaysDate())
+        ql.Settings.instance().setEvaluationDate(self.today)
+
+        curve_handle = ql.RelinkableYieldTermStructureHandle()
+        curve = build_nominal_term_structure(self.today, ZERO_COUPON_DATA)
+        curve_handle.linkTo(curve)
+
+        self.idx = ql.Euribor6M(curve_handle)
+        self.swap_idx = build_euribor_swap_idx(curve_handle)
+        self.swap_engine = ql.DiscountingSwapEngine(curve_handle)
+
+    def _get_fair_rate(self, option_tenor, swap_tenor):
+        exercise_date = CAL.advance(self.today, option_tenor)
+        start_date = CAL.advance(exercise_date, ql.Period(2, ql.Days))
+        underlying = ql.MakeVanillaSwap(
+            swap_tenor, self.idx, 0.0, ql.Period(0, ql.Days),
+            effectiveDate=start_date,
+            fixedLegTenor=ql.Period(1, ql.Years),
+            fixedLegDayCount=ql.Thirty360(),
+            floatingLegSpread=0.0,
+            swapType=ql.VanillaSwap.Receiver)
+        underlying.setPricingEngine(self.swap_engine)
+        return underlying.fairRate()
+
+    def _assert_atm_strike(
+            self, cube, interpolation, vol_type):
+        opt_tenor = ql.Period(1, ql.Years)
+        swap_tenor = ql.Period(10, ql.Years)
+        expected_atm_strike = self._get_fair_rate(opt_tenor, swap_tenor)
+        actual_atm_strike = cube.atmStrike(
+            cube.optionDateFromTenor(opt_tenor), swap_tenor)
+        fail_msg = """ 
+                    ATM strike test failed for:
+                        cube interpolation: {interpolation}
+                        volatility_type: {vol_type}
+                        option tenor: {option_tenor}
+                        swap tenor: {swap_tenor}
+                        strike: {strike}
+                        replicated strike: {replicated_strike}
+                   """.format(interpolation=interpolation,
+                              vol_type=vol_type,
+                              option_tenor=opt_tenor,
+                              swap_tenor=swap_tenor,
+                              strike=actual_atm_strike,
+                              replicated_strike=expected_atm_strike)
+        self.assertAlmostEquals(
+            first=actual_atm_strike,
+            second=expected_atm_strike,
+            delta=EPSILON,
+            msg=fail_msg)
+
+    def _assert_atm_vol(
+            self,
+            cube,
+            opt_tenor,
+            swap_tenor,
+            expected_vol,
+            interpolation,
+            vol_type):
+        option_date = cube.optionDateFromTenor(opt_tenor)
+        strike = cube.atmStrike(option_date, swap_tenor)
+        actual_vol = cube.volatility(option_date, swap_tenor, strike)
+        fail_msg = """ 
+                    ATM vol test failed for:
+                        cube interpolation: {interpolation}
+                        volatility_type: {vol_type}
+                        option tenor: {option_tenor}
+                        swap tenor: {swap_tenor}
+                        strike: {strike}
+                        volatility: {vol}
+                        replicated volatility: {replicated_vol}
+                   """.format(interpolation=interpolation,
+                              vol_type=vol_type,
+                              option_tenor=opt_tenor,
+                              swap_tenor=swap_tenor,
+                              strike=strike,
+                              vol=actual_vol,
+                              replicated_vol=expected_vol)
+        self.assertAlmostEquals(
+            first=actual_vol,
+            second=expected_vol,
+            delta=EPSILON,
+            msg=fail_msg)
+
+    def test_linear_normal_cube_at_the_money_strike(self):
+        """Testing ATM strike for linearly interpolated normal vol cube"""
+        linear_cube = build_linear_swaption_cube(
+            NORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            NORM_STRIKE_SPREADS,
+            NORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_atm_strike(
+            cube=linear_cube,
+            interpolation='linear',
+            vol_type='normal')
+
+    def test_linear_normal_cube_at_the_money_vol(self):
+        """Testing ATM volatility for linearly interpolated normal vol cube"""
+        linear_cube = build_linear_swaption_cube(
+            NORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            NORM_STRIKE_SPREADS,
+            NORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_atm_vol(
+            cube=linear_cube,
+            opt_tenor=ql.Period(1, ql.Years),
+            swap_tenor=ql.Period(10, ql.Years),
+            expected_vol=0.00453,
+            interpolation='linear',
+            vol_type='normal')
+
+
+if __name__ == "__main__":
+    print("testing QuantLib " + ql.__version__)
+    suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(SwaptionVolatilityCubeTest, "test"))
+    unittest.TextTestRunner(verbosity=2).run(suite)
