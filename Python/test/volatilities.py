@@ -19,10 +19,14 @@ import unittest
 import QuantLib as ql
 
 
-EPSILON = 1.e-10
+TOLERANCE = 1.e-10
+SABR_ATM_TOLERANCE = 3.0e-4
+SABR_SPREAD_TOLERANCE = 12.0e-4
 
 CAL = ql.TARGET()
 
+# Data source:
+# https://quantlib-python-docs.readthedocs.io/en/latest/termstructures.html#swaption-volatility
 ATM_NORM_VOLS = (
     (0.0086, 0.00128, 0.00195, 0.00269, 0.00327, 0.00361, 0.00387,
      0.00409, 0.00427, 0.00443, 0.00488, 0.00504, 0.00508, 0.00504),
@@ -105,7 +109,7 @@ SMILE_SWAP_TENORS = (ql.Period(2, ql.Years),
                      ql.Period(10, ql.Years),
                      ql.Period(30, ql.Years))
 
-STRIKE_SPREADS = (-0.01, -0.005, 0.0, 0.005, 0.01)
+STRIKE_SPREADS = (-0.02, -0.005, 0.0, 0.005, 0.02)
 
 NORM_VOL_SPREADS = (
     (-0.0006, 0.0005, 0.0, 0.0006, 0.0006),
@@ -130,15 +134,16 @@ LOGNORM_VOL_SPREADS = (
     (0.0545, 0.0079, 0.0000, -0.0042, -0.0020))
 
 ZERO_COUPON_DATA = (
-    (ql.Period(1, ql.Years), 0.003),
-    (ql.Period(2, ql.Years), 0.005),
-    (ql.Period(3, ql.Years), 0.006),
-    (ql.Period(4, ql.Years), 0.007),
-    (ql.Period(5, ql.Years), 0.009),
-    (ql.Period(10, ql.Years), 0.011),
-    (ql.Period(15, ql.Years), 0.014),
-    (ql.Period(20, ql.Years), 0.016),
-    (ql.Period(30, ql.Years), 0.019))
+    (ql.Period(1, ql.Days), 0.013),
+    (ql.Period(1, ql.Years), 0.013),
+    (ql.Period(2, ql.Years), 0.015),
+    (ql.Period(3, ql.Years), 0.016),
+    (ql.Period(4, ql.Years), 0.017),
+    (ql.Period(5, ql.Years), 0.019),
+    (ql.Period(10, ql.Years), 0.021),
+    (ql.Period(15, ql.Years), 0.024),
+    (ql.Period(20, ql.Years), 0.026),
+    (ql.Period(30, ql.Years), 0.029))
 
 NORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
     CAL,
@@ -199,6 +204,48 @@ def build_linear_swaption_cube(
     return cube
 
 
+def sabr_parameters_guess(number_of_options, number_of_swaps):
+    n_elements = number_of_options * number_of_swaps
+    guess = n_elements * [0]
+    for n in range(n_elements):
+        guess[n] = (ql.QuoteHandle(ql.SimpleQuote(0.2)),
+                    ql.QuoteHandle(ql.SimpleQuote(0.5)),
+                    ql.QuoteHandle(ql.SimpleQuote(0.4)),
+                    ql.QuoteHandle(ql.SimpleQuote(0.0)))
+    return guess
+
+
+def build_sabr_swaption_cube(
+        volatility_matrix,
+        spread_opt_tenors,
+        spread_swap_tenors,
+        strike_spreads,
+        vol_spreads,
+        swap_index_base,
+        short_swap_index_base=None,
+        vega_weighted_smile_fit=False):
+    v_spreads = [[ql.QuoteHandle(ql.SimpleQuote(v)) for v in row]
+                 for row in vol_spreads]
+    guess = sabr_parameters_guess(
+        len(spread_opt_tenors), len(spread_swap_tenors))
+    is_parameter_fixed = [False, False, False, False]
+    is_atm_calibrated = True
+    cube = ql.SwaptionVolCube1(
+        ql.SwaptionVolatilityStructureHandle(volatility_matrix),
+        spread_opt_tenors,
+        spread_swap_tenors,
+        strike_spreads,
+        v_spreads,
+        swap_index_base,
+        short_swap_index_base if short_swap_index_base else swap_index_base,
+        vega_weighted_smile_fit,
+        guess,
+        is_parameter_fixed,
+        is_atm_calibrated)
+    cube.enableExtrapolation()
+    return cube
+
+
 class SwaptionVolatilityCubeTest(unittest.TestCase):
     def setUp(self):
         self.today = CAL.adjust(ql.Date.todaysDate())
@@ -249,7 +296,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         self.assertAlmostEquals(
             first=actual_atm_strike,
             second=expected_atm_strike,
-            delta=EPSILON,
+            delta=TOLERANCE,
             msg=fail_msg)
 
     def _assert_atm_vol(
@@ -259,7 +306,8 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             swap_tenor,
             expected_vol,
             interpolation,
-            vol_type):
+            vol_type,
+            epsilon=TOLERANCE):
         option_date = cube.optionDateFromTenor(opt_tenor)
         strike = cube.atmStrike(option_date, swap_tenor)
         actual_vol = cube.volatility(option_date, swap_tenor, strike)
@@ -282,7 +330,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         self.assertAlmostEquals(
             first=actual_vol,
             second=expected_vol,
-            delta=EPSILON,
+            delta=epsilon,
             msg=fail_msg)
 
     def _assert_vol_spread(
@@ -293,7 +341,8 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             strike_spread,
             expected_vol,
             interpolation,
-            vol_type):
+            vol_type,
+            epsilon=TOLERANCE):
         option_date = cube.optionDateFromTenor(opt_tenor)
         strike = cube.atmStrike(option_date, swap_tenor) + strike_spread
         actual_vol = cube.volatility(option_date, swap_tenor, strike)
@@ -316,7 +365,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         self.assertAlmostEquals(
             first=actual_vol,
             second=expected_vol,
-            delta=EPSILON,
+            delta=epsilon,
             msg=fail_msg)
 
     def test_linear_normal_cube_at_the_money_strike(self):
@@ -345,6 +394,20 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         self._assert_atm_strike(
             cube=linear_cube,
             interpolation='linear',
+            vol_type='log-normal')
+    
+    def test_sabr_lognormal_cube_at_the_money_strike(self):
+        """Testing ATM strike for SABR interpolated log-normal vol cube"""
+        sabr_cube = build_sabr_swaption_cube(
+            LOGNORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            STRIKE_SPREADS,
+            LOGNORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_atm_strike(
+            cube=sabr_cube,
+            interpolation='SABR',
             vol_type='log-normal')
 
     def test_linear_normal_cube_at_the_money_vol(self):
@@ -381,6 +444,24 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             interpolation='linear',
             vol_type='log-normal')
 
+    def test_sabr_lognormal_cube_at_the_money_vol(self):
+        """Testing ATM volatility for SABR interpolated log-normal vol cube"""
+        sabr_cube = build_sabr_swaption_cube(
+            LOGNORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            STRIKE_SPREADS,
+            LOGNORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_atm_vol(
+            cube=sabr_cube,
+            opt_tenor=ql.Period(10, ql.Years),
+            swap_tenor=ql.Period(10, ql.Years),
+            expected_vol=0.1250,
+            interpolation='SABR',
+            vol_type='log-normal',
+            epsilon=SABR_ATM_TOLERANCE)
+
     def test_linear_normal_cube_spread_vol(self):
         """Testing spread volatility for linearly interpolated normal cube"""
         linear_cube = build_linear_swaption_cube(
@@ -416,6 +497,25 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             expected_vol=0.125 - 0.005,
             interpolation='linear',
             vol_type='log-normal')
+
+    def test_sabr_lognormal_cube_spread_vol(self):
+        """Testing spread volatility for SABR interpolated log-normal cube"""
+        sabr_cube = build_sabr_swaption_cube(
+            LOGNORM_VOL_MATRIX,
+            SMILE_OPT_TENORS,
+            SMILE_SWAP_TENORS,
+            STRIKE_SPREADS,
+            LOGNORM_VOL_SPREADS,
+            self.swap_idx)
+        self._assert_vol_spread(
+            cube=sabr_cube,
+            opt_tenor=ql.Period(10, ql.Years),
+            swap_tenor=ql.Period(10, ql.Years),
+            strike_spread=0.005,
+            expected_vol=0.125 - 0.005,
+            interpolation='SABR',
+            vol_type='log-normal',
+            epsilon=SABR_SPREAD_TOLERANCE)
 
 
 if __name__ == "__main__":
