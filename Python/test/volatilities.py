@@ -168,8 +168,7 @@ def build_euribor_swap_idx(
 
 
 def build_nominal_term_structure(valuation_date, nominal_quotes):
-    settle_date = CAL.advance(valuation_date, ql.Period(2, ql.Days))
-    dates, rates = zip(*[(CAL.advance(settle_date, x[0]), x[1])
+    dates, rates = zip(*[(CAL.advance(valuation_date, x[0]), x[1])
                          for x in nominal_quotes])
     crv = ql.ZeroCurve(dates, rates, ql.Actual365Fixed())
     crv.enableExtrapolation()
