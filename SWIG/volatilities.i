@@ -593,12 +593,22 @@ class SabrSmileSection : public SmileSection {
 
 
 %{
+using QuantLib::SwaptionVolatilityCube;
 using QuantLib::SwaptionVolCube1;
 using QuantLib::SwaptionVolCube2;
 %}
 
+%shared_ptr(SwaptionVolatilityCube);
+class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
+    private:
+        SwaptionVolatilityCube();
+    public:
+        Rate atmStrike(const Date& optionDate,
+                       const Period& swapTenor) const;
+};
+
 %shared_ptr(SwaptionVolCube1);
-class SwaptionVolCube1 : public SwaptionVolatilityDiscrete {
+class SwaptionVolCube1 : public SwaptionVolatilityCube {
   public:
     SwaptionVolCube1(
              const Handle<SwaptionVolatilityStructure>& atmVolStructure,
@@ -639,7 +649,7 @@ class SwaptionVolCube1 : public SwaptionVolatilityDiscrete {
 };
 
 %shared_ptr(SwaptionVolCube2);
-class SwaptionVolCube2 : public SwaptionVolatilityDiscrete {
+class SwaptionVolCube2 : public SwaptionVolatilityCube {
   public:
     SwaptionVolCube2(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
                      const std::vector<Period>& optionTenors,
@@ -650,7 +660,6 @@ class SwaptionVolCube2 : public SwaptionVolatilityDiscrete {
                      const boost::shared_ptr<SwapIndex>& shortSwapIndex,
                      bool vegaWeightedSmileFit);
 };
-
 
 %{
 using QuantLib::ConstantYoYOptionletVolatility;
