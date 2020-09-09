@@ -27,7 +27,7 @@ class FdmTest(unittest.TestCase):
         ql.Settings.instance().evaluationDate = self.todaysDate
 
     def tearDown(self):
-        ql.Settings.instance().setEvaluationDate(ql.Date())
+        ql.Settings.instance().evaluationDate = ql.Date()
 
 
     def test1dMesher(self):

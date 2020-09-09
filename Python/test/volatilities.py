@@ -249,7 +249,7 @@ def build_sabr_swaption_cube(
 class SwaptionVolatilityCubeTest(unittest.TestCase):
     def setUp(self):
         self.today = CAL.adjust(ql.Date.todaysDate())
-        ql.Settings.instance().setEvaluationDate(self.today)
+        ql.Settings.instance().evaluationDate = self.today
 
         curve_handle = ql.RelinkableYieldTermStructureHandle()
         curve = build_nominal_term_structure(self.today, ZERO_COUPON_DATA)
@@ -258,6 +258,9 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
         self.idx = ql.Euribor6M(curve_handle)
         self.swap_idx = build_euribor_swap_idx(curve_handle)
         self.swap_engine = ql.DiscountingSwapEngine(curve_handle)
+
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
 
     def _get_fair_rate(self, option_tenor, swap_tenor):
         exercise_date = CAL.advance(self.today, option_tenor)
