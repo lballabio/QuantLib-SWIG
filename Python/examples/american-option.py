@@ -84,11 +84,11 @@ results = []
 # #### Analytic approximations
 
 # %%
-option.setPricingEngine(ql.BaroneAdesiWhaleyEngine(process))
+option.setPricingEngine(ql.BaroneAdesiWhaleyApproximationEngine(process))
 results.append(("Barone-Adesi-Whaley", option.NPV()))
 
 # %%
-option.setPricingEngine(ql.BjerksundStenslandEngine(process))
+option.setPricingEngine(ql.BjerksundStenslandApproximationEngine(process))
 results.append(("Bjerksund-Stensland", option.NPV()))
 
 # %% [markdown]
