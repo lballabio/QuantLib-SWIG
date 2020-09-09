@@ -31,7 +31,7 @@ class SlvTest(unittest.TestCase):
         self.underlying = ql.QuoteHandle(ql.SimpleQuote(100.0))
 
     def tearDown(self):
-        ql.Settings.instance().setEvaluationDate(ql.Date())
+        ql.Settings.instance().evaluationDate = ql.Date()
 
     def constVol(self, vol):
         return ql.BlackVolTermStructureHandle(ql.BlackConstantVol(self.settlementDate, ql.TARGET(), vol, self.dc))

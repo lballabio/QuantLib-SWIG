@@ -78,7 +78,7 @@ class SwaptionTest(unittest.TestCase):
     def setUp(self):
         self.calendar = ql.TARGET()
         self.today = self.calendar.adjust(ql.Date.todaysDate())
-        ql.Settings.instance().setEvaluationDate(self.today)
+        ql.Settings.instance().evaluationDate = self.today
 
         projection_curve_handle = ql.RelinkableYieldTermStructureHandle()
         self.projection_rate = 0.01
@@ -101,6 +101,9 @@ class SwaptionTest(unittest.TestCase):
                         ql.Period(7, ql.Years), ql.Period(10, ql.Years),
                         ql.Period(15, ql.Years), ql.Period(20, ql.Years)]
         self.swap_type = [ql.VanillaSwap.Receiver, ql.VanillaSwap.Payer]
+
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
 
     def _assert_swaption_delta(self,
                                swaption_pricer_func,
