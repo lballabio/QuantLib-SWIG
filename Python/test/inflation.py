@@ -180,7 +180,7 @@ def interpolate_historic_index(
 
 class InflationTest(unittest.TestCase):
     def setUp(self):
-        ql.Settings.instance().setEvaluationDate(VALUATION_DATE)
+        ql.Settings.instance().evaluationDate = VALUATION_DATE
         self.inflation_ts_handle = ql.RelinkableZeroInflationTermStructureHandle()
         self.nominal_ts_handle = ql.RelinkableYieldTermStructureHandle()
         self.nominal_ts_handle.linkTo(
