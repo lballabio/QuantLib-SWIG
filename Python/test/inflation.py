@@ -171,6 +171,16 @@ def create_inflation_swap(
         observation_lag)
 
 
+def interpolate_historic_index(
+        idx, fixing_date, observation_lag):
+    f_d = ql.Date(1, fixing_date.month(), fixing_date.year())
+    s_d = ql.Date.endOfMonth(fixing_date) + 1
+    slope = (fixing_date - f_d) / (
+        (s_d + observation_lag) - (f_d + observation_lag))
+    return idx.fixing(f_d) + slope * (
+        idx.fixing(s_d) - idx.fixing(f_d))
+
+
 class InflationTest(unittest.TestCase):
     def setUp(self):
         ql.Settings.instance().setEvaluationDate(VALUATION_DATE)
@@ -195,18 +205,37 @@ class InflationTest(unittest.TestCase):
         self.inflation_ts_handle.linkTo(inflation_ts)
 
         # Create par inflation swap
+        rate = 0.0355
         zciis = create_inflation_swap(
             inflation_idx,
             VALUATION_DATE,
             CAL.advance(VALUATION_DATE, ql.Period(10, ql.Years)),
-            0.0355,
+            rate,
             OBSERVATION_LAG)
         zciis.setPricingEngine(self.discount_engine)
+        npv = zciis.NPV()
 
         # Check whether swap prices to par
+        fail_msg = """ Failed to price zero coupon inflation swap to par:
+                            index: {inflation_idx}
+                            start date : {start_date}
+                            end date: {end_date}
+                            observation lag: {observation_lag}
+                            rate: {rate}
+                            npv: {npv}
+                            expected npv: {expected_npv}
+                            tolerance: {tolerance}
+                   """.format(inflation_idx=inflation_idx.familyName(),
+                              start_date=zciis.startDate(),
+                              end_date=zciis.maturityDate(),
+                              observation_lag=OBSERVATION_LAG,
+                              rate=rate,
+                              npv=npv,
+                              expected_npv=0.0,
+                              tolerance=EPSILON)
         self.assertTrue(
-            abs(zciis.NPV() < EPSILON),
-            msg="Failed to price zero coupon inflation swap to par.")
+            abs(npv < EPSILON),
+            msg=fail_msg)
 
         inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
@@ -234,11 +263,31 @@ class InflationTest(unittest.TestCase):
         expected_inf_leg_payment = (
             expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
         actual_inf_leg_payment = inflation_cf.amount()
+
+        fail_msg = """ Failed to replicate inflation leg payment
+                       for First-Of-Month indexation:
+                            index: {inflation_idx}
+                            start date : {start_date}
+                            end date: {end_date}
+                            observation lag: {observation_lag}
+                            rate: {rate}
+                            inflation leg payment: {actual_payment}
+                            replicated payment: {expected_payment}
+                            tolerance: {tolerance}
+                   """.format(inflation_idx=inflation_idx.familyName(),
+                              start_date=zciis.startDate(),
+                              end_date=zciis.maturityDate(),
+                              observation_lag=OBSERVATION_LAG,
+                              rate=rate,
+                              actual_payment=actual_inf_leg_payment,
+                              expected_payment=expected_inf_leg_payment,
+                              tolerance=EPSILON)
+
         self.assertAlmostEquals(
             first=actual_inf_leg_payment,
             second=expected_inf_leg_payment,
             delta=EPSILON,
-            msg="Failed to replicate the inflation leg expected flow.")
+            msg=fail_msg)
 
     def test_linear_indexation_without_seasonality(self):
         """Testing linear indexation without seasonality"""
@@ -254,64 +303,112 @@ class InflationTest(unittest.TestCase):
         self.inflation_ts_handle.linkTo(inflation_ts)
 
         # Create inflation swap
+        rate = 0.032
         zciis = create_inflation_swap(
             inflation_idx,
             ql.Date(24, ql.August, 2018),
             ql.Date(24, ql.August, 2023),
-            0.032,
+            rate,
             OBSERVATION_LAG)
         zciis.setPricingEngine(self.discount_engine)
 
         inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
 
-        # Replicate base index for the inflation swap
-        def interpolate_historic_index(fixing_date: ql.Date):
-            f_d = ql.Date(1, fixing_date.month(), fixing_date.year())
-            s_d = ql.Date.endOfMonth(fixing_date) + 1
-            slope = (fixing_date - f_d) / (
-                (s_d + OBSERVATION_LAG) - (f_d + OBSERVATION_LAG))
-            return inflation_idx.fixing(f_d) + slope * (
-                inflation_idx.fixing(s_d) - inflation_idx.fixing(f_d))
-
         swap_base_d = inflation_cf.baseDate()
         swap_base_index = inflation_idx.fixing(swap_base_d)
-        expected_swap_base_index = interpolate_historic_index(swap_base_d)
+        expected_swap_base_index = interpolate_historic_index(
+            inflation_idx, swap_base_d, OBSERVATION_LAG)
+
+        fail_msg = """ Failed to replicate inflation swap base index fixing
+                       for linear indexation:
+                            index: {inflation_idx}
+                            start date : {start_date}
+                            end date: {end_date}
+                            observation lag: {observation_lag}
+                            rate: {rate}
+                            base index fixing: {base_index}
+                            replicated base index fixing: {expected_base_index}
+                            tolerance: {tolerance}
+                   """.format(inflation_idx=inflation_idx.familyName(),
+                              start_date=zciis.startDate(),
+                              end_date=zciis.maturityDate(),
+                              observation_lag=OBSERVATION_LAG,
+                              rate=rate,
+                              base_index=swap_base_index,
+                              expected_base_index=expected_swap_base_index,
+                              tolerance=EPSILON)
+
         self.assertAlmostEquals(
             first=swap_base_index,
             second=expected_swap_base_index,
             delta=EPSILON,
-            msg="Failed to replicate the base index on the inflation swap.")
+            msg=fail_msg)
+
+        curve_base_dt = inflation_ts.baseDate()
+        curve_base_fixing = inflation_idx.fixing(curve_base_dt)
+        expected_curve_base_fixing = interpolate_historic_index(
+            inflation_idx, curve_base_dt, OBSERVATION_LAG)
+
+        fail_msg = """ Failed to replicate inflation curve base index fixing
+                       for linear indexation:
+                            index: {inflation_idx}
+                            inflation curve base date : {base_date}
+                            inflation curve base fixing: {base_fixing}
+                            expected base fixing: {expected_base_fixing}
+                            tolerance: {tolerance}
+                   """.format(inflation_idx=inflation_idx.familyName(),
+                              base_date=curve_base_dt,
+                              base_fixing=curve_base_fixing,
+                              expected_base_fixing=expected_curve_base_fixing,
+                              tolerance=EPSILON)
+
+        self.assertAlmostEquals(
+            first=curve_base_fixing,
+            second=expected_curve_base_fixing,
+            msg=fail_msg,
+            delta=EPSILON)
 
         # Replicate projected swap fixing
-        fixing_d = inflation_cf.fixingDate()
-
-        ts_base_d = inflation_ts.baseDate()
-        ts_base_index = inflation_idx.fixing(ts_base_d)
-        expected_ts_base_index = interpolate_historic_index(ts_base_d)
-        self.assertAlmostEquals(
-            first=ts_base_index,
-            second=expected_ts_base_index,
-            msg="Failed to replicate the base index on the inflation curve.")
-
         # Apply linear indexation rule
+        fixing_d = inflation_cf.fixingDate()
         fraction = inflation_ts.dayCounter().yearFraction(
-            ts_base_d, fixing_d)
+            curve_base_dt, fixing_d)
         t = inflation_ts.timeFromReference(fixing_d)
         zero_rate = inflation_ts.zeroRate(t)
 
-        expected_fixing = ts_base_index * (
+        expected_fixing = curve_base_fixing * (
             1.0 + zero_rate)**fraction
 
         # Assert inflation leg projected amount
         expected_inf_leg_payment = (
             expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
         actual_inf_leg_payment = inflation_cf.amount()
+
+        fail_msg = """ Failed to replicate inflation leg payment
+                       for linear indexation:
+                            index: {inflation_idx}
+                            start date : {start_date}
+                            end date: {end_date}
+                            observation lag: {observation_lag}
+                            rate: {rate}
+                            inflation leg payment: {actual_payment}
+                            replicated payment: {expected_payment}
+                            tolerance: {tolerance}
+                   """.format(inflation_idx=inflation_idx.familyName(),
+                              start_date=zciis.startDate(),
+                              end_date=zciis.maturityDate(),
+                              observation_lag=OBSERVATION_LAG,
+                              rate=rate,
+                              actual_payment=actual_inf_leg_payment,
+                              expected_payment=expected_inf_leg_payment,
+                              tolerance=EPSILON)
+
         self.assertAlmostEquals(
             first=actual_inf_leg_payment,
             second=expected_inf_leg_payment,
             delta=EPSILON,
-            msg="Failed to replicate the inflation leg expected flow.")
+            msg=fail_msg)
 
     def test_linear_indexation_with_seasonality(self):
         """Testing linear indexation with seasonality"""
@@ -327,11 +424,12 @@ class InflationTest(unittest.TestCase):
             include_seasonality=True)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
+        rate = 0.032
         zciis = create_inflation_swap(
             inflation_idx,
             ql.Date(25, ql.July, 2018),
             ql.Date(25, ql.July, 2022),
-            0.03,
+            rate,
             OBSERVATION_LAG)
         zciis.setPricingEngine(self.discount_engine)
 
@@ -363,12 +461,31 @@ class InflationTest(unittest.TestCase):
         expected_inf_leg_payment = (
             expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
         actual_inf_leg_payment = inflation_cf.amount()
-        # TODO: improve error messages
+
+        fail_msg = """ Failed to replicate inflation leg payment
+                       for linear indexation and seasonality:
+                            index: {inflation_idx}
+                            start date : {start_date}
+                            end date: {end_date}
+                            observation lag: {observation_lag}
+                            rate: {rate}
+                            inflation leg payment: {actual_payment}
+                            replicated payment: {expected_payment}
+                            tolerance: {tolerance}
+                   """.format(inflation_idx=inflation_idx.familyName(),
+                              start_date=zciis.startDate(),
+                              end_date=zciis.maturityDate(),
+                              observation_lag=OBSERVATION_LAG,
+                              rate=rate,
+                              actual_payment=actual_inf_leg_payment,
+                              expected_payment=expected_inf_leg_payment,
+                              tolerance=EPSILON)
+
         self.assertAlmostEquals(
             first=actual_inf_leg_payment,
             second=expected_inf_leg_payment,
             delta=EPSILON,
-            msg="Failed to replicate the inflation leg expected flow.")
+            msg=fail_msg)
 
 
 if __name__ == '__main__':
