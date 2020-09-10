@@ -145,7 +145,7 @@
     <Compile Include="BachelierSwaptionEngine.cs" />
     <Compile Include="BackwardFlat.cs" />
     <Compile Include="BackwardFlatInterpolation.cs" />
-    <Compile Include="BaroneAdesiWhaleyEngine.cs" />
+    <Compile Include="BaroneAdesiWhaleyApproximationEngine.cs" />
     <Compile Include="Barrier.cs" />
     <Compile Include="BarrierOption.cs" />
     <Compile Include="BasketOption.cs" />
@@ -212,7 +212,7 @@
     <Compile Include="BivariateCumulativeNormalDistribution.cs" />
     <Compile Include="BivariateCumulativeNormalDistributionDr78.cs" />
     <Compile Include="BivariateCumulativeNormalDistributionWe04DP.cs" />
-    <Compile Include="BjerksundStenslandEngine.cs" />
+    <Compile Include="BjerksundStenslandApproximationEngine.cs" />
     <Compile Include="Bkbm.cs" />
     <Compile Include="Bkbm1M.cs" />
     <Compile Include="Bkbm2M.cs" />

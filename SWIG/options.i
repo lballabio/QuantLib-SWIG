@@ -898,12 +898,12 @@ using QuantLib::BaroneAdesiWhaleyApproximationEngine;
 %}
 
 %shared_ptr(BaroneAdesiWhaleyApproximationEngine);
-%rename(BaroneAdesiWhaleyEngine) BaroneAdesiWhaleyApproximationEngine;
 class BaroneAdesiWhaleyApproximationEngine : public PricingEngine {
   public:
     BaroneAdesiWhaleyApproximationEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
+deprecate_feature(BaroneAdesiWhaleyEngine, BaroneAdesiWhaleyApproximationEngine);
 
 
 %{
@@ -911,12 +911,12 @@ using QuantLib::BjerksundStenslandApproximationEngine;
 %}
 
 %shared_ptr(BjerksundStenslandApproximationEngine);
-%rename(BjerksundStenslandEngine) BjerksundStenslandApproximationEngine;
 class BjerksundStenslandApproximationEngine : public PricingEngine {
   public:
     BjerksundStenslandApproximationEngine(
             const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
+deprecate_feature(BjerksundStenslandEngine, BjerksundStenslandApproximationEngine);
 
 
 %{

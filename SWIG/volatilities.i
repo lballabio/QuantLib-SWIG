@@ -70,6 +70,7 @@ using QuantLib::BlackVolTermStructure;
 using QuantLib::LocalVolTermStructure;
 using QuantLib::OptionletVolatilityStructure;
 using QuantLib::SwaptionVolatilityStructure;
+using QuantLib::YoYOptionletVolatilitySurface;
 %}
 
 %shared_ptr(VolatilityTermStructure);
@@ -141,6 +142,38 @@ class OptionletVolatilityStructure : public VolatilityTermStructure {
 
 %template(OptionletVolatilityStructureHandle) Handle<OptionletVolatilityStructure>;
 %template(RelinkableOptionletVolatilityStructureHandle) RelinkableHandle<OptionletVolatilityStructure>;
+
+
+%shared_ptr(YoYOptionletVolatilitySurface)
+class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
+  private:
+    YoYOptionletVolatilitySurface();
+  public:
+    Period observationLag() const;
+    Real frequency() const;
+    bool indexIsInterpolated() const;
+    Date baseDate() const;
+    Time timeFromBase(const Date& date,
+                      const Period& obsLag = Period(-1,Days)) const;
+    Real minStrike() const;
+    Real maxStrike() const;
+    Volatility baseLevel() const;
+    Volatility volatility(const Date& maturityDate, Real strike,
+                          const Period& obsLag = Period(-1,Days),
+                          bool extrapolate = false) const;
+    Volatility volatility(const Period& optionTenor, Real strike,
+                          const Period& obsLag = Period(-1,Days),
+                          bool extrapolate = false) const;
+    Real totalVariance(const Date& exerciseDate, Rate strike,
+                       const Period& obsLag = Period(-1,Days),
+                       bool extrapolate = false) const ;
+    Real totalVariance(const Period& optionTenor, Rate strike,
+                       const Period& obsLag = Period(-1,Days),
+                       bool extrapolate = false) const;
+};
+
+%template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
+%template(RelinkableYoYOptionletVolatilitySurface) RelinkableHandle<YoYOptionletVolatilitySurface>;
 
 
 %{
@@ -560,12 +593,22 @@ class SabrSmileSection : public SmileSection {
 
 
 %{
+using QuantLib::SwaptionVolatilityCube;
 using QuantLib::SwaptionVolCube1;
 using QuantLib::SwaptionVolCube2;
 %}
 
+%shared_ptr(SwaptionVolatilityCube);
+class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
+    private:
+        SwaptionVolatilityCube();
+    public:
+        Rate atmStrike(const Date& optionDate,
+                       const Period& swapTenor) const;
+};
+
 %shared_ptr(SwaptionVolCube1);
-class SwaptionVolCube1 : public SwaptionVolatilityDiscrete {
+class SwaptionVolCube1 : public SwaptionVolatilityCube {
   public:
     SwaptionVolCube1(
              const Handle<SwaptionVolatilityStructure>& atmVolStructure,
@@ -606,7 +649,7 @@ class SwaptionVolCube1 : public SwaptionVolatilityDiscrete {
 };
 
 %shared_ptr(SwaptionVolCube2);
-class SwaptionVolCube2 : public SwaptionVolatilityDiscrete {
+class SwaptionVolCube2 : public SwaptionVolatilityCube {
   public:
     SwaptionVolCube2(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
                      const std::vector<Period>& optionTenors,
@@ -618,6 +661,24 @@ class SwaptionVolCube2 : public SwaptionVolatilityDiscrete {
                      bool vegaWeightedSmileFit);
 };
 
+%{
+using QuantLib::ConstantYoYOptionletVolatility;
+%}
+
+%shared_ptr(ConstantYoYOptionletVolatility)
+class ConstantYoYOptionletVolatility : public YoYOptionletVolatilitySurface {
+  public:
+    ConstantYoYOptionletVolatility(Volatility volatility,
+                                   Natural settlementDays,
+                                   const Calendar &cal,
+                                   BusinessDayConvention bdc,
+                                   const DayCounter& dc,
+                                   const Period& observationLag,
+                                   Frequency frequency,
+                                   bool indexIsInterpolated,
+                                   Real minStrike = -1.0,
+                                   Real maxStrike = 100.0);
+};
 %{
 using QuantLib::FlatSmileSection;
 %}

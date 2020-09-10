@@ -49,7 +49,7 @@ class AmericanQuantoOptionTest(unittest.TestCase):
 
 
     def tearDown(self):
-        ql.Settings.instance().setEvaluationDate(ql.Date())
+        ql.Settings.instance().evaluationDate = ql.Date()
 
     def testAmericanBSQuantoOption(self):
         """ Testing American Black-Scholes quanto option """

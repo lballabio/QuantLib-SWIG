@@ -172,6 +172,9 @@ class CmsTest(unittest.TestCase):
             self.numericalPricers[m] = ql.NumericHaganPricer(self.atmVol, m, self.zeroMeanRev)
             self.analyticPricers[m] = ql.AnalyticHaganPricer(self.atmVol, m, self.zeroMeanRev)
 
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
+
     def testFairRate(self):
         """Testing Hagan-pricer flat-vol equivalence for coupons..."""
         swapIndex = ql.SwapIndex(

@@ -121,7 +121,7 @@ namespace EquityOptionTest
             // Barone-Adesi and Whaley approximation for American
             try {
                 americanOption.setPricingEngine(
-                              new BaroneAdesiWhaleyEngine(stochasticProcess));
+                    new BaroneAdesiWhaleyApproximationEngine(stochasticProcess));
                 ReportResults("Barone-Adesi/Whaley",
                               null, null, americanOption.NPV());
             }
@@ -132,7 +132,7 @@ namespace EquityOptionTest
             // Bjerksund and Stensland approximation for American
             try {
                 americanOption.setPricingEngine(
-                             new BjerksundStenslandEngine(stochasticProcess));
+                    new BjerksundStenslandApproximationEngine(stochasticProcess));
                 ReportResults("Bjerksund/Stensland",
                               null, null, americanOption.NPV());
             }

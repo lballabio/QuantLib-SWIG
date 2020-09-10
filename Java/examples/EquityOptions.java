@@ -26,7 +26,7 @@ import org.quantlib.AnalyticEuropeanEngine;
 import org.quantlib.AnalyticHestonEngine;
 import org.quantlib.AnalyticHestonEngine_Integration;
 import org.quantlib.AnalyticPTDHestonEngine;
-import org.quantlib.BaroneAdesiWhaleyEngine;
+import org.quantlib.BaroneAdesiWhaleyApproximationEngine;
 import org.quantlib.BatesEngine;
 import org.quantlib.BatesModel;
 import org.quantlib.BatesProcess;
@@ -38,7 +38,7 @@ import org.quantlib.BinomialJRVanillaEngine;
 import org.quantlib.BinomialLRVanillaEngine;
 import org.quantlib.BinomialTianVanillaEngine;
 import org.quantlib.BinomialTrigeorgisVanillaEngine;
-import org.quantlib.BjerksundStenslandEngine;
+import org.quantlib.BjerksundStenslandApproximationEngine;
 import org.quantlib.BlackConstantVol;
 import org.quantlib.BlackScholesMertonProcess;
 import org.quantlib.BlackVolTermStructureHandle;
@@ -235,7 +235,7 @@ public class EquityOptions {
         // Barone-Adesi and Whaley approximation for American
         method = "Barone-Adesi/Whaley";
         americanOption.setPricingEngine(
-                              new BaroneAdesiWhaleyEngine(stochasticProcess));
+                 new BaroneAdesiWhaleyApproximationEngine(stochasticProcess));
         System.out.printf(fmt, new Object[] { method,
                                               Double.NaN,
                                               Double.NaN,
@@ -244,7 +244,7 @@ public class EquityOptions {
         // Bjerksund and Stensland approximation for American
         method = "Bjerksund/Stensland";
         americanOption.setPricingEngine(
-                             new BjerksundStenslandEngine(stochasticProcess));
+                new BjerksundStenslandApproximationEngine(stochasticProcess));
         System.out.printf(fmt, new Object[] { method,
                                               Double.NaN,
                                               Double.NaN,

@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -69,6 +70,14 @@ class Swaption : public Option {
     %extend {
         Real vega() {
             return self->result<Real>("vega");
+        }
+
+        Real delta() {
+            return self->result<Real>("delta");
+        }
+
+        Real annuity() {
+            return self->result<Real>("annuity");
         }
     }
 };

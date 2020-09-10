@@ -199,12 +199,12 @@ object EquityOptions {
         // Barone-Adesi and Whaley approximation for American
         val baroneAdesiWhaleyNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                new BaroneAdesiWhaleyEngine(SimpleFactory.bsProcess())
+                new BaroneAdesiWhaleyApproximationEngine(SimpleFactory.bsProcess())
 
         // Bjerksund and Stensland approximation for American
         val bjerksundStenslandNpv = 
             new VanillaPricingService(payoff, americanExercise) !!
-                new BjerksundStenslandEngine(SimpleFactory.bsProcess())
+                new BjerksundStenslandApproximationEngine(SimpleFactory.bsProcess())
 
         // Integral
         val integralNpv = new VanillaPricingService(payoff,europeanExercise) !!
