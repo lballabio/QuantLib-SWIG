@@ -37,7 +37,8 @@ EUR_BEI_SWAP_RATES = [(ql.Period(1, ql.Years), 0.0301),
                       (ql.Period(5, ql.Years), 0.0315),
                       (ql.Period(10, ql.Years), 0.0355)]
 
-# TODO: Include source.
+# Source: 
+# https://ec.europa.eu/eurostat/web/products-datasets/-/teicp240.
 EU_FIXING_DATA = [(ql.Date(1, ql.April, 2018), 103.11),
                   (ql.Date(1, ql.May, 2018), 103.64),
                   (ql.Date(1, ql.June, 2018), 103.76),
