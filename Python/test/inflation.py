@@ -59,11 +59,11 @@ def create_inflation_helper(
         reference_date,
         inflation_data,
         inflation_index,
-        observation_lag,
-        calendar,
-        business_day_convention,
-        day_counter,
-        discount_curve_handle):
+        discount_curve_handle,
+        observation_lag=OBSERVATION_LAG,
+        calendar=CAL,
+        business_day_convention=BDC,
+        day_counter=DAY_COUNTER):
     maturity = CAL.advance(reference_date, inflation_data[0])
     quote = ql.QuoteHandle(ql.SimpleQuote(inflation_data[1]))
     return ql.ZeroCouponInflationSwapHelper(
@@ -122,15 +122,11 @@ def build_inflation_term_structure(
         zero_coupon_data,
         inflation_index,
         nominal_term_structure_handle,
-        observation_lag,
+        observation_lag=OBSERVATION_LAG,
         include_seasonality=False):
     helpers = [create_inflation_helper(reference_date,
                                        x,
                                        inflation_index,
-                                       observation_lag,
-                                       CAL,
-                                       BDC,
-                                       DAY_COUNTER,
                                        nominal_term_structure_handle)
                for x in zero_coupon_data]
     base_zero_rate = zero_coupon_data[0][1]
@@ -155,7 +151,7 @@ def create_inflation_swap(
         start_date,
         end_date,
         rate,
-        observation_lag,
+        observation_lag=OBSERVATION_LAG,
         nominal=1.e6,
         payer=ql.ZeroCouponInflationSwap.Payer):
     return ql.ZeroCouponInflationSwap(
@@ -172,7 +168,7 @@ def create_inflation_swap(
 
 
 def interpolate_historic_index(
-        idx, fixing_date, observation_lag):
+        idx, fixing_date, observation_lag=OBSERVATION_LAG):
     f_d = ql.Date(1, fixing_date.month(), fixing_date.year())
     s_d = ql.Date.endOfMonth(fixing_date) + 1
     slope = (fixing_date - f_d) / (
@@ -190,8 +186,8 @@ class InflationTest(unittest.TestCase):
             build_nominal_term_structure(VALUATION_DATE, EUR_ZERO_RATES))
         self.discount_engine = ql.DiscountingSwapEngine(self.nominal_ts_handle)
 
-    def test_fom_indexation_without_seasonality(self):
-        """Testing first of month indexation without seasonality"""
+    def test_par_swap_pricing_fom_indexation_without_seasonality(self):
+        """Testing pricing of par inflation swap for First-Of-Month indexation"""
 
         # Inflation curve handle
         inflation_idx = build_hicp_index(
@@ -200,18 +196,15 @@ class InflationTest(unittest.TestCase):
             VALUATION_DATE,
             EUR_BEI_SWAP_RATES,
             inflation_idx,
-            self.nominal_ts_handle,
-            OBSERVATION_LAG)
+            self.nominal_ts_handle)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
         # Create par inflation swap
-        rate = 0.0355
         zciis = create_inflation_swap(
             inflation_idx,
             VALUATION_DATE,
             CAL.advance(VALUATION_DATE, ql.Period(10, ql.Years)),
-            rate,
-            OBSERVATION_LAG)
+            0.0355)
         zciis.setPricingEngine(self.discount_engine)
         npv = zciis.NPV()
 
@@ -221,7 +214,6 @@ class InflationTest(unittest.TestCase):
                             start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
-                            rate: {rate}
                             npv: {npv}
                             expected npv: {expected_npv}
                             tolerance: {tolerance}
@@ -229,7 +221,6 @@ class InflationTest(unittest.TestCase):
                               start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
-                              rate=rate,
                               npv=npv,
                               expected_npv=0.0,
                               tolerance=EPSILON)
@@ -237,18 +228,34 @@ class InflationTest(unittest.TestCase):
             abs(npv < EPSILON),
             msg=fail_msg)
 
+    def test_inflation_leg_payment_fom_indexation_without_seasonality(self):
+        """Testing inflation leg payment for First-Of-Month indexation"""
+        # Inflation curve handle
+        inflation_idx = build_hicp_index(
+            EU_FIXING_DATA, self.inflation_ts_handle)
+        inflation_ts = build_inflation_term_structure(
+            VALUATION_DATE,
+            EUR_BEI_SWAP_RATES,
+            inflation_idx,
+            self.nominal_ts_handle)
+        self.inflation_ts_handle.linkTo(inflation_ts)
+
+        zciis = create_inflation_swap(
+            inflation_idx,
+            VALUATION_DATE,
+            CAL.advance(VALUATION_DATE, ql.Period(10, ql.Years)),
+            0.0355)
+        zciis.setPricingEngine(self.discount_engine)
+
         inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
-
         # Obtaining base index for the inflation swap
         swap_base_d = inflation_cf.baseDate()
         swap_base_index = inflation_idx.fixing(swap_base_d)
-
         # Replicate fixing projection
         fixing_d = inflation_cf.fixingDate()
         ts_base_d = inflation_ts.baseDate()
         ts_base_index = inflation_idx.fixing(ts_base_d)
-
         # Apply FOM indexation rule
         effective_fixing_d = ql.Date(
             1, fixing_d.month(), fixing_d.year())
@@ -256,13 +263,12 @@ class InflationTest(unittest.TestCase):
             ts_base_d, effective_fixing_d)
         t = inflation_ts.timeFromReference(effective_fixing_d)
         zero_rate = inflation_ts.zeroRate(t)
-
         expected_fixing = ts_base_index * (
             1.0 + zero_rate)**fraction
 
-        expected_inf_leg_payment = (
+        expected_inflation_leg_payment = (
             expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
-        actual_inf_leg_payment = inflation_cf.amount()
+        actual_inflation_leg_payment = inflation_cf.amount()
 
         fail_msg = """ Failed to replicate inflation leg payment
                        for First-Of-Month indexation:
@@ -270,7 +276,6 @@ class InflationTest(unittest.TestCase):
                             start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
-                            rate: {rate}
                             inflation leg payment: {actual_payment}
                             replicated payment: {expected_payment}
                             tolerance: {tolerance}
@@ -278,19 +283,17 @@ class InflationTest(unittest.TestCase):
                               start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
-                              rate=rate,
-                              actual_payment=actual_inf_leg_payment,
-                              expected_payment=expected_inf_leg_payment,
+                              actual_payment=actual_inflation_leg_payment,
+                              expected_payment=expected_inflation_leg_payment,
                               tolerance=EPSILON)
-
         self.assertAlmostEquals(
-            first=actual_inf_leg_payment,
-            second=expected_inf_leg_payment,
+            first=actual_inflation_leg_payment,
+            second=expected_inflation_leg_payment,
             delta=EPSILON,
             msg=fail_msg)
 
-    def test_linear_indexation_without_seasonality(self):
-        """Testing linear indexation without seasonality"""
+    def test_swap_base_fixing_linear_indexation_without_seasonality(self):
+        """Testing swap base fixing for linear indexation"""
 
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
@@ -298,27 +301,24 @@ class InflationTest(unittest.TestCase):
             VALUATION_DATE,
             EUR_BEI_SWAP_RATES,
             inflation_idx,
-            self.nominal_ts_handle,
-            OBSERVATION_LAG)
+            self.nominal_ts_handle)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
         # Create inflation swap
-        rate = 0.032
         zciis = create_inflation_swap(
             inflation_idx,
             ql.Date(24, ql.August, 2018),
             ql.Date(24, ql.August, 2023),
-            rate,
-            OBSERVATION_LAG)
+            0.032)
         zciis.setPricingEngine(self.discount_engine)
 
         inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
 
-        swap_base_d = inflation_cf.baseDate()
-        swap_base_index = inflation_idx.fixing(swap_base_d)
+        swap_base_dt = inflation_cf.baseDate()
+        swap_base_fixing = inflation_idx.fixing(swap_base_dt)
         expected_swap_base_index = interpolate_historic_index(
-            inflation_idx, swap_base_d, OBSERVATION_LAG)
+            inflation_idx, swap_base_dt)
 
         fail_msg = """ Failed to replicate inflation swap base index fixing
                        for linear indexation:
@@ -326,7 +326,6 @@ class InflationTest(unittest.TestCase):
                             start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
-                            rate: {rate}
                             base index fixing: {base_index}
                             replicated base index fixing: {expected_base_index}
                             tolerance: {tolerance}
@@ -334,21 +333,31 @@ class InflationTest(unittest.TestCase):
                               start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
-                              rate=rate,
-                              base_index=swap_base_index,
+                              base_index=swap_base_fixing,
                               expected_base_index=expected_swap_base_index,
                               tolerance=EPSILON)
 
         self.assertAlmostEquals(
-            first=swap_base_index,
+            first=swap_base_fixing,
             second=expected_swap_base_index,
             delta=EPSILON,
             msg=fail_msg)
 
+    def test_inflation_curve_base_fixing(self):
+        """Testing inflation curve base fixing"""
+
+        inflation_idx = build_hicp_index(
+            EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
+        inflation_ts = build_inflation_term_structure(
+            VALUATION_DATE,
+            EUR_BEI_SWAP_RATES,
+            inflation_idx,
+            self.nominal_ts_handle)
+        self.inflation_ts_handle.linkTo(inflation_ts)
         curve_base_dt = inflation_ts.baseDate()
         curve_base_fixing = inflation_idx.fixing(curve_base_dt)
         expected_curve_base_fixing = interpolate_historic_index(
-            inflation_idx, curve_base_dt, OBSERVATION_LAG)
+            inflation_idx, curve_base_dt)
 
         fail_msg = """ Failed to replicate inflation curve base index fixing
                        for linear indexation:
@@ -369,20 +378,44 @@ class InflationTest(unittest.TestCase):
             msg=fail_msg,
             delta=EPSILON)
 
+    def test_inflation_leg_payment_linear_indexation_without_seasonality(self):
+        """Testing inflation leg payment for linear indexation"""
+
+        inflation_idx = build_hicp_index(
+            EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
+        inflation_ts = build_inflation_term_structure(
+            VALUATION_DATE,
+            EUR_BEI_SWAP_RATES,
+            inflation_idx,
+            self.nominal_ts_handle)
+        self.inflation_ts_handle.linkTo(inflation_ts)
+
+        # Create inflation swap
+        zciis = create_inflation_swap(
+            inflation_idx,
+            ql.Date(24, ql.August, 2018),
+            ql.Date(24, ql.August, 2023),
+            0.032)
+        zciis.setPricingEngine(self.discount_engine)
+
+        inflation_cf = ql.as_indexed_cashflow(
+            zciis.inflationLeg()[0])
         # Replicate projected swap fixing
         # Apply linear indexation rule
         fixing_d = inflation_cf.fixingDate()
         fraction = inflation_ts.dayCounter().yearFraction(
-            curve_base_dt, fixing_d)
+            inflation_ts.baseDate(), fixing_d)
         t = inflation_ts.timeFromReference(fixing_d)
         zero_rate = inflation_ts.zeroRate(t)
 
+        curve_base_fixing = inflation_idx.fixing(inflation_ts.baseDate())
         expected_fixing = curve_base_fixing * (
             1.0 + zero_rate)**fraction
 
         # Assert inflation leg projected amount
+        swap_base_fixing = inflation_idx.fixing(inflation_cf.baseDate())
         expected_inf_leg_payment = (
-            expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
+            expected_fixing / swap_base_fixing - 1.0) * inflation_cf.notional()
         actual_inf_leg_payment = inflation_cf.amount()
 
         fail_msg = """ Failed to replicate inflation leg payment
@@ -391,7 +424,6 @@ class InflationTest(unittest.TestCase):
                             start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
-                            rate: {rate}
                             inflation leg payment: {actual_payment}
                             replicated payment: {expected_payment}
                             tolerance: {tolerance}
@@ -399,7 +431,6 @@ class InflationTest(unittest.TestCase):
                               start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
-                              rate=rate,
                               actual_payment=actual_inf_leg_payment,
                               expected_payment=expected_inf_leg_payment,
                               tolerance=EPSILON)
@@ -411,7 +442,7 @@ class InflationTest(unittest.TestCase):
             msg=fail_msg)
 
     def test_linear_indexation_with_seasonality(self):
-        """Testing linear indexation with seasonality"""
+        """Testing inflation leg payment for linear indexation with seasonality"""
 
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
@@ -420,17 +451,14 @@ class InflationTest(unittest.TestCase):
             EUR_BEI_SWAP_RATES,
             inflation_idx,
             self.nominal_ts_handle,
-            OBSERVATION_LAG,
             include_seasonality=True)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
-        rate = 0.032
         zciis = create_inflation_swap(
             inflation_idx,
             ql.Date(25, ql.July, 2018),
             ql.Date(25, ql.July, 2022),
-            rate,
-            OBSERVATION_LAG)
+            0.032)
         zciis.setPricingEngine(self.discount_engine)
 
         inflation_cf = ql.as_indexed_cashflow(
@@ -452,6 +480,7 @@ class InflationTest(unittest.TestCase):
         zero_rate = inflation_ts.zeroRate(t)
 
         # Calculate seasonality adjustment
+        # Not that multiplicative seasonality is applied
         seasonality_b = get_seasonality_factor(ts_base_d)
         seasonality_f = get_seasonality_factor(fixing_d)
 
@@ -468,7 +497,6 @@ class InflationTest(unittest.TestCase):
                             start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
-                            rate: {rate}
                             inflation leg payment: {actual_payment}
                             replicated payment: {expected_payment}
                             tolerance: {tolerance}
@@ -476,7 +504,6 @@ class InflationTest(unittest.TestCase):
                               start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
-                              rate=rate,
                               actual_payment=actual_inf_leg_payment,
                               expected_payment=expected_inf_leg_payment,
                               tolerance=EPSILON)
