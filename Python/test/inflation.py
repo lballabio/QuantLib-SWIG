@@ -190,7 +190,6 @@ class InflationTest(unittest.TestCase):
     def test_par_swap_pricing_fom_indexation_without_seasonality(self):
         """Testing pricing of par inflation swap for First-Of-Month indexation"""
 
-        # Inflation curve handle
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle)
         inflation_ts = build_inflation_term_structure(
@@ -231,7 +230,6 @@ class InflationTest(unittest.TestCase):
 
     def test_inflation_leg_payment_fom_indexation_without_seasonality(self):
         """Testing inflation leg payment for First-Of-Month indexation"""
-        # Inflation curve handle
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle)
         inflation_ts = build_inflation_term_structure(
@@ -251,24 +249,24 @@ class InflationTest(unittest.TestCase):
         inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
         # Obtaining base index for the inflation swap
-        swap_base_d = inflation_cf.baseDate()
-        swap_base_index = inflation_idx.fixing(swap_base_d)
+        swap_base_dt = inflation_cf.baseDate()
+        swap_base_fixing = inflation_idx.fixing(swap_base_dt)
         # Replicate fixing projection
-        fixing_d = inflation_cf.fixingDate()
-        ts_base_d = inflation_ts.baseDate()
-        ts_base_index = inflation_idx.fixing(ts_base_d)
+        fixing_dt = inflation_cf.fixingDate()
+        ts_base_dt = inflation_ts.baseDate()
+        ts_base_fixing = inflation_idx.fixing(ts_base_dt)
         # Apply FOM indexation rule
         effective_fixing_d = ql.Date(
-            1, fixing_d.month(), fixing_d.year())
+            1, fixing_dt.month(), fixing_dt.year())
         fraction = inflation_ts.dayCounter().yearFraction(
-            ts_base_d, effective_fixing_d)
+            ts_base_dt, effective_fixing_d)
         t = inflation_ts.timeFromReference(effective_fixing_d)
         zero_rate = inflation_ts.zeroRate(t)
-        expected_fixing = ts_base_index * (
+        expected_fixing = ts_base_fixing * (
             1.0 + zero_rate)**fraction
 
         expected_inflation_leg_payment = (
-            expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
+            expected_fixing / swap_base_fixing - 1.0) * inflation_cf.notional()
         actual_inflation_leg_payment = inflation_cf.amount()
 
         fail_msg = """ Failed to replicate inflation leg payment
@@ -470,22 +468,22 @@ class InflationTest(unittest.TestCase):
         swap_base_index = inflation_idx.fixing(swap_base_d)
 
         # Replicate fixing projection
-        fixing_d = inflation_cf.fixingDate()
-        ts_base_d = inflation_ts.baseDate()
-        ts_base_index = inflation_idx.fixing(ts_base_d)
+        fixing_dt = inflation_cf.fixingDate()
+        ts_base_dt = inflation_ts.baseDate()
+        ts_base_fixing = inflation_idx.fixing(ts_base_dt)
 
         # Apply linear indexation rule
         fraction = inflation_ts.dayCounter().yearFraction(
-            ts_base_d, fixing_d)
-        t = inflation_ts.timeFromReference(fixing_d)
+            ts_base_dt, fixing_dt)
+        t = inflation_ts.timeFromReference(fixing_dt)
         zero_rate = inflation_ts.zeroRate(t)
 
         # Calculate seasonality adjustment
         # Not that multiplicative seasonality is applied
-        seasonality_b = get_seasonality_factor(ts_base_d)
-        seasonality_f = get_seasonality_factor(fixing_d)
+        seasonality_b = get_seasonality_factor(ts_base_dt)
+        seasonality_f = get_seasonality_factor(fixing_dt)
 
-        expected_fixing = ts_base_index * (
+        expected_fixing = ts_base_fixing * (
             seasonality_f / seasonality_b) * (1.0 + zero_rate)**fraction
 
         expected_inf_leg_payment = (
