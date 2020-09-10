@@ -167,9 +167,9 @@ LOGNORM_VOL_MATRIX = ql.SwaptionVolatilityMatrix(
 
 
 def build_euribor_swap_idx(
-        projectionCurveHandle):
+        projection_curve_handle):
     return ql.EuriborSwapIsdaFixA(ql.Period(1, ql.Years),
-                                  projectionCurveHandle)
+                                  projection_curve_handle)
 
 
 def build_nominal_term_structure(valuation_date, nominal_quotes):
