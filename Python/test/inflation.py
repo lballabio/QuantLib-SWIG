@@ -37,7 +37,7 @@ EUR_BEI_SWAP_RATES = [(ql.Period(1, ql.Years), 0.0301),
                       (ql.Period(5, ql.Years), 0.0315),
                       (ql.Period(10, ql.Years), 0.0355)]
 
-#TODO: Include source.
+# TODO: Include source.
 EU_FIXING_DATA = [(ql.Date(1, ql.April, 2018), 103.11),
                   (ql.Date(1, ql.May, 2018), 103.64),
                   (ql.Date(1, ql.June, 2018), 103.76),
@@ -57,13 +57,13 @@ OBSERVATION_LAG = ql.Period(3, ql.Months)
 
 def create_inflation_helper(
         reference_date,
-        inflation_data: Tuple[ql.Period, float],
-        inflation_index: ql.ZeroInflationIndex,
-        observation_lag: ql.Period,
-        calendar: ql.Calendar,
+        inflation_data,
+        inflation_index,
+        observation_lag,
+        calendar,
         business_day_convention,
-        day_counter: ql.DayCounter,
-        discount_curve_handle: ql.YieldTermStructureHandle):
+        day_counter,
+        discount_curve_handle):
     maturity = CAL.advance(reference_date, inflation_data[0])
     quote = ql.QuoteHandle(ql.SimpleQuote(inflation_data[1]))
     return ql.ZeroCouponInflationSwapHelper(
@@ -79,7 +79,7 @@ def create_inflation_helper(
 
 def build_nominal_term_structure(
         reference_date,
-        nominal_data: List[Tuple[ql.Date, float]]) -> ql.YieldTermStructure:
+        nominal_data):
     nominal_dc = ql.Actual365Fixed()
     dates = [CAL.advance(reference_date, x[0]) for x in nominal_data]
     rates = [x[1] for x in nominal_data]
@@ -87,9 +87,9 @@ def build_nominal_term_structure(
 
 
 def build_hicp_index(
-        fixing_data: List[Tuple[ql.Date, float]],
-        inflation_crv_handle: ql.ZeroInflationTermStructureHandle,
-        interpolated: bool = False) -> ql.ZeroInflationIndex:
+        fixing_data,
+        inflation_crv_handle,
+        interpolated=False):
     index = ql.EUHICP(interpolated, inflation_crv_handle)
     for x in fixing_data:
         # force override in case of multiple use
@@ -105,7 +105,7 @@ SEASONAL = {ql.January: 1.0, ql.February: 1.01, ql.March: 1.011,
             ql.November: 1.0067, ql.December: 1.0055}
 
 
-def construct_seasonality(evaluation_date: ql.Date) -> ql.Seasonality:
+def construct_seasonality(evaluation_date):
     frequency = ql.Monthly
     seasonality_base_date = ql.Date(1, ql.January, evaluation_date.year())
     factors = list(SEASONAL.values())
@@ -113,17 +113,17 @@ def construct_seasonality(evaluation_date: ql.Date) -> ql.Seasonality:
         seasonality_base_date, frequency, factors)
 
 
-def get_seasonality_factor(d: ql.Date):
+def get_seasonality_factor(d):
     return SEASONAL[d.month()]
 
 
 def build_inflation_term_structure(
-        reference_date: ql.Date,
-        zero_coupon_data: List[Tuple[ql.Period, float]],
-        inflation_index: ql.ZeroInflationIndex,
-        nominal_term_structure_handle: ql.YieldTermStructureHandle,
-        observation_lag: ql.Period,
-        include_seasonality: bool = False) -> ql.ZeroInflationTermStructure:
+        reference_date,
+        zero_coupon_data,
+        inflation_index,
+        nominal_term_structure_handle,
+        observation_lag,
+        include_seasonality=False):
     helpers = [create_inflation_helper(reference_date,
                                        x,
                                        inflation_index,
@@ -151,11 +151,11 @@ def build_inflation_term_structure(
 
 
 def create_inflation_swap(
-        index: ql.ZeroInflationIndex,
-        start_date: ql.Date,
-        end_date: ql.Date,
-        rate: float,
-        observation_lag: ql.Period,
+        index,
+        start_date,
+        end_date,
+        rate,
+        observation_lag,
         nominal=1.e6,
         payer=ql.ZeroCouponInflationSwap.Payer):
     return ql.ZeroCouponInflationSwap(
@@ -246,10 +246,10 @@ class InflationTest(unittest.TestCase):
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
         inflation_ts = build_inflation_term_structure(
-            VALUATION_DATE, 
-            EUR_BEI_SWAP_RATES, 
-            inflation_idx, 
-            self.nominal_ts_handle, 
+            VALUATION_DATE,
+            EUR_BEI_SWAP_RATES,
+            inflation_idx,
+            self.nominal_ts_handle,
             OBSERVATION_LAG)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
@@ -363,7 +363,7 @@ class InflationTest(unittest.TestCase):
         expected_inf_leg_payment = (
             expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
         actual_inf_leg_payment = inflation_cf.amount()
-        #TODO: improve error messages
+        # TODO: improve error messages
         self.assertAlmostEquals(
             first=actual_inf_leg_payment,
             second=expected_inf_leg_payment,
