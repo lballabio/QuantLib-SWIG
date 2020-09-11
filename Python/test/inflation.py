@@ -461,8 +461,8 @@ class InflationTest(unittest.TestCase):
             zciis.inflationLeg()[0])
 
         # Obtaining base index for the inflation swap
-        swap_base_d = inflation_cf.baseDate()
-        swap_base_index = inflation_idx.fixing(swap_base_d)
+        swap_base_dt = inflation_cf.baseDate()
+        swap_base_fixing = inflation_idx.fixing(swap_base_dt)
 
         # Replicate fixing projection
         fixing_dt = inflation_cf.fixingDate()
@@ -477,14 +477,15 @@ class InflationTest(unittest.TestCase):
 
         # Calculate seasonality adjustment
         # Not that multiplicative seasonality is applied
-        seasonality_b = get_seasonality_factor(ts_base_dt)
-        seasonality_f = get_seasonality_factor(fixing_dt)
+        seasonality_base_dt = get_seasonality_factor(ts_base_dt)
+        seasonality_fixing_dt = get_seasonality_factor(fixing_dt)
 
         expected_fixing = ts_base_fixing * (
-            seasonality_f / seasonality_b) * (1.0 + zero_rate)**fraction
+            seasonality_fixing_dt / seasonality_base_dt) * (
+                1.0 + zero_rate)**fraction
 
         expected_inf_leg_payment = (
-            expected_fixing / swap_base_index - 1.0) * inflation_cf.notional()
+            expected_fixing / swap_base_fixing - 1.0) * inflation_cf.notional()
         actual_inf_leg_payment = inflation_cf.amount()
 
         fail_msg = """ Failed to replicate inflation leg payment
