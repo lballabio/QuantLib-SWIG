@@ -457,7 +457,7 @@ class InflationTest(unittest.TestCase):
         t = inflation_ts.timeFromReference(fixing_dt)
         zero_rate = inflation_ts.zeroRate(t)
         # Calculate seasonality adjustment
-        # Not that multiplicative seasonality is applied
+        # Note that multiplicative seasonality is applied
         seasonality_base_dt = get_seasonality_factor(ts_base_dt)
         seasonality_fixing_dt = get_seasonality_factor(fixing_dt)
 
