@@ -330,7 +330,6 @@ class InflationTest(unittest.TestCase):
                               base_index=swap_base_fixing,
                               expected_base_index=expected_swap_base_index,
                               tolerance=EPSILON)
-
         self.assertAlmostEquals(
             first=swap_base_fixing,
             second=expected_swap_base_index,
@@ -366,7 +365,6 @@ class InflationTest(unittest.TestCase):
                               base_fixing=curve_base_fixing,
                               expected_base_fixing=expected_curve_base_fixing,
                               tolerance=EPSILON)
-
         self.assertAlmostEquals(
             first=curve_base_fixing,
             second=expected_curve_base_fixing,
@@ -427,7 +425,6 @@ class InflationTest(unittest.TestCase):
                               actual_payment=actual_inf_leg_payment,
                               expected_payment=expected_inf_leg_payment,
                               tolerance=EPSILON)
-
         self.assertAlmostEquals(
             first=actual_inf_leg_payment,
             second=expected_inf_leg_payment,
@@ -497,7 +494,6 @@ class InflationTest(unittest.TestCase):
                               actual_payment=actual_inf_leg_payment,
                               expected_payment=expected_inf_leg_payment,
                               tolerance=EPSILON)
-
         self.assertAlmostEquals(
             first=actual_inf_leg_payment,
             second=expected_inf_leg_payment,
