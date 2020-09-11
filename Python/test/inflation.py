@@ -205,7 +205,6 @@ class InflationTest(unittest.TestCase):
             0.0355)
         zciis.setPricingEngine(self.discount_engine)
         npv = zciis.NPV()
-
         # Check whether swap prices to par
         fail_msg = """ Failed to price zero coupon inflation swap to par:
                             index: {inflation_idx}
@@ -459,22 +458,18 @@ class InflationTest(unittest.TestCase):
 
         inflation_cf = ql.as_indexed_cashflow(
             zciis.inflationLeg()[0])
-
         # Obtaining base index for the inflation swap
         swap_base_dt = inflation_cf.baseDate()
         swap_base_fixing = inflation_idx.fixing(swap_base_dt)
-
         # Replicate fixing projection
         fixing_dt = inflation_cf.fixingDate()
         ts_base_dt = inflation_ts.baseDate()
         ts_base_fixing = inflation_idx.fixing(ts_base_dt)
-
         # Apply linear indexation rule
         fraction = inflation_ts.dayCounter().yearFraction(
             ts_base_dt, fixing_dt)
         t = inflation_ts.timeFromReference(fixing_dt)
         zero_rate = inflation_ts.zeroRate(t)
-
         # Calculate seasonality adjustment
         # Not that multiplicative seasonality is applied
         seasonality_base_dt = get_seasonality_factor(ts_base_dt)
