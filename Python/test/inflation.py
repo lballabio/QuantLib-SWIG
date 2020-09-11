@@ -95,7 +95,6 @@ def build_hicp_index(
     for x in fixing_data:
         # force override in case of multiple use
         index.addFixing(x[0], x[1], True)
-
     return index
 
 
@@ -106,9 +105,9 @@ SEASONAL = {ql.January: 1.0, ql.February: 1.01, ql.March: 1.011,
             ql.November: 1.0067, ql.December: 1.0055}
 
 
-def construct_seasonality(evaluation_date):
+def construct_seasonality(reference_date):
     frequency = ql.Monthly
-    seasonality_base_date = ql.Date(1, ql.January, evaluation_date.year())
+    seasonality_base_date = ql.Date(1, ql.January, reference_date.year())
     factors = list(SEASONAL.values())
     return ql.MultiplicativePriceSeasonality(
         seasonality_base_date, frequency, factors)
@@ -225,7 +224,7 @@ class InflationTest(unittest.TestCase):
                               expected_npv=0.0,
                               tolerance=EPSILON)
         self.assertTrue(
-            abs(npv < EPSILON),
+            abs(npv) < EPSILON,
             msg=fail_msg)
 
     def test_inflation_leg_payment_fom_indexation_without_seasonality(self):
