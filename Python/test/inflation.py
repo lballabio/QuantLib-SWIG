@@ -18,8 +18,6 @@
 import unittest
 import QuantLib as ql
 
-from typing import List, Tuple
-
 
 EPSILON = 1.e-9
 
