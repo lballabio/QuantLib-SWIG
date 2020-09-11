@@ -389,7 +389,6 @@ class InflationTest(unittest.TestCase):
             self.nominal_ts_handle)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
-        # Create inflation swap
         zciis = create_inflation_swap(
             inflation_idx,
             ql.Date(24, ql.August, 2018),
@@ -401,10 +400,10 @@ class InflationTest(unittest.TestCase):
             zciis.inflationLeg()[0])
         # Replicate projected swap fixing
         # Apply linear indexation rule
-        fixing_d = inflation_cf.fixingDate()
+        fixing_dt = inflation_cf.fixingDate()
         fraction = inflation_ts.dayCounter().yearFraction(
-            inflation_ts.baseDate(), fixing_d)
-        t = inflation_ts.timeFromReference(fixing_d)
+            inflation_ts.baseDate(), fixing_dt)
+        t = inflation_ts.timeFromReference(fixing_dt)
         zero_rate = inflation_ts.zeroRate(t)
 
         curve_base_fixing = inflation_idx.fixing(inflation_ts.baseDate())
