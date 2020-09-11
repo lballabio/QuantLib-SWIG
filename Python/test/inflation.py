@@ -229,6 +229,7 @@ class InflationTest(unittest.TestCase):
 
     def test_inflation_leg_payment_fom_indexation_without_seasonality(self):
         """Testing inflation leg payment for First-Of-Month indexation"""
+        
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle)
         inflation_ts = build_inflation_term_structure(
@@ -255,11 +256,11 @@ class InflationTest(unittest.TestCase):
         ts_base_dt = inflation_ts.baseDate()
         ts_base_fixing = inflation_idx.fixing(ts_base_dt)
         # Apply FOM indexation rule
-        effective_fixing_d = ql.Date(
+        effective_fixing_dt = ql.Date(
             1, fixing_dt.month(), fixing_dt.year())
         fraction = inflation_ts.dayCounter().yearFraction(
-            ts_base_dt, effective_fixing_d)
-        t = inflation_ts.timeFromReference(effective_fixing_d)
+            ts_base_dt, effective_fixing_dt)
+        t = inflation_ts.timeFromReference(effective_fixing_dt)
         zero_rate = inflation_ts.zeroRate(t)
         expected_fixing = ts_base_fixing * (
             1.0 + zero_rate)**fraction
@@ -302,7 +303,6 @@ class InflationTest(unittest.TestCase):
             self.nominal_ts_handle)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
-        # Create inflation swap
         zciis = create_inflation_swap(
             inflation_idx,
             ql.Date(24, ql.August, 2018),
