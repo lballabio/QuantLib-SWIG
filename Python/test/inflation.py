@@ -342,7 +342,7 @@ class InflationTest(unittest.TestCase):
             msg=fail_msg)
 
     def test_inflation_curve_base_fixing(self):
-        """Testing inflation curve base fixing"""
+        """Testing inflation curve base fixing for linear indexation"""
 
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
@@ -352,6 +352,7 @@ class InflationTest(unittest.TestCase):
             inflation_idx,
             self.nominal_ts_handle)
         self.inflation_ts_handle.linkTo(inflation_ts)
+        
         curve_base_dt = inflation_ts.baseDate()
         curve_base_fixing = inflation_idx.fixing(curve_base_dt)
         expected_curve_base_fixing = interpolate_historic_index(
