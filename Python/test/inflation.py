@@ -37,7 +37,7 @@ EUR_BEI_SWAP_RATES = [(ql.Period(1, ql.Years), 0.0301),
                       (ql.Period(5, ql.Years), 0.0315),
                       (ql.Period(10, ql.Years), 0.0355)]
 
-# Source: 
+# Source:
 # https://ec.europa.eu/eurostat/web/products-datasets/-/teicp240.
 EU_FIXING_DATA = [(ql.Date(1, ql.April, 2018), 103.11),
                   (ql.Date(1, ql.May, 2018), 103.64),
@@ -56,7 +56,7 @@ VALUATION_DATE = CAL.adjust(ql.Date(10, ql.September, 2018))
 OBSERVATION_LAG = ql.Period(3, ql.Months)
 
 
-def create_inflation_helper(
+def create_inflation_swap_helper(
         reference_date,
         inflation_data,
         inflation_index,
@@ -113,23 +113,23 @@ def construct_seasonality(reference_date):
         seasonality_base_date, frequency, factors)
 
 
-def get_seasonality_factor(d):
-    return SEASONAL[d.month()]
+def get_seasonality_factor(date):
+    return SEASONAL[date.month()]
 
 
 def build_inflation_term_structure(
         reference_date,
-        zero_coupon_data,
+        zero_coupon_swaps_data,
         inflation_index,
         nominal_term_structure_handle,
         observation_lag=OBSERVATION_LAG,
         include_seasonality=False):
-    helpers = [create_inflation_helper(reference_date,
-                                       x,
-                                       inflation_index,
-                                       nominal_term_structure_handle)
-               for x in zero_coupon_data]
-    base_zero_rate = zero_coupon_data[0][1]
+    helpers = [create_inflation_swap_helper(reference_date,
+                                            x,
+                                            inflation_index,
+                                            nominal_term_structure_handle)
+               for x in zero_coupon_swaps_data]
+    base_zero_rate = zero_coupon_swaps_data[0][1]
     cpi_term_structure = ql.PiecewiseZeroInflation(
         reference_date,
         CAL,
@@ -147,7 +147,7 @@ def build_inflation_term_structure(
 
 
 def create_inflation_swap(
-        index,
+        inflation_idx,
         start_date,
         end_date,
         rate,
@@ -163,18 +163,18 @@ def create_inflation_swap(
         BDC,
         DAY_COUNTER,
         rate,
-        index,
+        inflation_idx,
         observation_lag)
 
 
 def interpolate_historic_index(
-        idx, fixing_date, observation_lag=OBSERVATION_LAG):
-    f_d = ql.Date(1, fixing_date.month(), fixing_date.year())
-    s_d = ql.Date.endOfMonth(fixing_date) + 1
-    slope = (fixing_date - f_d) / (
-        (s_d + observation_lag) - (f_d + observation_lag))
-    return idx.fixing(f_d) + slope * (
-        idx.fixing(s_d) - idx.fixing(f_d))
+        inflation_idx, fixing_date, observation_lag=OBSERVATION_LAG):
+    first_dt = ql.Date(1, fixing_date.month(), fixing_date.year())
+    second_dt = ql.Date.endOfMonth(fixing_date) + 1
+    slope = (fixing_date - first_dt) / (
+        (second_dt + observation_lag) - (first_dt + observation_lag))
+    return inflation_idx.fixing(first_dt) + slope * (
+        inflation_idx.fixing(second_dt) - inflation_idx.fixing(first_dt))
 
 
 class InflationTest(unittest.TestCase):
@@ -228,7 +228,7 @@ class InflationTest(unittest.TestCase):
 
     def test_inflation_leg_payment_fom_indexation_without_seasonality(self):
         """Testing inflation leg payment for First-Of-Month indexation"""
-        
+
         inflation_idx = build_hicp_index(
             EU_FIXING_DATA, self.inflation_ts_handle)
         inflation_ts = build_inflation_term_structure(
@@ -351,7 +351,7 @@ class InflationTest(unittest.TestCase):
             inflation_idx,
             self.nominal_ts_handle)
         self.inflation_ts_handle.linkTo(inflation_ts)
-        
+
         curve_base_dt = inflation_ts.baseDate()
         curve_base_fixing = inflation_idx.fixing(curve_base_dt)
         expected_curve_base_fixing = interpolate_historic_index(
