@@ -206,14 +206,12 @@ class InflationTest(unittest.TestCase):
         # Check whether swap prices to par
         fail_msg = """ Failed to price zero coupon inflation swap to par:
                             index: {inflation_idx}
-                            start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
                             npv: {npv}
                             expected npv: {expected_npv}
                             tolerance: {tolerance}
                    """.format(inflation_idx=inflation_idx.familyName(),
-                              start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
                               npv=npv,
@@ -268,14 +266,12 @@ class InflationTest(unittest.TestCase):
         fail_msg = """ Failed to replicate inflation leg payment
                        for First-Of-Month indexation:
                             index: {inflation_idx}
-                            start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
                             inflation leg payment: {actual_payment}
                             replicated payment: {expected_payment}
                             tolerance: {tolerance}
                    """.format(inflation_idx=inflation_idx.familyName(),
-                              start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
                               actual_payment=actual_inflation_leg_payment,
@@ -317,14 +313,12 @@ class InflationTest(unittest.TestCase):
         fail_msg = """ Failed to replicate inflation swap base index fixing
                        for linear indexation:
                             index: {inflation_idx}
-                            start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
                             base index fixing: {base_index}
                             replicated base index fixing: {expected_base_index}
                             tolerance: {tolerance}
                    """.format(inflation_idx=inflation_idx.familyName(),
-                              start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
                               base_index=swap_base_fixing,
@@ -409,17 +403,14 @@ class InflationTest(unittest.TestCase):
             expected_fixing / swap_base_fixing - 1.0) * inflation_cf.notional()
         actual_inf_leg_payment = inflation_cf.amount()
 
-        fail_msg = """ Failed to replicate inflation leg payment
-                       for linear indexation:
+        fail_msg = """ Failed to replicate inflation leg payment for linear indexation:
                             index: {inflation_idx}
-                            start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
                             inflation leg payment: {actual_payment}
                             replicated payment: {expected_payment}
                             tolerance: {tolerance}
                    """.format(inflation_idx=inflation_idx.familyName(),
-                              start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
                               actual_payment=actual_inf_leg_payment,
@@ -481,14 +472,12 @@ class InflationTest(unittest.TestCase):
         fail_msg = """ Failed to replicate inflation leg payment
                        for linear indexation and seasonality:
                             index: {inflation_idx}
-                            start date : {start_date}
                             end date: {end_date}
                             observation lag: {observation_lag}
                             inflation leg payment: {actual_payment}
                             replicated payment: {expected_payment}
                             tolerance: {tolerance}
                    """.format(inflation_idx=inflation_idx.familyName(),
-                              start_date=zciis.startDate(),
                               end_date=zciis.maturityDate(),
                               observation_lag=OBSERVATION_LAG,
                               actual_payment=actual_inf_leg_payment,
