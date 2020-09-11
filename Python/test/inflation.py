@@ -198,7 +198,6 @@ class InflationTest(unittest.TestCase):
             self.nominal_ts_handle)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
-        # Create par inflation swap
         zciis = create_inflation_swap(
             inflation_idx,
             VALUATION_DATE,
@@ -410,7 +409,6 @@ class InflationTest(unittest.TestCase):
         expected_fixing = curve_base_fixing * (
             1.0 + zero_rate)**fraction
 
-        # Assert inflation leg projected amount
         swap_base_fixing = inflation_idx.fixing(inflation_cf.baseDate())
         expected_inf_leg_payment = (
             expected_fixing / swap_base_fixing - 1.0) * inflation_cf.notional()
