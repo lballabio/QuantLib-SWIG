@@ -43,6 +43,7 @@ from fdm import FdmTest
 from gjrgarch import GJRGARCHEngineTest, GJRGARCHCalibrationTest
 from swaption import SwaptionTest
 from volatilities import SwaptionVolatilityCubeTest
+from inflation import InflationTest
 
 
 def test():
@@ -79,6 +80,7 @@ def test():
     suite.addTest(unittest.makeSuite(GJRGARCHCalibrationTest, "test"))
     suite.addTest(unittest.makeSuite(SwaptionTest, "test"))
     suite.addTest(unittest.makeSuite(SwaptionVolatilityCubeTest, 'test'))
+    suite.addTest(unittest.makeSuite(InflationTest, "test"))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
