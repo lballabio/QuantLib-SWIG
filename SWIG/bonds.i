@@ -328,7 +328,7 @@ class AmortizingFloatingRateBond : public Bond {
         BusinessDayConvention paymentConvention = Following,
         Size fixingDays = Null<Size>(),
         const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
-        const std::vector<Spread>& spreads = std::vector<Spread>(1, 1.0),
+        const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
         const std::vector<Rate>& caps = std::vector<Rate>(),
         const std::vector<Rate>& floors = std::vector<Rate>(),
         bool inArrears = false,
