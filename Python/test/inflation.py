@@ -169,8 +169,10 @@ def interpolate_historic_index(
         inflation_idx, fixing_date, observation_lag=OBSERVATION_LAG):
     first_dt = ql.Date(1, fixing_date.month(), fixing_date.year())
     second_dt = ql.Date.endOfMonth(fixing_date) + 1
-    slope = (fixing_date - first_dt) / (
+    slope_numerator = fixing_date - first_dt
+    slope_denominator = (
         (second_dt + observation_lag) - (first_dt + observation_lag))
+    slope = float(slope_numerator) / float(slope_denominator)
     return inflation_idx.fixing(first_dt) + slope * (
         inflation_idx.fixing(second_dt) - inflation_idx.fixing(first_dt))
 
