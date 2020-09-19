@@ -68,6 +68,9 @@ class CapFloorTest(unittest.TestCase):
 
         self.black_vol = ql.QuoteHandle(ql.SimpleQuote(0.6))
 
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
+
     def testBlackCapFloorEngine(self):
         """ Testing BlackCapFloorEngine """
         black_engine = ql.BlackCapFloorEngine(self.term_structure_handle,

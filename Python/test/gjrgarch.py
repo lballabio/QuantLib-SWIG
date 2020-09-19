@@ -49,6 +49,9 @@ class GJRGARCHEngineTest(unittest.TestCase):
             [[15.6619, 11.1263, 7.0968, 3.9152, 1.8133, 0.7010], [16.5195, 12.3181, 8.6085, 5.5700, 3.3103, 1.8053]],
         ]
 
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
+
     def testOptionPricing(self):
 
         tolerance = 0.075
@@ -223,6 +226,9 @@ class GJRGARCHCalibrationTest(unittest.TestCase):
         ]
         self.strike = [3400, 3600, 3800, 4000, 4200, 4400, 4500, 4600, 4800, 5000, 5200, 5400, 5600]
         self.lambda_value = 0.1
+
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
 
     def testCalibration(self):
 
