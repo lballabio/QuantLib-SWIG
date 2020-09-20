@@ -96,13 +96,13 @@ class CompositeQuote : public Quote {
 #endif
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<Quote> )
+SWIG_STD_VECTOR_ENHANCED( QuantLib::ext::shared_ptr<Quote> )
 SWIG_STD_VECTOR_ENHANCED( Handle<Quote> )
 SWIG_STD_VECTOR_ENHANCED( RelinkableHandle<Quote> )
 #endif
 namespace std {
-    %template(QuoteVector) vector<boost::shared_ptr<Quote> >;
-    %template(QuoteVectorVector) vector<vector<boost::shared_ptr<Quote> > >;
+    %template(QuoteVector) vector<QuantLib::ext::shared_ptr<Quote> >;
+    %template(QuoteVectorVector) vector<vector<QuantLib::ext::shared_ptr<Quote> > >;
     %template(QuoteHandleVector) vector<Handle<Quote> >;
     %template(QuoteHandleVectorVector) vector<vector<Handle<Quote> > >;
     %template(RelinkableQuoteHandleVector) vector<RelinkableHandle<Quote> >;
