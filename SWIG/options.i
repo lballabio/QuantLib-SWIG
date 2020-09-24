@@ -413,7 +413,7 @@ using QuantLib::ExponentialFittingHestonEngine;
 class ExponentialFittingHestonEngine : public PricingEngine {
   public:
     enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV,
-    					  AsymptoticChF, OptimalCV };
+                          AsymptoticChF, OptimalCV };
     
     ExponentialFittingHestonEngine(
         const boost::shared_ptr<HestonModel>& model,
