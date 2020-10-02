@@ -62,10 +62,10 @@ class SoftCallability : public Callability {
 
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<Callability> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<Callability> )
 #endif
 namespace std {
-    %template(CallabilitySchedule) vector<boost::shared_ptr<Callability> >;
+    %template(CallabilitySchedule) vector<ext::shared_ptr<Callability> >;
 }
 
 #endif

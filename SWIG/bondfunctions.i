@@ -35,198 +35,130 @@ class BondFunctions {
     %rename(bondYield) yield;
     #endif
   public:
-    %extend {
-        static Date startDate(const boost::shared_ptr<Bond>& bond) {
-            return QuantLib::BondFunctions::startDate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)));
-        }
-        static Date maturityDate(const boost::shared_ptr<Bond>& bond) {
-            return QuantLib::BondFunctions::maturityDate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)));
-        }
-        static bool isTradable(const boost::shared_ptr<Bond>& bond,
-                               Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::isTradable(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    settlementDate);
-        }
-        static Date previousCashFlowDate(const boost::shared_ptr<Bond>& bond,
-                                         Date refDate = Date()) {
-            return QuantLib::BondFunctions::previousCashFlowDate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    refDate);
-        }
-        static Date nextCashFlowDate(const boost::shared_ptr<Bond>& bond,
-                                     Date refDate = Date()) {
-            return QuantLib::BondFunctions::nextCashFlowDate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    refDate);
-        }
-        static Real previousCashFlowAmount(const boost::shared_ptr<Bond>& bond,
-                                           Date refDate = Date()) {
-            return QuantLib::BondFunctions::previousCashFlowAmount(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    refDate);
-        }
-        static Real nextCashFlowAmount(const boost::shared_ptr<Bond>& bond,
-                                       Date refDate = Date()) {
-            return QuantLib::BondFunctions::nextCashFlowAmount(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    refDate);
-        }
-        static Rate previousCouponRate(const boost::shared_ptr<Bond>& bond,
-                                       Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::previousCouponRate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    settlementDate);
-        }
-        static Rate nextCouponRate(const boost::shared_ptr<Bond>& bond,
-                                   Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::nextCouponRate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    settlementDate);
-        }
-        static Date accrualStartDate(const boost::shared_ptr<Bond>& bond,
-                                     Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::accrualStartDate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    settlementDate);
-        }
-        static Date accrualEndDate(const boost::shared_ptr<Bond>& bond,
-                                   Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::accrualEndDate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    settlementDate);
-        }
-        static Time accrualPeriod(const boost::shared_ptr<Bond>& bond,
-                                  Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::accrualPeriod(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    settlementDate);
-        }
-        static BigInteger accrualDays(const boost::shared_ptr<Bond>& bond,
-                                      Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::accrualDays(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    settlementDate);
-        }
-        static Time accruedPeriod(const boost::shared_ptr<Bond>& bond,
-                                  Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::accruedPeriod(
-                *(boost::dynamic_pointer_cast<Bond>(bond)),
-                settlementDate);
-        }
-        static BigInteger accruedDays(const boost::shared_ptr<Bond>& bond,
-                                      Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::accruedDays(
-                *(boost::dynamic_pointer_cast<Bond>(bond)),
-                settlementDate);
-        }
-        static Real accruedAmount(const boost::shared_ptr<Bond>& bond,
-                                  Date settlementDate = Date()){
+    static Date startDate(const Bond& bond);
+    static Date maturityDate(const Bond& bond);
+    static bool isTradable(const Bond& bond,
+                           Date settlementDate = Date());
+    static Date previousCashFlowDate(const Bond& bond,
+                                     Date refDate = Date());
+    static Date nextCashFlowDate(const Bond& bond,
+                                 Date refDate = Date());
+    static Real previousCashFlowAmount(const Bond& bond,
+                                       Date refDate = Date());
+    static Real nextCashFlowAmount(const Bond& bond,
+                                   Date refDate = Date());
+    static Rate previousCouponRate(const Bond& bond,
+                                   Date settlementDate = Date());
+    static Rate nextCouponRate(const Bond& bond,
+                               Date settlementDate = Date());
+    static Date accrualStartDate(const Bond& bond,
+                                 Date settlementDate = Date());
+    static Date accrualEndDate(const Bond& bond,
+                               Date settlementDate = Date());
+    static Time accrualPeriod(const Bond& bond,
+                              Date settlementDate = Date());
+    static BigInteger accrualDays(const Bond& bond,
+                                  Date settlementDate = Date());
+    static Time accruedPeriod(const Bond& bond,
+                              Date settlementDate = Date());
+    static BigInteger accruedDays(const Bond& bond,
+                                  Date settlementDate = Date());
+    static Real accruedAmount(const Bond& bond,
+                              Date settlementDate = Date());
 
-            return QuantLib::BondFunctions::accruedAmount(
-                *(boost::dynamic_pointer_cast<Bond>(bond)), 
-                settlementDate);
-        }
+    static Real cleanPrice(const Bond& bond,
+                           const YieldTermStructure& discountCurve,
+                           Date settlementDate = Date());
+    static Real bps(const Bond& bond,
+                    const YieldTermStructure& discountCurve,
+                    Date settlementDate = Date());
+    static Rate atmRate(const Bond& bond,
+                        const YieldTermStructure& discountCurve,
+                        Date settlementDate = Date(),
+                        Real cleanPrice = Null<Real>());
 
-        static Real cleanPrice(
-                   const boost::shared_ptr<Bond>& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::cleanPrice(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    *discountCurve,
-                    settlementDate);
-        }
-        static Real bps(
-                   const boost::shared_ptr<Bond>& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::bps(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    *discountCurve,
-                    settlementDate);
-        }
-        static Rate atmRate(
-                   const boost::shared_ptr<Bond>& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                   Date settlementDate = Date(),
-                   Real cleanPrice = Null<Real>()) {
-            return QuantLib::BondFunctions::atmRate(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    *discountCurve,
-                    settlementDate,
-                    cleanPrice);
-        }
-        static Real cleanPrice(const boost::shared_ptr<Bond>& bond,
-                               const InterestRate& yield,
-                               Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::cleanPrice(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    yield,
-                    settlementDate);
-        }
-        static Real cleanPrice(const boost::shared_ptr<Bond>& bond,
-                               Rate yield,
-                               const DayCounter& dayCounter,
-                               Compounding compounding,
-                               Frequency frequency,
-                               Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::cleanPrice(
-                    *(boost::dynamic_pointer_cast<Bond>(bond)),
-                    yield,
-                    dayCounter,
-                    compounding,
-                    frequency,
-                    settlementDate);
-        }
-        static Real bps(const boost::shared_ptr<Bond>& bond,
-                        const InterestRate& yield,
-                        Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::bps(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        settlementDate);
-        }
-        static Real bps(const boost::shared_ptr<Bond>& bond,
-                        Rate yield,
-                        const DayCounter& dayCounter,
-                        Compounding compounding,
-                        Frequency frequency,
-                        Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::bps(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate);
-        }
-        static Rate yield(const boost::shared_ptr<Bond>& bond,
+    static Real cleanPrice(const Bond& bond,
+                           const InterestRate& yield,
+                           Date settlementDate = Date());
+    static Real cleanPrice(const Bond& bond,
+                           Rate yield,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date());
+    static Real bps(const Bond& bond,
+                    const InterestRate& yield,
+                    Date settlementDate = Date());
+    static Real bps(const Bond& bond,
+                    Rate yield,
+                    const DayCounter& dayCounter,
+                    Compounding compounding,
+                    Frequency frequency,
+                    Date settlementDate = Date());
+    static Rate yield(const Bond& bond,
+                      Real cleanPrice,
+                      const DayCounter& dayCounter,
+                      Compounding compounding,
+                      Frequency frequency,
+                      Date settlementDate = Date(),
+                      Real accuracy = 1.0e-10,
+                      Size maxIterations = 100,
+                      Rate guess = 0.05);
+
+    static Time duration(const Bond& bond,
+                         const InterestRate& yield,
+                         Duration::Type type = Duration::Modified,
+                         Date settlementDate = Date());
+    static Time duration(const Bond& bond,
+                         Rate yield,
+                         const DayCounter& dayCounter,
+                         Compounding compounding,
+                         Frequency frequency,
+                         Duration::Type type = Duration::Modified,
+                         Date settlementDate = Date());
+    static Real convexity(const Bond& bond,
+                          const InterestRate& yield,
+                          Date settlementDate = Date());
+    static Real convexity(const Bond& bond,
+                          Rate yield,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency,
+                          Date settlementDate = Date());
+    static Real basisPointValue(const Bond& bond,
+                                const InterestRate& yield,
+                                Date settlementDate = Date());
+    static Real basisPointValue(const Bond& bond,
+                                Rate yield,
+                                const DayCounter& dayCounter,
+                                Compounding compounding,
+                                Frequency frequency,
+                                Date settlementDate = Date());
+    static Real yieldValueBasisPoint(const Bond& bond,
+                                     const InterestRate& yield,
+                                     Date settlementDate = Date());
+    static Real yieldValueBasisPoint(const Bond& bond,
+                                     Rate yield,
+                                     const DayCounter& dayCounter,
+                                     Compounding compounding,
+                                     Frequency frequency,
+                                     Date settlementDate = Date());
+    static Spread zSpread(const Bond& bond,
                           Real cleanPrice,
+                          const ext::shared_ptr<YieldTermStructure>& discountCurve,
                           const DayCounter& dayCounter,
                           Compounding compounding,
                           Frequency frequency,
                           Date settlementDate = Date(),
                           Real accuracy = 1.0e-10,
                           Size maxIterations = 100,
-                          Rate guess = 0.05) {
-            return QuantLib::BondFunctions::yield(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        cleanPrice,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate,
-                        accuracy,
-                        maxIterations,
-                        guess);
-        }
+                          Rate guess = 0.0);
+
+    %extend {
 
         %define DefineYieldFunctionSolver(SolverType)
         static Rate yield ## SolverType(SolverType solver,
-                                         const boost::shared_ptr<Bond>& bond,
+                                         const Bond& bond,
                                          Real cleanPrice,
                                          const DayCounter& dayCounter,
                                          Compounding compounding,
@@ -236,7 +168,7 @@ class BondFunctions {
                                          Rate guess = 0.05) {
             return QuantLib::BondFunctions::yield<SolverType>(
                         solver,
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
+                        bond,
                         cleanPrice,
                         dayCounter,
                         compounding,
@@ -257,123 +189,6 @@ class BondFunctions {
         DefineYieldFunctionSolver(Newton);
         DefineYieldFunctionSolver(NewtonSafe);
         #endif
-
-        static Time duration(const boost::shared_ptr<Bond>& bond,
-                             const InterestRate& yield,
-                             Duration::Type type = Duration::Modified,
-                             Date settlementDate = Date() ) {
-            return QuantLib::BondFunctions::duration(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        type,
-                        settlementDate);
-        }
-        static Time duration(const boost::shared_ptr<Bond>& bond,
-                        Rate yield,
-                        const DayCounter& dayCounter,
-                        Compounding compounding,
-                        Frequency frequency,
-                        Duration::Type type = Duration::Modified,
-                        Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::duration(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        type,
-                        settlementDate);
-        }
-        static Real convexity(const boost::shared_ptr<Bond>& bond,
-                              const InterestRate& yield,
-                              Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::convexity(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        settlementDate);
-        }
-        static Real convexity(const boost::shared_ptr<Bond>& bond,
-                              Rate yield,
-                              const DayCounter& dayCounter,
-                              Compounding compounding,
-                              Frequency frequency,
-                              Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::convexity(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate);
-        }
-        static Real basisPointValue(const boost::shared_ptr<Bond>& bond,
-                                    const InterestRate& yield,
-                                    Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::basisPointValue(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        settlementDate);
-        }
-        static Real basisPointValue(const boost::shared_ptr<Bond>& bond,
-                                    Rate yield,
-                                    const DayCounter& dayCounter,
-                                    Compounding compounding,
-                                    Frequency frequency,
-                                    Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::basisPointValue(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate);
-        }
-        static Real yieldValueBasisPoint(const boost::shared_ptr<Bond>& bond,
-                                         const InterestRate& yield,
-                                         Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::yieldValueBasisPoint(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        settlementDate);
-        }
-        static Real yieldValueBasisPoint(const boost::shared_ptr<Bond>& bond,
-                                         Rate yield,
-                                         const DayCounter& dayCounter,
-                                         Compounding compounding,
-                                         Frequency frequency,
-                                         Date settlementDate = Date()) {
-            return QuantLib::BondFunctions::yieldValueBasisPoint(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        yield,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate);
-        }
-        static Spread zSpread(const boost::shared_ptr<Bond>& bond,
-                              Real cleanPrice,
-                              const boost::shared_ptr<YieldTermStructure>& discountCurve,
-                              const DayCounter& dayCounter,
-                              Compounding compounding,
-                              Frequency frequency,
-                              Date settlementDate = Date(),
-                              Real accuracy = 1.0e-10,
-                              Size maxIterations = 100,
-                              Rate guess = 0.0){
-            return QuantLib::BondFunctions::zSpread(
-                        *(boost::dynamic_pointer_cast<Bond>(bond)),
-                        cleanPrice,
-                        discountCurve,
-                        dayCounter,
-                        compounding,
-                        frequency,
-                        settlementDate,
-                        accuracy,
-                        maxIterations,
-                        guess);
-
-        }
-
     }
 };
 

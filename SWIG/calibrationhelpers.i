@@ -60,7 +60,7 @@ class BlackCalibrationHelper : public CalibrationHelper {
   public:
     enum CalibrationErrorType { RelativePriceError, PriceError, ImpliedVolError };
 
-    void setPricingEngine(const boost::shared_ptr<PricingEngine>& engine);
+    void setPricingEngine(const ext::shared_ptr<PricingEngine>& engine);
     Real marketValue() const;
     virtual Real modelValue() const;
     Volatility impliedVolatility(Real targetValue,
@@ -76,11 +76,11 @@ class BlackCalibrationHelper : public CalibrationHelper {
 };
 
 %inline %{
-    boost::shared_ptr<BlackCalibrationHelper> as_black_helper(const boost::shared_ptr<CalibrationHelper>& h) {
-        return boost::dynamic_pointer_cast<BlackCalibrationHelper>(h);
+    ext::shared_ptr<BlackCalibrationHelper> as_black_helper(const ext::shared_ptr<CalibrationHelper>& h) {
+        return ext::dynamic_pointer_cast<BlackCalibrationHelper>(h);
     }
-    boost::shared_ptr<SwaptionHelper> as_swaption_helper(const boost::shared_ptr<BlackCalibrationHelper>& h) {
-        return boost::dynamic_pointer_cast<SwaptionHelper>(h);
+    ext::shared_ptr<SwaptionHelper> as_swaption_helper(const ext::shared_ptr<BlackCalibrationHelper>& h) {
+        return ext::dynamic_pointer_cast<SwaptionHelper>(h);
     }
 %}
 
@@ -89,7 +89,7 @@ class SwaptionHelper : public BlackCalibrationHelper {
   public:
     SwaptionHelper(const Period& maturity, const Period& length,
                       const Handle<Quote>& volatility,
-                      const boost::shared_ptr<IborIndex>& index,
+                      const ext::shared_ptr<IborIndex>& index,
                       const Period& fixedLegTenor,
                       const DayCounter& fixedLegDayCounter,
                       const DayCounter& floatingLegDayCounter,
@@ -103,7 +103,7 @@ class SwaptionHelper : public BlackCalibrationHelper {
 
     SwaptionHelper(const Date& exerciseDate, const Period& length,
                       const Handle<Quote>& volatility,
-                      const boost::shared_ptr<IborIndex>& index,
+                      const ext::shared_ptr<IborIndex>& index,
                       const Period& fixedLegTenor,
                       const DayCounter& fixedLegDayCounter,
                       const DayCounter& floatingLegDayCounter,
@@ -117,7 +117,7 @@ class SwaptionHelper : public BlackCalibrationHelper {
 
     SwaptionHelper(const Date& exerciseDate, const Date& endDate,
                       const Handle<Quote>& volatility,
-                      const boost::shared_ptr<IborIndex>& index,
+                      const ext::shared_ptr<IborIndex>& index,
                       const Period& fixedLegTenor,
                       const DayCounter& fixedLegDayCounter,
                       const DayCounter& floatingLegDayCounter,
@@ -129,8 +129,8 @@ class SwaptionHelper : public BlackCalibrationHelper {
                       const VolatilityType type = ShiftedLognormal,
                       const Real shift = 0.0);
 
-    boost::shared_ptr<VanillaSwap> underlyingSwap() const;
-    boost::shared_ptr<Swaption> swaption() const;
+    ext::shared_ptr<VanillaSwap> underlyingSwap() const;
+    ext::shared_ptr<Swaption> swaption() const;
 
     %extend {
         std::vector<Time> times() {
@@ -160,7 +160,7 @@ class CapHelper : public BlackCalibrationHelper {
   public:
     CapHelper(const Period& length,
               const Handle<Quote>& volatility,
-              const boost::shared_ptr<IborIndex>& index,
+              const ext::shared_ptr<IborIndex>& index,
               Frequency fixedLegFrequency,
               const DayCounter& fixedLegDayCounter,
               bool includeFirstSwaplet,
@@ -196,14 +196,14 @@ class HestonModelHelper : public BlackCalibrationHelper {
 
 // allow use of vectors of helpers
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<CalibrationHelper> )
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BlackCalibrationHelper> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<CalibrationHelper> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<BlackCalibrationHelper> )
 #endif
 namespace std {
     %template(CalibrationHelperVector)
-        vector<boost::shared_ptr<CalibrationHelper> >;
+        vector<ext::shared_ptr<CalibrationHelper> >;
     %template(BlackCalibrationHelperVector)
-        vector<boost::shared_ptr<BlackCalibrationHelper> >;
+        vector<ext::shared_ptr<BlackCalibrationHelper> >;
 }
 
 // the base class for calibrated models
@@ -220,7 +220,7 @@ class CalibratedModel : public virtual Observable {
   public:
     Array params() const;
     virtual void calibrate(
-        const std::vector<boost::shared_ptr<CalibrationHelper> >&,
+        const std::vector<ext::shared_ptr<CalibrationHelper> >&,
         OptimizationMethod&, const EndCriteria &,
         const Constraint& constraint = Constraint(),
         const std::vector<Real>& weights = std::vector<Real>(),
@@ -228,8 +228,8 @@ class CalibratedModel : public virtual Observable {
 
     void setParams(const Array& params);
     Real value(const Array& params,
-               const std::vector<boost::shared_ptr<CalibrationHelper> >&);
-    const boost::shared_ptr<Constraint>& constraint() const;
+               const std::vector<ext::shared_ptr<CalibrationHelper> >&);
+    const ext::shared_ptr<Constraint>& constraint() const;
     EndCriteria::Type endCriteria() const;
     const Array& problemValues() const;
     Integer functionEvaluation() const;

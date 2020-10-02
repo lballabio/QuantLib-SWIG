@@ -25,13 +25,14 @@
 %{
 using QuantLib::FittedBondDiscountCurve;
 
+typedef ext::shared_ptr<YieldTermStructure> FittedBondDiscountCurvePtr;
 typedef QuantLib::FittedBondDiscountCurve::FittingMethod FittingMethod;
 
-std::vector<boost::shared_ptr<BondHelper> > convert_bond_helpers(
-                 const std::vector<boost::shared_ptr<RateHelper> >& helpers) {
-    std::vector<boost::shared_ptr<BondHelper> > result(helpers.size());
+std::vector<ext::shared_ptr<BondHelper> > convert_bond_helpers(
+                 const std::vector<ext::shared_ptr<RateHelper> >& helpers) {
+    std::vector<ext::shared_ptr<BondHelper> > result(helpers.size());
     for (Size i=0; i<helpers.size(); ++i)
-        result[i] = boost::dynamic_pointer_cast<BondHelper>(helpers[i]);
+        result[i] = ext::dynamic_pointer_cast<BondHelper>(helpers[i]);
     return result;
 }
 %}
@@ -53,7 +54,7 @@ class FittedBondDiscountCurve : public YieldTermStructure {
     FittedBondDiscountCurve(
                    Natural settlementDays,
                    const Calendar& calendar,
-                   const std::vector<boost::shared_ptr<BondHelper> >& helpers,
+                   const std::vector<ext::shared_ptr<BondHelper> >& helpers,
                    const DayCounter& dayCounter,
                    const FittingMethod& fittingMethod,
                    Real accuracy = 1.0e-10,
@@ -62,7 +63,7 @@ class FittedBondDiscountCurve : public YieldTermStructure {
                    Real simplexLambda = 1.0);
     FittedBondDiscountCurve(
                    const Date &referenceDate,
-                   const std::vector<boost::shared_ptr<BondHelper> >& helpers,
+                   const std::vector<ext::shared_ptr<BondHelper> >& helpers,
                    const DayCounter& dayCounter,
                    const FittingMethod& fittingMethod,
                    Real accuracy = 1.0e-10,

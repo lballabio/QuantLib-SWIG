@@ -45,37 +45,37 @@ class BasketPayoff : public Payoff {
 %shared_ptr(MinBasketPayoff)
 class MinBasketPayoff : public BasketPayoff  {
   public:
-    MinBasketPayoff(const boost::shared_ptr<Payoff> p);
+    MinBasketPayoff(const ext::shared_ptr<Payoff> p);
 };
 
 %shared_ptr(MaxBasketPayoff)
 class MaxBasketPayoff : public BasketPayoff  {
   public:
-    MaxBasketPayoff(const boost::shared_ptr<Payoff> p);
+    MaxBasketPayoff(const ext::shared_ptr<Payoff> p);
 };
 
 %shared_ptr(AverageBasketPayoff)
 class AverageBasketPayoff :
       public BasketPayoff  {
   public:
-    AverageBasketPayoff(const boost::shared_ptr<Payoff> p,
+    AverageBasketPayoff(const ext::shared_ptr<Payoff> p,
                            const Array &a);
-    AverageBasketPayoff(const boost::shared_ptr<Payoff> p,
+    AverageBasketPayoff(const ext::shared_ptr<Payoff> p,
                            Size n);
 };
 
 %shared_ptr(SpreadBasketPayoff)
 class SpreadBasketPayoff : public BasketPayoff  {
   public:
-    SpreadBasketPayoff(const boost::shared_ptr<Payoff> p);
+    SpreadBasketPayoff(const ext::shared_ptr<Payoff> p);
 };
 
 %shared_ptr(BasketOption)
 class BasketOption : public MultiAssetOption {
   public:
     BasketOption(
-            const boost::shared_ptr<BasketPayoff>& payoff,
-            const boost::shared_ptr<Exercise>& exercise);
+            const ext::shared_ptr<BasketPayoff>& payoff,
+            const ext::shared_ptr<Exercise>& exercise);
 };
 
 
@@ -94,7 +94,7 @@ class MCEuropeanBasketEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCEuropeanBasketEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+        MCEuropeanBasketEngine(const ext::shared_ptr<StochasticProcessArray>& process,
                                intOrNull timeSteps = Null<Size>(),
                                intOrNull timeStepsPerYear = Null<Size>(),
                                bool brownianBridge = false,
@@ -161,7 +161,7 @@ class MCAmericanBasketEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCAmericanBasketEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+        MCAmericanBasketEngine(const ext::shared_ptr<StochasticProcessArray>& process,
                                intOrNull timeSteps = Null<Size>(),
                                intOrNull timeStepsPerYear = Null<Size>(),
                                bool brownianBridge = false,
@@ -239,24 +239,24 @@ using QuantLib::Fd2dBlackScholesVanillaEngine;
 %shared_ptr(StulzEngine)
 class StulzEngine : public PricingEngine {
   public:
-    StulzEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& process1,
-                const boost::shared_ptr<GeneralizedBlackScholesProcess>& process2,
+    StulzEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process1,
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>& process2,
                 Real correlation);
 };
 
 %shared_ptr(KirkEngine)
 class KirkEngine : public PricingEngine {
   public:
-    KirkEngine(const boost::shared_ptr<BlackProcess>& process1,
-               const boost::shared_ptr<BlackProcess>& process2,
+    KirkEngine(const ext::shared_ptr<BlackProcess>& process1,
+               const ext::shared_ptr<BlackProcess>& process2,
                Real correlation);
 };
 
 %shared_ptr(Fd2dBlackScholesVanillaEngine)
 class Fd2dBlackScholesVanillaEngine : public PricingEngine {
   public:
-    Fd2dBlackScholesVanillaEngine(const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-                const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+    Fd2dBlackScholesVanillaEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
                 Real correlation,
                 Size xGrid = 100, Size yGrid = 100, 
                 Size tGrid = 50, Size dampingSteps = 0,
@@ -275,7 +275,7 @@ class EverestOption : public MultiAssetOption {
   public:
     EverestOption(Real notional,
                      Rate guarantee,
-                     const boost::shared_ptr<Exercise>& exercise);
+                     const ext::shared_ptr<Exercise>& exercise);
 };
 
 %shared_ptr(MCEverestEngine<PseudoRandom>);
@@ -288,7 +288,7 @@ class MCEverestEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCEverestEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+        MCEverestEngine(const ext::shared_ptr<StochasticProcessArray>& process,
                         Size timeSteps = Null<Size>(),
                         Size timeStepsPerYear = Null<Size>(),
                         bool brownianBridge = false,
@@ -367,7 +367,7 @@ class MCHimalayaEngine : public PricingEngine {
     #endif
   public:
     %extend {
-        MCHimalayaEngine(const boost::shared_ptr<StochasticProcessArray>& process,
+        MCHimalayaEngine(const ext::shared_ptr<StochasticProcessArray>& process,
                          bool brownianBridge = false,
                          bool antitheticVariate = false,
                          intOrNull requiredSamples = Null<Size>(),

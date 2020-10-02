@@ -50,7 +50,7 @@ class Instrument : public Observable {
     Real NPV() const;
     Real errorEstimate() const;
     bool isExpired() const;
-    void setPricingEngine(const boost::shared_ptr<PricingEngine>&);
+    void setPricingEngine(const ext::shared_ptr<PricingEngine>&);
     void recalculate();
     void freeze();
     void unfreeze();
@@ -60,19 +60,19 @@ class Instrument : public Observable {
 
 #if defined(SWIGR)
 %Rruntime %{
-setMethod("summary", "_p_boost__shared_ptrTInstrument_t",
+setMethod("summary", "_p_ext__shared_ptrTInstrument_t",
 function(object) c(value=object$NPV()))
 
-setMethod("print", "_p_boost__shared_ptrTInstrument_t",
+setMethod("print", "_p_ext__shared_ptrTInstrument_t",
 function(x) print(summary(x)))
 %}
 #endif
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<Instrument> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<Instrument> )
 #endif
 namespace std {
-    %template(InstrumentVector) vector<boost::shared_ptr<Instrument> >;
+    %template(InstrumentVector) vector<ext::shared_ptr<Instrument> >;
 }
 
 // actual instruments
@@ -96,9 +96,9 @@ using QuantLib::CompositeInstrument;
 class CompositeInstrument : public Instrument {
   public:
     CompositeInstrument();
-    void add(const boost::shared_ptr<Instrument>& instrument,
+    void add(const ext::shared_ptr<Instrument>& instrument,
              Real multiplier = 1.0);
-    void subtract(const boost::shared_ptr<Instrument>& instrument,
+    void subtract(const ext::shared_ptr<Instrument>& instrument,
                   Real multiplier = 1.0);
 };
 

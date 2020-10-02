@@ -22,14 +22,13 @@
 %include stl.i
 %include common.i
 %include vectors.i
+%include tuple.i
 %include functions.i
 %include options.i
 %include basketoptions.i
 %include dividends.i
 %include settings.i
 %include shortratemodels.i
-
-%include boost_shared_ptr.i
 
 
 // mesher
@@ -63,10 +62,10 @@ class Fdm1dMesher {
 };
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<Fdm1dMesher> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<Fdm1dMesher> )
 #endif
 namespace std {
-    %template(Fdm1dMesherVector) vector<boost::shared_ptr<Fdm1dMesher> >;
+    %template(Fdm1dMesherVector) vector<ext::shared_ptr<Fdm1dMesher> >;
 }
 
 %shared_ptr(FdmBlackScholesMesher)
@@ -78,7 +77,7 @@ class FdmBlackScholesMesher : public Fdm1dMesher {
 
     FdmBlackScholesMesher(
         Size size,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Time maturity, Real strike,
         doubleOrNull xMinConstraint = Null<Real>(),
         doubleOrNull xMaxConstraint = Null<Real>(),
@@ -86,21 +85,21 @@ class FdmBlackScholesMesher : public Fdm1dMesher {
         Real scaleFactor = 1.5,
         const std::pair<Real, Real>& cPoint
             = (std::pair<Real, Real>(Null<Real>(), Null<Real>())),
-        const std::vector<boost::shared_ptr<Dividend> >& dividendSchedule 
-            = std::vector<boost::shared_ptr<Dividend> >(),
-        const boost::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper
-            = boost::shared_ptr<FdmQuantoHelper>(),
+        const std::vector<ext::shared_ptr<Dividend> >& dividendSchedule
+            = std::vector<ext::shared_ptr<Dividend> >(),
+        const ext::shared_ptr<FdmQuantoHelper>& fdmQuantoHelper
+            = ext::shared_ptr<FdmQuantoHelper>(),
         Real spotAdjustment = 0.0);
 
-    static boost::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
+    static ext::shared_ptr<GeneralizedBlackScholesProcess> processHelper(
          const Handle<Quote>& s0,
          const Handle<YieldTermStructure>& rTS,
          const Handle<YieldTermStructure>& qTS,
          Volatility vol);
 };
 
-%template(Concentrating1dMesherPoint) boost::tuple<Real, Real, bool>;
-%template(Concentrating1dMesherPointVector) std::vector<boost::tuple<Real, Real, bool> >;
+%template(Concentrating1dMesherPoint) ext::tuple<Real, Real, bool>;
+%template(Concentrating1dMesherPointVector) std::vector<ext::tuple<Real, Real, bool> >;
 
 
 %shared_ptr(Concentrating1dMesher)
@@ -114,7 +113,7 @@ class Concentrating1dMesher : public Fdm1dMesher {
 
     Concentrating1dMesher(
         Real start, Real end, Size size,
-        const std::vector<boost::tuple<Real, Real, bool> >& cPoints,
+        const std::vector<ext::tuple<Real, Real, bool> >& cPoints,
         Real tol = 1e-8);
 };
 
@@ -147,7 +146,7 @@ class FdmHestonVarianceMesher : public Fdm1dMesher {
   public:
     FdmHestonVarianceMesher(
         Size size,
-        const boost::shared_ptr<HestonProcess> & process,
+        const ext::shared_ptr<HestonProcess> & process,
         Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
 
     Real volaEstimate() const;
@@ -158,8 +157,8 @@ class FdmHestonLocalVolatilityVarianceMesher : public Fdm1dMesher {
   public:
     FdmHestonLocalVolatilityVarianceMesher(
         Size size,
-        const boost::shared_ptr<HestonProcess>& process,
-        const boost::shared_ptr<LocalVolTermStructure>& leverageFct,
+        const ext::shared_ptr<HestonProcess>& process,
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
         Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001);
 
     Real volaEstimate() const;
@@ -171,7 +170,7 @@ class FdmSimpleProcess1dMesher : public Fdm1dMesher {
   public:
       FdmSimpleProcess1dMesher(
         Size size,
-        const boost::shared_ptr<StochasticProcess1D>& process,
+        const ext::shared_ptr<StochasticProcess1D>& process,
         Time maturity, Size tAvgSteps = 10, Real epsilon = 0.0001,
         doubleOrNull mandatoryPoint = Null<Real>());
 };
@@ -277,23 +276,23 @@ class FdmMesher {
 class FdmMesherComposite : public FdmMesher {
   public:
     FdmMesherComposite(
-        const boost::shared_ptr<FdmLinearOpLayout>& layout,
-        const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher);
+        const ext::shared_ptr<FdmLinearOpLayout>& layout,
+        const std::vector<ext::shared_ptr<Fdm1dMesher> > & mesher);
 
     // convenient constructors
     explicit FdmMesherComposite(
-        const std::vector<boost::shared_ptr<Fdm1dMesher> > & mesher);
+        const std::vector<ext::shared_ptr<Fdm1dMesher> > & mesher);
     explicit FdmMesherComposite(
-        const boost::shared_ptr<Fdm1dMesher>& mesher);
-    FdmMesherComposite(const boost::shared_ptr<Fdm1dMesher>& m1,
-                       const boost::shared_ptr<Fdm1dMesher>& m2);
-    FdmMesherComposite(const boost::shared_ptr<Fdm1dMesher>& m1,
-                       const boost::shared_ptr<Fdm1dMesher>& m2,
-                       const boost::shared_ptr<Fdm1dMesher>& m3);
-    FdmMesherComposite(const boost::shared_ptr<Fdm1dMesher>& m1,
-                       const boost::shared_ptr<Fdm1dMesher>& m2,
-                       const boost::shared_ptr<Fdm1dMesher>& m3,
-                       const boost::shared_ptr<Fdm1dMesher>& m4);
+        const ext::shared_ptr<Fdm1dMesher>& mesher);
+    FdmMesherComposite(const ext::shared_ptr<Fdm1dMesher>& m1,
+                       const ext::shared_ptr<Fdm1dMesher>& m2);
+    FdmMesherComposite(const ext::shared_ptr<Fdm1dMesher>& m1,
+                       const ext::shared_ptr<Fdm1dMesher>& m2,
+                       const ext::shared_ptr<Fdm1dMesher>& m3);
+    FdmMesherComposite(const ext::shared_ptr<Fdm1dMesher>& m1,
+                       const ext::shared_ptr<Fdm1dMesher>& m2,
+                       const ext::shared_ptr<Fdm1dMesher>& m3,
+                       const ext::shared_ptr<Fdm1dMesher>& m4);
 
 
     Real dplus(const FdmLinearOpIterator& iter, Size direction) const;
@@ -304,8 +303,8 @@ class FdmMesherComposite : public FdmMesher {
             return self->locations(direction);
         }
         
-        boost::shared_ptr<FdmLinearOpLayout> layout() {
-            const std::vector<boost::shared_ptr<Fdm1dMesher> >& meshers = 
+        ext::shared_ptr<FdmLinearOpLayout> layout() {
+            const std::vector<ext::shared_ptr<Fdm1dMesher> >& meshers =
                 self->getFdm1dMeshers();
                 
             std::vector<Size> dim(meshers.size());
@@ -313,11 +312,11 @@ class FdmMesherComposite : public FdmMesher {
             for (Size i=0; i < dim.size(); ++i)
                 dim[i] = meshers[i]->size();
                 
-            return boost::make_shared<FdmLinearOpLayout>(dim);            
+            return ext::make_shared<FdmLinearOpLayout>(dim);
         }
     }
 
-    const std::vector<boost::shared_ptr<Fdm1dMesher> >&
+    const std::vector<ext::shared_ptr<Fdm1dMesher> >&
         getFdm1dMeshers() const;
 };
 
@@ -604,7 +603,7 @@ using QuantLib::FdmHestonFwdOp;
 using QuantLib::FdmSquareRootFwdOp;
 
 typedef BoundaryCondition<FdmLinearOp> FdmBoundaryCondition;
-typedef std::vector<boost::shared_ptr<FdmBoundaryCondition> > FdmBoundaryConditionSet;
+typedef std::vector<ext::shared_ptr<FdmBoundaryCondition> > FdmBoundaryConditionSet;
 %}
 
 %shared_ptr(FdmBoundaryCondition);
@@ -625,20 +624,20 @@ class FdmBoundaryCondition {
 };
 
 
-typedef std::vector<boost::shared_ptr<FdmBoundaryCondition> > FdmBoundaryConditionSet;
+typedef std::vector<ext::shared_ptr<FdmBoundaryCondition> > FdmBoundaryConditionSet;
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<FdmBoundaryCondition> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<FdmBoundaryCondition> )
 #endif
 
-%template(FdmBoundaryConditionSet) std::vector<boost::shared_ptr<FdmBoundaryCondition> >;
+%template(FdmBoundaryConditionSet) std::vector<ext::shared_ptr<FdmBoundaryCondition> >;
 
 %shared_ptr(FdmDirichletBoundary)
 class FdmDirichletBoundary : public FdmBoundaryCondition {
   public:
     typedef FdmBoundaryCondition::Side Side;
 
-    FdmDirichletBoundary(const boost::shared_ptr<FdmMesher>& mesher,
+    FdmDirichletBoundary(const ext::shared_ptr<FdmMesher>& mesher,
                          Real valueOnBoundary, Size direction, Side side);
 
 	void applyAfterApplying(Array&) const;
@@ -651,8 +650,8 @@ class FdmDiscountDirichletBoundary : public FdmBoundaryCondition {
     typedef FdmBoundaryCondition::Side Side;
 
     FdmDiscountDirichletBoundary(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
         Time maturityTime,
         Real valueOnBoundary,
         Size direction, Side side);
@@ -667,21 +666,21 @@ class FdmTimeDepDirichletBoundary : public FdmBoundaryCondition {
     %extend {
 #if defined(SWIGPYTHON)
         FdmTimeDepDirichletBoundary(
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<FdmMesher>& mesher,
             PyObject* function,
             Size direction, Side side) {
 
-            const boost::function<Real(Real)> f = UnaryFunction(function);
+            const ext::function<Real(Real)> f = UnaryFunction(function);
             return new FdmTimeDepDirichletBoundary(
                 mesher, f, direction, side);
         }
 #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
         FdmTimeDepDirichletBoundary(
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<FdmMesher>& mesher,
             UnaryFunctionDelegate* function,
             Size direction, Side side) {
 
-            const boost::function<Real(Real)> f = UnaryFunction(function);
+            const ext::function<Real(Real)> f = UnaryFunction(function);
             return new FdmTimeDepDirichletBoundary(
                 mesher, f, direction, side);        
          }
@@ -695,35 +694,35 @@ class FdmTimeDepDirichletBoundary : public FdmBoundaryCondition {
 class FdmBatesOp : public FdmLinearOpComposite {
   public:
     FdmBatesOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<BatesProcess>& batesProcess,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<BatesProcess>& batesProcess,
         const FdmBoundaryConditionSet& bcSet,
         Size integroIntegrationOrder,
-        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
-                                    = boost::shared_ptr<FdmQuantoHelper>());  
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+                                    = ext::shared_ptr<FdmQuantoHelper>());
 };
 
 %shared_ptr(FdmBlackScholesOp)
 class FdmBlackScholesOp : public FdmLinearOpComposite {
   public:
     FdmBlackScholesOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Real strike,
         bool localVol = false,
         doubleOrNull illegalLocalVolOverwrite = -Null<Real>(),
         Size direction = 0,
-        const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
-            = boost::shared_ptr<FdmQuantoHelper>());
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+            = ext::shared_ptr<FdmQuantoHelper>());
 };
 
 %shared_ptr(Fdm2dBlackScholesOp)
 class Fdm2dBlackScholesOp : public FdmLinearOpComposite {
   public:  
     Fdm2dBlackScholesOp( 
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
         Real correlation,
         Time maturity,
         bool localVol = false,
@@ -734,8 +733,8 @@ class Fdm2dBlackScholesOp : public FdmLinearOpComposite {
 class FdmCEVOp : public FdmLinearOpComposite {
   public:
       FdmCEVOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
         Real f0, Real alpha, Real beta,
         Size direction);
 };
@@ -744,8 +743,8 @@ class FdmCEVOp : public FdmLinearOpComposite {
 class FdmG2Op : public FdmLinearOpComposite {
   public:
     FdmG2Op(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<G2>& model,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<G2>& model,
         Size direction1, Size direction2);
 };
 
@@ -753,9 +752,9 @@ class FdmG2Op : public FdmLinearOpComposite {
 class FdmHestonHullWhiteOp : public FdmLinearOpComposite {
   public:
     FdmHestonHullWhiteOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HestonProcess>& hestonProcess,
-        const boost::shared_ptr<HullWhiteProcess>& hwProcess,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<HestonProcess>& hestonProcess,
+        const ext::shared_ptr<HullWhiteProcess>& hwProcess,
         Real equityShortRateCorrelation);
 };
 
@@ -763,20 +762,20 @@ class FdmHestonHullWhiteOp : public FdmLinearOpComposite {
 class FdmHestonOp : public FdmLinearOpComposite {
   public:
     FdmHestonOp(
-	    const boost::shared_ptr<FdmMesher>& mesher,
-	    const boost::shared_ptr<HestonProcess>& hestonProcess,
-	    const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
-	        = boost::shared_ptr<FdmQuantoHelper>(),
-	    const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-	        = boost::shared_ptr<LocalVolTermStructure>());
+	    const ext::shared_ptr<FdmMesher>& mesher,
+	    const ext::shared_ptr<HestonProcess>& hestonProcess,
+	    const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+	        = ext::shared_ptr<FdmQuantoHelper>(),
+	    const ext::shared_ptr<LocalVolTermStructure>& leverageFct
+	        = ext::shared_ptr<LocalVolTermStructure>());
 };
 
 %shared_ptr(FdmHullWhiteOp)
 class FdmHullWhiteOp : public FdmLinearOpComposite {
   public:
     FdmHullWhiteOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HullWhite>& model,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<HullWhite>& model,
         Size direction);
 };
 
@@ -784,11 +783,11 @@ class FdmHullWhiteOp : public FdmLinearOpComposite {
 class FdmLocalVolFwdOp : public FdmLinearOpComposite {
   public:
       FdmLocalVolFwdOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<Quote>& spot,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& qTS,
-        const boost::shared_ptr<LocalVolTermStructure>& localVol,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<Quote>& spot,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<YieldTermStructure>& qTS,
+        const ext::shared_ptr<LocalVolTermStructure>& localVol,
         Size direction = 0);
 };
 
@@ -796,9 +795,9 @@ class FdmLocalVolFwdOp : public FdmLinearOpComposite {
 class FdmOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
   public:
     FdmOrnsteinUhlenbeckOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<OrnsteinUhlenbeckProcess>& p,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<OrnsteinUhlenbeckProcess>& p,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
         Size direction = 0);
 };
 
@@ -806,8 +805,8 @@ class FdmOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
 class FdmSabrOp : public FdmLinearOpComposite {
   public:
       FdmSabrOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
         Real f0,
         Real alpha,
         Real beta,
@@ -819,7 +818,7 @@ class FdmSabrOp : public FdmLinearOpComposite {
 class FdmZabrOp : public FdmLinearOpComposite {
   public:
     FdmZabrOp(
-        const boost::shared_ptr<FdmMesher> & mesher, 
+        const ext::shared_ptr<FdmMesher> & mesher,
         const Real beta,
         const Real nu,
         const Real rho, 
@@ -830,7 +829,7 @@ class FdmZabrOp : public FdmLinearOpComposite {
 class FdmDupire1dOp : public FdmLinearOpComposite {
   public:
     FdmDupire1dOp(
-        const boost::shared_ptr<FdmMesher> & mesher,
+        const ext::shared_ptr<FdmMesher> & mesher,
         const Array &localVolatility);
 };
 
@@ -838,8 +837,8 @@ class FdmDupire1dOp : public FdmLinearOpComposite {
 class FdmBlackScholesFwdOp : public FdmLinearOpComposite {
   public:
     FdmBlackScholesFwdOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Real strike,
         bool localVol = false,
         Real illegalLocalVolOverwrite = -Null<Real>(),
@@ -852,7 +851,7 @@ class FdmSquareRootFwdOp : public FdmLinearOpComposite {
     enum TransformationType { Plain, Power, Log };
 
     FdmSquareRootFwdOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<FdmMesher>& mesher,
         Real kappa, Real theta, Real sigma,
         Size direction,
         TransformationType type = Plain);
@@ -862,12 +861,12 @@ class FdmSquareRootFwdOp : public FdmLinearOpComposite {
 class FdmHestonFwdOp : public FdmLinearOpComposite {
   public:
     FdmHestonFwdOp(
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<HestonProcess>& process,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<HestonProcess>& process,
         FdmSquareRootFwdOp::TransformationType type 
             = FdmSquareRootFwdOp::Plain,
-        const boost::shared_ptr<LocalVolTermStructure> & leverageFct
-            = boost::shared_ptr<LocalVolTermStructure>());
+        const ext::shared_ptr<LocalVolTermStructure> & leverageFct
+            = ext::shared_ptr<LocalVolTermStructure>());
 };
 
 %{
@@ -883,7 +882,7 @@ using QuantLib::NthOrderDerivativeOp;
 class TripleBandLinearOp : public FdmLinearOp {
   public:
     TripleBandLinearOp(Size direction,
-                       const boost::shared_ptr<FdmMesher>& mesher);
+                       const ext::shared_ptr<FdmMesher>& mesher);
 
     Array apply(const Array& r) const;
     Array solve_splitting(const Array& r, Real a, Real b = 1.0) const;
@@ -903,21 +902,21 @@ class TripleBandLinearOp : public FdmLinearOp {
 class FirstDerivativeOp : public TripleBandLinearOp {
   public:
     FirstDerivativeOp(Size direction,
-                      const boost::shared_ptr<FdmMesher>& mesher);
+                      const ext::shared_ptr<FdmMesher>& mesher);
 };
 
 %shared_ptr(SecondDerivativeOp)
 class SecondDerivativeOp : public TripleBandLinearOp {
   public:
     SecondDerivativeOp(Size direction,
-        const boost::shared_ptr<FdmMesher>& mesher);
+        const ext::shared_ptr<FdmMesher>& mesher);
 };
 
 %shared_ptr(NinePointLinearOp)
 class NinePointLinearOp : public FdmLinearOp {
   public:
     NinePointLinearOp(Size d0, Size d1,
-        const boost::shared_ptr<FdmMesher>& mesher);
+        const ext::shared_ptr<FdmMesher>& mesher);
 };
 
 %shared_ptr(SecondOrderMixedDerivativeOp)
@@ -925,7 +924,7 @@ class SecondOrderMixedDerivativeOp : public NinePointLinearOp {
 public:
     SecondOrderMixedDerivativeOp(
         Size d0, Size d1, 
-        const boost::shared_ptr<FdmMesher>& mesher);
+        const ext::shared_ptr<FdmMesher>& mesher);
 };
 
 %shared_ptr(NthOrderDerivativeOp)
@@ -933,7 +932,7 @@ class NthOrderDerivativeOp : public FdmLinearOp {
   public:
     NthOrderDerivativeOp(
         Size direction, Size order, Integer nPoints,
-        const boost::shared_ptr<FdmMesher>& mesher);
+        const ext::shared_ptr<FdmMesher>& mesher);
 };
 
 
@@ -954,7 +953,7 @@ using QuantLib::ModifiedCraigSneydScheme;
 class CraigSneydScheme  {
   public:
     CraigSneydScheme(Real theta, Real mu,
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
+        const ext::shared_ptr<FdmLinearOpComposite> & map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet());
 
     void step(Array& a, Time t);
@@ -971,7 +970,7 @@ class ImplicitEulerScheme {
     #endif
 
     ImplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet(),
         Real relTol = 1e-8,
         SolverType solverType = BiCGstab);
@@ -991,7 +990,7 @@ class CrankNicolsonScheme  {
 
     CrankNicolsonScheme(
         Real theta,
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet(),
         Real relTol = 1e-8,
         ImplicitEulerScheme::SolverType solverType
@@ -1007,7 +1006,7 @@ class CrankNicolsonScheme  {
 class DouglasScheme  {
   public:
     DouglasScheme(Real theta,
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
+        const ext::shared_ptr<FdmLinearOpComposite> & map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet());
 
     void step(Array& a, Time t);
@@ -1018,7 +1017,7 @@ class DouglasScheme  {
 class ExplicitEulerScheme  {
   public:
     ExplicitEulerScheme(
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet());
 
     void step(Array& a, Time t);
@@ -1029,7 +1028,7 @@ class ExplicitEulerScheme  {
 class HundsdorferScheme  {
   public:
     HundsdorferScheme(Real theta, Real mu,
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
+        const ext::shared_ptr<FdmLinearOpComposite> & map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet());
 
     void step(Array& a, Time t);
@@ -1041,7 +1040,7 @@ class MethodOfLinesScheme  {
   public:
     MethodOfLinesScheme(
         const Real eps, const Real relInitStepSize,
-        const boost::shared_ptr<FdmLinearOpComposite>& map,
+        const ext::shared_ptr<FdmLinearOpComposite>& map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet());
 
     void step(Array& a, Time t);
@@ -1052,7 +1051,7 @@ class MethodOfLinesScheme  {
 class ModifiedCraigSneydScheme  {
   public:
     ModifiedCraigSneydScheme(Real theta, Real mu,
-        const boost::shared_ptr<FdmLinearOpComposite> & map,
+        const ext::shared_ptr<FdmLinearOpComposite> & map,
         const FdmBoundaryConditionSet& bcSet = FdmBoundaryConditionSet());
 
     void step(Array& a, Time t);
@@ -1323,8 +1322,8 @@ class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
 #if defined(SWIGPYTHON)
     %extend {
         FdmCellAveragingInnerValue(
-            const boost::shared_ptr<Payoff>& payoff,
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<Payoff>& payoff,
+            const ext::shared_ptr<FdmMesher>& mesher,
             Size direction,
             PyObject* gridMapping) {
 
@@ -1335,8 +1334,8 @@ class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
 #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
     %extend {
         FdmCellAveragingInnerValue(
-            const boost::shared_ptr<Payoff>& payoff,
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<Payoff>& payoff,
+            const ext::shared_ptr<FdmMesher>& mesher,
             Size direction,        
             UnaryFunctionDelegate* gridMapping) {
             
@@ -1348,8 +1347,8 @@ class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
 
     %extend {
         FdmCellAveragingInnerValue(
-            const boost::shared_ptr<Payoff>& payoff,
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<Payoff>& payoff,
+            const ext::shared_ptr<FdmMesher>& mesher,
             Size direction) {
                 return new FdmCellAveragingInnerValue(payoff, mesher, direction);            
         }
@@ -1360,8 +1359,8 @@ class FdmCellAveragingInnerValue : public FdmInnerValueCalculator {
 %shared_ptr(FdmLogInnerValue)
 class FdmLogInnerValue : public FdmCellAveragingInnerValue {
   public:
-    FdmLogInnerValue(const boost::shared_ptr<Payoff>& payoff,
-                     const boost::shared_ptr<FdmMesher>& mesher,
+    FdmLogInnerValue(const ext::shared_ptr<Payoff>& payoff,
+                     const ext::shared_ptr<FdmMesher>& mesher,
                      Size direction);
 };
 
@@ -1369,8 +1368,8 @@ class FdmLogInnerValue : public FdmCellAveragingInnerValue {
 %shared_ptr(FdmLogBasketInnerValue)
 class FdmLogBasketInnerValue : public FdmInnerValueCalculator {
   public:
-    FdmLogBasketInnerValue(const boost::shared_ptr<BasketPayoff>& payoff,
-                           const boost::shared_ptr<FdmMesher>& mesher);
+    FdmLogBasketInnerValue(const ext::shared_ptr<BasketPayoff>& payoff,
+                           const ext::shared_ptr<FdmMesher>& mesher);
 };
 
 %shared_ptr(FdmZeroInnerValue)
@@ -1396,12 +1395,12 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
 #if defined(SWIGJAVA)
     %extend {
         FdmAffineModelSwapInnerValue(
-            const boost::shared_ptr<ModelType>& disModel,
-            const boost::shared_ptr<ModelType>& fwdModel,
-            const boost::shared_ptr<VanillaSwap>& swap,
+            const ext::shared_ptr<ModelType>& disModel,
+            const ext::shared_ptr<ModelType>& fwdModel,
+            const ext::shared_ptr<VanillaSwap>& swap,
             const std::vector<Time>& exerciseTimes,
             const std::vector<Date>& exerciseDates,
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<FdmMesher>& mesher,
             Size direction) {
 
             QL_REQUIRE(exerciseTimes.size() == exerciseDates.size(),
@@ -1417,11 +1416,11 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
     }
 #else
     FdmAffineModelSwapInnerValue(
-        const boost::shared_ptr<ModelType>& disModel,
-        const boost::shared_ptr<ModelType>& fwdModel,
-        const boost::shared_ptr<VanillaSwap>& swap,
+        const ext::shared_ptr<ModelType>& disModel,
+        const ext::shared_ptr<ModelType>& fwdModel,
+        const ext::shared_ptr<VanillaSwap>& swap,
         const std::map<Time, Date>& exerciseDates,
-        const boost::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<FdmMesher>& mesher,
         Size direction);
 #endif
 };
@@ -1440,38 +1439,38 @@ public:
 };
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<StepCondition<Array> > )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<StepCondition<Array> > )
 #endif
 
-%template(FdmStepConditionVector) std::vector<boost::shared_ptr<StepCondition<Array> > > ; 
+%template(FdmStepConditionVector) std::vector<ext::shared_ptr<StepCondition<Array> > > ;
  
 %shared_ptr(FdmStepConditionComposite)
 class FdmStepConditionComposite : public StepCondition<Array> {
 public:
-    typedef std::vector<boost::shared_ptr<StepCondition<Array> > > Conditions;
+    typedef std::vector<ext::shared_ptr<StepCondition<Array> > > Conditions;
     %extend {
         FdmStepConditionComposite(
             const std::vector<Time> & stoppingTimes,
-            const std::vector<boost::shared_ptr<StepCondition<Array> > > & conditions) {
+            const std::vector<ext::shared_ptr<StepCondition<Array> > > & conditions) {
             return new FdmStepConditionComposite(
                 std::list<std::vector<Time> >(1, stoppingTimes), 
-                std::list<boost::shared_ptr<StepCondition<Array> > >(
+                std::list<ext::shared_ptr<StepCondition<Array> > >(
                     conditions.begin(), conditions.end()));
         }
     }
 
     const std::vector<Time>& stoppingTimes() const;
-    const std::vector<boost::shared_ptr<StepCondition<Array> > > & conditions() const;
+    const std::vector<ext::shared_ptr<StepCondition<Array> > > & conditions() const;
 
-    static boost::shared_ptr<FdmStepConditionComposite> joinConditions(
-                const boost::shared_ptr<FdmSnapshotCondition>& c1,
-                const boost::shared_ptr<FdmStepConditionComposite>& c2);
+    static ext::shared_ptr<FdmStepConditionComposite> joinConditions(
+                const ext::shared_ptr<FdmSnapshotCondition>& c1,
+                const ext::shared_ptr<FdmStepConditionComposite>& c2);
 
-    static boost::shared_ptr<FdmStepConditionComposite> vanillaComposite(
-         const std::vector<boost::shared_ptr<Dividend> >& schedule,
-         const boost::shared_ptr<Exercise>& exercise,
-         const boost::shared_ptr<FdmMesher>& mesher,
-         const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+    static ext::shared_ptr<FdmStepConditionComposite> vanillaComposite(
+         const std::vector<ext::shared_ptr<Dividend> >& schedule,
+         const ext::shared_ptr<Exercise>& exercise,
+         const ext::shared_ptr<FdmMesher>& mesher,
+         const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
          const Date& refDate,
          const DayCounter& dayCounter);
 };
@@ -1481,8 +1480,8 @@ public:
 class FdmAmericanStepCondition : public StepCondition<Array> {
   public:
     FdmAmericanStepCondition(
-        const boost::shared_ptr<FdmMesher> & mesher,
-        const boost::shared_ptr<FdmInnerValueCalculator> & calculator);
+        const ext::shared_ptr<FdmMesher> & mesher,
+        const ext::shared_ptr<FdmInnerValueCalculator> & calculator);
 };
 
 %shared_ptr(FdmArithmeticAverageCondition)
@@ -1491,7 +1490,7 @@ class FdmArithmeticAverageCondition : public StepCondition<Array> {
     FdmArithmeticAverageCondition(
         const std::vector<Time> & averageTimes,
         Real, Size pastFixings,
-        const boost::shared_ptr<FdmMesher> & mesher,
+        const ext::shared_ptr<FdmMesher> & mesher,
         Size equityDirection);
 };
 
@@ -1502,8 +1501,8 @@ class FdmBermudanStepCondition : public StepCondition<Array> {
         const std::vector<Date> & exerciseDates,
         const Date& referenceDate,
         const DayCounter& dayCounter,
-        const boost::shared_ptr<FdmMesher> & mesher,
-        const boost::shared_ptr<FdmInnerValueCalculator> & calculator);
+        const ext::shared_ptr<FdmMesher> & mesher,
+        const ext::shared_ptr<FdmInnerValueCalculator> & calculator);
 
     const std::vector<Time>& exerciseTimes() const;
 };
@@ -1513,8 +1512,8 @@ class FdmSimpleStorageCondition : public StepCondition<Array> {
   public:
     FdmSimpleStorageCondition(
         const std::vector<Time> & exerciseTimes,
-        const boost::shared_ptr<FdmMesher>& mesher,
-        const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+        const ext::shared_ptr<FdmMesher>& mesher,
+        const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
         Real changeRate);
 };
 
@@ -1523,8 +1522,8 @@ class FdmSimpleSwingCondition : public StepCondition<Array> {
   public:
       FdmSimpleSwingCondition(
               const std::vector<Time> & exerciseTimes,
-              const boost::shared_ptr<FdmMesher>& mesher,
-              const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+              const ext::shared_ptr<FdmMesher>& mesher,
+              const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
               Size swingDirection,
               Size minExercises = 0);
 };
@@ -1532,8 +1531,8 @@ class FdmSimpleSwingCondition : public StepCondition<Array> {
 %shared_ptr(FdmDividendHandler)
 class FdmDividendHandler : public StepCondition<Array> {
   public:
-    FdmDividendHandler(const std::vector<boost::shared_ptr<Dividend> >& schedule,
-                       const boost::shared_ptr<FdmMesher>& mesher,
+    FdmDividendHandler(const std::vector<ext::shared_ptr<Dividend> >& schedule,
+                       const ext::shared_ptr<FdmMesher>& mesher,
                        const Date& referenceDate,
                        const DayCounter& dayCounter,
                        Size equityDirection);
@@ -1565,10 +1564,10 @@ struct FdmSolverDesc {
   public:
     %extend {
         FdmSolverDesc(
-            const boost::shared_ptr<FdmMesher>& mesher,
+            const ext::shared_ptr<FdmMesher>& mesher,
             const FdmBoundaryConditionSet& bcSet,
-            const boost::shared_ptr<FdmStepConditionComposite>& condition,
-            const boost::shared_ptr<FdmInnerValueCalculator>& calculator,
+            const ext::shared_ptr<FdmStepConditionComposite>& condition,
+            const ext::shared_ptr<FdmInnerValueCalculator>& calculator,
             Time maturity,
             Size timeSteps,
             Size dampingSteps) {
@@ -1580,11 +1579,11 @@ struct FdmSolverDesc {
             return new FdmSolverDesc(desc);            
         }
         
-        boost::shared_ptr<FdmMesher> getMesher() const { return self->mesher; }
+        ext::shared_ptr<FdmMesher> getMesher() const { return self->mesher; }
         const FdmBoundaryConditionSet& getBcSet() const { return self->bcSet; }
-        boost::shared_ptr<FdmStepConditionComposite> 
+        ext::shared_ptr<FdmStepConditionComposite>
             getStepConditions() const { return self->condition; }
-        boost::shared_ptr<FdmInnerValueCalculator> 
+        ext::shared_ptr<FdmInnerValueCalculator>
             getCalculator() const { return self->calculator; }
         Time getMaturity() const { return self->maturity; }
         Size getTimeSteps() const { return self->timeSteps; }
@@ -1597,7 +1596,7 @@ class Fdm1DimSolver {
   public:
     Fdm1DimSolver(const FdmSolverDesc& solverDesc,
                   const FdmSchemeDesc& schemeDesc,
-                  const boost::shared_ptr<FdmLinearOpComposite>& op);
+                  const ext::shared_ptr<FdmLinearOpComposite>& op);
 
     Real interpolateAt(Real x) const;
     Real thetaAt(Real x) const;
@@ -1610,9 +1609,9 @@ class Fdm1DimSolver {
 class FdmBackwardSolver {
   public:    
     FdmBackwardSolver(
-      const boost::shared_ptr<FdmLinearOpComposite>& map,
+      const ext::shared_ptr<FdmLinearOpComposite>& map,
       const FdmBoundaryConditionSet& bcSet,
-      const boost::shared_ptr<FdmStepConditionComposite> condition,
+      const ext::shared_ptr<FdmStepConditionComposite> condition,
       const FdmSchemeDesc& schemeDesc);
 
     void rollback(Array& a, Time from, Time to,
@@ -1629,8 +1628,8 @@ class Fdm2dBlackScholesSolver {
     
     %extend {    
         Fdm2dBlackScholesSolver(
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-            const boost::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
             const Real correlation,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
@@ -1660,7 +1659,7 @@ class Fdm2DimSolver {
   public:
     Fdm2DimSolver(const FdmSolverDesc& solverDesc,
                   const FdmSchemeDesc& schemeDesc,
-                  const boost::shared_ptr<FdmLinearOpComposite>& op);
+                  const ext::shared_ptr<FdmLinearOpComposite>& op);
 
     Real interpolateAt(Real x, Real y) const;
     Real thetaAt(Real x, Real y) const;
@@ -1678,7 +1677,7 @@ class Fdm3DimSolver {
   public:
     Fdm3DimSolver(const FdmSolverDesc& solverDesc,
                   const FdmSchemeDesc& schemeDesc,
-                  const boost::shared_ptr<FdmLinearOpComposite>& op);
+                  const ext::shared_ptr<FdmLinearOpComposite>& op);
 
     void performCalculations() const;
 
@@ -1692,7 +1691,7 @@ class FdmG2Solver {
   public:
     %extend {
         FdmG2Solver(
-            const boost::shared_ptr<G2>& model,
+            const ext::shared_ptr<G2>& model,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
                 return new FdmG2Solver(Handle<G2>(model), solverDesc, schemeDesc);            
@@ -1707,8 +1706,8 @@ class FdmHestonHullWhiteSolver {
   public:
     %extend {
         FdmHestonHullWhiteSolver(
-            const boost::shared_ptr<HestonProcess>& hestonProcess,
-            const boost::shared_ptr<HullWhiteProcess>& hwProcess,
+            const ext::shared_ptr<HestonProcess>& hestonProcess,
+            const ext::shared_ptr<HullWhiteProcess>& hwProcess,
             Rate corrEquityShortRate,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
@@ -1736,13 +1735,13 @@ class FdmHestonSolver {
 
     %extend {
         FdmHestonSolver(
-            const boost::shared_ptr<HestonProcess>& process,
+            const ext::shared_ptr<HestonProcess>& process,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const boost::shared_ptr<FdmQuantoHelper>& quantoHelper
-                = boost::shared_ptr<FdmQuantoHelper>(),
-            const boost::shared_ptr<LocalVolTermStructure>& leverageFct
-                = boost::shared_ptr<LocalVolTermStructure>()) {
+            const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
+                = ext::shared_ptr<FdmQuantoHelper>(),
+            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
+                = ext::shared_ptr<LocalVolTermStructure>()) {
 
                 return new FdmHestonSolver(
                     Handle<HestonProcess>(process),
@@ -1768,7 +1767,7 @@ class FdmHullWhiteSolver {
   public:
     %extend {
         FdmHullWhiteSolver(
-            const boost::shared_ptr<HullWhite>& model,
+            const ext::shared_ptr<HullWhite>& model,
             const FdmSolverDesc& solverDesc,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
                 return new FdmHullWhiteSolver(
@@ -1788,7 +1787,7 @@ class FdmNdimSolver {
   public:
     FdmNdimSolver(const FdmSolverDesc& solverDesc,
                   const FdmSchemeDesc& schemeDesc,
-                  const boost::shared_ptr<FdmLinearOpComposite>& op);
+                  const ext::shared_ptr<FdmLinearOpComposite>& op);
 
     Real interpolateAt(const std::vector<Real>& x) const;
     Real thetaAt(const std::vector<Real>& x) const;
@@ -1816,7 +1815,7 @@ using QuantLib::SquareRootProcessRNDCalculator;
 %shared_ptr(FdmIndicesOnBoundary)
 class FdmIndicesOnBoundary {
   public:
-    FdmIndicesOnBoundary(const boost::shared_ptr<FdmLinearOpLayout>& l,
+    FdmIndicesOnBoundary(const ext::shared_ptr<FdmLinearOpLayout>& l,
                           Size direction, FdmDirichletBoundary::Side side);
 
     %extend {
@@ -1842,7 +1841,7 @@ class RiskNeutralDensityCalculator {
 class BSMRNDCalculator : public RiskNeutralDensityCalculator {
   public:
     explicit BSMRNDCalculator(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %shared_ptr(CEVRNDCalculator)
@@ -1857,14 +1856,14 @@ class CEVRNDCalculator : public RiskNeutralDensityCalculator {
 class GBSMRNDCalculator : public RiskNeutralDensityCalculator {
 public:
     explicit GBSMRNDCalculator(
-        const boost::shared_ptr<GeneralizedBlackScholesProcess>& process);
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 %shared_ptr(HestonRNDCalculator)
 class HestonRNDCalculator : public RiskNeutralDensityCalculator {
 public:
     HestonRNDCalculator(
-        const boost::shared_ptr<HestonProcess>& hestonProcess,
+        const ext::shared_ptr<HestonProcess>& hestonProcess,
         Real integrationEps= 1e-6,
         Size maxIntegrationIterations = 10000ul);
 };
@@ -1878,17 +1877,17 @@ class LocalVolRNDCalculator : public RiskNeutralDensityCalculator {
 #endif
 
     LocalVolRNDCalculator(
-        const boost::shared_ptr<Quote>& spot,
-        const boost::shared_ptr<YieldTermStructure>& rTS,
-        const boost::shared_ptr<YieldTermStructure>& qTS,
-        const boost::shared_ptr<LocalVolTermStructure>& localVol,
+        const ext::shared_ptr<Quote>& spot,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        const ext::shared_ptr<YieldTermStructure>& qTS,
+        const ext::shared_ptr<LocalVolTermStructure>& localVol,
         Size xGrid = 101, Size tGrid = 51,
         Real x0Density = 0.1,
         Real localVolProbEps = 1e-6,
         Size maxIter = 10000,
         Time gaussianStepSize = -Null<Time>());
 
-    boost::shared_ptr<Fdm1dMesher> mesher(Time t) const;
+    ext::shared_ptr<Fdm1dMesher> mesher(Time t) const;
     %extend {
         std::vector<unsigned int> rescaleTimeSteps() const {
             return to_vector<unsigned int>($self->rescaleTimeSteps());

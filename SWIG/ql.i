@@ -125,6 +125,7 @@
 
 %include common.i
 %include vectors.i
+%include tuple.i
 %include basketoptions.i
 %include blackformula.i
 %include bonds.i

@@ -64,7 +64,7 @@ Real blackFormulaImpliedStdDevLiRS(
     Natural maxIterations = 100);
 
 Real blackFormulaImpliedStdDevLiRS(
-    const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+    const ext::shared_ptr<PlainVanillaPayoff>& payoff,
     Real forward,
     Real blackPrice,
     Real discount = 1.0,
@@ -81,7 +81,7 @@ Real blackFormulaCashItmProbability(Option::Type optionType,
                                     Real displacement = 0.0);
 
 Real blackFormulaCashItmProbability(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real displacement = 0.0);
@@ -94,7 +94,7 @@ Real blackFormulaAssetItmProbability(
                         Real displacement = 0.0);
 
 Real blackFormulaAssetItmProbability(
-                        const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                        const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                         Real forward,
                         Real stdDev,
                         Real displacement = 0.0);
@@ -119,7 +119,7 @@ Real bachelierBlackFormulaAssetItmProbability(
                         Real stdDev);
 
 Real bachelierBlackFormulaAssetItmProbability(
-                    const boost::shared_ptr<PlainVanillaPayoff>& payoff,
+                    const ext::shared_ptr<PlainVanillaPayoff>& payoff,
                     Real forward,
                     Real stdDev);      
 

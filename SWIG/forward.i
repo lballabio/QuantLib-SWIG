@@ -1,6 +1,6 @@
 /*
  Copyright (C) 2015 Gouthaman Balaraman
- Copyright (C) 2018 Matthias Lungwitz 
+ Copyright (C) 2018 Matthias Lungwitz
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -42,7 +42,7 @@ class Forward : public Instrument{
         Real spotValue() const;
         Real spotIncome(const Handle<YieldTermStructure>&
                                                incomeDiscountCurve) const;
-        
+
         // calculations
         Real forwardValue();
         InterestRate impliedYield(
@@ -76,12 +76,12 @@ class FixedRateBondForward : public Forward {
                 const DayCounter& dayCounter,
                 const Calendar& calendar,
                 BusinessDayConvention businessDayConvention,
-                const boost::shared_ptr<FixedRateBond>& fixedBond,
+                const ext::shared_ptr<FixedRateBond>& fixedBond,
                 const Handle<YieldTermStructure>& discountCurve =
                                             Handle<YieldTermStructure>(),
                 const Handle<YieldTermStructure>& incomeDiscountCurve =
                                             Handle<YieldTermStructure>());
-        
+
         Real forwardPrice();
 
         Real cleanForwardPrice();

@@ -184,11 +184,11 @@ class DefaultProbabilityHelper : public Observable {
 };
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<DefaultProbabilityHelper> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<DefaultProbabilityHelper> )
 #endif
 namespace std {
     %template(DefaultProbabilityHelperVector)
-    vector<boost::shared_ptr<DefaultProbabilityHelper> >;
+    vector<ext::shared_ptr<DefaultProbabilityHelper> >;
 }
 
 
@@ -291,7 +291,7 @@ class Name : public DefaultProbabilityTermStructure {
   public:
     %extend {
         Name(const Date& referenceDate,
-             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const std::vector<ext::shared_ptr<DefaultProbabilityHelper> >& instruments,
              const DayCounter& dayCounter,
              Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
@@ -300,7 +300,7 @@ class Name : public DefaultProbabilityTermStructure {
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
-             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const std::vector<ext::shared_ptr<DefaultProbabilityHelper> >& instruments,
              const DayCounter& dayCounter,
              Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
@@ -309,14 +309,14 @@ class Name : public DefaultProbabilityTermStructure {
                             accuracy, i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(const Date& referenceDate,
-             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const std::vector<ext::shared_ptr<DefaultProbabilityHelper> >& instruments,
              const DayCounter& dayCounter,
              const _IterativeBootstrap& b) {
             return new Name(referenceDate, instruments, dayCounter, 1e-12,
                             Interpolator(), Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
-             const std::vector<boost::shared_ptr<DefaultProbabilityHelper> >& instruments,
+             const std::vector<ext::shared_ptr<DefaultProbabilityHelper> >& instruments,
              const DayCounter& dayCounter,
              const _IterativeBootstrap& b) {
             return new Name(settlementDays, calendar, instruments, dayCounter, 1e-12,
