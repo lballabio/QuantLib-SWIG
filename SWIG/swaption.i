@@ -46,15 +46,15 @@ struct Settlement {
 %shared_ptr(Swaption)
 class Swaption : public Option {
   public:
-    Swaption(const QuantLib::ext::shared_ptr<VanillaSwap>& swap,
-             const QuantLib::ext::shared_ptr<Exercise>& exercise,
+    Swaption(const ext::shared_ptr<VanillaSwap>& swap,
+             const ext::shared_ptr<Exercise>& exercise,
              Settlement::Type type = Settlement::Physical,
              Settlement::Method settlementMethod = Settlement::PhysicalOTC);
     
     Settlement::Type settlementType() const;       
     Settlement::Method settlementMethod() const;
     VanillaSwap::Type type() const;
-    const QuantLib::ext::shared_ptr<VanillaSwap>& underlyingSwap() const;
+    const ext::shared_ptr<VanillaSwap>& underlyingSwap() const;
     
     //! implied volatility
     Volatility impliedVolatility(
@@ -89,17 +89,17 @@ using QuantLib::BasketGeneratingEngine;
 %shared_ptr(NonstandardSwaption)
 class NonstandardSwaption : public Instrument {
   public:
-    NonstandardSwaption(const QuantLib::ext::shared_ptr<NonstandardSwap>& swap,
-                const QuantLib::ext::shared_ptr<Exercise>& exercise,
+    NonstandardSwaption(const ext::shared_ptr<NonstandardSwap>& swap,
+                const ext::shared_ptr<Exercise>& exercise,
                 Settlement::Type type = Settlement::Physical,
                 Settlement::Method settlementMethod = Settlement::PhysicalOTC);
                 
-    const QuantLib::ext::shared_ptr<NonstandardSwap> &underlyingSwap() const;
+    const ext::shared_ptr<NonstandardSwap> &underlyingSwap() const;
 
     %extend {                
-        std::vector<QuantLib::ext::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
-            QuantLib::ext::shared_ptr<SwapIndex> swapIndex,
-            QuantLib::ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+            ext::shared_ptr<SwapIndex> swapIndex,
+            ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
             std::string typeStr) {
 
             BasketGeneratingEngine::CalibrationBasketType type;
@@ -110,9 +110,9 @@ class NonstandardSwaption : public Instrument {
             else
                 QL_FAIL("type " << typeStr << "unknown.");
 
-            std::vector<QuantLib::ext::shared_ptr<BlackCalibrationHelper> > hs =
+            std::vector<ext::shared_ptr<BlackCalibrationHelper> > hs =
                 self->calibrationBasket(swapIndex, swaptionVolatility, type);
-            std::vector<QuantLib::ext::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+            std::vector<ext::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
             for (Size i=0; i<hs.size(); ++i)
                 helpers[i] = hs[i];
             return helpers;
@@ -128,18 +128,18 @@ class NonstandardSwaption : public Instrument {
 %shared_ptr(FloatFloatSwaption)
 class FloatFloatSwaption : public Instrument {
 public:
-    FloatFloatSwaption(const QuantLib::ext::shared_ptr<FloatFloatSwap>& swap,
-                const QuantLib::ext::shared_ptr<Exercise>& exercise,
+    FloatFloatSwaption(const ext::shared_ptr<FloatFloatSwap>& swap,
+                const ext::shared_ptr<Exercise>& exercise,
                 Settlement::Type delivery = Settlement::Physical,
                 Settlement::Method settlementMethod = Settlement::PhysicalOTC);
 
-    const QuantLib::ext::shared_ptr<FloatFloatSwap> &underlyingSwap();
+    const ext::shared_ptr<FloatFloatSwap> &underlyingSwap();
     
     %extend {
 
-        std::vector<QuantLib::ext::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
-        QuantLib::ext::shared_ptr<SwapIndex> swapIndex,
-        QuantLib::ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+        ext::shared_ptr<SwapIndex> swapIndex,
+        ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
         std::string typeStr) {
 
         BasketGeneratingEngine::CalibrationBasketType type;
@@ -150,9 +150,9 @@ public:
         else
             QL_FAIL("type " << typeStr << "unknown.");
 
-        std::vector<QuantLib::ext::shared_ptr<BlackCalibrationHelper> > hs =
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > hs =
             self->calibrationBasket(swapIndex, swaptionVolatility, type);
-        std::vector<QuantLib::ext::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
         for (Size i=0; i<hs.size(); ++i)
             helpers[i] = hs[i];
         return helpers;

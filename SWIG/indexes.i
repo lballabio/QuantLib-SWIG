@@ -132,14 +132,14 @@ class IborIndex : public InterestRateIndex {
     BusinessDayConvention businessDayConvention() const;
     bool endOfMonth() const;
     Handle<YieldTermStructure> forwardingTermStructure() const;
-    QuantLib::ext::shared_ptr<IborIndex> clone(
+    ext::shared_ptr<IborIndex> clone(
                                    const Handle<YieldTermStructure>&) const;
 };
 
 %inline %{
-    QuantLib::ext::shared_ptr<IborIndex> as_iborindex(
-                          const QuantLib::ext::shared_ptr<InterestRateIndex>& index) {
-        return QuantLib::ext::dynamic_pointer_cast<IborIndex>(index);
+    ext::shared_ptr<IborIndex> as_iborindex(
+                          const ext::shared_ptr<InterestRateIndex>& index) {
+        return ext::dynamic_pointer_cast<IborIndex>(index);
     }
 %}
 
@@ -259,7 +259,7 @@ class SwapIndex : public InterestRateIndex {
               const Period& fixedLegTenor,
               BusinessDayConvention fixedLegConvention,
               const DayCounter& fixedLegDayCounter,
-              const QuantLib::ext::shared_ptr<IborIndex>& iborIndex);
+              const ext::shared_ptr<IborIndex>& iborIndex);
     SwapIndex(const std::string& familyName,
               const Period& tenor,
               Integer settlementDays,
@@ -268,25 +268,25 @@ class SwapIndex : public InterestRateIndex {
               const Period& fixedLegTenor,
               BusinessDayConvention fixedLegConvention,
               const DayCounter& fixedLegDayCounter,
-              const QuantLib::ext::shared_ptr<IborIndex>& iborIndex,
+              const ext::shared_ptr<IborIndex>& iborIndex,
               const Handle<YieldTermStructure>& discountCurve);
     Period fixedLegTenor() const;
     BusinessDayConvention fixedLegConvention() const;
-    QuantLib::ext::shared_ptr<IborIndex> iborIndex() const;
+    ext::shared_ptr<IborIndex> iborIndex() const;
     Handle<YieldTermStructure> forwardingTermStructure() const;
     Handle<YieldTermStructure> discountingTermStructure() const;
-    QuantLib::ext::shared_ptr<SwapIndex> clone(const Handle<YieldTermStructure>& h) const;
-    QuantLib::ext::shared_ptr<SwapIndex> clone(const Handle<YieldTermStructure>& forwarding,
+    ext::shared_ptr<SwapIndex> clone(const Handle<YieldTermStructure>& h) const;
+    ext::shared_ptr<SwapIndex> clone(const Handle<YieldTermStructure>& forwarding,
                                        const Handle<YieldTermStructure>& discounting) const;
-    QuantLib::ext::shared_ptr<SwapIndex> clone(const Period& tenor) const;
+    ext::shared_ptr<SwapIndex> clone(const Period& tenor) const;
 };
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( QuantLib::ext::shared_ptr<SwapIndex> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<SwapIndex> )
 #endif
 namespace std {
     %template(SwapIndexVector)
-        vector<QuantLib::ext::shared_ptr<SwapIndex> >;
+        vector<ext::shared_ptr<SwapIndex> >;
 }
 
 %define export_swap_instance(Name)
@@ -320,9 +320,9 @@ class Name : public Base {
 %enddef
 
 %inline %{
-    QuantLib::ext::shared_ptr<SwapIndex> as_swap_index(
-                          const QuantLib::ext::shared_ptr<InterestRateIndex>& index) {
-        return QuantLib::ext::dynamic_pointer_cast<SwapIndex>(index);
+    ext::shared_ptr<SwapIndex> as_swap_index(
+                          const ext::shared_ptr<InterestRateIndex>& index) {
+        return ext::dynamic_pointer_cast<SwapIndex>(index);
     }
 %}
 
@@ -335,14 +335,14 @@ using QuantLib::SwapSpreadIndex;
 class SwapSpreadIndex : public InterestRateIndex {
   public:
     SwapSpreadIndex(const std::string& familyName,
-                    const QuantLib::ext::shared_ptr<SwapIndex>& swapIndex1,
-                    const QuantLib::ext::shared_ptr<SwapIndex>& swapIndex2,
+                    const ext::shared_ptr<SwapIndex>& swapIndex1,
+                    const ext::shared_ptr<SwapIndex>& swapIndex2,
                     const Real gearing1 = 1.0,
                     const Real gearing2 = -1.0);
     Rate forecastFixing(const Date& fixingDate) const;
     Rate pastFixing(const Date& fixingDate) const;
-    QuantLib::ext::shared_ptr<SwapIndex> swapIndex1();
-    QuantLib::ext::shared_ptr<SwapIndex> swapIndex2();
+    ext::shared_ptr<SwapIndex> swapIndex1();
+    ext::shared_ptr<SwapIndex> swapIndex2();
     Real gearing1();
     Real gearing2();
 };

@@ -212,9 +212,9 @@ class SmileSection : public Observable {
 };
 
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( QuantLib::ext::shared_ptr<SmileSection> )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<SmileSection> )
 #endif
-%template(SmileSectionVector) std::vector<QuantLib::ext::shared_ptr<SmileSection> >;
+%template(SmileSectionVector) std::vector<ext::shared_ptr<SmileSection> >;
 
 
 %{
@@ -253,22 +253,22 @@ class SwaptionVolatilityStructure : public VolatilityTermStructure {
     Real shift(Time optionTime,
                Time swapLength,
                bool extrapolate = false) const;
-    QuantLib::ext::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
+    ext::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
                                                  const Period& swapTenor,
                                                  bool extr = false) const;
-    QuantLib::ext::shared_ptr<SmileSection> smileSection(const Date& optionDate,
+    ext::shared_ptr<SmileSection> smileSection(const Date& optionDate,
                                                  const Period& swapTenor,
                                                  bool extr = false) const;
-    QuantLib::ext::shared_ptr<SmileSection> smileSection(Time optionTime,
+    ext::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                  const Period& swapTenor,
                                                  bool extr = false) const;
-    QuantLib::ext::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
+    ext::shared_ptr<SmileSection> smileSection(const Period& optionTenor,
                                                  Time swapLength,
                                                  bool extr = false) const;
-    QuantLib::ext::shared_ptr<SmileSection> smileSection(const Date& optionDate,
+    ext::shared_ptr<SmileSection> smileSection(const Date& optionDate,
                                                  Time swapLength,
                                                  bool extr = false) const;
-    QuantLib::ext::shared_ptr<SmileSection> smileSection(Time optionTime,
+    ext::shared_ptr<SmileSection> smileSection(Time optionTime,
                                                  Time swapLength,
                                                  bool extr = false) const;
 };
@@ -616,17 +616,17 @@ class SwaptionVolCube1 : public SwaptionVolatilityCube {
              const std::vector<Period>& swapTenors,
              const std::vector<Spread>& strikeSpreads,
              const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-             const QuantLib::ext::shared_ptr<SwapIndex>& swapIndex,
-             const QuantLib::ext::shared_ptr<SwapIndex>& shortSwapIndex,
+             const ext::shared_ptr<SwapIndex>& swapIndex,
+             const ext::shared_ptr<SwapIndex>& shortSwapIndex,
              bool vegaWeightedSmileFit,
              const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
              const std::vector<bool>& isParameterFixed,
              bool isAtmCalibrated,
-             const QuantLib::ext::shared_ptr<EndCriteria>& endCriteria
-                                           = QuantLib::ext::shared_ptr<EndCriteria>(),
+             const ext::shared_ptr<EndCriteria>& endCriteria
+                                           = ext::shared_ptr<EndCriteria>(),
              Real maxErrorTolerance = Null<Real>(),
-             const QuantLib::ext::shared_ptr<OptimizationMethod>& optMethod
-                                  = QuantLib::ext::shared_ptr<OptimizationMethod>(),
+             const ext::shared_ptr<OptimizationMethod>& optMethod
+                                  = ext::shared_ptr<OptimizationMethod>(),
              const Real errorAccept = Null<Real>(),
              const bool useMaxError = false,
              const Size maxGuesses = 50,
@@ -637,13 +637,13 @@ class SwaptionVolCube1 : public SwaptionVolatilityCube {
     Matrix marketVolCube() const;
     Matrix volCubeAtmCalibrated() const;
     %extend {
-        QuantLib::ext::shared_ptr<SabrSmileSection> smileSection(Time optionTime, Time swapLength, bool extr = false) {
+        ext::shared_ptr<SabrSmileSection> smileSection(Time optionTime, Time swapLength, bool extr = false) {
             SwaptionVolatilityStructure* base = dynamic_cast<SwaptionVolatilityStructure*>($self);
-            return QuantLib::ext::dynamic_pointer_cast<SabrSmileSection>(base->smileSection(optionTime, swapLength, extr));
+            return ext::dynamic_pointer_cast<SabrSmileSection>(base->smileSection(optionTime, swapLength, extr));
         }
-        QuantLib::ext::shared_ptr<SabrSmileSection> smileSection(const Period& optionTenor, const Period& swapTenor, bool extr = false) {
+        ext::shared_ptr<SabrSmileSection> smileSection(const Period& optionTenor, const Period& swapTenor, bool extr = false) {
             SwaptionVolatilityStructure* base = dynamic_cast<SwaptionVolatilityStructure*>($self);
-            return QuantLib::ext::dynamic_pointer_cast<SabrSmileSection>(base->smileSection(optionTenor, swapTenor, extr));
+            return ext::dynamic_pointer_cast<SabrSmileSection>(base->smileSection(optionTenor, swapTenor, extr));
         }
     }
 };
@@ -656,8 +656,8 @@ class SwaptionVolCube2 : public SwaptionVolatilityCube {
                      const std::vector<Period>& swapTenors,
                      const std::vector<Spread>& strikeSpreads,
                      const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-                     const QuantLib::ext::shared_ptr<SwapIndex>& swapIndex,
-                     const QuantLib::ext::shared_ptr<SwapIndex>& shortSwapIndex,
+                     const ext::shared_ptr<SwapIndex>& swapIndex,
+                     const ext::shared_ptr<SwapIndex>& shortSwapIndex,
                      bool vegaWeightedSmileFit);
 };
 
@@ -768,7 +768,7 @@ using QuantLib::KahaleSmileSection;
 
 class KahaleSmileSection : public SmileSection {
   public:
-    KahaleSmileSection(const QuantLib::ext::shared_ptr<SmileSection> source,
+    KahaleSmileSection(const ext::shared_ptr<SmileSection> source,
                        const Real atm = Null<Real>(),
                        const bool interpolate = false,
                        const bool exponentialExtrapolation = false,
@@ -837,10 +837,10 @@ class ZabrInterpolatedSmileSection : public SmileSection {
                bool isBetaFixed = false, bool isNuFixed = false,
                bool isRhoFixed = false, bool isGammaFixed = false,
                bool vegaWeighted = true,
-               const QuantLib::ext::shared_ptr<EndCriteria> &endCriteria =
-               QuantLib::ext::shared_ptr<EndCriteria>(),
-               const QuantLib::ext::shared_ptr<OptimizationMethod> &method =
-               QuantLib::ext::shared_ptr<OptimizationMethod>(),
+               const ext::shared_ptr<EndCriteria> &endCriteria =
+               ext::shared_ptr<EndCriteria>(),
+               const ext::shared_ptr<OptimizationMethod> &method =
+               ext::shared_ptr<OptimizationMethod>(),
                const DayCounter &dc = Actual365Fixed());
     ZabrInterpolatedSmileSection(
                const Date &optionDate, const Rate &forward,
@@ -850,10 +850,10 @@ class ZabrInterpolatedSmileSection : public SmileSection {
                bool isAlphaFixed = false, bool isBetaFixed = false,
                bool isNuFixed = false, bool isRhoFixed = false,
                bool isGammaFixed = false, bool vegaWeighted = true,
-               const QuantLib::ext::shared_ptr<EndCriteria> &endCriteria =
-               QuantLib::ext::shared_ptr<EndCriteria>(),
-               const QuantLib::ext::shared_ptr<OptimizationMethod> &method =
-               QuantLib::ext::shared_ptr<OptimizationMethod>(),
+               const ext::shared_ptr<EndCriteria> &endCriteria =
+               ext::shared_ptr<EndCriteria>(),
+               const ext::shared_ptr<OptimizationMethod> &method =
+               ext::shared_ptr<OptimizationMethod>(),
                const DayCounter &dc = Actual365Fixed());
     Real alpha() const;
     Real beta() const;
@@ -905,10 +905,10 @@ class NoArbSabrInterpolatedSmileSection : public SmileSection {
                bool isBetaFixed = false, bool isNuFixed = false,
                bool isRhoFixed = false,
                bool vegaWeighted = true,
-               const QuantLib::ext::shared_ptr<EndCriteria> &endCriteria =
-               QuantLib::ext::shared_ptr<EndCriteria>(),
-               const QuantLib::ext::shared_ptr<OptimizationMethod> &method =
-               QuantLib::ext::shared_ptr<OptimizationMethod>(),
+               const ext::shared_ptr<EndCriteria> &endCriteria =
+               ext::shared_ptr<EndCriteria>(),
+               const ext::shared_ptr<OptimizationMethod> &method =
+               ext::shared_ptr<OptimizationMethod>(),
                const DayCounter &dc = Actual365Fixed());
     NoArbSabrInterpolatedSmileSection(
                const Date &optionDate, const Rate &forward,
@@ -918,10 +918,10 @@ class NoArbSabrInterpolatedSmileSection : public SmileSection {
                bool isAlphaFixed = false, bool isBetaFixed = false,
                bool isNuFixed = false, bool isRhoFixed = false,
                bool vegaWeighted = true,
-               const QuantLib::ext::shared_ptr<EndCriteria> &endCriteria =
-               QuantLib::ext::shared_ptr<EndCriteria>(),
-               const QuantLib::ext::shared_ptr<OptimizationMethod> &method =
-               QuantLib::ext::shared_ptr<OptimizationMethod>(),
+               const ext::shared_ptr<EndCriteria> &endCriteria =
+               ext::shared_ptr<EndCriteria>(),
+               const ext::shared_ptr<OptimizationMethod> &method =
+               ext::shared_ptr<OptimizationMethod>(),
                const DayCounter &dc = Actual365Fixed());
     Real alpha() const;
     Real beta() const;
@@ -970,7 +970,7 @@ using QuantLib::AndreasenHugeLocalVolAdapter;
 using QuantLib::HestonBlackVolSurface;
 %}
 
-%template(CalibrationErrorTuple) QuantLib::ext::tuple<Real, Real, Real>;
+%template(CalibrationErrorTuple) ext::tuple<Real, Real, Real>;
 
 %shared_ptr(AndreasenHugeVolatilityInterpl)
 class AndreasenHugeVolatilityInterpl : public Observable {
@@ -984,7 +984,7 @@ class AndreasenHugeVolatilityInterpl : public Observable {
             CallPut};
 
         typedef std::vector<std::pair<
-            QuantLib::ext::shared_ptr<VanillaOption>, QuantLib::ext::shared_ptr<Quote> > >
+            ext::shared_ptr<VanillaOption>, ext::shared_ptr<Quote> > >
           CalibrationSet;
 
         AndreasenHugeVolatilityInterpl(
@@ -997,8 +997,8 @@ class AndreasenHugeVolatilityInterpl : public Observable {
             Size nGridPoints = 500,
             Real minStrike = Null<Real>(),
             Real maxStrike = Null<Real>(),
-            const QuantLib::ext::shared_ptr<OptimizationMethod>& optimizationMethod =
-                QuantLib::ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
+            const ext::shared_ptr<OptimizationMethod>& optimizationMethod =
+                ext::shared_ptr<OptimizationMethod>(new LevenbergMarquardt),
             const EndCriteria& endCriteria =
                 EndCriteria(500, 100, 1e-12, 1e-10, 1e-10));
 
@@ -1010,7 +1010,7 @@ class AndreasenHugeVolatilityInterpl : public Observable {
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
         // returns min, max and average error in volatility units
-        QuantLib::ext::tuple<Real, Real, Real> calibrationError() const;
+        ext::tuple<Real, Real, Real> calibrationError() const;
 
         // returns the option price of the calibration type. In case
         // of CallPut it return the call option price
@@ -1023,7 +1023,7 @@ class AndreasenHugeVolatilityInterpl : public Observable {
 class AndreasenHugeVolatilityAdapter : public BlackVolTermStructure {
   public:
     AndreasenHugeVolatilityAdapter(
-        const QuantLib::ext::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
+        const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& volInterpl,
         Real eps = 1e-6);
 };
 
@@ -1031,7 +1031,7 @@ class AndreasenHugeVolatilityAdapter : public BlackVolTermStructure {
 class AndreasenHugeLocalVolAdapter : public LocalVolTermStructure {
   public:
     explicit AndreasenHugeLocalVolAdapter(
-        const QuantLib::ext::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
+        const ext::shared_ptr<AndreasenHugeVolatilityInterpl>& localVol);
 };
 
 %shared_ptr(HestonBlackVolSurface)
@@ -1054,10 +1054,10 @@ class CmsMarket{
   public:       
     CmsMarket(
         const std::vector<Period>& swapLengths,
-        const std::vector<QuantLib::ext::shared_ptr<SwapIndex> >& swapIndexes,
-        const QuantLib::ext::shared_ptr<IborIndex>& iborIndex,
+        const std::vector<ext::shared_ptr<SwapIndex> >& swapIndexes,
+        const ext::shared_ptr<IborIndex>& iborIndex,
         const std::vector<std::vector<Handle<Quote> > >& bidAskSpreads,
-        const std::vector<QuantLib::ext::shared_ptr<CmsCouponPricer> >& pricers,
+        const std::vector<ext::shared_ptr<CmsCouponPricer> >& pricers,
         const Handle<YieldTermStructure>& discountingTS);
 
         void reprice(const Handle<SwaptionVolatilityStructure>& volStructure,
@@ -1087,24 +1087,24 @@ class CmsMarketCalibration {
 
     CmsMarketCalibration(
         Handle<SwaptionVolatilityStructure>& volCube,
-        QuantLib::ext::shared_ptr<CmsMarket>& cmsMarket,
+        ext::shared_ptr<CmsMarket>& cmsMarket,
         const Matrix& weights,
         CalibrationType calibrationType);
 
-    Array compute(const QuantLib::ext::shared_ptr<EndCriteria>& endCriteria,
-              const QuantLib::ext::shared_ptr<OptimizationMethod>& method,
+    Array compute(const ext::shared_ptr<EndCriteria>& endCriteria,
+              const ext::shared_ptr<OptimizationMethod>& method,
               const Array& guess,
               bool isMeanReversionFixed);
 
-    Matrix compute(const QuantLib::ext::shared_ptr<EndCriteria>& endCriteria,
-                  const QuantLib::ext::shared_ptr<OptimizationMethod>& method,
+    Matrix compute(const ext::shared_ptr<EndCriteria>& endCriteria,
+                  const ext::shared_ptr<OptimizationMethod>& method,
                   const Matrix& guess,
                   bool isMeanReversionFixed,
                   const Real meanReversionGuess = Null<Real>());
 
 
-    Matrix computeParametric(const QuantLib::ext::shared_ptr<EndCriteria> &endCriteria,
-                      const QuantLib::ext::shared_ptr<OptimizationMethod> &method,
+    Matrix computeParametric(const ext::shared_ptr<EndCriteria> &endCriteria,
+                      const ext::shared_ptr<OptimizationMethod> &method,
                       const Matrix &guess, bool isMeanReversionFixed,
                       const Real meanReversionGuess = Null<Real>());
 

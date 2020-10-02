@@ -79,8 +79,7 @@ namespace std {
   };
 %}
 
-namespace QuantLib {
-  namespace ext {
+namespace ext {
   template <typename T1=void, typename T2=void, typename T3=void>
   struct tuple;
 
@@ -93,7 +92,7 @@ namespace QuantLib {
     tuple(T1);
     %extend {
       T1 first() const {
-        return QuantLib::ext::get<0>(*$self);
+        return ext::get<0>(*$self);
       }
     }
   };
@@ -103,10 +102,10 @@ namespace QuantLib {
     tuple(T1,T2);
     %extend {
       T1 first() const {
-        return QuantLib::ext::get<0>(*$self);
+        return ext::get<0>(*$self);
       }
       T2 second() const {
-        return QuantLib::ext::get<1>(*$self);
+        return ext::get<1>(*$self);
       }
     }
   };
@@ -116,17 +115,16 @@ namespace QuantLib {
     tuple(T1,T2,T3);
     %extend {
       T1 first() const {
-        return QuantLib::ext::get<0>(*$self);
+        return ext::get<0>(*$self);
       }
       T2 second() const {
-        return QuantLib::ext::get<1>(*$self);
+        return ext::get<1>(*$self);
       }
       T3 third() const {
-        return QuantLib::ext::get<2>(*$self);
+        return ext::get<2>(*$self);
       }
     }
   };
-  }
 }
 
 #endif

@@ -32,8 +32,8 @@ class Observable {};
 
 
 %extend Handle {
-    QuantLib::ext::shared_ptr<Observable> asObservable() {
-        return QuantLib::ext::shared_ptr<Observable>(*self);
+    ext::shared_ptr<Observable> asObservable() {
+        return ext::shared_ptr<Observable>(*self);
     }
 }
 
@@ -85,8 +85,8 @@ class PyObserver {
     %rename(_unregisterWith) unregisterWith;
   public:
     PyObserver(PyObject* callback);
-    void registerWith(const QuantLib::ext::shared_ptr<Observable>&);
-    void unregisterWith(const QuantLib::ext::shared_ptr<Observable>&);
+    void registerWith(const ext::shared_ptr<Observable>&);
+    void unregisterWith(const ext::shared_ptr<Observable>&);
     %pythoncode %{
         def registerWith(self,x):
             if hasattr(x, "asObservable"):

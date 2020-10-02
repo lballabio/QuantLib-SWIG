@@ -19,7 +19,12 @@
 #ifndef quantlib_common_i
 #define quantlib_common_i
 
-#define SWIG_SHARED_PTR_NAMESPACE QuantLib::ext
+%{
+    namespace QuantLib { namespace ext {} }
+    namespace ext = QuantLib::ext;
+%}
+#define SWIG_SHARED_PTR_NAMESPACE ext
+
 %include stl.i
 %include exception.i
 %include boost_shared_ptr.i
@@ -62,7 +67,6 @@ using QuantLib::Handle;
 using QuantLib::RelinkableHandle;
 %}
 
-namespace QuantLib {
 namespace ext {
 
     %extend shared_ptr {
@@ -83,15 +87,14 @@ namespace ext {
         #endif
     }
 }
-}
 
 
 template <class T>
 class Handle {
   public:
-  Handle(const QuantLib::ext::shared_ptr<T>& = QuantLib::ext::shared_ptr<T>());
-    QuantLib::ext::shared_ptr<T> operator->();
-    QuantLib::ext::shared_ptr<T> currentLink();
+  Handle(const ext::shared_ptr<T>& = ext::shared_ptr<T>());
+    ext::shared_ptr<T> operator->();
+    ext::shared_ptr<T> currentLink();
     #if defined(SWIGPYTHON)
     %extend {
         bool __nonzero__() {
@@ -109,12 +112,12 @@ class Handle {
 template <class T>
 class RelinkableHandle : public Handle<T> {
   public:
-    RelinkableHandle(const QuantLib::ext::shared_ptr<T>& = QuantLib::ext::shared_ptr<T>());
-    void linkTo(const QuantLib::ext::shared_ptr<T>&);
+    RelinkableHandle(const ext::shared_ptr<T>& = ext::shared_ptr<T>());
+    void linkTo(const ext::shared_ptr<T>&);
     %extend {
         // could be defined in C++ class, added here in the meantime
         void reset() {
-            self->linkTo(QuantLib::ext::shared_ptr<T>());
+            self->linkTo(ext::shared_ptr<T>());
         }
     }
 };
