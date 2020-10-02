@@ -85,11 +85,12 @@ class HestonSLVMCModel {
            Size timeStepsPerYear = 365,
            Size nBins = 201,
            Size calibrationPaths = (1 << 15),
-           const std::vector<Date>& mandatoryDates = std::vector<Date>()) {
+           const std::vector<Date>& mandatoryDates = std::vector<Date>(),
+           Real mixingFactor = 1.0) {
             return new HestonSLVMCModel(
                 Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(model),
                 brownianGeneratorFactory, endDate, timeStepsPerYear,
-                nBins, calibrationPaths, mandatoryDates);
+                nBins, calibrationPaths, mandatoryDates, mixingFactor);
         }
     }
     boost::shared_ptr<HestonProcess> hestonProcess() const;
@@ -158,10 +159,11 @@ class HestonSLVFDMModel {
             const Date& endDate,
             const HestonSLVFokkerPlanckFdmParams& params,
             const bool logging = false,
-            const std::vector<Date>& mandatoryDates = std::vector<Date>()) {
+            const std::vector<Date>& mandatoryDates = std::vector<Date>(),
+            Real mixingFactor = 1.0) {
             return new HestonSLVFDMModel(
                 Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(model),
-                endDate, params, logging, mandatoryDates);
+                endDate, params, logging, mandatoryDates, mixingFactor);
         }
     }
     boost::shared_ptr<HestonProcess> hestonProcess() const;
