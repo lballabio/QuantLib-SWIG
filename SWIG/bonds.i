@@ -109,7 +109,7 @@ class Bond : public Instrument {
 
 %inline %{
     Real cleanPriceFromZSpread(
-                   const ext::shared_ptr<Bond>& bond,
+                   const Bond& bond,
                    const ext::shared_ptr<YieldTermStructure>& discountCurve,
                    Spread zSpread,
                    const DayCounter& dc,
@@ -117,7 +117,7 @@ class Bond : public Instrument {
                    Frequency freq,
                    const Date& settlementDate = Date()) {
         return QuantLib::BondFunctions::cleanPrice(
-                                  *(ext::dynamic_pointer_cast<Bond>(bond)),
+                                  bond,
                                   discountCurve,
                                   zSpread, dc, compounding,
                                   freq, settlementDate);

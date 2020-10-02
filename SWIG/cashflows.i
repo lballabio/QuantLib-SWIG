@@ -575,7 +575,7 @@ Leg _FixedRateLeg(const Schedule& schedule,
 %{
 Leg _IborLeg(const std::vector<Real>& nominals,
              const Schedule& schedule,
-             const ext::shared_ptr<Index>& index,
+             const ext::shared_ptr<IborIndex>& index,
              const DayCounter& paymentDayCounter = DayCounter(),
              const BusinessDayConvention paymentConvention = Following,
              const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -588,9 +588,7 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              const Calendar& exCouponCalendar = Calendar(),
              BusinessDayConvention exCouponConvention = Unadjusted,
              bool exCouponEndOfMonth = false) {
-    ext::shared_ptr<IborIndex> libor =
-        ext::dynamic_pointer_cast<IborIndex>(index);
-    return QuantLib::IborLeg(schedule, libor)
+    return QuantLib::IborLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
@@ -629,15 +627,13 @@ Leg _IborLeg(const std::vector<Real>& nominals,
 %{
 Leg _OvernightLeg(const std::vector<Real>& nominals,
              const Schedule& schedule,
-             const ext::shared_ptr<Index>& index,
+             const ext::shared_ptr<OvernightIndex>& index,
              const DayCounter& paymentDayCounter = DayCounter(),
              const BusinessDayConvention paymentConvention = Following,
              const std::vector<Real>& gearings = std::vector<Real>(),
              const std::vector<Spread>& spreads = std::vector<Spread>(),
              bool telescopicValueDates = false) {
-    ext::shared_ptr<OvernightIndex> overnightindex =
-        ext::dynamic_pointer_cast<OvernightIndex>(index);
-    return QuantLib::OvernightLeg(schedule, overnightindex)
+    return QuantLib::OvernightLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
@@ -652,7 +648,7 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
 %rename(OvernightLeg) _OvernightLeg;
 Leg _OvernightLeg(const std::vector<Real>& nominals,
              const Schedule& schedule,
-             const ext::shared_ptr<Index>& index,
+             const ext::shared_ptr<OvernightIndex>& index,
              const DayCounter& paymentDayCounter = DayCounter(),
              const BusinessDayConvention paymentConvention = Following,
              const std::vector<Real>& gearings = std::vector<Real>(),
@@ -662,7 +658,7 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,
             const Schedule& schedule,
-            const ext::shared_ptr<Index>& index,
+            const ext::shared_ptr<SwapIndex>& index,
             const DayCounter& paymentDayCounter = DayCounter(),
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -675,9 +671,7 @@ Leg _CmsLeg(const std::vector<Real>& nominals,
             const Calendar& exCouponCalendar = Calendar(),
             const BusinessDayConvention exCouponConvention = Unadjusted,
             bool exCouponEndOfMonth = false) {
-    ext::shared_ptr<SwapIndex> swapIndex =
-         ext::dynamic_pointer_cast<SwapIndex>(index);
-    return QuantLib::CmsLeg(schedule, swapIndex)
+    return QuantLib::CmsLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
@@ -714,7 +708,7 @@ Leg _CmsLeg(const std::vector<Real>& nominals,
 %{
 Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const Schedule& schedule,
-                const ext::shared_ptr<Index>& index,
+                const ext::shared_ptr<SwapIndex>& index,
                 const DayCounter& paymentDayCounter = DayCounter(),
                 const BusinessDayConvention paymentConvention = Following,
                 const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -726,9 +720,7 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
                 const Calendar& exCouponCalendar = Calendar(),
                 const BusinessDayConvention exCouponConvention = Unadjusted,
                 bool exCouponEndOfMonth = false) {
-    ext::shared_ptr<SwapIndex> swapIndex =
-         ext::dynamic_pointer_cast<SwapIndex>(index);
-    return QuantLib::CmsLeg(schedule, swapIndex)
+    return QuantLib::CmsLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
@@ -764,7 +756,7 @@ Leg _CmsZeroLeg(const std::vector<Real>& nominals,
 %{
 Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
             const Schedule& schedule,
-            const ext::shared_ptr<Index>& index,
+            const ext::shared_ptr<SwapSpreadIndex>& index,
             const DayCounter& paymentDayCounter = DayCounter(),
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Natural>& fixingDays = std::vector<Natural>(),
@@ -773,9 +765,7 @@ Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
             bool isInArrears = false) {
-    ext::shared_ptr<SwapSpreadIndex> swapSpreadIndex =
-        ext::dynamic_pointer_cast<SwapSpreadIndex>(index);
-    return QuantLib::CmsSpreadLeg(schedule, swapSpreadIndex)
+    return QuantLib::CmsSpreadLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)

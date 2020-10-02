@@ -973,11 +973,7 @@ class DividendVanillaOption : public OneAssetOption {
                          Real accuracy = 1.0e-4,
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
-                         Volatility maxVol = 4.0) {
-        return ext::dynamic_pointer_cast<DividendVanillaOption>(*self)
-            ->impliedVolatility(targetValue, process, accuracy,
-                                maxEvaluations, minVol, maxVol);
-    }
+                         Volatility maxVol = 4.0);
 };
 
 
@@ -1061,11 +1057,7 @@ class BarrierOption : public OneAssetOption {
                          Real accuracy = 1.0e-4,
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
-                         Volatility maxVol = 4.0) {
-        return ext::dynamic_pointer_cast<BarrierOption>(*self)
-             ->impliedVolatility(targetValue, process, accuracy,
-                                 maxEvaluations, minVol, maxVol);
-    }
+                         Volatility maxVol = 4.0);
 };
 
 %shared_ptr(DividendBarrierOption)
