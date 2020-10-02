@@ -22,14 +22,13 @@
 %include stl.i
 %include common.i
 %include vectors.i
+%include tuple.i
 %include functions.i
 %include options.i
 %include basketoptions.i
 %include dividends.i
 %include settings.i
 %include shortratemodels.i
-
-%include boost_shared_ptr.i
 
 
 // mesher

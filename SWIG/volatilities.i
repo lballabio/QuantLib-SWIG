@@ -36,6 +36,7 @@
 %include options.i
 %include termstructures.i
 %include vectors.i
+%include tuple.i
 
 %define QL_TYPECHECK_VOLATILITYTYPE       8210    %enddef
 
