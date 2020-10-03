@@ -34,7 +34,8 @@ using QuantLib::HestonSLVProcess;
 class HestonSLVProcess : public StochasticProcess {
   public:
     HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
-                     const ext::shared_ptr<LocalVolTermStructure>& leverageFct);
+                     const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+                     const Real mixingFactor = 1.0);
 };
 
 
