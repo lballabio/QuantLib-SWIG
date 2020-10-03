@@ -1286,7 +1286,8 @@ class FdHestonVanillaEngine : public PricingEngine {
         Size vGrid = 50, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
         const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-            = ext::shared_ptr<LocalVolTermStructure>());
+            = ext::shared_ptr<LocalVolTermStructure>(),
+        const Real mixingFactor = 1.0);
 
     FdHestonVanillaEngine(
         const ext::shared_ptr<HestonModel>& model,
@@ -1297,7 +1298,8 @@ class FdHestonVanillaEngine : public PricingEngine {
         Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
         const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-            = ext::shared_ptr<LocalVolTermStructure>());
+            = ext::shared_ptr<LocalVolTermStructure>(),
+        const Real mixingFactor = 1.0);
 
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") make;
@@ -1310,10 +1312,11 @@ class FdHestonVanillaEngine : public PricingEngine {
                     Size dampingSteps = 0,
                     const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
                     const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                        = ext::shared_ptr<LocalVolTermStructure>()) {
+                        = ext::shared_ptr<LocalVolTermStructure>(),
+                    const Real mixingFactor = 1.0) {
             return ext::shared_ptr<FdHestonVanillaEngine>(
                 new FdHestonVanillaEngine(model, quantoHelper, tGrid, xGrid, vGrid,
-                                          dampingSteps, schemeDesc, leverageFct));
+                                          dampingSteps, schemeDesc, leverageFct, mixingFactor));
         }
     }
     #endif
