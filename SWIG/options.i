@@ -373,7 +373,8 @@ class AnalyticHestonEngine : public PricingEngine {
                 const ext::shared_ptr<Integrator>& integrator);
     };
     enum ComplexLogFormula { 
-        Gatheral, BranchCorrection, AndersenPiterbarg, AndersenPiterbargOptCV
+        Gatheral, BranchCorrection, AndersenPiterbarg, 
+        AndersenPiterbargOptCV, AsymptoticChF, OptimalCV
     };
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
@@ -411,7 +412,8 @@ using QuantLib::ExponentialFittingHestonEngine;
 %shared_ptr(ExponentialFittingHestonEngine)
 class ExponentialFittingHestonEngine : public PricingEngine {
   public:
-    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV };
+    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV,
+                          AsymptoticChF, OptimalCV };
     
     ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model,
@@ -1166,7 +1168,8 @@ struct FdmSchemeDesc {
   enum FdmSchemeType { HundsdorferType, DouglasType,
                        CraigSneydType, ModifiedCraigSneydType,
                        ImplicitEulerType, ExplicitEulerType,
-                       MethodOfLinesType, TrBDF2Type };
+                       MethodOfLinesType, TrBDF2Type, 
+                       CrankNicolsonType };
 
   FdmSchemeDesc(FdmSchemeType type, Real theta, Real mu);
 
@@ -1175,6 +1178,7 @@ struct FdmSchemeDesc {
 
   // some default scheme descriptions
   static FdmSchemeDesc Douglas();
+  static FdmSchemeDesc CrankNicolson();
   static FdmSchemeDesc ImplicitEuler();
   static FdmSchemeDesc ExplicitEuler();
   static FdmSchemeDesc CraigSneyd();
