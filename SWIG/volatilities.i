@@ -420,6 +420,29 @@ class LocalVolSurface : public LocalVolTermStructure {
 };
 
 
+
+// no except local vol surface (override bad points - use with care)
+%{
+using QuantLib::NoExceptLocalVolSurface;
+%}
+
+%shared_ptr(NoExceptLocalVolSurface);
+class NoExceptLocalVolSurface : public LocalVolSurface {
+  public:
+    NoExceptLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
+                            const Handle<YieldTermStructure>& riskFreeTS,
+                            const Handle<YieldTermStructure>& dividendTS,
+                            const Handle<Quote>& underlying,
+                            Real illegalLocalVolOverwrite);
+    NoExceptLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
+                            const Handle<YieldTermStructure>& riskFreeTS,
+                            const Handle<YieldTermStructure>& dividendTS,
+                            Real underlying,
+                            Real illegalLocalVolOverwrite);
+};
+
+
+
 // constant caplet constant term structure
 %{
 using QuantLib::ConstantOptionletVolatility;
