@@ -1404,7 +1404,8 @@ class FdHestonBarrierEngine : public PricingEngine {
                           Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
                           const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                              = ext::shared_ptr<LocalVolTermStructure>());
+                              = ext::shared_ptr<LocalVolTermStructure>(),
+                          const Real mixingFactor = 1.0);
 };
 
 %shared_ptr(FdHestonRebateEngine)
@@ -1414,7 +1415,8 @@ class FdHestonRebateEngine : public PricingEngine {
                          Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
                          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
                          const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                             = ext::shared_ptr<LocalVolTermStructure>());
+                             = ext::shared_ptr<LocalVolTermStructure>(),
+                         const Real mixingFactor = 1.0);
 };
 
 
