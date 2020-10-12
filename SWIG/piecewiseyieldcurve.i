@@ -77,7 +77,7 @@ class Name : public YieldTermStructure {
   public:
     %extend {
         Name(const Date& referenceDate,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
              const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -88,7 +88,7 @@ class Name : public YieldTermStructure {
                             accuracy, i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
              const std::vector<Date>& jumpDates = std::vector<Date>(),
@@ -100,14 +100,14 @@ class Name : public YieldTermStructure {
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(const Date& referenceDate,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const _IterativeBootstrap& b) {
             return new Name(referenceDate, instruments, dayCounter, Interpolator(),
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const _IterativeBootstrap& b) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
@@ -141,9 +141,9 @@ export_piecewise_curve(PiecewiseConvexMonotoneZero,ZeroYield,ConvexMonotone);
 
 %{
 class AdditionalErrors {
-    std::vector<boost::shared_ptr<RateHelper> > additionalHelpers_;
+    std::vector<ext::shared_ptr<RateHelper> > additionalHelpers_;
   public:
-    AdditionalErrors(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers)
+    AdditionalErrors(const std::vector<ext::shared_ptr<RateHelper> >& additionalHelpers)
     : additionalHelpers_(additionalHelpers) {}
     Array operator()() const {
         Array errors(additionalHelpers_.size() - 2);
@@ -168,12 +168,12 @@ class AdditionalDates {
 };
 
 struct _GlobalBootstrap {
-    std::vector<boost::shared_ptr<RateHelper> > additionalHelpers;
+    std::vector<ext::shared_ptr<RateHelper> > additionalHelpers;
     std::vector<Date> additionalDates;
     double accuracy;
     _GlobalBootstrap(double accuracy = Null<double>())
     : accuracy(accuracy) {}
-    _GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+   _GlobalBootstrap(const std::vector<ext::shared_ptr<RateHelper> >& additionalHelpers,
                      const std::vector<Date>& additionalDates,
                      double accuracy = Null<double>())
     : additionalHelpers(additionalHelpers), additionalDates(additionalDates), accuracy(accuracy) {}
@@ -183,7 +183,7 @@ struct _GlobalBootstrap {
 %rename(GlobalBootstrap) _GlobalBootstrap;
 struct _GlobalBootstrap {
     _GlobalBootstrap(doubleOrNull accuracy = Null<double>());
-    _GlobalBootstrap(const std::vector<boost::shared_ptr<RateHelper> >& additionalHelpers,
+    _GlobalBootstrap(const std::vector<ext::shared_ptr<RateHelper> >& additionalHelpers,
                      const std::vector<Date>& additionalDates,
                      doubleOrNull accuracy = Null<double>());
 };
@@ -201,7 +201,7 @@ class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
     %extend {
         GlobalLinearSimpleZeroCurve(
              const Date& referenceDate,
-             const std::vector<boost::shared_ptr<RateHelper> >& instruments,
+             const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const _GlobalBootstrap& b) {
             if (b.additionalHelpers.empty()) {

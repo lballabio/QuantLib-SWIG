@@ -73,6 +73,9 @@ class BlackDeltaCalculatorTest(unittest.TestCase):
         self.foreign_rate = ql.FlatForward(self.spotDate, 0.013,
                                            ql.Actual365Fixed())
 
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
+
     def test_single_spot_delta(self):
         """Test for a single strike for call spot delta 75"""
         volatility = 0.2

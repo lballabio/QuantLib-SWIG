@@ -43,9 +43,9 @@ class PlainVanillaPayoff : public StrikedTypePayoff {
 };
 
 %inline %{
-    const boost::shared_ptr<PlainVanillaPayoff> as_plain_vanilla_payoff(
-                           const boost::shared_ptr<Payoff>& payoff) {
-        return boost::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
+    const ext::shared_ptr<PlainVanillaPayoff> as_plain_vanilla_payoff(
+                           const ext::shared_ptr<Payoff>& payoff) {
+        return ext::dynamic_pointer_cast<PlainVanillaPayoff>(payoff);
     }
 %}
 

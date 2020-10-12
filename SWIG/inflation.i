@@ -76,9 +76,9 @@ class InflationTermStructure : public TermStructure {
     virtual Rate baseRate() const;
     virtual Handle<YieldTermStructure> nominalTermStructure() const;
     virtual Date baseDate() const;
-    void setSeasonality(const boost::shared_ptr<Seasonality>& seasonality =
-                                            boost::shared_ptr<Seasonality>());
-    boost::shared_ptr<Seasonality> seasonality() const;
+    void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality =
+                                            ext::shared_ptr<Seasonality>());
+    ext::shared_ptr<Seasonality> seasonality() const;
     bool hasSeasonality() const;
 };
 
@@ -171,7 +171,7 @@ class ZeroInflationIndex : public InflationIndex {
                          const Handle<ZeroInflationTermStructure>& h =
                                        Handle<ZeroInflationTermStructure>());
       Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
-      boost::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
+      ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
 };
 
 %shared_ptr(YoYInflationIndex)
@@ -190,7 +190,7 @@ class YoYInflationIndex : public InflationIndex {
                                 Handle<YoYInflationTermStructure>());
     bool ratio() const;
     Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
-    boost::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
+    ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
 };
 
 %define export_zii_instance(Name)
@@ -280,13 +280,13 @@ class InflationCoupon : public Coupon {
     Integer fixingDays() const;
     Period observationLag() const;
     Rate indexFixing() const;
-    boost::shared_ptr<InflationIndex> index() const;
+    ext::shared_ptr<InflationIndex> index() const;
 };
 
 %inline %{
-    boost::shared_ptr<InflationCoupon> as_inflation_coupon(
-                                      const boost::shared_ptr<CashFlow>& cf) {
-        return boost::dynamic_pointer_cast<InflationCoupon>(cf);
+    ext::shared_ptr<InflationCoupon> as_inflation_coupon(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<InflationCoupon>(cf);
     }
 %}
 
@@ -300,13 +300,13 @@ class CPICoupon : public InflationCoupon {
     Rate adjustedFixing() const;
     Rate baseCPI() const;
     CPI::InterpolationType observationInterpolation() const;
-    boost::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+    ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
 };
 
 %inline %{
-    boost::shared_ptr<CPICoupon> as_cpi_coupon(
-                                      const boost::shared_ptr<CashFlow>& cf) {
-        return boost::dynamic_pointer_cast<CPICoupon>(cf);
+    ext::shared_ptr<CPICoupon> as_cpi_coupon(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<CPICoupon>(cf);
     }
 %}
 
@@ -343,14 +343,14 @@ class BootstrapHelper : public Observable {
 
  
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > )
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > )
-SWIG_STD_VECTOR_ENHANCED( boost::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > )
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > )
 #endif
 namespace std {
-    %template(ZeroHelperVector) vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >;
-    %template(YoYHelperVector) vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >;
-    %template(YoYOptionHelperVector) vector<boost::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > >;
+    %template(ZeroHelperVector) vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >;
+    %template(YoYHelperVector) vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >;
+    %template(YoYOptionHelperVector) vector<ext::shared_ptr<BootstrapHelper<YoYOptionletVolatilitySurface> > >;
 }
 
 %shared_ptr(ZeroCouponInflationSwapHelper)
@@ -365,7 +365,7 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
             const Calendar& calendar,
             BusinessDayConvention bcd,
             const DayCounter& dayCounter,
-            const boost::shared_ptr<ZeroInflationIndex>& index,
+            const ext::shared_ptr<ZeroInflationIndex>& index,
             const Handle<YieldTermStructure>& nominalTS = Handle<YieldTermStructure>()) {
 
             return new ZeroCouponInflationSwapHelper(quote,lag,maturity,
@@ -387,7 +387,7 @@ class YearOnYearInflationSwapHelper : public BootstrapHelper<YoYInflationTermStr
                                       const Calendar& calendar,
                                       BusinessDayConvention bdc,
                                       const DayCounter& dayCounter,
-                                      const boost::shared_ptr<YoYInflationIndex>& index,
+                                      const ext::shared_ptr<YoYInflationIndex>& index,
                                       const Handle<YieldTermStructure>& nominalTS =
                                                         Handle<YieldTermStructure>()) {
             return new YearOnYearInflationSwapHelper(quote,lag,maturity,
@@ -421,7 +421,7 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
               bool indexIsInterpolated,
               Rate baseRate,
               const Handle<YieldTermStructure>& nominalTS,
-              const std::vector<boost::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
+              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
     const std::vector<Date>& dates() const;
@@ -451,7 +451,7 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
               bool indexIsInterpolated,
               Rate baseRate,
               const Handle<YieldTermStructure>& nominalTS,
-              const std::vector<boost::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
+              const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
     const std::vector<Date>& dates() const;
@@ -487,7 +487,7 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
 %{
 Leg _yoyInflationLeg(const Schedule& schedule,
                      const Calendar& calendar,
-                     const boost::shared_ptr<YoYInflationIndex>& index,
+                     const ext::shared_ptr<YoYInflationIndex>& index,
                      const Period& observationLag,
                      const std::vector<Real>& notionals,
                      const DayCounter& paymentDayCounter,
@@ -512,7 +512,7 @@ Leg _yoyInflationLeg(const Schedule& schedule,
 %rename(yoyInflationLeg) _yoyInflationLeg;
 Leg _yoyInflationLeg(const Schedule& schedule,
                      const Calendar& calendar,
-                     const boost::shared_ptr<YoYInflationIndex>& index,
+                     const ext::shared_ptr<YoYInflationIndex>& index,
                      const Period& observationLag,
                      const std::vector<Real>& notionals,
                      const DayCounter& paymentDayCounter,
@@ -545,7 +545,7 @@ class ZeroCouponInflationSwap : public Swap {
                    BusinessDayConvention convention,
                    const DayCounter& dayCounter,
                    Rate fixedRate,
-                   const boost::shared_ptr<ZeroInflationIndex>& index,
+                   const ext::shared_ptr<ZeroInflationIndex>& index,
                    const Period& lag,
                    bool adjustInfObsDates = false,
                    Calendar infCalendar = Calendar(),
@@ -553,8 +553,8 @@ class ZeroCouponInflationSwap : public Swap {
     Rate fairRate();
     Real fixedLegNPV();
     Real inflationLegNPV();
-    std::vector<boost::shared_ptr<CashFlow> > fixedLeg();
-    std::vector<boost::shared_ptr<CashFlow> > inflationLeg();
+    std::vector<ext::shared_ptr<CashFlow> > fixedLeg();
+    std::vector<ext::shared_ptr<CashFlow> > inflationLeg();
     ZeroCouponInflationSwap::Type type();
 };
 
@@ -569,7 +569,7 @@ class YearOnYearInflationSwap : public Swap {
                Rate fixedRate,
                const DayCounter& fixedDayCounter,
                const Schedule& yoySchedule,
-               const boost::shared_ptr<YoYInflationIndex>& index,
+               const ext::shared_ptr<YoYInflationIndex>& index,
                const Period& lag,
                Spread spread,
                const DayCounter& yoyDayCounter,
@@ -596,14 +596,14 @@ class CPISwap : public Swap {
             const Schedule& floatSchedule,
             const BusinessDayConvention& floatRoll,
             Natural fixingDays,
-            const boost::shared_ptr<IborIndex>& floatIndex,
+            const ext::shared_ptr<IborIndex>& floatIndex,
             Rate fixedRate,
             Real baseCPI,
             const DayCounter& fixedDayCount,
             const Schedule& fixedSchedule,
             const BusinessDayConvention& fixedRoll,
             const Period& observationLag,
-            const boost::shared_ptr<ZeroInflationIndex>& fixedIndex,
+            const ext::shared_ptr<ZeroInflationIndex>& fixedIndex,
             CPI::InterpolationType observationInterpolation = CPI::AsIndex,
             Real inflationNominal = Null<Real>() );
     Rate fairRate();
@@ -648,7 +648,7 @@ class YoYInflationCapFloor : public Instrument {
 class YoYInflationCap : public YoYInflationCapFloor {
   public:
     YoYInflationCap(
-            const std::vector<boost::shared_ptr<CashFlow> >& leg,
+            const std::vector<ext::shared_ptr<CashFlow> >& leg,
             const std::vector<Rate>& capRates);
 };
 
@@ -656,7 +656,7 @@ class YoYInflationCap : public YoYInflationCapFloor {
 class YoYInflationFloor : public YoYInflationCapFloor {
   public:
     YoYInflationFloor(
-            const std::vector<boost::shared_ptr<CashFlow> >& leg,
+            const std::vector<ext::shared_ptr<CashFlow> >& leg,
             const std::vector<Rate>& floorRates);
 };
 
@@ -664,7 +664,7 @@ class YoYInflationFloor : public YoYInflationCapFloor {
 class YoYInflationCollar : public YoYInflationCapFloor {
   public:
     YoYInflationCollar(
-            const std::vector<boost::shared_ptr<CashFlow> >& leg,
+            const std::vector<ext::shared_ptr<CashFlow> >& leg,
             const std::vector<Rate>& capRates,
             const std::vector<Rate>& floorRates);
 };
@@ -738,8 +738,8 @@ class YoYCapFloorTermPriceSurface : public InflationTermStructure {
   public:
     virtual std::pair<std::vector<Time>, std::vector<Rate> > atmYoYSwapTimeRates() const;
     virtual std::pair<std::vector<Date>, std::vector<Rate> > atmYoYSwapDateRates() const;
-    virtual boost::shared_ptr<YoYInflationTermStructure> YoYTS() const;
-    boost::shared_ptr<YoYInflationIndex> yoyIndex();
+    virtual ext::shared_ptr<YoYInflationTermStructure> YoYTS() const;
+    ext::shared_ptr<YoYInflationIndex> yoyIndex();
     virtual BusinessDayConvention businessDayConvention() const;
     virtual Natural fixingDays() const;
     virtual Real price(const Date& d, Rate k);
@@ -784,7 +784,7 @@ class Name : public YoYCapFloorTermPriceSurface {
     %extend {
         Name(Natural fixingDays,
           const Period &yyLag,  // observation lag
-          const boost::shared_ptr<YoYInflationIndex>& yii,
+          const ext::shared_ptr<YoYInflationIndex>& yii,
           Rate baseRate,
           const Handle<YieldTermStructure> &nominal,
           const DayCounter &dc,
@@ -818,7 +818,7 @@ using QuantLib::YoYInflationBachelierCapFloorEngine;
 %shared_ptr(YoYInflationBlackCapFloorEngine)
 class YoYInflationBlackCapFloorEngine : public PricingEngine {
   public:
-    YoYInflationBlackCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
+    YoYInflationBlackCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
                                     const Handle<YoYOptionletVolatilitySurface>& vol,
                                     const Handle<YieldTermStructure>& nominalTermStructure);
 };
@@ -826,7 +826,7 @@ class YoYInflationBlackCapFloorEngine : public PricingEngine {
 %shared_ptr(YoYInflationUnitDisplacedBlackCapFloorEngine)
 class YoYInflationUnitDisplacedBlackCapFloorEngine : public PricingEngine {
   public:
-    YoYInflationUnitDisplacedBlackCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
+    YoYInflationUnitDisplacedBlackCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
                                     const Handle<YoYOptionletVolatilitySurface>& vol,
                                     const Handle<YieldTermStructure>& nominalTermStructure);
 };
@@ -834,7 +834,7 @@ class YoYInflationUnitDisplacedBlackCapFloorEngine : public PricingEngine {
 %shared_ptr(YoYInflationBachelierCapFloorEngine)
 class YoYInflationBachelierCapFloorEngine : public PricingEngine {
   public:
-    YoYInflationBachelierCapFloorEngine(const boost::shared_ptr<YoYInflationIndex>&,
+    YoYInflationBachelierCapFloorEngine(const ext::shared_ptr<YoYInflationIndex>&,
                                     const Handle<YoYOptionletVolatilitySurface>& vol,
                                     const Handle<YieldTermStructure>& nominalTermStructure);
 };
@@ -851,10 +851,10 @@ class YoYOptionletHelper : public BootstrapHelper<YoYOptionletVolatilitySurface>
          const DayCounter& yoyDayCounter,
          const Calendar& paymentCalendar,
          Natural fixingDays,
-         const boost::shared_ptr<YoYInflationIndex>& index,
+         const ext::shared_ptr<YoYInflationIndex>& index,
          Rate strike, Size n,
-         const boost::shared_ptr<PricingEngine> &pricer) {
-            boost::shared_ptr<QuantLib::YoYInflationCapFloorEngine> engine = boost::dynamic_pointer_cast<YoYInflationCapFloorEngine>(pricer);
+         const ext::shared_ptr<PricingEngine> &pricer) {
+            ext::shared_ptr<QuantLib::YoYInflationCapFloorEngine> engine = ext::dynamic_pointer_cast<YoYInflationCapFloorEngine>(pricer);
             return new YoYOptionletHelper(price, notional, capFloorType, lag, yoyDayCounter, paymentCalendar, fixingDays, index, strike, n, engine);
          }
      }
@@ -872,10 +872,10 @@ class YoYOptionletStripper {
     YoYOptionletStripper();
   public:
       %extend {
-        virtual void initialize(const boost::shared_ptr<YoYCapFloorTermPriceSurface>& surf,
-                                const boost::shared_ptr<PricingEngine>& pricer,
+        virtual void initialize(const ext::shared_ptr<YoYCapFloorTermPriceSurface>& surf,
+                                const ext::shared_ptr<PricingEngine>& pricer,
                                 Real slope) const {
-            boost::shared_ptr<QuantLib::YoYInflationCapFloorEngine> engine = boost::dynamic_pointer_cast<YoYInflationCapFloorEngine>(pricer);
+            ext::shared_ptr<QuantLib::YoYInflationCapFloorEngine> engine = ext::dynamic_pointer_cast<YoYInflationCapFloorEngine>(pricer);
             return (self)->initialize(surf, engine, slope);
         }
     }
@@ -932,12 +932,12 @@ class KInterpolatedYoYOptionletVolatilitySurface : public YoYOptionletVolatility
             BusinessDayConvention bdc,
             const DayCounter& dc,
             const Period& lag,
-            const boost::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
-            const boost::shared_ptr<PricingEngine>& pricer,
-            const boost::shared_ptr<YoYOptionletStripper>& yoyOptionletStripper,
+            const ext::shared_ptr<YoYCapFloorTermPriceSurface>& capFloorPrices,
+            const ext::shared_ptr<PricingEngine>& pricer,
+            const ext::shared_ptr<YoYOptionletStripper>& yoyOptionletStripper,
             Real slope,
             const Interpolator1D& interpolator = Interpolator1D()) {
-                 boost::shared_ptr<QuantLib::YoYInflationCapFloorEngine> engine = boost::dynamic_pointer_cast<YoYInflationCapFloorEngine>(pricer);
+                 ext::shared_ptr<QuantLib::YoYInflationCapFloorEngine> engine = ext::dynamic_pointer_cast<YoYInflationCapFloorEngine>(pricer);
                      return new KInterpolatedYoYOptionletVolatilitySurface<Interpolator1D>(settlementDays,
                                  calendar, bdc, dc, lag, capFloorPrices, engine, yoyOptionletStripper,
                                  slope, interpolator);

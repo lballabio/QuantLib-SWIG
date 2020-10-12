@@ -22,7 +22,7 @@ import unittest
 
 class FixedRateBondTest(unittest.TestCase):
     def setUp(self):
-        ql.Settings.instance().setEvaluationDate(ql.Date(2, 1, 2010))
+        ql.Settings.instance().evaluationDate = ql.Date(2, 1, 2010)
         self.settlement_days = 3
         self.face_amount = 100.0
         self.redemption = 100.0
@@ -184,7 +184,7 @@ class FixedRateBondTest(unittest.TestCase):
         )
 
     def tearDown(self):
-        ql.Settings.instance().setEvaluationDate(ql.Date())
+        ql.Settings.instance().evaluationDate = ql.Date()
 
 
 class FixedRateBondKwargsTest(unittest.TestCase):

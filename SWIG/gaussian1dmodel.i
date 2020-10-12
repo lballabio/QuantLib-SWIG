@@ -35,7 +35,7 @@ using QuantLib::Gaussian1dModel;
 %shared_ptr(Gaussian1dModel)
 class Gaussian1dModel : public TermStructureConsistentModel {
     public:
-        const boost::shared_ptr<StochasticProcess1D> stateProcess() const;
+        const ext::shared_ptr<StochasticProcess1D> stateProcess() const;
 
         const Real numeraire(const Time t, const Real y = 0.0,
                              const Handle<YieldTermStructure> &yts =
@@ -69,20 +69,20 @@ class Gaussian1dModel : public TermStructureConsistentModel {
         const Real forwardRate(const Date &fixing,
                                const Date &referenceDate = Null<Date>(),
                                const Real y = 0.0,
-                               boost::shared_ptr<IborIndex> iborIdx =
-                                   boost::shared_ptr<IborIndex>()) const;
+                               ext::shared_ptr<IborIndex> iborIdx =
+                                   ext::shared_ptr<IborIndex>()) const;
 
         const Real swapRate(const Date &fixing, const Period &tenor,
                             const Date &referenceDate = Null<Date>(),
                             const Real y = 0.0,
-                            boost::shared_ptr<SwapIndex> swapIdx =
-                                boost::shared_ptr<SwapIndex>()) const;
+                            ext::shared_ptr<SwapIndex> swapIdx =
+                                ext::shared_ptr<SwapIndex>()) const;
 
         const Real swapAnnuity(const Date &fixing, const Period &tenor,
                                const Date &referenceDate = Null<Date>(),
                                const Real y = 0.0,
-                               boost::shared_ptr<SwapIndex> swapIdx =
-                                   boost::shared_ptr<SwapIndex>()) const;
+                               ext::shared_ptr<SwapIndex> swapIdx =
+                                   ext::shared_ptr<SwapIndex>()) const;
 };
 
 %{
@@ -103,7 +103,7 @@ class Gsr : public Gaussian1dModel {
            const std::vector<Handle<Quote> > &reversions, const Real T = 60.0);
     
     void calibrateVolatilitiesIterative(
-            const std::vector<boost::shared_ptr<BlackCalibrationHelper> > &helpers,
+            const std::vector<ext::shared_ptr<BlackCalibrationHelper> > &helpers,
             OptimizationMethod &method, const EndCriteria &endCriteria,
             const Constraint &constraint = Constraint(),
             const std::vector<Real> &weights = std::vector<Real>());
@@ -115,15 +115,15 @@ class Gsr : public Gaussian1dModel {
     // Calibrated Model functions
     Array params() const;
     void calibrate(
-            const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments,
+            const std::vector<ext::shared_ptr<CalibrationHelper> >& instruments,
             OptimizationMethod& method, const EndCriteria& endCriteria,
             const Constraint& constraint = Constraint(),
             const std::vector<Real>& weights = std::vector<Real>(),
             const std::vector<bool>& fixParameters = std::vector<bool>());
     void setParams(const Array& params);
     Real value(const Array& params,
-               const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments);
-    const boost::shared_ptr<Constraint>& constraint() const;
+               const std::vector<ext::shared_ptr<CalibrationHelper> >& instruments);
+    const ext::shared_ptr<Constraint>& constraint() const;
     EndCriteria::Type endCriteria() const;
     const Array& problemValues() const;
     Integer functionEvaluation() const;
@@ -172,7 +172,7 @@ class MarkovFunctional : public Gaussian1dModel {
                      const Handle<SwaptionVolatilityStructure> &swaptionVol,
                      const std::vector<Date> &swaptionExpiries,
                      const std::vector<Period> &swaptionTenors,
-                     const boost::shared_ptr<SwapIndex> &swapIndexBase,
+                     const ext::shared_ptr<SwapIndex> &swapIndexBase,
                      const MarkovFunctional::ModelSettings &modelSettings =
                          ModelSettings());
     
@@ -183,14 +183,14 @@ class MarkovFunctional : public Gaussian1dModel {
                      const std::vector<Real> &volatilities,
                      const Handle<OptionletVolatilityStructure> &capletVol,
                      const std::vector<Date> &capletExpiries,
-                     const boost::shared_ptr<IborIndex> &iborIndex,
+                     const ext::shared_ptr<IborIndex> &iborIndex,
                      const MarkovFunctional::ModelSettings &modelSettings =
                          ModelSettings());
                          
     const Array &volatility();
 
     void calibrate(
-        const std::vector<boost::shared_ptr<CalibrationHelper> > &helper,
+        const std::vector<ext::shared_ptr<CalibrationHelper> > &helper,
         OptimizationMethod &method, const EndCriteria &endCriteria,
         const Constraint &constraint = Constraint(),
         const std::vector<Real> &weights = std::vector<Real>(),
@@ -200,8 +200,8 @@ class MarkovFunctional : public Gaussian1dModel {
     Array params() const;
     void setParams(const Array& params);
     Real value(const Array& params,
-               const std::vector<boost::shared_ptr<CalibrationHelper> >& instruments);
-    const boost::shared_ptr<Constraint>& constraint() const;
+               const std::vector<ext::shared_ptr<CalibrationHelper> >& instruments);
+    const ext::shared_ptr<Constraint>& constraint() const;
     EndCriteria::Type endCriteria() const;
     const Array& problemValues() const;
     Integer functionEvaluation() const;
@@ -223,7 +223,7 @@ class Gaussian1dSwaptionEngine : public PricingEngine {
     #endif
   public:
     enum Probabilities { None, Naive, Digital };
-    Gaussian1dSwaptionEngine(const boost::shared_ptr<Gaussian1dModel> &model,
+    Gaussian1dSwaptionEngine(const ext::shared_ptr<Gaussian1dModel> &model,
                              const int integrationPoints = 64, const Real stddevs = 7.0,
                              const bool extrapolatePayoff = true,
                              const bool flatPayoffExtrapolation = false,
@@ -236,7 +236,7 @@ class Gaussian1dSwaptionEngine : public PricingEngine {
 %shared_ptr(Gaussian1dJamshidianSwaptionEngine)
 class Gaussian1dJamshidianSwaptionEngine : public PricingEngine {
   public:
-    Gaussian1dJamshidianSwaptionEngine(const boost::shared_ptr<Gaussian1dModel>& model);
+    Gaussian1dJamshidianSwaptionEngine(const ext::shared_ptr<Gaussian1dModel>& model);
 };
 
 %shared_ptr(Gaussian1dNonstandardSwaptionEngine)
@@ -247,7 +247,7 @@ class Gaussian1dNonstandardSwaptionEngine : public PricingEngine {
   public:
     enum Probabilities { None, Naive, Digital };
     Gaussian1dNonstandardSwaptionEngine(
-            const boost::shared_ptr<Gaussian1dModel> &model,
+            const ext::shared_ptr<Gaussian1dModel> &model,
             const int integrationPoints = 64, const Real stddevs = 7.0,
             const bool extrapolatePayoff = true,
             const bool flatPayoffExtrapolation = false,
@@ -270,7 +270,7 @@ class Gaussian1dFloatFloatSwaptionEngine : public PricingEngine {
                           Naive,
                           Digital };
     Gaussian1dFloatFloatSwaptionEngine(
-                const boost::shared_ptr<Gaussian1dModel> &model,
+                const ext::shared_ptr<Gaussian1dModel> &model,
                 const int integrationPoints = 64, const Real stddevs = 7.0,
                 const bool extrapolatePayoff = true,
                 const bool flatPayoffExtrapolation = false,

@@ -45,8 +45,8 @@ using QuantLib::MakeOIS;
 %shared_ptr(Swap)
 class Swap : public Instrument {
   public:
-    Swap(const std::vector<boost::shared_ptr<CashFlow> >& firstLeg,
-         const std::vector<boost::shared_ptr<CashFlow> >& secondLeg);
+    Swap(const std::vector<ext::shared_ptr<CashFlow> >& firstLeg,
+         const std::vector<ext::shared_ptr<CashFlow> >& secondLeg);
     Date startDate();
     Date maturityDate();
     const Leg & leg(Size i);
@@ -62,7 +62,7 @@ class VanillaSwap : public Swap {
                    const Schedule& fixedSchedule, Rate fixedRate,
                    const DayCounter& fixedDayCount,
                    const Schedule& floatSchedule,
-                   const boost::shared_ptr<IborIndex>& index,
+                   const ext::shared_ptr<IborIndex>& index,
                    Spread spread,
                    const DayCounter& floatingDayCount);
     Rate fairRate();
@@ -123,16 +123,16 @@ class MakeVanillaSwap {
         MakeVanillaSwap& withDiscountingTermStructure(
                               const Handle<YieldTermStructure>& discountCurve);
         MakeVanillaSwap& withPricingEngine(
-                              const boost::shared_ptr<PricingEngine>& engine);
+                              const ext::shared_ptr<PricingEngine>& engine);
 
         MakeVanillaSwap(const Period& swapTenor,
-                        const boost::shared_ptr<IborIndex>& index,
+                        const ext::shared_ptr<IborIndex>& index,
                         Rate fixedRate,
                         const Period& forwardStart);
         
         %extend{
-            boost::shared_ptr<VanillaSwap> makeVanillaSwap(){
-                return (boost::shared_ptr<VanillaSwap>)(* $self);
+            ext::shared_ptr<VanillaSwap> makeVanillaSwap(){
+                return (ext::shared_ptr<VanillaSwap>)(* $self);
             }
         }
 };
@@ -221,7 +221,7 @@ class NonstandardSwap : public Swap {
                        const std::vector<Real> &fixedRate,
                        const DayCounter &fixedDayCount,
                        const Schedule &floatSchedule,
-                       const boost::shared_ptr<IborIndex> &index,
+                       const ext::shared_ptr<IborIndex> &index,
                        const std::vector<Real> &gearing,
                        const std::vector<Spread> &spread,
                        const DayCounter &floatDayCount,
@@ -238,7 +238,7 @@ class NonstandardSwap : public Swap {
     const DayCounter &fixedDayCount() const;
 
     const Schedule &floatingSchedule() const;
-    const boost::shared_ptr<IborIndex> &iborIndex() const;
+    const ext::shared_ptr<IborIndex> &iborIndex() const;
     Spread spread() const;
     Real gearing() const;
     const std::vector<Spread>& spreads() const;
@@ -283,9 +283,9 @@ class AssetSwap : public Swap {
     #endif
   public:
     AssetSwap(bool payFixedRate,
-                 const boost::shared_ptr<Bond>& bond,
+                 const ext::shared_ptr<Bond>& bond,
                  Real bondCleanPrice,
-                 const boost::shared_ptr<IborIndex>& index,
+                 const ext::shared_ptr<IborIndex>& index,
                  Spread spread,
                  const Schedule& floatSchedule = Schedule(),
                  const DayCounter& floatingDayCount = DayCounter(),
@@ -299,9 +299,9 @@ class FloatFloatSwap : public Swap {
   public:
     FloatFloatSwap(VanillaSwap::Type type, const std::vector<Real> &nominal1,
         const std::vector<Real> &nominal2, const Schedule &schedule1,
-        const boost::shared_ptr<InterestRateIndex> &index1,
+        const ext::shared_ptr<InterestRateIndex> &index1,
         const DayCounter &dayCount1, const Schedule &schedule2,
-        const boost::shared_ptr<InterestRateIndex> &index2,
+        const ext::shared_ptr<InterestRateIndex> &index2,
         const DayCounter &dayCount2,
         const bool intermediateCapitalExchange = false,
         const bool finalCapitalExchange = false,
@@ -328,7 +328,7 @@ class OvernightIndexedSwap : public Swap {
             const Schedule& schedule,
             Rate fixedRate,
             const DayCounter& fixedDC,
-            const boost::shared_ptr<OvernightIndex>& index,
+            const ext::shared_ptr<OvernightIndex>& index,
             Spread spread = 0.0,
             Natural paymentLag = 0,
             BusinessDayConvention paymentAdjustment = Following,
@@ -341,7 +341,7 @@ class OvernightIndexedSwap : public Swap {
             const Schedule& schedule,
             Rate fixedRate,
             const DayCounter& fixedDC,
-            const boost::shared_ptr<OvernightIndex>& index,
+            const ext::shared_ptr<OvernightIndex>& index,
             Spread spread = 0.0,
             Natural paymentLag = 0,
             BusinessDayConvention paymentAdjustment = Following,
@@ -373,13 +373,13 @@ class OvernightIndexedSwap : public Swap {
 class MakeOIS {
       public:
         MakeOIS(const Period& swapTenor,
-                const boost::shared_ptr<OvernightIndex>& overnightIndex,
+                const ext::shared_ptr<OvernightIndex>& overnightIndex,
                 Rate fixedRate = Null<Rate>(),
                 const Period& fwdStart = 0*Days);
 
         %extend{
-            boost::shared_ptr<OvernightIndexedSwap> makeOIS(){
-                return (boost::shared_ptr<OvernightIndexedSwap>)(* $self);
+            ext::shared_ptr<OvernightIndexedSwap> makeOIS(){
+                return (ext::shared_ptr<OvernightIndexedSwap>)(* $self);
             }
         }
 
@@ -401,7 +401,7 @@ class MakeOIS {
                   const Handle<YieldTermStructure>& discountingTermStructure);
         MakeOIS& withTelescopicValueDates(bool telescopicValueDates);
         MakeOIS& withPricingEngine(
-                              const boost::shared_ptr<PricingEngine>& engine);
+                              const ext::shared_ptr<PricingEngine>& engine);
 };
 
 #if defined(SWIGPYTHON)
@@ -477,22 +477,22 @@ class OvernightIndexedSwapIndex : public SwapIndex {
               const Period& tenor,
               Natural settlementDays,
               Currency currency,
-              const boost::shared_ptr<OvernightIndex>& overnightIndex,
+              const ext::shared_ptr<OvernightIndex>& overnightIndex,
               bool telescopicValueDates = false);
     //! \name Inspectors
     //@{
-    boost::shared_ptr<OvernightIndex> overnightIndex() const;
+    ext::shared_ptr<OvernightIndex> overnightIndex() const;
     /*! \warning Relinking the term structure underlying the index will
                  not have effect on the returned swap.
     */
-    boost::shared_ptr<OvernightIndexedSwap> underlyingSwap(
+    ext::shared_ptr<OvernightIndexedSwap> underlyingSwap(
                                             const Date& fixingDate) const;
 };
 
 %inline %{
-    boost::shared_ptr<OvernightIndexedSwap> as_overnight_swap_index(
-                          const boost::shared_ptr<InterestRateIndex>& index) {
-        return boost::dynamic_pointer_cast<OvernightIndexedSwap>(index);
+    ext::shared_ptr<OvernightIndexedSwap> as_overnight_swap_index(
+                          const ext::shared_ptr<InterestRateIndex>& index) {
+        return ext::dynamic_pointer_cast<OvernightIndexedSwap>(index);
     }
 %}
 

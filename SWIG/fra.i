@@ -43,7 +43,7 @@ class ForwardRateAgreement : public Forward {
                     Position::Type type,
                     Rate strikeForwardRate,
                     Real notionalAmount,
-                    const boost::shared_ptr<IborIndex>& index,
+                    const ext::shared_ptr<IborIndex>& index,
                     const Handle<YieldTermStructure>& discountCurve =
                                            Handle<YieldTermStructure>(),
                     bool useIndexedCoupon = true);

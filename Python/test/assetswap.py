@@ -57,6 +57,9 @@ class AssetSwapTest(unittest.TestCase):
             self.swaptionVolatilityStructure, ql.GFunctionFactory.Standard, self.meanReversionQuote
         )
 
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
+
     def testConsistency(self):
         """Testing consistency between fair price and fair spread..."""
         bondCalendar = ql.TARGET()

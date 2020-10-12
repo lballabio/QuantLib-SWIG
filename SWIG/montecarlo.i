@@ -80,12 +80,12 @@ template <class GSG>
 class PathGenerator {
   public:
     typedef Sample<Path> sample_type;
-    PathGenerator(const boost::shared_ptr<StochasticProcess>&,
+    PathGenerator(const ext::shared_ptr<StochasticProcess>&,
                       Time length,
                       Size timeSteps,
                       const GSG& generator,
                       bool brownianBridge);
-    PathGenerator(const boost::shared_ptr<StochasticProcess>&,
+    PathGenerator(const ext::shared_ptr<StochasticProcess>&,
                       const TimeGrid& timeGrid,
                       const GSG& generator,
                       bool brownianBridge);
@@ -143,7 +143,7 @@ class GaussianMultiPathGenerator {
   public:
     %extend {
       GaussianMultiPathGenerator(
-                   const boost::shared_ptr<StochasticProcess>& process,
+                   const ext::shared_ptr<StochasticProcess>& process,
                    const std::vector<Time>& times,
                    const GaussianRandomSequenceGenerator& generator,
                    bool brownianBridge = false) {

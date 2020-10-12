@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2020 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -45,15 +46,15 @@ struct Settlement {
 %shared_ptr(Swaption)
 class Swaption : public Option {
   public:
-    Swaption(const boost::shared_ptr<VanillaSwap>& swap,
-             const boost::shared_ptr<Exercise>& exercise,
+    Swaption(const ext::shared_ptr<VanillaSwap>& swap,
+             const ext::shared_ptr<Exercise>& exercise,
              Settlement::Type type = Settlement::Physical,
              Settlement::Method settlementMethod = Settlement::PhysicalOTC);
     
     Settlement::Type settlementType() const;       
     Settlement::Method settlementMethod() const;
     VanillaSwap::Type type() const;
-    const boost::shared_ptr<VanillaSwap>& underlyingSwap() const;
+    const ext::shared_ptr<VanillaSwap>& underlyingSwap() const;
     
     //! implied volatility
     Volatility impliedVolatility(
@@ -70,6 +71,14 @@ class Swaption : public Option {
         Real vega() {
             return self->result<Real>("vega");
         }
+
+        Real delta() {
+            return self->result<Real>("delta");
+        }
+
+        Real annuity() {
+            return self->result<Real>("annuity");
+        }
     }
 };
 
@@ -80,17 +89,17 @@ using QuantLib::BasketGeneratingEngine;
 %shared_ptr(NonstandardSwaption)
 class NonstandardSwaption : public Instrument {
   public:
-    NonstandardSwaption(const boost::shared_ptr<NonstandardSwap>& swap,
-                const boost::shared_ptr<Exercise>& exercise,
+    NonstandardSwaption(const ext::shared_ptr<NonstandardSwap>& swap,
+                const ext::shared_ptr<Exercise>& exercise,
                 Settlement::Type type = Settlement::Physical,
                 Settlement::Method settlementMethod = Settlement::PhysicalOTC);
                 
-    const boost::shared_ptr<NonstandardSwap> &underlyingSwap() const;
+    const ext::shared_ptr<NonstandardSwap> &underlyingSwap() const;
 
     %extend {                
-        std::vector<boost::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
-            boost::shared_ptr<SwapIndex> swapIndex,
-            boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+            ext::shared_ptr<SwapIndex> swapIndex,
+            ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
             std::string typeStr) {
 
             BasketGeneratingEngine::CalibrationBasketType type;
@@ -101,9 +110,9 @@ class NonstandardSwaption : public Instrument {
             else
                 QL_FAIL("type " << typeStr << "unknown.");
 
-            std::vector<boost::shared_ptr<BlackCalibrationHelper> > hs =
+            std::vector<ext::shared_ptr<BlackCalibrationHelper> > hs =
                 self->calibrationBasket(swapIndex, swaptionVolatility, type);
-            std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+            std::vector<ext::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
             for (Size i=0; i<hs.size(); ++i)
                 helpers[i] = hs[i];
             return helpers;
@@ -119,18 +128,18 @@ class NonstandardSwaption : public Instrument {
 %shared_ptr(FloatFloatSwaption)
 class FloatFloatSwaption : public Instrument {
 public:
-    FloatFloatSwaption(const boost::shared_ptr<FloatFloatSwap>& swap,
-                const boost::shared_ptr<Exercise>& exercise,
+    FloatFloatSwaption(const ext::shared_ptr<FloatFloatSwap>& swap,
+                const ext::shared_ptr<Exercise>& exercise,
                 Settlement::Type delivery = Settlement::Physical,
                 Settlement::Method settlementMethod = Settlement::PhysicalOTC);
 
-    const boost::shared_ptr<FloatFloatSwap> &underlyingSwap();
+    const ext::shared_ptr<FloatFloatSwap> &underlyingSwap();
     
     %extend {
 
-        std::vector<boost::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
-        boost::shared_ptr<SwapIndex> swapIndex,
-        boost::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > calibrationBasket(
+        ext::shared_ptr<SwapIndex> swapIndex,
+        ext::shared_ptr<SwaptionVolatilityStructure> swaptionVolatility,
         std::string typeStr) {
 
         BasketGeneratingEngine::CalibrationBasketType type;
@@ -141,9 +150,9 @@ public:
         else
             QL_FAIL("type " << typeStr << "unknown.");
 
-        std::vector<boost::shared_ptr<BlackCalibrationHelper> > hs =
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > hs =
             self->calibrationBasket(swapIndex, swaptionVolatility, type);
-        std::vector<boost::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
+        std::vector<ext::shared_ptr<BlackCalibrationHelper> > helpers(hs.size());
         for (Size i=0; i<hs.size(); ++i)
             helpers[i] = hs[i];
         return helpers;

@@ -33,8 +33,9 @@ using QuantLib::HestonSLVProcess;
 %shared_ptr(HestonSLVProcess);
 class HestonSLVProcess : public StochasticProcess {
   public:
-    HestonSLVProcess(const boost::shared_ptr<HestonProcess>& hestonProcess,
-                     const boost::shared_ptr<LocalVolTermStructure>& leverageFct);
+    HestonSLVProcess(const ext::shared_ptr<HestonProcess>& hestonProcess,
+                     const ext::shared_ptr<LocalVolTermStructure>& leverageFct,
+                     const Real mixingFactor = 1.0);
 };
 
 
@@ -78,23 +79,24 @@ class HestonSLVMCModel {
   public:
     %extend {
         HestonSLVMCModel(
-           const boost::shared_ptr<LocalVolTermStructure>& localVol,
-           const boost::shared_ptr<HestonModel>& model,
-           const boost::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
+           const ext::shared_ptr<LocalVolTermStructure>& localVol,
+           const ext::shared_ptr<HestonModel>& model,
+           const ext::shared_ptr<BrownianGeneratorFactory>& brownianGeneratorFactory,
            const Date& endDate,
            Size timeStepsPerYear = 365,
            Size nBins = 201,
            Size calibrationPaths = (1 << 15),
-           const std::vector<Date>& mandatoryDates = std::vector<Date>()) {
+           const std::vector<Date>& mandatoryDates = std::vector<Date>(),
+           Real mixingFactor = 1.0) {
             return new HestonSLVMCModel(
                 Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(model),
                 brownianGeneratorFactory, endDate, timeStepsPerYear,
-                nBins, calibrationPaths, mandatoryDates);
+                nBins, calibrationPaths, mandatoryDates, mixingFactor);
         }
     }
-    boost::shared_ptr<HestonProcess> hestonProcess() const;
-    boost::shared_ptr<LocalVolTermStructure> localVol() const;
-    boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
+    ext::shared_ptr<HestonProcess> hestonProcess() const;
+    ext::shared_ptr<LocalVolTermStructure> localVol() const;
+    ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 };
 
 
@@ -153,20 +155,21 @@ class HestonSLVFDMModel {
   public:
     %extend {
         HestonSLVFDMModel(
-            const boost::shared_ptr<LocalVolTermStructure>& localVol,
-            const boost::shared_ptr<HestonModel>& model,
+            const ext::shared_ptr<LocalVolTermStructure>& localVol,
+            const ext::shared_ptr<HestonModel>& model,
             const Date& endDate,
             const HestonSLVFokkerPlanckFdmParams& params,
             const bool logging = false,
-            const std::vector<Date>& mandatoryDates = std::vector<Date>()) {
+            const std::vector<Date>& mandatoryDates = std::vector<Date>(),
+            Real mixingFactor = 1.0) {
             return new HestonSLVFDMModel(
                 Handle<LocalVolTermStructure>(localVol), Handle<HestonModel>(model),
-                endDate, params, logging, mandatoryDates);
+                endDate, params, logging, mandatoryDates, mixingFactor);
         }
     }
-    boost::shared_ptr<HestonProcess> hestonProcess() const;
-    boost::shared_ptr<LocalVolTermStructure> localVol() const;
-    boost::shared_ptr<LocalVolTermStructure> leverageFunction() const;
+    ext::shared_ptr<HestonProcess> hestonProcess() const;
+    ext::shared_ptr<LocalVolTermStructure> localVol() const;
+    ext::shared_ptr<LocalVolTermStructure> leverageFunction() const;
 };
 
 

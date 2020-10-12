@@ -156,8 +156,8 @@ class OptionletStripper1 : public StrippedOptionletBase {
     %feature("kwargs") OptionletStripper1;
     #endif
   public:
-    OptionletStripper1(const boost::shared_ptr<CapFloorTermVolSurface>& parVolSurface,
-                       const boost::shared_ptr<IborIndex> &index,
+    OptionletStripper1(const ext::shared_ptr<CapFloorTermVolSurface>& parVolSurface,
+                       const ext::shared_ptr<IborIndex> &index,
                        Rate switchStrikes = Null<Rate>(),
                        Real accuracy = 1.0e-6, Natural maxIter = 100,
                        const Handle<YieldTermStructure> &discount =
@@ -179,7 +179,7 @@ using QuantLib::StrippedOptionletAdapter;
 %shared_ptr(StrippedOptionletAdapter);
 class StrippedOptionletAdapter : public OptionletVolatilityStructure {
   public:
-    StrippedOptionletAdapter(const boost::shared_ptr<StrippedOptionletBase>&);
+    StrippedOptionletAdapter(const ext::shared_ptr<StrippedOptionletBase>&);
 };
  
 #endif

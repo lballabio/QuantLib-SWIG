@@ -58,7 +58,7 @@ class FaceValueClaim : public Claim {
 %shared_ptr(FaceValueAccrualClaim)
 class FaceValueAccrualClaim : public Claim {
   public:
-    FaceValueAccrualClaim(const boost::shared_ptr<Bond>& bond);
+    FaceValueAccrualClaim(const ext::shared_ptr<Bond>& bond);
 };
 
 
@@ -90,8 +90,8 @@ class CreditDefaultSwap : public Instrument {
                          bool paysAtDefaultTime = true,
                          const Date& protectionStart = Date(),
                          const Date& upfrontDate = Date(),
-                         const boost::shared_ptr<Claim>& claim =
-                                                    boost::shared_ptr<Claim>(),
+                         const ext::shared_ptr<Claim>& claim =
+                                                    ext::shared_ptr<Claim>(),
                          const DayCounter& lastPeriodDayCounter = DayCounter(),
                          const bool rebatesAccrual = true);
     Protection::Side side() const;
@@ -125,7 +125,7 @@ class CreditDefaultSwap : public Instrument {
     Rate conventionalSpread(Real conventionalRecovery,
             const Handle<YieldTermStructure>& discountCurve,
             const DayCounter& dayCounter) const;
-    std::vector<boost::shared_ptr<CashFlow> > coupons();
+    std::vector<ext::shared_ptr<CashFlow> > coupons();
 };
 
 
@@ -169,8 +169,8 @@ class IsdaCdsEngine : public PricingEngine {
 %shared_ptr(CdsOption)
 class CdsOption : public Option {
     public:
-        CdsOption(const boost::shared_ptr<CreditDefaultSwap>& swap,
-                  const boost::shared_ptr<Exercise>& exercise,
+        CdsOption(const ext::shared_ptr<CreditDefaultSwap>& swap,
+                  const ext::shared_ptr<Exercise>& exercise,
                   bool knocksOut = true);
         Rate atmRate() const;
         Real riskyAnnuity() const;

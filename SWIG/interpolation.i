@@ -236,10 +236,10 @@ class SafeSABRInterpolation {
                           bool nuIsFixed,
                           bool rhoIsFixed,
                           bool vegaWeighted = true,
-                          const boost::shared_ptr<EndCriteria>& endCriteria
-                                  = boost::shared_ptr<EndCriteria>(),
-                          const boost::shared_ptr<OptimizationMethod>& optMethod
-                                  = boost::shared_ptr<OptimizationMethod>(),
+                          const ext::shared_ptr<EndCriteria>& endCriteria
+                                  = ext::shared_ptr<EndCriteria>(),
+                          const ext::shared_ptr<OptimizationMethod>& optMethod
+                                  = ext::shared_ptr<OptimizationMethod>(),
                           const Real errorAccept=0.0020,
                           const bool useMaxError=false,
                           const Size maxGuesses=50,
@@ -284,10 +284,10 @@ class SafeSABRInterpolation {
                           bool nuIsFixed,
                           bool rhoIsFixed,
                           bool vegaWeighted = true,
-                          const boost::shared_ptr<EndCriteria>& endCriteria
-                                  = boost::shared_ptr<EndCriteria>(),
-                          const boost::shared_ptr<OptimizationMethod>& optMethod
-                                  = boost::shared_ptr<OptimizationMethod>(),
+                          const ext::shared_ptr<EndCriteria>& endCriteria
+                                  = ext::shared_ptr<EndCriteria>(),
+                          const ext::shared_ptr<OptimizationMethod>& optMethod
+                                  = ext::shared_ptr<OptimizationMethod>(),
                           const Real errorAccept=0.0020,
                           const bool useMaxError=false,
                           const Size maxGuesses=50,

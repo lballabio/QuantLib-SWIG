@@ -70,9 +70,9 @@ class Bond : public Instrument {
     Date startDate() const;
     Date maturityDate() const;
     Date issueDate() const;
-    std::vector<boost::shared_ptr<CashFlow> > cashflows() const;
-    std::vector<boost::shared_ptr<CashFlow> > redemptions() const;
-    boost::shared_ptr<CashFlow> redemption() const;
+    std::vector<ext::shared_ptr<CashFlow> > cashflows() const;
+    std::vector<ext::shared_ptr<CashFlow> > redemptions() const;
+    ext::shared_ptr<CashFlow> redemption() const;
     Calendar calendar() const;
     std::vector<Real> notionals() const;
     Real notional(Date d = Date()) const;
@@ -109,15 +109,15 @@ class Bond : public Instrument {
 
 %inline %{
     Real cleanPriceFromZSpread(
-                   const boost::shared_ptr<Bond>& bond,
-                   const boost::shared_ptr<YieldTermStructure>& discountCurve,
+                   const Bond& bond,
+                   const ext::shared_ptr<YieldTermStructure>& discountCurve,
                    Spread zSpread,
                    const DayCounter& dc,
                    Compounding compounding,
                    Frequency freq,
                    const Date& settlementDate = Date()) {
         return QuantLib::BondFunctions::cleanPrice(
-                                  *(boost::dynamic_pointer_cast<Bond>(bond)),
+                                  bond,
                                   discountCurve,
                                   zSpread, dc, compounding,
                                   freq, settlementDate);
@@ -203,7 +203,7 @@ class FixedRateBond : public Bond {
           bool exCouponEndOfMonth = false);
     %extend {
         //! convenience wrapper around constructor taking rates
-        static boost::shared_ptr<FixedRateBond> from_rates(
+        static ext::shared_ptr<FixedRateBond> from_rates(
                               Integer settlementDays,
                               Real faceAmount,
                               const Schedule &schedule,
@@ -217,7 +217,7 @@ class FixedRateBond : public Bond {
                               const Calendar& exCouponCalendar = Calendar(),
                               BusinessDayConvention exCouponConvention = Unadjusted,
                               bool exCouponEndOfMonth = false) {
-            return boost::shared_ptr<FixedRateBond>(
+            return ext::shared_ptr<FixedRateBond>(
                 new FixedRateBond(settlementDays, faceAmount, schedule, coupons,
                                   paymentDayCounter, paymentConvention,
                                   redemption, issueDate, paymentCalendar,
@@ -225,7 +225,7 @@ class FixedRateBond : public Bond {
                                   exCouponConvention, exCouponEndOfMonth));
         }
         //! convenience wrapper around constructor taking interest rates
-        static boost::shared_ptr<FixedRateBond> from_interest_rates(
+        static ext::shared_ptr<FixedRateBond> from_interest_rates(
                               Integer settlementDays,
                               Real faceAmount,
                               const Schedule& schedule,
@@ -238,7 +238,7 @@ class FixedRateBond : public Bond {
                               const Calendar& exCouponCalendar = Calendar(),
                               BusinessDayConvention exCouponConvention = Unadjusted,
                               bool exCouponEndOfMonth = false) {
-            return boost::shared_ptr<FixedRateBond>(
+            return ext::shared_ptr<FixedRateBond>(
                 new FixedRateBond(settlementDays, faceAmount, schedule, coupons,
                                   paymentConvention, redemption,
                                   issueDate, paymentCalendar,
@@ -246,7 +246,7 @@ class FixedRateBond : public Bond {
                                   exCouponConvention, exCouponEndOfMonth));
         }
         //! convenience wrapper around constructor doing internal schedule calculation
-        static boost::shared_ptr<FixedRateBond> from_date_info(
+        static ext::shared_ptr<FixedRateBond> from_date_info(
                               Integer settlementDays,
                               const Calendar& couponCalendar,
                               Real faceAmount,
@@ -267,7 +267,7 @@ class FixedRateBond : public Bond {
                               const Calendar& exCouponCalendar = Calendar(),
                               const BusinessDayConvention exCouponConvention = Unadjusted,
                               bool exCouponEndOfMonth = false) {
-            return boost::shared_ptr<FixedRateBond>(
+            return ext::shared_ptr<FixedRateBond>(
                 new FixedRateBond(settlementDays, couponCalendar, faceAmount,
                                   startDate, maturityDate, tenor,
                                   coupons, accrualDayCounter, accrualConvention,
@@ -323,12 +323,12 @@ class AmortizingFloatingRateBond : public Bond {
         Size settlementDays,
         const std::vector<Real>& notional,
         const Schedule& schedule,
-        const boost::shared_ptr<IborIndex>& index,
+        const ext::shared_ptr<IborIndex>& index,
         const DayCounter& accrualDayCounter,
         BusinessDayConvention paymentConvention = Following,
         Size fixingDays = Null<Size>(),
         const std::vector<Real>& gearings = std::vector<Real>(1, 1.0),
-        const std::vector<Spread>& spreads = std::vector<Spread>(1, 1.0),
+        const std::vector<Spread>& spreads = std::vector<Spread>(1, 0.0),
         const std::vector<Rate>& caps = std::vector<Rate>(),
         const std::vector<Rate>& floors = std::vector<Rate>(),
         bool inArrears = false,
@@ -350,7 +350,7 @@ class FloatingRateBond : public Bond {
         Size settlementDays,
         Real faceAmount,
         const Schedule& schedule,
-        const boost::shared_ptr<IborIndex>& index,
+        const ext::shared_ptr<IborIndex>& index,
         const DayCounter& paymentDayCounter,
         BusinessDayConvention paymentConvention = Following,
         Size fixingDays = Null<Size>(),
@@ -381,7 +381,7 @@ class CmsRateBond : public Bond {
     CmsRateBond(Size settlementDays,
                    Real faceAmount,
                    const Schedule& schedule,
-                   const boost::shared_ptr<SwapIndex>& index,
+                   const ext::shared_ptr<SwapIndex>& index,
                    const DayCounter& paymentDayCounter,
                    BusinessDayConvention paymentConvention,
                    Natural fixingDays,
@@ -415,7 +415,7 @@ class CallableBond : public Bond {
   private:
     CallableBond();
   public:
-    const std::vector<boost::shared_ptr<Callability> >& callability() const;
+    const std::vector<ext::shared_ptr<Callability> >& callability() const;
 
     Volatility impliedVolatility(Real targetValue,
                                  const Handle<YieldTermStructure>& discountCurve,
@@ -472,7 +472,7 @@ class CallableFixedRateBond : public CallableBond {
             BusinessDayConvention paymentConvention,
             Real redemption,
             Date issueDate,
-            const std::vector<boost::shared_ptr<Callability> >& putCallSchedule,
+            const std::vector<ext::shared_ptr<Callability> >& putCallSchedule,
             const Period& exCouponPeriod = Period(),
             const Calendar& exCouponCalendar = Calendar(),
             BusinessDayConvention exCouponConvention = Unadjusted,
@@ -495,8 +495,8 @@ class CallableZeroCouponBond : public CallableBond {
             BusinessDayConvention paymentConvention = Following,
             Real redemption = 100.0,
             const Date& issueDate = Date(),
-            const std::vector<boost::shared_ptr<Callability> >& putCallSchedule
-                           = std::vector<boost::shared_ptr<Callability> >());
+            const std::vector<ext::shared_ptr<Callability> >& putCallSchedule
+                           = std::vector<ext::shared_ptr<Callability> >());
 };
 
 
@@ -504,12 +504,12 @@ class CallableZeroCouponBond : public CallableBond {
 class TreeCallableFixedRateBondEngine : public PricingEngine {
   public:
     TreeCallableFixedRateBondEngine(
-                         const boost::shared_ptr<ShortRateModel>& model,
+                         const ext::shared_ptr<ShortRateModel>& model,
                          Size timeSteps,
                          const Handle<YieldTermStructure>& termStructure =
                                                 Handle<YieldTermStructure>());
     TreeCallableFixedRateBondEngine(
-                         const boost::shared_ptr<ShortRateModel>& model,
+                         const ext::shared_ptr<ShortRateModel>& model,
                          const TimeGrid& grid,
                          const Handle<YieldTermStructure>& termStructure =
                                                 Handle<YieldTermStructure>());
@@ -539,7 +539,7 @@ class CPIBond : public Bond {
             bool growthOnly,
             Real baseCPI,
             const Period& observationLag,
-            const boost::shared_ptr<ZeroInflationIndex>& cpiIndex,
+            const ext::shared_ptr<ZeroInflationIndex>& cpiIndex,
             CPI::InterpolationType observationInterpolation,
             const Schedule& schedule,
             const std::vector<Rate>& coupons,
