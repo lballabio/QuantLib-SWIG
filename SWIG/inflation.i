@@ -687,6 +687,7 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
                                    const Period& lag,
                                    Frequency frequency,
                                    bool indexIsInterpolated,
+                                   const Handle<YieldTermStructure>& yTS,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator &interpolator
@@ -710,6 +711,7 @@ class InterpolatedYoYInflationCurve : public YoYInflationTermStructure {
                                    const Period& lag,
                                    Frequency frequency,
                                    bool indexIsInterpolated,
+                                   const Handle<YieldTermStructure>& yTS,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator &interpolator
@@ -858,7 +860,6 @@ class YoYOptionletHelper : public BootstrapHelper<YoYOptionletVolatilitySurface>
             return new YoYOptionletHelper(price, notional, capFloorType, lag, yoyDayCounter, paymentCalendar, fixingDays, index, strike, n, engine);
          }
      }
-    void setTermStructure(YoYOptionletVolatilitySurface*);
 };
 
 %{
