@@ -102,6 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actual360.cs" />
+    <Compile Include="Actual364.cs" />
     <Compile Include="Actual365Fixed.cs" />
     <Compile Include="ActualActual.cs" />
     <Compile Include="AmericanExercise.cs" />
@@ -136,6 +137,7 @@
     <Compile Include="AssetSwap.cs" />
     <Compile Include="ASX.cs" />
     <Compile Include="ATSCurrency.cs" />
+    <Compile Include="AUCPI.cs" />
     <Compile Include="AUDCurrency.cs" />
     <Compile Include="AUDLibor.cs" />
     <Compile Include="Australia.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Bibor6M.cs" />
     <Compile Include="Bibor9M.cs" />
     <Compile Include="Bibor1Y.cs" />
+    <Compile Include="Bicubic.cs" />
     <Compile Include="BicubicSpline.cs" />
     <Compile Include="BiCGstab.cs" />
     <Compile Include="BilinearInterpolation.cs" />
@@ -272,6 +275,7 @@
     <Compile Include="CallabilitySchedule.cs" />
     <Compile Include="CallableBond.cs" />
     <Compile Include="CallableFixedRateBond.cs" />
+    <Compile Include="CallableZeroCouponBond.cs" />
     <Compile Include="Canada.cs" />
     <Compile Include="Cap.cs" />
     <Compile Include="CapFloor.cs" />
@@ -322,6 +326,7 @@
     <Compile Include="ConstantOptionletVolatility.cs" />
     <Compile Include="ConstantParameter.cs" />
     <Compile Include="ConstantSwaptionVolatility.cs" />
+    <Compile Include="ConstantYoYOptionletVolatility.cs" />
     <Compile Include="Constraint.cs" />
     <Compile Include="ContinuousArithmeticAsianLevyEngine.cs" />
     <Compile Include="ContinuousAveragingAsianOption.cs" />
@@ -334,6 +339,7 @@
     <Compile Include="COSHestonEngine.cs" />
     <Compile Include="CostFunctionDelegate.cs" />
     <Compile Include="Coupon.cs" />
+    <Compile Include="CoxIngersollRoss.cs" />
     <Compile Include="CPI.cs" />
     <Compile Include="CPIBond.cs" />
     <Compile Include="CPICoupon.cs" />
@@ -474,6 +480,7 @@
     <Compile Include="ExponentialJump1dMesher.cs" />
     <Compile Include="ExponentialSplinesFitting.cs" />
     <Compile Include="ExtOUWithJumpsProcess.cs" />
+    <Compile Include="ExtendedCoxIngersollRoss.cs" />
     <Compile Include="ExtendedOrnsteinUhlenbeckProcess.cs" />
     <Compile Include="FaceValueAccrualClaim.cs" />
     <Compile Include="FaceValueClaim.cs" />
@@ -704,6 +711,7 @@
     <Compile Include="ImpliedTermStructure.cs" />
     <Compile Include="IncrementalStatistics.cs" />
     <Compile Include="Index.cs" />
+    <Compile Include="IndexedCashFlow.cs" />
     <Compile Include="IndexManager.cs" />
     <Compile Include="India.cs" />
     <Compile Include="Indonesia.cs" />
@@ -718,6 +726,8 @@
     <Compile Include="InterestRate.cs" />
     <Compile Include="InterestRateIndex.cs" />
     <Compile Include="InterestRateVector.cs" />
+    <Compile Include="InterpolatedYoYInflationOptionletStripper.cs" />
+    <Compile Include="InterpolatedYoYInflationOptionletVolatilityCurve.cs" />
     <Compile Include="IntervalPrice.cs" />
     <Compile Include="IntervalPriceTimeSeries.cs" />
     <Compile Include="IntervalPriceVector.cs" />
@@ -754,6 +764,8 @@
     <Compile Include="JpyLiborSwapIsdaFixPm.cs" />
     <Compile Include="JuQuadraticApproximationEngine.cs" />
     <Compile Include="KahaleSmileSection.cs" />
+    <Compile Include="KerkhofSeasonality.cs" />
+    <Compile Include="KInterpolatedYoYInflationOptionletVolatilitySurface.cs" />
     <Compile Include="KirkEngine.cs" />
     <Compile Include="KirkSpreadOptionEngine.cs" />
     <Compile Include="KlugeExtOUProcess.cs" />
@@ -878,6 +890,7 @@
     <Compile Include="NoConstraint.cs" />
     <Compile Include="NodePair.cs" />
     <Compile Include="NodeVector.cs" />
+    <Compile Include="NoExceptLocalVolSurface.cs" />
     <Compile Include="NOKCurrency.cs" />
     <Compile Include="NonCentralCumulativeChiSquareDistribution.cs" />
     <Compile Include="NonhomogeneousBoundaryConstraint.cs" />
@@ -914,6 +927,7 @@
     <Compile Include="OvernightIndexedSwapIndex.cs" />
     <Compile Include="OvernightIndexFuture.cs" />
     <Compile Include="OvernightIndexFutureRateHelper.cs" />
+    <Compile Include="PairDoubleVector.cs" />
     <Compile Include="Parabolic.cs" />
     <Compile Include="Parameter.cs" />
     <Compile Include="ParkinsonSigma.cs" />
@@ -988,6 +1002,7 @@
     <Compile Include="RelinkableSwaptionVolatilityStructureHandle.cs" />
     <Compile Include="RelinkableYieldTermStructureHandle.cs" />
     <Compile Include="RelinkableYoYInflationTermStructureHandle.cs" />
+    <Compile Include="RelinkableYoYOptionletVolatilitySurface.cs" />
     <Compile Include="RelinkableZeroInflationTermStructureHandle.cs" />
     <Compile Include="RichardsonExtrapolation.cs" />
     <Compile Include="Ridder.cs" />
@@ -1001,6 +1016,7 @@
     <Compile Include="RUBCurrency.cs" />
     <Compile Include="RungeKutta.cs" />
     <Compile Include="Russia.cs" />
+    <Compile Include="SABRInterpolation.cs" />
     <Compile Include="SabrSmileSection.cs" />
     <Compile Include="SalvagingAlgorithm.cs" />
     <Compile Include="SampleArray.cs" />
@@ -1040,6 +1056,7 @@
     <Compile Include="SKKCurrency.cs" />
     <Compile Include="Slovakia.cs" />
     <Compile Include="SmileSection.cs" />
+    <Compile Include="SmileSectionVector.cs" />
     <Compile Include="SobolBrownianBridgeRsg.cs" />
     <Compile Include="SobolBrownianGenerator.cs" />
     <Compile Include="SobolBrownianGeneratorFactory.cs" />
@@ -1083,6 +1100,7 @@
     <Compile Include="SwapSpreadIndex.cs" />
     <Compile Include="Swaption.cs" />
     <Compile Include="SwaptionHelper.cs" />
+    <Compile Include="SwaptionVolatilityCube.cs" />
     <Compile Include="SwaptionVolatilityDiscrete.cs" />
     <Compile Include="SwaptionVolatilityMatrix.cs" />
     <Compile Include="SwaptionVolatilityStructure.cs" />
@@ -1090,19 +1108,19 @@
     <Compile Include="SwaptionVolCube1.cs" />
     <Compile Include="SwaptionVolCube2.cs" />
     <Compile Include="Sweden.cs" />
-    <Compile Include="SWIGTYPE_p_boost__functionT_double_fdoubleF_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_bool_t.cs" />
     <Compile Include="SWIGTYPE_p_boost__optionalT_VolatilityType_t.cs" />
-    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_Bond_t.cs" />
-    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_PlainVanillaPayoff_t.cs" />
-    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SmileSection_t.cs" />
-    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_SwaptionHelper_t.cs" />
-    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_Swaption_t.cs" />
-    <Compile Include="SWIGTYPE_p_boost__shared_ptrT_VanillaSwap_t.cs" />
     <Compile Include="SWIGTYPE_p_DisposableT_Array_t.cs" />
     <Compile Include="SWIGTYPE_p_EndCriteria__Type.cs" />
+    <Compile Include="SWIGTYPE_p_ext__functionT_double_fdoubleF_t.cs" />
+    <Compile Include="SWIGTYPE_p_ext__shared_ptrT_Bond_t.cs" />
+    <Compile Include="SWIGTYPE_p_ext__shared_ptrT_PlainVanillaPayoff_t.cs" />
+    <Compile Include="SWIGTYPE_p_ext__shared_ptrT_SwaptionHelper_t.cs" />
+    <Compile Include="SWIGTYPE_p_ext__shared_ptrT_Swaption_t.cs" />
+    <Compile Include="SWIGTYPE_p_ext__shared_ptrT_VanillaSwap_t.cs" />
     <Compile Include="SWIGTYPE_p_MatrixMultiplicationProxy.cs" />
     <Compile Include="SWIGTYPE_p_std__pairT_std__size_t_std__size_t_t.cs" />
+    <Compile Include="SWIGTYPE_p_std__pairT_std__vectorT_Date_t_std__vectorT_double_t_t.cs" />
     <Compile Include="SWIGTYPE_p_std__size_t.cs" />
     <Compile Include="SWIGTYPE_p_std__vectorT_std__vectorT_double_t_t.cs" />
     <Compile Include="SwingExercise.cs" />
@@ -1116,6 +1134,7 @@
     <Compile Include="THBCurrency.cs" />
     <Compile Include="THBFIX.cs" />
     <Compile Include="Thirty360.cs" />
+    <Compile Include="Thirty365.cs" />
     <Compile Include="Tibor.cs" />
     <Compile Include="TimeBasket.cs" />
     <Compile Include="TimeGrid.cs" />
@@ -1176,9 +1195,13 @@
     <Compile Include="YearOnYearInflationSwapHelper.cs" />
     <Compile Include="YieldTermStructure.cs" />
     <Compile Include="YieldTermStructureHandle.cs" />
+    <Compile Include="YoYCapFloorTermPriceSurface.cs" />
     <Compile Include="YoYHelper.cs" />
     <Compile Include="YoYHelperVector.cs" />
+    <Compile Include="YoYInflationBachelierCapFloorEngine.cs" />
+    <Compile Include="YoYInflationBlackCapFloorEngine.cs" />
     <Compile Include="YoYInflationCap.cs" />
+    <Compile Include="YoYInflationCapFloorTermPriceSurface.cs" />
     <Compile Include="YoYInflationCapFloor.cs" />
     <Compile Include="YoYInflationCollar.cs" />
     <Compile Include="YoYInflationCurve.cs" />
@@ -1186,12 +1209,24 @@
     <Compile Include="YoYInflationIndex.cs" />
     <Compile Include="YoYInflationTermStructure.cs" />
     <Compile Include="YoYInflationTermStructureHandle.cs" />
+    <Compile Include="YoYInflationUnitDisplacedBlackCapFloorEngine.cs" />
+    <Compile Include="YoYOptionHelper.cs" />
+    <Compile Include="YoYOptionHelperVector.cs" />
+    <Compile Include="YoYOptionletHelper.cs" />
+    <Compile Include="YoYOptionletStripper.cs" />
+    <Compile Include="YoYOptionletVolatilitySurface.cs" />
+    <Compile Include="YoYOptionletVolatilitySurfaceHandle.cs" />
     <Compile Include="YYEUHICP.cs" />
+    <Compile Include="YYEUHICPr.cs" />
     <Compile Include="YYEUHICPXT.cs" />
     <Compile Include="YYFRHICP.cs" />
+    <Compile Include="YYFRHICPr.cs" />
     <Compile Include="YYUKRPI.cs" />
+    <Compile Include="YYUKRPIr.cs" />
     <Compile Include="YYUSCPI.cs" />
+    <Compile Include="YYUSCPIr.cs" />
     <Compile Include="YYZACPI.cs" />
+    <Compile Include="YYZACPIr.cs" />
     <Compile Include="ZabrFullFd.cs" />
     <Compile Include="ZabrFullFdInterpolatedSmileSection.cs" />
     <Compile Include="ZabrFullFdSmileSection.cs" />
