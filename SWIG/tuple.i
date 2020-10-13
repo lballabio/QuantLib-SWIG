@@ -23,16 +23,6 @@
 
 %include common.i
 
-%{
-#include <boost/tuple/tuple.hpp>
-  namespace QuantLib {
-    namespace ext {
-		   using boost::tuple;
-		   using boost::get;
-		   }
-  };
-%}
-
 namespace ext {
   template <typename T1=void, typename T2=void, typename T3=void>
   struct tuple;
