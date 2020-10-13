@@ -132,8 +132,7 @@ class IborIndex : public InterestRateIndex {
     BusinessDayConvention businessDayConvention() const;
     bool endOfMonth() const;
     Handle<YieldTermStructure> forwardingTermStructure() const;
-    ext::shared_ptr<IborIndex> clone(
-                                   const Handle<YieldTermStructure>&) const;
+    ext::shared_ptr<IborIndex> clone(const Handle<YieldTermStructure>&) const;
 };
 
 %inline %{
@@ -154,6 +153,11 @@ class OvernightIndex : public IborIndex {
                    const DayCounter& dayCounter,
                    const Handle<YieldTermStructure>& h =
                                     Handle<YieldTermStructure>());
+    %extend {
+        ext::shared_ptr<OvernightIndex> clone(const Handle<YieldTermStructure>& h) {
+            return ext::dynamic_pointer_cast<OvernightIndex>(self->clone(h));
+        }
+    }
 };
 
 %{
