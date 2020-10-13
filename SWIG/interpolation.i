@@ -4,7 +4,7 @@
  Copyright (C) 2002, 2003 Ferdinando Ametrano
  Copyright (C) 2003, 2004, 2008 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
- Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2018, 2020 Matthias Lungwitz
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -152,6 +152,7 @@ using QuantLib::ForwardFlat;
 using QuantLib::Linear;
 using QuantLib::LogLinear;
 using QuantLib::Cubic;
+using QuantLib::Bicubic;
 using QuantLib::ConvexMonotone;
 
 class MonotonicCubic : public Cubic {
@@ -204,6 +205,7 @@ struct ForwardFlat {};
 struct Linear {};
 struct LogLinear {};
 struct Cubic {};
+struct Bicubic {};
 struct MonotonicCubic {};
 struct DefaultLogCubic {};
 struct MonotonicLogCubic {};
