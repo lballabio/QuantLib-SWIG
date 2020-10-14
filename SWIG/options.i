@@ -1930,7 +1930,8 @@ class FdHestonDoubleBarrierEngine : public PricingEngine {
             Size vGrid = 50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
             const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>());
+                = ext::shared_ptr<LocalVolTermStructure>(),
+            const Real mixingFactor = 1.0);
 };
 
 %{
