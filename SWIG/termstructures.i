@@ -179,4 +179,20 @@ class FlatForward : public YieldTermStructure {
 };
 
 
+// ultimate forward term structure
+
+%{
+using QuantLib::UltimateForwardTermStructure;
+%}
+
+%shared_ptr(UltimateForwardTermStructure);
+class UltimateForwardTermStructure : public YieldTermStructure {
+  public:
+    UltimateForwardTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                                 const Handle<Quote>& lastLiquidForwardRate,
+                                 const Handle<Quote>& ultimateForwardRate,
+                                 const Period& firstSmoothingPoint,
+                                 Real alpha)
+};
+
 #endif
