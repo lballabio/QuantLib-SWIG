@@ -192,7 +192,7 @@ class UltimateForwardTermStructure : public YieldTermStructure {
                                  const Handle<Quote>& lastLiquidForwardRate,
                                  const Handle<Quote>& ultimateForwardRate,
                                  const Period& firstSmoothingPoint,
-                                 Real alpha)
+                                 Real alpha);
 };
 
 #endif
