@@ -1,12 +1,22 @@
-commit c5fc26f54e45aedd20b8234f83e101e8a70c374c
+commit 83d91ae6f508bb2cca5c0cb1b32c8f76bfad3c54
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 24 Oct 2020 13:01:24 +0200
+
+    Set version to 1.20 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c20457d9f0cd55d411a5144aad617383b58e9c02
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Wed, 14 Oct 2020 16:46:23 +0200
 
     Update changelog and news.
 
- ChangeLog.txt | 1404 +++++++++++++++++++++++++++++++++++++--------------------
+ ChangeLog.txt | 1432 ++++++++++++++++++++++++++++++++++++++-------------------
  News.md       |   49 +-
- 2 files changed, 943 insertions(+), 510 deletions(-)
+ 2 files changed, 971 insertions(+), 510 deletions(-)
 
 commit 2a04ee0218c6e53b19b3bea91cd797d4f63f1530
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
