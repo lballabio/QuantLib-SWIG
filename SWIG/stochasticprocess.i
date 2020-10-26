@@ -104,6 +104,7 @@ class GeneralizedBlackScholesProcess : public StochasticProcess1D {
       Handle<YieldTermStructure> dividendYield();
       Handle<YieldTermStructure> riskFreeRate();
       Handle<BlackVolTermStructure> blackVolatility();
+      Handle<LocalVolTermStructure> localVolatility();
 };
 
 %{
