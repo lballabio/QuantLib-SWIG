@@ -65,6 +65,7 @@ class VanillaSwap : public Swap {
                    const ext::shared_ptr<IborIndex>& index,
                    Spread spread,
                    const DayCounter& floatingDayCount);
+    VanillaSwap::Type type() const;
     Rate fairRate();
     Spread fairSpread();
     Real fixedLegBPS();

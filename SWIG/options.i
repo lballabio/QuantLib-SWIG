@@ -1966,6 +1966,11 @@ class DeltaVolQuote : public Quote {
                   DeltaVolQuote::DeltaType deltaType,
                   Time maturity,
                   DeltaVolQuote::AtmType atmType);
+
+    Real delta() const;
+    Time maturity() const;
+    AtmType atmType() const;
+    DeltaType deltaType() const;
 };
 
 %template(DeltaVolQuoteHandle) Handle<DeltaVolQuote>;

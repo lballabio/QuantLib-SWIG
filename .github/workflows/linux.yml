@@ -1,0 +1,15 @@
+name: Linux build
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [python2, python3, java, csharp, r, scala]
+    container: ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.language }}
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build and check
+      run: |
+        ./.build/${{ matrix.language }}.build

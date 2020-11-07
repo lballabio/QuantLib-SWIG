@@ -5,7 +5,7 @@ QuantLib-SWIG: language bindings for QuantLib
 [![PyPI version](https://badge.fury.io/py/QuantLib.svg)](https://badge.fury.io/py/QuantLib)
 ![PRs Welcome](https://img.shields.io/badge/PRs%20-welcome-brightgreen.svg)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1441003.svg)](https://doi.org/10.5281/zenodo.1441003)
-[![Build Status](https://travis-ci.com/lballabio/QuantLib-SWIG.svg?branch=master)](https://travis-ci.com/lballabio/QuantLib-SWIG)
+[![Build status](https://github.com/lballabio/QuantLib-SWIG/workflows/Linux%20build/badge.svg?branch=master)](https://github.com/lballabio/QuantLib-SWIG/actions?query=workflow%3A%22Linux+build%22)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/lballabio/QuantLib-SWIG/binder?filepath=Python%2Fexamples)
 
 ---
