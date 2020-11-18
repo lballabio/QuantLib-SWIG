@@ -1,0 +1,23 @@
+name: Fix uses of boost namespace
+on:
+  - push
+jobs:
+  namespaces:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Check
+      run: |
+        sed -i -e 's/boost::shared_ptr/ext::shared_ptr/g' SWIG/*
+        sed -i -e 's/boost::make_shared/ext::make_shared/g' SWIG/*
+        sed -i -e 's/boost::dynamic_pointer_cast/ext::dynamic_pointer_cast/g' SWIG/*
+        sed -i -e 's/boost::tuple/ext::tuple/g' SWIG/*
+        sed -i -e 's/boost::get/ext::get/g' SWIG/*
+        sed -i -e 's/boost::function/ext::function/g' SWIG/*
+    - uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: fix-boost-namespace-${{ github.ref }}
+        commit-message: 'Fix uses of boost namespace'
+        title: 'Fix uses of boost namespace'
+        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
