@@ -105,7 +105,7 @@ class IndexedCashFlow : public CashFlow {
 
 %inline %{
     ext::shared_ptr<IndexedCashFlow> as_indexed_cashflow(const ext::shared_ptr<CashFlow>& cf) {
-        return boost::dynamic_pointer_cast<IndexedCashFlow>(cf);
+        return ext::dynamic_pointer_cast<IndexedCashFlow>(cf);
     }
 %}
 
