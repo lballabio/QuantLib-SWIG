@@ -308,6 +308,18 @@ class AmortizingFixedRateBond : public Bond {
             const DayCounter& accrualDayCounter,
             BusinessDayConvention paymentConvention = QuantLib::Following,
             Date issueDate = Date());
+    AmortizingFixedRateBond(
+            Integer settlementDays,
+            const std::vector<Real>& notionals,
+            const Schedule& schedule,
+            const std::vector<InterestRate>& coupons,
+            BusinessDayConvention paymentConvention = QuantLib::Following,
+            Date issueDate = Date(),
+            const Calendar& paymentCalendar = Calendar(),
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            const BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false);
     Frequency frequency() const;
     DayCounter dayCounter() const;
 };
