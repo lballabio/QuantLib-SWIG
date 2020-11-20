@@ -1787,6 +1787,7 @@ class AnalyticDiscreteGeometricAverageStrikeAsianEngine : public PricingEngine {
 
 %{
 using QuantLib::MCDiscreteArithmeticAPEngine;
+using QuantLib::MCDiscreteArithmeticAPHestonEngine;
 using QuantLib::MCDiscreteArithmeticASEngine;
 using QuantLib::MCDiscreteGeometricAPEngine;
 %}
@@ -1853,6 +1854,59 @@ class MCDiscreteArithmeticAPEngine : public PricingEngine {
 %}
 #endif
 
+%shared_ptr(MCDiscreteArithmeticAPHestonEngine<PseudoRandom>);
+%shared_ptr(MCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCDiscreteArithmeticAPHestonEngine;
+    #endif
+  public:
+    %extend {
+        MCDiscreteArithmeticAPHestonEngine(const ext::shared_ptr<HestonProcess>& process,
+                                           bool antitheticVariate = false,
+                                           intOrNull requiredSamples = Null<Size>(),
+                                           doubleOrNull requiredTolerance = Null<Real>(),
+                                           intOrNull maxSamples = Null<Size>(),
+                                           BigInteger seed = 0) {
+            return new MCDiscreteArithmeticAPHestonEngine<RNG>(process,
+                                                               antitheticVariate,
+                                                               requiredSamples,
+                                                               requiredTolerance,
+                                                               maxSamples,
+                                                               seed);
+        }
+    }
+};
+
+%template(MCPRDiscreteArithmeticAPHestonEngine) MCDiscreteArithmeticAPHestonEngine<PseudoRandom>;
+%template(MCLDDiscreteArithmeticAPHestonEngine) MCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteArithmeticAPHestonEngine(process,
+                                           traits,
+                                           antitheticVariate=False,
+                                           requiredSamples=None,
+                                           requiredTolerance=None,
+                                           maxSamples=None,
+                                           seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteArithmeticAPHestonEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteArithmeticAPHestonEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
 
 %shared_ptr(MCDiscreteArithmeticASEngine<PseudoRandom>);
 %shared_ptr(MCDiscreteArithmeticASEngine<LowDiscrepancy>);
