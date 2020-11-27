@@ -156,7 +156,31 @@ class GaussianMultiPathGenerator {
       }
     }
     Sample<MultiPath> next() const;
-	Sample<MultiPath> antithetic() const;
+    Sample<MultiPath> antithetic() const;
+};
+
+%{
+typedef QuantLib::MultiPathGenerator<GaussianLowDiscrepancySequenceGenerator>
+    GaussianMultiPathSobolGenerator;
+%}
+class GaussianMultiPathSobolGenerator {
+  public:
+    %extend {
+      GaussianMultiPathSobolGenerator(
+                   const ext::shared_ptr<StochasticProcess>& process,
+                   const std::vector<Time>& times,
+                   const GaussianLowDiscrepancySequenceGenerator& generator,
+                   bool brownianBridge = false) {
+          return new GaussianMultiPathSobolGenerator(process,
+                                                     QuantLib::TimeGrid(
+                                                     times.begin(),
+                                                     times.end()),
+                                                     generator,
+                                                     brownianBridge);
+      }
+    }
+    Sample<MultiPath> next() const;
+    Sample<MultiPath> antithetic() const;
 };
 
 %{
