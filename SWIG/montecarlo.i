@@ -140,10 +140,6 @@ class MultiPath {
 using QuantLib::MultiPathGenerator;
 %}
 
-#if defined(SWIGR)
-%rename(nextSample) next;
-#endif
-
 template <class GSG>
 class MultiPathGenerator {
   public:
