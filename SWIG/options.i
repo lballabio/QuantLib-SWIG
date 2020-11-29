@@ -1527,11 +1527,37 @@ class ForwardEuropeanEngine : public PricingEngine {
     ForwardEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
 };
 
+%shared_ptr(QuantoEuropeanEngine)
+class QuantoEuropeanEngine : public PricingEngine {
+  public:
+    QuantoEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const Handle<YieldTermStructure>& foreignRiskFreeRate,
+                         const Handle<BlackVolTermStructure>& exchangeRateVolatility,
+                         const Handle<Quote>& correlation);
+};
+
+%shared_ptr(QuantoForwardEuropeanEngine)
+class QuantoForwardEuropeanEngine : public PricingEngine {
+  public:
+    QuantoForwardEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                const Handle<YieldTermStructure>& foreignRiskFreeRate,
+                                const Handle<BlackVolTermStructure>& exchangeRateVolatility,
+                                const Handle<Quote>& correlation);
+};
+
 
 %{
+using QuantLib::AnalyticHestonForwardEuropeanEngine;
 using QuantLib::MCForwardEuropeanBSEngine;
 using QuantLib::MCForwardEuropeanHestonEngine;
 %}
+
+%shared_ptr(AnalyticHestonForwardEuropeanEngine)
+class AnalyticHestonForwardEuropeanEngine : public PricingEngine {
+  public:
+    AnalyticHestonForwardEuropeanEngine(const ext::shared_ptr<HestonProcess>& process,
+                                        Size integrationOrder = 144);
+};
 
 %shared_ptr(MCForwardEuropeanBSEngine<PseudoRandom>);
 %shared_ptr(MCForwardEuropeanBSEngine<LowDiscrepancy>);
@@ -1663,23 +1689,6 @@ class MCForwardEuropeanHestonEngine : public PricingEngine {
 #endif
 
 
-%shared_ptr(QuantoEuropeanEngine)
-class QuantoEuropeanEngine : public PricingEngine {
-  public:
-    QuantoEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                         const Handle<YieldTermStructure>& foreignRiskFreeRate,
-                         const Handle<BlackVolTermStructure>& exchangeRateVolatility,
-                         const Handle<Quote>& correlation);
-};
-
-%shared_ptr(QuantoForwardEuropeanEngine)
-class QuantoForwardEuropeanEngine : public PricingEngine {
-  public:
-    QuantoForwardEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                                const Handle<YieldTermStructure>& foreignRiskFreeRate,
-                                const Handle<BlackVolTermStructure>& exchangeRateVolatility,
-                                const Handle<Quote>& correlation);
-};
 
 
 %{
