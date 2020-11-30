@@ -1643,7 +1643,8 @@ class MCForwardEuropeanHestonEngine : public PricingEngine {
                                       intOrNull requiredSamples = Null<Size>(),
                                       doubleOrNull requiredTolerance = Null<Real>(),
                                       intOrNull maxSamples = Null<Size>(),
-                                      BigInteger seed = 0) {
+                                      BigInteger seed = 0,
+                                      bool controlVariate = false) {
             return new MCForwardEuropeanHestonEngine<RNG>(process,
                                                           timeSteps,
                                                           timeStepsPerYear,
@@ -1651,7 +1652,8 @@ class MCForwardEuropeanHestonEngine : public PricingEngine {
                                                           requiredSamples,
                                                           requiredTolerance,
                                                           maxSamples,
-                                                          seed);
+                                                          seed,
+                                                          controlVariate);
         }
     }
 };
@@ -1669,7 +1671,8 @@ class MCForwardEuropeanHestonEngine : public PricingEngine {
                                       requiredSamples=None,
                                       requiredTolerance=None,
                                       maxSamples=None,
-                                      seed=0):
+                                      seed=0,
+                                      controlVariate=False):
         traits = traits.lower()
         if traits == "pr" or traits == "pseudorandom":
             cls = MCPRForwardEuropeanHestonEngine
@@ -1684,7 +1687,8 @@ class MCForwardEuropeanHestonEngine : public PricingEngine {
                    requiredSamples,
                    requiredTolerance,
                    maxSamples,
-                   seed)
+                   seed,
+                   controlVariate)
 %}
 #endif
 
