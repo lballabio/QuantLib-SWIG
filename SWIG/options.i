@@ -1757,6 +1757,11 @@ class DiscreteAveragingAsianOption : public OneAssetOption {
             const std::vector<Date>& fixingDates,
             const ext::shared_ptr<StrikedTypePayoff>& payoff,
             const ext::shared_ptr<Exercise>& exercise);
+    %extend {
+        TimeGrid timeGrid() {
+            return self->result<TimeGrid>("TimeGrid");
+        }
+    }
 };
 
 // Asian engines
@@ -1882,13 +1887,17 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                            intOrNull requiredSamples = Null<Size>(),
                                            doubleOrNull requiredTolerance = Null<Real>(),
                                            intOrNull maxSamples = Null<Size>(),
-                                           BigInteger seed = 0) {
+                                           BigInteger seed = 0,
+                                           intOrNull timeSteps = Null<Size>(),
+                                           intOrNull timeStepsPerYear = Null<Size>()) {
             return new MCDiscreteArithmeticAPHestonEngine<RNG>(process,
                                                                antitheticVariate,
                                                                requiredSamples,
                                                                requiredTolerance,
                                                                maxSamples,
-                                                               seed);
+                                                               seed,
+                                                               timeSteps,
+                                                               timeStepsPerYear);
         }
     }
 };
@@ -1904,7 +1913,9 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                            requiredSamples=None,
                                            requiredTolerance=None,
                                            maxSamples=None,
-                                           seed=0):
+                                           seed=0,
+                                           timeSteps=None,
+                                           timeStepsPerYear=None):
         traits = traits.lower()
         if traits == "pr" or traits == "pseudorandom":
             cls = MCPRDiscreteArithmeticAPHestonEngine
@@ -1917,7 +1928,9 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                    requiredSamples,
                    requiredTolerance,
                    maxSamples,
-                   seed)
+                   seed,
+                   timeSteps,
+                   timeStepsPerYear)
 %}
 #endif
 
