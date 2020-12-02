@@ -31,6 +31,7 @@
 %include observer.i
 %include marketelements.i
 %include interpolation.i
+%include functions.i
 
 
 %{
@@ -179,8 +180,6 @@ class FlatForward : public YieldTermStructure {
 };
 
 
-// ultimate forward term structure
-
 %{
 using QuantLib::UltimateForwardTermStructure;
 %}
@@ -194,5 +193,31 @@ class UltimateForwardTermStructure : public YieldTermStructure {
                                  const Period& firstSmoothingPoint,
                                  Real alpha);
 };
+
+
+#if defined(SWIGPYTHON)
+%{
+using QuantLib::CompositeZeroYieldStructure;
+%}
+
+%shared_ptr(CompositeZeroYieldStructure<BinaryFunction>);
+
+template <class F>
+class CompositeZeroYieldStructure : public YieldTermStructure {
+  public:
+    %extend {
+        CompositeZeroYieldStructure(
+                const Handle<YieldTermStructure>& h1,
+                const Handle<YieldTermStructure>& h2,
+                PyObject* function,
+                Compounding comp = QuantLib::Continuous,
+                Frequency freq = QuantLib::NoFrequency) {
+            return new CompositeZeroYieldStructure<F>(h1, h2, F(function), comp, freq);
+        }
+    }
+};
+
+%template(CompositeZeroYieldStructure) CompositeZeroYieldStructure<BinaryFunction>;
+#endif
 
 #endif
