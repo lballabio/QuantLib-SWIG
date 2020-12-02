@@ -161,8 +161,8 @@ class TermStructureTest(unittest.TestCase):
         actualZeroRate = compositeTs.zeroRate(
             maturity, self.dayCounter, compounding, freq).rate()
         failMsg = """ Composite zero yield structure rate replication failed:
-                            expected zero rate: {expected}
-                            actual zero rate: {actual}
+                        expected zero rate: {expected}
+                        actual zero rate: {actual}
                   """.format(expected=expectedZeroRate,
                              actual=actualZeroRate)
         self.assertAlmostEquals(
