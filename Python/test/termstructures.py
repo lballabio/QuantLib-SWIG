@@ -27,11 +27,16 @@ def raiseFlag():
     flag = 1
 
 
+def binaryFunction(x, y):
+    return 2.0 * x + y
+
+
 class TermStructureTest(unittest.TestCase):
     def setUp(self):
         self.calendar = ql.TARGET()
         today = self.calendar.adjust(ql.Date.todaysDate())
         self.settlementDays = 2
+        self.day_counter = ql.Actual360()
         settlement = self.calendar.advance(today, self.settlementDays, ql.Days)
         deposits = [
             ql.DepositRateHelper(
@@ -41,7 +46,7 @@ class TermStructureTest(unittest.TestCase):
                 self.calendar,
                 ql.ModifiedFollowing,
                 False,
-                ql.Actual360(),
+                self.day_counter,
             )
             for (n, units, rate) in [
                 (1, ql.Months, 4.581),
@@ -64,7 +69,8 @@ class TermStructureTest(unittest.TestCase):
             for (years, rate) in [(1, 4.54), (5, 4.99), (10, 5.47), (20, 5.89), (30, 5.96)]
         ]
 
-        self.termStructure = ql.PiecewiseFlatForward(settlement, deposits + swaps, ql.Actual360())
+        self.termStructure = ql.PiecewiseFlatForward(
+            settlement, deposits + swaps, self.day_counter)
 
     def testImpliedObs(self):
         "Testing observability of implied term structure"
@@ -115,6 +121,37 @@ class TermStructureTest(unittest.TestCase):
         me.setValue(0.005)
         if not flag:
             self.fail("Observer was not notified of spread change")
+
+    def testCompositeZeroYieldStructure(self):
+        """Testing composite zero yield structure"""
+        settlement = self.termStructure.referenceDate()
+        compounding = ql.Continuous
+        flat_ts = ql.FlatForward(
+            settlement, 
+            ql.QuoteHandle(ql.SimpleQuote(0.0085)), 
+            self.day_counter)
+        first_handle = ql.YieldTermStructureHandle(flat_ts)
+        second_handle = ql.YieldTermStructureHandle(self.termStructure)
+        composite_ts = ql.CompositeZeroYieldStructure(
+            first_handle, second_handle, binaryFunction)
+        maturity_date = settlement + ql.Period(20, ql.Years)
+        expected_zero_rate = binaryFunction(
+            first_handle.zeroRate(
+                maturity_date, self.day_counter, compounding).rate(),
+            second_handle.zeroRate(
+                maturity_date, self.day_counter, compounding).rate())
+        actual_zero_rate = composite_ts.zeroRate(
+            maturity_date, self.day_counter, compounding).rate()
+        fail_msg = """ Composite zero yield structure failed:
+                            expected zero rate: {expected}
+                            actual zero rate: {actual}
+                    """.format(expected=expected_zero_rate,
+                               actual=actual_zero_rate)
+        self.assertAlmostEquals(
+            first=expected_zero_rate,
+            second=actual_zero_rate,
+            delta=1.0e-12,
+            msg=fail_msg)
 
 
 if __name__ == "__main__":
