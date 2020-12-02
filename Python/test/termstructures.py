@@ -142,7 +142,8 @@ class TermStructureTest(unittest.TestCase):
     def testCompositeZeroYieldStructure(self):
         """Testing composite zero yield structure"""
         settlement = self.termStructure.referenceDate()
-        compounding = ql.Continuous
+        compounding = ql.Compounded
+        freq = ql.Semiannual
         flatTs = ql.FlatForward(
             settlement,
             ql.QuoteHandle(ql.SimpleQuote(0.0085)),
@@ -150,15 +151,15 @@ class TermStructureTest(unittest.TestCase):
         firstHandle = ql.YieldTermStructureHandle(flatTs)
         secondHandle = ql.YieldTermStructureHandle(self.termStructure)
         compositeTs = ql.CompositeZeroYieldStructure(
-            firstHandle, secondHandle, binaryFunction)
+            firstHandle, secondHandle, binaryFunction, compounding, freq)
         maturity = settlement + ql.Period(20, ql.Years)
         expectedZeroRate = binaryFunction(
             firstHandle.zeroRate(
-                maturity, self.dayCounter, compounding).rate(),
+                maturity, self.dayCounter, compounding, freq).rate(),
             secondHandle.zeroRate(
-                maturity, self.dayCounter, compounding).rate())
+                maturity, self.dayCounter, compounding, freq).rate())
         actualZeroRate = compositeTs.zeroRate(
-            maturity, self.dayCounter, compounding).rate()
+            maturity, self.dayCounter, compounding, freq).rate()
         failMsg = """ Composite zero yield structure rate replication failed:
                             expected zero rate: {expected}
                             actual zero rate: {actual}
