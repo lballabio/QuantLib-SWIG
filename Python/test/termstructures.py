@@ -191,8 +191,8 @@ class TermStructureTest(unittest.TestCase):
             expectedForward = forwardCalculator(t)
             failMsg = """ UFR term structure forward replication failed for:
                             time to maturity: {timeToMaturity}
-                            expected zero rate: {expected}
-                            actual zero rate: {actual}
+                            expected forward rate: {expected}
+                            actual forward rate: {actual}
                        """.format(timeToMaturity=t,
                                   expected=expectedForward,
                                   actual=actualForward)
