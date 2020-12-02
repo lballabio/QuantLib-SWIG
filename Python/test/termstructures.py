@@ -163,8 +163,8 @@ class TermStructureTest(unittest.TestCase):
         failMsg = """ Composite zero yield structure rate replication failed:
                             expected zero rate: {expected}
                             actual zero rate: {actual}
-                    """.format(expected=expectedZeroRate,
-                               actual=actualZeroRate)
+                  """.format(expected=expectedZeroRate,
+                             actual=actualZeroRate)
         self.assertAlmostEquals(
             first=expectedZeroRate,
             second=actualZeroRate,
@@ -194,9 +194,9 @@ class TermStructureTest(unittest.TestCase):
                             time to maturity: {timeToMaturity}
                             expected forward rate: {expected}
                             actual forward rate: {actual}
-                       """.format(timeToMaturity=t,
-                                  expected=expectedForward,
-                                  actual=actualForward)
+                      """.format(timeToMaturity=t,
+                                 expected=expectedForward,
+                                 actual=actualForward)
             self.assertAlmostEquals(
                 first=expectedForward,
                 second=actualForward,
