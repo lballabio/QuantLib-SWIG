@@ -18,6 +18,7 @@
 
 import QuantLib as ql
 import unittest
+import math
 
 flag = None
 
@@ -29,6 +30,21 @@ def raiseFlag():
 
 def binaryFunction(x, y):
     return 2.0 * x + y
+
+
+def extrapolated_forward_rate(
+        first_smoothing_point,
+        last_liquid_forward_rate,
+        ultimate_forward_rate,
+        alpha):
+
+    def calculate(t):
+        delta_t = t - first_smoothing_point
+        beta = (1.0 - math.exp(-alpha * delta_t)) / (alpha * delta_t)
+        return ultimate_forward_rate + (
+            last_liquid_forward_rate - ultimate_forward_rate) * beta
+
+    return calculate
 
 
 class TermStructureTest(unittest.TestCase):
@@ -127,8 +143,8 @@ class TermStructureTest(unittest.TestCase):
         settlement = self.termStructure.referenceDate()
         compounding = ql.Continuous
         flat_ts = ql.FlatForward(
-            settlement, 
-            ql.QuoteHandle(ql.SimpleQuote(0.0085)), 
+            settlement,
+            ql.QuoteHandle(ql.SimpleQuote(0.0085)),
             self.day_counter)
         first_handle = ql.YieldTermStructureHandle(flat_ts)
         second_handle = ql.YieldTermStructureHandle(self.termStructure)
@@ -142,7 +158,7 @@ class TermStructureTest(unittest.TestCase):
                 maturity_date, self.day_counter, compounding).rate())
         actual_zero_rate = composite_ts.zeroRate(
             maturity_date, self.day_counter, compounding).rate()
-        fail_msg = """ Composite zero yield structure failed:
+        fail_msg = """ Composite zero yield structure zero replication failed:
                             expected zero rate: {expected}
                             actual zero rate: {actual}
                     """.format(expected=expected_zero_rate,
@@ -152,6 +168,38 @@ class TermStructureTest(unittest.TestCase):
             second=actual_zero_rate,
             delta=1.0e-12,
             msg=fail_msg)
+
+    def testUltimateForwardTermStructure(self):
+        """Testing ultimate forward term structure"""
+        settlement = self.termStructure.referenceDate()
+        ufr = ql.QuoteHandle(ql.SimpleQuote(0.06))
+        llfr = ql.QuoteHandle(ql.SimpleQuote(0.05))
+        fsp = ql.Period(20, ql.Years)
+        alpha = 0.05
+        base_crv_handle = ql.YieldTermStructureHandle(self.termStructure)
+        ufr_crv = ql.UltimateForwardTermStructure(
+            base_crv_handle, llfr, ufr, fsp, alpha)
+        cut_off = ufr_crv.timeFromReference(settlement + fsp)
+        forward_calculator = extrapolated_forward_rate(
+            cut_off, llfr.value(), ufr.value(), alpha)
+        times = [ufr_crv.timeFromReference(settlement + ql.Period(x, ql.Years))
+                 for x in [21, 30, 40, 50, 60, 70, 80, 90, 100]]
+        for t in times:
+            actual_forward = ufr_crv.forwardRate(
+                cut_off, t, ql.Continuous, ql.NoFrequency, True).rate()
+            expected_forward = forward_calculator(t)
+            fail_msg = """ UFR term structure forward replication failed for:
+                            time to maturity: {time_to_maturity}
+                            expected zero rate: {expected}
+                            actual zero rate: {actual}
+                       """.format(time_to_maturity=t,
+                                  expected=expected_forward,
+                                  actual=actual_forward)
+            self.assertAlmostEquals(
+                first=expected_forward,
+                second=actual_forward,
+                delta=1.0e-12,
+                msg=fail_msg)
 
 
 if __name__ == "__main__":
