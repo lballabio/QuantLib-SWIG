@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2014 StatPro Italia srl
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2020 Marcin Rybacki
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -31,6 +32,7 @@
 %include observer.i
 %include marketelements.i
 %include interpolation.i
+%include functions.i
 
 
 %{
@@ -178,5 +180,45 @@ class FlatForward : public YieldTermStructure {
                 Frequency frequency = QuantLib::Annual);
 };
 
+
+%{
+using QuantLib::UltimateForwardTermStructure;
+%}
+
+%shared_ptr(UltimateForwardTermStructure);
+class UltimateForwardTermStructure : public YieldTermStructure {
+  public:
+    UltimateForwardTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                                 const Handle<Quote>& lastLiquidForwardRate,
+                                 const Handle<Quote>& ultimateForwardRate,
+                                 const Period& firstSmoothingPoint,
+                                 Real alpha);
+};
+
+
+#if defined(SWIGPYTHON)
+%{
+using QuantLib::CompositeZeroYieldStructure;
+%}
+
+%shared_ptr(CompositeZeroYieldStructure<BinaryFunction>);
+
+template <class F>
+class CompositeZeroYieldStructure : public YieldTermStructure {
+  public:
+    %extend {
+        CompositeZeroYieldStructure(
+                const Handle<YieldTermStructure>& h1,
+                const Handle<YieldTermStructure>& h2,
+                PyObject* function,
+                Compounding comp = QuantLib::Continuous,
+                Frequency freq = QuantLib::NoFrequency) {
+            return new CompositeZeroYieldStructure<F>(h1, h2, F(function), comp, freq);
+        }
+    }
+};
+
+%template(CompositeZeroYieldStructure) CompositeZeroYieldStructure<BinaryFunction>;
+#endif
 
 #endif
