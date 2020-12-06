@@ -1778,6 +1778,18 @@ class AnalyticContinuousGeometricAveragePriceAsianEngine : public PricingEngine 
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
+%{
+using QuantLib::AnalyticContinuousGeometricAveragePriceAsianHestonEngine;
+%}
+
+%shared_ptr(AnalyticContinuousGeometricAveragePriceAsianHestonEngine)
+class AnalyticContinuousGeometricAveragePriceAsianHestonEngine : public PricingEngine {
+  public:
+    AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
+            const ext::shared_ptr<HestonProcess>& process,
+            Size summationCutoff = 50,
+            Real xiRightLimit = 100.0);
+};
 
 %{
 using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianEngine;
