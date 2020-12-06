@@ -1820,6 +1820,7 @@ using QuantLib::MCDiscreteArithmeticAPEngine;
 using QuantLib::MCDiscreteArithmeticAPHestonEngine;
 using QuantLib::MCDiscreteArithmeticASEngine;
 using QuantLib::MCDiscreteGeometricAPEngine;
+using QuantLib::MCDiscreteGeometricAPHestonEngine;
 %}
 
 %shared_ptr(MCDiscreteArithmeticAPEngine<PseudoRandom>);
@@ -2063,6 +2064,68 @@ class MCDiscreteGeometricAPEngine : public PricingEngine {
                    requiredTolerance,
                    maxSamples,
                    seed)
+%}
+#endif
+
+%shared_ptr(MCDiscreteGeometricAPHestonEngine<PseudoRandom>);
+%shared_ptr(MCDiscreteGeometricAPHestonEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCDiscreteGeometricAPHestonEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCDiscreteGeometricAPHestonEngine;
+    #endif
+  public:
+    %extend {
+        MCDiscreteGeometricAPHestonEngine(const ext::shared_ptr<HestonProcess>& process,
+                                          bool antitheticVariate = false,
+                                          intOrNull requiredSamples = Null<Size>(),
+                                          doubleOrNull requiredTolerance = Null<Real>(),
+                                          intOrNull maxSamples = Null<Size>(),
+                                          BigInteger seed = 0,
+                                          intOrNull timeSteps = Null<Size>(),
+                                          intOrNull timeStepsPerYear = Null<Size>()) {
+            return new MCDiscreteGeometricAPHestonEngine<RNG>(process,
+                                                              antitheticVariate,
+                                                              requiredSamples,
+                                                              requiredTolerance,
+                                                              maxSamples,
+                                                              seed,
+                                                              timeSteps,
+                                                              timeStepsPerYear);
+        }
+    }
+};
+
+%template(MCPRDiscreteGeometricAPHestonEngine) MCDiscreteGeometricAPHestonEngine<PseudoRandom>;
+%template(MCLDDiscreteGeometricAPHestonEngine) MCDiscreteGeometricAPHestonEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDiscreteGeometricAPHestonEngine(process,
+                                          traits,
+                                          antitheticVariate=False,
+                                          requiredSamples=None,
+                                          requiredTolerance=None,
+                                          maxSamples=None,
+                                          seed=0,
+                                          timeSteps=None,
+                                          timeStepsPerYear=None):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDiscreteGeometricAPHestonEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDiscreteGeometricAPHestonEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed,
+                   timeSteps,
+                   timeStepsPerYear)
 %}
 #endif
 
