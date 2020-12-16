@@ -1901,7 +1901,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                            intOrNull maxSamples = Null<Size>(),
                                            BigInteger seed = 0,
                                            intOrNull timeSteps = Null<Size>(),
-                                           intOrNull timeStepsPerYear = Null<Size>()) {
+                                           intOrNull timeStepsPerYear = Null<Size>(),
+                                           bool controlVariate = false) {
             return new MCDiscreteArithmeticAPHestonEngine<RNG>(process,
                                                                antitheticVariate,
                                                                requiredSamples,
@@ -1909,7 +1910,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                                                maxSamples,
                                                                seed,
                                                                timeSteps,
-                                                               timeStepsPerYear);
+                                                               timeStepsPerYear,
+                                                               controlVariate);
         }
     }
 };
@@ -1927,7 +1929,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                            maxSamples=None,
                                            seed=0,
                                            timeSteps=None,
-                                           timeStepsPerYear=None):
+                                           timeStepsPerYear=None,
+                                           controlVariate=False):
         traits = traits.lower()
         if traits == "pr" or traits == "pseudorandom":
             cls = MCPRDiscreteArithmeticAPHestonEngine
@@ -1942,7 +1945,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                    maxSamples,
                    seed,
                    timeSteps,
-                   timeStepsPerYear)
+                   timeStepsPerYear,
+                   controlVariate)
 %}
 #endif
 
