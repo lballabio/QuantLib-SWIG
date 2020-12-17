@@ -1769,6 +1769,10 @@ class DiscreteAveragingAsianOption : public OneAssetOption {
 
 %{
 using QuantLib::AnalyticContinuousGeometricAveragePriceAsianEngine;
+using QuantLib::AnalyticContinuousGeometricAveragePriceAsianHestonEngine;
+using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianEngine;
+using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianHestonEngine;
+using QuantLib::AnalyticDiscreteGeometricAverageStrikeAsianEngine;
 %}
 
 %shared_ptr(AnalyticContinuousGeometricAveragePriceAsianEngine)
@@ -1777,10 +1781,6 @@ class AnalyticContinuousGeometricAveragePriceAsianEngine : public PricingEngine 
     AnalyticContinuousGeometricAveragePriceAsianEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
-
-%{
-using QuantLib::AnalyticContinuousGeometricAveragePriceAsianHestonEngine;
-%}
 
 %shared_ptr(AnalyticContinuousGeometricAveragePriceAsianHestonEngine)
 class AnalyticContinuousGeometricAveragePriceAsianHestonEngine : public PricingEngine {
@@ -1791,10 +1791,6 @@ class AnalyticContinuousGeometricAveragePriceAsianHestonEngine : public PricingE
             Real xiRightLimit = 100.0);
 };
 
-%{
-using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianEngine;
-%}
-
 %shared_ptr(AnalyticDiscreteGeometricAveragePriceAsianEngine)
 class AnalyticDiscreteGeometricAveragePriceAsianEngine : public PricingEngine {
   public:
@@ -1802,10 +1798,13 @@ class AnalyticDiscreteGeometricAveragePriceAsianEngine : public PricingEngine {
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
-
-%{
-using QuantLib::AnalyticDiscreteGeometricAverageStrikeAsianEngine;
-%}
+%shared_ptr(AnalyticDiscreteGeometricAveragePriceAsianHestonEngine)
+class AnalyticDiscreteGeometricAveragePriceAsianHestonEngine : public PricingEngine {
+  public:
+    AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
+            const ext::shared_ptr<HestonProcess>& process,
+            Real xiRightLimit = 100.0);
+};
 
 %shared_ptr(AnalyticDiscreteGeometricAverageStrikeAsianEngine)
 class AnalyticDiscreteGeometricAverageStrikeAsianEngine : public PricingEngine {
@@ -1902,7 +1901,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                            intOrNull maxSamples = Null<Size>(),
                                            BigInteger seed = 0,
                                            intOrNull timeSteps = Null<Size>(),
-                                           intOrNull timeStepsPerYear = Null<Size>()) {
+                                           intOrNull timeStepsPerYear = Null<Size>(),
+                                           bool controlVariate = false) {
             return new MCDiscreteArithmeticAPHestonEngine<RNG>(process,
                                                                antitheticVariate,
                                                                requiredSamples,
@@ -1910,7 +1910,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                                                maxSamples,
                                                                seed,
                                                                timeSteps,
-                                                               timeStepsPerYear);
+                                                               timeStepsPerYear,
+                                                               controlVariate);
         }
     }
 };
@@ -1928,7 +1929,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                                            maxSamples=None,
                                            seed=0,
                                            timeSteps=None,
-                                           timeStepsPerYear=None):
+                                           timeStepsPerYear=None,
+                                           controlVariate=False):
         traits = traits.lower()
         if traits == "pr" or traits == "pseudorandom":
             cls = MCPRDiscreteArithmeticAPHestonEngine
@@ -1943,7 +1945,8 @@ class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
                    maxSamples,
                    seed,
                    timeSteps,
-                   timeStepsPerYear)
+                   timeStepsPerYear,
+                   controlVariate)
 %}
 #endif
 
