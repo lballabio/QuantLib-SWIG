@@ -40,8 +40,6 @@
 
 %{
 using QuantLib::Payoff;
-using QuantLib::TypePayoff;
-using QuantLib::StrikedTypePayoff;
 %}
 
 %shared_ptr(Payoff);
@@ -55,10 +53,9 @@ class Payoff {
     Payoff();
 };
 
-// option and barrier types
+// option types
 %{
 using QuantLib::Option;
-using QuantLib::Barrier;
 %}
 
 %shared_ptr(Option)
@@ -73,40 +70,12 @@ class Option : public Instrument {
     Option();
 };
 
-struct Barrier {
-    enum Type { DownIn, UpIn, DownOut, UpOut };
-};
 
-struct DoubleBarrier {
-    enum Type { KnockIn, KnockOut, KIKO, KOKI };
-};
-
-
-#if defined(SWIGR)
-%Rruntime %{
-setMethod("summary", "_p_VanillaOption",
-function(object) {object$freeze()
-ans <- c(value=object$NPV(), delta=object$delta(),
-gamma=object$gamma(), vega=object$vega(),
-theta=object$theta(), rho=object$rho(),
-divRho=object$dividendRho())
-object$unfreeze()
-ans
-})
-
-setMethod("summary", "_p_DividendVanillaOption",
-function(object) {object$freeze()
-ans <- c(value=object$NPV(), delta=object$delta(),
-gamma=object$gamma(), vega=object$vega(),
-theta=object$theta(), rho=object$rho(),
-divRho=object$dividendRho())
-object$unfreeze()
-ans
-})
-
+%{
+using QuantLib::TypePayoff;
+using QuantLib::FloatingTypePayoff;
+using QuantLib::StrikedTypePayoff;
 %}
-#endif
-
 
 %shared_ptr(TypePayoff)
 class TypePayoff : public Payoff {
@@ -114,6 +83,14 @@ class TypePayoff : public Payoff {
     Option::Type optionType();
   private:
     TypePayoff();
+};
+
+%shared_ptr(FloatingTypePayoff)
+class FloatingTypePayoff : public TypePayoff {
+  public:
+    FloatingTypePayoff(Option::Type type);
+    Real operator()(Real price, Real strike) const;
+    Real operator()(Real price) const;
 };
 
 %shared_ptr(StrikedTypePayoff)
@@ -124,6 +101,36 @@ class StrikedTypePayoff : public TypePayoff
   private:
     StrikedTypePayoff();
 };
+
+
+%{
+using QuantLib::DeltaVolQuote;
+%}
+
+%shared_ptr(DeltaVolQuote)
+
+class DeltaVolQuote : public Quote {
+  public:
+    enum DeltaType { Spot, Fwd, PaSpot, PaFwd };
+    enum AtmType { AtmNull, AtmSpot, AtmFwd, AtmDeltaNeutral,
+                   AtmVegaMax, AtmGammaMax, AtmPutCall50 };
+    DeltaVolQuote(Real delta,
+                  const Handle<Quote>& vol,
+                  Time maturity,
+                  DeltaVolQuote::DeltaType deltaType);
+    DeltaVolQuote(const Handle<Quote>& vol,
+                  DeltaVolQuote::DeltaType deltaType,
+                  Time maturity,
+                  DeltaVolQuote::AtmType atmType);
+
+    Real delta() const;
+    Time maturity() const;
+    AtmType atmType() const;
+    DeltaType deltaType() const;
+};
+
+%template(DeltaVolQuoteHandle) Handle<DeltaVolQuote>;
+%template(RelinkableDeltaVolQuoteHandle) RelinkableHandle<DeltaVolQuote>;
 
 
 // plain option and engines
@@ -151,6 +158,20 @@ class OneAssetOption : public Option {
     Real strikeSensitivity() const;
     Real itmCashProbability() const;
 };
+
+#if defined(SWIGR)
+%Rruntime %{
+setMethod("summary", "_p_VanillaOption",
+function(object) {object$freeze()
+ans <- c(value=object$NPV(), delta=object$delta(),
+gamma=object$gamma(), vega=object$vega(),
+theta=object$theta(), rho=object$rho(),
+divRho=object$dividendRho())
+object$unfreeze()
+ans
+})
+%}
+#endif
 
 %shared_ptr(VanillaOption)
 class VanillaOption : public OneAssetOption {
@@ -873,29 +894,6 @@ class FDShoutEngine : public PricingEngine {
 
 
 %{
-using QuantLib::ContinuousArithmeticAsianLevyEngine;
-%}
-
-%shared_ptr(ContinuousArithmeticAsianLevyEngine)
-class ContinuousArithmeticAsianLevyEngine : public PricingEngine {
-  public:
-    ContinuousArithmeticAsianLevyEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                                        const Handle<Quote>& runningAverage,
-                                        const Date& startDate);
-};
-
-%{
-using QuantLib::FdBlackScholesAsianEngine;
-%}
-
-%shared_ptr(FdBlackScholesAsianEngine)
-class FdBlackScholesAsianEngine : public PricingEngine {
-  public:
-    FdBlackScholesAsianEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                              Size tGrid, Size xGrid, Size aGrid);
-};
-
-%{
 using QuantLib::BaroneAdesiWhaleyApproximationEngine;
 %}
 
@@ -960,6 +958,20 @@ class AnalyticDigitalAmericanKOEngine : public PricingEngine {
 using QuantLib::DividendVanillaOption;
 %}
 
+
+#if defined(SWIGR)
+%Rruntime %{
+setMethod("summary", "_p_DividendVanillaOption",
+function(object) {object$freeze()
+ans <- c(value=object$NPV(), delta=object$delta(),
+gamma=object$gamma(), vega=object$vega(),
+theta=object$theta(), rho=object$rho(),
+divRho=object$dividendRho())
+object$unfreeze()
+ans
+})
+%}
+#endif
 
 %shared_ptr(DividendVanillaOption)
 class DividendVanillaOption : public OneAssetOption {
@@ -1035,129 +1047,6 @@ class FDDividendAmericanEngine : public PricingEngine {
 };
 
 %template(FDDividendAmericanEngine) FDDividendAmericanEngine<CrankNicolson>;
-
-
-// Barrier option
-
-%{
-using QuantLib::BarrierOption;
-using QuantLib::DividendBarrierOption;
-%}
-
-%shared_ptr(BarrierOption)
-class BarrierOption : public OneAssetOption {
-  public:
-    BarrierOption(
-               Barrier::Type barrierType,
-               Real barrier,
-               Real rebate,
-               const ext::shared_ptr<StrikedTypePayoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise);
-    Volatility impliedVolatility(
-                         Real targetValue,
-                         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                         Real accuracy = 1.0e-4,
-                         Size maxEvaluations = 100,
-                         Volatility minVol = 1.0e-4,
-                         Volatility maxVol = 4.0);
-};
-
-%shared_ptr(DividendBarrierOption)
-class DividendBarrierOption : public BarrierOption {
-  public:
-    DividendBarrierOption(Barrier::Type barrierType,
-                          Real barrier,
-                          Real rebate,
-                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                          const ext::shared_ptr<Exercise>& exercise,
-                          const std::vector<Date>& dividendDates,
-                          const std::vector<Real>& dividends);
-};
-
-
-// Barrier engines
-
-%{
-using QuantLib::AnalyticBarrierEngine;
-using QuantLib::MCBarrierEngine;
-%}
-
-%shared_ptr(AnalyticBarrierEngine)
-class AnalyticBarrierEngine : public PricingEngine {
-  public:
-    AnalyticBarrierEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
-};
-
-
-%shared_ptr(MCBarrierEngine<PseudoRandom>);
-%shared_ptr(MCBarrierEngine<LowDiscrepancy>);
-
-template <class RNG>
-class MCBarrierEngine : public PricingEngine {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCBarrierEngine;
-    #endif
-  public:
-    %extend {
-        MCBarrierEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                        intOrNull timeSteps = Null<Size>(),
-                        intOrNull timeStepsPerYear = Null<Size>(),
-                        bool brownianBridge = false,
-                        bool antitheticVariate = false,
-                        intOrNull requiredSamples = Null<Size>(),
-                        doubleOrNull requiredTolerance = Null<Real>(),
-                        intOrNull maxSamples = Null<Size>(),
-                        bool isBiased = false,
-                        BigInteger seed = 0) {
-            return new MCBarrierEngine<RNG>(process,
-                                            timeSteps,
-                                            timeStepsPerYear,
-                                            brownianBridge,
-                                            antitheticVariate,
-                                            requiredSamples,
-                                            requiredTolerance,
-                                            maxSamples,
-                                            isBiased,
-                                            seed);
-        }
-    }
-};
-
-%template(MCPRBarrierEngine) MCBarrierEngine<PseudoRandom>;
-%template(MCLDBarrierEngine) MCBarrierEngine<LowDiscrepancy>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def MCBarrierEngine(process,
-                        traits,
-                        timeSteps=None,
-                        timeStepsPerYear=None,
-                        brownianBridge=False,
-                        antitheticVariate=False,
-                        requiredSamples=None,
-                        requiredTolerance=None,
-                        maxSamples=None,
-                        isBiased=False,
-                        seed=0):
-        traits = traits.lower()
-        if traits == "pr" or traits == "pseudorandom":
-            cls = MCPRBarrierEngine
-        elif traits == "ld" or traits == "lowdiscrepancy":
-            cls = MCLDBarrierEngine
-        else:
-            raise RuntimeError("unknown MC traits: %s" % traits);
-        return cls(process,
-                   timeSteps,
-                   timeStepsPerYear,
-                   brownianBridge,
-                   antitheticVariate,
-                   requiredSamples,
-                   requiredTolerance,
-                   maxSamples,
-                   isBiased,
-                   seed)
-%}
-#endif
 
 
 %{
@@ -1369,147 +1258,6 @@ class FdSabrVanillaEngine : public PricingEngine {
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 };
 
-
-%{
-using QuantLib::FdBlackScholesBarrierEngine;
-using QuantLib::FdBlackScholesRebateEngine;
-using QuantLib::FdHestonBarrierEngine;
-using QuantLib::FdHestonRebateEngine;
-%}
-
-%shared_ptr(FdBlackScholesBarrierEngine)
-class FdBlackScholesBarrierEngine : public PricingEngine {
-  public:
-    FdBlackScholesBarrierEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-                                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-                                bool localVol = false,
-                                Real illegalLocalVolOverwrite = -Null<Real>());
-};
-
-%shared_ptr(FdBlackScholesRebateEngine)
-class FdBlackScholesRebateEngine : public PricingEngine {
-  public:
-    FdBlackScholesRebateEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                               Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
-                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
-                               bool localVol = false,
-                               Real illegalLocalVolOverwrite = -Null<Real>());
-};
-
-%shared_ptr(FdHestonBarrierEngine)
-class FdHestonBarrierEngine : public PricingEngine {
-  public:
-    FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
-                          Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
-                          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                          const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                              = ext::shared_ptr<LocalVolTermStructure>(),
-                          const Real mixingFactor = 1.0);
-};
-
-%shared_ptr(FdHestonRebateEngine)
-class FdHestonRebateEngine : public PricingEngine {
-  public:
-    FdHestonRebateEngine(const ext::shared_ptr<HestonModel>& model,
-                         Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
-                         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                         const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                             = ext::shared_ptr<LocalVolTermStructure>(),
-                         const Real mixingFactor = 1.0);
-};
-
-
-%{
-using QuantLib::AnalyticBinaryBarrierEngine;
-%}
-
-%shared_ptr(AnalyticBinaryBarrierEngine)
-class AnalyticBinaryBarrierEngine : public PricingEngine {
-  public:
-    AnalyticBinaryBarrierEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-};
-
-
-%{
-using QuantLib::BinomialBarrierEngine;
-using QuantLib::DiscretizedDermanKaniBarrierOption;
-%}
-
-#if defined(SWIGPYTHON)
-%feature("docstring") BinomialBarrierEngine "Binomial Engine for barrier options.
-Features different binomial models, selected by the type parameters.
-Uses Boyle-Lau adjustment for optimize steps and Derman-Kani optimization to speed
-up convergence.
-Type values:
-    crr or coxrossrubinstein:        Cox-Ross-Rubinstein model
-    jr  or jarrowrudd:               Jarrow-Rudd model
-    eqp or additiveeqpbinomialtree:  Additive EQP model
-    trigeorgis:                      Trigeorgis model
-    tian:                            Tian model
-    lr  or leisenreimer              Leisen-Reimer model
-    j4  or joshi4:                   Joshi 4th (smoothed) model
-
-Boyle-Lau adjustment is controlled by parameter max_steps.
-If max_steps is equal to steps Boyle-Lau is disabled.
-Il max_steps is 0 (default value), max_steps is calculated by capping it to
-5*steps when Boyle-Lau would need more than 1000 steps.
-If max_steps is specified, it would limit binomial steps to this value.
-"
-#endif
-
-#if !defined(SWIGR)
-
-%shared_ptr(BinomialBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniBarrierOption>);
-%shared_ptr(BinomialBarrierEngine<JarrowRudd, DiscretizedDermanKaniBarrierOption>);
-%shared_ptr(BinomialBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniBarrierOption>);
-%shared_ptr(BinomialBarrierEngine<Trigeorgis, DiscretizedDermanKaniBarrierOption>);
-%shared_ptr(BinomialBarrierEngine<Tian, DiscretizedDermanKaniBarrierOption>);
-%shared_ptr(BinomialBarrierEngine<LeisenReimer, DiscretizedDermanKaniBarrierOption>);
-%shared_ptr(BinomialBarrierEngine<Joshi4, DiscretizedDermanKaniBarrierOption>);
-
-template <class T, class U>
-class BinomialBarrierEngine : public PricingEngine {
-  public:
-    BinomialBarrierEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
-                          Size steps,
-                          Size max_steps = 0);
-};
-
-%template(BinomialCRRBarrierEngine) BinomialBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniBarrierOption>;
-%template(BinomialJRBarrierEngine) BinomialBarrierEngine<JarrowRudd, DiscretizedDermanKaniBarrierOption>;
-%template(BinomialEQPBarrierEngine) BinomialBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniBarrierOption>;
-%template(BinomialTrigeorgisBarrierEngine) BinomialBarrierEngine<Trigeorgis, DiscretizedDermanKaniBarrierOption>;
-%template(BinomialTianBarrierEngine) BinomialBarrierEngine<Tian, DiscretizedDermanKaniBarrierOption>;
-%template(BinomialLRBarrierEngine) BinomialBarrierEngine<LeisenReimer, DiscretizedDermanKaniBarrierOption>;
-%template(BinomialJ4BarrierEngine) BinomialBarrierEngine<Joshi4, DiscretizedDermanKaniBarrierOption>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def BinomialBarrierEngine(process, type, steps):
-        type = type.lower()
-        if type == "crr" or type == "coxrossrubinstein":
-            cls = BinomialCRRBarrierEngine
-        elif type == "jr" or type == "jarrowrudd":
-            cls = BinomialJRBarrierEngine
-        elif type == "eqp":
-            cls = BinomialEQPBarrierEngine
-        elif type == "trigeorgis":
-            cls = BinomialTrigeorgisBarrierEngine
-        elif type == "tian":
-            cls = BinomialTianBarrierEngine
-        elif type == "lr" or type == "leisenreimer":
-            cls = BinomialLRBarrierEngine
-        elif type == "j4" or type == "joshi4":
-            cls = BinomialJ4BarrierEngine
-        else:
-            raise RuntimeError("unknown binomial engine type: %s" % type);
-        return cls(process, steps)
-%}
-#endif
-
-#endif
 
 
 %{
@@ -1726,412 +1474,6 @@ class BlackCalculator {
 
 
 
-// Asian options
-
-%{
-using QuantLib::Average;
-using QuantLib::ContinuousAveragingAsianOption;
-using QuantLib::DiscreteAveragingAsianOption;
-%}
-
-struct Average {
-    enum Type { Arithmetic, Geometric };
-};
-
-%shared_ptr(ContinuousAveragingAsianOption)
-class ContinuousAveragingAsianOption : public OneAssetOption {
-  public:
-    ContinuousAveragingAsianOption(
-            Average::Type averageType,
-            const ext::shared_ptr<StrikedTypePayoff>& payoff,
-            const ext::shared_ptr<Exercise>& exercise);
-};
-
-%shared_ptr(DiscreteAveragingAsianOption)
-class DiscreteAveragingAsianOption : public OneAssetOption {
-  public:
-    DiscreteAveragingAsianOption(
-            Average::Type averageType,
-            Real runningAccumulator,
-            Size pastFixings,
-            const std::vector<Date>& fixingDates,
-            const ext::shared_ptr<StrikedTypePayoff>& payoff,
-            const ext::shared_ptr<Exercise>& exercise);
-    %extend {
-        TimeGrid timeGrid() {
-            return self->result<TimeGrid>("TimeGrid");
-        }
-    }
-};
-
-// Asian engines
-
-
-%{
-using QuantLib::AnalyticContinuousGeometricAveragePriceAsianEngine;
-using QuantLib::AnalyticContinuousGeometricAveragePriceAsianHestonEngine;
-using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianEngine;
-using QuantLib::AnalyticDiscreteGeometricAveragePriceAsianHestonEngine;
-using QuantLib::AnalyticDiscreteGeometricAverageStrikeAsianEngine;
-%}
-
-%shared_ptr(AnalyticContinuousGeometricAveragePriceAsianEngine)
-class AnalyticContinuousGeometricAveragePriceAsianEngine : public PricingEngine {
-  public:
-    AnalyticContinuousGeometricAveragePriceAsianEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-};
-
-%shared_ptr(AnalyticContinuousGeometricAveragePriceAsianHestonEngine)
-class AnalyticContinuousGeometricAveragePriceAsianHestonEngine : public PricingEngine {
-  public:
-    AnalyticContinuousGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process,
-            Size summationCutoff = 50,
-            Real xiRightLimit = 100.0);
-};
-
-%shared_ptr(AnalyticDiscreteGeometricAveragePriceAsianEngine)
-class AnalyticDiscreteGeometricAveragePriceAsianEngine : public PricingEngine {
-  public:
-    AnalyticDiscreteGeometricAveragePriceAsianEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-};
-
-%shared_ptr(AnalyticDiscreteGeometricAveragePriceAsianHestonEngine)
-class AnalyticDiscreteGeometricAveragePriceAsianHestonEngine : public PricingEngine {
-  public:
-    AnalyticDiscreteGeometricAveragePriceAsianHestonEngine(
-            const ext::shared_ptr<HestonProcess>& process,
-            Real xiRightLimit = 100.0);
-};
-
-%shared_ptr(AnalyticDiscreteGeometricAverageStrikeAsianEngine)
-class AnalyticDiscreteGeometricAverageStrikeAsianEngine : public PricingEngine {
-  public:
-    AnalyticDiscreteGeometricAverageStrikeAsianEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-};
-
-
-%{
-using QuantLib::MCDiscreteArithmeticAPEngine;
-using QuantLib::MCDiscreteArithmeticAPHestonEngine;
-using QuantLib::MCDiscreteArithmeticASEngine;
-using QuantLib::MCDiscreteGeometricAPEngine;
-using QuantLib::MCDiscreteGeometricAPHestonEngine;
-%}
-
-%shared_ptr(MCDiscreteArithmeticAPEngine<PseudoRandom>);
-%shared_ptr(MCDiscreteArithmeticAPEngine<LowDiscrepancy>);
-
-template <class RNG>
-class MCDiscreteArithmeticAPEngine : public PricingEngine {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteArithmeticAPEngine;
-    #endif
-  public:
-    %extend {
-        MCDiscreteArithmeticAPEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                                     bool brownianBridge = false,
-                                     bool antitheticVariate = false,
-                                     bool controlVariate = false,
-                                     intOrNull requiredSamples = Null<Size>(),
-                                     doubleOrNull requiredTolerance = Null<Real>(),
-                                     intOrNull maxSamples = Null<Size>(),
-                                     BigInteger seed = 0) {
-            return new MCDiscreteArithmeticAPEngine<RNG>(process,
-                                                         brownianBridge,
-                                                         antitheticVariate,
-                                                         controlVariate,
-                                                         requiredSamples,
-                                                         requiredTolerance,
-                                                         maxSamples,
-                                                         seed);
-        }
-    }
-};
-
-%template(MCPRDiscreteArithmeticAPEngine) MCDiscreteArithmeticAPEngine<PseudoRandom>;
-%template(MCLDDiscreteArithmeticAPEngine) MCDiscreteArithmeticAPEngine<LowDiscrepancy>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def MCDiscreteArithmeticAPEngine(process,
-                                     traits,
-                                     brownianBridge=False,
-                                     antitheticVariate=False,
-                                     controlVariate=False,
-                                     requiredSamples=None,
-                                     requiredTolerance=None,
-                                     maxSamples=None,
-                                     seed=0):
-        traits = traits.lower()
-        if traits == "pr" or traits == "pseudorandom":
-            cls = MCPRDiscreteArithmeticAPEngine
-        elif traits == "ld" or traits == "lowdiscrepancy":
-            cls = MCLDDiscreteArithmeticAPEngine
-        else:
-            raise RuntimeError("unknown MC traits: %s" % traits);
-        return cls(process,
-                   brownianBridge,
-                   antitheticVariate,
-                   controlVariate,
-                   requiredSamples,
-                   requiredTolerance,
-                   maxSamples,
-                   seed)
-%}
-#endif
-
-%shared_ptr(MCDiscreteArithmeticAPHestonEngine<PseudoRandom>);
-%shared_ptr(MCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>);
-
-template <class RNG>
-class MCDiscreteArithmeticAPHestonEngine : public PricingEngine {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteArithmeticAPHestonEngine;
-    #endif
-  public:
-    %extend {
-        MCDiscreteArithmeticAPHestonEngine(const ext::shared_ptr<HestonProcess>& process,
-                                           bool antitheticVariate = false,
-                                           intOrNull requiredSamples = Null<Size>(),
-                                           doubleOrNull requiredTolerance = Null<Real>(),
-                                           intOrNull maxSamples = Null<Size>(),
-                                           BigInteger seed = 0,
-                                           intOrNull timeSteps = Null<Size>(),
-                                           intOrNull timeStepsPerYear = Null<Size>(),
-                                           bool controlVariate = false) {
-            return new MCDiscreteArithmeticAPHestonEngine<RNG>(process,
-                                                               antitheticVariate,
-                                                               requiredSamples,
-                                                               requiredTolerance,
-                                                               maxSamples,
-                                                               seed,
-                                                               timeSteps,
-                                                               timeStepsPerYear,
-                                                               controlVariate);
-        }
-    }
-};
-
-%template(MCPRDiscreteArithmeticAPHestonEngine) MCDiscreteArithmeticAPHestonEngine<PseudoRandom>;
-%template(MCLDDiscreteArithmeticAPHestonEngine) MCDiscreteArithmeticAPHestonEngine<LowDiscrepancy>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def MCDiscreteArithmeticAPHestonEngine(process,
-                                           traits,
-                                           antitheticVariate=False,
-                                           requiredSamples=None,
-                                           requiredTolerance=None,
-                                           maxSamples=None,
-                                           seed=0,
-                                           timeSteps=None,
-                                           timeStepsPerYear=None,
-                                           controlVariate=False):
-        traits = traits.lower()
-        if traits == "pr" or traits == "pseudorandom":
-            cls = MCPRDiscreteArithmeticAPHestonEngine
-        elif traits == "ld" or traits == "lowdiscrepancy":
-            cls = MCLDDiscreteArithmeticAPHestonEngine
-        else:
-            raise RuntimeError("unknown MC traits: %s" % traits);
-        return cls(process,
-                   antitheticVariate,
-                   requiredSamples,
-                   requiredTolerance,
-                   maxSamples,
-                   seed,
-                   timeSteps,
-                   timeStepsPerYear,
-                   controlVariate)
-%}
-#endif
-
-%shared_ptr(MCDiscreteArithmeticASEngine<PseudoRandom>);
-%shared_ptr(MCDiscreteArithmeticASEngine<LowDiscrepancy>);
-
-template <class RNG>
-class MCDiscreteArithmeticASEngine : public PricingEngine {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteArithmeticASEngine;
-    #endif
-  public:
-    %extend {
-        MCDiscreteArithmeticASEngine(
-                            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                            bool brownianBridge = false,
-                            bool antitheticVariate = false,
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0) {
-            return new MCDiscreteArithmeticASEngine<RNG>(process,
-                                                         brownianBridge,
-                                                         antitheticVariate,
-                                                         requiredSamples,
-                                                         requiredTolerance,
-                                                         maxSamples,
-                                                         seed);
-        }
-    }
-};
-
-%template(MCPRDiscreteArithmeticASEngine) MCDiscreteArithmeticASEngine<PseudoRandom>;
-%template(MCLDDiscreteArithmeticASEngine) MCDiscreteArithmeticASEngine<LowDiscrepancy>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def MCDiscreteArithmeticASEngine(process,
-                                     traits,
-                                     brownianBridge=False,
-                                     antitheticVariate=False,
-                                     requiredSamples=None,
-                                     requiredTolerance=None,
-                                     maxSamples=None,
-                                     seed=0):
-        traits = traits.lower()
-        if traits == "pr" or traits == "pseudorandom":
-            cls = MCPRDiscreteArithmeticASEngine
-        elif traits == "ld" or traits == "lowdiscrepancy":
-            cls = MCLDDiscreteArithmeticASEngine
-        else:
-            raise RuntimeError("unknown MC traits: %s" % traits);
-        return cls(process,
-                   brownianBridge,
-                   antitheticVariate,
-                   requiredSamples,
-                   requiredTolerance,
-                   maxSamples,
-                   seed)
-%}
-#endif
-
-
-%shared_ptr(MCDiscreteGeometricAPEngine<PseudoRandom>);
-%shared_ptr(MCDiscreteGeometricAPEngine<LowDiscrepancy>);
-
-template <class RNG>
-class MCDiscreteGeometricAPEngine : public PricingEngine {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteGeometricAPEngine;
-    #endif
-  public:
-    %extend {
-        MCDiscreteGeometricAPEngine(
-                            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                            bool brownianBridge = false,
-                            bool antitheticVariate = false,
-                            intOrNull requiredSamples = Null<Size>(),
-                            doubleOrNull requiredTolerance = Null<Real>(),
-                            intOrNull maxSamples = Null<Size>(),
-                            BigInteger seed = 0) {
-            return new MCDiscreteGeometricAPEngine<RNG>(process,
-                                                        brownianBridge,
-                                                        antitheticVariate,
-                                                        requiredSamples,
-                                                        requiredTolerance,
-                                                        maxSamples,
-                                                        seed);
-        }
-    }
-};
-
-
-%template(MCPRDiscreteGeometricAPEngine) MCDiscreteGeometricAPEngine<PseudoRandom>;
-%template(MCLDDiscreteGeometricAPEngine) MCDiscreteGeometricAPEngine<LowDiscrepancy>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def MCDiscreteGeometricAPEngine(process,
-                                     traits,
-                                     brownianBridge=False,
-                                     antitheticVariate=False,
-                                     requiredSamples=None,
-                                     requiredTolerance=None,
-                                     maxSamples=None,
-                                     seed=0):
-        traits = traits.lower()
-        if traits == "pr" or traits == "pseudorandom":
-            cls = MCPRDiscreteGeometricAPEngine
-        elif traits == "ld" or traits == "lowdiscrepancy":
-            cls = MCLDDiscreteGeometricAPEngine
-        else:
-            raise RuntimeError("unknown MC traits: %s" % traits);
-        return cls(process,
-                   brownianBridge,
-                   antitheticVariate,
-                   requiredSamples,
-                   requiredTolerance,
-                   maxSamples,
-                   seed)
-%}
-#endif
-
-%shared_ptr(MCDiscreteGeometricAPHestonEngine<PseudoRandom>);
-%shared_ptr(MCDiscreteGeometricAPHestonEngine<LowDiscrepancy>);
-
-template <class RNG>
-class MCDiscreteGeometricAPHestonEngine : public PricingEngine {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") MCDiscreteGeometricAPHestonEngine;
-    #endif
-  public:
-    %extend {
-        MCDiscreteGeometricAPHestonEngine(const ext::shared_ptr<HestonProcess>& process,
-                                          bool antitheticVariate = false,
-                                          intOrNull requiredSamples = Null<Size>(),
-                                          doubleOrNull requiredTolerance = Null<Real>(),
-                                          intOrNull maxSamples = Null<Size>(),
-                                          BigInteger seed = 0,
-                                          intOrNull timeSteps = Null<Size>(),
-                                          intOrNull timeStepsPerYear = Null<Size>()) {
-            return new MCDiscreteGeometricAPHestonEngine<RNG>(process,
-                                                              antitheticVariate,
-                                                              requiredSamples,
-                                                              requiredTolerance,
-                                                              maxSamples,
-                                                              seed,
-                                                              timeSteps,
-                                                              timeStepsPerYear);
-        }
-    }
-};
-
-%template(MCPRDiscreteGeometricAPHestonEngine) MCDiscreteGeometricAPHestonEngine<PseudoRandom>;
-%template(MCLDDiscreteGeometricAPHestonEngine) MCDiscreteGeometricAPHestonEngine<LowDiscrepancy>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def MCDiscreteGeometricAPHestonEngine(process,
-                                          traits,
-                                          antitheticVariate=False,
-                                          requiredSamples=None,
-                                          requiredTolerance=None,
-                                          maxSamples=None,
-                                          seed=0,
-                                          timeSteps=None,
-                                          timeStepsPerYear=None):
-        traits = traits.lower()
-        if traits == "pr" or traits == "pseudorandom":
-            cls = MCPRDiscreteGeometricAPHestonEngine
-        elif traits == "ld" or traits == "lowdiscrepancy":
-            cls = MCLDDiscreteGeometricAPHestonEngine
-        else:
-            raise RuntimeError("unknown MC traits: %s" % traits);
-        return cls(process,
-                   antitheticVariate,
-                   requiredSamples,
-                   requiredTolerance,
-                   maxSamples,
-                   seed,
-                   timeSteps,
-                   timeStepsPerYear)
-%}
-#endif
-
 
 %{
 using QuantLib::VarianceGammaEngine;
@@ -2153,307 +1495,6 @@ class FFTVarianceGammaEngine : public PricingEngine {
     FFTVarianceGammaEngine(const ext::shared_ptr<VarianceGammaProcess>& process,
                            Real logStrikeSpacing = 0.001);
     void precalculate(const std::vector<ext::shared_ptr<Instrument> >& optionList);
-};
-
-// Double barrier options
-%{
-using QuantLib::DoubleBarrierOption;
-using QuantLib::DoubleBarrier;
-%}
-
-%shared_ptr(DoubleBarrierOption)
-class DoubleBarrierOption : public OneAssetOption {
-  public:
-    DoubleBarrierOption(
-               DoubleBarrier::Type barrierType,
-               Real barrier_lo,
-               Real barrier_hi,
-               Real rebate,
-               const ext::shared_ptr<StrikedTypePayoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise);
-};
-
-// QuantoVanillaOption
-
-%{
-using QuantLib::QuantoDoubleBarrierOption;
-%}
-
-%shared_ptr(QuantoDoubleBarrierOption)
-class QuantoDoubleBarrierOption : public DoubleBarrierOption {
-  public:
-    QuantoDoubleBarrierOption(
-            DoubleBarrier::Type barrierType,
-            Real barrier_lo,
-            Real barrier_hi,
-            Real rebate,
-            const ext::shared_ptr<StrikedTypePayoff>& payoff,
-            const ext::shared_ptr<Exercise>& exercise);
-    Real qvega();
-    Real qrho();
-    Real qlambda();
-};
-
-// Double Barrier engines
-
-%{
-using QuantLib::AnalyticDoubleBarrierEngine;
-%}
-
-#if defined(SWIGPYTHON)
-%feature("docstring") AnalyticDoubleBarrierEngine "Double barrier engine implementing Ikeda-Kunitomo series."
-#endif
-%shared_ptr(AnalyticDoubleBarrierEngine)
-class AnalyticDoubleBarrierEngine : public PricingEngine {
-  public:
-    AnalyticDoubleBarrierEngine(
-                           const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                           int series = 5);
-};
-
-%{
-using QuantLib::FdHestonDoubleBarrierEngine;
-%}
-
-%shared_ptr(FdHestonDoubleBarrierEngine);
-class FdHestonDoubleBarrierEngine : public PricingEngine {
-  public:
-    FdHestonDoubleBarrierEngine(
-            const ext::shared_ptr<HestonModel>& model,
-            Size tGrid = 100, Size xGrid = 100,
-            Size vGrid = 50, Size dampingSteps = 0,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-            const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                = ext::shared_ptr<LocalVolTermStructure>(),
-            const Real mixingFactor = 1.0);
-};
-
-%{
-using QuantLib::WulinYongDoubleBarrierEngine;
-%}
-
-%shared_ptr(WulinYongDoubleBarrierEngine)
-class WulinYongDoubleBarrierEngine : public PricingEngine {
-  public:
-    WulinYongDoubleBarrierEngine(
-                           const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                           int series = 5);
-};
-
-%{
-using QuantLib::VannaVolgaBarrierEngine;
-using QuantLib::DeltaVolQuote;
-%}
-
-%shared_ptr(DeltaVolQuote)
-
-class DeltaVolQuote : public Quote {
-  public:
-    enum DeltaType { Spot, Fwd, PaSpot, PaFwd };
-    enum AtmType { AtmNull, AtmSpot, AtmFwd, AtmDeltaNeutral,
-                   AtmVegaMax, AtmGammaMax, AtmPutCall50 };
-    DeltaVolQuote(Real delta,
-                  const Handle<Quote>& vol,
-                  Time maturity,
-                  DeltaVolQuote::DeltaType deltaType);
-    DeltaVolQuote(const Handle<Quote>& vol,
-                  DeltaVolQuote::DeltaType deltaType,
-                  Time maturity,
-                  DeltaVolQuote::AtmType atmType);
-
-    Real delta() const;
-    Time maturity() const;
-    AtmType atmType() const;
-    DeltaType deltaType() const;
-};
-
-%template(DeltaVolQuoteHandle) Handle<DeltaVolQuote>;
-%template(RelinkableDeltaVolQuoteHandle) RelinkableHandle<DeltaVolQuote>;
-
-#if defined(SWIGPYTHON)
-%feature("docstring") VannaVolgaDoubleBarrierEngine "
-Vanna-Volga engine for double barrier options.
-Supports different double barrier engines, selected by the type parameters.
-Type values:
-    ik or analytic:  Ikeda-Kunitomo standard engine (default)
-    wo:              Wulin-Yong engine
-"
-#endif
-
-%{
-using QuantLib::VannaVolgaDoubleBarrierEngine;
-%}
-
-%shared_ptr(VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine>);
-%shared_ptr(VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine>);
-
-template <class E>
-class VannaVolgaDoubleBarrierEngine : public PricingEngine {
-  public:
-    VannaVolgaDoubleBarrierEngine(
-                           const Handle<DeltaVolQuote> atmVol,
-                           const Handle<DeltaVolQuote> vol25Put,
-                           const Handle<DeltaVolQuote> vol25Call,
-                           const Handle<Quote> spotFX,
-                           const Handle<YieldTermStructure> domesticTS,
-                           const Handle<YieldTermStructure> foreignTS,
-                           const bool adaptVanDelta = false,
-                           const Real bsPriceWithSmile = 0.0,
-                           int series = 5);
-};
-
-%template(VannaVolgaIKDoubleBarrierEngine) VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine>;
-%template(VannaVolgaWODoubleBarrierEngine) VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine>;
-
-
-%shared_ptr(VannaVolgaBarrierEngine)
-class VannaVolgaBarrierEngine : public PricingEngine {
-  public:
-    VannaVolgaBarrierEngine(
-                const Handle<DeltaVolQuote>& atmVol,
-                const Handle<DeltaVolQuote>& vol25Put,
-                const Handle<DeltaVolQuote>& vol25Call,
-                const Handle<Quote>& spotFX,
-                const Handle<YieldTermStructure>& domesticTS,
-                const Handle<YieldTermStructure>& foreignTS,
-                const bool adaptVanDelta = false,
-                const Real bsPriceWithSmile = 0.0);
-};
-
-%{
-using QuantLib::AnalyticDoubleBarrierBinaryEngine;
-%}
-
-%shared_ptr(AnalyticDoubleBarrierBinaryEngine)
-class AnalyticDoubleBarrierBinaryEngine : public PricingEngine {
-  public:
-    AnalyticDoubleBarrierBinaryEngine(
-                           const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
-};
-
-%{
-using QuantLib::BinomialDoubleBarrierEngine;
-using QuantLib::DiscretizedDermanKaniDoubleBarrierOption;
-%}
-
-#if defined(SWIGPYTHON)
-%feature("docstring") BinomialDoubleBarrierEngine "Binomial Engine for double barrier options.
-Features different binomial models, selected by the type parameters.
-Uses Derman-Kani optimization to speed up convergence.
-Type values:
-    crr or coxrossrubinstein:        Cox-Ross-Rubinstein model
-    jr  or jarrowrudd:               Jarrow-Rudd model
-    eqp or additiveeqpbinomialtree:  Additive EQP model
-    trigeorgis:                      Trigeorgis model
-    tian:                            Tian model
-    lr  or leisenreimer              Leisen-Reimer model
-    j4  or joshi4:                   Joshi 4th (smoothed) model
-"
-#endif
-
-#if !defined(SWIGR)
-
-%shared_ptr(BinomialDoubleBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniDoubleBarrierOption>);
-%shared_ptr(BinomialDoubleBarrierEngine<JarrowRudd, DiscretizedDermanKaniDoubleBarrierOption>);
-%shared_ptr(BinomialDoubleBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniDoubleBarrierOption>);
-%shared_ptr(BinomialDoubleBarrierEngine<Trigeorgis, DiscretizedDermanKaniDoubleBarrierOption>);
-%shared_ptr(BinomialDoubleBarrierEngine<Tian, DiscretizedDermanKaniDoubleBarrierOption>);
-%shared_ptr(BinomialDoubleBarrierEngine<LeisenReimer, DiscretizedDermanKaniDoubleBarrierOption>);
-%shared_ptr(BinomialDoubleBarrierEngine<Joshi4, DiscretizedDermanKaniDoubleBarrierOption>);
-
-template <class T, class U>
-class BinomialDoubleBarrierEngine : public PricingEngine {
-  public:
-    BinomialDoubleBarrierEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
-                                Size steps);
-};
-
-%template(BinomialCRRDoubleBarrierEngine) BinomialDoubleBarrierEngine<CoxRossRubinstein, DiscretizedDermanKaniDoubleBarrierOption>;
-%template(BinomialJRDoubleBarrierEngine) BinomialDoubleBarrierEngine<JarrowRudd, DiscretizedDermanKaniDoubleBarrierOption>;
-%template(BinomialEQPDoubleBarrierEngine) BinomialDoubleBarrierEngine<AdditiveEQPBinomialTree, DiscretizedDermanKaniDoubleBarrierOption>;
-%template(BinomialTrigeorgisDoubleBarrierEngine) BinomialDoubleBarrierEngine<Trigeorgis, DiscretizedDermanKaniDoubleBarrierOption>;
-%template(BinomialTianDoubleBarrierEngine) BinomialDoubleBarrierEngine<Tian, DiscretizedDermanKaniDoubleBarrierOption>;
-%template(BinomialLRDoubleBarrierEngine) BinomialDoubleBarrierEngine<LeisenReimer, DiscretizedDermanKaniDoubleBarrierOption>;
-%template(BinomialJ4DoubleBarrierEngine) BinomialDoubleBarrierEngine<Joshi4, DiscretizedDermanKaniDoubleBarrierOption>;
-
-#if defined(SWIGPYTHON)
-%pythoncode %{
-    def BinomialDoubleBarrierEngine(process, type, steps):
-        type = type.lower()
-        if type == "crr" or type == "coxrossrubinstein":
-            cls = BinomialCRRDoubleBarrierEngine
-        elif type == "jr" or type == "jarrowrudd":
-            cls = BinomialJRDoubleBarrierEngine
-        elif type == "eqp":
-            cls = BinomialEQPDoubleBarrierEngine
-        elif type == "trigeorgis":
-            cls = BinomialTrigeorgisDoubleBarrierEngine
-        elif type == "tian":
-            cls = BinomialTianDoubleBarrierEngine
-        elif type == "lr" or type == "leisenreimer":
-            cls = BinomialLRDoubleBarrierEngine
-        elif type == "j4" or type == "joshi4":
-            cls = BinomialJ4DoubleBarrierEngine
-        else:
-            raise RuntimeError("unknown binomial engine type: %s" % type);
-        return cls(process, steps)
-%}
-#endif
-
-#endif
-
-
-// Swing option
-
-%{
-using QuantLib::VanillaSwingOption;
-%}
-
-%shared_ptr(VanillaSwingOption)
-class VanillaSwingOption : public OneAssetOption {
-  public:
-    VanillaSwingOption(
-        const ext::shared_ptr<Payoff>& payoff,
-        const ext::shared_ptr<SwingExercise>& ex,
-        Size minExerciseRights, Size maxExerciseRights);
-};
-
-// Swing engines
-
-%{
-using QuantLib::FdSimpleBSSwingEngine;
-using QuantLib::FdSimpleExtOUJumpSwingEngine;
-%}
-
-%shared_ptr(FdSimpleBSSwingEngine)
-class FdSimpleBSSwingEngine : public PricingEngine {
-  public:
-    FdSimpleBSSwingEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-            Size tGrid = 50, Size xGrid = 100,
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
-};
-
-%shared_ptr(FdSimpleExtOUJumpSwingEngine)
-class FdSimpleExtOUJumpSwingEngine : public PricingEngine {
-  public:
-    %extend {
-        FdSimpleExtOUJumpSwingEngine(
-            const ext::shared_ptr<ExtOUWithJumpsProcess>& process,
-            const ext::shared_ptr<YieldTermStructure>& rTS,
-            Size tGrid = 50, Size xGrid = 200, Size yGrid=50,
-            const std::vector<std::pair<Time,Real> >& shape =
-                                         std::vector<std::pair<Time,Real> >(),
-            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
-
-            ext::shared_ptr<FdSimpleExtOUJumpSwingEngine::Shape> curve(
-                              new FdSimpleExtOUJumpSwingEngine::Shape(shape));
-
-            return new FdSimpleExtOUJumpSwingEngine(
-                    process, rTS, tGrid, xGrid, yGrid,
-                    curve, schemeDesc);
-        }
-    }
 };
 
 
@@ -2553,25 +1594,5 @@ class MCEuropeanGJRGARCHEngine : public PricingEngine {
 %}
 #endif
 
-
-%{
-using QuantLib::SpreadOption;
-using QuantLib::KirkSpreadOptionEngine;
-%}
-
-%shared_ptr(SpreadOption);
-class SpreadOption : public MultiAssetOption {
-public:
-  SpreadOption(const ext::shared_ptr<PlainVanillaPayoff>& payoff,
-               const ext::shared_ptr<Exercise>& exercise);
-};
-
-%shared_ptr(KirkSpreadOptionEngine);
-class KirkSpreadOptionEngine : public PricingEngine {
-public:
-  KirkSpreadOptionEngine(const ext::shared_ptr<BlackProcess>& process1,
-                         const ext::shared_ptr<BlackProcess>& process2,
-                         const Handle<Quote>& correlation);
-};
 
 #endif
