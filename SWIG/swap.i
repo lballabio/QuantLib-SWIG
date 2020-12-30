@@ -47,6 +47,8 @@ class Swap : public Instrument {
   public:
     Swap(const std::vector<ext::shared_ptr<CashFlow> >& firstLeg,
          const std::vector<ext::shared_ptr<CashFlow> >& secondLeg);
+    Swap(const std::vector<Leg>& legs,
+         const std::vector<bool>& payer);
     Date startDate();
     Date maturityDate();
     const Leg & leg(Size i);

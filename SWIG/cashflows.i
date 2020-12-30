@@ -35,6 +35,7 @@
 
 %{
 using QuantLib::CashFlow;
+using QuantLib::Leg;
 %}
 
 %shared_ptr(CashFlow)
@@ -53,6 +54,10 @@ SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<CashFlow> )
 %template(Leg) std::vector<ext::shared_ptr<CashFlow> >;
 typedef std::vector<ext::shared_ptr<CashFlow> > Leg;
 
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( Leg )
+#endif
+%template(LegVector) std::vector<Leg>;
 
 // implementations
 
@@ -63,7 +68,6 @@ using QuantLib::Redemption;
 using QuantLib::AmortizingPayment;
 using QuantLib::Coupon;
 using QuantLib::FixedRateCoupon;
-using QuantLib::Leg;
 using QuantLib::FloatingRateCoupon;
 using QuantLib::OvernightIndexedCoupon;
 %}
