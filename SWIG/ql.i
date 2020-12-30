@@ -165,6 +165,7 @@
 %include interestrate.i
 %include interpolation.i
 %include linearalgebra.i
+%include lookbackoptions.i
 %include marketelements.i
 %include money.i
 %include montecarlo.i

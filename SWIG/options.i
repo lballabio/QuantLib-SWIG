@@ -40,8 +40,6 @@
 
 %{
 using QuantLib::Payoff;
-using QuantLib::TypePayoff;
-using QuantLib::StrikedTypePayoff;
 %}
 
 %shared_ptr(Payoff);
@@ -73,31 +71,11 @@ class Option : public Instrument {
 };
 
 
-#if defined(SWIGR)
-%Rruntime %{
-setMethod("summary", "_p_VanillaOption",
-function(object) {object$freeze()
-ans <- c(value=object$NPV(), delta=object$delta(),
-gamma=object$gamma(), vega=object$vega(),
-theta=object$theta(), rho=object$rho(),
-divRho=object$dividendRho())
-object$unfreeze()
-ans
-})
-
-setMethod("summary", "_p_DividendVanillaOption",
-function(object) {object$freeze()
-ans <- c(value=object$NPV(), delta=object$delta(),
-gamma=object$gamma(), vega=object$vega(),
-theta=object$theta(), rho=object$rho(),
-divRho=object$dividendRho())
-object$unfreeze()
-ans
-})
-
+%{
+using QuantLib::TypePayoff;
+using QuantLib::FloatingTypePayoff;
+using QuantLib::StrikedTypePayoff;
 %}
-#endif
-
 
 %shared_ptr(TypePayoff)
 class TypePayoff : public Payoff {
@@ -105,6 +83,14 @@ class TypePayoff : public Payoff {
     Option::Type optionType();
   private:
     TypePayoff();
+};
+
+%shared_ptr(FloatingTypePayoff)
+class FloatingTypePayoff : public TypePayoff {
+  public:
+    FloatingTypePayoff(Option::Type type);
+    Real operator()(Real price, Real strike) const;
+    Real operator()(Real price) const;
 };
 
 %shared_ptr(StrikedTypePayoff)
@@ -172,6 +158,20 @@ class OneAssetOption : public Option {
     Real strikeSensitivity() const;
     Real itmCashProbability() const;
 };
+
+#if defined(SWIGR)
+%Rruntime %{
+setMethod("summary", "_p_VanillaOption",
+function(object) {object$freeze()
+ans <- c(value=object$NPV(), delta=object$delta(),
+gamma=object$gamma(), vega=object$vega(),
+theta=object$theta(), rho=object$rho(),
+divRho=object$dividendRho())
+object$unfreeze()
+ans
+})
+%}
+#endif
 
 %shared_ptr(VanillaOption)
 class VanillaOption : public OneAssetOption {
@@ -958,6 +958,20 @@ class AnalyticDigitalAmericanKOEngine : public PricingEngine {
 using QuantLib::DividendVanillaOption;
 %}
 
+
+#if defined(SWIGR)
+%Rruntime %{
+setMethod("summary", "_p_DividendVanillaOption",
+function(object) {object$freeze()
+ans <- c(value=object$NPV(), delta=object$delta(),
+gamma=object$gamma(), vega=object$vega(),
+theta=object$theta(), rho=object$rho(),
+divRho=object$dividendRho())
+object$unfreeze()
+ans
+})
+%}
+#endif
 
 %shared_ptr(DividendVanillaOption)
 class DividendVanillaOption : public OneAssetOption {
