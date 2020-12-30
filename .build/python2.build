@@ -5,7 +5,7 @@
 && make -C Python \
 && make -C Python check \
 && make -C Python install \
-&& grep -v QuantLib requirements.txt > Python/examples/requirements.txt \
+&& grep -v QuantLib requirements.txt | grep -v jupytext > Python/examples/requirements.txt \
 && echo 'pyrsistent==0.16' >> Python/examples/requirements.txt \
 && pip install -r Python/examples/requirements.txt \
 && for i in Python/examples/*.py ; do echo "$i" && /usr/bin/python2 "$i" || break -1 ; done
