@@ -116,11 +116,16 @@ class MultiPath {
   public:
     Size pathSize() const;
     Size assetNumber() const;
-	Path& at(Size j);
+    #ifndef(SWIGPYTHON)
+    Path& at(Size i);
+    #endif
 
     %extend {
         #if defined(SWIGPYTHON)
-        const Path& __getitem__(Integer i) {
+        Path at(Size i) {
+            return self->at(i);
+        }        
+        const Path __getitem__(Integer i) {
             Integer assets_ = Integer(self->assetNumber());
             if (i>=0 && i<assets_) {
                 return (*self)[i];
