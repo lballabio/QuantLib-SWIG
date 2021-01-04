@@ -64,7 +64,7 @@ class Sample {
     Sample();
   public:
     %extend {
-        T value() { return self->value; }
+        const T& value() { return self->value; }
         Real weight() { return self->weight; }
     }
 };
