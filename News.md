@@ -1,40 +1,43 @@
 
-Main changes for QuantLib-SWIG 1.20
+Main changes for QuantLib-SWIG 1.21
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/13?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/14?closed=1>.
 
-- We're sunsetting support for Python 2.7, which reached end of life
-  in January 2020.  For the next release, we'll still check that the
-  wrappers work with 2.7.  After the next release, we'll make no
-  further effort to keep it working.
+- As previously announced, this release is the last one to support
+  Python 2.7, which reached end of life in January 2020.
 
-- SWIG wrappers now work also if the C++ library was compiled using
-  `std::shared_ptr` instead of `boost::shared_ptr` (thanks to Joseph
-  Wang).
+- Exported methods for `VolDeltaQuote` class (thanks to Jack Gillett).
 
-- The `BaroneAdesiWhaleyApproximationEngine` and
-  `BjerksundStenslandApproximationEngine` classes used to be renamed
-  to `BaroneAdesiWhaleyEngine` and `BjerksundStenslandEngine`,
-  respectively.  This is no longer the case.
+- Exported `localVolatility()` method for Black-Scholes process
+  (thanks to Jack Gillett).
 
-- Exported mixing factor to Heston SLV process and engines (thanks to
-  Jack Gillett).
+- Exported `type()` method for vanilla swaps (thanks to Ralf Konrad).
 
-- Exported a number of inflation-related classes (thanks to Matthias
-  Lungwitz).
+- Exported constructors with full parameter lists for CDS helpers
+  (thanks to Joe Song).
 
-- Exported Crank-Nicolson finite-differences scheme (thanks to Klaus
-  Spanderen).
+- Exported amortizing-bond constructor taking an `InterestRate`
+  instance (thanks to Piter Dias).
 
-- Exported `SwaptionVolatilityCube` class (thanks to Marcin Rybacki).
+- Exported Sobol-based multi-path generator (thanks to Jack Gillett).
 
-- Exported Cox-Ingersoll-Ross short-rate model.
+- Exported Monte Carlo and analytic forward option engines based on
+  the Heston model (thanks to Jack Gillett).
 
-- Exported callable zero-coupon bond.
+- Exported ultimate-forward term structure (thanks to Marcin Rybacki).
 
-- Exported SABR interpolation.
+- Exported a few Monte Carlo and analytic Asian option engines based
+  on the Heston model (thanks to Jack Gillett).
 
-- Made the `Date` class comparable and convertible to string in C#.
+- Exported swap constructor taking multiple legs.
 
+- Exported lookback options.
+
+- Exported overnight-index futures.
+
+- Avoided memory access issue with path generators in Python (thanks
+  to Klaus Spanderen for the heads-up).
+
+- Added an example of cash-flow analysis in Python.
