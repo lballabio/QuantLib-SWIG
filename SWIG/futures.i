@@ -36,13 +36,18 @@ class OvernightIndexFuture : public Forward {
   public:
     enum NettingType { Averaging, Compounding };
 
-    OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                         const ext::shared_ptr<Payoff>& payoff,
-                         const Date& valueDate,
-                         const Date& maturityDate,
-                         const Handle<YieldTermStructure>& discountCurve,
-                         const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                         NettingType subPeriodsNettingType = Compounding);
+    %extend {
+        OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                             const Date& valueDate,
+                             const Date& maturityDate,
+                             const Handle<YieldTermStructure>& discountCurve,
+                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+                             NettingType subPeriodsNettingType = Compounding) {
+            return new OvernightIndexFuture(overnightIndex, ext::shared_ptr<Payoff>(),
+                                            valueDate, maturityDate, discountCurve,
+                                            convexityAdjustment, subPeriodsNettingType);
+        }
+    }
 
     Real convexityAdjustment() const;
 };
