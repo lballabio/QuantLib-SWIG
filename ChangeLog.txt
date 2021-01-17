@@ -1,3 +1,33 @@
+commit d596e90aaba4c58cbb4c1fb64ef31a34da5d5fe7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 17 Jan 2021 16:02:29 +0100
+
+    Set version to 1.21 final
+
+ Python/setup.py | 2 +-
+ SWIG/ql.i       | 2 +-
+ configure.ac    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit b2dd54eba54e73b8662f404cc6ddef15ecca9b5c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 6 Jan 2021 17:19:10 +0100
+
+    Allow for lack of empty payoff in wrappers
+
+ SWIG/futures.i | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
+
+commit 27f3f49cba28f89bb7b7a372cc0b5b8d074cc38f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 5 Jan 2021 16:39:40 +0100
+
+    Update changelog and news
+
+ ChangeLog.txt | 1330 ++++++++++++++++-----------------------------------------
+ News.md       |   51 +--
+ 2 files changed, 386 insertions(+), 995 deletions(-)
+
 commit 872ea986965105ceecdaad5a213dd49e288c1a85
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 5 Jan 2021 16:18:36 +0100
