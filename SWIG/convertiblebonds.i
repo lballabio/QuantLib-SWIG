@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2006, 2007 StatPro Italia srl
  Copyright (C) 2018 Matthias Lungwitz
@@ -21,7 +20,6 @@
 #define quantlib_convertible_bonds_i
 
 %include bonds.i
-%include callability.i
 %include dividends.i
 %include options.i
 

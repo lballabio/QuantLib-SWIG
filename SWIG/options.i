@@ -516,49 +516,6 @@ class IntegralEngine : public PricingEngine {
 
 
 %{
-using QuantLib::CrankNicolson;
-using QuantLib::FDBermudanEngine;
-using QuantLib::FDEuropeanEngine;
-%}
-
-%shared_ptr(FDBermudanEngine<CrankNicolson>);
-
-template <class S>
-class FDBermudanEngine : public PricingEngine {
-    #if defined(SWIGPYTHON)
-    %pythonprepend FDBermudanEngine %{
-        from warnings import warn
-        warn("FDBermudanEngine is deprecated; use FdBlackScholesVanillaEngine")
-    %}
-    #endif
-  public:
-    FDBermudanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                     Size timeSteps = 100, Size gridPoints = 100,
-                     bool timeDependent = false);
-};
-
-%template(FDBermudanEngine) FDBermudanEngine<CrankNicolson>;
-
-%shared_ptr(FDEuropeanEngine<CrankNicolson>);
-
-template <class S>
-class FDEuropeanEngine : public PricingEngine {
-    #if defined(SWIGPYTHON)
-    %pythonprepend FDEuropeanEngine %{
-        from warnings import warn
-        warn("FDEuropeanEngine is deprecated; use FdBlackScholesVanillaEngine")
-    %}
-    #endif
-  public:
-    FDEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess> process,
-                     Size timeSteps = 100, Size gridPoints = 100,
-                     bool timeDependent = false);
-};
-
-%template(FDEuropeanEngine) FDEuropeanEngine<CrankNicolson>;
-
-
-%{
 using QuantLib::BinomialVanillaEngine;
 using QuantLib::CoxRossRubinstein;
 using QuantLib::JarrowRudd;
@@ -857,28 +814,9 @@ class MCEuropeanHestonEngine : public PricingEngine {
 // American engines
 
 %{
-using QuantLib::FDAmericanEngine;
 using QuantLib::FDShoutEngine;
+using QuantLib::CrankNicolson;
 %}
-
-%shared_ptr(FDAmericanEngine<CrankNicolson>);
-
-template <class S>
-class FDAmericanEngine : public PricingEngine {
-    #if defined(SWIGPYTHON)
-    %pythonprepend FDAmericanEngine %{
-        from warnings import warn
-        warn("FDAmericanEngine is deprecated; use FdBlackScholesVanillaEngine")
-    %}
-    #endif
-  public:
-    FDAmericanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                     Size timeSteps = 100, Size gridPoints = 100,
-                     bool timeDependent = false);
-};
-
-%template(FDAmericanEngine) FDAmericanEngine<CrankNicolson>;
-
 
 %shared_ptr(FDShoutEngine<CrankNicolson>);
 
@@ -1001,52 +939,6 @@ class AnalyticDividendEuropeanEngine : public PricingEngine {
     AnalyticDividendEuropeanEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
-
-%{
-using QuantLib::FDDividendEuropeanEngine;
-using QuantLib::FDDividendAmericanEngine;
-%}
-
-%shared_ptr(FDDividendEuropeanEngine<CrankNicolson>)
-
-%rename(FDDividendEuropeanEngineT) FDDividendEuropeanEngine;
-template <class S>
-class FDDividendEuropeanEngine : public PricingEngine {
-    #if defined(SWIGPYTHON)
-    %pythonprepend FDDividendEuropeanEngine %{
-        from warnings import warn
-        warn("FDDividendEuropeanEngine is deprecated; use FdBlackScholesVanillaEngine")
-    %}
-    #endif
-  public:
-    FDDividendEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                             Size timeSteps = 100,
-                             Size gridPoints = 100,
-                             bool timeDependent = false);
-};
-
-%template(FDDividendEuropeanEngine) FDDividendEuropeanEngine<CrankNicolson>;
-
-
-%shared_ptr(FDDividendAmericanEngine<CrankNicolson>)
-
-%rename(FDDividendAmericanEngineT) FDDividendAmericanEngine;
-template <class S>
-class FDDividendAmericanEngine : public PricingEngine {
-    #if defined(SWIGPYTHON)
-    %pythonprepend FDDividendAmericanEngine %{
-        from warnings import warn
-        warn("FDDividendAmericanEngine is deprecated; use FdBlackScholesVanillaEngine")
-    %}
-    #endif
-  public:
-    FDDividendAmericanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                             Size timeSteps = 100,
-                             Size gridPoints = 100,
-                             bool timeDependent = false);
-};
-
-%template(FDDividendAmericanEngine) FDDividendAmericanEngine<CrankNicolson>;
 
 
 %{

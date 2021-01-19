@@ -24,7 +24,7 @@ import org.quantlib.Settings;
 
 import org.quantlib.CallableFixedRateBond;
 import org.quantlib.CallabilitySchedule;
-import org.quantlib.CallabilityPrice;
+import org.quantlib.BondPrice;
 import org.quantlib.Callability;
 import org.quantlib.TreeCallableFixedRateBondEngine;
 import org.quantlib.HullWhite;
@@ -160,9 +160,9 @@ public class CallableBondsOAS {
 
         for (long i=0; i< numberOfCallDates; ++i) {
 
-            CallabilityPrice myPrice=
-		new CallabilityPrice(callPrice,
-				      CallabilityPrice.Type.Clean);
+            BondPrice myPrice =
+                new BondPrice(callPrice,
+                              BondPrice.Type.Clean);
             callSchedule.add(new Callability(myPrice,
 					     Callability.Type.Call,
 					     callDate));
@@ -206,9 +206,9 @@ public class CallableBondsOAS {
 
         for (long i=0; i< numberOfCallDates; ++i) {
 
-            CallabilityPrice myPrice=
-		new CallabilityPrice(callPrice,
-				      CallabilityPrice.Type.Clean);
+            BondPrice myPrice =
+                new BondPrice(callPrice,
+                              BondPrice.Type.Clean);
             callSchedule.add(new Callability(myPrice,
 					     Callability.Type.Call,
 					     callDate));
@@ -248,9 +248,9 @@ public class CallableBondsOAS {
         double callPrice = 100.; 
         Date callDate =new Date(11, Month.August, 2018);
 
-	CallabilityPrice myPrice=
-	    new CallabilityPrice(callPrice,
-				 CallabilityPrice.Type.Clean);
+	BondPrice myPrice =
+	    new BondPrice(callPrice,
+                      BondPrice.Type.Clean);
 	callSchedule.add(new Callability(myPrice,
 					 Callability.Type.Put,
 					 callDate));
