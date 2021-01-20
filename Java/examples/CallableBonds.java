@@ -42,7 +42,7 @@ import org.quantlib.NullCalendar;
 import org.quantlib.UnitedStates;
 import org.quantlib.Calendar;
 import org.quantlib.Callability;
-import org.quantlib.CallabilityPrice;
+import org.quantlib.BondPrice;
 import org.quantlib.TimeUnit;
 import org.quantlib.BusinessDayConvention;
 import org.quantlib.DateGeneration;
@@ -173,9 +173,9 @@ public class CallableBonds {
 
         for (long i=0; i< numberOfCallDates; ++i) {
 
-            CallabilityPrice myPrice=
-                new CallabilityPrice(callPrice,
-                                     CallabilityPrice.Type.Clean);
+            BondPrice myPrice=
+                new BondPrice(callPrice,
+                              BondPrice.Type.Clean);
             callSchedule.add(new Callability(myPrice,
                                              Callability.Type.Call,
                                              callDate));

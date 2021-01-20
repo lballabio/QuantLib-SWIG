@@ -31,12 +31,12 @@
 %include cashflows.i
 %include interestrate.i
 %include indexes.i
-%include callability.i
 %include inflation.i
 %include shortratemodels.i
 
 %{
 using QuantLib::Bond;
+typedef Bond::Price BondPrice;
 using QuantLib::ZeroCouponBond;
 using QuantLib::FixedRateBond;
 using QuantLib::AmortizingFixedRateBond;
@@ -44,6 +44,14 @@ using QuantLib::FloatingRateBond;
 using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
 %}
+
+class BondPrice {
+  public:
+    enum Type { Dirty, Clean };
+    BondPrice(Real amount, Type type);
+    Real amount() const;
+    Type type() const;
+};
 
 %shared_ptr(Bond)
 class Bond : public Instrument {
@@ -416,11 +424,43 @@ class DiscountingBondEngine : public PricingEngine {
 
 %{
 using QuantLib::CallableBond;
+using QuantLib::Callability;
+using QuantLib::SoftCallability;
+using QuantLib::CallabilitySchedule;
+
 using QuantLib::CallableFixedRateBond;
 using QuantLib::CallableZeroCouponBond;
 using QuantLib::TreeCallableFixedRateBondEngine;
 using QuantLib::BlackCallableFixedRateBondEngine;
 %}
+
+%shared_ptr(Callability)
+class Callability {
+  public:
+    enum Type { Call, Put };
+    Callability(const BondPrice& price,
+                Type type,
+                const Date& date);
+    const BondPrice& price() const;
+    Type type() const;
+    Date date() const;
+};
+
+%shared_ptr(SoftCallability)
+class SoftCallability : public Callability {
+  public:
+    SoftCallability(const BondPrice& price,
+                    const Date& date,
+                    Real trigger);
+};
+
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<Callability> )
+#endif
+namespace std {
+    %template(CallabilitySchedule) vector<ext::shared_ptr<Callability> >;
+}
+
 
 %shared_ptr(CallableBond)
 class CallableBond : public Bond {
