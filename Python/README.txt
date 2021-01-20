@@ -2,7 +2,7 @@
 The C++ wrappers for the QuantLib-Python extension module are created
 by means of SWIG (Simplified Wrapper and Interface Generator)
 available from <http://www.swig.org/>; the latest version is suggested.
-Both Python 2.7 and 3.x are supported.
+At this time, we only support Python 3.x.
 
 Generating the wrappers is not required if you are using a distributed
 tarball. If you're building from a Git checkout, instead, use the
