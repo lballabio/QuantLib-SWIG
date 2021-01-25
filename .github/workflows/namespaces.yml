@@ -18,6 +18,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: fix-boost-namespace-${{ github.ref }}
+        delete-branch: true
         commit-message: 'Fix uses of boost namespace'
         title: 'Fix uses of boost namespace'
         author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
