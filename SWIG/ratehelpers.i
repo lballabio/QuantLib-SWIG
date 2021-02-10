@@ -307,7 +307,8 @@ class OISRateHelper : public RateHelper {
             const Period& forwardStart = 0 * Days, 
             const Spread overnightSpread = 0.0,
             Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date());
+            Date customPillarDate = Date(), 
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
     ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 
@@ -320,7 +321,9 @@ class DatedOISRateHelper : public RateHelper {
             const Handle<Quote>& rate,
             const ext::shared_ptr<OvernightIndex>& index,
             const Handle<YieldTermStructure>& discountingCurve
-                                        = Handle<YieldTermStructure>());
+                                        = Handle<YieldTermStructure>(),
+            bool telescopicValueDates = false,
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
 };
 
 %shared_ptr(FxSwapRateHelper)
@@ -348,7 +351,7 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& maturityDate,
             const ext::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            OvernightIndexFuture::NettingType type = OvernightIndexFuture::Compounding);
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
 };
 
 %shared_ptr(SofrFutureRateHelper)
@@ -361,7 +364,7 @@ class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
             Frequency referenceFreq,
             const ext::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            OvernightIndexFuture::NettingType type = OvernightIndexFuture::Compounding);
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
     SofrFutureRateHelper(
             Real price,
             Month referenceMonth,
@@ -369,7 +372,7 @@ class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
             Frequency referenceFreq,
             const ext::shared_ptr<OvernightIndex>& index,
             Real convexityAdjustment = 0.0,
-            OvernightIndexFuture::NettingType type = OvernightIndexFuture::Compounding);
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
 };
 
 

@@ -21,6 +21,7 @@
 %include forward.i
 %include indexes.i
 %include options.i
+%include cashflows.i
 
 %{
 using QuantLib::Futures;
@@ -34,18 +35,16 @@ struct Futures {
 %shared_ptr(OvernightIndexFuture)
 class OvernightIndexFuture : public Forward {
   public:
-    enum NettingType { Averaging, Compounding };
-
     %extend {
         OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
                              const Date& valueDate,
                              const Date& maturityDate,
                              const Handle<YieldTermStructure>& discountCurve,
                              const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                             NettingType subPeriodsNettingType = Compounding) {
+                             OvernightAveraging averagingMethod = OvernightAveraging::Compound) {
             return new OvernightIndexFuture(overnightIndex, ext::shared_ptr<Payoff>(),
                                             valueDate, maturityDate, discountCurve,
-                                            convexityAdjustment, subPeriodsNettingType);
+                                            convexityAdjustment, averagingMethod);
         }
     }
 

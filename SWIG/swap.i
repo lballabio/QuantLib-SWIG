@@ -336,7 +336,8 @@ class OvernightIndexedSwap : public Swap {
             Natural paymentLag = 0,
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
-            bool telescopicValueDates = false);
+            bool telescopicValueDates = false,
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
     
     OvernightIndexedSwap(
             OvernightIndexedSwap::Type type,
@@ -349,7 +350,8 @@ class OvernightIndexedSwap : public Swap {
             Natural paymentLag = 0,
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
-            bool telescopicValueDates = false);
+            bool telescopicValueDates = false,
+            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
 
 
     Rate fixedLegBPS();
@@ -403,6 +405,7 @@ class MakeOIS {
         MakeOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
         MakeOIS& withTelescopicValueDates(bool telescopicValueDates);
+        MakeOIS& withAveragingMethod(OvernightAveraging averagingMethod);
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
 };
@@ -426,6 +429,7 @@ def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
             overnightLegSpread=0.0,
             discountingTermStructure=None,
             telescopicValueDates=False,
+            averagingMethod=OvernightAveraging_Compound,
             pricingEngine=None):
 
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
@@ -464,6 +468,8 @@ def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
         mv.withDiscountingTermStructure(discountingTermStructure)        
     if telescopicValueDates:
         mv.withTelescopicValueDates(telescopicValueDates)
+    if averagingMethod:
+        mv.withAveragingMethod(averagingMethod)
     if pricingEngine is not None:
         mv.withPricingEngine(pricingEngine)
 
