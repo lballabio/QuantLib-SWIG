@@ -337,7 +337,7 @@ class OvernightIndexedSwap : public Swap {
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
     
     OvernightIndexedSwap(
             OvernightIndexedSwap::Type type,
@@ -351,7 +351,7 @@ class OvernightIndexedSwap : public Swap {
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
 
     Rate fixedLegBPS();
@@ -405,7 +405,7 @@ class MakeOIS {
         MakeOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
         MakeOIS& withTelescopicValueDates(bool telescopicValueDates);
-        MakeOIS& withAveragingMethod(OvernightAveraging averagingMethod);
+        MakeOIS& withAveragingMethod(OvernightAveraging::Type averagingMethod);
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
 };
@@ -429,7 +429,7 @@ def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
             overnightLegSpread=0.0,
             discountingTermStructure=None,
             telescopicValueDates=False,
-            averagingMethod=OvernightAveraging_Compound,
+            averagingMethod=OvernightAveraging.Compound,
             pricingEngine=None):
 
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
@@ -487,7 +487,8 @@ class OvernightIndexedSwapIndex : public SwapIndex {
               Natural settlementDays,
               Currency currency,
               const ext::shared_ptr<OvernightIndex>& overnightIndex,
-              bool telescopicValueDates = false);
+              bool telescopicValueDates = false,
+              OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
     //! \name Inspectors
     //@{
     ext::shared_ptr<OvernightIndex> overnightIndex() const;

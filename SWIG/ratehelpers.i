@@ -308,7 +308,7 @@ class OISRateHelper : public RateHelper {
             const Spread overnightSpread = 0.0,
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(), 
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
     ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 
@@ -323,7 +323,7 @@ class DatedOISRateHelper : public RateHelper {
             const Handle<YieldTermStructure>& discountingCurve
                                         = Handle<YieldTermStructure>(),
             bool telescopicValueDates = false,
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 };
 
 %shared_ptr(FxSwapRateHelper)
@@ -351,7 +351,7 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& maturityDate,
             const ext::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 };
 
 %shared_ptr(SofrFutureRateHelper)
@@ -364,7 +364,7 @@ class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
             Frequency referenceFreq,
             const ext::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
     SofrFutureRateHelper(
             Real price,
             Month referenceMonth,
@@ -372,7 +372,7 @@ class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
             Frequency referenceFreq,
             const ext::shared_ptr<OvernightIndex>& index,
             Real convexityAdjustment = 0.0,
-            OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 };
 
 

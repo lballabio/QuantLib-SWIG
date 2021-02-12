@@ -41,7 +41,7 @@ class OvernightIndexFuture : public Forward {
                              const Date& maturityDate,
                              const Handle<YieldTermStructure>& discountCurve,
                              const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                             OvernightAveraging averagingMethod = OvernightAveraging::Compound) {
+                             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound) {
             return new OvernightIndexFuture(overnightIndex, ext::shared_ptr<Payoff>(),
                                             valueDate, maturityDate, discountCurve,
                                             convexityAdjustment, averagingMethod);

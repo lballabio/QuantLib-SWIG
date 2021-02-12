@@ -211,20 +211,9 @@ class FloatingRateCoupon : public Coupon {
 using QuantLib::OvernightAveraging;
 %}
 
-enum class OvernightAveraging { Simple, Compound };
-
-#if defined(SWIGPYTHON)
-%pythoncode{
-
-def simple_overnight_averaging():
-    return OvernightAveraging_Simple
-
-
-def compound_overnight_averaging():
-    return OvernightAveraging_Compound
-
-}
-#endif
+struct OvernightAveraging {
+        enum Type { Simple,  Compound };
+};
 
 %shared_ptr(OvernightIndexedCoupon)
 class OvernightIndexedCoupon : public FloatingRateCoupon {
@@ -241,7 +230,7 @@ class OvernightIndexedCoupon : public FloatingRateCoupon {
                 const Date& refPeriodEnd = Date(),
                 const DayCounter& dayCounter = DayCounter(),
                 bool telescopicValueDates = false,
-                OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+                OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
     const std::vector<Date>& fixingDates() const;
     const std::vector<Time>& dt() const;
     const std::vector<Rate>& indexFixings() const;
@@ -657,7 +646,7 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
              const std::vector<Real>& gearings = std::vector<Real>(),
              const std::vector<Spread>& spreads = std::vector<Spread>(),
              bool telescopicValueDates = false,
-             OvernightAveraging averagingMethod = OvernightAveraging::Compound) {
+             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound) {
     return QuantLib::OvernightLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
@@ -680,7 +669,7 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
              const std::vector<Real>& gearings = std::vector<Real>(),
              const std::vector<Spread>& spreads = std::vector<Spread>(),
              bool telescopicValueDates = false,
-             OvernightAveraging averagingMethod = OvernightAveraging::Compound);
+             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,
