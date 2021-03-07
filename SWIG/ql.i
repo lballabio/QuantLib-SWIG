@@ -30,7 +30,7 @@
 %{
 #include <ql/quantlib.hpp>
 
-#if QL_HEX_VERSION < 0x01210000
+#if QL_HEX_VERSION < 0x01220000
     #error using an old version of QuantLib, please update
 #endif
 
@@ -84,14 +84,6 @@
 #pragma warning(disable: 4786)
 #endif
 %}
-
-#ifdef SWIGPYTHON
-%{
-#if PY_VERSION_HEX < 0x02010000
-    #error Python version 2.1.0 or later is required
-#endif
-%}
-#endif
 
 #ifdef SWIGJAVA
 %include "enumtypesafe.swg"
