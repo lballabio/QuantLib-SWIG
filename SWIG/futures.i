@@ -32,22 +32,14 @@ struct Futures {
 };
 
 %shared_ptr(OvernightIndexFuture)
-class OvernightIndexFuture : public Forward {
+class OvernightIndexFuture : public Instrument {
   public:
-    enum NettingType { Averaging, Compounding };
-
-    %extend {
-        OvernightIndexFuture(const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                             const Date& valueDate,
-                             const Date& maturityDate,
-                             const Handle<YieldTermStructure>& discountCurve,
-                             const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                             NettingType subPeriodsNettingType = Compounding) {
-            return new OvernightIndexFuture(overnightIndex, ext::shared_ptr<Payoff>(),
-                                            valueDate, maturityDate, discountCurve,
-                                            convexityAdjustment, subPeriodsNettingType);
-        }
-    }
+    OvernightIndexFuture(
+        ext::shared_ptr<OvernightIndex> overnightIndex,
+        const Date& valueDate,
+        const Date& maturityDate,
+        Handle<Quote> convexityAdjustment = Handle<Quote>(),
+        OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
     Real convexityAdjustment() const;
 };
