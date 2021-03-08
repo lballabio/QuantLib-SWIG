@@ -626,12 +626,11 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
             ql.Period(3, ql.Months), quoted_ccy_idx_handle)
         self.collateral_ccy_handle = ql.YieldTermStructureHandle(
             flat_rate(0.009))
-        """ Cross currency basis swaps data source:
-               N. Moreni, A. Pallavicini (2015)
-               FX Modelling in Collateralized Markets: foreign measures, basis curves
-               and pricing formulae.
-
-               section 4.2.1, Table 2. """
+        # Cross currency basis swaps data source:
+        #   N. Moreni, A. Pallavicini (2015)
+        #   FX Modelling in Collateralized Markets: foreign measures, basis curves
+        #   and pricing formulae.
+        #   section 4.2.1, Table 2.
         self.cross_currency_basis_quotes = ((ql.Period(1, ql.Years), -14.5),
                                             (ql.Period(18, ql.Months), -18.5),
                                             (ql.Period(2, ql.Years), -20.5),
