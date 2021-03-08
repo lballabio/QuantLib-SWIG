@@ -3,6 +3,7 @@
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2009 Joseph Malicki
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2021 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
