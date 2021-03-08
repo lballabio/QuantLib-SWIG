@@ -675,8 +675,7 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
             self,
             is_fx_base_ccy_collateral_ccy,
             is_basis_on_fx_base_ccy_leg):
-        eps = 1.0e-10
-        # Trigger bootstrap
+        eps = 1.0e-8
         helpers = [self.buildRateHelper(q,
                                         is_fx_base_ccy_collateral_ccy,
                                         is_basis_on_fx_base_ccy_leg)
@@ -684,6 +683,8 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
         term_structure = ql.PiecewiseLogLinearDiscount(
             self.settlement_days, self.calendar, helpers, self.day_count)
         settlement_date = term_structure.referenceDate()
+        
+        # Trigger bootstrap
         discount_at_origin = term_structure.discount(settlement_date)
         self.assertAlmostEquals(
             first=discount_at_origin, second=1.0, delta=eps)
@@ -708,14 +709,37 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
                 msg=fail_msg)
     
     def testFxBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy(self):
-        """ Testing basis swaps instruments with collateral 
-            in base ccy and basis in quote ccy... 
+        """ Testing basis swaps instruments with collateral in base ccy and basis in quote ccy... 
         """
         is_fx_base_ccy_collateral_ccy = True
         is_basis_on_fx_base_currency_leg = False
         self.assertImpliedQuotes(
             is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
+
+    def testFxBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy(self):
+        """ Testing basis swaps instruments with collateral in quote ccy and basis in base ccy...
+        """
+        is_fx_base_ccy_collateral_ccy = False
+        is_basis_on_fx_base_currency_leg = True
+        self.assertImpliedQuotes(
+            is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
     
+    def testFxBasisSwapsWithCollateralAndBasisInBaseCcy(self):
+        """ Testing basis swaps instruments with collateral and basis in base ccy...
+        """
+        is_fx_base_ccy_collateral_ccy = True
+        is_basis_on_fx_base_currency_leg = True
+        self.assertImpliedQuotes(
+            is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
+    
+    def testFxBasisSwapsWithCollateralAndBasisInQuoteCcy(self):
+        """ Testing basis swaps instruments with collateral and basis in quote ccy...
+        """
+        is_fx_base_ccy_collateral_ccy = False
+        is_basis_on_fx_base_currency_leg = False
+        self.assertImpliedQuotes(
+            is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
+
     def tearDown(self):
         ql.Settings.instance().evaluationDate = ql.Date()
 
