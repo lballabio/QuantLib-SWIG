@@ -33,7 +33,7 @@ QuantLib-SWIG is
     Copyright (C) 2019 Prasad Somwanshi
     Copyright (C) 2020 Gorazd Brumen
     Copyright (C) 2020 Jack Gillett
-    Copyright (C) 2020 Marcin Rybacki
+    Copyright (C) 2020, 2021 Marcin Rybacki
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
