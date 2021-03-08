@@ -69,6 +69,7 @@ using QuantLib::AmortizingPayment;
 using QuantLib::Coupon;
 using QuantLib::FixedRateCoupon;
 using QuantLib::FloatingRateCoupon;
+using QuantLib::OvernightAveraging;
 using QuantLib::OvernightIndexedCoupon;
 %}
 
@@ -207,13 +208,14 @@ class FloatingRateCoupon : public Coupon {
     }
 %}
 
-%{
-using QuantLib::OvernightAveraging;
-%}
 
 struct OvernightAveraging {
-        enum Type { Simple,  Compound };
+    enum Type {
+        Simple,
+        Compound
+    };
 };
+
 
 %shared_ptr(OvernightIndexedCoupon)
 class OvernightIndexedCoupon : public FloatingRateCoupon {
@@ -639,14 +641,14 @@ Leg _IborLeg(const std::vector<Real>& nominals,
 
 %{
 Leg _OvernightLeg(const std::vector<Real>& nominals,
-             const Schedule& schedule,
-             const ext::shared_ptr<OvernightIndex>& index,
-             const DayCounter& paymentDayCounter = DayCounter(),
-             const BusinessDayConvention paymentConvention = Following,
-             const std::vector<Real>& gearings = std::vector<Real>(),
-             const std::vector<Spread>& spreads = std::vector<Spread>(),
-             bool telescopicValueDates = false,
-             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound) {
+                  const Schedule& schedule,
+                  const ext::shared_ptr<OvernightIndex>& index,
+                  const DayCounter& paymentDayCounter = DayCounter(),
+                  const BusinessDayConvention paymentConvention = Following,
+                  const std::vector<Real>& gearings = std::vector<Real>(),
+                  const std::vector<Spread>& spreads = std::vector<Spread>(),
+                  bool telescopicValueDates = false,
+                  OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound) {
     return QuantLib::OvernightLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
@@ -662,14 +664,14 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
 #endif
 %rename(OvernightLeg) _OvernightLeg;
 Leg _OvernightLeg(const std::vector<Real>& nominals,
-             const Schedule& schedule,
-             const ext::shared_ptr<OvernightIndex>& index,
-             const DayCounter& paymentDayCounter = DayCounter(),
-             const BusinessDayConvention paymentConvention = Following,
-             const std::vector<Real>& gearings = std::vector<Real>(),
-             const std::vector<Spread>& spreads = std::vector<Spread>(),
-             bool telescopicValueDates = false,
-             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+                  const Schedule& schedule,
+                  const ext::shared_ptr<OvernightIndex>& index,
+                  const DayCounter& paymentDayCounter = DayCounter(),
+                  const BusinessDayConvention paymentConvention = Following,
+                  const std::vector<Real>& gearings = std::vector<Real>(),
+                  const std::vector<Spread>& spreads = std::vector<Spread>(),
+                  bool telescopicValueDates = false,
+                  OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,

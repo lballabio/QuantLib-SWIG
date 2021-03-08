@@ -321,9 +321,8 @@ class DatedOISRateHelper : public RateHelper {
             const Date& endDate,
             const Handle<Quote>& rate,
             const ext::shared_ptr<OvernightIndex>& index,
-            const Handle<YieldTermStructure>& discountingCurve
-                                        = Handle<YieldTermStructure>(),
-            bool telescopicValueDates = false,
+            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
+            bool telescopicValueDates = false, 
             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 };
 
@@ -351,7 +350,7 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& valueDate,
             const Date& maturityDate,
             const ext::shared_ptr<OvernightIndex>& index,
-            const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
+            const Handle<Quote>& convexityAdjustment = Handle<Quote>(), 
             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 };
 

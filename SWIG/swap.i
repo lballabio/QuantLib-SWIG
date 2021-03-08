@@ -353,7 +353,6 @@ class OvernightIndexedSwap : public Swap {
             bool telescopicValueDates = false,
             OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
 
-
     Rate fixedLegBPS();
     Real fixedLegNPV();
     Real fairRate();
@@ -430,8 +429,8 @@ def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
             overnightLegSpread=0.0,
             discountingTermStructure=None,
             telescopicValueDates=False,
-            averagingMethod=OvernightAveraging.Compound,
-            pricingEngine=None):
+            pricingEngine=None,
+            averagingMethod=None):
 
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
     
@@ -469,7 +468,7 @@ def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
         mv.withDiscountingTermStructure(discountingTermStructure)        
     if telescopicValueDates:
         mv.withTelescopicValueDates(telescopicValueDates)
-    if averagingMethod:
+    if averagingMethod is not None:
         mv.withAveragingMethod(averagingMethod)
     if pricingEngine is not None:
         mv.withPricingEngine(pricingEngine)
