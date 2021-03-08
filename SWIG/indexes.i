@@ -48,6 +48,7 @@ class IndexManager {
     std::vector<std::string> histories() const;
     void clearHistory(const std::string& name);
     void clearHistories();
+    bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
 };
 
 
@@ -66,6 +67,7 @@ class Index : public Observable {
     std::string name() const;
     Calendar fixingCalendar() const;
     bool isValidFixingDate(const Date& fixingDate) const;
+    bool hasHistoricalFixing(const Date& fixingDate) const;
     Real fixing(const Date& fixingDate,
                 bool forecastTodaysFixing = false) const;
     void addFixing(const Date& fixingDate, Rate fixing,
