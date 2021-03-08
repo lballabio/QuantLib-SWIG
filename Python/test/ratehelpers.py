@@ -709,32 +709,28 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
                 msg=fail_msg)
     
     def testFxBasisSwapsWithCollateralInBaseAndBasisInQuoteCcy(self):
-        """ Testing basis swaps instruments with collateral in base ccy and basis in quote ccy... 
-        """
+        """ Testing basis swaps instruments with collateral in base ccy and basis in quote ccy... """
         is_fx_base_ccy_collateral_ccy = True
         is_basis_on_fx_base_currency_leg = False
         self.assertImpliedQuotes(
             is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
 
     def testFxBasisSwapsWithCollateralInQuoteAndBasisInBaseCcy(self):
-        """ Testing basis swaps instruments with collateral in quote ccy and basis in base ccy...
-        """
+        """ Testing basis swaps instruments with collateral in quote ccy and basis in base ccy... """
         is_fx_base_ccy_collateral_ccy = False
         is_basis_on_fx_base_currency_leg = True
         self.assertImpliedQuotes(
             is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
     
     def testFxBasisSwapsWithCollateralAndBasisInBaseCcy(self):
-        """ Testing basis swaps instruments with collateral and basis in base ccy...
-        """
+        """ Testing basis swaps instruments with collateral and basis in base ccy... """
         is_fx_base_ccy_collateral_ccy = True
         is_basis_on_fx_base_currency_leg = True
         self.assertImpliedQuotes(
             is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
     
     def testFxBasisSwapsWithCollateralAndBasisInQuoteCcy(self):
-        """ Testing basis swaps instruments with collateral and basis in quote ccy...
-        """
+        """ Testing basis swaps instruments with collateral and basis in quote ccy... """
         is_fx_base_ccy_collateral_ccy = False
         is_basis_on_fx_base_currency_leg = False
         self.assertImpliedQuotes(
