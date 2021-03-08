@@ -28,9 +28,9 @@ from solvers1d import Solver1DTest
 from termstructures import TermStructureTest
 from bonds import FixedRateBondTest, FixedRateBondKwargsTest
 from ratehelpers import (
-    FixedRateBondHelperTest, 
-    FxSwapRateHelperTest, 
-    OISRateHelperTest, 
+    FixedRateBondHelperTest,
+    FxSwapRateHelperTest,
+    OISRateHelperTest,
     CrossCurrencyBasisSwapRateHelperTest)
 from cms import CmsTest
 from assetswap import AssetSwapTest
