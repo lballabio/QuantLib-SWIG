@@ -369,6 +369,7 @@ class OvernightIndexedSwap : public Swap {
     Spread spread();
     const Leg& fixedLeg();
     const Leg& overnightLeg();
+    OvernightAveraging::Type averagingMethod();
 };
 
 #if defined(SWIGPYTHON)

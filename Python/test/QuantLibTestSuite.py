@@ -27,7 +27,11 @@ from integrals import IntegralTest
 from solvers1d import Solver1DTest
 from termstructures import TermStructureTest
 from bonds import FixedRateBondTest, FixedRateBondKwargsTest
-from ratehelpers import FixedRateBondHelperTest, FxSwapRateHelperTest, OISRateHelperTest
+from ratehelpers import (
+    FixedRateBondHelperTest,
+    FxSwapRateHelperTest,
+    OISRateHelperTest,
+    CrossCurrencyBasisSwapRateHelperTest)
 from cms import CmsTest
 from assetswap import AssetSwapTest
 from capfloor import CapFloorTest
@@ -81,6 +85,7 @@ def test():
     suite.addTest(unittest.makeSuite(SwaptionTest, "test"))
     suite.addTest(unittest.makeSuite(SwaptionVolatilityCubeTest, 'test'))
     suite.addTest(unittest.makeSuite(InflationTest, "test"))
+    suite.addTest(unittest.makeSuite(CrossCurrencyBasisSwapRateHelperTest, "test"))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
