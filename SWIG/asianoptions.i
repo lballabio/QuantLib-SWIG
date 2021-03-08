@@ -49,9 +49,15 @@ class DiscreteAveragingAsianOption : public OneAssetOption {
             Average::Type averageType,
             Real runningAccumulator,
             Size pastFixings,
-            const std::vector<Date>& fixingDates,
+            std::vector<Date> fixingDates,
             const ext::shared_ptr<StrikedTypePayoff>& payoff,
             const ext::shared_ptr<Exercise>& exercise);
+    DiscreteAveragingAsianOption(
+            Average::Type averageType,
+            std::vector<Date> fixingDates,
+            const ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const ext::shared_ptr<Exercise>& exercise,
+            std::vector<Real> allPastFixings = std::vector<Real>());
     %extend {
         TimeGrid timeGrid() {
             return self->result<TimeGrid>("TimeGrid");
