@@ -21,7 +21,6 @@
 %include forward.i
 %include indexes.i
 %include options.i
-%include cashflows.i
 
 %{
 using QuantLib::Futures;
