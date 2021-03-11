@@ -280,7 +280,9 @@ using QuantLib::AnalyticEuropeanEngine;
 %shared_ptr(AnalyticEuropeanEngine)
 class AnalyticEuropeanEngine : public PricingEngine {
   public:
-    AnalyticEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>&);
+    AnalyticEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+    AnalyticEuropeanEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                           const Handle<YieldTermStructure>& discountCurve);
 };
 
 
