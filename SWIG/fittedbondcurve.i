@@ -85,7 +85,12 @@ using QuantLib::SimplePolynomialFitting;
 class ExponentialSplinesFitting : public FittingMethod {
   public:
     ExponentialSplinesFitting(bool constrainAtZero = true,
-                              const Array& weights = Array());
+                              const Array& weights = Array(),
+                              const Array& l2 = Array(),
+                              Real minCutoffTime = 0.0,
+                              Real maxCutoffTime = QL_MAX_REAL,
+                              Size numCoeffs = 9,
+                              Real fixedKappa = Null<Real>());
 };
 
 class NelsonSiegelFitting : public FittingMethod {

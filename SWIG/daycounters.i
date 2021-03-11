@@ -76,7 +76,7 @@ namespace QuantLib {
     };
     class Thirty360 : public DayCounter {
       public:
-        enum Convention { USA, BondBasis, European, EurobondBasis, Italian };
+        enum Convention { USA, BondBasis, European, EurobondBasis, Italian, German };
         Thirty360(Convention c = USA);
     };
     class Thirty365 : public DayCounter {};
