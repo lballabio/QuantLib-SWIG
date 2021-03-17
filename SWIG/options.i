@@ -991,6 +991,7 @@ class FdmQuantoHelper {
 %{
 using QuantLib::LocalVolTermStructure;
 using QuantLib::FdBlackScholesVanillaEngine;
+using QuantLib::FdBlackScholesShoutEngine;
 using QuantLib::FdOrnsteinUhlenbeckVanillaEngine;
 using QuantLib::FdBatesVanillaEngine;
 using QuantLib::FdHestonVanillaEngine;
@@ -1038,6 +1039,15 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
         }
     }
     #endif
+};
+
+%shared_ptr(FdBlackScholesShoutEngine)
+class FdBlackScholesShoutEngine : public PricingEngine {
+  public:
+    FdBlackScholesShoutEngine(
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 };
 
 %shared_ptr(FdOrnsteinUhlenbeckVanillaEngine)
