@@ -69,7 +69,7 @@ using QuantLib::AmortizingPayment;
 using QuantLib::Coupon;
 using QuantLib::FixedRateCoupon;
 using QuantLib::FloatingRateCoupon;
-using QuantLib::OvernightAveraging;
+using QuantLib::RateAveraging;
 using QuantLib::OvernightIndexedCoupon;
 %}
 
@@ -209,7 +209,7 @@ class FloatingRateCoupon : public Coupon {
 %}
 
 
-struct OvernightAveraging {
+struct RateAveraging {
     enum Type {
         Simple,
         Compound
@@ -232,7 +232,7 @@ class OvernightIndexedCoupon : public FloatingRateCoupon {
                 const Date& refPeriodEnd = Date(),
                 const DayCounter& dayCounter = DayCounter(),
                 bool telescopicValueDates = false,
-                OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+                RateAveraging::Type averagingMethod = RateAveraging::Compound);
     const std::vector<Date>& fixingDates() const;
     const std::vector<Time>& dt() const;
     const std::vector<Rate>& indexFixings() const;
@@ -648,7 +648,7 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   const std::vector<Real>& gearings = std::vector<Real>(),
                   const std::vector<Spread>& spreads = std::vector<Spread>(),
                   bool telescopicValueDates = false,
-                  OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound) {
+                  RateAveraging::Type averagingMethod = RateAveraging::Compound) {
     return QuantLib::OvernightLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
@@ -671,7 +671,7 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   const std::vector<Real>& gearings = std::vector<Real>(),
                   const std::vector<Spread>& spreads = std::vector<Spread>(),
                   bool telescopicValueDates = false,
-                  OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+                  RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,

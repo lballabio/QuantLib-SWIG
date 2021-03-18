@@ -337,7 +337,7 @@ class OvernightIndexedSwap : public Swap {
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
-            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound);
     
     OvernightIndexedSwap(
             OvernightIndexedSwap::Type type,
@@ -351,7 +351,7 @@ class OvernightIndexedSwap : public Swap {
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
-            OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
     Rate fixedLegBPS();
     Real fixedLegNPV();
@@ -369,7 +369,7 @@ class OvernightIndexedSwap : public Swap {
     Spread spread();
     const Leg& fixedLeg();
     const Leg& overnightLeg();
-    OvernightAveraging::Type averagingMethod();
+    RateAveraging::Type averagingMethod();
 };
 
 #if defined(SWIGPYTHON)
@@ -405,7 +405,7 @@ class MakeOIS {
         MakeOIS& withDiscountingTermStructure(
                   const Handle<YieldTermStructure>& discountingTermStructure);
         MakeOIS& withTelescopicValueDates(bool telescopicValueDates);
-        MakeOIS& withAveragingMethod(OvernightAveraging::Type averagingMethod);
+        MakeOIS& withAveragingMethod(RateAveraging::Type averagingMethod);
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
 };
@@ -488,7 +488,7 @@ class OvernightIndexedSwapIndex : public SwapIndex {
               Currency currency,
               const ext::shared_ptr<OvernightIndex>& overnightIndex,
               bool telescopicValueDates = false,
-              OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+              RateAveraging::Type averagingMethod = RateAveraging::Compound);
     //! \name Inspectors
     //@{
     ext::shared_ptr<OvernightIndex> overnightIndex() const;
