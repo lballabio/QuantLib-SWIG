@@ -39,7 +39,7 @@ class OvernightIndexFuture : public Instrument {
         const Date& valueDate,
         const Date& maturityDate,
         Handle<Quote> convexityAdjustment = Handle<Quote>(),
-        OvernightAveraging::Type averagingMethod = OvernightAveraging::Compound);
+        RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
     Real convexityAdjustment() const;
 };
