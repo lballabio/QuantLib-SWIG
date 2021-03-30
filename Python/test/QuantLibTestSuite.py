@@ -48,6 +48,7 @@ from gjrgarch import GJRGARCHEngineTest, GJRGARCHCalibrationTest
 from swaption import SwaptionTest
 from volatilities import SwaptionVolatilityCubeTest
 from inflation import InflationTest
+from subperiodscoupon import SubPeriodsCouponTest
 
 
 def test():
@@ -86,6 +87,7 @@ def test():
     suite.addTest(unittest.makeSuite(SwaptionVolatilityCubeTest, 'test'))
     suite.addTest(unittest.makeSuite(InflationTest, "test"))
     suite.addTest(unittest.makeSuite(CrossCurrencyBasisSwapRateHelperTest, "test"))
+    suite.addTest(unittest.makeSuite(SubPeriodsCouponTest, "test"))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
