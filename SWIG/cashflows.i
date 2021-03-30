@@ -915,7 +915,7 @@ Leg _SubPeriodsLeg(const std::vector<Real>& nominals,
                    const Calendar& exCouponCalendar = Calendar(),
                    BusinessDayConvention exCouponConvention = Unadjusted,
                    bool exCouponEndOfMonth = false,
-                   RateAveraging::Type averagingMethod = RateAveraging::Compound)
+                   RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
 // cash-flow analysis
 
