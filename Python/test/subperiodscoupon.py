@@ -87,11 +87,11 @@ def create_sub_periods_leg(
         averaging_method)
 
 
-def sum_ibor_leg_payments(leg):
+def sum_leg_payments(leg):
     return sum([cf.amount() for cf in leg])
 
 
-def compounded_ibor_leg_payment(leg):
+def compounded_leg_payment(leg):
     compound = 1.0
     for cf in leg:
         floating_cf = ql.as_floating_rate_coupon(cf)
@@ -101,7 +101,7 @@ def compounded_ibor_leg_payment(leg):
     return compound - 1.0
 
 
-def averaged_ibor_leg_payment(leg):
+def averaged_leg_payment(leg):
     acc = 0.0
     for cf in leg:
         floating_cf = ql.as_floating_rate_coupon(cf)
@@ -124,7 +124,7 @@ class SubPeriodsCouponTest(unittest.TestCase):
             self.ibor_idx, start, end, averaging)
 
         actual_payment = sub_periods_cpn.amount()
-        expected_payment = sum_ibor_leg_payments(ibor_leg)
+        expected_payment = sum_leg_payments(ibor_leg)
 
         fail_msg = """ Unable to replicate single period coupon payment:
                             calculated: {actual}
@@ -146,7 +146,7 @@ class SubPeriodsCouponTest(unittest.TestCase):
             self.ibor_idx, start, end, ql.RateAveraging.Compound)
 
         actual_payment = sub_periods_cpn.amount()
-        expected_payment = compounded_ibor_leg_payment(ibor_leg)
+        expected_payment = compounded_leg_payment(ibor_leg)
 
         fail_msg = """ Unable to replicate compounded multiple sub-period coupon payment:
                             calculated: {actual}
@@ -168,7 +168,7 @@ class SubPeriodsCouponTest(unittest.TestCase):
             self.ibor_idx, start, end, ql.RateAveraging.Simple)
 
         actual_payment = sub_periods_cpn.amount()
-        expected_payment = averaged_ibor_leg_payment(ibor_leg)
+        expected_payment = averaged_leg_payment(ibor_leg)
 
         fail_msg = """ Unable to replicate averaged multiple sub-period coupon payment:
                             calculated: {actual}
@@ -192,7 +192,7 @@ class SubPeriodsCouponTest(unittest.TestCase):
         sub_periods_leg = create_sub_periods_leg(
             self.ibor_idx, start, end, ql.Period(1, ql.Years), averaging_method)
 
-        actual_payment = sum([cf.amount() for cf in sub_periods_leg])
+        actual_payment = sum_leg_payments(sub_periods_leg)
         expected_payment = sub_periods_cpn.amount()
 
         fail_msg = """ Unable to replicate sub-period leg payments:
