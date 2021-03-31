@@ -31,6 +31,9 @@ VALUATION_DATE = CAL.adjust(ql.Date(15, ql.March, 2021))
 
 SETTLEMENT_DELAY = 2
 
+RATE_AVERAGING_MAP = {ql.RateAveraging.Compound: 'Compounded',
+                      ql.RateAveraging.Simple: 'Simple'}
+
 
 def flat_rate(rate):
     return ql.FlatForward(
@@ -72,21 +75,21 @@ def create_sub_periods_leg(
                           backwards=True)
     day_count = ibor_idx.dayCounter()
     return ql.SubPeriodsLeg(
-        [1.0], 
-        sch, 
+        [1.0],
+        sch,
         ibor_idx,
-        day_count, 
-        ql.Following, 
-        CAL, 
-        0, 
-        [2], 
-        [1.0], 
-        [0.0], 
-        [0.0], 
-        ql.Period(), 
-        CAL, 
-        ql.Unadjusted, 
-        False, 
+        day_count,
+        ql.Following,
+        CAL,
+        0,
+        [2],
+        [1.0],
+        [0.0],
+        [0.0],
+        ql.Period(),
+        CAL,
+        ql.Unadjusted,
+        False,
         averaging_method)
 
 
@@ -125,7 +128,7 @@ class SubPeriodsCouponTest(unittest.TestCase):
         ibor_leg = create_ibor_leg(self.ibor_idx, start, end)
         sub_periods_cpn = create_sub_periods_coupon(
             self.ibor_idx, start, end, averaging)
-        
+
         actual_payment = sub_periods_cpn.amount()
         expected_payment = sum_ibor_leg_payments(ibor_leg)
 
@@ -138,6 +141,73 @@ class SubPeriodsCouponTest(unittest.TestCase):
                               expected=expected_payment,
                               start=start,
                               end=end)
+        self.assertTrue(
+            abs(actual_payment - expected_payment) < EPSILON,
+            msg=fail_msg)
+
+    def check_multiple_compounded_sub_periods_coupon_replication(
+            self, start, end):
+        ibor_leg = create_ibor_leg(self.ibor_idx, start, end)
+        sub_periods_cpn = create_sub_periods_coupon(
+            self.ibor_idx, start, end, ql.RateAveraging.Compound)
+
+        actual_payment = sub_periods_cpn.amount()
+        expected_payment = compounded_ibor_leg_payment(ibor_leg)
+
+        fail_msg = """ Unable to replicate compounded multiple sub-period coupon payment:
+                            calculated: {actual}
+                            expected: {expected}
+                            start: {start}
+                            end: {end}
+                   """.format(actual=actual_payment,
+                              expected=expected_payment,
+                              start=start,
+                              end=end)
+        self.assertTrue(
+            abs(actual_payment - expected_payment) < EPSILON,
+            msg=fail_msg)
+
+    def check_multiple_averaged_sub_periods_coupon_replication(
+            self, start, end):
+        ibor_leg = create_ibor_leg(self.ibor_idx, start, end)
+        sub_periods_cpn = create_sub_periods_coupon(
+            self.ibor_idx, start, end, ql.RateAveraging.Simple)
+
+        actual_payment = sub_periods_cpn.amount()
+        expected_payment = averaged_ibor_leg_payment(ibor_leg)
+
+        fail_msg = """ Unable to replicate averaged multiple sub-period coupon payment:
+                            calculated: {actual}
+                            expected: {expected}
+                            start: {start}
+                            end: {end}
+                   """.format(actual=actual_payment,
+                              expected=expected_payment,
+                              start=start,
+                              end=end)
+        self.assertTrue(
+            abs(actual_payment - expected_payment) < EPSILON,
+            msg=fail_msg)
+
+    def check_sub_periods_leg_replication(self, averaging_method):
+        start = ql.Date(18, ql.March, 2021)
+        end = ql.Date(18, ql.March, 2022)
+
+        sub_periods_cpn = create_sub_periods_coupon(
+            self.ibor_idx, start, end, averaging_method)
+        sub_periods_leg = create_sub_periods_leg(
+            self.ibor_idx, start, end, ql.Period(1, ql.Years), averaging_method)
+
+        actual_payment = sum([cf.amount() for cf in sub_periods_leg])
+        expected_payment = sub_periods_cpn.amount()
+
+        fail_msg = """ Unable to replicate sub-period leg payments:
+                            calculated: {actual}
+                            expected: {expected}
+                            averaging: {averaging}
+                   """.format(actual=actual_payment,
+                              expected=expected_payment,
+                              averaging=RATE_AVERAGING_MAP[averaging_method])
         self.assertTrue(
             abs(actual_payment - expected_payment) < EPSILON,
             msg=fail_msg)
@@ -171,6 +241,26 @@ class SubPeriodsCouponTest(unittest.TestCase):
             start, end, ql.RateAveraging.Simple)
         self.check_single_period_coupon_replication(
             start, end, ql.RateAveraging.Compound)
+
+    def test_regular_compounded_forward_starting_coupon_with_multiple_sub_periods(self):
+        """Testing regular forward starting coupon with multiple compounded sub-periods"""
+        start = ql.Date(15, ql.April, 2021)
+        end = ql.Date(15, ql.April, 2022)
+
+        self.check_multiple_compounded_sub_periods_coupon_replication(
+            start, end)
+
+    def test_regular_averaged_forward_starting_coupon_with_multiple_sub_periods(self):
+        """Testing regular forward starting coupon with multiple averaged sub-periods"""
+        start = ql.Date(15, ql.April, 2021)
+        end = ql.Date(15, ql.April, 2022)
+
+        self.check_multiple_averaged_sub_periods_coupon_replication(start, end)
+    
+    def test_sub_periods_leg_cash_flows(self):
+        """Testing sub-periods leg replication"""
+        self.check_sub_periods_leg_replication(ql.RateAveraging.Compound)
+        self.check_sub_periods_leg_replication(ql.RateAveraging.Simple)
 
 
 if __name__ == '__main__':
