@@ -263,8 +263,8 @@ class SubPeriodsCouponTest(unittest.TestCase):
         sub_periods_leg = create_sub_periods_leg(
             self.ibor_idx, start, end, ql.Period(1, ql.Years), ql.RateAveraging.Compound)
         cf = sub_periods_leg[0]
-        assert not isinstance(cf, ql.SubPeriodsCoupon)
-        assert isinstance(ql.as_sub_periods_coupon(cf), ql.SubPeriodsCoupon)
+        self.assertTrue(not isinstance(cf, ql.SubPeriodsCoupon))
+        self.assertTrue(isinstance(ql.as_sub_periods_coupon(cf), ql.SubPeriodsCoupon))
 
 
 if __name__ == '__main__':
