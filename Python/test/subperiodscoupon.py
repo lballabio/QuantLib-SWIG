@@ -23,13 +23,7 @@ EPSILON = 1.e-9
 
 CAL = ql.TARGET()
 
-DAY_COUNTER = ql.ActualActual()
-
-BDC = ql.ModifiedFollowing
-
 VALUATION_DATE = CAL.adjust(ql.Date(15, ql.March, 2021))
-
-SETTLEMENT_DELAY = 2
 
 RATE_AVERAGING_MAP = {ql.RateAveraging.Compound: 'Compounded',
                       ql.RateAveraging.Simple: 'Simple'}
@@ -37,7 +31,7 @@ RATE_AVERAGING_MAP = {ql.RateAveraging.Compound: 'Compounded',
 
 def flat_rate(rate):
     return ql.FlatForward(
-        SETTLEMENT_DELAY, CAL, ql.QuoteHandle(ql.SimpleQuote(rate)), DAY_COUNTER)
+        2, CAL, ql.QuoteHandle(ql.SimpleQuote(rate)), ql.Actual365Fixed())
 
 
 def create_ibor_leg(ibor_idx, start, end):
