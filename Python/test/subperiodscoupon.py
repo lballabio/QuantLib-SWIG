@@ -250,11 +250,21 @@ class SubPeriodsCouponTest(unittest.TestCase):
         end = ql.Date(15, ql.April, 2022)
 
         self.check_multiple_averaged_sub_periods_coupon_replication(start, end)
-    
+
     def test_sub_periods_leg_cash_flows(self):
         """Testing sub-periods leg replication"""
         self.check_sub_periods_leg_replication(ql.RateAveraging.Compound)
         self.check_sub_periods_leg_replication(ql.RateAveraging.Simple)
+
+    def test_casting(self):
+        """Testing casting to sub periods coupon"""
+        start = ql.Date(18, ql.March, 2021)
+        end = ql.Date(18, ql.March, 2022)
+        sub_periods_leg = create_sub_periods_leg(
+            self.ibor_idx, start, end, ql.Period(1, ql.Years), ql.RateAveraging.Compound)
+        cf = sub_periods_leg[0]
+        assert not isinstance(cf, ql.SubPeriodsCoupon)
+        assert isinstance(ql.as_sub_periods_coupon(cf), ql.SubPeriodsCoupon)
 
 
 if __name__ == '__main__':
