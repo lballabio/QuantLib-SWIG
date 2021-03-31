@@ -1,43 +1,29 @@
 
-Main changes for QuantLib-SWIG 1.21
+Main changes for QuantLib-SWIG 1.22
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/14?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/15?closed=1>.
 
-- As previously announced, this release is the last one to support
+- As previously announced, this release drops support for
   Python 2.7, which reached end of life in January 2020.
 
-- Exported methods for `VolDeltaQuote` class (thanks to Jack Gillett).
+- Exported revised `SubPeriodCoupon` class (thanks to Marcin Rybacki).
 
-- Exported `localVolatility()` method for Black-Scholes process
-  (thanks to Jack Gillett).
+- Exported new `FdBlackScholesShoutEngine` class.
 
-- Exported `type()` method for vanilla swaps (thanks to Ralf Konrad).
+- Exported optional discount curve in AnalyticEuropeanEngine constructor.
 
-- Exported constructors with full parameter lists for CDS helpers
-  (thanks to Joe Song).
+- Exported the `CrossCurrencyBasisSwapRateHelper` (thanks to Marcin Rybacki).
 
-- Exported amortizing-bond constructor taking an `InterestRate`
-  instance (thanks to Piter Dias).
+- Exported new constructors for Asian options (thanks to Jack Gillett).
 
-- Exported Sobol-based multi-path generator (thanks to Jack Gillett).
+- Exported new method `hasHistoricalFixing` for indexes (thanks to Ralf Konrad).
 
-- Exported Monte Carlo and analytic forward option engines based on
-  the Heston model (thanks to Jack Gillett).
+- Exported revised `OvernightIndexFuture` interface.
 
-- Exported ultimate-forward term structure (thanks to Marcin Rybacki).
+- Classes `CallabilityPrice`, `FDBermudanEngine`, `FDEuropeanEngine`,
+  `FDAmericanEngine`, `FDDividendEuropeanEngine` and
+  `FDDividendAmericanEngine` were removed in the C++ library after a
+  deprecation period.
 
-- Exported a few Monte Carlo and analytic Asian option engines based
-  on the Heston model (thanks to Jack Gillett).
-
-- Exported swap constructor taking multiple legs.
-
-- Exported lookback options.
-
-- Exported overnight-index futures.
-
-- Avoided memory access issue with path generators in Python (thanks
-  to Klaus Spanderen for the heads-up).
-
-- Added an example of cash-flow analysis in Python.

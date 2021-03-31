@@ -1,622 +1,425 @@
-commit d596e90aaba4c58cbb4c1fb64ef31a34da5d5fe7
+commit 91aceefb69f6d8e1289609b91ae97c5dfb5e1410
+Merge: 408fbbf 8c8f2af
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 17 Jan 2021 16:02:29 +0100
+Date:   Wed, 31 Mar 2021 12:40:30 +0200
 
-    Set version to 1.21 final
-
- Python/setup.py | 2 +-
- SWIG/ql.i       | 2 +-
- configure.ac    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-commit b2dd54eba54e73b8662f404cc6ddef15ecca9b5c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 6 Jan 2021 17:19:10 +0100
-
-    Allow for lack of empty payoff in wrappers
-
- SWIG/futures.i | 19 ++++++++++++-------
- 1 file changed, 12 insertions(+), 7 deletions(-)
-
-commit 27f3f49cba28f89bb7b7a372cc0b5b8d074cc38f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Jan 2021 16:39:40 +0100
-
-    Update changelog and news
-
- ChangeLog.txt | 1330 ++++++++++++++++-----------------------------------------
- News.md       |   51 +--
- 2 files changed, 386 insertions(+), 995 deletions(-)
-
-commit 872ea986965105ceecdaad5a213dd49e288c1a85
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Jan 2021 16:18:36 +0100
-
-    Set version to 1.21 rc
-
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit e54f57b59a99e78d2d55f91424913eb1ae9f0ca7
-Merge: c05b15e 92e8163
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Jan 2021 22:51:34 +0100
-
-    Merge pull request #355.
+    Merge pull request #371.
     
-    Avoid temporary object creation from Sample instances
+    Sub periods coupon
 
-commit 92e8163859ae2e11d9f9d4dff8b9def92fb89767
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Jan 2021 13:46:51 +0100
+commit 8c8f2affc254998592d5403dd41eba5d295484fa
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Wed, 31 Mar 2021 11:39:48 +0200
 
-    Avoid temporary object creation from Sample instances
+    Fixed Codacy error.
 
- SWIG/randomnumbers.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit c05b15ece35a37a8f043001ce9f1ed10a16aa295
-Merge: d442586 e4cc2ff
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Jan 2021 09:58:59 +0100
-
-    Merge pull request #354.
-    
-    Export OvernightIndexFuture class.
-
-commit e4cc2ff96f95d134c10183c57ac80c78e4d584b0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 4 Jan 2021 09:11:13 +0100
-
-    Export OvernightIndexFuture class.
-
- SWIG/futures.i | 19 ++++++++++++++++---
- 1 file changed, 16 insertions(+), 3 deletions(-)
-
-commit d442586413b3adad1ecabf0242e45aad17f887f1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 31 Dec 2020 15:57:04 +0100
-
-    Update stale.yml
-    
-    Reduce inactivity period before staleness
-
- .github/stale.yml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 90eabbcab39beedead2873fb95cff6bcc0dac13c
-Merge: dd91f43 9c4729a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 30 Dec 2020 18:12:58 +0100
-
-    Merge pull request #352.
-    
-    Export lookback options
-
-commit 9c4729a7f5a8dd2fae0797625b510cf5a2d57586
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 30 Dec 2020 17:46:36 +0100
-
-    Export lookback options.
-
- SWIG/lookbackoptions.i | 105 +++++++++++++++++++++++++++++++++++++++++++++++++
- SWIG/options.i         |  66 +++++++++++++++++++------------
- SWIG/ql.i              |   1 +
- 3 files changed, 146 insertions(+), 26 deletions(-)
-
-commit 6cf8589853ab1796fb9a2a43dab4b875af6922c3
-Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-Date:   Wed, 30 Dec 2020 15:18:31 +0000
-
-    Update copyright list in license
-
- LICENSE.TXT | 2 ++
- 1 file changed, 2 insertions(+)
-
-commit ce69b005715face1c39486fb555b81b6e215cfd1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 30 Dec 2020 15:54:28 +0100
-
-    Split interface file for options
-
- SWIG/asianoptions.i   |  452 +++++++++++++++++++++
- SWIG/barrieroptions.i |  513 ++++++++++++++++++++++++
- SWIG/options.i        | 1055 ++-----------------------------------------------
- SWIG/ql.i             |    8 +-
- SWIG/spreadoption.i   |   43 ++
- SWIG/swingoption.i    |   75 ++++
- 6 files changed, 1119 insertions(+), 1027 deletions(-)
-
-commit dd91f435488688125bab1d3e45eca5d2ac502a7d
-Merge: 42f01ce a7b8c97
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 30 Dec 2020 15:21:32 +0100
-
-    Merge pull request #350.
-    
-    Export multi-leg swap constructor
-
-commit a7b8c97829274fa06f259e12148504ef44a4a076
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 30 Dec 2020 13:19:30 +0100
-
-    Add multi-leg swap constructor
-
- SWIG/cashflows.i | 6 +++++-
- SWIG/swap.i      | 2 ++
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-commit 42f01ceb2ad0df1027f4ce629cdbf484a1016b8b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 30 Dec 2020 13:42:13 +0100
-
-    Try keeping python2 checks alive until next release
-
- .build/python2.build | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 02b05a4608b8e45a63fe6269eb9b7dbb4961bb23
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 18 Dec 2020 15:26:17 +0100
-
-    Add all .cs files to VC# project.
-
- CSharp/csharp/NQuantLib.csproj | 1154 +---------------------------------------
- tools/sync_csharp_projects.sh  |   26 -
- 2 files changed, 1 insertion(+), 1179 deletions(-)
-
-commit 38b723c31cb35b096b4d02944fd84b38a1eb24ab
-Merge: 08b25ec edecc14
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 17 Dec 2020 09:31:13 +0100
-
-    Merge pull request #349.
-    
-    Exposing MC Geometric Asian Pricer and Arithmetic Asian Control Variate to SWIG
-
-commit edecc1441a668168769d3da0dcddc15b02e7628e
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Wed, 16 Dec 2020 21:57:28 +0800
-
-    Exposing arithmetic asian control variate
-
- SWIG/options.i | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-commit 3525fa46a7459ed53681a3c739e8a7d869fc2959
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Wed, 16 Dec 2020 21:56:46 +0800
-
-    Adding Geometric MC Heston engine
-
- SWIG/options.i | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
-
-commit 08b25ecf98de50b9d68166b141f11d108e897d4c
-Merge: efeaa80 0cc9736
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 9 Dec 2020 18:34:33 +0100
-
-    Merge pull request #347.
-    
-    Extra Heston pricers
-
-commit 0cc9736ac28925b6a9a2471e74c1757dc2f4f4c7
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Sun, 6 Dec 2020 10:37:35 +0800
-
-    Exposing Heston MC pricer for discrete geometric asians to SWIG
-
- SWIG/options.i | 63 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 63 insertions(+)
-
-commit 8f59079cfdb1e26c6aa35eefd57146a93f4ef143
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Sun, 6 Dec 2020 08:25:36 +0800
-
-    Exposing analytic Heston continuous geometric asian pricer to SWIG
-
- SWIG/options.i | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-commit efeaa8029a2dbe6a9b64863c514b3efc5427e18f
-Merge: 5dc67cd cc3b59d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 4 Dec 2020 09:52:19 +0100
-
-    Merge pull request #346.
-    
-    Expose UFR and composite zero yield term structures
-
-commit cc3b59d74051eb7de39c270122f9c02a21660828
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 23:58:20 +0100
-
-    Fixed indentation.
-
- Python/test/termstructures.py | 4 ++--
+ Python/test/subperiodscoupon.py | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-commit a178b230e193094a46529ec017518ec870e5b7b9
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 23:56:07 +0100
+commit ccbe8142fcaf7a87849b021ef1052c8e68da1c1f
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Wed, 31 Mar 2021 11:12:15 +0200
 
-    Fixed indentation.
+    Added unit test for casting.
 
- Python/test/termstructures.py | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ Python/test/subperiodscoupon.py | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
 
-commit 48e8a8d5a84a92184f00892ac4290cdb5c49d8d5
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 23:33:31 +0100
+commit a6fdca738c6dd7620b9d7dfe790d4380eebae212
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Wed, 31 Mar 2021 10:57:59 +0200
 
-    Updated compounding and frequency in unit test.
+    A few renamings.
 
- Python/test/termstructures.py | 11 ++++++-----
- 1 file changed, 6 insertions(+), 5 deletions(-)
+ Python/test/subperiodscoupon.py | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-commit a8b1ac74ef7de73f09f88d505a2a02c4eeebf339
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 23:18:38 +0100
+commit b0a91a7292e73a7dc1befd35e87ea7245fc73bec
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Wed, 31 Mar 2021 10:50:53 +0200
 
-    Corrected a typo in error message.
+    Removed unused variables.
 
- Python/test/termstructures.py | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Python/test/subperiodscoupon.py | 8 +-------
+ 1 file changed, 1 insertion(+), 7 deletions(-)
 
-commit 103a71602e0aa68ebb05303ccbcbfa7fbd30f96c
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 23:06:44 +0100
+commit e0b2ca89e1a5c468e93eb3ae7c7f7612a23f7db2
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Wed, 31 Mar 2021 10:47:03 +0200
 
-    Unified naming convention in test file.
+    Added more unit tests.
 
- Python/test/termstructures.py | 98 +++++++++++++++++++++----------------------
- 1 file changed, 49 insertions(+), 49 deletions(-)
+ Python/test/subperiodscoupon.py | 120 +++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 105 insertions(+), 15 deletions(-)
 
-commit d9afd602ad20b2d8415a66e8b5f2b2efc0d9787d
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 22:47:32 +0100
+commit 58958806d7aeee639184c95048aa27e8d3df6124
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Tue, 30 Mar 2021 17:05:26 +0200
 
-    Updated copyright.
+    Unit tests for SubPeriodsCoupon class in Python.
 
- Python/test/termstructures.py | 3 ++-
- SWIG/termstructures.i         | 1 +
- 2 files changed, 3 insertions(+), 1 deletion(-)
+ Python/test/QuantLibTestSuite.py |   2 +
+ Python/test/subperiodscoupon.py  | 180 +++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 182 insertions(+)
 
-commit a6ff1f38237735f54e32fafa976fabe94c31e6b7
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 22:45:39 +0100
+commit 7c2d09757df519c537e5128b3a0dac79655092fd
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Tue, 30 Mar 2021 15:06:11 +0200
 
-    Added unit test for UFR term structure.
-
- Python/test/termstructures.py | 54 ++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 51 insertions(+), 3 deletions(-)
-
-commit 138374b8859fde4e92efcbe74c7cd838fceb23cd
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 21:34:25 +0100
-
-    Unit tests for composite zero yield structure.
-
- Python/test/termstructures.py | 41 +++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 39 insertions(+), 2 deletions(-)
-
-commit 54ad74697f5b7c1d58db6531fd1a4053009594f9
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Wed, 2 Dec 2020 21:33:59 +0100
-
-    Exposed composite zero yield structure.
-
- SWIG/termstructures.i | 29 +++++++++++++++++++++++++++--
- 1 file changed, 27 insertions(+), 2 deletions(-)
-
-commit 5dc67cd8c1cfdd2719ce1e5cef67faee9b6269f0
-Merge: 55cd353 3515708
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 2 Dec 2020 18:43:40 +0100
-
-    Merge pull request #345.
-    
-    Exposing two recent changes to SWIG
-
-commit 3515708dacb76f634427f96b01a711682a283640
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Wed, 2 Dec 2020 19:55:17 +0800
-
-    Exposing timeSteps arguments to MC Heston Asian pricer in SWIG
-
- SWIG/options.i | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
-
-commit f33df09f134d5ce6c6e9bff8fc319f11dbf15ab0
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Mon, 30 Nov 2020 08:55:39 +0800
-
-    Exposing MCForwardEuropeanHestonEngine's control variate param in SWIG
-
- SWIG/options.i | 12 ++++++++----
- 1 file changed, 8 insertions(+), 4 deletions(-)
-
-commit 55cd35323647a13a468dc0488b664172ff0fd861
-Merge: 175f55c 7b59df5
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 29 Nov 2020 12:09:43 +0100
-
-    Merge pull request #344.
-    
-    Exposing Heston analytic forward european pricer to SWIG
-
-commit 7b59df592867893c6b79a5d6643a47e9e7fa9255
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Sun, 29 Nov 2020 12:12:27 +0800
-
-    Exposing Heston analytic forward european pricer to SWIG
-
- SWIG/options.i | 43 ++++++++++++++++++++++++++-----------------
- 1 file changed, 26 insertions(+), 17 deletions(-)
-
-commit 175f55ccc7ef9e034bf0f3f14ea3296f82059e38
-Merge: c0b6817 1b26753
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sat, 28 Nov 2020 14:18:33 +0100
-
-    Merge pull request #342.
-    
-    Exposing Sobol multipath generator in SWIG
-
-commit 1b26753b5ccc37a3c482e45da12f96b555285995
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Sat, 28 Nov 2020 20:35:15 +0800
-
-    Clearing out duplicated SWIGR renaming
-
- SWIG/montecarlo.i | 4 ----
- 1 file changed, 4 deletions(-)
-
-commit c63371dd70a78f67c3343ff3348954714f82ea7e
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Sat, 28 Nov 2020 09:40:06 +0800
-
-    Combining PSR and LD multiPathGenerators via templates
-
- SWIG/montecarlo.i | 64 ++++++++++++++++++++++++-------------------------------
- 1 file changed, 28 insertions(+), 36 deletions(-)
-
-commit 8f65d3c162e54726640d6b21890ce7baf3904300
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Fri, 27 Nov 2020 18:34:32 +0800
-
-    Exposing Sobol multipath generator in SWIG
-
- SWIG/montecarlo.i | 26 +++++++++++++++++++++++++-
- 1 file changed, 25 insertions(+), 1 deletion(-)
-
-commit c0b68179b840f696cfcfd3fc865f4dbc7482973e
-Merge: 0de60a2 2050229
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 20 Nov 2020 16:47:43 +0100
-
-    Merge pull request #340.
-    
-    Exposes the new constructor added to AmortizingFixedRateBond
-
-commit 0de60a222e8b908bfdb0ac0c59f322eb34c38e85
-Merge: fdf2aba fd9ed1f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 20 Nov 2020 12:43:41 +0100
-
-    Merge pull request #339.
-    
-    Exposing MC Heston Engine for discrete Arithmetic Asians
-
-commit fd9ed1fce2e21282e0b6fa2776046cd6bc22772e
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Fri, 20 Nov 2020 17:42:05 +0800
-
-    Exposing MC Heston Engine for discrete Arithmetic Asians
-
- SWIG/options.i | 54 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 54 insertions(+)
-
-commit 20502292e293d6fa5274b78fa0d781a54c7f2d9e
-Author: Piter Dias <piter.dias@piterdias.com>
-Date:   Wed, 18 Nov 2020 14:03:28 -0300
-
-    Add a new constructor to AmortizingFixedRateBond that accepts a vector of InterestRate objects as coupons. The main use cases are Brazilian corporate bonds whose coupons usually are annually compounded following Business252 day counter.
-
- SWIG/bonds.i | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-commit fdf2aba19ed1646eacd89cf7ee9cdbc854d96f92
-Merge: 5a0ea56 3fae589
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 18 Nov 2020 10:41:31 +0100
-
-    Merge pull request #336.
-    
-    Exposing MC forward-start option engines in SWIG
-
-commit 5a0ea56495c8c9b2be4057be8e7b9334f9c5b5bb
-Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-Date:   Wed, 18 Nov 2020 09:03:48 +0000
-
-    Fix uses of boost namespace
+    Fixed build.
 
  SWIG/cashflows.i | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 53a4f1bb1509cf0296db957d659a9a1228fdeaa9
+commit b0dab264769faa26165d4ff2cff587f25663a931
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Tue, 30 Mar 2021 15:04:50 +0200
+
+    Exposed SubPeriodsCoupon class.
+
+ SWIG/cashflows.i | 108 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 107 insertions(+), 1 deletion(-)
+
+commit 408fbbf58ec1721bb48e3080ca6bd07a2f7594bb
+Merge: 53ad68e 310c519
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 18 Nov 2020 09:54:19 +0100
+Date:   Thu, 18 Mar 2021 19:26:29 +0100
 
-    Add action to check old uses of boost namespace
+    Merge pull request #370.
+    
+    Export renamed RateAveraging struct
 
- .github/workflows/namespaces.yml | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-commit c6afd171cb10d18b47ceaf5bbe2e261d691bb48f
+commit 310c519c3cef14c9c424503a1addecd8f6a413cb
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 18 Nov 2020 09:44:46 +0100
+Date:   Thu, 18 Mar 2021 15:25:15 +0100
 
-    Update create-pull-request action
+    Apply changes from C++ library
 
- .github/workflows/copyrights.yml | 3 ++-
- .github/workflows/misspell.yml   | 3 ++-
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ SWIG/cashflows.i   | 10 +++++-----
+ SWIG/futures.i     |  2 +-
+ SWIG/ratehelpers.i | 10 +++++-----
+ SWIG/swap.i        | 10 +++++-----
+ 4 files changed, 16 insertions(+), 16 deletions(-)
 
-commit 3fae5890e1d08fd8df82128c034d3ff04d223aba
+commit 53ad68e75b8c7ebb563d9767b7284123de18a832
+Merge: 017f9a2 5f804fc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Mar 2021 10:58:49 +0100
+
+    Merge pull request #369.
+    
+    Export new-style FD shout engine
+
+commit 5f804fc80cce83c28282c31247c6ea9bc83d4f1f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Mar 2021 09:57:46 +0100
+
+    Export new-style FD shout engine
+
+ SWIG/options.i | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+commit 017f9a2af64ae6a45e72ef599e57ed36956a7f67
+Merge: aa8bb17 3bf394a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Mar 2021 16:11:00 +0100
+
+    Merge pull request #368.
+    
+    Export optional discount curve in AnalyticEuropeanEngine constructor
+
+commit 3bf394a6e4b95673004fc08c523697b2a14c3598
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Mar 2021 15:12:41 +0100
+
+    Export optional discount curve in AnalyticEuropeanEngine constructor
+
+ SWIG/options.i | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit aa8bb177c8d7934169f593c8d95e45bc578b7122
+Merge: 996139d 91325fc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Mar 2021 13:22:08 +0100
+
+    Merge pull request #367.
+    
+    Export a few missing parameters in existing classes
+
+commit 91325fc4632536ad242dba818add24cf086669bb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Mar 2021 12:28:53 +0100
+
+    Export a few missing parameters in existing classes
+
+ SWIG/daycounters.i     | 2 +-
+ SWIG/fittedbondcurve.i | 7 ++++++-
+ 2 files changed, 7 insertions(+), 2 deletions(-)
+
+commit 996139d7bca228ac3aedb45ad3e3d205df073463
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Mon, 8 Mar 2021 15:50:54 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 99d1d28e4e61f5a4b3a48206e924e535dbeac9cf
+Merge: b1c4364 a0cd9c9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Mar 2021 16:50:34 +0100
+
+    Merge pull request #364.
+    
+    Cross currency swap rate helper
+
+commit a0cd9c95cc290254baeaf97707789efa7a7b8ab2
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Mon, 8 Mar 2021 15:17:37 +0100
+
+    Changed data source comment.
+
+ Python/test/ratehelpers.py | 11 +++++------
+ 1 file changed, 5 insertions(+), 6 deletions(-)
+
+commit 65a3e85204e38d3383b25cdcc9b1c439d82c9b6e
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Mon, 8 Mar 2021 15:12:56 +0100
+
+    Fixed Codacy issues.
+
+ Python/test/QuantLibTestSuite.py |  6 ++---
+ Python/test/ratehelpers.py       | 49 +++++++++++++++++-----------------------
+ 2 files changed, 24 insertions(+), 31 deletions(-)
+
+commit 35b24970a429f0aa100b1821f57f4f29771fa4e2
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Mon, 8 Mar 2021 14:56:47 +0100
+
+    Fixed Codacy issues.
+
+ Python/test/ratehelpers.py | 12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
+
+commit f6526d8027dc51af5c2c439db4f5c00b576329cf
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Mon, 8 Mar 2021 14:19:21 +0100
+
+    More unit tests for cross currency basis swap rate helper.
+
+ Python/test/ratehelpers.py | 32 ++++++++++++++++++++++++++++----
+ 1 file changed, 28 insertions(+), 4 deletions(-)
+
+commit a1a27d5a4115358dc2cd339b537bf92c803c476e
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Mon, 8 Mar 2021 13:20:26 +0100
+
+    Adding unit tests for cross currency basis swap rate helper.
+
+ Python/test/QuantLibTestSuite.py |   7 ++-
+ Python/test/ratehelpers.py       | 117 +++++++++++++++++++++++++++++++++++++++
+ SWIG/ratehelpers.i               |   1 +
+ 3 files changed, 124 insertions(+), 1 deletion(-)
+
+commit 6f65e82efb42126b9882f440ddb912fb7b43ca1d
+Author: Marcin <mrybacki12@gmail.com>
+Date:   Mon, 8 Mar 2021 11:32:57 +0100
+
+    No need to include cashflows.i in futures.i
+
+ SWIG/futures.i | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit b1c43645272de1f263d0e0b564002ae1b734e3c5
+Merge: f3a5807 2b0df54
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Mar 2021 09:25:55 +0100
+
+    Merge pull request #362.
+    
+    Adding new fixing dates interface to SWIG
+
+commit 2b0df54506a42a9ccacbc79e8aa45436c4abb6b7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Mar 2021 08:40:06 +0100
+
+    Fix a couple of types
+
+ SWIG/asianoptions.i | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+commit f3a58075eb8c86a2cf008de2cb9d55e25f4a17b4
+Merge: f134ad3 0d6396b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Mar 2021 08:27:27 +0100
+
+    Merge pull request #360.
+    
+    Index::hasHistoricalFixing(...)
+
+commit f134ad3a4db1116e83de7081bbbb18bb719915bf
+Merge: f3b893e 45633c9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 7 Mar 2021 19:18:14 +0100
+
+    Merge pull request #363.
+    
+    Export changes in overnight-index interfaces
+
+commit 45633c9c12b8fd3c34af103597f2c743d48c5a94
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 7 Mar 2021 12:29:11 +0100
+
+    Export changes in overnight-index interfaces
+
+ SWIG/cashflows.i   | 46 ++++++++++++++++++++++++++++++----------------
+ SWIG/futures.i     | 22 +++++++---------------
+ SWIG/ql.i          | 10 +---------
+ SWIG/ratehelpers.i | 16 +++++++++-------
+ SWIG/swap.i        | 16 +++++++++++-----
+ 5 files changed, 58 insertions(+), 52 deletions(-)
+
+commit f21f189136f99b01955f0584f39dcd8fc462486c
 Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Wed, 18 Nov 2020 08:38:25 +0800
+Date:   Sat, 6 Mar 2021 11:40:54 +0800
 
-    Exposing MC forward-start option engines in SWIG
+    Adding new fixing dates interface to SWIG
 
- SWIG/options.i | 138 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 137 insertions(+), 1 deletion(-)
+ SWIG/asianoptions.i | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
 
-commit 8f7ff814d47835ace3dc763024b8c6d203a0f35c
-Merge: fb03d73 93cc887
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 8 Nov 2020 17:14:58 +0100
+commit 86b313822bd371bea520022591bc8fcd7abc1ec2
+Author: Marcin <mrybacki12@gmail.com>
+Date:   Wed, 17 Feb 2021 16:11:29 +0100
 
-    Merge pull request #332.
-    
-    Full parameter list in two methods
-
-commit 93cc8879bfd2c48341bfa7a708cbd9b4e1dcdcdc
-Author: Joe <joe.song@omnirisks.com>
-Date:   Fri, 6 Nov 2020 09:10:04 -0600
-
-    Full parameter list in two methods
-
- SWIG/defaultprobability.i | 24 ++++++++++++++++++++----
- 1 file changed, 20 insertions(+), 4 deletions(-)
-
-commit fb03d7331428b150a262f6cd505bb1c0529cdde5
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Nov 2020 09:37:28 +0100
-
-    Move CI build to GitHub Actions.
-
- {.travis => .build}/csharp.build  |  0
- {.travis => .build}/java.build    |  0
- {.travis => .build}/python2.build |  0
- {.travis => .build}/python3.build |  0
- {.travis => .build}/r.build       |  0
- {.travis => .build}/scala.build   |  0
- .github/workflows/linux.yml       | 15 +++++++++++++++
- .travis.yml                       | 37 -------------------------------------
- README.md                         |  2 +-
- 9 files changed, 16 insertions(+), 38 deletions(-)
-
-commit 1e43ecc80b990674bfb365ff8f95ca4eab4549ba
-Merge: 2d923cf a73018a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 29 Oct 2020 18:34:58 +0100
-
-    Merge pull request #328.
-    
-    Added type() to VanillaSwap
-
-commit 2d923cfa7ed6210153764979000341c977770d7a
-Merge: 22f9a58 076e06c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 29 Oct 2020 18:34:05 +0100
-
-    Merge pull request #327.
-    
-    Expose localVolatility method of GBS-process to SWIG
-
-commit 22f9a58ede289ce7371eecebf2db7f4f0c6fa865
-Merge: 3a236d7 8b0d409
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 29 Oct 2020 18:33:25 +0100
-
-    Merge pull request #326.
-    
-    Expose VolDeltaQuote's public methods in SWIG
-
-commit 3a236d71e06075f6ef7e43e266c70b32e70c4df0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 29 Oct 2020 15:36:23 +0100
-
-    Use GitHub Container Registry for Travis build.
-
- .travis.yml | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
-
-commit 73d27ad93fd34871da5c259ffb2da59d9804ad96
-Merge: 1523779 9fae8e0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 29 Oct 2020 12:10:14 +0100
-
-    Merge pull request #329.
-    
-    Add Python example of cash-flow analysis.
-
-commit a73018a98500595a55a5d9bbf502f8c37dffe5cd
-Author: RalfKonrad <bitbucket@eckel-consulting.de>
-Date:   Tue, 27 Oct 2020 15:45:27 +0100
-
-    Added type() to VanillaSwap
+    Added OvernightAveraging to OIS swap inspectors.
 
  SWIG/swap.i | 1 +
  1 file changed, 1 insertion(+)
 
-commit 15237796fe99f01dbf28c67ece6a3dcab293570d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 26 Oct 2020 11:34:23 +0100
+commit 9dec90d1615b2f794e40c3fc668d1d239bff6234
+Author: Marcin <mrybacki12@gmail.com>
+Date:   Wed, 17 Feb 2021 13:32:09 +0100
 
-    Update version to 1.21-dev
+    Exposed index methods.
+
+ SWIG/indexes.i | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit b736af643a5dafa817c362a78e05614728e0b5b2
+Author: Marcin <mrybacki12@gmail.com>
+Date:   Mon, 15 Feb 2021 10:03:01 +0100
+
+    Exposed XCCY basis swap in SWIG.
+
+ SWIG/ratehelpers.i | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+commit 081131aa7d00f4b075f4a94d178a89b6fb326f43
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Fri, 12 Feb 2021 18:54:26 +0100
+
+    Scoped OvernightAveraging via struct.
+
+ SWIG/cashflows.i   | 23 ++++++-----------------
+ SWIG/futures.i     |  2 +-
+ SWIG/ratehelpers.i | 10 +++++-----
+ SWIG/swap.i        | 11 ++++++-----
+ 4 files changed, 18 insertions(+), 28 deletions(-)
+
+commit 37811bca2e2d9ccbf5dc092c4286a742a67d359f
+Author: Marcin Rybacki <mrybacki12@gmail.com>
+Date:   Wed, 10 Feb 2021 12:54:34 +0100
+
+    Changes propagating OvernightAveraging.
+
+ SWIG/cashflows.i   | 31 +++++++++++++++++++++++++++----
+ SWIG/futures.i     |  7 +++----
+ SWIG/ratehelpers.i | 13 ++++++++-----
+ SWIG/swap.i        | 10 ++++++++--
+ 4 files changed, 46 insertions(+), 15 deletions(-)
+
+commit 0d6396b0606feebd61e97396aed0e8eafddae433
+Author: RalfKonrad <github@eckel-consulting.de>
+Date:   Fri, 5 Feb 2021 22:11:27 +0100
+
+    Added 'bool hasHistoricalFixing(const Date& fixingDate) const;'
+
+ SWIG/indexes.i | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit f3b893e059141b30881324e3553a418910700a9a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 4 Feb 2021 09:18:53 +0100
+
+    Add badge and link to latest release
+
+ README.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 265e2cd0342ef68143b4acf24cd1445dfb9a3dab
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 25 Jan 2021 23:37:16 +0100
+
+    Clean up branches from automated PRs
+
+ .github/workflows/copyrights.yml | 1 +
+ .github/workflows/misspell.yml   | 1 +
+ .github/workflows/namespaces.yml | 1 +
+ 3 files changed, 3 insertions(+)
+
+commit 7719b932cb4c9352015fac415ec60e47fa25e6c7
+Merge: 59ca4a9 01ceca5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 Jan 2021 15:08:42 +0100
+
+    Merge pull request #358.
+    
+    Remove features deprecated in version 1.17
+
+commit 59ca4a922e9e9b6b42e19d4e4c95b4a6bd252b91
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 Jan 2021 13:21:41 +0100
+
+    Remove support for Python 2.7
+
+ .build/python2.build        | 12 ------------
+ .github/workflows/linux.yml |  2 +-
+ Python/README.txt           |  2 +-
+ 3 files changed, 2 insertions(+), 14 deletions(-)
+
+commit d324d69ff35005b25cbbc82c71f085913cb146e9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 13 Jan 2021 14:21:02 +0100
+
+    Add link check.
+
+ .github/workflows/link-check.yml | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+commit ffc337f03ca669bf002b96d6d51baece6131ea14
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 Jan 2021 10:43:58 +0100
+
+    Update version to 1.22-dev
 
  Python/setup.py | 2 +-
  R/DESCRIPTION   | 2 +-
  configure.ac    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-commit 076e06c5524e7b45ae07642d1ead53f71981235a
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Mon, 26 Oct 2020 15:18:41 +0800
-
-    Expose lovalVolatility method of GBS-process to SWIG
-
- SWIG/stochasticprocess.i | 1 +
- 1 file changed, 1 insertion(+)
-
-commit 8b0d409b615eb5e7d1a6668f27ceb232013e6cdf
-Author: jackgillett101 <jack.gillett@cantab.net>
-Date:   Fri, 23 Oct 2020 15:53:39 +0800
-
-    Expose VolDeltaQuote's public methods in SWIG
-    
-    This will allow creation of vol surfaces from just a list of DeltaVolQuote objects
-
- SWIG/options.i | 5 +++++
- 1 file changed, 5 insertions(+)
-
-commit 9fae8e07bd097e226cb5dd330926bd1d8ec32ac8
+commit 01ceca58a4a2aee5a796efe3a7d3ddaa931a6779
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 19 Oct 2020 12:00:24 +0200
+Date:   Tue, 19 Jan 2021 18:35:19 +0100
 
-    Add example on cash-flow analysis.
+    Remove features deprecated in version 1.17
 
- Python/examples/cashflows.py | 158 +++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 158 insertions(+)
-
-commit a87efb6475e056095233bddaf60850171e9797e5
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Thu, 15 Oct 2020 15:23:21 +0200
-
-    Exposed UltimateForwardTermStructure.
-
- SWIG/termstructures.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 023f8f60a4209083f79a708a4dcf57b41bc0a565
-Author: Marcin <mrybacki12@gmail.com>
-Date:   Thu, 15 Oct 2020 10:28:47 +0200
-
-    Exposed the UFR curve.
-
- SWIG/termstructures.i | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ Java/examples/CallableBonds.java    |   8 +--
+ Java/examples/CallableBondsOAS.java |  20 +++----
+ SWIG/bonds.i                        |  42 +++++++++++++-
+ SWIG/callability.i                  |  71 -----------------------
+ SWIG/convertiblebonds.i             |   2 -
+ SWIG/options.i                      | 110 +-----------------------------------
+ SWIG/ql.i                           |   1 -
+ 7 files changed, 56 insertions(+), 198 deletions(-)
