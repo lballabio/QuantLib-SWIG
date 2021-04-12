@@ -34,14 +34,61 @@ def flat_rate(rate):
         2, CAL, ql.QuoteHandle(ql.SimpleQuote(rate)), ql.Actual365Fixed())
 
 
-def create_ibor_leg(ibor_idx, start, end):
+def create_ibor_leg(ibor_idx, start, end, payment_lag=0):
+    day_count = ibor_idx.dayCounter()
+    bdc = ibor_idx.businessDayConvention()
+    cal = ibor_idx.fixingCalendar()
     sch = ql.MakeSchedule(effectiveDate=start,
                           terminationDate=end,
                           tenor=ibor_idx.tenor(),
-                          calendar=ibor_idx.fixingCalendar(),
-                          convention=ibor_idx.businessDayConvention(),
+                          calendar=cal,
+                          convention=bdc,
                           backwards=True)
-    return ql.IborLeg([1.0], sch, ibor_idx)
+    return ql.IborLeg([1.0], sch, ibor_idx, day_count, bdc, cal, payment_lag)
+
+
+def create_overnight_leg(overnight_idx, start, end, payment_lag=0):
+    day_count = ql.Actual365Fixed()
+    sch = ql.MakeSchedule(effectiveDate=start,
+                          terminationDate=end,
+                          tenor=ql.Period(1, ql.Years),
+                          calendar=CAL,
+                          convention=ql.Following,
+                          backwards=True)
+    return ql.OvernightLeg(
+        [1.0], sch, overnight_idx, day_count, ql.Following, CAL, payment_lag)
+
+
+def create_fixed_rate_leg(start, end, payment_lag=0):
+    day_count = ql.Actual365Fixed()
+    sch = ql.MakeSchedule(effectiveDate=start,
+                          terminationDate=end,
+                          tenor=ql.Period(1, ql.Years),
+                          calendar=CAL,
+                          convention=ql.Following,
+                          backwards=True)
+    return ql.FixedRateLeg(
+        sch, day_count, [1.0], [0.005], ql.Following, CAL, payment_lag)
+
+
+class IborCouponTest(unittest.TestCase):
+    def setUp(self):
+        ql.Settings.instance().evaluationDate = VALUATION_DATE
+        self.nominal_ts_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
+        self.ibor_idx = ql.Euribor6M(self.nominal_ts_handle)
+
+
+class OvernightCouponTest(unittest.TestCase):
+    def setUp(self):
+        ql.Settings.instance().evaluationDate = VALUATION_DATE
+        self.nominal_ts_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
+        self.overnight_idx = ql.Eonia(self.nominal_ts_handle)
+
+
+class FixedRateCouponTest(unittest.TestCase):
+    def setUp(self):
+        ql.Settings.instance().evaluationDate = VALUATION_DATE
+        self.nominal_ts_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
 
 
 def create_sub_periods_coupon(ibor_idx, start, end, averaging_method):
@@ -264,11 +311,15 @@ class SubPeriodsCouponTest(unittest.TestCase):
             self.ibor_idx, start, end, ql.Period(1, ql.Years), ql.RateAveraging.Compound)
         cf = sub_periods_leg[0]
         self.assertTrue(not isinstance(cf, ql.SubPeriodsCoupon))
-        self.assertTrue(isinstance(ql.as_sub_periods_coupon(cf), ql.SubPeriodsCoupon))
+        self.assertTrue(isinstance(
+            ql.as_sub_periods_coupon(cf), ql.SubPeriodsCoupon))
 
 
 if __name__ == '__main__':
     print('testing QuantLib ' + ql.__version__)
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SubPeriodsCouponTest, 'test'))
+    suite.addTest(unittest.makeSuite(IborCouponTest, 'test'))
+    suite.addTest(unittest.makeSuite(OvernightCouponTest, 'test'))
+    suite.addTest(unittest.makeSuite(FixedRateCouponTest, 'test'))
     unittest.TextTestRunner(verbosity=2).run(suite)
