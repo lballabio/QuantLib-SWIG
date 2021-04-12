@@ -331,6 +331,10 @@ class SubPeriodsCoupon: public FloatingRateCoupon {
                      const Date& refPeriodEnd = Date(),
                      const DayCounter& dayCounter = DayCounter(),
                      const Date& exCouponDate = Date());
+    const std::vector<Date>& fixingDates() const;
+    const std::vector<Time>& dt() const;
+    const std::vector<Date>& valueDates() const;
+    Spread rateSpread() const;
 };
 
 %inline %{
