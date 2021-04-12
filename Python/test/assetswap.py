@@ -2086,7 +2086,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg1 = list(
-            ql.FixedRateLeg(fixedBondSchedule1, ql.ActualActual(ql.ActualActual.ISDA), [self.faceAmount], [0.04])
+            ql.FixedRateLeg(
+                fixedBondSchedule1, 
+                ql.ActualActual(ql.ActualActual.ISDA), 
+                [self.faceAmount], 
+                [0.04], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1, ql.Following)
         fixedBondLeg1.append(ql.SimpleCashFlow(100.0, fixedbondRedemption1))
@@ -2146,7 +2152,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg2 = list(
-            ql.FixedRateLeg(fixedBondSchedule2, ql.Thirty360(ql.Thirty360.BondBasis), [self.faceAmount], [0.05])
+            ql.FixedRateLeg(
+                fixedBondSchedule2, 
+                ql.Thirty360(ql.Thirty360.BondBasis), 
+                [self.faceAmount], 
+                [0.05], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2, ql.Following)
         fixedBondLeg2.append(ql.SimpleCashFlow(100.0, fixedbondRedemption2))
@@ -2209,6 +2221,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.ModifiedFollowing,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0056],
@@ -2280,6 +2294,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.ModifiedFollowing,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0025],
@@ -2594,7 +2610,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg1 = list(
-            ql.FixedRateLeg(fixedBondSchedule1, ql.ActualActual(ql.ActualActual.ISDA), [self.faceAmount], [0.04])
+            ql.FixedRateLeg(
+                fixedBondSchedule1, 
+                ql.ActualActual(ql.ActualActual.ISDA), 
+                [self.faceAmount], 
+                [0.04], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1, ql.Following)
         fixedBondLeg1.append(ql.SimpleCashFlow(100.0, fixedbondRedemption1))
@@ -2664,7 +2686,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg2 = list(
-            ql.FixedRateLeg(fixedBondSchedule2, ql.Thirty360(ql.Thirty360.BondBasis), [self.faceAmount], [0.05])
+            ql.FixedRateLeg(
+                fixedBondSchedule2, 
+                ql.Thirty360(ql.Thirty360.BondBasis), 
+                [self.faceAmount], 
+                [0.05], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2, ql.Following)
         fixedBondLeg2.append(ql.SimpleCashFlow(100.0, fixedbondRedemption2))
@@ -2736,6 +2764,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.Following,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0056],
@@ -2824,6 +2854,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.ModifiedFollowing,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0025],
@@ -3193,7 +3225,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg1 = list(
-            ql.FixedRateLeg(fixedBondSchedule1, ql.ActualActual(ql.ActualActual.ISDA), [self.faceAmount], [0.04])
+            ql.FixedRateLeg(
+                fixedBondSchedule1, 
+                ql.ActualActual(ql.ActualActual.ISDA), 
+                [self.faceAmount], 
+                [0.04], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1, ql.Following)
         fixedBondLeg1.append(ql.SimpleCashFlow(100.0, fixedbondRedemption1))
@@ -3247,7 +3285,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg2 = list(
-            ql.FixedRateLeg(fixedBondSchedule2, ql.Thirty360(ql.Thirty360.BondBasis), [self.faceAmount], [0.05])
+            ql.FixedRateLeg(
+                fixedBondSchedule2, 
+                ql.Thirty360(ql.Thirty360.BondBasis), 
+                [self.faceAmount], 
+                [0.05], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2, ql.Following)
         fixedBondLeg2.append(ql.SimpleCashFlow(100.0, fixedbondRedemption2))
@@ -3306,6 +3350,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.Following,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0056],
@@ -3377,6 +3423,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.ModifiedFollowing,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0025],
@@ -3670,7 +3718,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg1 = list(
-            ql.FixedRateLeg(fixedBondSchedule1, ql.ActualActual(ql.ActualActual.ISDA), [self.faceAmount], [0.04])
+            ql.FixedRateLeg(
+                fixedBondSchedule1, 
+                ql.ActualActual(ql.ActualActual.ISDA), 
+                [self.faceAmount], 
+                [0.04], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1, ql.Following)
         fixedBondLeg1.append(ql.SimpleCashFlow(100.0, fixedbondRedemption1))
@@ -3744,7 +3798,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg2 = list(
-            ql.FixedRateLeg(fixedBondSchedule2, ql.Thirty360(ql.Thirty360.BondBasis), [self.faceAmount], [0.05])
+            ql.FixedRateLeg(
+                fixedBondSchedule2, 
+                ql.Thirty360(ql.Thirty360.BondBasis), 
+                [self.faceAmount], 
+                [0.05], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2, ql.Following)
         fixedBondLeg2.append(ql.SimpleCashFlow(100.0, fixedbondRedemption2))
@@ -3823,6 +3883,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.Following,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0056],
@@ -3920,6 +3982,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.ModifiedFollowing,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0025],
@@ -4334,7 +4398,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg1 = list(
-            ql.FixedRateLeg(fixedBondSchedule1, ql.ActualActual(ql.ActualActual.ISDA), [self.faceAmount], [0.04])
+            ql.FixedRateLeg(
+                fixedBondSchedule1, 
+                ql.ActualActual(ql.ActualActual.ISDA), 
+                [self.faceAmount], 
+                [0.04], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption1 = bondCalendar.adjust(fixedBondMaturityDate1, ql.Following)
         fixedBondLeg1.append(ql.SimpleCashFlow(100.0, fixedbondRedemption1))
@@ -4457,7 +4527,13 @@ class AssetSwapTest(unittest.TestCase):
             False,
         )
         fixedBondLeg2 = list(
-            ql.FixedRateLeg(fixedBondSchedule2, ql.Thirty360(ql.Thirty360.BondBasis), [self.faceAmount], [0.05])
+            ql.FixedRateLeg(
+                fixedBondSchedule2, 
+                ql.Thirty360(ql.Thirty360.BondBasis), 
+                [self.faceAmount], 
+                [0.05], 
+                ql.Following, 
+                bondCalendar)
         )
         fixedbondRedemption2 = bondCalendar.adjust(fixedBondMaturityDate2, ql.Following)
         fixedBondLeg2.append(ql.SimpleCashFlow(100.0, fixedbondRedemption2))
@@ -4583,6 +4659,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.Following,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0056],
@@ -4728,6 +4806,8 @@ class AssetSwapTest(unittest.TestCase):
                 self.iborIndex,
                 ql.Actual360(),
                 ql.ModifiedFollowing,
+                bondCalendar,
+                0,
                 [fixingDays],
                 [],
                 [0.0025],
