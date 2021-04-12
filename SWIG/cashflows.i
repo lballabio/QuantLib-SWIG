@@ -611,6 +611,8 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   const std::vector<Real>& nominals,
                   const std::vector<Rate>& couponRates,
                   BusinessDayConvention paymentAdjustment = Following,
+                  const Calendar& paymentCalendar = Calendar(),
+                  const Natural paymentLag = 0,
                   const DayCounter& firstPeriodDayCount = DayCounter(),
                   const Period& exCouponPeriod = Period(),
                   const Calendar& exCouponCalendar = Calendar(),
@@ -620,6 +622,8 @@ Leg _FixedRateLeg(const Schedule& schedule,
         .withNotionals(nominals)
         .withCouponRates(couponRates,dayCount)
         .withPaymentAdjustment(paymentAdjustment)
+        .withPaymentCalendar(paymentCalendar)
+        .withPaymentLag(paymentLag)
         .withFirstPeriodDayCounter(firstPeriodDayCount)
         .withExCouponPeriod(exCouponPeriod,
                             exCouponCalendar,
@@ -636,6 +640,8 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   const std::vector<Real>& nominals,
                   const std::vector<Rate>& couponRates,
                   BusinessDayConvention paymentAdjustment = Following,
+                  const Calendar& paymentCalendar = Calendar(),
+                  Natural paymentLag = 0,
                   const DayCounter& firstPeriodDayCount = DayCounter(),
                   const Period& exCouponPeriod = Period(),
                   const Calendar& exCouponCalendar = Calendar(),
@@ -648,6 +654,8 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              const ext::shared_ptr<IborIndex>& index,
              const DayCounter& paymentDayCounter = DayCounter(),
              const BusinessDayConvention paymentConvention = Following,
+             const Calendar& paymentCalendar = Calendar(),
+             const Natural paymentLag = 0,
              const std::vector<Natural>& fixingDays = std::vector<Natural>(),
              const std::vector<Real>& gearings = std::vector<Real>(),
              const std::vector<Spread>& spreads = std::vector<Spread>(),
@@ -662,6 +670,8 @@ Leg _IborLeg(const std::vector<Real>& nominals,
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
+        .withPaymentCalendar(paymentCalendar)
+        .withPaymentLag(paymentLag)
         .withFixingDays(fixingDays)
         .withGearings(gearings)
         .withSpreads(spreads)
@@ -683,6 +693,8 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              const ext::shared_ptr<IborIndex>& index,
              const DayCounter& paymentDayCounter = DayCounter(),
              const BusinessDayConvention paymentConvention = Following,
+             const Calendar& paymentCalendar = Calendar(),
+             Natural paymentLag = 0,
              const std::vector<Natural>& fixingDays = std::vector<Natural>(),
              const std::vector<Real>& gearings = std::vector<Real>(),
              const std::vector<Spread>& spreads = std::vector<Spread>(),
@@ -700,6 +712,8 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   const ext::shared_ptr<OvernightIndex>& index,
                   const DayCounter& paymentDayCounter = DayCounter(),
                   const BusinessDayConvention paymentConvention = Following,
+                  const Calendar& paymentCalendar = Calendar(),
+                  const Natural paymentLag = 0,
                   const std::vector<Real>& gearings = std::vector<Real>(),
                   const std::vector<Spread>& spreads = std::vector<Spread>(),
                   bool telescopicValueDates = false,
@@ -708,6 +722,8 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
+        .withPaymentCalendar(paymentCalendar)
+        .withPaymentLag(paymentLag)
         .withGearings(gearings)
         .withSpreads(spreads)
         .withTelescopicValueDates(telescopicValueDates)
@@ -723,6 +739,8 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   const ext::shared_ptr<OvernightIndex>& index,
                   const DayCounter& paymentDayCounter = DayCounter(),
                   const BusinessDayConvention paymentConvention = Following,
+                  const Calendar& paymentCalendar = Calendar(),
+                  Natural paymentLag = 0,
                   const std::vector<Real>& gearings = std::vector<Real>(),
                   const std::vector<Spread>& spreads = std::vector<Spread>(),
                   bool telescopicValueDates = false,
