@@ -49,9 +49,9 @@ from swaption import SwaptionTest
 from volatilities import SwaptionVolatilityCubeTest
 from inflation import InflationTest
 from coupons import (
-    SubPeriodsCouponTest, 
-    IborCouponTest, 
-    OvernightCouponTest, 
+    SubPeriodsCouponTest,
+    IborCouponTest,
+    OvernightCouponTest,
     FixedRateCouponTest)
 
 
