@@ -97,8 +97,9 @@ class IborCouponTest(unittest.TestCase):
                             expected: {expected}
                        """.format(actual=actual_payment_date,
                                   expected=expected_payment_date)
-            self.assertTrue(actual_payment_date == expected_payment_date,
-                            msg=fail_msg)
+            self.assertEqual(actual_payment_date,
+                             expected_payment_date,
+                             msg=fail_msg)
 
 
 class OvernightCouponTest(unittest.TestCase):
@@ -125,8 +126,9 @@ class OvernightCouponTest(unittest.TestCase):
                             expected: {expected}
                        """.format(actual=actual_payment_date,
                                   expected=expected_payment_date)
-            self.assertTrue(actual_payment_date == expected_payment_date,
-                            msg=fail_msg)
+            self.assertEqual(actual_payment_date,
+                             expected_payment_date,
+                             msg=fail_msg)
 
 
 class FixedRateCouponTest(unittest.TestCase):
@@ -151,11 +153,13 @@ class FixedRateCouponTest(unittest.TestCase):
                             expected: {expected}
                        """.format(actual=actual_payment_date,
                                   expected=expected_payment_date)
-            self.assertTrue(actual_payment_date == expected_payment_date,
-                            msg=fail_msg)
+            self.assertEqual(actual_payment_date,
+                             expected_payment_date,
+                             msg=fail_msg)
 
 
-def create_sub_periods_coupon(ibor_idx, start, end, averaging_method):
+def create_sub_periods_coupon(
+        ibor_idx, start, end, averaging_method=ql.RateAveraging.Compound):
     payment_calendar = ibor_idx.fixingCalendar()
     payment_bdc = ibor_idx.businessDayConvention()
     payment_date = payment_calendar.adjust(end, payment_bdc)
@@ -377,6 +381,56 @@ class SubPeriodsCouponTest(unittest.TestCase):
         self.assertTrue(not isinstance(cf, ql.SubPeriodsCoupon))
         self.assertTrue(isinstance(
             ql.as_sub_periods_coupon(cf), ql.SubPeriodsCoupon))
+
+    def test_sub_period_coupon_fixing_dates(self):
+        """Testing sub-period coupon fixing dates"""
+        start = ql.Date(15, ql.April, 2021)
+        end = ql.Date(15, ql.April, 2022)
+        cpn = ql.as_sub_periods_coupon(
+            create_sub_periods_coupon(self.ibor_idx, start, end))
+        actual_dates = cpn.fixingDates()
+        expected_dates = (ql.Date(13, 4, 2021), ql.Date(13, 10, 2021))
+
+        fail_msg = """ Unable to replicate sub-period coupon fixing dates:
+                            calculated: {actual}
+                            expected: {expected}
+                       """.format(actual=actual_dates,
+                                  expected=expected_dates)
+        self.assertTupleEqual(actual_dates, expected_dates, msg=fail_msg)
+
+    def test_sub_period_coupon_value_dates(self):
+        """Testing sub-period coupon value dates"""
+        start = ql.Date(15, ql.April, 2021)
+        end = ql.Date(15, ql.April, 2022)
+        cpn = ql.as_sub_periods_coupon(
+            create_sub_periods_coupon(self.ibor_idx, start, end))
+        actual_dates = cpn.valueDates()
+        expected_dates = (ql.Date(15, 4, 2021),
+                          ql.Date(15, 10, 2021),
+                          ql.Date(19, 4, 2022))
+
+        fail_msg = """ Unable to replicate sub-period coupon value dates:
+                            calculated: {actual}
+                            expected: {expected}
+                       """.format(actual=actual_dates,
+                                  expected=expected_dates)
+        self.assertTupleEqual(actual_dates, expected_dates, msg=fail_msg)
+
+    def test_sub_period_coupon_rate_spread(self):
+        """Testing sub-period coupon rate spread"""
+        start = ql.Date(15, ql.April, 2021)
+        end = ql.Date(15, ql.April, 2022)
+        cpn = ql.as_sub_periods_coupon(
+            create_sub_periods_coupon(self.ibor_idx, start, end))
+        actual_spread = cpn.rateSpread()
+        expected_spread = 0.0
+
+        fail_msg = """ Unable to replicate sub-period coupon rate spread:
+                            calculated: {actual}
+                            expected: {expected}
+                       """.format(actual=actual_spread,
+                                  expected=expected_spread)
+        self.assertEqual(actual_spread, expected_spread, msg=fail_msg)
 
 
 if __name__ == '__main__':
