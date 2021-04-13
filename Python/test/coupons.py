@@ -77,6 +77,29 @@ class IborCouponTest(unittest.TestCase):
         self.nominal_ts_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
         self.ibor_idx = ql.Euribor6M(self.nominal_ts_handle)
 
+    def test_payment_lag(self):
+        """Testing payment lag of an Ibor leg"""
+        start = ql.Date(17, ql.March, 2021)
+        end = ql.Date(17, ql.March, 2031)
+        pay_lag = 2
+        leg_without_lag = create_ibor_leg(self.ibor_idx, start, end)
+        leg_with_lag = create_ibor_leg(self.ibor_idx, start, end, pay_lag)
+        for c_f_without_lag, c_f_with_lag in zip(leg_without_lag, leg_with_lag):
+            actual_payment_date = c_f_with_lag.date()
+            expected_payment_date = CAL.advance(
+                c_f_without_lag.date(),
+                pay_lag,
+                ql.Days,
+                self.ibor_idx.businessDayConvention())
+
+            fail_msg = """ Unable to replicate Ibor coupon payment date:
+                            calculated: {actual}
+                            expected: {expected}
+                       """.format(actual=actual_payment_date,
+                                  expected=expected_payment_date)
+            self.assertTrue(actual_payment_date == expected_payment_date,
+                            msg=fail_msg)
+
 
 class OvernightCouponTest(unittest.TestCase):
     def setUp(self):
@@ -84,11 +107,52 @@ class OvernightCouponTest(unittest.TestCase):
         self.nominal_ts_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
         self.overnight_idx = ql.Eonia(self.nominal_ts_handle)
 
+    def test_payment_lag(self):
+        """Testing payment lag of an overnight leg"""
+        start = ql.Date(17, ql.March, 2021)
+        end = ql.Date(17, ql.March, 2031)
+        pay_lag = 2
+        leg_without_lag = create_overnight_leg(self.overnight_idx, start, end)
+        leg_with_lag = create_overnight_leg(
+            self.overnight_idx, start, end, pay_lag)
+        for c_f_without_lag, c_f_with_lag in zip(leg_without_lag, leg_with_lag):
+            actual_payment_date = c_f_with_lag.date()
+            expected_payment_date = CAL.advance(
+                c_f_without_lag.date(), pay_lag, ql.Days, ql.Following)
+
+            fail_msg = """ Unable to replicate overnight coupon payment date:
+                            calculated: {actual}
+                            expected: {expected}
+                       """.format(actual=actual_payment_date,
+                                  expected=expected_payment_date)
+            self.assertTrue(actual_payment_date == expected_payment_date,
+                            msg=fail_msg)
+
 
 class FixedRateCouponTest(unittest.TestCase):
     def setUp(self):
         ql.Settings.instance().evaluationDate = VALUATION_DATE
         self.nominal_ts_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
+
+    def test_payment_lag(self):
+        """Testing payment lag of a fixed rate leg"""
+        start = ql.Date(17, ql.March, 2021)
+        end = ql.Date(17, ql.March, 2031)
+        pay_lag = 2
+        leg_without_lag = create_fixed_rate_leg(start, end)
+        leg_with_lag = create_fixed_rate_leg(start, end, pay_lag)
+        for c_f_without_lag, c_f_with_lag in zip(leg_without_lag, leg_with_lag):
+            actual_payment_date = c_f_with_lag.date()
+            expected_payment_date = CAL.advance(
+                c_f_without_lag.date(), pay_lag, ql.Days, ql.Following)
+
+            fail_msg = """ Unable to replicate fixed rate coupon payment date:
+                            calculated: {actual}
+                            expected: {expected}
+                       """.format(actual=actual_payment_date,
+                                  expected=expected_payment_date)
+            self.assertTrue(actual_payment_date == expected_payment_date,
+                            msg=fail_msg)
 
 
 def create_sub_periods_coupon(ibor_idx, start, end, averaging_method):
