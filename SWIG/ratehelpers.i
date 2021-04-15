@@ -258,8 +258,8 @@ class SwapRateHelper : public RateHelper {
 class BondHelper : public RateHelper {
   public:
     BondHelper(const Handle<Quote>& cleanPrice,
-                  const ext::shared_ptr<Bond>& bond,
-                  bool useCleanPrice = true);
+               const ext::shared_ptr<Bond>& bond,
+               BondPrice::Type priceType = BondPrice::Clean);
 
     ext::shared_ptr<Bond> bond();
 };
@@ -282,7 +282,7 @@ class FixedRateBondHelper : public BondHelper {
                   const Calendar& exCouponCalendar = Calendar(),
                   BusinessDayConvention exCouponConvention = Unadjusted,
                   bool exCouponEndOfMonth = false,
-                  bool useCleanPrice = true);
+                  BondPrice::Type priceType = BondPrice::Clean);
 
     ext::shared_ptr<FixedRateBond> fixedRateBond();
 };
