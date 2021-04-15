@@ -81,22 +81,20 @@ class Name : public YieldTermStructure {
              const DayCounter& dayCounter,
              const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
              const std::vector<Date>& jumpDates = std::vector<Date>(),
-             Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
              const _IterativeBootstrap& b = _IterativeBootstrap()) {
             return new Name(referenceDate, instruments, dayCounter, jumps, jumpDates,
-                            accuracy, i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
+                            i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(Integer settlementDays, const Calendar& calendar,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
              const std::vector<Date>& jumpDates = std::vector<Date>(),
-             Real accuracy = 1.0e-12,
              const Interpolator& i = Interpolator(),
              const _IterativeBootstrap& b = _IterativeBootstrap()) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
-                            jumps, jumpDates, accuracy, Interpolator(),
+                            jumps, jumpDates, Interpolator(),
                             Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
         }
         Name(const Date& referenceDate,
