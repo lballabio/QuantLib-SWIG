@@ -1,6 +1,8 @@
 name: Fix uses of boost namespace
 on:
-  - push
+  push:
+    branches:
+      - '**'
 jobs:
   namespaces:
     runs-on: ubuntu-latest
