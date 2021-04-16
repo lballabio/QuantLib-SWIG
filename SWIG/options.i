@@ -7,6 +7,7 @@
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2019 Pedro Coelho
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/

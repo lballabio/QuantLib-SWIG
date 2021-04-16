@@ -25,13 +25,15 @@ class DateTest(unittest.TestCase):
 
     def testArithmetics(self):
         "Testing date arithmetics"
-        date = ql.Date_minDate()
+        today = ql.Date.todaysDate()
+        date = today - ql.Period(30, ql.Years)
+        end_date = today + ql.Period(30, ql.Years)
 
         dold = date.dayOfMonth()
         mold = date.month()
         yold = date.year()
 
-        while date < ql.Date_maxDate():
+        while date < end_date:
             date += 1
 
             d = date.dayOfMonth()
