@@ -8,7 +8,7 @@ if BUILD_PYTHON
 
 all-local: .build-stamp
 
-.build-stamp: QuantLib/quantlib_wrap.cpp QuantLib/QuantLib.py
+.build-stamp: QuantLib/quantlib_wrap.cpp QuantLib/QuantLib.py setup.py
 	CXXFLAGS="$(CXXFLAGS) $(CXXWARNINGFLAGS)" CC="$(CC)" CXX="$(CXX)" $(PYTHON) setup.py build
 	touch .build-stamp
 
