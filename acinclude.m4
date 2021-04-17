@@ -4,9 +4,10 @@ AC_DEFUN([QL_CHECK_CXXFLAGS],
  ql_original_CXXFLAGS=$CXXFLAGS
  ql_more_CXXFLAGS="-fno-strict-aliasing -Wno-unused -Wno-uninitialized -Wno-sign-compare -Wno-write-strings"
  CXXFLAGS="$ql_original_CXXFLAGS $ql_more_CXXFLAGS"
- AC_TRY_COMPILE(
-    [],
-    [],
+ AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+        [[]],
+        [[]])],
     [AC_MSG_RESULT([yes])
      AC_SUBST([CXXWARNINGFLAGS], [$ql_more_CXXFLAGS])],
     [AC_MSG_RESULT([no])

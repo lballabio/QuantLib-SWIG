@@ -50,7 +50,7 @@ fi
 AC_PATH_PROG([PYTHON], [python])
 AM_CONDITIONAL(HAVE_PYTHON, test "x${PYTHON}" != "x")
 AC_ARG_ENABLE([python],
-              AC_HELP_STRING([--disable-python],
+              AS_HELP_STRING([--disable-python],
                              [If disabled, the Python module
                               will not be built]),
               [build_python=$enableval],
@@ -61,7 +61,7 @@ AC_PATH_PROGS([MCS], [gmcs mcs gmcs2])
 AC_PATH_PROGS([MONO], [mono])
 AM_CONDITIONAL(HAVE_MCS, test "x${MCS}" != "x" && test "x${MONO}" != "x")
 AC_ARG_ENABLE([csharp],
-              AC_HELP_STRING([--disable-csharp],
+              AS_HELP_STRING([--disable-csharp],
                              [If disabled, the C# module
                               will not be built]),
               [build_mcs=$enableval],
@@ -71,7 +71,7 @@ AM_CONDITIONAL(BUILD_MCS, test "$build_mcs" != "no")
 AC_PATH_PROG([R], [R])
 AM_CONDITIONAL(HAVE_R, test "x${R}" != "x")
 AC_ARG_ENABLE([r],
-              AC_HELP_STRING([--disable-r],
+              AS_HELP_STRING([--disable-r],
                              [If disabled, the R module
                               will not be built]),
               [build_r=$enableval],
@@ -85,14 +85,14 @@ AC_PATH_PROG([JAR], [jar])
 AC_PATH_PROG([JAVA], [java])
 AM_CONDITIONAL(HAVE_JAVA, test "x${JAVAC}" != "x" && test "x${JAR}" != "x")
 AC_ARG_ENABLE([java],
-              AC_HELP_STRING([--disable-java],
+              AS_HELP_STRING([--disable-java],
                              [If disabled, the Java module
                               will not be built]),
               [build_java=$enableval],
               [build_java=yes])
 AM_CONDITIONAL(BUILD_JAVA, test "$build_java" != "no")
 AC_ARG_ENABLE([java-autoload],
-              AC_HELP_STRING([--disable-java-autoload],
+              AS_HELP_STRING([--disable-java-autoload],
                              [If disabled, the Java JNI shared library
 			     will not be automatically loaded]),
               [java_autoload=$enableval],
@@ -100,7 +100,7 @@ AC_ARG_ENABLE([java-autoload],
 AM_CONDITIONAL(JAVA_AUTOLOAD, test "$java_autoload" != "no")
 
 AC_ARG_ENABLE([java-finalizer],
-              AC_HELP_STRING([--disable-java-finalizer],
+              AS_HELP_STRING([--disable-java-finalizer],
                              [If disabled, the finalizers
 			     will not be generated.  Be careful.]),
               [java_finalizer=$enableval],
@@ -108,7 +108,7 @@ AC_ARG_ENABLE([java-finalizer],
 AM_CONDITIONAL(JAVA_FINALIZER, test "$java_finalizer" != "no")
 
 AC_ARG_ENABLE([java-autocloseable],
-              AC_HELP_STRING([--enable-java-autocloseable],
+              AS_HELP_STRING([--enable-java-autocloseable],
                              [If enabled, the java Objects will implement AutoCloseable]),
               [java_autocloseable=$enableval],
               [java_autocloseable=no])
@@ -116,7 +116,7 @@ AM_CONDITIONAL(JAVA_AUTOCLOSEABLE, test "$java_autocloseable" != "no")
 
 
 AC_ARG_WITH([jdk-include],
-            AC_HELP_STRING([--with-jdk-include=INCLUDE_PATH],
+            AS_HELP_STRING([--with-jdk-include=INCLUDE_PATH],
                            [Supply the location of JDK header files]),
             [ql_jdk_include_path="`cd ${withval} 2>/dev/null && pwd`"],
             [ql_jdk_include_path=""])
@@ -124,7 +124,7 @@ if test [ -n "$ql_jdk_include_path" ] ; then
    AC_SUBST([JDK_INCLUDE],["-I${ql_jdk_include_path}"])
 fi
 AC_ARG_WITH([jdk-system-include],
-            AC_HELP_STRING([--with-jdk-system-include=INCLUDE_PATH],
+            AS_HELP_STRING([--with-jdk-system-include=INCLUDE_PATH],
                            [Supply the location of system-dependent JDK header files]),
             [ql_jdk_sys_include_path="`cd ${withval} 2>/dev/null && pwd`"],
             [ql_jdk_sys_include_path=""])
@@ -137,7 +137,7 @@ AC_PATH_PROG([SCALAC], [scalac])
 AC_PATH_PROG([SCALA], [scala])
 AM_CONDITIONAL(HAVE_SCALA, test "x${SCALAC}" != "x" && test "x${JAR}" != "x")
 AC_ARG_ENABLE([scala],
-              AC_HELP_STRING([--disable-scala],
+              AS_HELP_STRING([--disable-scala],
                              [If disabled, the scala examples
                               will not be built]),
               [build_scala=$enableval],
