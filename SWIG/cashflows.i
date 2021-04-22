@@ -905,7 +905,7 @@ Leg _SubPeriodsLeg(const std::vector<Real>& nominals,
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
-        .withPaymentCalendar(paymentCalendar)
+        .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar)
         .withPaymentLag(paymentLag)
         .withFixingDays(fixingDays)
         .withGearings(gearings)

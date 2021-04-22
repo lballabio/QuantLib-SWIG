@@ -45,24 +45,13 @@ def create_ibor_leg(ibor_idx, start, end, payment_lag=0):
     return ql.IborLeg([1.0],
                       sch,
                       ibor_idx,
-                      ibor_idx.dayCounter(),
-                      bdc,
-                      [],
-                      [],
-                      [],
-                      [],
-                      [],
-                      False,
-                      ql.Period(),
-                      CAL,
-                      ql.Unadjusted,
-                      False,
-                      CAL,
-                      payment_lag)
+                      paymentDayCounter=ibor_idx.dayCounter(),
+                      paymentConvention=bdc,
+                      paymentCalendar=CAL,
+                      paymentLag=payment_lag)
 
 
 def create_overnight_leg(overnight_idx, start, end, payment_lag=0):
-    day_count = ql.Actual365Fixed()
     sch = ql.MakeSchedule(effectiveDate=start,
                           terminationDate=end,
                           tenor=ql.Period(1, ql.Years),
@@ -72,18 +61,13 @@ def create_overnight_leg(overnight_idx, start, end, payment_lag=0):
     return ql.OvernightLeg([1.0],
                            sch,
                            overnight_idx,
-                           day_count,
-                           ql.Following,
-                           [],
-                           [],
-                           False,
-                           ql.RateAveraging.Compound,
-                           CAL,
-                           payment_lag)
+                           paymentDayCounter=ql.Actual365Fixed(),
+                           paymentConvention=ql.Following,
+                           paymentCalendar=CAL,
+                           paymentLag=payment_lag)
 
 
 def create_fixed_rate_leg(start, end, payment_lag=0):
-    day_count = ql.Actual365Fixed()
     sch = ql.MakeSchedule(effectiveDate=start,
                           terminationDate=end,
                           tenor=ql.Period(1, ql.Years),
@@ -91,17 +75,12 @@ def create_fixed_rate_leg(start, end, payment_lag=0):
                           convention=ql.Following,
                           backwards=True)
     return ql.FixedRateLeg(sch,
-                           day_count,
+                           ql.Actual365Fixed(),
                            [1.0],
                            [0.005],
-                           ql.Following,
-                           day_count,
-                           ql.Period(),
-                           CAL,
-                           ql.Unadjusted,
-                           False,
-                           CAL,
-                           payment_lag)
+                           paymentAdjustment=ql.Following,
+                           paymentCalendar=CAL,
+                           paymentLag=payment_lag)
 
 
 class IborCouponTest(unittest.TestCase):
@@ -215,24 +194,11 @@ def create_sub_periods_leg(
                           calendar=ibor_idx.fixingCalendar(),
                           convention=ibor_idx.businessDayConvention(),
                           backwards=True)
-    day_count = ibor_idx.dayCounter()
     return ql.SubPeriodsLeg(
         [1.0],
         sch,
         ibor_idx,
-        day_count,
-        ql.Following,
-        CAL,
-        0,
-        [2],
-        [1.0],
-        [0.0],
-        [0.0],
-        ql.Period(),
-        CAL,
-        ql.Unadjusted,
-        False,
-        averaging_method)
+        averagingMethod=averaging_method)
 
 
 def sum_leg_payments(leg):
