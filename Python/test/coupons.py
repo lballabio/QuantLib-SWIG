@@ -94,13 +94,13 @@ def create_fixed_rate_leg(start, end, payment_lag=0):
                            day_count,
                            [1.0],
                            [0.005],
-                           ql.Following, 
-                           day_count, 
-                           ql.Period(), 
-                           CAL, 
-                           ql.Unadjusted, 
-                           False, 
-                           CAL, 
+                           ql.Following,
+                           day_count,
+                           ql.Period(),
+                           CAL,
+                           ql.Unadjusted,
+                           False,
+                           CAL,
                            payment_lag)
 
 
