@@ -23,7 +23,7 @@ class OptionsTest(unittest.TestCase):
 
     def testFdHestonHullWhite(self):
         """ Testing FDM Heston Hull-White pricing """
-        
+
         dc = ql.Actual365Fixed()
         todays_date = ql.Date(19, ql.May, 2021)
 
