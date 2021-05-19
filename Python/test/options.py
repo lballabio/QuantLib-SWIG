@@ -29,7 +29,7 @@ class OptionsTest(unittest.TestCase):
 
         r = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.075, dc))
         d = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.01, dc))
-        
+
         s0 = 8.0
 
         v0 = 0.2*0.2
@@ -40,9 +40,9 @@ class OptionsTest(unittest.TestCase):
 
         a = 0.00883
         sig = 0.00631
-        
+
         underlying = ql.QuoteHandle(ql.SimpleQuote(s0))
-        
+
         option = ql.VanillaOption(
             ql.PlainVanillaPayoff(ql.Option.Call, s0),
             ql.EuropeanExercise(todays_date + ql.Period(1, ql.Years))
@@ -58,7 +58,7 @@ class OptionsTest(unittest.TestCase):
                 controlVariate=True
             )
         )
-        
+
         self.assertAlmostEqual(0.87628, option.NPV(), 4)
 
 
@@ -67,4 +67,3 @@ if __name__ == '__main__':
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(OptionsTest,'test'))
     unittest.TextTestRunner(verbosity=2).run(suite)
- 
