@@ -1054,7 +1054,7 @@ class FdBlackScholesShoutEngine : public PricingEngine {
 %shared_ptr(FdOrnsteinUhlenbeckVanillaEngine)
 class FdOrnsteinUhlenbeckVanillaEngine : public PricingEngine {
   public:
-    #if !defined(SWIGPYTHON)
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") FdOrnsteinUhlenbeckVanillaEngine;
     #endif
     FdOrnsteinUhlenbeckVanillaEngine(
@@ -1163,6 +1163,29 @@ class FdSabrVanillaEngine : public PricingEngine {
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 };
 
+
+%{
+using QuantLib::FdHestonHullWhiteVanillaEngine;
+%}
+
+%shared_ptr(FdHestonHullWhiteVanillaEngine);
+class FdHestonHullWhiteVanillaEngine : public PricingEngine {
+  public:
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FdHestonHullWhiteVanillaEngine;
+    #endif
+    FdHestonHullWhiteVanillaEngine(
+        const ext::shared_ptr<HestonModel>& model,
+        ext::shared_ptr<HullWhiteProcess> hwProcess,
+        Real corrEquityShortRate,
+        Size tGrid = 50,
+        Size xGrid = 100,
+        Size vGrid = 40,
+        Size rGrid = 20,
+        Size dampingSteps = 0,
+        bool controlVariate = true,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());    
+};
 
 
 %{
