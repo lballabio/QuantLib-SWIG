@@ -14,7 +14,7 @@
  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
- 
+
 import unittest
 
 import QuantLib as ql
@@ -25,7 +25,7 @@ class OptionsTest(unittest.TestCase):
         """ Testing FDM Heston Hull-White pricing """
         
         dc = ql.Actual365Fixed()
-        todays_date = ql.Date(19, ql.May, 2021)        
+        todays_date = ql.Date(19, ql.May, 2021)
         
         r = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.075, dc))
         d = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.01, dc))
@@ -49,15 +49,15 @@ class OptionsTest(unittest.TestCase):
         )
 
         hull_white_process = ql.HullWhiteProcess(r, a, sig)
-        heston_process = ql.HestonProcess(r, d, underlying, v0, kappa, theta, sigma, rho)        
+        heston_process = ql.HestonProcess(r, d, underlying, v0, kappa, theta, sigma, rho)
 
         option.setPricingEngine(
             ql.FdHestonHullWhiteVanillaEngine(
                 ql.HestonModel(heston_process), hull_white_process, -0.5,
-                10, 200, 25, 10, 
+                10, 200, 25, 10,
                 controlVariate=True
             )
-        )            
+        )
         
         self.assertAlmostEqual(0.87628, option.NPV(), 4)
 
