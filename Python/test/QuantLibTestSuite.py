@@ -52,6 +52,8 @@ from coupons import (
     IborCouponTest,
     OvernightCouponTest,
     FixedRateCouponTest)
+from options import OptionsTest
+
 
 
 def test():
@@ -92,6 +94,7 @@ def test():
     suite.addTest(unittest.makeSuite(IborCouponTest, "test"))
     suite.addTest(unittest.makeSuite(OvernightCouponTest, "test"))
     suite.addTest(unittest.makeSuite(FixedRateCouponTest, "test"))
+    suite.addTest(unittest.makeSuite(OptionsTest, "test"))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
