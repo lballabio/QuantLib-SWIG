@@ -1189,6 +1189,43 @@ class FdHestonHullWhiteVanillaEngine : public PricingEngine {
 
 
 %{
+using QuantLib::AnalyticHestonHullWhiteEngine;
+%}
+
+%shared_ptr(AnalyticHestonHullWhiteEngine);
+class AnalyticHestonHullWhiteEngine : public PricingEngine {
+  public:
+    AnalyticHestonHullWhiteEngine(const ext::shared_ptr<HestonModel>& hestonModel,
+                                  ext::shared_ptr<HullWhite> hullWhiteModel,
+                                  Size integrationOrder = 144);
+
+    AnalyticHestonHullWhiteEngine(const ext::shared_ptr<HestonModel>& model,
+                                  ext::shared_ptr<HullWhite> hullWhiteModel,
+                                  Real relTolerance,
+                                  Size maxEvaluations);
+};
+
+
+%{
+using QuantLib::AnalyticH1HWEngine;
+%}
+
+%shared_ptr(AnalyticH1HWEngine);
+class AnalyticH1HWEngine : public PricingEngine {
+  public:
+    AnalyticH1HWEngine(const ext::shared_ptr<HestonModel>& hestonModel,
+                       const ext::shared_ptr<HullWhite>& hullWhiteModel,
+                       Real rhoSr, Size integrationOrder = 144);
+
+    AnalyticH1HWEngine(const ext::shared_ptr<HestonModel>& model,
+                       const ext::shared_ptr<HullWhite>& hullWhiteModel,
+                       Real rhoSr,
+                       Real relTolerance,
+                       Size maxEvaluations);
+};
+
+
+%{
 using QuantLib::ForwardVanillaEngine;
 using QuantLib::QuantoEngine;
 typedef ForwardVanillaEngine<AnalyticEuropeanEngine> ForwardEuropeanEngine;
