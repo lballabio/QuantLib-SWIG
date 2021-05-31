@@ -294,7 +294,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         oisHelpers = [
             ql.OISRateHelper(
                 settlementDays, ql.Period(n, unit),
-                ql.QuoteHandle(ois[(n, unit)]), on_index, discounting_yts_handle
+                ql.QuoteHandle(
+                    ois[(n, unit)]), on_index, discounting_yts_handle
             )
             for n, unit in ois.keys()
         ]
@@ -423,10 +424,10 @@ class FxSwapRateHelperTest(unittest.TestCase):
         for original_quote, maturity in zip(original_quotes, self.maturities):
             original_forward = self.fx_spot_quote_EURPLN + original_quote
             curve_impl_forward = (
-                    self.fx_spot_quote_EURPLN
-                    * self.eur_ois_curve.discount(maturity)
-                    / self.pln_eur_implied_curve.discount(maturity)
-                    / spot_df
+                self.fx_spot_quote_EURPLN
+                * self.eur_ois_curve.discount(maturity)
+                / self.pln_eur_implied_curve.discount(maturity)
+                / spot_df
             )
 
             self.assertAlmostEqual(original_forward, curve_impl_forward,
@@ -614,7 +615,7 @@ def flat_rate(rate):
 class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
     def setUp(self):
         ql.Settings.instance().evaluationDate = ql.Date(26, 5, 2021)
-        
+
         self.basis_point = 1.0e-4
         self.settlement_days = 2
         self.business_day_convention = ql.Following
