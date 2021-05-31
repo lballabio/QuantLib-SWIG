@@ -520,32 +520,33 @@ class ZeroCouponSwap : public Swap {
                    ext::shared_ptr<IborIndex> iborIndex,
                    const Calendar& paymentCalendar,
                    BusinessDayConvention paymentConvention = Following,
-                   Natural paymentDelay = 0,
-                   RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                   Natural paymentDelay = 0);
 
     ZeroCouponSwap(Type type,
                    Real baseNominal,
                    const Date& startDate,
                    const Date& maturityDate,
-                   Real fixedRate,
+                   Rate fixedRate,
                    const DayCounter& fixedDayCounter,
                    ext::shared_ptr<IborIndex> iborIndex,
                    const Calendar& paymentCalendar,
                    BusinessDayConvention paymentConvention = Following,
-                   Natural paymentDelay = 0,
-                   RateAveraging::Type averagingMethod = RateAveraging::Compound);
-    
-    Real fixedLegNPV() const;
-    Real floatingLegNPV() const;
-    Real fairFixedPayment() const;
+                   Natural paymentDelay = 0);
 
     // Inspectors
     ZeroCouponSwap::Type type() const;
     Real baseNominal() const;
-    Real fixedPayment() const;
+    Date startDate() const;
+    Date maturityDate() const;
     const ext::shared_ptr<IborIndex>& iborIndex() const;
-    RateAveraging::Type averagingMethod() const;
+    
     const Leg& fixedLeg() const;
     const Leg& floatingLeg() const;
+    Real fixedPayment() const;
+
+    Real fixedLegNPV() const;
+    Real floatingLegNPV() const;
+    Real fairFixedPayment() const;
+    Rate fairFixedRate(const DayCounter& dayCounter) const;
 };
 #endif
