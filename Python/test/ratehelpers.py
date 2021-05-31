@@ -730,6 +730,10 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
         self.assertImpliedQuotes(
             is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
 
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = self.calendar.adjust(
+            ql.Date.todaysDate())
+
 
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
