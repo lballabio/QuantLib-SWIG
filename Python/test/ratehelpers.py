@@ -614,12 +614,10 @@ def flat_rate(rate):
 class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
     def setUp(self):
         ql.Settings.instance().evaluationDate = ql.Date(26, 5, 2021)
-
         self.basis_point = 1.0e-4
         self.settlement_days = 2
         self.business_day_convention = ql.Following
-        self.calendar = ql.JointCalendar(
-            ql.TARGET(), ql.UnitedStates(ql.UnitedStates.LiborImpact))
+        self.calendar = ql.TARGET()
         self.day_count = ql.Actual365Fixed()
         self.end_of_month = False
         base_ccy_idx_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
@@ -730,10 +728,6 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
         is_basis_on_fx_base_currency_leg = False
         self.assertImpliedQuotes(
             is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
-
-    def tearDown(self):
-        ql.Settings.instance().evaluationDate = self.calendar.adjust(
-            ql.Date.todaysDate())
 
 
 if __name__ == "__main__":
