@@ -613,6 +613,8 @@ def flat_rate(rate):
 
 class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
     def setUp(self):
+        ql.Settings.instance().evaluationDate = ql.Date(26, 5, 2021)
+
         self.basis_point = 1.0e-4
         self.settlement_days = 2
         self.business_day_convention = ql.Following
