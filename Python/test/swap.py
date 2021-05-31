@@ -75,7 +75,7 @@ class ZeroCouponSwapTest(unittest.TestCase):
         self.assertAlmostEqual(swap.fixedPayment(), 1.5e6,
                                delta=EPSILON, msg=fail_msg)
 
-    def test_npvs_of_zero_coupon_swap_with_fixed_payment(self):
+    def test_npvs_of_par_zero_coupon_swap_with_fixed_payment(self):
         """Testing NPVs of a zero coupon swap with fixed payment"""
         swap = self.build_zcs_from_fixed_payment(1.5e6)
         swap.setPricingEngine(self.engine)
@@ -101,7 +101,7 @@ class ZeroCouponSwapTest(unittest.TestCase):
                                delta=EPSILON,
                                msg=fail_legs_npv_msg)
 
-    def test_npvs_of_zero_coupon_swap_with_fixed_rate(self):
+    def test_npvs_of_par_zero_coupon_swap_with_fixed_rate(self):
         """Testing NPVs of a zero coupon swap with fixed rate"""
         swap = self.build_zcs_from_fixed_payment(1.5e6)
         swap.setPricingEngine(self.engine)
