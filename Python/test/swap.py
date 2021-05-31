@@ -119,7 +119,6 @@ class ZeroCouponSwapTest(unittest.TestCase):
     def test_zero_coupon_swap_legs(self):
         """Testing zero coupon swap legs"""
         swap = self.build_zcs_from_rate(0.01)
-        swap.setPricingEngine(self.engine)
         fxd_leg = swap.fixedLeg()
         fxd_cf = ql.as_fixed_rate_coupon(fxd_leg[0])
         fail_msg_fxd = """Fixed leg cash flow type should be FixedRateCoupon 
