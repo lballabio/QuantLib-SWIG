@@ -121,7 +121,7 @@ class ZeroCouponSwapTest(unittest.TestCase):
         swap = self.build_zcs_from_rate(0.01)
         fxd_leg = swap.fixedLeg()
         fxd_cf = ql.as_fixed_rate_coupon(fxd_leg[0])
-        fail_msg_fxd = """Fixed leg cash flow type should be FixedRateCoupon 
+        fail_msg_fxd = """Fixed leg cash flow type should be FixedRateCoupon
                           but was {actual}.
                        """.format(actual=type(fxd_cf))
         self.assertTrue(isinstance(fxd_cf, ql.FixedRateCoupon),
@@ -129,7 +129,7 @@ class ZeroCouponSwapTest(unittest.TestCase):
 
         flt_leg = swap.floatingLeg()
         flt_cf = ql.as_sub_periods_coupon(flt_leg[0])
-        fail_msg_flt = """Floating leg cash flow type should be SubPeriodsCoupon 
+        fail_msg_flt = """Floating leg cash flow type should be SubPeriodsCoupon
                           but was {actual}.
                        """.format(actual=type(flt_cf))
         self.assertTrue(isinstance(flt_cf, ql.SubPeriodsCoupon), msg=fail_msg_flt)
