@@ -40,6 +40,7 @@ using QuantLib::DiscountingSwapEngine;
 using QuantLib::FloatFloatSwap;
 using QuantLib::OvernightIndexedSwap;
 using QuantLib::MakeOIS;
+using QuantLib::ZeroCouponSwap;
 %}
 
 %shared_ptr(Swap)
@@ -506,4 +507,46 @@ class OvernightIndexedSwapIndex : public SwapIndex {
     }
 %}
 
+%shared_ptr(ZeroCouponSwap)
+class ZeroCouponSwap : public Swap {
+  public:
+    enum Type { Receiver = -1, Payer = 1 };
+
+    ZeroCouponSwap(Type type,
+                   Real baseNominal,
+                   const Date& startDate,
+                   const Date& maturityDate, 
+                   Real fixedPayment,
+                   ext::shared_ptr<IborIndex> iborIndex,
+                   const Calendar& paymentCalendar,
+                   BusinessDayConvention paymentConvention = Following,
+                   Natural paymentDelay = 0);
+
+    ZeroCouponSwap(Type type,
+                   Real baseNominal,
+                   const Date& startDate,
+                   const Date& maturityDate,
+                   Rate fixedRate,
+                   const DayCounter& fixedDayCounter,
+                   ext::shared_ptr<IborIndex> iborIndex,
+                   const Calendar& paymentCalendar,
+                   BusinessDayConvention paymentConvention = Following,
+                   Natural paymentDelay = 0);
+
+    // Inspectors
+    ZeroCouponSwap::Type type() const;
+    Real baseNominal() const;
+    Date startDate() const;
+    Date maturityDate() const;
+    const ext::shared_ptr<IborIndex>& iborIndex() const;
+    
+    const Leg& fixedLeg() const;
+    const Leg& floatingLeg() const;
+    Real fixedPayment() const;
+
+    Real fixedLegNPV() const;
+    Real floatingLegNPV() const;
+    Real fairFixedPayment() const;
+    Rate fairFixedRate(const DayCounter& dayCounter) const;
+};
 #endif
