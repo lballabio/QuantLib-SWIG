@@ -72,10 +72,16 @@ isdaRateHelpers = isdaRateHelpers + [
                       ql.Thirty360(),isda_ibor)
     for i in range(len(swap_tenors))]
 
-discountCurve = ql.RelinkableYieldTermStructureHandle()
-discountCurve.linkTo(ql.PiecewiseLogLinearDiscount(0,ql.WeekendsOnly(),
-                                                   isdaRateHelpers,
-                                                   ql.Actual365Fixed()))
+# Get around following error
+# yield term structure reference date (May 25th, 2009 should be evaluation date (May 21st, 2009)
+spot_date = ql.WeekendsOnly().advance(tradeDate, 2 * ql.Period(ql.Daily))
+pw_discount = ql.PiecewiseLogLinearDiscount(spot_date, isdaRateHelpers, ql.Actual365Fixed())
+df_dates = [tradeDate]
+df_values = [1.0]
+for node in pw_discount.nodes():
+    df_dates.append(node[0])
+    df_values.append(node[1])
+discountCurve = ql.YieldTermStructureHandle(ql.DiscountCurve(df_dates, df_values, ql.Actual365Fixed()))
 
 probabilityCurve = ql.RelinkableDefaultProbabilityTermStructureHandle()
 
@@ -112,16 +118,17 @@ markitValues = [97798.29358, #0.001
 tolerance = 1.0e-6
 
 
-l = 0;
+l = 0
 distance = 0
 
 # +
 data = []
+upfront_date = ql.WeekendsOnly().advance(tradeDate, 3 * ql.Period(ql.Daily))
 for termDate in termDates:
     for spread in spreads:
         for recovery in recoveries:
 
-            cdsSchedule = ql.Schedule(tradeDate+1, termDate,
+            cdsSchedule = ql.Schedule(tradeDate, termDate,
                                       3*ql.Period(ql.Monthly),
                                       ql.WeekendsOnly(),
                                       ql.Following, ql.Unadjusted,
@@ -129,9 +136,8 @@ for termDate in termDates:
 
             quotedTrade = ql.CreditDefaultSwap(
                 ql.Protection.Buyer,10000000,0,spread,cdsSchedule,
-                ql.Following,ql.Actual360(),True,True,tradeDate+1,
-                ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
-                ql.FaceValueClaim(), ql.Actual360(True))
+                ql.Following,ql.Actual360(),True,True,tradeDate,
+                upfront_date, ql.FaceValueClaim(), ql.Actual360(True))
 
             h = quotedTrade.impliedHazardRate(0,discountCurve,ql.Actual365Fixed(),
                                               recovery,1e-10,
@@ -145,9 +151,8 @@ for termDate in termDates:
             engine = ql.IsdaCdsEngine(probabilityCurve,recovery,discountCurve)
             conventionalTrade = ql.CreditDefaultSwap(
                 ql.Protection.Buyer,10000000,0,0.01,cdsSchedule,
-                ql.Following,ql.Actual360(),True,True,tradeDate+1,
-                ql.WeekendsOnly().advance(tradeDate,3*ql.Period(ql.Daily)),
-                ql.FaceValueClaim(), ql.Actual360(True))
+                ql.Following,ql.Actual360(),True,True,tradeDate,
+                upfront_date, ql.FaceValueClaim(), ql.Actual360(True))
             conventionalTrade.setPricingEngine(engine)
 
             upfront = conventionalTrade.notional() * conventionalTrade.fairUpfront()
