@@ -731,8 +731,7 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
             is_fx_base_ccy_collateral_ccy, is_basis_on_fx_base_currency_leg)
 
     def tearDown(self):
-        ql.Settings.instance().evaluationDate = self.calendar.adjust(
-            ql.Date.todaysDate())
+        ql.Settings.instance().evaluationDate = ql.Date()
 
 
 if __name__ == "__main__":
