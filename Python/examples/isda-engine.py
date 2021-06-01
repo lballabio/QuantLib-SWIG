@@ -75,13 +75,14 @@ isdaRateHelpers = isdaRateHelpers + [
 # Get around following error
 # yield term structure reference date (May 25th, 2009 should be evaluation date (May 21st, 2009)
 spot_date = ql.WeekendsOnly().advance(tradeDate, 2 * ql.Period(ql.Daily))
-pw_discount = ql.PiecewiseLogLinearDiscount(spot_date, isdaRateHelpers, ql.Actual365Fixed())
-df_dates = [tradeDate]
-df_values = [1.0]
-for node in pw_discount.nodes():
-    df_dates.append(node[0])
-    df_values.append(node[1])
-discountCurve = ql.YieldTermStructureHandle(ql.DiscountCurve(df_dates, df_values, ql.Actual365Fixed()))
+pw_flat_fwd = ql.PiecewiseFlatForward(spot_date, isdaRateHelpers, ql.Actual365Fixed())
+yts_nodes = pw_flat_fwd.nodes()
+fwd_dates = [tradeDate]
+fwd_values = [yts_nodes[0][1]]
+for node in yts_nodes:
+    fwd_dates.append(node[0])
+    fwd_values.append(node[1])
+discountCurve = ql.YieldTermStructureHandle(ql.ForwardCurve(fwd_dates, fwd_values, ql.Actual365Fixed()))
 
 probabilityCurve = ql.RelinkableDefaultProbabilityTermStructureHandle()
 
