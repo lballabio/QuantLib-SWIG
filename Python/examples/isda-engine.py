@@ -118,7 +118,6 @@ markitValues = [97798.29358, #0.001
 
 tolerance = 1.0e-2
 
-
 l = 0
 distance = 0
 
