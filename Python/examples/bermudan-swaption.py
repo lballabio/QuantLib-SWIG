@@ -93,7 +93,7 @@ fixedLegDayCounter = ql.Thirty360(ql.Thirty360.European)
 floatingLegFrequency = ql.Semiannual
 floatingLegTenor = ql.Period(6, ql.Months)
 
-payFixed = ql.VanillaSwap.Payer
+payFixed = ql.Swap.Payer
 fixingDays = 2
 index = ql.Euribor6M(termStructure)
 floatingLegDayCounter = index.dayCounter()

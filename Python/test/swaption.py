@@ -23,8 +23,8 @@ BASIS_POINT = 1e-4
 
 EPSILON = 1.e-10
 
-OPTION_TYPE_MAP = {ql.VanillaSwap.Receiver: 'Receiver',
-                   ql.VanillaSwap.Payer: 'Payer'}
+OPTION_TYPE_MAP = {ql.Swap.Receiver: 'Receiver',
+                   ql.Swap.Payer: 'Payer'}
 
 SETTLEMENT_TYPE_MAP = {ql.Settlement.Physical: 'Physical',
                        ql.Settlement.Cash: 'Cash'}
@@ -100,7 +100,7 @@ class SwaptionTest(unittest.TestCase):
                         ql.Period(3, ql.Years), ql.Period(5, ql.Years),
                         ql.Period(7, ql.Years), ql.Period(10, ql.Years),
                         ql.Period(15, ql.Years), ql.Period(20, ql.Years)]
-        self.swap_type = [ql.VanillaSwap.Receiver, ql.VanillaSwap.Payer]
+        self.swap_type = [ql.Swap.Receiver, ql.Swap.Payer]
 
     def tearDown(self):
         ql.Settings.instance().evaluationDate = ql.Date()

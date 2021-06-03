@@ -41,7 +41,7 @@ class ZeroCouponSwapTest(unittest.TestCase):
         self.engine = ql.DiscountingSwapEngine(self.nominal_ts_handle)
 
     def build_zcs_from_fixed_payment(self, amount):
-        return ql.ZeroCouponSwap(ql.ZeroCouponSwap.Receiver,
+        return ql.ZeroCouponSwap(ql.Swap.Receiver,
                                  1.0e6,
                                  ql.Date(3, ql.June, 2021),
                                  ql.Date(3, ql.June, 2051),
@@ -50,7 +50,7 @@ class ZeroCouponSwapTest(unittest.TestCase):
                                  CAL)
 
     def build_zcs_from_rate(self, rate):
-        return ql.ZeroCouponSwap(ql.ZeroCouponSwap.Receiver,
+        return ql.ZeroCouponSwap(ql.Swap.Receiver,
                                  1.0e6,
                                  ql.Date(3, ql.June, 2021),
                                  ql.Date(3, ql.June, 2051),
@@ -64,7 +64,7 @@ class ZeroCouponSwapTest(unittest.TestCase):
         swap = self.build_zcs_from_fixed_payment(1.5e6)
         fail_msg = "Unable to replicate the properties of a ZC swap."
 
-        self.assertEqual(swap.type(), ql.ZeroCouponSwap.Receiver,
+        self.assertEqual(swap.type(), ql.Swap.Receiver,
                          msg=fail_msg)
         self.assertEqual(swap.startDate(), ql.Date(3, ql.June, 2021),
                          msg=fail_msg)

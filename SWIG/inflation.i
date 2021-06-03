@@ -535,9 +535,8 @@ using QuantLib::CPISwap;
 %shared_ptr(ZeroCouponInflationSwap)
 class ZeroCouponInflationSwap : public Swap {
   public:
-    enum Type { Receiver = -1, Payer = 1 };
     ZeroCouponInflationSwap(
-                   ZeroCouponInflationSwap::Type type,
+                   Type type,
                    Real nominal,
                    const Date& start,
                    const Date& maturity,
@@ -555,15 +554,14 @@ class ZeroCouponInflationSwap : public Swap {
     Real inflationLegNPV();
     std::vector<ext::shared_ptr<CashFlow> > fixedLeg();
     std::vector<ext::shared_ptr<CashFlow> > inflationLeg();
-    ZeroCouponInflationSwap::Type type();
+    Type type();
 };
 
 %shared_ptr(YearOnYearInflationSwap)
 class YearOnYearInflationSwap : public Swap {
   public:
-    enum Type { Receiver = -1, Payer = 1 };
     YearOnYearInflationSwap(
-               YearOnYearInflationSwap::Type type,
+               Type type,
                Real nominal,
                const Schedule& fixedSchedule,
                Rate fixedRate,
@@ -586,9 +584,8 @@ class YearOnYearInflationSwap : public Swap {
 %shared_ptr(CPISwap)
 class CPISwap : public Swap {
   public:
-    enum Type { Receiver = -1, Payer = 1 };
     CPISwap(
-            CPISwap::Type type,
+            Type type,
             Real nominal,
             bool subtractInflationNominal,
             Spread spread,

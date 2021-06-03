@@ -233,7 +233,7 @@ floatingSchedule = ql.Schedule(
 
 # %%
 spot = ql.VanillaSwap(
-    ql.VanillaSwap.Payer,
+    ql.Swap.Payer,
     nominal,
     fixedSchedule,
     fixedRate,
@@ -274,7 +274,7 @@ floatingSchedule = ql.Schedule(
 
 # %%
 forward = ql.VanillaSwap(
-    ql.VanillaSwap.Payer,
+    ql.Swap.Payer,
     nominal,
     fixedSchedule,
     fixedRate,

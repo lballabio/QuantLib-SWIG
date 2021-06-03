@@ -151,7 +151,7 @@ def create_inflation_swap(
         rate,
         observation_lag=OBSERVATION_LAG,
         nominal=1.e6,
-        payer=ql.ZeroCouponInflationSwap.Payer):
+        payer=ql.Swap.Payer):
     return ql.ZeroCouponInflationSwap(
         payer,
         nominal,
