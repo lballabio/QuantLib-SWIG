@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.4.2
+#       jupytext_version: 1.11.2
 #   kernelspec:
 #     display_name: Python 3
 #     language: python
@@ -33,8 +33,8 @@ import pandas as pd
 
 interactive = 'get_ipython' in globals()
 
-tradeDate = ql.Date(21,5,2009)
-ql.Settings.instance().setEvaluationDate(tradeDate)
+trade_date = ql.Date(21,5,2009)
+ql.Settings.instance().setEvaluationDate(trade_date)
 
 ql.IborCoupon.createAtParCoupons()
 
@@ -72,17 +72,15 @@ isdaRateHelpers = isdaRateHelpers + [
                       ql.Thirty360(),isda_ibor)
     for i in range(len(swap_tenors))]
 
-# Get around following error
-# yield term structure reference date (May 25th, 2009 should be evaluation date (May 21st, 2009)
-spot_date = ql.WeekendsOnly().advance(tradeDate, 2 * ql.Period(ql.Daily))
-pw_flat_fwd = ql.PiecewiseFlatForward(spot_date, isdaRateHelpers, ql.Actual365Fixed())
-yts_nodes = pw_flat_fwd.nodes()
-fwd_dates = [tradeDate]
-fwd_values = [yts_nodes[0][1]]
-for node in yts_nodes:
-    fwd_dates.append(node[0])
-    fwd_values.append(node[1])
-discountCurve = ql.YieldTermStructureHandle(ql.ForwardCurve(fwd_dates, fwd_values, ql.Actual365Fixed()))
+spot_date = ql.WeekendsOnly().advance(trade_date, 2 * ql.Period(ql.Daily))
+
+# Technically, the model requires the discount factor to be 1 at spot;
+# but we can't do that and also have the discount curve extend back to
+# the trade date.  For the time being, we'll keep discount = 1 at trade.
+# The results match anyway.
+
+swap_curve = ql.PiecewiseFlatForward(trade_date, isdaRateHelpers, ql.Actual365Fixed())
+discountCurve = ql.YieldTermStructureHandle(swap_curve)
 
 probabilityCurve = ql.RelinkableDefaultProbabilityTermStructureHandle()
 
@@ -121,14 +119,13 @@ tolerance = 1.0e-2
 l = 0
 distance = 0
 
-# +
 data = []
-upfront_date = ql.WeekendsOnly().advance(tradeDate, 3 * ql.Period(ql.Daily))
+upfront_date = ql.WeekendsOnly().advance(trade_date, 3 * ql.Period(ql.Daily))
 for termDate in termDates:
     for spread in spreads:
         for recovery in recoveries:
 
-            cdsSchedule = ql.Schedule(tradeDate, termDate,
+            cdsSchedule = ql.Schedule(trade_date, termDate,
                                       3*ql.Period(ql.Monthly),
                                       ql.WeekendsOnly(),
                                       ql.Following, ql.Unadjusted,
@@ -136,7 +133,7 @@ for termDate in termDates:
 
             quotedTrade = ql.CreditDefaultSwap(
                 ql.Protection.Buyer,10000000,0,spread,cdsSchedule,
-                ql.Following,ql.Actual360(),True,True,tradeDate,
+                ql.Following,ql.Actual360(),True,True,trade_date,
                 upfront_date, ql.FaceValueClaim(), ql.Actual360(True))
 
             h = quotedTrade.impliedHazardRate(0,discountCurve,ql.Actual365Fixed(),
@@ -151,7 +148,7 @@ for termDate in termDates:
             engine = ql.IsdaCdsEngine(probabilityCurve,recovery,discountCurve)
             conventionalTrade = ql.CreditDefaultSwap(
                 ql.Protection.Buyer,10000000,0,0.01,cdsSchedule,
-                ql.Following,ql.Actual360(),True,True,tradeDate,
+                ql.Following,ql.Actual360(),True,True,trade_date,
                 upfront_date, ql.FaceValueClaim(), ql.Actual360(True))
             conventionalTrade.setPricingEngine(engine)
 
@@ -168,10 +165,9 @@ for termDate in termDates:
 
             l = l + 1
 
-df = pd.DataFrame(data, columns=["Hazard", "Upfront", "Markit value", "Distance", "Within tolerance"])
+df = pd.DataFrame(data, columns=["Hazard rate", "Upfront", "Markit value", "Distance", "Within tolerance"])
 if not interactive:
     print(df)
-df.style.format({'Hazard': '{:.2%}', 'Upfront': '{:.2f}', 'Markit value': '{:.2f}', 'Distance': '{:.6f}'})
-# -
+df.style.format({'Hazard rate': '{:.2%}', 'Upfront': '{:.2f}', 'Markit value': '{:.2f}', 'Distance': '{:.6f}'})
 
 print('total distance:',distance)
