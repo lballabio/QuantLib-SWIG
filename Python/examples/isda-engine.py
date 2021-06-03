@@ -160,6 +160,7 @@ for termDate in termDates:
             data.append(
                 (h,
                  upfront,
+                 markitValues[l],
                  abs(upfront-markitValues[l]),
                  abs(upfront-markitValues[l])<tolerance)
             )
@@ -167,10 +168,10 @@ for termDate in termDates:
 
             l = l + 1
 
-df = pd.DataFrame(data, columns=["Hazard", "Upfront", "Distance", "Within tolerance"])
+df = pd.DataFrame(data, columns=["Hazard", "Upfront", "Markit value", "Distance", "Within tolerance"])
 if not interactive:
     print(df)
-df
+df.style.format({'Hazard': '{:.2%}', 'Upfront': '{:.2f}', 'Markit value': '{:.2f}', 'Distance': '{:.6f}'})
 # -
 
 print('total distance:',distance)
