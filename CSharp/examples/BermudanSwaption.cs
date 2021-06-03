@@ -109,7 +109,7 @@ namespace BermudanSwaption
                 floatingLegTenor,calendar,floatingLegConvention,
                 floatingLegConvention,DateGeneration.Rule.Forward,false);
             VanillaSwap swap = new VanillaSwap(
-                       VanillaSwap.Type.Payer, 1000.0,
+                       Swap.Type.Payer, 1000.0,
                        fixedSchedule, dummyFixedRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter());
@@ -121,17 +121,17 @@ namespace BermudanSwaption
             double fixedITMRate = fixedATMRate * 0.8;
 
             VanillaSwap atmSwap = new VanillaSwap(
-                       VanillaSwap.Type.Payer, 1000.0,
+                       Swap.Type.Payer, 1000.0,
                        fixedSchedule, fixedATMRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter() );
             VanillaSwap otmSwap = new VanillaSwap(
-                       VanillaSwap.Type.Payer, 1000.0,
+                       Swap.Type.Payer, 1000.0,
                        fixedSchedule, fixedOTMRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter());
             VanillaSwap itmSwap = new VanillaSwap(
-                       VanillaSwap.Type.Payer, 1000.0,
+                       Swap.Type.Payer, 1000.0,
                        fixedSchedule, fixedITMRate, fixedLegDayCounter,
                        floatSchedule, indexSixMonths, 0.0,
                        indexSixMonths.dayCounter());
