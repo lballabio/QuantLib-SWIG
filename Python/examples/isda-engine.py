@@ -155,7 +155,10 @@ for termDate in termDates:
             upfront = conventionalTrade.notional() * conventionalTrade.fairUpfront()
 
             data.append(
-                (h,
+                (termDate,
+                 spread,
+                 recovery,
+                 h,
                  upfront,
                  markitValues[l],
                  abs(upfront-markitValues[l]),
@@ -165,9 +168,11 @@ for termDate in termDates:
 
             l = l + 1
 
-df = pd.DataFrame(data, columns=["Hazard rate", "Upfront", "Markit value", "Distance", "Within tolerance"])
+df = pd.DataFrame(data, columns=["Term date", "Spread", "Recovery",
+                                 "Hazard rate", "Upfront", "Markit value", "Distance", "Within tolerance"])
 if not interactive:
     print(df)
-df.style.format({'Hazard rate': '{:.2%}', 'Upfront': '{:.2f}', 'Markit value': '{:.2f}', 'Distance': '{:.6f}'})
+df.style.format({'Spread': '{:.4%}', 'Hazard rate': '{:.2%}', 'Upfront': '{:.2f}',
+                 'Markit value': '{:.2f}', 'Distance': '{:.6f}'})
 
 print('total distance:',distance)
