@@ -449,6 +449,17 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
               Frequency frequency,
               bool indexIsInterpolated,
               Rate baseRate,
+              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
+              Real accuracy = 1.0e-12,
+              const Interpolator& i = Interpolator());
+    PiecewiseZeroInflationCurve(
+              const Date& referenceDate,
+              const Calendar& calendar,
+              const DayCounter& dayCounter,
+              const Period& lag,
+              Frequency frequency,
+              bool indexIsInterpolated,
+              Rate baseRate,
               const Handle<YieldTermStructure>& nominalTS,
               const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
@@ -471,6 +482,17 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
     %feature("kwargs") PiecewiseYoYInflationCurve;
     #endif
   public:
+    PiecewiseYoYInflationCurve(
+              const Date& referenceDate,
+              const Calendar& calendar,
+              const DayCounter& dayCounter,
+              const Period& lag,
+              Frequency frequency,
+              bool indexIsInterpolated,
+              Rate baseRate,
+              const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
+              Real accuracy = 1.0e-12,
+              const Interpolator& i = Interpolator());
     PiecewiseYoYInflationCurve(
               const Date& referenceDate,
               const Calendar& calendar,
