@@ -34,6 +34,7 @@ using QuantLib::Money;
 
 class Currency {
   public:
+    Currency() = default;
     Currency(const std::string& name,
              const std::string& code,
              Integer numericCode,
