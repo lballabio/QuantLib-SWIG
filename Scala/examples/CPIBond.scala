@@ -97,13 +97,13 @@ object CPIBond {
         zciisData map { datum => zeroSwapHelpers add 
           new ZeroCouponInflationSwapHelper(
             new QuoteHandle(new SimpleQuote(datum.rate/100d)), observationLag,
-            datum.date, calendar, convention, dayCounter, inflationIndex) }
+            datum.date, calendar, convention, dayCounter, inflationIndex,
+            CPI.InterpolationType.AsIndex, yTS) }
 
         cpiTS linkTo new PiecewiseZeroInflation(          
           evaluationDate, calendar, dayCounter, observationLag, 
           inflationIndex.frequency, inflationIndex.interpolated, 
-          zciisData(0).rate/100d,
-          yTS, zeroSwapHelpers, 1.0e-12, new Linear)
+          zciisData(0).rate/100d, zeroSwapHelpers)
           
         val notional = 1000000d;
         
@@ -113,7 +113,7 @@ object CPIBond {
         val fixedDayCounter = new Actual365Fixed
         val fixedPaymentConvention = BusinessDayConvention.ModifiedFollowing
         val fixedPaymentCalendar = new UnitedKingdom
-	val contractObservationLag = new Period(3, TimeUnit.Months)
+        val contractObservationLag = new Period(3, TimeUnit.Months)
         val observationInterpolation = CPI.InterpolationType.Flat
         val settlementDays = 3
         val growthOnly = true
