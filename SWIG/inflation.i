@@ -269,6 +269,7 @@ struct CPI {
 %{
 using QuantLib::InflationCoupon;
 using QuantLib::CPICoupon;
+using QuantLib::ZeroInflationCashFlow;
 %}
 
 %shared_ptr(InflationCoupon)
@@ -307,6 +308,42 @@ class CPICoupon : public InflationCoupon {
     ext::shared_ptr<CPICoupon> as_cpi_coupon(
                                       const ext::shared_ptr<CashFlow>& cf) {
         return ext::dynamic_pointer_cast<CPICoupon>(cf);
+    }
+%}
+
+%shared_ptr(ZeroInflationCashFlow)
+class ZeroInflationCashFlow : public CashFlow {
+  public:
+    ZeroInflationCashFlow(Real notional,
+                          const ext::shared_ptr<ZeroInflationIndex>& index,
+                          CPI::InterpolationType observationInterpolation,
+                          const Date& startDate,
+                          const Date& endDate,
+                          const Period& observationLag,
+                          const Date& paymentDate,
+                          bool growthOnly = false);
+    ZeroInflationCashFlow(Real notional,
+                          const ext::shared_ptr<ZeroInflationIndex>& index,
+                          CPI::InterpolationType observationInterpolation,
+                          const Date& startDate,
+                          const Date& endDate,
+                          const Period& observationLag,
+                          const Calendar& calendar,
+                          BusinessDayConvention convention,
+                          const Date& paymentDate,
+                          bool growthOnly = false);
+    Real notional() const;
+    Date baseDate() const;
+    Date fixingDate() const;
+    bool growthOnly() const;
+    CPI::InterpolationType observationInterpolation() const;
+    ext::shared_ptr<ZeroInflationIndex> zeroInflationIndex() const;
+};
+
+%inline %{
+    ext::shared_ptr<ZeroInflationCashFlow> as_zero_inflation_cash_flow(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<ZeroInflationCashFlow>(cf);
     }
 %}
 
@@ -356,9 +393,7 @@ namespace std {
 %shared_ptr(ZeroCouponInflationSwapHelper)
 class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermStructure> {
   public:
-    // using extend to prevent deprecation warning
-    %extend {
-        ZeroCouponInflationSwapHelper(
+    ZeroCouponInflationSwapHelper(
             const Handle<Quote>& quote,
             const Period& lag,   // lag on swap observation of index
             const Date& maturity,
@@ -366,36 +401,30 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
             BusinessDayConvention bcd,
             const DayCounter& dayCounter,
             const ext::shared_ptr<ZeroInflationIndex>& index,
-            const Handle<YieldTermStructure>& nominalTS = Handle<YieldTermStructure>()) {
-
-            return new ZeroCouponInflationSwapHelper(quote,lag,maturity,
-                                                     calendar,bcd,
-                                                     dayCounter,index,
-                                                     nominalTS);
-        }
-    }
+            CPI::InterpolationType observationInterpolation,
+            const Handle<YieldTermStructure>& nominalTS);
+    ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& lag,   // lag on swap observation of index
+            const Date& maturity,
+            const Calendar& calendar,
+            BusinessDayConvention bcd,
+            const DayCounter& dayCounter,
+            const ext::shared_ptr<ZeroInflationIndex>& index,
+            const Handle<YieldTermStructure>& nominalTS);
 };
 
 %shared_ptr(YearOnYearInflationSwapHelper)
 class YearOnYearInflationSwapHelper : public BootstrapHelper<YoYInflationTermStructure> {
   public:
-    // using extend to prevent deprecation warning
-    %extend {
-        YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
-                                      const Period& lag,
-                                      const Date& maturity,
-                                      const Calendar& calendar,
-                                      BusinessDayConvention bdc,
-                                      const DayCounter& dayCounter,
-                                      const ext::shared_ptr<YoYInflationIndex>& index,
-                                      const Handle<YieldTermStructure>& nominalTS =
-                                                        Handle<YieldTermStructure>()) {
-            return new YearOnYearInflationSwapHelper(quote,lag,maturity,
-                                                     calendar,bdc,
-                                                     dayCounter,index,
-                                                     nominalTS);
-        }
-    }
+    YearOnYearInflationSwapHelper(const Handle<Quote>& quote,
+                                  const Period& lag,
+                                  const Date& maturity,
+                                  const Calendar& calendar,
+                                  BusinessDayConvention bdc,
+                                  const DayCounter& dayCounter,
+                                  const ext::shared_ptr<YoYInflationIndex>& index,
+                                  const Handle<YieldTermStructure>& nominalTS);
 };
 
 
@@ -412,6 +441,17 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
     %feature("kwargs") PiecewiseZeroInflationCurve;
     #endif
   public:
+    PiecewiseZeroInflationCurve(
+              const Date& referenceDate,
+              const Calendar& calendar,
+              const DayCounter& dayCounter,
+              const Period& lag,
+              Frequency frequency,
+              bool indexIsInterpolated,
+              Rate baseRate,
+              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
+              Real accuracy = 1.0e-12,
+              const Interpolator& i = Interpolator());
     PiecewiseZeroInflationCurve(
               const Date& referenceDate,
               const Calendar& calendar,
@@ -442,6 +482,17 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
     %feature("kwargs") PiecewiseYoYInflationCurve;
     #endif
   public:
+    PiecewiseYoYInflationCurve(
+              const Date& referenceDate,
+              const Calendar& calendar,
+              const DayCounter& dayCounter,
+              const Period& lag,
+              Frequency frequency,
+              bool indexIsInterpolated,
+              Rate baseRate,
+              const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
+              Real accuracy = 1.0e-12,
+              const Interpolator& i = Interpolator());
     PiecewiseYoYInflationCurve(
               const Date& referenceDate,
               const Calendar& calendar,
@@ -546,9 +597,24 @@ class ZeroCouponInflationSwap : public Swap {
                    Rate fixedRate,
                    const ext::shared_ptr<ZeroInflationIndex>& index,
                    const Period& lag,
+                   CPI::InterpolationType observationInterpolation,
                    bool adjustInfObsDates = false,
                    Calendar infCalendar = Calendar(),
-                   BusinessDayConvention infConvention = Following);
+                   BusinessDayConvention infConvention = BusinessDayConvention());
+    ZeroCouponInflationSwap(
+                   Type type,
+                   Real nominal,
+                   const Date& start,
+                   const Date& maturity,
+                   const Calendar& calendar,
+                   BusinessDayConvention convention,
+                   const DayCounter& dayCounter,
+                   Rate fixedRate,
+                   const ext::shared_ptr<ZeroInflationIndex>& index,
+                   const Period& lag,
+                   bool adjustInfObsDates = false,
+                   Calendar infCalendar = Calendar(),
+                   BusinessDayConvention infConvention = BusinessDayConvention());
     Rate fairRate();
     Real fixedLegNPV();
     Real inflationLegNPV();
