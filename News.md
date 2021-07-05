@@ -1,29 +1,38 @@
 
-Main changes for QuantLib-SWIG 1.22
+Main changes for QuantLib-SWIG 1.23
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/15?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/16?closed=1>.
 
-- As previously announced, this release drops support for
-  Python 2.7, which reached end of life in January 2020.
+- Exported overloaded constructors for piecewise inflation curves.
 
-- Exported revised `SubPeriodCoupon` class (thanks to Marcin Rybacki).
+- Exported new `ZeroInflationCashFlow` class.
 
-- Exported new `FdBlackScholesShoutEngine` class.
+- Exported new constructor for `Currency` class (thanks to Marcin Rybacki).
 
-- Exported optional discount curve in AnalyticEuropeanEngine constructor.
+- Exported `ZeroCouponSwap` class (thanks to Marcin Rybacki).
 
-- Exported the `CrossCurrencyBasisSwapRateHelper` (thanks to Marcin Rybacki).
+- Exported `MCDigitalEngine` class (thanks to Jack Gillett).
 
-- Exported new constructors for Asian options (thanks to Jack Gillett).
+- Export updated 30/360 enumeration and constructors.
 
-- Exported new method `hasHistoricalFixing` for indexes (thanks to Ralf Konrad).
+- Export `AnalyticHestonHullWhiteEngine`, `AnalyticH1HWEngine` and
+  `FdHestonHullWhiteVanillaEngine` classes (thanks to Klaus Spanderen).
 
-- Exported revised `OvernightIndexFuture` interface.
+- Added payment lag and payment constructor to a few leg constructors
+  (thanks to Marcin Rybacki).
 
-- Classes `CallabilityPrice`, `FDBermudanEngine`, `FDEuropeanEngine`,
-  `FDAmericanEngine`, `FDDividendEuropeanEngine` and
-  `FDDividendAmericanEngine` were removed in the C++ library after a
-  deprecation period.
+- The `Type` enumeration defined in several swap classes was moved to
+  their base `Swap` class.
 
+- Updated ISDA CDS example in Python.  The differences between its
+  results and Markit values are now within the desired tolerance
+  (thanks to Francis Duffy).
+
+- Removed constructors of piecewise yield and default curves taking an
+  accuracy parameter (they were removed from the C++ library).
+
+- Bond helper constructors now take a `BondPrice::Type priceType`
+  argument instead of a `bool useCleanPrice` (the latter was removed
+  from the C++ library).
