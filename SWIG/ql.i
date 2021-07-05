@@ -128,6 +128,7 @@
 %include calibrationhelpers.i
 %include capfloor.i
 %include cashflows.i
+%include cliquetoptions.i
 %include convertiblebonds.i
 %include credit.i
 %include creditdefaultswap.i
