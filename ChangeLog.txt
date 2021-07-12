@@ -1,3 +1,33 @@
+commit d70eec3f2f7fae42c5a8c20a8dbc58058288b819
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Apr 2021 11:12:19 +0200
+
+    Set version to 1.23 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 98b4ec7f5aac2605ebd0efebf49176e59301c5d2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 14:55:08 +0200
+
+    Set version to 1.23 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 9393b28ede8086ce66c52964fd363a7be44930ea
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 5 Jul 2021 14:59:30 +0200
+
+    Update changelog and news.
+
+ ChangeLog.txt | 787 +++++++++++++++++++++++++++++++++++++---------------------
+ News.md       |  39 +--
+ 2 files changed, 523 insertions(+), 303 deletions(-)
+
 commit bc72cfa6ca077891320616caff2aff3c74a7cf8f
 Merge: 8a7203a f52a3c7
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
