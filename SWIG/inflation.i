@@ -452,18 +452,6 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
               const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
-    PiecewiseZeroInflationCurve(
-              const Date& referenceDate,
-              const Calendar& calendar,
-              const DayCounter& dayCounter,
-              const Period& lag,
-              Frequency frequency,
-              bool indexIsInterpolated,
-              Rate baseRate,
-              const Handle<YieldTermStructure>& nominalTS,
-              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     #if !defined(SWIGR)
@@ -490,18 +478,6 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
               Frequency frequency,
               bool indexIsInterpolated,
               Rate baseRate,
-              const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator());
-    PiecewiseYoYInflationCurve(
-              const Date& referenceDate,
-              const Calendar& calendar,
-              const DayCounter& dayCounter,
-              const Period& lag,
-              Frequency frequency,
-              bool indexIsInterpolated,
-              Rate baseRate,
-              const Handle<YieldTermStructure>& nominalTS,
               const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
@@ -750,7 +726,6 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
                                    const Period& lag,
                                    Frequency frequency,
                                    bool indexIsInterpolated,
-                                   const Handle<YieldTermStructure>& yTS,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator &interpolator
@@ -774,7 +749,6 @@ class InterpolatedYoYInflationCurve : public YoYInflationTermStructure {
                                    const Period& lag,
                                    Frequency frequency,
                                    bool indexIsInterpolated,
-                                   const Handle<YieldTermStructure>& yTS,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator &interpolator
