@@ -136,7 +136,6 @@ def build_inflation_term_structure(
         inflation_index.frequency(),
         inflation_index.interpolated(),
         base_zero_rate,
-        nominal_term_structure_handle,
         helpers)
     if include_seasonality:
         seasonality = construct_seasonality(reference_date)
