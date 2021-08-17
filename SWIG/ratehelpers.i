@@ -47,6 +47,7 @@ using QuantLib::FxSwapRateHelper;
 using QuantLib::OvernightIndexFutureRateHelper;
 using QuantLib::SofrFutureRateHelper;
 using QuantLib::CrossCurrencyBasisSwapRateHelper;
+using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 %}
 
 struct Pillar {
@@ -390,6 +391,23 @@ class CrossCurrencyBasisSwapRateHelper : public RateHelper {
                                      Handle<YieldTermStructure> collateralCurve,
                                      bool isFxBaseCurrencyCollateralCurrency,
                                      bool isBasisOnFxBaseCurrencyLeg);
+};
+
+%shared_ptr(MtMCrossCurrencyBasisSwapRateHelper)
+class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
+  public:
+    MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
+                                        const Period& tenor,
+                                        Natural fixingDays,
+                                        Calendar calendar,
+                                        BusinessDayConvention convention,
+                                        bool endOfMonth,
+                                        ext::shared_ptr<IborIndex> baseCurrencyIndex,
+                                        ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+                                        Handle<YieldTermStructure> collateralCurve,
+                                        bool isFxBaseCurrencyCollateralCurrency,
+                                        bool isBasisOnFxBaseCurrencyLeg,
+                                        bool isFxBaseCurrencyLegResettable);
 };
 
 // allow use of RateHelper vectors
