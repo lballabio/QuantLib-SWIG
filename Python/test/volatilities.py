@@ -271,7 +271,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             fixedLegTenor=ql.Period(1, ql.Years),
             fixedLegDayCount=ql.Thirty360(),
             floatingLegSpread=0.0,
-            swapType=ql.VanillaSwap.Receiver)
+            swapType=ql.Swap.Receiver)
         underlying.setPricingEngine(self.swap_engine)
         return underlying.fairRate()
 

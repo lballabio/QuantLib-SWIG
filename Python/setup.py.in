@@ -18,15 +18,15 @@
 """
 
 import os, sys, math
-from distutils.cmd import Command
+try:
+    from setuptools import setup, Extension
+    from setuptools import Command
+except:
+    from distutils.core import setup, Extension
+    from distutils.cmd import Command
 from distutils.command.build_ext import build_ext
 from distutils.command.build import build
 from distutils.ccompiler import get_default_compiler
-try:
-    from setuptools import setup, Extension
-except:
-    from distutils.core import setup, Extension
-from distutils import sysconfig
 
 class test(Command):
     # Original version of this class posted
@@ -78,16 +78,10 @@ class my_wrap(Command):
                  ' is recommended. \nSome features may not work.'
                  .format(swig_version))
         swig_dir = os.path.join("..","SWIG")
-        if sys.version_info.major >= 3:
-            os.system('swig -python -py3 -c++ -modern ' +
-                      '-I%s ' % swig_dir +
-                      '-outdir QuantLib -o QuantLib/quantlib_wrap.cpp ' +
-                      'quantlib.i')
-        else:
-            os.system('swig -python -c++ -modern ' +
-                      '-I%s ' % swig_dir +
-                      '-outdir QuantLib -o QuantLib/quantlib_wrap.cpp ' +
-                      'quantlib.i')
+        os.system('swig -python -c++ -modern ' +
+                  '-I%s ' % swig_dir +
+                  '-outdir QuantLib -o QuantLib/quantlib_wrap.cpp ' +
+                  'quantlib.i')
 
 class my_build(build):
     user_options = build.user_options + [
@@ -199,23 +193,6 @@ class my_build_ext(build_ext):
 
             ext.extra_link_args = ext.extra_link_args or []
             ext.extra_link_args += extra_link_args
-
-if os.name == 'posix':
-    # changes the compiler from gcc to g++
-    save_init_posix = sysconfig._init_posix
-    def my_init_posix():
-        save_init_posix()
-        g = sysconfig._config_vars
-        if 'CXX' in os.environ:
-            g['CC'] = os.environ['CXX']
-        else:
-            g['CC'] = 'g++'
-        if sys.platform.startswith("darwin"):
-            g['LDSHARED'] = g['CC'] + \
-                            ' -bundle -flat_namespace -undefined suppress'
-        else:
-            g['LDSHARED'] = g['CC'] + ' -shared'
-    sysconfig._init_posix = my_init_posix
 
 classifiers = [
     'Development Status :: 5 - Production/Stable',

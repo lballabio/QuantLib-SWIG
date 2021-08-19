@@ -136,7 +136,6 @@ def build_inflation_term_structure(
         inflation_index.frequency(),
         inflation_index.interpolated(),
         base_zero_rate,
-        nominal_term_structure_handle,
         helpers)
     if include_seasonality:
         seasonality = construct_seasonality(reference_date)
@@ -151,7 +150,7 @@ def create_inflation_swap(
         rate,
         observation_lag=OBSERVATION_LAG,
         nominal=1.e6,
-        payer=ql.ZeroCouponInflationSwap.Payer):
+        payer=ql.Swap.Payer):
     return ql.ZeroCouponInflationSwap(
         payer,
         nominal,

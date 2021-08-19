@@ -581,6 +581,7 @@ class BinomialVanillaEngine : public PricingEngine {
 using QuantLib::MCEuropeanEngine;
 using QuantLib::MCEuropeanHestonEngine;
 using QuantLib::MCAmericanEngine;
+using QuantLib::MCDigitalEngine;
 using QuantLib::PseudoRandom;
 using QuantLib::LowDiscrepancy;
 using QuantLib::LsmBasisSystem;
@@ -805,6 +806,77 @@ class MCEuropeanHestonEngine : public PricingEngine {
         return cls(process,
                    timeSteps,
                    timeStepsPerYear,
+                   antitheticVariate,
+                   requiredSamples,
+                   requiredTolerance,
+                   maxSamples,
+                   seed)
+%}
+#endif
+
+
+
+%shared_ptr(MCDigitalEngine<PseudoRandom>);
+%shared_ptr(MCDigitalEngine<LowDiscrepancy>);
+
+template <class RNG>
+class MCDigitalEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MCDigitalEngine;
+    #endif
+  public:
+    %extend {
+        MCDigitalEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                        intOrNull timeSteps = Null<Size>(),
+                        intOrNull timeStepsPerYear = Null<Size>(),
+                        bool brownianBridge = false,
+                        bool antitheticVariate = false,
+                        intOrNull requiredSamples = Null<Size>(),
+                        doubleOrNull requiredTolerance = Null<Real>(),
+                        intOrNull maxSamples = Null<Size>(),
+                        BigInteger seed = 0) {
+            QL_REQUIRE(Size(timeSteps) != Null<Size>() ||
+                       Size(timeStepsPerYear) != Null<Size>(),
+                       "number of steps not specified");
+            return new MCDigitalEngine<RNG>(process,
+                                            timeSteps,
+                                            timeStepsPerYear,
+                                            brownianBridge,
+                                            antitheticVariate,
+                                            requiredSamples,
+                                            requiredTolerance,
+                                            maxSamples,
+                                            seed);
+        }
+    }
+};
+
+%template(MCPRDigitalEngine) MCDigitalEngine<PseudoRandom>;
+%template(MCLDDigitalEngine) MCDigitalEngine<LowDiscrepancy>;
+
+#if defined(SWIGPYTHON)
+%pythoncode %{
+    def MCDigitalEngine(process,
+                        traits,
+                        timeSteps=None,
+                        timeStepsPerYear=None,
+                        brownianBridge=False,
+                        antitheticVariate=False,
+                        requiredSamples=None,
+                        requiredTolerance=None,
+                        maxSamples=None,
+                        seed=0):
+        traits = traits.lower()
+        if traits == "pr" or traits == "pseudorandom":
+            cls = MCPRDigitalEngine
+        elif traits == "ld" or traits == "lowdiscrepancy":
+            cls = MCLDDigitalEngine
+        else:
+            raise RuntimeError("unknown MC traits: %s" % traits);
+        return cls(process,
+                   timeSteps,
+                   timeStepsPerYear,
+                   brownianBridge,
                    antitheticVariate,
                    requiredSamples,
                    requiredTolerance,
