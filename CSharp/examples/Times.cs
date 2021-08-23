@@ -16,7 +16,7 @@
 */
 
 using System;
-using ql=QuantLib;
+using ql = QuantLib;
 
 namespace TimesTest
 {
@@ -28,10 +28,20 @@ namespace TimesTest
         [STAThread]
         static void Main(string[] args)
         {
-            var tenor = new ql.Period("3M");
-            Console.WriteLine(tenor.ToString());
-            Console.WriteLine(tenor.__repr__());
-            Console.WriteLine(tenor.__str__());
+            var tenor01Y = new ql.Period("01Y");
+            var tenor12M = new ql.Period("12M");
+
+            Console.WriteLine($"{tenor01Y}, {tenor01Y.GetHashCode()}");
+            Console.WriteLine($"{tenor12M}, {tenor12M.GetHashCode()}");
+
+            var tenor03M = new ql.Period("03M");
+            var tenor90D = new ql.Period("91D");
+
+            Console.WriteLine(tenor03M.ToString());
+            Console.WriteLine(tenor03M.__repr__());
+            Console.WriteLine(tenor03M.__str__());
+
+            tenor90D.CompareTo(tenor03M);
         }
     }
 }
