@@ -207,6 +207,9 @@ using QuantLib::FdmMesherComposite;
 class FdmLinearOpIterator {
   public:
     %extend {
+        FdmLinearOpIterator(const std::vector<unsigned int>& dim) {
+            return new FdmLinearOpIterator(to_vector<Size>(dim));
+        }    
         FdmLinearOpIterator(const std::vector<unsigned int>& dim,
                             const std::vector<unsigned int>& coordinates,
                             Size index) {
@@ -270,6 +273,19 @@ class FdmLinearOpLayout {
 class FdmMesher {
   private:
     FdmMesher();
+  public:
+    virtual Real dplus(const FdmLinearOpIterator& iter,
+                       Size direction)  const = 0;
+    virtual Real dminus(const FdmLinearOpIterator& iter,
+                        Size direction) const = 0;
+    virtual Real location(const FdmLinearOpIterator& iter ,
+                          Size direction) const = 0;
+    virtual Disposable<Array> locations(Size direction) const = 0;
+    %extend {
+      ext::shared_ptr<FdmLinearOpLayout> layout() const {
+          return self->layout();
+      }
+    }    
 };
 
 %shared_ptr(FdmMesherComposite)
