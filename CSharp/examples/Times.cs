@@ -16,6 +16,8 @@
 */
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using ql = QuantLib;
 
 namespace TimesTest
@@ -28,20 +30,50 @@ namespace TimesTest
         [STAThread]
         static void Main(string[] args)
         {
+            var tenor03M = new ql.Period("03M");
+            var tenor06M = new ql.Period("06M");
             var tenor01Y = new ql.Period("01Y");
+            var tenor02Y = new ql.Period("02Y");
+
+            var periods = new List<ql.Period>() { tenor01Y, tenor02Y, tenor06M, tenor03M };
+            periods.Sort();
+
+            Debug.Assert(periods[0] == tenor03M);
+            Debug.Assert(periods[1] == tenor06M);
+            Debug.Assert(periods[2] == tenor01Y);
+            Debug.Assert(periods[3] == tenor02Y);
+
             var tenor12M = new ql.Period("12M");
 
-            Console.WriteLine($"{tenor01Y}, {tenor01Y.GetHashCode()}");
-            Console.WriteLine($"{tenor12M}, {tenor12M.GetHashCode()}");
+            Debug.Assert(tenor03M.CompareTo(tenor12M) < 0);
+            Debug.Assert(tenor06M.CompareTo(tenor12M) < 0);
+            Debug.Assert(tenor01Y.CompareTo(tenor12M) == 0);
+            Debug.Assert(tenor02Y.CompareTo(tenor12M) > 0);
 
-            var tenor03M = new ql.Period("03M");
-            var tenor90D = new ql.Period("91D");
+            Debug.Assert(tenor03M != tenor12M);
+            Debug.Assert(tenor06M != tenor12M);
+            Debug.Assert(tenor01Y == tenor12M);
+            Debug.Assert(tenor02Y != tenor12M);
 
-            Console.WriteLine(tenor03M.ToString());
-            Console.WriteLine(tenor03M.__repr__());
-            Console.WriteLine(tenor03M.__str__());
+            Debug.Assert(tenor01Y.ToString() == tenor12M.ToString());
+            Debug.Assert(tenor01Y.GetHashCode() == tenor12M.GetHashCode());
 
-            tenor90D.CompareTo(tenor03M);
+            var tenor91D = new ql.Period("91D");
+            Func<bool> compare91Dversus03MthrowsApplicationException = () =>
+            {
+                bool hasThrown = false;
+                try
+                {
+                    tenor91D.CompareTo(tenor03M);
+                }
+                catch (System.ApplicationException)
+                {
+                    hasThrown = true;
+                }
+                return hasThrown;
+            };
+
+            Debug.Assert(compare91Dversus03MthrowsApplicationException());
         }
     }
 }
