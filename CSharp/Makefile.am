@@ -20,9 +20,11 @@ NQuantLib.dll: $(BUILT_SOURCES)
 
 check-local: examples/BermudanSwaption.exe \
              examples/EquityOption.exe \
+             examples/Times.exe \
              examples/libNQuantLibc.so examples/NQuantLib.dll
 	$(MONO) ./examples/BermudanSwaption.exe
 	$(MONO) ./examples/EquityOption.exe
+	$(MONO) ./examples/Times.exe
 
 examples/%.exe: examples/%.cs
 	$(MCS) -nologo -target:exe -out:$@ -reference:NQuantLib.dll $<

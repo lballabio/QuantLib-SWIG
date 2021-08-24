@@ -7,6 +7,7 @@
  Copyright (C) 2014 Bitquant Research Laboratories (Asia) Ltd.
  Copyright (C) 2015 Klaus Spanderen
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2021 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -174,6 +175,89 @@ enum Frequency {
 
 // time period
 
+#if defined(SWIGCSHARP)
+%typemap(csinterfaces) Period "global::System.IDisposable, global::System.IEquatable<Period>, global::System.IComparable, global::System.IComparable<Period>";
+%typemap(cscode) Period %{
+  public override string ToString() {
+    return this.__str__();
+  }
+
+  public override int GetHashCode() {
+    return ToString().GetHashCode();
+  }
+
+  public int CompareTo(object obj) {
+    if (obj != null && !(obj is Period))
+      throw new global::System.ArgumentException("Object must be of type Period.");
+
+    return CompareTo(obj as Period);
+  }
+
+  public int CompareTo(Period other) {
+    // All instances are greater than null
+    if (object.ReferenceEquals(other, null))
+      return 1;
+    else
+      return Period.compareTo(this, other);
+  }
+
+  public override bool Equals(object obj) {
+    return (obj != null) && (obj is Period) && Equals(obj as Period);
+  }
+
+  public bool Equals(Period other) {
+    return (this == other);
+  }
+
+  public static bool operator==(Period lhs, Period rhs) {
+    var lhsObject = (object)lhs;
+    var rhsObject = (object)rhs;
+
+    // null == null
+    if (lhsObject == null && rhsObject == null)
+      return true;
+
+    // null != (!null)
+    if (lhsObject == null || rhsObject == null)
+      return false;
+
+    return lhs.CompareTo(rhs) == 0;
+  }
+
+  public static bool operator!=(Period lhs, Period rhs) {
+    return !(lhs == rhs);
+  }
+
+  public static bool operator<(Period lhs, Period rhs) {
+    var lhsObject = (object)lhs;
+    var rhsObject = (object)rhs;
+
+    // null == null, therefore (null < null) == false
+    if (lhsObject == null && rhsObject == null)
+      return false;
+
+    // All instances are greater than null
+    if (lhsObject == null)
+      return true;
+
+    return lhs.CompareTo(rhs) < 0;
+  }
+
+  public static bool operator<=(Period lhs, Period rhs) {
+    return (lhs < rhs) || (lhs == rhs);
+  }
+
+  public static bool operator>(Period lhs, Period rhs) {
+    return !(lhs <= rhs);
+  }
+
+  public static bool operator>=(Period lhs, Period rhs) {
+    return !(lhs < rhs);
+  }
+%}
+#endif
+
+
 %{
 using QuantLib::Period;
 using QuantLib::PeriodParser;
@@ -242,6 +326,14 @@ class Period {
             return *self < other  ? -1 :
                    *self == other ?  0 :
                                      1;
+        }
+        #endif
+
+        #if defined(SWIGCSHARP)
+        static int compareTo(const Period& lhs, const Period& rhs) {
+            return lhs < rhs  ? -1 :
+                   lhs == rhs ?  0 :
+                                 1;
         }
         #endif
     }
