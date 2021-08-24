@@ -216,7 +216,8 @@ class SwapRateHelper : public RateHelper {
                                         = Handle<YieldTermStructure>(),
             Natural settlementDays = Null<Natural>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date());
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
     SwapRateHelper(
             Rate rate,
             const Period& tenor,
@@ -231,7 +232,8 @@ class SwapRateHelper : public RateHelper {
                                         = Handle<YieldTermStructure>(),
             Natural settlementDays = Null<Natural>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date());
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
     SwapRateHelper(
             const Handle<Quote>& rate,
             const ext::shared_ptr<SwapIndex>& index,
@@ -240,7 +242,8 @@ class SwapRateHelper : public RateHelper {
             const Handle<YieldTermStructure>& discountingCurve
                                         = Handle<YieldTermStructure>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date());
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
     SwapRateHelper(
             Rate rate,
             const ext::shared_ptr<SwapIndex>& index,
@@ -249,7 +252,8 @@ class SwapRateHelper : public RateHelper {
             const Handle<YieldTermStructure>& discountingCurve
                                         = Handle<YieldTermStructure>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
-            Date customPillarDate = Date());
+            Date customPillarDate = Date(),
+            bool endOfMonth = false);
     Spread spread();
     ext::shared_ptr<VanillaSwap> swap();
 };
