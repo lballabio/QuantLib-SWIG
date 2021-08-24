@@ -15,6 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
+#pragma warning disable CS1718 // Comparison made to same variable
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -24,41 +26,184 @@ namespace TimesTest
 {
     class Times
     {
+        class TestCaseException : Exception { }
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main(string[] args)
         {
+            try
+            {
+                DateTime startTime = DateTime.Now;
+
+                RunTestCases();
+
+                DateTime endTime = DateTime.Now;
+                TimeSpan delta = endTime - startTime;
+                Console.WriteLine();
+                Console.WriteLine("Run completed in {0} s", delta.TotalSeconds);
+                Console.WriteLine();
+            }
+            catch (TestCaseException exc)
+            {
+                Console.Error.WriteLine(exc);
+                throw;
+            }
+        }
+
+        private static void RunTestCases()
+        {
+            Action<string, IEnumerable<ql.Period>> writePeriods = (heading, periods2Write) =>
+            {
+                Console.Write($"  {heading}:  ");
+                foreach (var item in periods2Write)
+                {
+                    var itemAsString = item != null ? item.ToString() : "null";
+                    Console.Write($"{itemAsString}  ");
+                }
+                Console.WriteLine();
+            };
+
+            Action<bool> testCase = (testResult) =>
+            {
+                if (!testResult) throw new TestCaseException();
+            };
+
+            var tenorNull = null as ql.Period;
+            var tenor91D = new ql.Period("91D");
             var tenor03M = new ql.Period("03M");
             var tenor06M = new ql.Period("06M");
+            var tenor12M = new ql.Period("12M");
             var tenor01Y = new ql.Period("01Y");
             var tenor02Y = new ql.Period("02Y");
 
-            var periods = new List<ql.Period>() { tenor01Y, tenor02Y, tenor06M, tenor03M };
+            var periods = new List<ql.Period>() { tenor01Y, tenorNull, tenor02Y, tenor06M, tenor03M };
+
+            Console.WriteLine("Testing sorting of a list.");
+            writePeriods("Before sorting", periods);
+
             periods.Sort();
 
-            Debug.Assert(periods[0] == tenor03M);
-            Debug.Assert(periods[1] == tenor06M);
-            Debug.Assert(periods[2] == tenor01Y);
-            Debug.Assert(periods[3] == tenor02Y);
+            writePeriods(" After sorting", periods);
 
-            var tenor12M = new ql.Period("12M");
+            testCase(periods[0] == tenorNull);
+            testCase(periods[1] == tenor03M);
+            testCase(periods[2] == tenor06M);
+            testCase(periods[3] == tenor01Y);
+            testCase(periods[4] == tenor02Y);
 
-            Debug.Assert(tenor03M.CompareTo(tenor12M) < 0);
-            Debug.Assert(tenor06M.CompareTo(tenor12M) < 0);
-            Debug.Assert(tenor01Y.CompareTo(tenor12M) == 0);
-            Debug.Assert(tenor02Y.CompareTo(tenor12M) > 0);
 
-            Debug.Assert(tenor03M != tenor12M);
-            Debug.Assert(tenor06M != tenor12M);
-            Debug.Assert(tenor01Y == tenor12M);
-            Debug.Assert(tenor02Y != tenor12M);
+            #region test Period.CompareTo(Period)
 
-            Debug.Assert(tenor01Y.ToString() == tenor12M.ToString());
-            Debug.Assert(tenor01Y.GetHashCode() == tenor12M.GetHashCode());
+            Console.WriteLine("test Period.CompareTo(Period)");
 
-            var tenor91D = new ql.Period("91D");
+            testCase(tenor12M.CompareTo(tenorNull) > 0);
+            testCase(tenor12M.CompareTo(tenor03M) > 0);
+            testCase(tenor12M.CompareTo(tenor06M) > 0);
+            testCase(tenor12M.CompareTo(tenor01Y) == 0);
+            testCase(tenor01Y.CompareTo(tenor01Y) == 0);
+            testCase(tenor12M.CompareTo(tenor02Y) < 0);
+
+            #endregion
+
+            #region test Period == Period
+
+            Console.WriteLine("test Period == Period");
+
+            testCase(tenorNull == null);
+            testCase(null == tenorNull);
+            testCase(!(tenorNull == tenor12M));
+            testCase(!(tenor12M == null));
+            testCase(tenor12M == tenor12M);
+            testCase(tenor12M == tenor01Y);
+            testCase(!(tenor12M == tenor06M));
+            testCase(!(tenor06M == tenor12M));
+
+            #endregion
+
+            #region test Period != Period
+
+            Console.WriteLine("test Period != Period");
+
+            testCase(!(tenorNull != null));
+            testCase(!(null != tenorNull));
+            testCase(tenorNull != tenor12M);
+            testCase(tenor12M != null);
+            testCase(!(tenor12M != tenor12M));
+            testCase(!(tenor12M != tenor01Y));
+            testCase(tenor12M != tenor06M);
+
+            #endregion
+
+            #region test Period < Period
+
+            Console.WriteLine("test Period < Period");
+
+            testCase(!(tenorNull < null));
+            testCase(!(null < tenorNull));
+            testCase(tenorNull < tenor12M);
+            testCase(!(tenor12M < null));
+            testCase(!(tenor12M < tenor12M));
+            testCase(!(tenor12M < tenor01Y));
+            testCase(!(tenor12M < tenor06M));
+            testCase(tenor06M < tenor12M);
+
+            #endregion
+
+            #region test Period <= Period
+
+            Console.WriteLine("test Period <= Period");
+
+            testCase(tenorNull <= null);
+            testCase(null <= tenorNull);
+            testCase(tenorNull <= tenor12M);
+            testCase(!(tenor12M <= null));
+            testCase(tenor12M <= tenor12M);
+            testCase(tenor12M <= tenor01Y);
+            testCase(!(tenor12M <= tenor06M));
+            testCase(tenor06M <= tenor12M);
+
+            #endregion
+
+            #region test Period > Period
+
+            Console.WriteLine("test Period > Period");
+
+            testCase(!(tenorNull > null));
+            testCase(!(null > tenorNull));
+            testCase(!(tenorNull > tenor12M));
+            testCase(tenor12M > null);
+            testCase(!(tenor12M > tenor12M));
+            testCase(!(tenor12M > tenor01Y));
+            testCase(tenor12M > tenor06M);
+            testCase(!(tenor06M > tenor12M));
+
+            #endregion
+
+            #region test Period >= Period
+
+            Console.WriteLine("test Period >= Period");
+
+            testCase(tenorNull >= null);
+            testCase(null >= tenorNull);
+            testCase(!(tenorNull >= tenor12M));
+            testCase(tenor12M >= null);
+            testCase(tenor12M >= tenor12M);
+            testCase(tenor12M >= tenor01Y);
+            testCase(tenor12M >= tenor06M);
+            testCase(!(tenor06M >= tenor12M));
+
+            #endregion
+
+            Console.WriteLine("test Period.ToString()");
+            testCase(tenor01Y.ToString() == tenor12M.ToString());
+
+            Console.WriteLine("test Period.GetHashCode()");
+            testCase(tenor01Y.GetHashCode() == tenor12M.GetHashCode());
+
+            Console.WriteLine("test that uncomparable periods throw");
             Func<bool> compare91Dversus03MthrowsApplicationException = () =>
             {
                 bool hasThrown = false;
@@ -73,8 +218,9 @@ namespace TimesTest
                 return hasThrown;
             };
 
-            Debug.Assert(compare91Dversus03MthrowsApplicationException());
+            testCase(compare91Dversus03MthrowsApplicationException());
         }
     }
 }
 
+#pragma warning restore CS1718 // Comparison made to same variable

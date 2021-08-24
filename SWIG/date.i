@@ -212,16 +212,47 @@ enum Frequency {
   public static bool operator==(Period lhs, Period rhs) {
     var lhsObject = (object)lhs;
     var rhsObject = (object)rhs;
+
+    // null == null
     if (lhsObject == null && rhsObject == null)
       return true;
+
+    // null != (!null)
     if (lhsObject == null || rhsObject == null)
       return false;
 
-    return Period.compareTo(lhs, rhs) == 0;
+    return lhs.CompareTo(rhs) == 0;
   }
 
   public static bool operator!=(Period lhs, Period rhs) {
     return !(lhs == rhs);
+  }
+
+  public static bool operator<(Period lhs, Period rhs) {
+    var lhsObject = (object)lhs;
+    var rhsObject = (object)rhs;
+
+    // null == null, therefore (null < null) == false
+    if (lhsObject == null && rhsObject == null)
+      return false;
+
+    // All instances are greater than null
+    if (lhsObject == null)
+      return true;
+
+    return lhs.CompareTo(rhs) < 0;
+  }
+
+  public static bool operator<=(Period lhs, Period rhs) {
+    return (lhs < rhs) || (lhs == rhs);
+  }
+
+  public static bool operator>(Period lhs, Period rhs) {
+    return !(lhs <= rhs);
+  }
+
+  public static bool operator>=(Period lhs, Period rhs) {
+    return !(lhs < rhs);
   }
 %}
 #endif
