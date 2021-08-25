@@ -662,11 +662,11 @@ class SwaptionVolCube1 : public SwaptionVolatilityCube {
     Matrix volCubeAtmCalibrated() const;
     %extend {
         ext::shared_ptr<SabrSmileSection> smileSection(Time optionTime, Time swapLength, bool extr = false) const {
-            SwaptionVolatilityStructure* base = dynamic_cast<SwaptionVolatilityStructure*>(const_cast<SwaptionVolCube1*>($self));
+            auto base = dynamic_cast<const SwaptionVolatilityStructure*>($self);
             return ext::dynamic_pointer_cast<SabrSmileSection>(base->smileSection(optionTime, swapLength, extr));
         }
         ext::shared_ptr<SabrSmileSection> smileSection(const Period& optionTenor, const Period& swapTenor, bool extr = false) const {
-            SwaptionVolatilityStructure* base = dynamic_cast<SwaptionVolatilityStructure*>(const_cast<SwaptionVolCube1*>($self));
+            auto base = dynamic_cast<const SwaptionVolatilityStructure*>($self);
             return ext::dynamic_pointer_cast<SabrSmileSection>(base->smileSection(optionTenor, swapTenor, extr));
         }
     }
