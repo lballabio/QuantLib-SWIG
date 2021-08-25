@@ -197,3 +197,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include volatilitymodels.i
 %include zerocurve.i
 %include old_volatility.i
+
+%{
+QL_DEPRECATED_ENABLE_WARNING
+%}
