@@ -51,8 +51,8 @@ class Swap : public Instrument {
          const std::vector<ext::shared_ptr<CashFlow> >& secondLeg);
     Swap(const std::vector<Leg>& legs,
          const std::vector<bool>& payer);
-    virtual Date startDate() const;
-    virtual Date maturityDate() const;
+    Date startDate() const;
+    Date maturityDate() const;
     const Leg & leg(Size i);
     Real legNPV(Size j) const;
     Real legBPS(Size k) const;
