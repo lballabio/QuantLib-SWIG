@@ -532,8 +532,6 @@ class ZeroCouponSwap : public Swap {
     // Inspectors
     Type type() const;
     Real baseNominal() const;
-    Date startDate() const;
-    Date maturityDate() const;
     const ext::shared_ptr<IborIndex>& iborIndex() const;
     
     const Leg& fixedLeg() const;
