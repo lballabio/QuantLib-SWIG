@@ -443,9 +443,13 @@ namespace std {
     const ext::shared_ptr<OISRateHelper> as_oisratehelper(const ext::shared_ptr<RateHelper> helper) {
         return ext::dynamic_pointer_cast<OISRateHelper>(helper);
     }
-    const ext::shared_ptr<CrossCurrencyBasisSwapRateHelper> as_crosscurrencybasisswapratehelper(
+    const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwapRateHelper> as_constnotionalcrosscurrencybasisswapratehelper(
             const ext::shared_ptr<RateHelper> helper) {
-        return ext::dynamic_pointer_cast<CrossCurrencyBasisSwapRateHelper>(helper);
+        return ext::dynamic_pointer_cast<ConstNotionalCrossCurrencyBasisSwapRateHelper>(helper);
+    }
+    const ext::shared_ptr<MtMCrossCurrencyBasisSwapRateHelper> as_mtmcrosscurrencybasisswapratehelper(
+            const ext::shared_ptr<RateHelper> helper) {
+        return ext::dynamic_pointer_cast<MtMCrossCurrencyBasisSwapRateHelper>(helper);
     }
 %}
 
