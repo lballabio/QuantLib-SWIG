@@ -51,8 +51,8 @@ class Swap : public Instrument {
          const std::vector<ext::shared_ptr<CashFlow> >& secondLeg);
     Swap(const std::vector<Leg>& legs,
          const std::vector<bool>& payer);
-    Date startDate();
-    Date maturityDate();
+    Date startDate() const;
+    Date maturityDate() const;
     const Leg & leg(Size i);
     Real legNPV(Size j) const;
     Real legBPS(Size k) const;
@@ -532,8 +532,6 @@ class ZeroCouponSwap : public Swap {
     // Inspectors
     Type type() const;
     Real baseNominal() const;
-    Date startDate() const;
-    Date maturityDate() const;
     const ext::shared_ptr<IborIndex>& iborIndex() const;
     
     const Leg& fixedLeg() const;
