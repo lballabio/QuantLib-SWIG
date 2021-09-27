@@ -46,6 +46,7 @@ using QuantLib::DatedOISRateHelper;
 using QuantLib::FxSwapRateHelper;
 using QuantLib::OvernightIndexFutureRateHelper;
 using QuantLib::SofrFutureRateHelper;
+using QuantLib::CrossCurrencyBasisSwapRateHelper;
 using QuantLib::ConstNotionalCrossCurrencyBasisSwapRateHelper;
 using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 %}
@@ -381,6 +382,22 @@ class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 };
 
+%shared_ptr(CrossCurrencyBasisSwapRateHelper)
+class CrossCurrencyBasisSwapRateHelper : public RateHelper {
+  public:
+    CrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
+                                     const Period& tenor,
+                                     Natural fixingDays,
+                                     Calendar calendar,
+                                     BusinessDayConvention convention,
+                                     bool endOfMonth,
+                                     ext::shared_ptr<IborIndex> baseCurrencyIndex,
+                                     ext::shared_ptr<IborIndex> quoteCurrencyIndex,
+                                     Handle<YieldTermStructure> collateralCurve,
+                                     bool isFxBaseCurrencyCollateralCurrency,
+                                     bool isBasisOnFxBaseCurrencyLeg);
+};
+
 %shared_ptr(ConstNotionalCrossCurrencyBasisSwapRateHelper)
 class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
   public:
@@ -442,6 +459,10 @@ namespace std {
     }
     const ext::shared_ptr<OISRateHelper> as_oisratehelper(const ext::shared_ptr<RateHelper> helper) {
         return ext::dynamic_pointer_cast<OISRateHelper>(helper);
+    }
+    const ext::shared_ptr<CrossCurrencyBasisSwapRateHelper> as_crosscurrencybasisswapratehelper(
+            const ext::shared_ptr<RateHelper> helper) {
+        return ext::dynamic_pointer_cast<CrossCurrencyBasisSwapRateHelper>(helper);
     }
     const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwapRateHelper> as_constnotionalcrosscurrencybasisswapratehelper(
             const ext::shared_ptr<RateHelper> helper) {
