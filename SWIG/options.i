@@ -916,7 +916,6 @@ class BaroneAdesiWhaleyApproximationEngine : public PricingEngine {
     BaroneAdesiWhaleyApproximationEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
-deprecate_feature(BaroneAdesiWhaleyEngine, BaroneAdesiWhaleyApproximationEngine);
 
 
 %{
@@ -929,7 +928,6 @@ class BjerksundStenslandApproximationEngine : public PricingEngine {
     BjerksundStenslandApproximationEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
-deprecate_feature(BjerksundStenslandEngine, BjerksundStenslandApproximationEngine);
 
 
 %{
