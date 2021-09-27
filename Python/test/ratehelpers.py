@@ -652,7 +652,7 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
             is_basis_on_fx_base_ccy_leg):
         tenor, rate = quote_tuple
         quote_handle = ql.QuoteHandle(ql.SimpleQuote(rate * self.basis_point))
-        return ql.CrossCurrencyBasisSwapRateHelper(
+        return ql.ConstNotionalCrossCurrencyBasisSwapRateHelper(
             quote_handle,
             tenor,
             self.settlement_days,
