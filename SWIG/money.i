@@ -31,8 +31,9 @@ class Money {
     %rename("compare") __cmp__;
     #endif
   public:
-    Money(const Currency& currency, Decimal value);
-    Money(Decimal value, const Currency& currency);
+    Money() = default;
+    Money(const Currency currency, Decimal value);
+    Money(Decimal value, Currency currency);
     const Currency& currency() const;
     Decimal value() const;
     Money rounded() const;
@@ -80,14 +81,18 @@ class Money {
     enum ConversionType { NoConversion,
                           BaseCurrencyConversion,
                           AutomatedConversion };
+    class Settings;
     %extend {
         static void setConversionType(ConversionType type) {
-            Money::conversionType = type;
+            Money::Settings::instance().conversionType() = type;
         }
         static void setBaseCurrency(const Currency& c) {
-            Money::baseCurrency = c;
+            Money::Settings::instance().baseCurrency() = c;
         }
     }
+  private:
+    Decimal value_;
+    Currency currency_;
 };
 
 
