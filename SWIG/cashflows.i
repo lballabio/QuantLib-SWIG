@@ -287,9 +287,17 @@ class IborCoupon : public FloatingRateCoupon {
                const DayCounter& dayCounter = DayCounter(),
                bool isInArrears = false,
                const Date& exCouponDate = Date());
-    static void createAtParCoupons();
-    static void createIndexedCoupons();
-    static bool usingAtParCoupons();
+    %extend {
+        static void createAtParCoupons() {
+            IborCoupon::Settings::instance().createAtParCoupons();
+        }
+        static void createIndexedCoupons() {
+            IborCoupon::Settings::instance().createIndexedCoupons();
+        }
+        static bool usingAtParCoupons() {
+            return IborCoupon::Settings::instance().usingAtParCoupons();
+        }
+    }
 };
 
 %shared_ptr(CappedFlooredIborCoupon)

@@ -82,10 +82,10 @@ class Money {
                           AutomatedConversion };
     %extend {
         static void setConversionType(ConversionType type) {
-            Money::conversionType = type;
+            Money::Settings::instance().conversionType() = type;
         }
         static void setBaseCurrency(const Currency& c) {
-            Money::baseCurrency = c;
+            Money::Settings::instance().baseCurrency() = c;
         }
     }
 };
