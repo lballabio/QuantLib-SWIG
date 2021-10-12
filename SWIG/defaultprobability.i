@@ -30,6 +30,7 @@
 %include interpolation.i
 %include termstructures.i
 %include piecewiseyieldcurve.i
+%include bonds.i
 
 %{
 using QuantLib::DefaultProbabilityTermStructure;
@@ -348,6 +349,21 @@ class Name : public DefaultProbabilityTermStructure {
 
 // add other instantiations if you need them
 export_piecewise_default_curve(PiecewiseFlatHazardRate,HazardRate,BackwardFlat);
+
+
+// bond engine based on default probability
+
+%{
+using QuantLib::RiskyBondEngine;
+%}
+
+%shared_ptr(RiskyBondEngine)
+class RiskyBondEngine : public PricingEngine {
+  public:
+    RiskyBondEngine(const Handle<DefaultProbabilityTermStructure>& defaultCurve,
+                    Real recoveryRate,
+                    const Handle<YieldTermStructure>& riskFreeCurve);
+};
 
 
 #endif
