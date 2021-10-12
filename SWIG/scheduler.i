@@ -34,7 +34,7 @@ using QuantLib::MakeSchedule;
 
 struct DateGeneration {
     enum Rule { Backward, Forward,
-                Zero, ThirdWednesday,
+                Zero, ThirdWednesday, ThirdWednesdayInclusive,
                 Twentieth, TwentiethIMM,
                 OldCDS, CDS, CDS2015 };
 };
