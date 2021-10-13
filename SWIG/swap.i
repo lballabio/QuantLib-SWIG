@@ -61,13 +61,23 @@ class Swap : public Instrument {
 %shared_ptr(VanillaSwap)
 class VanillaSwap : public Swap {
   public:
-    VanillaSwap(Type type, Real nominal,
-                const Schedule& fixedSchedule, Rate fixedRate,
-                const DayCounter& fixedDayCount,
-                const Schedule& floatSchedule,
-                const ext::shared_ptr<IborIndex>& index,
-                Spread spread,
-                const DayCounter& floatingDayCount);
+    %extend {
+        VanillaSwap(Type type, Real nominal,
+                    const Schedule& fixedSchedule, Rate fixedRate,
+                    const DayCounter& fixedDayCount,
+                    const Schedule& floatSchedule,
+                    const ext::shared_ptr<IborIndex>& index,
+                    Spread spread,
+                    const DayCounter& floatingDayCount,
+                    boost::optional<bool> withIndexedCoupons = boost::none) {
+            // work around the lack of typemap for this argument
+            boost::optional<BusinessDayConvention> paymentConvention = boost::none;
+
+            return new VanillaSwap(type, nominal, fixedSchedule, fixedRate, fixedDayCount,
+                                   floatSchedule, index, spread, floatingDayCount,
+                                   paymentConvention, withIndexedCoupons);
+        }
+    }
     Type type() const;
     Rate fairRate();
     Spread fairSpread();
@@ -129,6 +139,9 @@ class MakeVanillaSwap {
         MakeVanillaSwap& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
 
+        MakeVanillaSwap& withIndexedCoupons(bool flag = true);
+        MakeVanillaSwap& withAtParCoupons(bool flag = true);
+
         MakeVanillaSwap(const Period& swapTenor,
                         const ext::shared_ptr<IborIndex>& index,
                         Rate fixedRate,
@@ -152,8 +165,9 @@ def MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart,
     discountingTermStructure=None, pricingEngine=None,
     fixedLegTerminationDateConvention=None,  fixedLegDateGenRule=None,
     fixedLegEndOfMonth=None, fixedLegFirstDate=None, fixedLegNextToLastDate=None,
-    floatingLegTerminationDateConvention=None,  floatingLegDateGenRule=None,
-    floatingLegEndOfMonth=None, floatingLegFirstDate=None, floatingLegNextToLastDate=None):
+    floatingLegTerminationDateConvention=None, floatingLegDateGenRule=None,
+    floatingLegEndOfMonth=None, floatingLegFirstDate=None, floatingLegNextToLastDate=None,
+    withIndexedCoupons=None):
     mv = _MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart)
     if receiveFixed is not None:
         mv.receiveFixed(receiveFixed)
@@ -211,6 +225,8 @@ def MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart,
         mv.withFloatingLegFirstDate(floatingLegFirstDate)
     if floatingLegNextToLastDate is not None:
         mv.withFloatingLegNextToLastDate(floatingLegNextToLastDate)
+    if withIndexedCoupons is not None:
+        mv.withIndexedCoupons(withIndexedCoupons)
     return mv.makeVanillaSwap()
 }
 #endif

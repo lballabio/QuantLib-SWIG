@@ -364,13 +364,17 @@ class IborCouponPricer : public FloatingRateCouponPricer {
 
 %shared_ptr(BlackIborCouponPricer)
 class BlackIborCouponPricer : public IborCouponPricer {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") BlackIborCouponPricer;
+    #endif
   public:
     enum TimingAdjustment { Black76, BivariateLognormal };
     BlackIborCouponPricer(const Handle<OptionletVolatilityStructure>& v =
                                     Handle<OptionletVolatilityStructure>(),
-                                    const TimingAdjustment timingAdjustment = Black76,
-                                    const Handle<Quote> correlation =
-                                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))));
+                          const TimingAdjustment timingAdjustment = Black76,
+                          const Handle<Quote> correlation =
+                                    Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
+                          boost::optional<bool> useIndexedCoupon = boost::none);
 };
 
 %shared_ptr(SubPeriodsPricer)
@@ -665,7 +669,8 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              BusinessDayConvention exCouponConvention = Unadjusted,
              bool exCouponEndOfMonth = false,
              const Calendar& paymentCalendar = Calendar(),
-             const Natural paymentLag = 0) {
+             const Natural paymentLag = 0,
+             boost::optional<bool> withIndexedCoupons = boost::none) {
     return QuantLib::IborLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
@@ -681,7 +686,8 @@ Leg _IborLeg(const std::vector<Real>& nominals,
         .withExCouponPeriod(exCouponPeriod,
                             exCouponCalendar,
                             exCouponConvention,
-                            exCouponEndOfMonth);
+                            exCouponEndOfMonth)
+        .withIndexedCoupons(withIndexedCoupons);
 }
 %}
 #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -704,7 +710,8 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              BusinessDayConvention exCouponConvention = Unadjusted,
              bool exCouponEndOfMonth = false,
              const Calendar& paymentCalendar = Calendar(),
-             Natural paymentLag = 0);
+             Natural paymentLag = 0,
+             boost::optional<bool> withIndexedCoupons = boost::none);
 
 %{
 Leg _OvernightLeg(const std::vector<Real>& nominals,
