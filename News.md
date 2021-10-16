@@ -1,38 +1,38 @@
 
-Main changes for QuantLib-SWIG 1.23
+Main changes for QuantLib-SWIG 1.24
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/16?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/17?closed=1>.
 
-- Exported overloaded constructors for piecewise inflation curves.
+- Breaking change: removed inflation-curve constructors taking a
+  nominal curve (they were deprecated and were removed from the C++
+  library in version 1.24).
 
-- Exported new `ZeroInflationCashFlow` class.
+- Breaking change: removed the long-deprecated
+  `BaroneAdesiWhaleyEngine` and `BjerksundStenslandEngine` aliases for
+  `BaroneAdesiWhaleyApproximationEngine` and
+  `BjerksundStenslandApproximationEngine`, respectively.
 
-- Exported new constructor for `Currency` class (thanks to Marcin Rybacki).
+- Exported `CliquetOption` class and related pricing engines (thanks
+  to Jack Gillett).
 
-- Exported `ZeroCouponSwap` class (thanks to Marcin Rybacki).
+- Made the `Period` class equatable and comparable in C# (thanks to
+  Ralf Konrad).
 
-- Exported `MCDigitalEngine` class (thanks to Jack Gillett).
+- Exported the missing `endOfMonth` parameter in `SwapRateHelper`
+  constructor (thanks to Fidel Selva).
 
-- Export updated 30/360 enumeration and constructors.
+- Exported the new `ConstNotionalCrossCurrencyBasisSwapRateHelper` and
+  `MtMCrossCurrencyBasisSwapRateHelper` rate helpers (thanks to Marcin
+  Rybacki).
 
-- Export `AnalyticHestonHullWhiteEngine`, `AnalyticH1HWEngine` and
-  `FdHestonHullWhiteVanillaEngine` classes (thanks to Klaus Spanderen).
+- Exported the new `RiskyBondEngine` class.
 
-- Added payment lag and payment constructor to a few leg constructors
-  (thanks to Marcin Rybacki).
+- Exported the new Chilean calendar.
 
-- The `Type` enumeration defined in several swap classes was moved to
-  their base `Swap` class.
+- Exported the new `ThirdWednesdayInclusive` date-generation rule.
 
-- Updated ISDA CDS example in Python.  The differences between its
-  results and Markit values are now within the desired tolerance
-  (thanks to Francis Duffy).
-
-- Removed constructors of piecewise yield and default curves taking an
-  accuracy parameter (they were removed from the C++ library).
-
-- Bond helper constructors now take a `BondPrice::Type priceType`
-  argument instead of a `bool useCleanPrice` (the latter was removed
-  from the C++ library).
+- Exported the new `useIndexedCoupon` parameter in the constructors of
+  `BlackIborCouponPricer`, `IborLeg`, `SwapRateHelper` and
+  `VanillaSwap`.
