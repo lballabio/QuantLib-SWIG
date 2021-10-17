@@ -280,8 +280,10 @@ class FdmMesher {
                         Size direction) const = 0;
     virtual Real location(const FdmLinearOpIterator& iter ,
                           Size direction) const = 0;
-    virtual Disposable<Array> locations(Size direction) const = 0;
     %extend {
+      Array locations(Size direction) const {
+          return self->locations(direction);        
+      } 
       ext::shared_ptr<FdmLinearOpLayout> layout() const {
           return self->layout();
       }
@@ -315,21 +317,12 @@ class FdmMesherComposite : public FdmMesher {
     Real dminus(const FdmLinearOpIterator& iter, Size direction) const;
     Real location(const FdmLinearOpIterator& iter, Size direction) const;
     %extend {
-        Array locations(Size direction) const {
-            return self->locations(direction);
-        }
-        
-        ext::shared_ptr<FdmLinearOpLayout> layout() {
-            const std::vector<ext::shared_ptr<Fdm1dMesher> >& meshers =
-                self->getFdm1dMeshers();
-                
-            std::vector<Size> dim(meshers.size());
-            
-            for (Size i=0; i < dim.size(); ++i)
-                dim[i] = meshers[i]->size();
-                
-            return ext::make_shared<FdmLinearOpLayout>(dim);
-        }
+      Array locations(Size direction) const {
+          return self->locations(direction);
+      }    
+      ext::shared_ptr<FdmLinearOpLayout> layout() const {
+          return self->layout();
+      }
     }
 
     const std::vector<ext::shared_ptr<Fdm1dMesher> >&
