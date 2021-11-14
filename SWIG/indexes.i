@@ -455,6 +455,7 @@ export_overnight_instance(Sonia);
 export_overnight_instance(FedFunds);
 export_overnight_instance(Nzocr);
 export_overnight_instance(Sofr);
+export_overnight_instance(Estr);
 
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);
