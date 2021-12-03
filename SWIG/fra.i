@@ -35,7 +35,7 @@ struct Position {
 };
 
 %shared_ptr(ForwardRateAgreement)
-class ForwardRateAgreement : public Forward {
+class ForwardRateAgreement : public Instrument {
   public:
     ForwardRateAgreement(
                     const Date& valueDate,
