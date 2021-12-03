@@ -36,9 +36,7 @@ class ConvertibleZeroCouponBond : public Bond {
     ConvertibleZeroCouponBond(
           const ext::shared_ptr<Exercise>& exercise,
           Real conversionRatio,
-          const std::vector<ext::shared_ptr<Dividend> >& dividends,
           const std::vector<ext::shared_ptr<Callability> >& callability,
-          const Handle<Quote>& creditSpread,
           const Date& issueDate,
           Integer settlementDays,
           const DayCounter& dayCounter,
@@ -53,9 +51,7 @@ class ConvertibleFixedCouponBond : public Bond {
     ConvertibleFixedCouponBond(
           const ext::shared_ptr<Exercise>& exercise,
           Real conversionRatio,
-          const std::vector<ext::shared_ptr<Dividend> >& dividends,
           const std::vector<ext::shared_ptr<Callability> >& callability,
-          const Handle<Quote>& creditSpread,
           const Date& issueDate,
           Integer settlementDays,
           const std::vector<Rate>& coupons,
@@ -75,9 +71,7 @@ class ConvertibleFloatingRateBond : public Bond {
     ConvertibleFloatingRateBond(
           const ext::shared_ptr<Exercise>& exercise,
           Real conversionRatio,
-          const std::vector<ext::shared_ptr<Dividend> >& dividends,
           const std::vector<ext::shared_ptr<Callability> >& callability,
-          const Handle<Quote>& creditSpread,
           const Date& issueDate,
           Integer settlementDays,
           const ext::shared_ptr<IborIndex>& index,
@@ -104,8 +98,11 @@ class ConvertibleFloatingRateBond : public Bond {
 template <class T>
 class BinomialConvertibleEngine : public PricingEngine {
   public:
-    BinomialConvertibleEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
-                              Size steps);
+    BinomialConvertibleEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>,
+                              Size steps,
+                              const Handle<Quote>& creditSpread,
+                              const std::vector<ext::shared_ptr<Dividend> >& dividends
+                                  = std::vector<ext::shared_ptr<Dividend> >());
 };
 
 %template(BinomialCRRConvertibleEngine) BinomialConvertibleEngine<CoxRossRubinstein>;
@@ -118,7 +115,7 @@ class BinomialConvertibleEngine : public PricingEngine {
 
 #if defined(SWIGPYTHON)
 %pythoncode %{
-    def BinomialConvertibleEngine(process, type, steps):
+    def BinomialConvertibleEngine(process, type, steps, creditSpread, dividends=[]):
         type = type.lower()
         if type == "crr" or type == "coxrossrubinstein":
             cls = BinomialCRRConvertibleEngine
@@ -136,7 +133,7 @@ class BinomialConvertibleEngine : public PricingEngine {
             cls = BinomialJ4ConvertibleEngine
         else:
             raise RuntimeError("unknown binomial engine type: %s" % type);
-        return cls(process, steps)
+        return cls(process, steps, creditSpread, dividends)
 %}
 #endif
 
