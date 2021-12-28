@@ -49,6 +49,8 @@ using QuantLib::SofrFutureRateHelper;
 using QuantLib::CrossCurrencyBasisSwapRateHelper;
 using QuantLib::ConstNotionalCrossCurrencyBasisSwapRateHelper;
 using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
+using QuantLib::IborIborBasisSwapRateHelper;
+using QuantLib::OvernightIborBasisSwapRateHelper;
 %}
 
 struct Pillar {
@@ -433,6 +435,35 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         bool isFxBaseCurrencyCollateralCurrency,
                                         bool isBasisOnFxBaseCurrencyLeg,
                                         bool isFxBaseCurrencyLegResettable);
+};
+
+%shared_ptr(IborIborBasisSwapRateHelper)
+class IborIborBasisSwapRateHelper : public RateHelper {
+  public:
+    IborIborBasisSwapRateHelper(const Handle<Quote>& basis,
+                                const Period& tenor,
+                                Natural settlementDays,
+                                Calendar calendar,
+                                BusinessDayConvention convention,
+                                bool endOfMonth,
+                                const ext::shared_ptr<IborIndex>& baseIndex,
+                                const ext::shared_ptr<IborIndex>& otherIndex,
+                                Handle<YieldTermStructure> discountHandle,
+                                bool bootstrapBaseCurve);
+};
+
+%shared_ptr(OvernightIborBasisSwapRateHelper)
+class OvernightIborBasisSwapRateHelper : public RateHelper {
+  public:
+    OvernightIborBasisSwapRateHelper(const Handle<Quote>& basis,
+                                     const Period& tenor,
+                                     Natural settlementDays,
+                                     Calendar calendar,
+                                     BusinessDayConvention convention,
+                                     bool endOfMonth,
+                                     const ext::shared_ptr<OvernightIndex>& baseIndex,
+                                     const ext::shared_ptr<IborIndex>& otherIndex,
+                                     Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
 };
 
 // allow use of RateHelper vectors
