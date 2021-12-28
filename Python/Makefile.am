@@ -18,6 +18,9 @@ check-local: .build-stamp
 install-exec-local: .build-stamp
 	$(PYTHON) setup.py install
 
+wheel: .build-stamp
+	$(PYTHON) setup.py bdist_wheel
+
 clean-local:
 	rm -rf build
 

@@ -4,7 +4,8 @@
 && ./configure PYTHON=/usr/bin/python3 CC=clang CXX=clang++ CXXFLAGS='-O1' \
 && make -C Python \
 && make -C Python check \
-&& make -C Python install \
+&& make -C Python wheel \
+&& pip install Python/dist/QuantLib-*.whl \
 && grep -v QuantLib requirements.txt > Python/examples/requirements.txt \
 && pip install -r Python/examples/requirements.txt \
 && for i in Python/examples/*.py ; do echo "$i" && /usr/bin/python3 "$i" || break -1 ; done
