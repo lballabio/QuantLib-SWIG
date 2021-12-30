@@ -207,6 +207,9 @@ using QuantLib::FdmMesherComposite;
 class FdmLinearOpIterator {
   public:
     %extend {
+        FdmLinearOpIterator(const std::vector<unsigned int>& dim) {
+            return new FdmLinearOpIterator(to_vector<Size>(dim));
+        }    
         FdmLinearOpIterator(const std::vector<unsigned int>& dim,
                             const std::vector<unsigned int>& coordinates,
                             Size index) {
@@ -270,6 +273,12 @@ class FdmLinearOpLayout {
 class FdmMesher {
   private:
     FdmMesher();
+  public:
+    Real dplus(const FdmLinearOpIterator& iter, Size direction) const;
+    Real dminus(const FdmLinearOpIterator& iter, Size direction) const;
+    Real location(const FdmLinearOpIterator& iter, Size direction) const;
+    Array locations(Size direction) const;
+    ext::shared_ptr<FdmLinearOpLayout> layout() const;
 };
 
 %shared_ptr(FdmMesherComposite)
@@ -294,28 +303,6 @@ class FdmMesherComposite : public FdmMesher {
                        const ext::shared_ptr<Fdm1dMesher>& m3,
                        const ext::shared_ptr<Fdm1dMesher>& m4);
 
-
-    Real dplus(const FdmLinearOpIterator& iter, Size direction) const;
-    Real dminus(const FdmLinearOpIterator& iter, Size direction) const;
-    Real location(const FdmLinearOpIterator& iter, Size direction) const;
-    %extend {
-        Array locations(Size direction) const {
-            return self->locations(direction);
-        }
-        
-        ext::shared_ptr<FdmLinearOpLayout> layout() {
-            const std::vector<ext::shared_ptr<Fdm1dMesher> >& meshers =
-                self->getFdm1dMeshers();
-                
-            std::vector<Size> dim(meshers.size());
-            
-            for (Size i=0; i < dim.size(); ++i)
-                dim[i] = meshers[i]->size();
-                
-            return ext::make_shared<FdmLinearOpLayout>(dim);
-        }
-    }
-
     const std::vector<ext::shared_ptr<Fdm1dMesher> >&
         getFdm1dMeshers() const;
 };
@@ -338,6 +325,21 @@ class FdmLinearOp {
     FdmLinearOp();
 };
 
+%{
+class SparseMatrix {
+  public:
+    std::vector<unsigned int> row_idx, col_idx;
+    std::vector<Real> data;    
+};
+%}
+
+%shared_ptr(SparseMatrix)
+class SparseMatrix {
+  public:
+    std::vector<unsigned int> row_idx, col_idx;
+    std::vector<Real> data;    
+};
+
 %shared_ptr(FdmLinearOpComposite)
 class FdmLinearOpComposite : public FdmLinearOp {
   public:    
@@ -349,6 +351,31 @@ class FdmLinearOpComposite : public FdmLinearOp {
     virtual Array solve_splitting(Size direction, const Array& r, Real s) const;
     virtual Array preconditioner(const Array& r, Real s) const;
 
+    %extend {
+        ext::shared_ptr<SparseMatrix> to_sparse_matrix() const {
+            
+            ext::shared_ptr<SparseMatrix> a = ext::make_shared<SparseMatrix>();
+            
+            const QuantLib::SparseMatrix m = self->toMatrix(); 
+            
+            Size entries(0);
+            for (auto iter1 = m.begin1(); iter1 != m.end1(); ++iter1)
+                entries+=std::distance(iter1.begin(), iter1.end());
+        
+            a->row_idx.reserve(entries);
+            a->col_idx.reserve(entries);
+            a->data.reserve(entries);
+            
+            for (auto iter1 = m.begin1(); iter1 != m.end1(); ++iter1)
+                for (auto iter2 = iter1.begin(); iter2 != iter1.end(); ++iter2) {
+                    a->row_idx.push_back(iter1.index1());
+                    a->col_idx.push_back(iter2.index2());
+                    a->data.push_back(*iter2);
+                }
+    
+            return a;
+        }        
+    }
   private:
       FdmLinearOpComposite();
 };
