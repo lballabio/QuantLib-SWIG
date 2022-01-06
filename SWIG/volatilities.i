@@ -46,7 +46,7 @@ using QuantLib::ShiftedLognormal;
 using QuantLib::Normal;
 %}
 
-enum VolatilityType { ShiftedLognormal, Normal};
+enum VolatilityType { ShiftedLognormal, Normal };
 
 #if defined(SWIGPYTHON)
 %typemap(in) boost::optional<VolatilityType> %{
@@ -604,11 +604,13 @@ class SabrSmileSection : public SmileSection {
                      Rate forward,
                      const std::vector<Real>& sabrParameters,
                      const DayCounter& dc = Actual365Fixed(),
-                     Real shift = 0.0);
+                     Real shift = 0.0,
+                     VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
     SabrSmileSection(Time timeToExpiry,
                      Rate forward,
                      const std::vector<Real>& sabrParameters,
-                     Real shift = 0.0);
+                     Real shift = 0.0,
+                     VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
     Real alpha() const;
     Real beta() const;
     Real nu() const;
@@ -907,13 +909,15 @@ class NoArbSabrSmileSection : public SmileSection {
                Time timeToExpiry, 
                Rate forward,
                const std::vector<Real> &sabrParameters,
-               const Real shift = 0.0);
+               const Real shift = 0.0,
+               VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
     NoArbSabrSmileSection(
                const Date &d, 
                Rate forward,
                const std::vector<Real> &sabrParameters,
                const DayCounter &dc = Actual365Fixed(),
-               const Real shift = 0.0);
+               const Real shift = 0.0,
+               VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
 };
 
 %shared_ptr(NoArbSabrInterpolatedSmileSection)
@@ -968,16 +972,18 @@ Real sabrVolatility(Rate strike,
                     Real alpha,
                     Real beta,
                     Real nu,
-                    Real rho);
+                    Real rho,
+                    VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
 
 Real shiftedSabrVolatility(Rate strike,
-                             Rate forward,
-                             Time expiryTime,
-                             Real alpha,
-                             Real beta,
-                             Real nu,
-                             Real rho,
-                             Real shift);
+                           Rate forward,
+                           Time expiryTime,
+                           Real alpha,
+                           Real beta,
+                           Real nu,
+                           Real rho,
+                           Real shift,
+                           VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
 
 Real sabrFlochKennedyVolatility(Rate strike,
                                 Rate forward,
