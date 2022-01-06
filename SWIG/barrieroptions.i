@@ -382,33 +382,26 @@ class FdHestonDoubleBarrierEngine : public PricingEngine {
 };
 
 %{
-using QuantLib::WulinYongDoubleBarrierEngine;
+using QuantLib::SuoWangDoubleBarrierEngine;
 %}
 
-%shared_ptr(WulinYongDoubleBarrierEngine)
-class WulinYongDoubleBarrierEngine : public PricingEngine {
+%shared_ptr(SuoWangDoubleBarrierEngine)
+class SuoWangDoubleBarrierEngine : public PricingEngine {
   public:
-    WulinYongDoubleBarrierEngine(
+    SuoWangDoubleBarrierEngine(
                            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                            int series = 5);
 };
 
-#if defined(SWIGPYTHON)
-%feature("docstring") VannaVolgaDoubleBarrierEngine "
-Vanna-Volga engine for double barrier options.
-Supports different double barrier engines, selected by the type parameters.
-Type values:
-    ik or analytic:  Ikeda-Kunitomo standard engine (default)
-    wo:              Wulin-Yong engine
-"
-#endif
+deprecate_feature(WulinYongDoubleBarrierEngine, SuoWangDoubleBarrierEngine);
+
 
 %{
 using QuantLib::VannaVolgaDoubleBarrierEngine;
 %}
 
 %shared_ptr(VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine>);
-%shared_ptr(VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine>);
+%shared_ptr(VannaVolgaDoubleBarrierEngine<SuoWangDoubleBarrierEngine>);
 
 template <class E>
 class VannaVolgaDoubleBarrierEngine : public PricingEngine {
@@ -426,7 +419,7 @@ class VannaVolgaDoubleBarrierEngine : public PricingEngine {
 };
 
 %template(VannaVolgaIKDoubleBarrierEngine) VannaVolgaDoubleBarrierEngine<AnalyticDoubleBarrierEngine>;
-%template(VannaVolgaWODoubleBarrierEngine) VannaVolgaDoubleBarrierEngine<WulinYongDoubleBarrierEngine>;
+%template(VannaVolgaWODoubleBarrierEngine) VannaVolgaDoubleBarrierEngine<SuoWangDoubleBarrierEngine>;
 
 %{
 using QuantLib::AnalyticDoubleBarrierBinaryEngine;
