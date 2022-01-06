@@ -19,8 +19,8 @@ public class FRA {
 
         Date todaysDate = new Date(23, Month.May, 2006);
         Settings.instance().setEvaluationDate(todaysDate);
-        Date settlementDate = new Date(25, Month.May, 2006);
-        Date maturityDate = new Date(23, Month.August, 2006);
+
+        Date startDate = new Date(23, Month.August, 2006);
         Position.Type type = Position.Type.Long;
         double strike = 0.02;
         double notional = 100.0;
@@ -29,16 +29,13 @@ public class FRA {
 
         // define the underlying asset and the yield/dividend/volatility curves
         YieldTermStructureHandle flatTermStructure =
-            new YieldTermStructureHandle(new FlatForward(
-                                  settlementDate, riskFreeRate, dayCounter));
+            new YieldTermStructureHandle(new FlatForward(todaysDate, riskFreeRate, dayCounter));
         IborIndex euribor3m = new Euribor3M(flatTermStructure);
-        Date fixingDate = new Date(19, Month.May, 2006);
-        euribor3m.addFixing(fixingDate, 0.02);
 
         ForwardRateAgreement myFra =
-            new ForwardRateAgreement(todaysDate, maturityDate,
-                    type, strike, notional, euribor3m, flatTermStructure);
-        System.out.println(myFra.spotValue());
+            new ForwardRateAgreement(startDate, type, strike, notional, euribor3m, flatTermStructure);
+        System.out.println(myFra.amount());
+        System.out.println(myFra.NPV());
     }
 }
 
