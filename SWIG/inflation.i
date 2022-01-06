@@ -438,9 +438,19 @@ using QuantLib::PiecewiseYoYInflationCurve;
 template <class Interpolator>
 class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") PiecewiseZeroInflationCurve;
+    //%feature("kwargs") PiecewiseZeroInflationCurve;
     #endif
   public:
+    PiecewiseZeroInflationCurve(
+              const Date& referenceDate,
+              const Calendar& calendar,
+              const DayCounter& dayCounter,
+              const Period& lag,
+              Frequency frequency,
+              Rate baseRate,
+              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
+              Real accuracy = 1.0e-12,
+              const Interpolator& i = Interpolator());
     PiecewiseZeroInflationCurve(
               const Date& referenceDate,
               const Calendar& calendar,
@@ -718,8 +728,16 @@ using QuantLib::InterpolatedYoYInflationCurve;
 
 template <class Interpolator>
 class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
-    %feature("kwargs") InterpolatedZeroInflationCurve;
+    //%feature("kwargs") InterpolatedZeroInflationCurve;
   public:
+    InterpolatedZeroInflationCurve(const Date& referenceDate,
+                                   const Calendar& calendar,
+                                   const DayCounter& dayCounter,
+                                   const Period& lag,
+                                   Frequency frequency,
+                                   const std::vector<Date>& dates,
+                                   const std::vector<Rate>& rates,
+                                   const Interpolator &interpolator = Interpolator());
     InterpolatedZeroInflationCurve(const Date& referenceDate,
                                    const Calendar& calendar,
                                    const DayCounter& dayCounter,
@@ -728,8 +746,7 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
                                    bool indexIsInterpolated,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
-                                   const Interpolator &interpolator
-                                                        = Interpolator());
+                                   const Interpolator &interpolator = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;
