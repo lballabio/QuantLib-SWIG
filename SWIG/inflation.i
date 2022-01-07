@@ -21,6 +21,7 @@
 #define quantlib_inflation_i
 
 %include termstructures.i
+%include cashflows.i
 %include swap.i
 %include interpolation.i
 
@@ -269,6 +270,8 @@ struct CPI {
 %{
 using QuantLib::InflationCoupon;
 using QuantLib::CPICoupon;
+using QuantLib::CPICouponPricer;
+using QuantLib::CPICashFlow;
 using QuantLib::ZeroInflationCashFlow;
 %}
 
@@ -291,17 +294,37 @@ class InflationCoupon : public Coupon {
     }
 %}
 
+%shared_ptr(CPICouponPricer)
+class CPICouponPricer {
+  public:
+    CPICouponPricer();
+};
+
 %shared_ptr(CPICoupon)
 class CPICoupon : public InflationCoupon {
-  private:
-    CPICoupon();
   public:
+    CPICoupon(Real baseCPI,
+              const Date& paymentDate,
+              Real nominal,
+              const Date& startDate,
+              const Date& endDate,
+              Natural fixingDays,
+              const ext::shared_ptr<ZeroInflationIndex>& index,
+              const Period& observationLag,
+              CPI::InterpolationType observationInterpolation,
+              const DayCounter& dayCounter,
+              Real fixedRate,
+              Spread spread = 0.0,
+              const Date& refPeriodStart = Date(),
+              const Date& refPeriodEnd = Date(),
+              const Date& exCouponDate = Date());
     Rate fixedRate() const;
     Spread spread() const;
     Rate adjustedFixing() const;
     Rate baseCPI() const;
     CPI::InterpolationType observationInterpolation() const;
     ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
+    void setPricer(const ext::shared_ptr<CPICouponPricer>&);
 };
 
 %inline %{
@@ -310,6 +333,92 @@ class CPICoupon : public InflationCoupon {
         return ext::dynamic_pointer_cast<CPICoupon>(cf);
     }
 %}
+
+%shared_ptr(CPICashFlow)
+class CPICashFlow : public IndexedCashFlow {
+  public:
+    CPICashFlow(Real notional,
+                const ext::shared_ptr<ZeroInflationIndex>& index,
+                const Date& baseDate,
+                Real baseFixing,
+                const Date& fixingDate,
+                const Date& paymentDate,
+                bool growthOnly = false,
+                CPI::InterpolationType interpolation = CPI::AsIndex,
+                const Frequency& frequency = NoFrequency);
+    Real baseFixing() const;
+    CPI::InterpolationType interpolation() const;
+    Frequency frequency() const;
+};
+
+%inline %{
+    ext::shared_ptr<CPICashFlow> as_cpi_cashflow(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<CPICashFlow>(cf);
+    }
+%}
+
+%{
+Leg _CPILeg(const std::vector<Real>& nominals,
+            const Schedule& schedule,
+            const ext::shared_ptr<ZeroInflationIndex>& index,
+            Real baseCPI,
+            const Period& observationLag,
+            const DayCounter& paymentDayCounter = DayCounter(),
+            const BusinessDayConvention paymentConvention = Following,
+            const std::vector<Real>& fixedRates = std::vector<Real>(),
+            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false,
+            const Calendar& paymentCalendar = Calendar(),
+            bool growthOnly = true,
+            CPI::InterpolationType observationInterpolation = CPI::AsIndex) {
+    return QuantLib::CPILeg(schedule, index, baseCPI, observationLag)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(paymentDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar)
+        .withFixingDays(fixingDays)
+        .withFixedRates(fixedRates)
+        .withSpreads(spreads)
+        .withCaps(caps)
+        .withFloors(floors)
+        .withExCouponPeriod(exCouponPeriod,
+                            exCouponCalendar,
+                            exCouponConvention,
+                            exCouponEndOfMonth)
+        .withSubtractInflationNominal(growthOnly)
+        .withObservationInterpolation(observationInterpolation);
+}
+%}
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+%feature("kwargs") _CPILeg;
+#endif
+%rename(CPILeg) _CPILeg;
+Leg _CPILeg(const std::vector<Real>& nominals,
+            const Schedule& schedule,
+            const ext::shared_ptr<ZeroInflationIndex>& index,
+            Real baseCPI,
+            const Period& observationLag,
+            const DayCounter& paymentDayCounter = DayCounter(),
+            const BusinessDayConvention paymentConvention = Following,
+            const std::vector<Real>& fixedRates = std::vector<Real>(),
+            const std::vector<Spread>& spreads = std::vector<Spread>(),
+            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+            const std::vector<Rate>& caps = std::vector<Rate>(),
+            const std::vector<Rate>& floors = std::vector<Rate>(),
+            const Period& exCouponPeriod = Period(),
+            const Calendar& exCouponCalendar = Calendar(),
+            BusinessDayConvention exCouponConvention = Unadjusted,
+            bool exCouponEndOfMonth = false,
+            const Calendar& paymentCalendar = Calendar(),
+            bool growthOnly = true,
+            CPI::InterpolationType observationInterpolation = CPI::AsIndex);
 
 %shared_ptr(ZeroInflationCashFlow)
 class ZeroInflationCashFlow : public CashFlow {
