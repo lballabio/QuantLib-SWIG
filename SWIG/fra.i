@@ -37,21 +37,28 @@ struct Position {
 %shared_ptr(ForwardRateAgreement)
 class ForwardRateAgreement : public Instrument {
   public:
-    ForwardRateAgreement(
-                    const Date& valueDate,
-                    const Date& maturityDate,
-                    Position::Type type,
-                    Rate strikeForwardRate,
-                    Real notionalAmount,
-                    const ext::shared_ptr<IborIndex>& index,
-                    const Handle<YieldTermStructure>& discountCurve =
-                                           Handle<YieldTermStructure>(),
-                    bool useIndexedCoupon = true);
+    ForwardRateAgreement(const Date& valueDate,
+                         const Date& maturityDate,
+                         Position::Type type,
+                         Rate strikeForwardRate,
+                         Real notionalAmount,
+                         const ext::shared_ptr<IborIndex>& index,
+                         const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
+                         bool useIndexedCoupon = true);
 
+    ForwardRateAgreement(const Date& valueDate,
+                         Position::Type type,
+                         Rate strikeForwardRate,
+                         Real notionalAmount,
+                         const ext::shared_ptr<IborIndex>& index,
+                         const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>());
+
+    Real amount() const;
     Date fixingDate() const;
+    InterestRate forwardRate() const;
+    // these two are deprecated
     Real spotIncome(const Handle<YieldTermStructure>& discount) const;
     Real spotValue() const;
-    InterestRate forwardRate() const;
 };
  
 

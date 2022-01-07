@@ -393,15 +393,8 @@ class SuoWangDoubleBarrierEngine : public PricingEngine {
                            int series = 5);
 };
 
-#if defined(SWIGPYTHON)
-%feature("docstring") VannaVolgaDoubleBarrierEngine "
-Vanna-Volga engine for double barrier options.
-Supports different double barrier engines, selected by the type parameters.
-Type values:
-    ik or analytic:  Ikeda-Kunitomo standard engine (default)
-    wo:              Wulin-Yong engine
-"
-#endif
+deprecate_feature(WulinYongDoubleBarrierEngine, SuoWangDoubleBarrierEngine);
+
 
 %{
 using QuantLib::VannaVolgaDoubleBarrierEngine;
