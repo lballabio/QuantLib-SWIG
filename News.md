@@ -27,3 +27,5 @@ More details on the changes are available in ChangeLog.txt and at
 - Exported new basis-swap rate helpers.
 
 - Exported `ESTR` class (thanks to Kirill Egorov).
+
+- Exported `StrippedOptionlet` class.
