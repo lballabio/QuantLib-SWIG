@@ -144,6 +144,30 @@ class StrippedOptionletBase {
     Calendar calendar();
     Natural settlementDays();
     BusinessDayConvention businessDayConvention();
+    VolatilityType volatilityType();
+    Real displacement();
+};
+
+%{
+using QuantLib::StrippedOptionlet;
+%}
+
+%shared_ptr(StrippedOptionlet)
+class StrippedOptionlet : public StrippedOptionletBase {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") StrippedOptionlet;
+    #endif
+  public:
+    StrippedOptionlet(Natural settlementDays,
+                      const Calendar& calendar,
+                      BusinessDayConvention bdc,
+                      ext::shared_ptr<IborIndex> iborIndex,
+                      const std::vector<Date>& optionletDates,
+                      const std::vector<Rate>& strikes,
+                      std::vector<std::vector<Handle<Quote> > > volatilities,
+                      DayCounter dc,
+                      VolatilityType type = ShiftedLognormal,
+                      Real displacement = 0.0);
 };
 
 %{
