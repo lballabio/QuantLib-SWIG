@@ -1,3 +1,69 @@
+commit a8960538cec340d7f369b6995dbc1397a1ac32db
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Apr 2021 11:12:19 +0200
+
+    Set version to 1.25 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 33dd21a3c5ccf46322e32a5fe8eb9609c540cebe
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 15 Jan 2022 11:00:35 +0100
+
+    Update news
+
+ News.md | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit 18cbbc59188ea5456f0fdd94d00180b15d334913
+Merge: a9615b1 5bc6331
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 15 Jan 2022 10:56:35 +0100
+
+    Merge pull request #440.
+    
+    Export `StrippedOptionlet` class
+
+commit 5bc633192733b01ba48a2d434281e9637ed8f32e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 15 Jan 2022 10:03:17 +0100
+
+    Export StrippedOptionlet class
+
+ SWIG/old_volatility.i | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+commit a9615b13e3bba65d247e3876ed97d86ec8ad54f5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Jan 2022 10:06:04 +0100
+
+    Update version requirement for underlying C++ library
+
+ SWIG/ql.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit b2396db7c114a057d512da42841dd45ea1eef20b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 1 Apr 2021 14:55:08 +0200
+
+    Set version to 1.25 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a83f264af86509ef6b8c29cd95d2d29401845712
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Jan 2022 09:35:16 +0100
+
+    Update changelog and news
+
+ ChangeLog.txt | 526 ++++++++++++++++++----------------------------------------
+ News.md       |  39 ++---
+ 2 files changed, 179 insertions(+), 386 deletions(-)
+
 commit 01ac145d61f24f2fbea8b1e2d73bb0a9341aec05
 Merge: f4ed510 5984660
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
