@@ -150,6 +150,18 @@ class FraRateHelper : public RateHelper {
                   Pillar::Choice pillar = Pillar::LastRelevantDate,
                   Date customPillarDate = Date(),
                   bool useIndexedCoupon = true);
+    FraRateHelper(Rate rate,
+                  Period periodToStart,
+                  const ext::shared_ptr<IborIndex>& iborIndex,
+                  Pillar::Choice pillar = Pillar::LastRelevantDate,
+                  Date customPillarDate = Date(),
+                  bool useIndexedCoupon = true);
+    FraRateHelper(const Handle<Quote>& rate,
+                  Period periodToStart,
+                  const ext::shared_ptr<IborIndex>& iborIndex,
+                  Pillar::Choice pillar = Pillar::LastRelevantDate,
+                  Date customPillarDate = Date(),
+                  bool useIndexedCoupon = true);
 };
 
 %shared_ptr(FuturesRateHelper)
