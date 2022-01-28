@@ -1,38 +1,31 @@
 
-Main changes for QuantLib-SWIG 1.24
+Main changes for QuantLib-SWIG 1.25
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/17?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/18?closed=1>.
 
-- Breaking change: removed inflation-curve constructors taking a
-  nominal curve (they were deprecated and were removed from the C++
-  library in version 1.24).
+- **Breaking change:** exported updated interface for convertible bonds and their engine.
 
-- Breaking change: removed the long-deprecated
-  `BaroneAdesiWhaleyEngine` and `BjerksundStenslandEngine` aliases for
-  `BaroneAdesiWhaleyApproximationEngine` and
-  `BjerksundStenslandApproximationEngine`, respectively.
+- **Breaking change (except for Python):** renamed `WulinYongDoubleBarrierEngine`
+  to `SuoWangDoubleBarrierEngine`.
 
-- Exported `CliquetOption` class and related pricing engines (thanks
-  to Jack Gillett).
+- Added a few missing methods to `Schedule` (thanks to Ralf Konrad).
 
-- Made the `Period` class equatable and comparable in C# (thanks to
-  Ralf Konrad).
+- Exported `CPICoupon`, `CPICashFlow`, `CPILeg`.
 
-- Exported the missing `endOfMonth` parameter in `SwapRateHelper`
-  constructor (thanks to Fidel Selva).
+- Exported new argument to `SabrSmileSection` constructor to allow normal volatilities.
 
-- Exported the new `ConstNotionalCrossCurrencyBasisSwapRateHelper` and
-  `MtMCrossCurrencyBasisSwapRateHelper` rate helpers (thanks to Marcin
-  Rybacki).
+- Exported new constructor and `amount` method for `ForwardRateAgreement`.
 
-- Exported the new `RiskyBondEngine` class.
+- Exported new constructors for `SofrFutureRateHelper`.
 
-- Exported the new Chilean calendar.
+- Exported new constructors for zero-inflation curves.
 
-- Exported the new `ThirdWednesdayInclusive` date-generation rule.
+- Exported a few more finite-difference classes (thanks to Klaus Spanderen).
 
-- Exported the new `useIndexedCoupon` parameter in the constructors of
-  `BlackIborCouponPricer`, `IborLeg`, `SwapRateHelper` and
-  `VanillaSwap`.
+- Exported new basis-swap rate helpers.
+
+- Exported `ESTR` class (thanks to Kirill Egorov).
+
+- Exported `StrippedOptionlet` class.

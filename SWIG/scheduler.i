@@ -91,6 +91,7 @@ class Schedule {
     Date date(Size i) const;
     Date previousDate(const Date& refDate) const;
     Date nextDate(const Date& refDate) const;
+    const std::vector<Date>& dates() const;
     bool hasIsRegular() const;
     bool isRegular(Size i) const;
     const std::vector<bool>& isRegular() const;
@@ -106,7 +107,8 @@ class Schedule {
     DateGeneration::Rule rule() const;
     bool hasEndOfMonth() const;
     bool endOfMonth() const;
-    Schedule until(Date truncationDate) const;
+    Schedule after(const Date& truncationDate) const;
+    Schedule until(const Date& truncationDate) const;
     %extend {
         #if defined(SWIGPYTHON)
         Date __getitem__(Integer i) {
