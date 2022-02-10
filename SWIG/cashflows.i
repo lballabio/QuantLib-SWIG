@@ -240,6 +240,13 @@ class OvernightIndexedCoupon : public FloatingRateCoupon {
     const std::vector<Date>& valueDates() const;
 };
 
+%inline %{
+    ext::shared_ptr<OvernightIndexedCoupon> as_overnight_indexed_coupon(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<OvernightIndexedCoupon>(cf);
+    }
+%}
+
 %{
 using QuantLib::CappedFlooredCoupon;
 %}
