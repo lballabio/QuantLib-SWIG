@@ -60,7 +60,7 @@ class InterpolatedZeroCurve : public YieldTermStructure {
 %template(NaturalCubicZeroCurve) InterpolatedZeroCurve<SplineCubic>;
 %template(LogCubicZeroCurve) InterpolatedZeroCurve<DefaultLogCubic>;
 %template(MonotonicCubicZeroCurve) InterpolatedZeroCurve<MonotonicCubic>;
-%template(KrugerCubicZeroCurve) InterpolatedZeroCurve<Kruger>;
+%template(KrugerZeroCurve) InterpolatedZeroCurve<Kruger>;
 
 
 #endif
