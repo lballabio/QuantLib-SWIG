@@ -33,6 +33,7 @@ using QuantLib::InterpolatedZeroCurve;
 %shared_ptr(InterpolatedZeroCurve<SplineCubic>);
 %shared_ptr(InterpolatedZeroCurve<DefaultLogCubic>);
 %shared_ptr(InterpolatedZeroCurve<MonotonicCubic>);
+%shared_ptr(InterpolatedZeroCurve<Kruger>);
 
 template <class Interpolator>
 class InterpolatedZeroCurve : public YieldTermStructure {
@@ -59,6 +60,7 @@ class InterpolatedZeroCurve : public YieldTermStructure {
 %template(NaturalCubicZeroCurve) InterpolatedZeroCurve<SplineCubic>;
 %template(LogCubicZeroCurve) InterpolatedZeroCurve<DefaultLogCubic>;
 %template(MonotonicCubicZeroCurve) InterpolatedZeroCurve<MonotonicCubic>;
+%template(KrugerZeroCurve) InterpolatedZeroCurve<Kruger>;
 
 
 #endif
