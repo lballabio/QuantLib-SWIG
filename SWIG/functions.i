@@ -153,7 +153,7 @@ class UnaryFunctionDelegate {
     }
 };
 
-class UnaryFunction : public std::unary_function<Real, Real> {
+class UnaryFunction {
   public:
     UnaryFunction(UnaryFunctionDelegate* delegate)
     : delegate_(delegate) { }
@@ -290,7 +290,7 @@ class UnaryFunctionDelegate {
     };
 };
 
-class UnaryFunction : public std::unary_function<Real, Real> {
+class UnaryFunction {
   public:
     UnaryFunction(UnaryFunctionDelegate* delegate)
     : delegate_(delegate) { }
