@@ -394,28 +394,19 @@ class ExtendedOrnsteinUhlenbeckProcess : public StochasticProcess1D {
 
 %shared_ptr(ExtOUWithJumpsProcess)
 class ExtOUWithJumpsProcess : public StochasticProcess {
-    public:
-        ExtOUWithJumpsProcess(
+  public:
+    ExtOUWithJumpsProcess(
             const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& process,
-            Real Y0, Real beta, Real jumpIntensity, Real eta) {
-                        
-			return new ExtOUWithJumpsProcess(
-				new ExtOUWithJumpsProcess(
-					process, Y0, beta, jumpIntensity, eta));
-        }
+            Real Y0, Real beta, Real jumpIntensity, Real eta);
 };
 
 %shared_ptr(KlugeExtOUProcess)
 class KlugeExtOUProcess : public StochasticProcess {
-    public:
-        KlugeExtOUProcess(
+  public:
+    KlugeExtOUProcess(
             Real rho,
             const ext::shared_ptr<ExtOUWithJumpsProcess>& kluge,
-            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU) {
-	                            	
-            return new KlugeExtOUProcess(new KlugeExtOUProcess(
-            	rho, kluge, extOU));
-        }
+            const ext::shared_ptr<ExtendedOrnsteinUhlenbeckProcess>& extOU);
 };
 
 %{
