@@ -184,12 +184,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="quantlib_wrap.cpp" />
-    <ClCompile Include="QuantlibWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="quantlib_wrap.h" />
-    <ClInclude Include="QuantlibWrapper.h" />
-    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

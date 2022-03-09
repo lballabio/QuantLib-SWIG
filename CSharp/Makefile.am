@@ -47,8 +47,6 @@ dist-hook: $(BUILT_SOURCES)
 	cp ./cpp/*.vcxproj $(distdir)/cpp
 	cp ./cpp/quantlib_wrap.cpp $(distdir)/cpp
 	cp ./cpp/quantlib_wrap.h $(distdir)/cpp
-	cp ./cpp/QuantlibWrapper.h ./cpp/QuantlibWrapper.cpp $(distdir)/cpp
-	cp ./cpp/stdafx.h $(distdir)/cpp
 	mkdir -p $(distdir)/csharp
 	cp ./csharp/*.csproj $(distdir)/csharp
 	cp ./csharp/*.cs $(distdir)/csharp
