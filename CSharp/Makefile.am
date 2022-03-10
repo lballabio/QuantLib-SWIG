@@ -1,39 +1,35 @@
 
-CLEANFILES = cpp/quantlib_wrap.* csharp/*.cs *.so *.dll \
-             examples/*.so examples/*.dll examples/*.exe
+CLEANFILES = cpp/quantlib_wrap.* cpp/*.so cpp/*.dylib csharp/*.cs *.dll
 
 BUILT_SOURCES = cpp/quantlib_wrap.cpp cpp/quantlib_wrap.h
 
-if HAVE_MCS
-if BUILD_MCS
+if HAVE_DOTNET
+if BUILD_DOTNET
 
-all-local: libNQuantLibc.so NQuantLib.dll
+all-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
 
-libNQuantLibc.so: cpp/quantlib_wrap.o
-	$(CXX) -shared cpp/quantlib_wrap.o -o libNQuantLibc.so `quantlib-config --libs`
+cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@: cpp/quantlib_wrap.o
+	$(CXX) -shared cpp/quantlib_wrap.o -o cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ `quantlib-config --libs`
 
 cpp/quantlib_wrap.o: $(BUILT_SOURCES)
 	$(CXX) -c -fpic $(CXXFLAGS) cpp/quantlib_wrap.cpp -o cpp/quantlib_wrap.o `quantlib-config --cflags`
 
-NQuantLib.dll: $(BUILT_SOURCES)
-	$(MCS) -nologo -target:library -out:NQuantLib.dll csharp/*.cs
+csharp/bin/Release/net5.0/NQuantLib.dll: $(BUILT_SOURCES)
+	$(DOTNET) build --nologo -c Release -p:Version=$(PACKAGE_VERSION) csharp/NQuantLib.csproj
 
-check-local: examples/BermudanSwaption.exe \
-             examples/EquityOption.exe \
-             examples/Times.exe \
-             examples/libNQuantLibc.so examples/NQuantLib.dll
-	$(MONO) ./examples/BermudanSwaption.exe
-	$(MONO) ./examples/EquityOption.exe
-	$(MONO) ./examples/Times.exe
+nupkg: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
+	$(DOTNET) pack --no-build -c Release -p:PackageVersion=$(PACKAGE_VERSION) --include-symbols --include-source csharp/NQuantLib.csproj
 
-examples/%.exe: examples/%.cs
-	$(MCS) -nologo -target:exe -out:$@ -reference:NQuantLib.dll $<
+check-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
+	ln -f cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ examples/
+	cd examples && $(DOTNET) run -c Release --project BermudanSwaption.csproj
+	cd examples && $(DOTNET) run -c Release --project EquityOption.csproj
+	cd examples && $(DOTNET) run -c Release --project FiniteDifferenceMethods.csproj
+	cd examples && $(DOTNET) run -c Release --project Times.csproj
+	rm -f examples/libNQuantLibc.@SHARED_LIB_EXTENSION@
 
-examples/libNQuantLibc.so: libNQuantLibc.so
-	cd examples && ln -sf ../libNQuantLibc.so
-
-examples/NQuantLib.dll: NQuantLib.dll
-	cd examples && ln -sf ../NQuantLib.dll
+clean-local:
+	rm -rf csharp/bin csharp/obj examples/*/bin examples/*/obj
 
 endif
 endif

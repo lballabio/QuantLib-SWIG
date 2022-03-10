@@ -58,6 +58,7 @@ testCaseCollection.xml
 *.lo
 *.o
 *.so
+*.dylib
 .build-stamp
 *.pyc
 *.exe

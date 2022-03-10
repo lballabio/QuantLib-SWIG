@@ -57,16 +57,15 @@ AC_ARG_ENABLE([python],
               [build_python=yes])
 AM_CONDITIONAL(BUILD_PYTHON, test "$build_python" != "no")
 
-AC_PATH_PROGS([MCS], [gmcs mcs gmcs2])
-AC_PATH_PROGS([MONO], [mono])
-AM_CONDITIONAL(HAVE_MCS, test "x${MCS}" != "x" && test "x${MONO}" != "x")
+AC_PATH_PROGS([DOTNET], [dotnet])
+AM_CONDITIONAL(HAVE_DOTNET, test "x${DOTNET}" != "x")
 AC_ARG_ENABLE([csharp],
               AS_HELP_STRING([--disable-csharp],
                              [If disabled, the C# module
                               will not be built]),
-              [build_mcs=$enableval],
-              [build_mcs=yes])
-AM_CONDITIONAL(BUILD_MCS, test "$build_mcs" != "no")
+              [build_dotnet=$enableval],
+              [build_dotnet=yes])
+AM_CONDITIONAL(BUILD_DOTNET, test "$build_dotnet" != "no")
 
 AC_PATH_PROG([R], [R])
 AM_CONDITIONAL(HAVE_R, test "x${R}" != "x")
@@ -149,9 +148,11 @@ AM_CONDITIONAL(BUILD_SCALA, test "$build_scala" != "no")
 case "$target" in
 Darwin)
     AC_SUBST([SHARED_LIB],[${SHARED_LIB='-dynamiclib'}])
+	AC_SUBST([SHARED_LIB_EXTENSION],[${SHARED_LIB_EXTENSION='dylib'}])
 	AC_SUBST([JNILIB_EXTENSION],[${JNILIB_EXTENSION='jnilib'}]) ;;
 *)
     AC_SUBST([SHARED_LIB],[${SHARED_LIB='-shared'}])
+	AC_SUBST([SHARED_LIB_EXTENSION],[${SHARED_LIB_EXTENSION='so'}])
 	AC_SUBST([JNILIB_EXTENSION],[${JNILIB_EXTENSION='so'}]) ;;
 esac
 
