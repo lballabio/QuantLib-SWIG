@@ -9,8 +9,8 @@ CSharp/cpp/quantlib_wrap.cpp
 CSharp/cpp/quantlib_wrap.h
 CSharp/cpp/build
 CSharp/csharp/obj
-CSharp/examples/bin
-CSharp/examples/obj
+CSharp/examples/*/bin
+CSharp/examples/*/obj
 CSharp/.vs/
 Java/bin/
 Java/quantlib_wrap.cpp
@@ -58,6 +58,7 @@ testCaseCollection.xml
 *.lo
 *.o
 *.so
+*.dylib
 .build-stamp
 *.pyc
 *.exe
