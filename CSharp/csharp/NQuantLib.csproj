@@ -4,9 +4,13 @@
     <PackageDescription>QuantLib</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="../cpp/libNQuantLibc.so" Link="runtimes/osx-x64/native/libNQuantLibc.so"
+    <Content Include="../cpp/NQuantLibc.dll" Link="runtimes/win-x64/native/NQuantLibc.dll"
              Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
-      <PackagePath>runtimes/osx-x64/native</PackagePath>
+      <PackagePath>runtimes/win-x64/native</PackagePath>
+    </Content>
+    <Content Include="../cpp/libNQuantLibc.so" Link="runtimes/linux-x64/native/libNQuantLibc.so"
+             Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
+      <PackagePath>runtimes/linux-x64/native</PackagePath>
     </Content>
     <Content Include="../cpp/libNQuantLibc.dylib" Link="runtimes/osx-x64/native/libNQuantLibc.dylib"
              Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' ">

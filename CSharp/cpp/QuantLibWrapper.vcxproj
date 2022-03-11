@@ -100,6 +100,9 @@
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)cpp\bin\$(Platform)\$(Configuration)\NQuantLibc.dll" "$(SolutionDir)cpp"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -126,6 +129,9 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)cpp\bin\$(Platform)\$(Configuration)\NQuantLibc.dll" "$(SolutionDir)cpp"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -154,6 +160,9 @@
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)cpp\bin\$(Platform)\$(Configuration)\NQuantLibc.dll" "$(SolutionDir)cpp"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -181,6 +190,9 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(SolutionDir)cpp\bin\$(Platform)\$(Configuration)\NQuantLibc.dll" "$(SolutionDir)cpp"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="quantlib_wrap.cpp" />

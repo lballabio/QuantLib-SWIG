@@ -22,10 +22,10 @@ nupkg: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuant
 
 check-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
 	ln -f cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ examples/
-	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project BermudanSwaption.csproj
-	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project EquityOption.csproj
-	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project FiniteDifferenceMethods.csproj
-	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project Times.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project BermudanSwaption/BermudanSwaption.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project EquityOption/EquityOption.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project FiniteDifferenceMethods/FiniteDifferenceMethods.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project Times/Times.csproj
 	rm -f examples/libNQuantLibc.@SHARED_LIB_EXTENSION@
 
 clean-local:
@@ -47,8 +47,18 @@ dist-hook: $(BUILT_SOURCES)
 	cp ./csharp/*.csproj $(distdir)/csharp
 	cp ./csharp/*.cs $(distdir)/csharp
 	mkdir -p $(distdir)/examples
-	cp ./examples/*.csproj $(distdir)/examples
-	cp ./examples/*.cs $(distdir)/examples
+	mkdir -p $(distdir)/examples/BermudanSwaption
+	cp ./examples/BermudanSwaption/BermudanSwaption.csproj $(distdir)/examples/BermudanSwaption
+	cp ./examples/BermudanSwaption/BermudanSwaption.cs $(distdir)/examples/BermudanSwaption
+	mkdir -p $(distdir)/examples/EquityOption
+	cp ./examples/EquityOption/EquityOption.csproj $(distdir)/examples/EquityOption
+	cp ./examples/EquityOption/EquityOption.cs $(distdir)/examples/EquityOption
+	mkdir -p $(distdir)/examples/FiniteDifferenceMethods
+	cp ./examples/FiniteDifferenceMethods/FiniteDifferenceMethods.csproj $(distdir)/examples/FiniteDifferenceMethods
+	cp ./examples/FiniteDifferenceMethods/FiniteDifferenceMethods.cs $(distdir)/examples/FiniteDifferenceMethods
+	mkdir -p $(distdir)/examples/Times
+	cp ./examples/Times/Times.csproj $(distdir)/examples/Times
+	cp ./examples/Times/Times.cs $(distdir)/examples/Times
 
 EXTRA_DIST = \
     QuantLib.sln \
