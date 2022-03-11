@@ -8,4 +8,4 @@ Description: This package provides the SWIG-generated QuantLib bindings for R
 Depends: methods
 SystemRequirements: QuantLib library, Boost library
 License: QuantLib License
-URL: http://quantlib.org 
+URL: https://www.quantlib.org 

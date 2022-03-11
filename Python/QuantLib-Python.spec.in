@@ -8,7 +8,7 @@ Group: System Environment/Libraries
 Packager: Liguo Song (Leo) <liguo.song@vanderbilt.edu>
 Vendor: QuantLib.org
 Source0: http://prdownloads.sourceforge.net/quantlib/QuantLib-Python-%{version}.tar.gz
-URL: http://quantlib.org/
+URL: https://www.quantlib.org/
 Buildroot: %{_tmppath}/%{name}-%{version}-root
 BuildRequires: QuantLib-devel == %{version}, python >= 2.1
 
