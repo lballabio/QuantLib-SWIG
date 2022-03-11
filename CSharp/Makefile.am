@@ -22,10 +22,10 @@ nupkg: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuant
 
 check-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
 	ln -f cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ examples/
-	cd examples && $(DOTNET) run -c Release --project BermudanSwaption.csproj
-	cd examples && $(DOTNET) run -c Release --project EquityOption.csproj
-	cd examples && $(DOTNET) run -c Release --project FiniteDifferenceMethods.csproj
-	cd examples && $(DOTNET) run -c Release --project Times.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project BermudanSwaption.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project EquityOption.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project FiniteDifferenceMethods.csproj
+	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project Times.csproj
 	rm -f examples/libNQuantLibc.@SHARED_LIB_EXTENSION@
 
 clean-local:
