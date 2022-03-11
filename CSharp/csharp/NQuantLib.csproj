@@ -5,7 +5,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="../cpp/NQuantLibc.dll" Link="runtimes/win-x64/native/NQuantLibc.dll"
-             Condition=" '$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' ">
+             Condition=" '$(OS)' == 'Windows_NT' ">
       <PackagePath>runtimes/win-x64/native</PackagePath>
     </Content>
     <Content Include="../cpp/libNQuantLibc.so" Link="runtimes/linux-x64/native/libNQuantLibc.so"
