@@ -132,6 +132,8 @@ export_piecewise_curve(PiecewiseSplineCubicDiscount,Discount,SplineCubic);
 export_piecewise_curve(PiecewiseKrugerZero,ZeroYield,Kruger);
 export_piecewise_curve(PiecewiseKrugerLogDiscount,Discount,KrugerLog);
 export_piecewise_curve(PiecewiseConvexMonotoneZero,ZeroYield,ConvexMonotone);
+export_piecewise_curve(PiecewiseNaturalCubicZero,ZeroYield,SplineCubic);
+export_piecewise_curve(PiecewiseNaturalLogCubicDiscount,Discount,SplineLogCubic);
 
 
 // global boostrapper
