@@ -58,42 +58,17 @@ class Forward : public Instrument{
 
 // FixedRateBondForward
 %{
-using QuantLib::FixedRateBondForward;
 using QuantLib::BondForward;
+using QuantLib::FixedRateBondForward;
 using QuantLib::FixedRateBond;
 using QuantLib::BusinessDayConvention;
 using QuantLib::Position;
 %}
 
-%shared_ptr(FixedRateBondForward)
-class FixedRateBondForward : public Forward {
-    public:
-        FixedRateBondForward(
-                const Date& valueDate,
-                const Date& maturityDate,
-                Position::Type type,
-                Real strike,
-                Natural settlementDays,
-                const DayCounter& dayCounter,
-                const Calendar& calendar,
-                BusinessDayConvention businessDayConvention,
-                const ext::shared_ptr<FixedRateBond>& fixedBond,
-                const Handle<YieldTermStructure>& discountCurve =
-                                            Handle<YieldTermStructure>(),
-                const Handle<YieldTermStructure>& incomeDiscountCurve =
-                                            Handle<YieldTermStructure>());
-
-        Real forwardPrice();
-
-        Real cleanForwardPrice();
-
-};
-
 %shared_ptr(BondForward)
 class BondForward : public Forward {
-    public:
-        BondForward(
-                const Date& valueDate,
+  public:
+    BondForward(const Date& valueDate,
                 const Date& maturityDate,
                 Position::Type type,
                 Real strike,
@@ -107,8 +82,27 @@ class BondForward : public Forward {
                 const Handle<YieldTermStructure>& incomeDiscountCurve =
                                             Handle<YieldTermStructure>());
 
-        Real forwardPrice();
-        Real cleanForwardPrice();
+    Real forwardPrice();
+    Real cleanForwardPrice();
+};
+
+%shared_ptr(FixedRateBondForward)
+class FixedRateBondForward : public BondForward {
+  public:
+    FixedRateBondForward(
+                const Date& valueDate,
+                const Date& maturityDate,
+                Position::Type type,
+                Real strike,
+                Natural settlementDays,
+                const DayCounter& dayCounter,
+                const Calendar& calendar,
+                BusinessDayConvention businessDayConvention,
+                const ext::shared_ptr<FixedRateBond>& fixedBond,
+                const Handle<YieldTermStructure>& discountCurve =
+                                            Handle<YieldTermStructure>(),
+                const Handle<YieldTermStructure>& incomeDiscountCurve =
+                                            Handle<YieldTermStructure>());
 };
 
 #endif
