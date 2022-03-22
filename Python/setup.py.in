@@ -215,13 +215,13 @@ setup(name             = "QuantLib",
       version          = "@PACKAGE_VERSION@",
       description      = "Python bindings for the QuantLib library",
       long_description = """
-QuantLib (http://quantlib.org/) is a C++ library for financial quantitative
+QuantLib (https://www.quantlib.org/) is a C++ library for financial quantitative
 analysts and developers, aimed at providing a comprehensive software
 framework for quantitative finance.
       """,
       author           = "QuantLib Team",
       author_email     = "quantlib-users@lists.sourceforge.net",
-      url              = "http://quantlib.org",
+      url              = "https://www.quantlib.org",
       license          = "BSD 3-Clause",
       classifiers      = classifiers,
       py_modules       = ['QuantLib.__init__','QuantLib.QuantLib'],
