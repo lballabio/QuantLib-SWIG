@@ -183,7 +183,7 @@ enum Frequency {
   }
 
   public override int GetHashCode() {
-    return ToString().GetHashCode();
+    return normalized().ToString().GetHashCode();
   }
 
   public int CompareTo(object obj) {
@@ -275,6 +275,7 @@ class Period {
     Integer length() const;
     TimeUnit units() const;
     Frequency frequency() const;
+    Period normalized() const;
     %extend {
         Period(const std::string& str) {
             return new Period(PeriodParser::parse(str));
@@ -340,7 +341,7 @@ class Period {
     #if defined(SWIGPYTHON)
     %pythoncode %{
     def __hash__(self):
-        return hash(str(self))
+        return hash(str(self.normalized()))
     %}
     #endif
 };
