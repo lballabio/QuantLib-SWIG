@@ -197,9 +197,6 @@ namespace TimesTest
 
             #endregion
 
-            Console.WriteLine("test Period.ToString()");
-            testCase(tenor01Y.ToString() == tenor12M.ToString());
-
             Console.WriteLine("test Period.GetHashCode()");
             testCase(tenor01Y.GetHashCode() == tenor12M.GetHashCode());
 
