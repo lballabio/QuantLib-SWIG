@@ -37,6 +37,7 @@ std::vector<ext::shared_ptr<BondHelper> > convert_bond_helpers(
 }
 %}
 
+%shared_ptr(FittingMethod)
 class FittingMethod {
   public:
     virtual ~FittingMethod() = 0;
@@ -80,8 +81,10 @@ using QuantLib::NelsonSiegelFitting;
 using QuantLib::SvenssonFitting;
 using QuantLib::CubicBSplinesFitting;
 using QuantLib::SimplePolynomialFitting;
+using QuantLib::SpreadFittingMethod;
 %}
 
+%shared_ptr(ExponentialSplinesFitting)
 class ExponentialSplinesFitting : public FittingMethod {
   public:
     ExponentialSplinesFitting(bool constrainAtZero = true,
@@ -93,16 +96,19 @@ class ExponentialSplinesFitting : public FittingMethod {
                               Real fixedKappa = Null<Real>());
 };
 
+%shared_ptr(NelsonSiegelFitting)
 class NelsonSiegelFitting : public FittingMethod {
   public:
     NelsonSiegelFitting(const Array& weights = Array());
 };
 
+%shared_ptr(SvenssonFitting)
 class SvenssonFitting : public FittingMethod {
   public:
     SvenssonFitting(const Array& weights = Array());
 };
 
+%shared_ptr(CubicBSplinesFitting)
 class CubicBSplinesFitting : public FittingMethod {
   public:
     CubicBSplinesFitting(const std::vector<Time>& knotVector,
@@ -111,6 +117,7 @@ class CubicBSplinesFitting : public FittingMethod {
     Real basisFunction(Integer i, Time t);
 };
 
+%shared_ptr(SimplePolynomialFitting)
 class SimplePolynomialFitting : public FittingMethod {
   public:
     #if defined(SWIGJAVA)
@@ -120,6 +127,15 @@ class SimplePolynomialFitting : public FittingMethod {
                             bool constrainAtZero = true,
                             const Array& weights = Array());
     #endif
+};
+
+%shared_ptr(SpreadFittingMethod)
+class SpreadFittingMethod : public FittingMethod {
+  public:
+    SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
+                        Handle<YieldTermStructure> discountCurve,
+                        Real minCutoffTime = 0.0,
+                        Real maxCutoffTime = QL_MAX_REAL);
 };
 
 
