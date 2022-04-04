@@ -651,16 +651,13 @@ class SVD {
 };
 
 %{
-using QuantLib::Disposable;
 using QuantLib::BiCGstab;
 using QuantLib::GMRES;
 %}
 
 #if defined(SWIGPYTHON)
 %{
-Disposable<Array> extractArray(
-    PyObject* source, const std::string& methodName) {
-      
+Array extractArray(PyObject* source, const std::string& methodName) {
     QL_ENSURE(source != NULL,
               "failed to call " + methodName + " on Python object");
 
@@ -707,7 +704,7 @@ class MatrixMultiplicationProxy {
         Py_XDECREF(matrixMult_);    
     }
     
-    Disposable<Array> operator()(const Array& x) const {
+    Array operator()(const Array& x) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&x), SWIGTYPE_p_Array, 0);
             
@@ -753,7 +750,7 @@ class MatrixMultiplicationProxy {
     MatrixMultiplicationProxy(MatrixMultiplicationDelegate* delegate)
     : delegate_(delegate) {}
     
-    Disposable<Array> operator()(const Array& x) const {
+    Array operator()(const Array& x) const {
         Array retVal = delegate_->apply(x);        
         return retVal;
     }
