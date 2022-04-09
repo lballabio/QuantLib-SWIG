@@ -1,31 +1,31 @@
 
-Main changes for QuantLib-SWIG 1.25
+Main changes for QuantLib-SWIG 1.26
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/18?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/19?closed=1>.
 
-- **Breaking change:** exported updated interface for convertible bonds and their engine.
+- Running `make` in the `CSharp` folder (after `../configure` in the
+  root folder) now uses `dotnet` instead of older C# compilers.
+  The existing VC# projects were also updated to .Net.
 
-- **Breaking change (except for Python):** renamed `WulinYongDoubleBarrierEngine`
-  to `SuoWangDoubleBarrierEngine`.
+- Fixed a compilation error in wrappers when using strict C++17 mode
+  (thanks to Jonghee Lee).
 
-- Added a few missing methods to `Schedule` (thanks to Ralf Konrad).
+- Exported a few more constructors for `FraRateHelper` (thanks to Marcin Rybacki).
 
-- Exported `CPICoupon`, `CPICashFlow`, `CPILeg`.
+- Exported the `SpreadFittingMethod` class.
 
-- Exported new argument to `SabrSmileSection` constructor to allow normal volatilities.
+- Exported the new `BondForward` class (thanks to Marcin Rybacki).
 
-- Exported new constructor and `amount` method for `ForwardRateAgreement`.
+- Ensure that periods that compare equal have the same hash in C# and Python.
 
-- Exported new constructors for `SofrFutureRateHelper`.
+- Exported `SplineLogCubic` interpolation and the corresponding
+  `NaturalLogCubicDiscountCurve`, `PiecewiseNaturalCubicZero` and
+  `PiecewiseNaturalLogCubicDiscount` classes. Also exported
+  `KrugerLogDiscountCurve` and `KrugerZeroCurve` based on Kruger
+  interpolation (thanks to Marcin Rybacki).
 
-- Exported new constructors for zero-inflation curves.
+- Exported `as_overnight_indexed_coupon` function to downcast such
+  coupons when needed (thanks to Marcin Rybacki).
 
-- Exported a few more finite-difference classes (thanks to Klaus Spanderen).
-
-- Exported new basis-swap rate helpers.
-
-- Exported `ESTR` class (thanks to Kirill Egorov).
-
-- Exported `StrippedOptionlet` class.

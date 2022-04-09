@@ -1,341 +1,393 @@
-commit a8960538cec340d7f369b6995dbc1397a1ac32db
+commit 614415b329317a0cf76272dd7b907dad40424516
+Merge: fb9b604 98fd7fc
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 12 Apr 2021 11:12:19 +0200
+Date:   Thu, 31 Mar 2022 16:56:18 +0200
 
-    Set version to 1.25 final.
-
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit 33dd21a3c5ccf46322e32a5fe8eb9609c540cebe
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sat, 15 Jan 2022 11:00:35 +0100
-
-    Update news
-
- News.md | 2 ++
- 1 file changed, 2 insertions(+)
-
-commit 18cbbc59188ea5456f0fdd94d00180b15d334913
-Merge: a9615b1 5bc6331
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sat, 15 Jan 2022 10:56:35 +0100
-
-    Merge pull request #440.
+    Merge pull request #454.
     
-    Export `StrippedOptionlet` class
+    Export `SpreadFittingMethod` class
 
-commit 5bc633192733b01ba48a2d434281e9637ed8f32e
+commit 98fd7fc416bf02fffa9325fff0d4889c1b414c09
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sat, 15 Jan 2022 10:03:17 +0100
+Date:   Thu, 31 Mar 2022 15:53:17 +0200
 
-    Export StrippedOptionlet class
+    Export SpreadFittingMethod class
 
- SWIG/old_volatility.i | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+ SWIG/fittedbondcurve.i | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-commit a9615b13e3bba65d247e3876ed97d86ec8ad54f5
+commit fb9b6041d3359f380d4cfeb0003f760749c5f3dc
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 28 Mar 2022 18:00:57 +0000
+
+    Bump peter-evans/create-pull-request from 3 to 4
+    
+    Bumps [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) from 3 to 4.
+    - [Release notes](https://github.com/peter-evans/create-pull-request/releases)
+    - [Commits](https://github.com/peter-evans/create-pull-request/compare/v3...v4)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: peter-evans/create-pull-request
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/copyrights.yml | 2 +-
+ .github/workflows/misspell.yml   | 2 +-
+ .github/workflows/namespaces.yml | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 3da258c9530b2f4781b99a2ddd4137b8c71604e9
+Merge: 18d8c89 89a76c0
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 11 Jan 2022 10:06:04 +0100
+Date:   Wed, 23 Mar 2022 19:21:31 +0100
 
-    Update version requirement for underlying C++ library
+    Merge pull request #451.
+    
+    Expose `BondForward` class
+
+commit 18d8c89ae2cfda197a145947d9d153260fba7fc6
+Merge: 0ca88dc 428a690
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Mar 2022 15:14:02 +0100
+
+    Merge pull request #452.
+    
+    Use normalized period to generate hash
+
+commit 428a690fad613dad5cf35f0547784186befaa200
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 23 Mar 2022 14:11:36 +0100
+
+    Use normalized period to generate hash
+
+ CSharp/examples/Times/Times.cs | 3 ---
+ SWIG/date.i                    | 5 +++--
+ SWIG/ql.i                      | 2 +-
+ 3 files changed, 4 insertions(+), 6 deletions(-)
+
+commit 808f793402d4dfe380a2f28db8aaba77002b5b07
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 22 Mar 2022 10:20:37 +0100
+
+    Require newest QuantLib version
 
  SWIG/ql.i | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit b2396db7c114a057d512da42841dd45ea1eef20b
+commit f8e46a6758036f1bc1fa71b7ccc1f298b906c30c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 1 Apr 2021 14:55:08 +0200
+Date:   Tue, 22 Mar 2022 10:19:58 +0100
 
-    Set version to 1.25 rc
+    Expose inheritance relation
 
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ SWIG/forward.i | 32 +++++++++++++-------------------
+ 1 file changed, 13 insertions(+), 19 deletions(-)
 
-commit a83f264af86509ef6b8c29cd95d2d29401845712
+commit 0ca88dce75a30c475020d825454d5f4c32f9401c
+Merge: 1329a07 808d438
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 11 Jan 2022 09:35:16 +0100
+Date:   Mon, 21 Mar 2022 15:01:59 +0100
 
-    Update changelog and news
-
- ChangeLog.txt | 526 ++++++++++++++++++----------------------------------------
- News.md       |  39 ++---
- 2 files changed, 179 insertions(+), 386 deletions(-)
-
-commit 01ac145d61f24f2fbea8b1e2d73bb0a9341aec05
-Merge: f4ed510 5984660
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 10 Jan 2022 11:52:27 +0100
-
-    Merge pull request #439.
+    Merge pull request #450.
     
-    Scheduler - Added missing methods
+    Natural log cubic interpolation
 
-commit 5984660102af59afd1b4e81ae1c5adc2a0053b32
-Author: RalfKonrad <github@eckel-consulting.de>
-Date:   Mon, 10 Jan 2022 10:49:52 +0100
+commit e6f7cdce741447177711c157c1b19067d6e186bf
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Mon, 21 Mar 2022 12:46:17 +0100
 
-    Added missing methods
+    Exposed BondForward class.
 
- SWIG/scheduler.i | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ SWIG/forward.i | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
 
-commit f4ed5108b7377d45ae81ad83fb68251966b6ccbc
-Merge: 62a0334 660dd01
+commit 808d4386d2d4d9b8a1fc28edf20d1c36d2b5a1ba
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Mon, 21 Mar 2022 12:26:43 +0100
+
+    Exposed natural cubic spline interpolation.
+
+ SWIG/discountcurve.i       |  4 ++--
+ SWIG/interpolation.i       | 15 ++++-----------
+ SWIG/piecewiseyieldcurve.i |  2 ++
+ SWIG/zerocurve.i           |  2 --
+ 4 files changed, 8 insertions(+), 15 deletions(-)
+
+commit 1329a07f5b7d4a11068648d3529b06938e66285d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 7 Jan 2022 12:49:17 +0100
+Date:   Fri, 11 Mar 2022 22:40:59 +0100
 
-    Merge pull request #438.
+    Use https links to QuantLib site
+
+ Python/QuantLib-Python.spec.in | 2 +-
+ Python/setup.py                | 4 ++--
+ Python/setup.py.in             | 4 ++--
+ R/DESCRIPTION                  | 2 +-
+ R/DESCRIPTION.in               | 2 +-
+ README.md                      | 6 +++---
+ 6 files changed, 10 insertions(+), 10 deletions(-)
+
+commit 724819ba8417dc8647fe701f93d07c83fa403e3c
+Merge: 303db59 1907b78
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 12 Mar 2022 00:00:51 +0100
+
+    Merge pull request #447.
     
-    Export `CPICoupon`, `CPICashFlow`, `CPILeg`
+    Use .Net for C# projects and CI build
 
-commit 660dd0178696fdc9c1109c82885bb70bcb607b2d
+commit 1907b788a16276627a5a0bc167a8ef77460fb0cc
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 7 Jan 2022 12:08:40 +0100
+Date:   Fri, 11 Mar 2022 22:31:59 +0100
 
-    Export CPICoupon, CPICashFlow, CPILeg
+    Rename docker image for .Net CI build
 
- SWIG/inflation.i | 113 ++++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 111 insertions(+), 2 deletions(-)
+ .build/dotnet.build         | 6 ------
+ .github/workflows/linux.yml | 2 +-
+ 2 files changed, 1 insertion(+), 7 deletions(-)
 
-commit 62a033405fd489e92923db613d02cb22e72f474a
-Merge: 6129456 4bd6335
+commit c61bbe1cf42e657babcca9951c3fbad5ccfaf50c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 20:38:19 +0100
+Date:   Fri, 11 Mar 2022 18:33:43 +0100
 
-    Merge pull request #437.
-    
-    Rename `WulinYongDoubleBarrierEngine` to `SuoWangDoubleBarrierEngine`
+    Fix condition
 
-commit 6129456060c52d774c0c07176181c92c0d788111
-Merge: c5812a1 b3b92eb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 20:04:54 +0100
-
-    Merge pull request #436.
-    
-    Export new argument to `SabrSmileSection` constructor
-
-commit 4bd633571b6df65819f0253701fad4cc9735e8bb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 19:35:07 +0100
-
-    Rename WulinYongDoubleBarrierEngine to SuoWangDoubleBarrierEngine
-
- SWIG/barrieroptions.i | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
-
-commit c5812a17cc21a503676df9a6921641799131000b
-Merge: eb2408d c299897
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 19:19:37 +0100
-
-    Merge pull request #435.
-    
-    Export new constructor and `amount` method from `ForwardRateAgreement`
-
-commit eb2408df0cf9507493cca54cb81185bd6c784df6
-Merge: 7c9bdd4 3e5e6a7
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 19:17:32 +0100
-
-    Merge pull request #434.
-    
-    Export new constructors for `SofrFutureRateHelper`
-
-commit b3b92eb017a249983bfe703de69203d277416de6
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 19:00:44 +0100
-
-    Export new argument to SabrSmileSection constructor
-
- SWIG/volatilities.i | 32 +++++++++++++++++++-------------
- 1 file changed, 19 insertions(+), 13 deletions(-)
-
-commit 7c9bdd410f5f25cb57bf7e41f6418f405f0e8eea
-Merge: 27af7b3 fe13e55
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 18:32:42 +0100
-
-    Merge pull request #433.
-    
-    Export new constructors for zero-inflation curves
-
-commit c299897c50bc366763caeb514aea2514bf14f8d4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 18:32:08 +0100
-
-    Rework FRA example in Java
-
- Java/examples/FRA.java | 15 ++++++---------
- 1 file changed, 6 insertions(+), 9 deletions(-)
-
-commit 3e5e6a74c62823789adbffd4db4492bb12c13276
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 18:15:02 +0100
-
-    Export new constructors for SofrFutureRateHelper
-
- SWIG/ratehelpers.i | 43 +++++++++++++++++++++++++++----------------
- 1 file changed, 27 insertions(+), 16 deletions(-)
-
-commit 1af7dad10341688459b5f054b4a7c43a1befb039
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 17:52:02 +0100
-
-    Export new constructor and amount method from ForwardRateAgreement
-
- SWIG/fra.i | 29 ++++++++++++++++++-----------
- 1 file changed, 18 insertions(+), 11 deletions(-)
-
-commit fe13e5596f75c859e92fd324e73073c2c086e829
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 6 Jan 2022 17:27:48 +0100
-
-    Export new constructors for zero-inflation curves
-
- SWIG/inflation.i | 25 +++++++++++++++++++++----
- 1 file changed, 21 insertions(+), 4 deletions(-)
-
-commit 27af7b30de94dd814b19d2af419f8bf4a9eeec96
-Merge: 9501715 cf56571
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 30 Dec 2021 14:16:30 +0100
-
-    Merge pull request #392.
-    
-    added `to_sparse_matrix` to finite difference linear operators
-
-commit cf56571840158cb54669cc62fae032656e15c01c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 30 Dec 2021 12:45:58 +0100
-
-    Simplify interface
-
- SWIG/fdm.i | 32 +++++---------------------------
- 1 file changed, 5 insertions(+), 27 deletions(-)
-
-commit 950171513cd9adfdc6e10f8b9c4a372c8b0e23ce
-Merge: 5df3d59 4fbbcc9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 28 Dec 2021 19:58:06 +0100
-
-    Merge pull request #432.
-    
-    Export basis-swap rate helpers
-
-commit 5df3d593abf8decd330d3e90db4d81d52dfca845
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 28 Dec 2021 18:30:44 +0100
-
-    Add make target for Python wheel and use it in CI build.
-    
-    This avoids using deprecated distutils features that currently
-    cause the build to fail.
-
- .build/python3.build | 3 ++-
- Python/Makefile.am   | 3 +++
- 2 files changed, 5 insertions(+), 1 deletion(-)
-
-commit 4fbbcc98732bf940a83d338efebdcc6f21a6af64
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 28 Dec 2021 16:47:50 +0100
-
-    Export basis-swap rate helpers
-
- SWIG/ratehelpers.i | 31 +++++++++++++++++++++++++++++++
- 1 file changed, 31 insertions(+)
-
-commit 74fdfa74ea1c78e4a5fdf503a2f470f6071f9a34
-Merge: b879eb8 c9aa118
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Dec 2021 19:31:50 +0100
-
-    Merge pull request #431.
-    
-    Update interface for convertible bonds and engine
-
-commit c9aa1185083c902f6bee0619bb09702e8e65495f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Dec 2021 17:42:49 +0100
-
-    Remove obsolete tests
-
- Python/test/inflation.py | 128 -----------------------------------------------
- 1 file changed, 128 deletions(-)
-
-commit d329b3caf316bc1e7666ef8a1b0295b8c72cbd89
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Dec 2021 17:42:27 +0100
-
-    Fix inheritance declaration
-
- SWIG/fra.i | 2 +-
+ CSharp/csharp/NQuantLib.csproj | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 712f81d0e28352a6a1b1e6f92f0fea172106c1ef
+commit 72dc7a95ad0c1389e336b36f2db7b6bf3a80baf0
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Dec 2021 17:41:55 +0100
+Date:   Fri, 11 Mar 2022 18:26:40 +0100
 
-    Update interface for convertible bonds and engine
+    Move C# examples to own folder to avoid workarounds
 
- SWIG/convertiblebonds.i | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ .gitignore                                         |  4 +-
+ CSharp/Makefile.am                                 | 22 ++++--
+ CSharp/QuantLib.sln                                | 90 +++++++++++-----------
+ CSharp/cpp/QuantLibWrapper.vcxproj                 | 12 +++
+ CSharp/csharp/NQuantLib.csproj                     |  8 +-
+ CSharp/examples/BermudanSwaption.csproj            | 34 --------
+ .../{ => BermudanSwaption}/BermudanSwaption.cs     |  0
+ .../BermudanSwaption/BermudanSwaption.csproj       | 17 ++++
+ CSharp/examples/EquityOption.csproj                | 34 --------
+ CSharp/examples/{ => EquityOption}/EquityOption.cs |  0
+ CSharp/examples/EquityOption/EquityOption.csproj   | 17 ++++
+ CSharp/examples/FiniteDifferenceMethods.csproj     | 34 --------
+ .../FiniteDifferenceMethods.cs                     |  0
+ .../FiniteDifferenceMethods.csproj                 | 17 ++++
+ CSharp/examples/Times.csproj                       | 34 --------
+ CSharp/examples/{ => Times}/Times.cs               |  0
+ CSharp/examples/Times/Times.csproj                 | 17 ++++
+ 17 files changed, 149 insertions(+), 191 deletions(-)
 
-commit b879eb82acd1df332df383f236703552524416b5
-Merge: e8df1a2 8780b19
+commit 4d8a06fd70d32c8282d648dd1c83c2987f5afcb5
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 14 Nov 2021 09:50:03 +0100
+Date:   Fri, 11 Mar 2022 16:18:36 +0100
 
-    Merge pull request #424.
+    Unset executable bit
+
+ CSharp/examples/FiniteDifferenceMethods.csproj | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 42a2e4cf2490df4bced20fc7339c668b52417f38
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 11 Mar 2022 12:39:04 +0100
+
+    Make sure examples find locally-compiled dynamic library
+
+ CSharp/Makefile.am | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit f2a1c99beffaedf833d4cd8b85d8eabaeab5f2d4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 10 Mar 2022 17:01:25 +0100
+
+    Try out dotnet build on Linux
+
+ .build/dotnet.build         | 6 ++++++
+ .github/workflows/linux.yml | 2 +-
+ 2 files changed, 7 insertions(+), 1 deletion(-)
+
+commit 29bf451f17bfa6b193e577570fd89fc000c12390
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 10 Mar 2022 15:40:16 +0100
+
+    Use .Net for C# compilation on Linux/macOS
+
+ .gitignore                                     |   1 +
+ CSharp/Makefile.am                             |  42 ++++---
+ CSharp/csharp/NQuantLib.csproj                 | 136 ++--------------------
+ CSharp/examples/BermudanSwaption.csproj        | 151 ++++---------------------
+ CSharp/examples/EquityOption.csproj            | 151 ++++---------------------
+ CSharp/examples/FiniteDifferenceMethods.csproj | 151 ++++---------------------
+ CSharp/examples/Times.csproj                   | 151 ++++---------------------
+ configure.ac                                   |  13 ++-
+ 8 files changed, 134 insertions(+), 662 deletions(-)
+
+commit 303db59fd095c284d4c1574dc9e87daae84df663
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 9 Mar 2022 17:50:20 +0100
+
+    Remove useless files
+
+ CSharp/Makefile.am                         |  2 --
+ CSharp/cpp/QuantLibWrapper.vcxproj         |  3 ---
+ CSharp/cpp/QuantLibWrapper.vcxproj.filters |  9 --------
+ CSharp/cpp/QuantlibWrapper.cpp             | 36 ------------------------------
+ CSharp/cpp/QuantlibWrapper.h               | 22 ------------------
+ CSharp/cpp/stdafx.h                        | 13 -----------
+ 6 files changed, 85 deletions(-)
+
+commit 8bbed7c2d85cef7387ccf6a72b5d23cb83efc0dc
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 7 Mar 2022 18:00:54 +0000
+
+    Bump actions/checkout from 2 to 3
     
-    Export ESTR
+    Bumps [actions/checkout](https://github.com/actions/checkout) from 2 to 3.
+    - [Release notes](https://github.com/actions/checkout/releases)
+    - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
+    - [Commits](https://github.com/actions/checkout/compare/v2...v3)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/checkout
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
 
-commit 8780b19c2077f544dda1ae15ada6a82777f7f1c1
-Author: kismsu <egorovkn@gmail.com>
-Date:   Sat, 13 Nov 2021 18:15:41 +0000
+ .github/workflows/copyrights.yml | 2 +-
+ .github/workflows/link-check.yml | 2 +-
+ .github/workflows/linux.yml      | 2 +-
+ .github/workflows/misspell.yml   | 2 +-
+ .github/workflows/namespaces.yml | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-    Export ESTR
+commit 30cf3481fc953ff668deaf06ce7b7ba4ff77b91e
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Wed, 2 Mar 2022 16:28:46 +0100
 
- SWIG/indexes.i | 1 +
- 1 file changed, 1 insertion(+)
+    Exposed Akima cubic interpolation scheme.
 
-commit e8df1a2f23b2f00be9d63893a35db929410905ab
+ SWIG/discountcurve.i |  2 ++
+ SWIG/interpolation.i | 16 ++++++++++++++++
+ SWIG/zerocurve.i     |  2 ++
+ 3 files changed, 20 insertions(+)
+
+commit a99320cdc1c7ce48e482ca3b32a9b010c17b8e6b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 15 Apr 2021 16:27:56 +0200
+Date:   Tue, 1 Mar 2022 10:05:23 +0100
 
-    Set version to 1.25-dev.
+    Remove exported constructor body
+
+ SWIG/stochasticprocess.i | 21 ++++++---------------
+ 1 file changed, 6 insertions(+), 15 deletions(-)
+
+commit 0cc2dd449ec743eba0a370e4882d182dfc6baee0
+Merge: 0ff0103 1b1005d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 18 Feb 2022 10:20:18 +0100
+
+    Merge pull request #445.
+    
+    Don't use deprecated `std::unary_function` in wrappers
+
+commit 1b1005d3fabbf87686418e0cb6f61371b8d9f707
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 18 Feb 2022 09:53:34 +0100
+
+    Avoid unary_function in Java wrappers too
+
+ SWIG/functions.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0ff01035312f077e6c9249269556fc3a0fab628d
+Merge: 6513254 d4d2d28
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 18 Feb 2022 09:32:33 +0100
+
+    Merge pull request #444.
+    
+    Update for interpolation and cash flows.
+
+commit 8c94ae215a19c74511d10c7d3bae722bc13c1bb6
+Author: jonghee <jonghee.lee@miraeasset.com>
+Date:   Fri, 18 Feb 2022 10:02:52 +0900
+
+    remove unary_function in CSHARP
+
+ SWIG/functions.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d4d2d289550a6587136fae7a43e9012b80f74cf3
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Thu, 10 Feb 2022 13:32:40 +0100
+
+    Aligned naming.
+
+ SWIG/discountcurve.i | 2 +-
+ SWIG/zerocurve.i     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 4691a709eb089c0778b6906c7749c159b8486c6f
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Thu, 10 Feb 2022 13:13:30 +0100
+
+    Added a cast to OvernightIndexedCoupon.
+
+ SWIG/cashflows.i | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+commit 1ceb1f87a37008de71538f4aee8292130345c3b4
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Thu, 10 Feb 2022 13:12:59 +0100
+
+    Exposed Kruger interpolation scheme for zero and discount curves.
+
+ SWIG/discountcurve.i | 2 ++
+ SWIG/zerocurve.i     | 2 ++
+ 2 files changed, 4 insertions(+)
+
+commit 6513254295eaea07824e6a786c9823950d3e717b
+Merge: a6ed59c 34560a0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 28 Jan 2022 22:34:32 +0100
+
+    Merge pull request #442.
+    
+    FRA rate helper constructors
+
+commit 34560a05176aeb25511cf4a63318a9b1e90ff077
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Fri, 28 Jan 2022 19:11:47 +0100
+
+    Exposed additional FraRateHelper constuctors.
+
+ SWIG/ratehelpers.i | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
+
+commit a6ed59c032e4e266d13ec492b857e2d80493025a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 18 Jan 2022 11:02:58 +0100
+
+    Set version to 1.26-dev.
 
  Python/setup.py | 2 +-
  R/DESCRIPTION   | 2 +-
  configure.ac    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-commit 4947fdc072a089d2b72d4c022f60f7a09fa8d1ca
-Author: klausspanderen <klaus@spanderen.de>
-Date:   Sun, 17 Oct 2021 10:25:31 +0200
+commit 4d692dd7adf0832a3b55765c21e67f6f047c38db
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Thu, 6 Jan 2022 10:13:46 +0100
 
-    fixed bug
+    Fixed build.
 
- SWIG/fdm.i | 25 +++++++++----------------
- 1 file changed, 9 insertions(+), 16 deletions(-)
-
-commit bc67532086c9dffa2bb451ac0674a67946da0a73
-Author: klausspanderen <klaus@spanderen.de>
-Date:   Mon, 23 Aug 2021 21:56:45 +0200
-
-    added FdmMesher signature and layout method
-
- SWIG/fdm.i | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
-
-commit 5c53d15723657d747bdd16f3c2d16e0617bb74a5
-Author: klausspanderen <klaus@spanderen.de>
-Date:   Sun, 27 Jun 2021 19:50:12 +0200
-
-    added to_sparse_matrix to finite difference linear operators
-
- SWIG/fdm.i | 40 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 40 insertions(+)
+ SWIG/barrieroptions.i | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
