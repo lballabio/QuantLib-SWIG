@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib-SWIG], [1.31-dev],
+AC_INIT([QuantLib-SWIG], [1.31-rc],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib-SWIG])
 AC_PREREQ(2.50)
