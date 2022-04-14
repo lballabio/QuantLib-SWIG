@@ -9,6 +9,9 @@ jobs:
         language: [python3, java, csharp, r, scala]
     container: ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.language }}
     steps:
+    - name: Set up git permissions
+      run: |
+        git config --global --add safe.directory $GITHUB_WORKSPACE
     - uses: actions/checkout@v3
     - name: Build and check
       run: |
