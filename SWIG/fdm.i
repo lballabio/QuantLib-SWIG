@@ -429,15 +429,15 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         Py_XDECREF(pyResult);
     }
 
-    Disposable<Array> apply(const Array& r) const {
+    Array apply(const Array& r) const {
         return apply(r, "apply");        
     }
 
-    Disposable<Array> apply_mixed(const Array& r) const {
+    Array apply_mixed(const Array& r) const {
         return apply(r, "apply_mixed");        
     }
 
-    Disposable<Array> apply_direction(Size direction, const Array& r) const {
+    Array apply_direction(Size direction, const Array& r) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
@@ -450,9 +450,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         return extractArray(pyResult, "apply_direction");        
     }
 
-    Disposable<Array> solve_splitting(
-        Size direction, const Array& r, Real s) const {
-
+    Array solve_splitting(Size direction, const Array& r, Real s) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
@@ -465,7 +463,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         return extractArray(pyResult, "solve_splitting");        
     }
 
-    Disposable<Array> preconditioner(const Array& r, Real s) const {
+    Array preconditioner(const Array& r, Real s) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
@@ -478,9 +476,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
   private:
-    Disposable<Array> apply(
-        const Array& r, const std::string& methodName) const {
-
+    Array apply(const Array& r, const std::string& methodName) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
@@ -554,24 +550,23 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     Size size() const { return delegate_->size(); }
     void setTime(Time t1, Time t2) { delegate_->setTime(t1, t2); }
 
-    Disposable<Array> apply(const Array& r) const {
+    Array apply(const Array& r) const {
         Array retVal = delegate_->apply(r);
         return retVal;
     }
-    Disposable<Array> apply_mixed(const Array& r) const {
+    Array apply_mixed(const Array& r) const {
         Array retVal = delegate_->apply_mixed(r);
         return retVal;
     }        
-    Disposable<Array> apply_direction(Size direction, const Array& r) const {
+    Array apply_direction(Size direction, const Array& r) const {
         Array retVal = delegate_->apply_direction(direction, r);
         return retVal;
     }
-    Disposable<Array> solve_splitting(
-        Size direction, const Array& r, Real s) const {
+    Array solve_splitting(Size direction, const Array& r, Real s) const {
         Array retVal = delegate_->solve_splitting(direction, r, s);
         return retVal;
     }
-    Disposable<Array> preconditioner(const Array& r, Real s) const {
+    Array preconditioner(const Array& r, Real s) const {
         Array retVal = delegate_->preconditioner(r, s);
         return retVal;
     }

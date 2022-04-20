@@ -25,7 +25,6 @@
 
 %{
 using QuantLib::CostFunction;
-using QuantLib::Disposable;
 %}
 
 #if defined(SWIGPYTHON)
@@ -132,7 +131,7 @@ class PyCostFunction : public CostFunction {
         Py_XDECREF(pyResult);
         return result;
     }
-    Disposable<Array> values(const Array& x) const {
+    Array values(const Array& x) const {
         QL_FAIL("Not implemented");
         // Should be straight forward to copy from a python list
         // to an array
@@ -246,7 +245,7 @@ class JavaCostFunction : public CostFunction {
       return delegate_->value(x);
     }
 
-    virtual Disposable<Array> values(const Array& x) const {
+    virtual Array values(const Array& x) const {
       Array retVal = delegate_->values(x);
       return retVal;
     }
@@ -262,7 +261,7 @@ class JavaCostFunction {
 
     virtual ~JavaCostFunction();
     virtual Real value(const Array& x ) const;
-    virtual Disposable<Array> values(const Array& x) const;
+    virtual Array values(const Array& x) const;
 
   private:
     CostFunctionDelegate* delegate_;
@@ -383,7 +382,7 @@ class DotNetCostFunction : public CostFunction {
       return delegate_->value(x);
     }
 
-    virtual Disposable<Array> values(const Array& x) const {
+    virtual Array values(const Array& x) const {
       Array retVal = delegate_->values(x);
       return retVal;
     }
@@ -399,7 +398,7 @@ class DotNetCostFunction {
 
     virtual ~DotNetCostFunction();
     virtual Real value(const Array& x ) const;
-    virtual Disposable<Array> values(const Array& x) const;
+    virtual Array values(const Array& x) const;
 
   private:
     CostFunctionDelegate* delegate_;

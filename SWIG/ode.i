@@ -21,10 +21,6 @@
 %include common.i
 %include functions.i
 
-%{
-using QuantLib::Disposable;
-%}
-
 #if defined(SWIGJAVA) || defined(SWIGCSHARP)
 
 %{
@@ -45,9 +41,7 @@ class OdeFct {
 
     virtual ~OdeFct() { }
 
-    const Disposable<std::vector<Real> > 
-        operator()(Real x, const std::vector<Real>& y) const {
-        
+    const std::vector<Real> operator()(Real x, const std::vector<Real>& y) const {
         std::vector<Real> retVal = delegate_->value(x, y);
         return retVal;
     }
@@ -89,9 +83,7 @@ class OdeFct {
         Py_XDECREF(function_);
     }
     
-    const Disposable<std::vector<Real> > operator()(
-        Real x, const std::vector<Real>& y) const {
-        
+    const std::vector<Real> operator()(Real x, const std::vector<Real>& y) const {
         PyObject* pyY = PyList_New(y.size());
         for (Size i=0; i < y.size(); ++i)
             PyList_SetItem(pyY, i, PyFloat_FromDouble(y[i]));
