@@ -889,24 +889,6 @@ class MCDigitalEngine : public PricingEngine {
 // American engines
 
 %{
-using QuantLib::FDShoutEngine;
-using QuantLib::CrankNicolson;
-%}
-
-%shared_ptr(FDShoutEngine<CrankNicolson>);
-
-template <class S>
-class FDShoutEngine : public PricingEngine {
-  public:
-    FDShoutEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                  Size timeSteps = 100, Size gridPoints = 100,
-                  bool timeDependent = false);
-};
-
-%template(FDShoutEngine) FDShoutEngine<CrankNicolson>;
-
-
-%{
 using QuantLib::BaroneAdesiWhaleyApproximationEngine;
 %}
 
