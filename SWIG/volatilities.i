@@ -5,6 +5,7 @@
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2018, 2019, 2020 Matthias Lungwitz
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -617,6 +618,20 @@ class SabrSmileSection : public SmileSection {
     Real rho() const;
 };
 
+
+%{
+using QuantLib::SviSmileSection;
+%}
+
+%shared_ptr(SviSmileSection)
+class SviSmileSection : public SmileSection {
+  public:
+    SviSmileSection(Time timeToExpiry, Rate forward, std::vector<Real> sviParameters);
+    SviSmileSection(const Date& d,
+                    Rate forward,
+                    std::vector<Real> sviParameters,
+                    const DayCounter& dc = Actual365Fixed());
+};
 
 %{
 using QuantLib::SwaptionVolatilityCube;
