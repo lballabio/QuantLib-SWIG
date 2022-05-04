@@ -525,8 +525,10 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
 
 
 class SviSmileSectionTest(unittest.TestCase):
-    def test_svi_smile_section(self):
+    def setUp(self):
         ql.Settings.instance().evaluationDate = ql.Date(3, ql.May, 2022)
+
+    def test_svi_smile_section(self):
         expiry_date = ql.Date(16, ql.December, 2022)
         forward = 100
         atm_vol = 0.325819
@@ -539,7 +541,6 @@ class SviSmileSectionTest(unittest.TestCase):
         self.assertAlmostEqual(smile.volatility(257.328), 0.739775, places=5)
 
     def test_svi_interpolated_smile_section(self):
-        ql.Settings.instance().evaluationDate = ql.Date(3, ql.May, 2022)
         expiry_date = ql.Date(16, ql.December, 2022)
         forward = 100
         strikes = [25.6134, 48.5585, 71.5027, 94.4478, 117.3920, 140.3372, 163.2814, 186.2265, 209.1707, 232.1149]
