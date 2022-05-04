@@ -16,7 +16,6 @@
   FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import math
 import unittest
 import QuantLib as ql
 
@@ -557,8 +556,8 @@ class SviSmileSectionTest(unittest.TestCase):
         m = 0.6
 
         interpolated_smile = ql.SviInterpolatedSmileSection(
-            expiry_date, forward, strikes, has_floating_strikes, atm_vol, vols, 
-            a, b, sigma, rho, m, 
+            expiry_date, forward, strikes, has_floating_strikes, atm_vol, vols,
+            a, b, sigma, rho, m,
             False, False, False, False, False
         )
 
