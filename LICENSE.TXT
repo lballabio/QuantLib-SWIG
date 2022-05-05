@@ -35,6 +35,7 @@ QuantLib-SWIG is
     Copyright (C) 2020, 2021 Jack Gillett
     Copyright (C) 2020, 2021 Marcin Rybacki
     Copyright (C) 2021 Ralf Konrad Eckel
+    Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
