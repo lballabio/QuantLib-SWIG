@@ -5,6 +5,7 @@
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2018, 2019, 2020 Matthias Lungwitz
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -615,6 +616,80 @@ class SabrSmileSection : public SmileSection {
     Real beta() const;
     Real nu() const;
     Real rho() const;
+};
+
+
+%{
+using QuantLib::SviSmileSection;
+%}
+
+%shared_ptr(SviSmileSection)
+class SviSmileSection : public SmileSection {
+  public:
+    SviSmileSection(Time timeToExpiry, Rate forward, std::vector<Real> sviParameters);
+    SviSmileSection(const Date& d,
+                    Rate forward,
+                    std::vector<Real> sviParameters,
+                    const DayCounter& dc = Actual365Fixed());
+};
+
+%{
+using QuantLib::SviInterpolatedSmileSection;
+%}
+
+%shared_ptr(SviInterpolatedSmileSection)
+class SviInterpolatedSmileSection : public SmileSection {
+  public:
+    SviInterpolatedSmileSection(
+        const Date& optionDate,
+        Handle<Quote> forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        Handle<Quote> atmVolatility,
+        const std::vector<Handle<Quote> >& volHandles,
+        Real a,
+        Real b,
+        Real sigma,
+        Real rho,
+        Real m,
+        bool aIsFixed,
+        bool bIsFixed,
+        bool sigmaIsFixed,
+        bool rhoIsFixed,
+        bool mIsFixed,
+        bool vegaWeighted = true,
+        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        const DayCounter& dc = Actual365Fixed());
+    SviInterpolatedSmileSection(
+        const Date& optionDate,
+        const Rate& forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        const Volatility& atmVolatility,
+        const std::vector<Volatility>& vols,
+        Real a,
+        Real b,
+        Real sigma,
+        Real rho,
+        Real m,
+        bool isAFixed,
+        bool isBFixed,
+        bool isSigmaFixed,
+        bool isRhoFixed,
+        bool isMFixed,
+        bool vegaWeighted = true,
+        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        const DayCounter& dc = Actual365Fixed());
+    Real a() const;
+    Real b() const;
+    Real sigma() const;
+    Real rho() const;
+    Real m() const;
+    Real rmsError() const;
+    Real maxError() const;
+    EndCriteria::Type endCriteria() const;
 };
 
 

@@ -1,5 +1,6 @@
 """
   Copyright (C) 2020 Marcin Rybacki
+  Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
   This file is part of QuantLib, a free-software/open-source library
   for financial quantitative analysts and developers - http://quantlib.org/
@@ -522,8 +523,51 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             epsilon=SABR_SPREAD_TOLERANCE)
 
 
+class SviSmileSectionTest(unittest.TestCase):
+    def setUp(self):
+        ql.Settings.instance().evaluationDate = ql.Date(3, ql.May, 2022)
+
+    def test_svi_smile_section(self):
+        """Testing the SviSmileSection against already fitted parameters"""
+        expiry_date = ql.Date(16, ql.December, 2022)
+        forward = 100
+        atm_vol = 0.325819
+        # parameters = a, b, sigma, rho, m
+        svi_parameters = [-0.651304, 0.986546, 0.838493, 0.520853, 0.695177]
+
+        smile = ql.SviSmileSection(expiry_date, forward, svi_parameters)
+
+        self.assertAlmostEqual(smile.volatility(forward), atm_vol, places=5)
+        self.assertAlmostEqual(smile.volatility(257.328), 0.739775, places=5)
+
+    def test_svi_interpolated_smile_section(self):
+        """Testing the SviInterpolatedSmileSection's parameter fitting against given vols"""
+        expiry_date = ql.Date(16, ql.December, 2022)
+        forward = 100
+        strikes = [25.6134, 48.5585, 71.5027, 94.4478, 117.3920, 140.3372, 163.2814, 186.2265, 209.1707, 232.1149]
+        has_floating_strikes = False
+        atm_vol = 0.325819
+        vols = [0.881504, 0.627807, 0.456964, 0.343740, 0.297482, 0.321816, 0.390772, 0.476758, 0.565635, 0.651507]
+
+        a = -0.6
+        b = 0.9
+        sigma = 0.8
+        rho = 0.5
+        m = 0.6
+
+        interpolated_smile = ql.SviInterpolatedSmileSection(
+            expiry_date, forward, strikes, has_floating_strikes, atm_vol, vols,
+            a, b, sigma, rho, m,
+            False, False, False, False, False
+        )
+
+        self.assertAlmostEqual(interpolated_smile.volatility(forward), atm_vol, places=5)
+        self.assertAlmostEqual(interpolated_smile.volatility(257.328), 0.739775, places=5)
+
+
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(SwaptionVolatilityCubeTest, "test"))
+    suite.addTest(unittest.makeSuite(SviSmileSectionTest, "test"))
     unittest.TextTestRunner(verbosity=2).run(suite)
