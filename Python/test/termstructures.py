@@ -272,7 +272,25 @@ class TermStructureTest(unittest.TestCase):
         quanto_engine = ql.QuantoEuropeanEngine(gbm_vanilla, r_foreign_ts, sigma_fx, rho)
         quanto_option.setPricingEngine(quanto_engine)
 
-        self.assertAlmostEquals(quanto_option.NPV(), vanilla_option.NPV(), delta=1e-12)
+        quanto_option_pv = quanto_option.NPV()
+        vanilla_option_pv = vanilla_option.NPV()
+
+        message = """Failed to reproduce QuantoOption / EuropeanQuantoEngine NPV: 
+                      {quanto_pv}
+                      by using the QuantoTermStructure as the dividend together with
+                      VanillaOption / AnalyticEuropeanEngine:
+                      {vanilla_pv}
+                  """.format(
+            quanto_pv=quanto_option_pv,
+            vanilla_pv=vanilla_option_pv
+        )
+
+        self.assertAlmostEquals(
+            quanto_option_pv,
+            vanilla_option_pv,
+            delta=1e-12,
+            msg=message
+        )
 
 
 if __name__ == "__main__":
