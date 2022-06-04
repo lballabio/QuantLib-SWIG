@@ -2,7 +2,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2010, 2012, 2018, 2019 Klaus Spanderen
  Copyright (C) 2018, 2019 Matthias Lungwitz
- Copyright (C) 2020 Jack Gillett
+ Copyright (C) 2020, 2022 Jack Gillett
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -452,6 +452,16 @@ class FdBlackScholesAsianEngine : public PricingEngine {
   public:
     FdBlackScholesAsianEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                               Size tGrid, Size xGrid, Size aGrid);
+};
+
+%{
+using QuantLib::TurnbullWakemanAsianEngine;
+%}
+
+%shared_ptr(TurnbullWakemanAsianEngine)
+class TurnbullWakemanAsianEngine : public PricingEngine {
+  public:
+    TurnbullWakemanAsianEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
