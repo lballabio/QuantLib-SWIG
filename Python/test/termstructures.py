@@ -275,7 +275,7 @@ class TermStructureTest(unittest.TestCase):
         quanto_option_pv = quanto_option.NPV()
         vanilla_option_pv = vanilla_option.NPV()
 
-        message = """Failed to reproduce QuantoOption / EuropeanQuantoEngine NPV: 
+        message = """Failed to reproduce QuantoOption / EuropeanQuantoEngine NPV:
                       {quanto_pv}
                       by using the QuantoTermStructure as the dividend together with
                       VanillaOption / AnalyticEuropeanEngine:
