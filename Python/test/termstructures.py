@@ -203,6 +203,95 @@ class TermStructureTest(unittest.TestCase):
                 delta=1.0e-12,
                 msg=failMsg)
 
+    def testQuantoTermStructure(self):
+        """Testing quanto term structure"""
+        today = ql.Date.todaysDate()
+
+        dividend_ts = ql.YieldTermStructureHandle(
+            ql.FlatForward(
+                today,
+                ql.QuoteHandle(ql.SimpleQuote(0.055)),
+                self.dayCounter
+            )
+        )
+        r_domestic_ts = ql.YieldTermStructureHandle(
+            ql.FlatForward(
+                today,
+                ql.QuoteHandle(ql.SimpleQuote(-0.01)),
+                self.dayCounter
+            )
+        )
+        r_foreign_ts = ql.YieldTermStructureHandle(
+            ql.FlatForward(
+                today,
+                ql.QuoteHandle(ql.SimpleQuote(0.02)),
+                self.dayCounter
+            )
+        )
+        sigma_s = ql.BlackVolTermStructureHandle(
+            ql.BlackConstantVol(
+                today,
+                self.calendar,
+                ql.QuoteHandle(ql.SimpleQuote(0.25)),
+                self.dayCounter
+            )
+        )
+        sigma_fx = ql.BlackVolTermStructureHandle(
+            ql.BlackConstantVol(
+                today,
+                self.calendar,
+                ql.QuoteHandle(ql.SimpleQuote(0.05)),
+                self.dayCounter
+            )
+        )
+        rho = ql.QuoteHandle(ql.SimpleQuote(0.3))
+        s_0 = ql.QuoteHandle(ql.SimpleQuote(100.0))
+
+        exercise = ql.EuropeanExercise(self.calendar.advance(today, 6, ql.Months))
+        payoff = ql.PlainVanillaPayoff(ql.Option.Call, 95.0)
+
+        vanilla_option = ql.VanillaOption(payoff, exercise)
+        quanto_ts = ql.YieldTermStructureHandle(
+            ql.QuantoTermStructure(
+                dividend_ts,
+                r_domestic_ts,
+                r_foreign_ts,
+                sigma_s,
+                ql.nullDouble(),
+                sigma_fx,
+                ql.nullDouble(),
+                rho.value()
+            )
+        )
+        gbm_quanto = ql.BlackScholesMertonProcess(s_0, quanto_ts, r_domestic_ts, sigma_s)
+        vanilla_engine = ql.AnalyticEuropeanEngine(gbm_quanto)
+        vanilla_option.setPricingEngine(vanilla_engine)
+
+        quanto_option = ql.QuantoVanillaOption(payoff, exercise)
+        gbm_vanilla = ql.BlackScholesMertonProcess(s_0, dividend_ts, r_domestic_ts, sigma_s)
+        quanto_engine = ql.QuantoEuropeanEngine(gbm_vanilla, r_foreign_ts, sigma_fx, rho)
+        quanto_option.setPricingEngine(quanto_engine)
+
+        quanto_option_pv = quanto_option.NPV()
+        vanilla_option_pv = vanilla_option.NPV()
+
+        message = """Failed to reproduce QuantoOption / EuropeanQuantoEngine NPV:
+                      {quanto_pv}
+                      by using the QuantoTermStructure as the dividend together with
+                      VanillaOption / AnalyticEuropeanEngine:
+                      {vanilla_pv}
+                  """.format(
+            quanto_pv=quanto_option_pv,
+            vanilla_pv=vanilla_option_pv
+        )
+
+        self.assertAlmostEquals(
+            quanto_option_pv,
+            vanilla_option_pv,
+            delta=1e-12,
+            msg=message
+        )
+
 
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)

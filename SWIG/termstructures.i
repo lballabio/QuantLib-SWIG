@@ -221,4 +221,23 @@ class CompositeZeroYieldStructure : public YieldTermStructure {
 %template(CompositeZeroYieldStructure) CompositeZeroYieldStructure<BinaryFunction>;
 #endif
 
+
+%{
+using QuantLib::QuantoTermStructure;
+%}
+
+%shared_ptr(QuantoTermStructure);
+class QuantoTermStructure : public YieldTermStructure {
+  public:
+    QuantoTermStructure(const Handle<YieldTermStructure>& underlyingDividendTS,
+                        Handle<YieldTermStructure> riskFreeTS,
+                        Handle<YieldTermStructure> foreignRiskFreeTS,
+                        Handle<BlackVolTermStructure> underlyingBlackVolTS,
+                        Real strike,
+                        Handle<BlackVolTermStructure> exchRateBlackVolTS,
+                        Real exchRateATMlevel,
+                        Real underlyingExchRateCorrelation);
+};
+
+
 #endif
