@@ -1,0 +1,9 @@
+#!/bin/bash
+
+./autogen.sh \
+&& ./configure --disable-java-finalizer --enable-java-autocloseable \
+               --with-jdk-include=/usr/lib/jvm/default-java/include \
+               --with-jdk-system-include=/usr/lib/jvm/default-java/include/linux \
+               CC=clang CXX=clang++ CXXFLAGS='-O2' \
+&& make -C Java \
+&& make -C Java check
