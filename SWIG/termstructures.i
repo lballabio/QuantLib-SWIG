@@ -145,6 +145,7 @@ class InterpolatedPiecewiseZeroSpreadedTermStructure : public YieldTermStructure
                 const Interpolator& factory = Interpolator());
 };
 
+%template(PiecewiseZeroSpreadedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<Linear>;
 %template(SpreadedLinearZeroInterpolatedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<Linear>;
 %template(SpreadedBackwardFlatZeroInterpolatedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<BackwardFlat>;
 
