@@ -48,6 +48,7 @@ from swaption import SwaptionTest
 from volatilities import SviSmileSectionTest, SwaptionVolatilityCubeTest
 from inflation import InflationTest
 from coupons import (
+    CashFlowsTest,
     SubPeriodsCouponTest,
     IborCouponTest,
     OvernightCouponTest,
@@ -91,6 +92,7 @@ def test():
     suite.addTest(unittest.makeSuite(SwaptionVolatilityCubeTest, 'test'))
     suite.addTest(unittest.makeSuite(InflationTest, "test"))
     suite.addTest(unittest.makeSuite(CrossCurrencyBasisSwapRateHelperTest, "test"))
+    suite.addTest(unittest.makeSuite(CashFlowsTest, "test"))
     suite.addTest(unittest.makeSuite(SubPeriodsCouponTest, "test"))
     suite.addTest(unittest.makeSuite(IborCouponTest, "test"))
     suite.addTest(unittest.makeSuite(OvernightCouponTest, "test"))
