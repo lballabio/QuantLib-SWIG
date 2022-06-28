@@ -92,8 +92,9 @@ class CashFlowsTest(unittest.TestCase):
         """Testing previous cash flows amount"""
         reference_date = ql.Date(28, 6, 2022)
         expected_amount = 1.05e6
+        include_settlement_date_flows = False
         actual_amount = ql.CashFlows.previousCashFlowAmount(
-            self.cash_flows, False, reference_date)
+            self.cash_flows, include_settlement_date_flows, reference_date)
         fail_msg = """ Unable to replicate previous cash flow amount:
                             calculated: {actual}
                             expected: {expected}
@@ -105,8 +106,9 @@ class CashFlowsTest(unittest.TestCase):
         """Testing next cash flows amount"""
         reference_date = ql.Date(21, 6, 2022)
         expected_amount = 1.05e6
+        include_settlement_date_flows = False
         actual_amount = ql.CashFlows.nextCashFlowAmount(
-            self.cash_flows, False, reference_date)
+            self.cash_flows, include_settlement_date_flows, reference_date)
         fail_msg = """ Unable to replicate next cash flow amount:
                             calculated: {actual}
                             expected: {expected}
