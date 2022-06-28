@@ -85,7 +85,6 @@ def create_fixed_rate_leg(start, end, payment_lag=0):
 
 class CashFlowsTest(unittest.TestCase):
     def setUp(self):
-        ql.Settings.instance().evaluationDate = VALUATION_DATE
         self.cash_flows = [ql.SimpleCashFlow(1.e6, ql.Date(22, 6, 2022)),
                            ql.SimpleCashFlow(5.e4, ql.Date(22, 6, 2022))]
 
