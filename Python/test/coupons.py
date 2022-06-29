@@ -83,6 +83,40 @@ def create_fixed_rate_leg(start, end, payment_lag=0):
                            paymentLag=payment_lag)
 
 
+class CashFlowsTest(unittest.TestCase):
+    def setUp(self):
+        self.cash_flows = [ql.SimpleCashFlow(1.e6, ql.Date(22, 6, 2022)),
+                           ql.SimpleCashFlow(5.e4, ql.Date(22, 6, 2022))]
+
+    def test_previous_cash_flow_amount(self):
+        """Testing previous cash flows amount"""
+        reference_date = ql.Date(28, 6, 2022)
+        expected_amount = 1.05e6
+        include_settlement_date_flows = False
+        actual_amount = ql.CashFlows.previousCashFlowAmount(
+            self.cash_flows, include_settlement_date_flows, reference_date)
+        fail_msg = """ Unable to replicate previous cash flow amount:
+                            calculated: {actual}
+                            expected: {expected}
+                   """.format(actual=actual_amount,
+                              expected=expected_amount)
+        self.assertEqual(actual_amount, expected_amount, msg=fail_msg)
+
+    def test_next_cash_flow_amount(self):
+        """Testing next cash flows amount"""
+        reference_date = ql.Date(21, 6, 2022)
+        expected_amount = 1.05e6
+        include_settlement_date_flows = False
+        actual_amount = ql.CashFlows.nextCashFlowAmount(
+            self.cash_flows, include_settlement_date_flows, reference_date)
+        fail_msg = """ Unable to replicate next cash flow amount:
+                            calculated: {actual}
+                            expected: {expected}
+                   """.format(actual=actual_amount,
+                              expected=expected_amount)
+        self.assertEqual(actual_amount, expected_amount, msg=fail_msg)
+
+
 class IborCouponTest(unittest.TestCase):
     def setUp(self):
         ql.Settings.instance().evaluationDate = VALUATION_DATE
@@ -435,6 +469,7 @@ class SubPeriodsCouponTest(unittest.TestCase):
 if __name__ == '__main__':
     print('testing QuantLib ' + ql.__version__)
     suite = unittest.TestSuite()
+    suite.addTest(unittest.makeSuite(CashFlowsTest, 'test'))
     suite.addTest(unittest.makeSuite(SubPeriodsCouponTest, 'test'))
     suite.addTest(unittest.makeSuite(IborCouponTest, 'test'))
     suite.addTest(unittest.makeSuite(OvernightCouponTest, 'test'))
