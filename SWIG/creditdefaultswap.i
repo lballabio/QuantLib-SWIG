@@ -109,23 +109,32 @@ class CreditDefaultSwap : public Instrument {
     }
     bool settlesAccrual() const;
     bool paysAtDefaultTime() const;
-    Rate fairSpread() const;
+    std::vector<ext::shared_ptr<CashFlow> > coupons();
+    const Date& protectionStartDate() const;
+    const Date& protectionEndDate() const;
+    bool rebatesAccrual() const;
+    ext::shared_ptr<CashFlow> upfrontPayment() const;
+    ext::shared_ptr<CashFlow> accrualRebate() const;
+    const Date& tradeDate() const;
+    Natural cashSettlementDays() const;
     Rate fairUpfront() const;
+    Rate fairSpread() const;
     Real couponLegBPS() const;
+    Real upfrontBPS() const;
     Real couponLegNPV() const;
     Real defaultLegNPV() const;
-    Real upfrontBPS() const;
     Real upfrontNPV() const;
+    Real accrualRebateNPV() const;
     Rate impliedHazardRate(Real targetNPV,
                            const Handle<YieldTermStructure>& discountCurve,
                            const DayCounter& dayCounter,
                            Real recoveryRate = 0.4,
                            Real accuracy = 1.0e-6,
-               CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const;
+                           CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const;
     Rate conventionalSpread(Real conventionalRecovery,
-            const Handle<YieldTermStructure>& discountCurve,
-            const DayCounter& dayCounter) const;
-    std::vector<ext::shared_ptr<CashFlow> > coupons();
+                            const Handle<YieldTermStructure>& discountCurve,
+                            const DayCounter& dayCounter,
+                            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const;
 };
 
 
