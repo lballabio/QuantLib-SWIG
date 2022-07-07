@@ -51,6 +51,8 @@ namespace std {
     %template(PairDoubleVector) pair<vector<double>,vector<double> >;
 
 #if !defined(SWIGR)
+    %template(SizePair) pair<Size,Size>;
+
     %template(NodePair) pair<Date,double>;
     %template(NodeVector) vector<pair<Date,double> >;
 #endif
