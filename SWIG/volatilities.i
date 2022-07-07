@@ -586,10 +586,13 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
         }
     }
     
+#if !defined(SWIGR)
     std::pair<Size,Size> locate(const Date& optionDate,
                                 const Period& swapTenor) const;
     std::pair<Size,Size> locate(Time optionTime,
                                 Time swapLength) const;
+#endif
+
     VolatilityType volatilityType() const;
 };
 
