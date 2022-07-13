@@ -1,31 +1,37 @@
 
-Main changes for QuantLib-SWIG 1.26
+Main changes for QuantLib-SWIG 1.27
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/19?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/20?closed=1>.
 
-- Running `make` in the `CSharp` folder (after `../configure` in the
-  root folder) now uses `dotnet` instead of older C# compilers.
-  The existing VC# projects were also updated to .Net.
 
-- Fixed a compilation error in wrappers when using strict C++17 mode
-  (thanks to Jonghee Lee).
+- Fixed code generation when Java's `AutoCloseable` support is enabled
+  through the `--enable-java-autocloseable` configure switch.
 
-- Exported a few more constructors for `FraRateHelper` (thanks to Marcin Rybacki).
+- Exported the `SviSmileSection` and `SviInterpolatedSmileSection`
+  classes; thanks to Fredrik Gerdin Börjesson (@gbfredrik).
 
-- Exported the `SpreadFittingMethod` class.
+- Exported the `QuantoTermStructure` class; thanks to Sebastian Bohlen
+  (@BohlSeb).
 
-- Exported the new `BondForward` class (thanks to Marcin Rybacki).
+- Exported the `TurnbullWakemanAsianEngine` class; thanks to Jack
+  Gillett (@jackgillett101).
 
-- Ensure that periods that compare equal have the same hash in C# and Python.
+- Exported shorter name (the same as in C++) for
+  `PiecewiseZeroSpreadedTermStructure`.  The older and uglier
+  `SpreadedLinearZeroInterpolatedTermStructure` is still available.
 
-- Exported `SplineLogCubic` interpolation and the corresponding
-  `NaturalLogCubicDiscountCurve`, `PiecewiseNaturalCubicZero` and
-  `PiecewiseNaturalLogCubicDiscount` classes. Also exported
-  `KrugerLogDiscountCurve` and `KrugerZeroCurve` based on Kruger
-  interpolation (thanks to Marcin Rybacki).
+- Exported the `previousCashFlowAmount` and `nextCashFlowAmount`
+  methods from the `CashFlows` class; thanks to Marcin Rybacki
+  (@marcin-rybacki).
 
-- Exported `as_overnight_indexed_coupon` function to downcast such
-  coupons when needed (thanks to Marcin Rybacki).
+- Exported a few missing methods from the `CreditDefaultSwap` class.
+
+- Removed the `FDShoutEngine` class, no longer available in the
+  underlying C++ library; thanks to Fredrik Gerdin Börjesson
+  (@gbfredrik).
+
+- Removed reference to the deprecated `Disposable` class from
+  interface files; thanks to Jonathan Sweemer (@sweemer).
 

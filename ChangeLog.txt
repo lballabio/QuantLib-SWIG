@@ -1,393 +1,337 @@
-commit 614415b329317a0cf76272dd7b907dad40424516
-Merge: fb9b604 98fd7fc
+commit f4fc9fe1da48ea7e25d473128811ade78ec2bee6
+Merge: 5fbd5aa e108360
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 31 Mar 2022 16:56:18 +0200
+Date:   Thu, 7 Jul 2022 12:16:16 +0200
 
-    Merge pull request #454.
+    Merge pull request #477.
     
-    Export `SpreadFittingMethod` class
+    Add missing `std::pair<Size,Size>` mapping
 
-commit 98fd7fc416bf02fffa9325fff0d4889c1b414c09
+commit e10836057ce6592aee730ccd9177c32df16ddbd6
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 31 Mar 2022 15:53:17 +0200
+Date:   Thu, 7 Jul 2022 10:34:12 +0200
 
-    Export SpreadFittingMethod class
+    Add missing std::pair<Size,Size> mapping
 
- SWIG/fittedbondcurve.i | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+ SWIG/vectors.i      | 2 ++
+ SWIG/volatilities.i | 3 +++
+ 2 files changed, 5 insertions(+)
 
-commit fb9b6041d3359f380d4cfeb0003f760749c5f3dc
-Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 28 Mar 2022 18:00:57 +0000
-
-    Bump peter-evans/create-pull-request from 3 to 4
-    
-    Bumps [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) from 3 to 4.
-    - [Release notes](https://github.com/peter-evans/create-pull-request/releases)
-    - [Commits](https://github.com/peter-evans/create-pull-request/compare/v3...v4)
-    
-    ---
-    updated-dependencies:
-    - dependency-name: peter-evans/create-pull-request
-      dependency-type: direct:production
-      update-type: version-update:semver-major
-    ...
-    
-    Signed-off-by: dependabot[bot] <support@github.com>
-
- .github/workflows/copyrights.yml | 2 +-
- .github/workflows/misspell.yml   | 2 +-
- .github/workflows/namespaces.yml | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-commit 3da258c9530b2f4781b99a2ddd4137b8c71604e9
-Merge: 18d8c89 89a76c0
+commit 5fbd5aa47436c7142e3f202a5fafd132f183104c
+Merge: f58c579 b0eab63
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Mar 2022 19:21:31 +0100
+Date:   Wed, 6 Jul 2022 16:55:16 +0200
 
-    Merge pull request #451.
+    Merge pull request #476.
     
-    Expose `BondForward` class
+    Export missing CDS methods
 
-commit 18d8c89ae2cfda197a145947d9d153260fba7fc6
-Merge: 0ca88dc 428a690
+commit b0eab63672165a805f4ba41885ff44b1eb1c4ad9
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Mar 2022 15:14:02 +0100
+Date:   Wed, 6 Jul 2022 15:18:08 +0200
 
-    Merge pull request #452.
+    Export missing CDS methods
+
+ SWIG/creditdefaultswap.i | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
+
+commit f58c57941dc9ca50e090415d27d16c0d15f70edb
+Merge: c7fac27 d2857e0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 29 Jun 2022 15:15:04 +0200
+
+    Merge pull request #473.
     
-    Use normalized period to generate hash
+    Next and previous cash flow amount
 
-commit 428a690fad613dad5cf35f0547784186befaa200
+commit d2857e06a452a71ba51dd3781c657d66f2d43a7d
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Tue, 28 Jun 2022 19:23:49 +0200
+
+    Made function args more descriptive.
+
+ Python/test/coupons.py | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 073efa25ff381206f6fea7f9097b2ed688f3b804
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Tue, 28 Jun 2022 19:20:20 +0200
+
+    Setting evaluation date is not required.
+
+ Python/test/coupons.py | 1 -
+ 1 file changed, 1 deletion(-)
+
+commit 0d2474025c4d1a0a7810a17cb16a3af039e6bbf2
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Tue, 28 Jun 2022 19:18:45 +0200
+
+    Added unit tests in Python.
+
+ Python/test/QuantLibTestSuite.py |  2 ++
+ Python/test/coupons.py           | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 36 insertions(+)
+
+commit bdf9d406ff2f659488027cb52f63faa05fccba48
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Tue, 28 Jun 2022 19:06:18 +0200
+
+    Exposed functions returning next and previous cash flow amount
+
+ SWIG/cashflows.i | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+commit c7fac275b56c4a423877835068a9a737192e621b
+Merge: 6ac2384 dc0d1e4
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Mar 2022 14:11:36 +0100
+Date:   Sat, 25 Jun 2022 17:29:04 +0200
 
-    Use normalized period to generate hash
+    Merge pull request #472.
+    
+    Shorter name for default zero-spreaded curve.
 
- CSharp/examples/Times/Times.cs | 3 ---
- SWIG/date.i                    | 5 +++--
- SWIG/ql.i                      | 2 +-
- 3 files changed, 4 insertions(+), 6 deletions(-)
-
-commit 808f793402d4dfe380a2f28db8aaba77002b5b07
+commit dc0d1e42021d19dc7166b3a155266bc6c391c34d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 22 Mar 2022 10:20:37 +0100
+Date:   Sat, 25 Jun 2022 14:02:44 +0200
 
-    Require newest QuantLib version
+    Shorter name for default zero-spreaded curve.
+    
+    This is also the name used in the C++ version.
 
- SWIG/ql.i | 2 +-
+ SWIG/termstructures.i | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 6ac238490782927488f5cbeb8040a05a72070125
+Merge: e583aae 7200820
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Jun 2022 14:36:57 +0200
+
+    Merge pull request #471.
+    
+    Fix code generation when Java's `AutoCloseable` support is enabled
+
+commit 7200820ec23a9212d14f344485cc2db5c1d0ef2c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Jun 2022 10:40:42 +0200
+
+    Test two different Java configurations
+
+ .build/java-new.build                 |  9 +++++++++
+ .build/{java.build => java-old.build} |  0
+ .github/workflows/linux.yml           | 12 ++++++++++--
+ 3 files changed, 19 insertions(+), 2 deletions(-)
+
+commit 25bdefe4234f04eb7835542540c2047ed8a96173
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 17 Jun 2022 10:40:02 +0200
+
+    Fix code generation with AutoCloseable support enabled
+
+ SWIG/quantlib.i   | 9 ++++++++-
+ SWIG/timeseries.i | 2 +-
+ 2 files changed, 9 insertions(+), 2 deletions(-)
+
+commit e583aae9265603f06900686f0a14333f9b22d037
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Mon, 6 Jun 2022 06:50:40 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit f8e46a6758036f1bc1fa71b7ccc1f298b906c30c
+commit bac97aa4a6346e3df39be9f23205aed664e37147
+Merge: 0e174c2 9a187bd
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 22 Mar 2022 10:19:58 +0100
+Date:   Mon, 6 Jun 2022 08:50:21 +0200
 
-    Expose inheritance relation
-
- SWIG/forward.i | 32 +++++++++++++-------------------
- 1 file changed, 13 insertions(+), 19 deletions(-)
-
-commit 0ca88dce75a30c475020d825454d5f4c32f9401c
-Merge: 1329a07 808d438
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 21 Mar 2022 15:01:59 +0100
-
-    Merge pull request #450.
+    Merge pull request #467.
     
-    Natural log cubic interpolation
+    Expose Turnbull-Wakeman engine
 
-commit e6f7cdce741447177711c157c1b19067d6e186bf
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 21 Mar 2022 12:46:17 +0100
-
-    Exposed BondForward class.
-
- SWIG/forward.i | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-commit 808d4386d2d4d9b8a1fc28edf20d1c36d2b5a1ba
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 21 Mar 2022 12:26:43 +0100
-
-    Exposed natural cubic spline interpolation.
-
- SWIG/discountcurve.i       |  4 ++--
- SWIG/interpolation.i       | 15 ++++-----------
- SWIG/piecewiseyieldcurve.i |  2 ++
- SWIG/zerocurve.i           |  2 --
- 4 files changed, 8 insertions(+), 15 deletions(-)
-
-commit 1329a07f5b7d4a11068648d3529b06938e66285d
+commit 0e174c2aa6e8bf212e005b5d04ca50a7c9667e52
+Merge: 56d9cac 5214926
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 11 Mar 2022 22:40:59 +0100
+Date:   Sun, 5 Jun 2022 17:52:43 +0200
 
-    Use https links to QuantLib site
-
- Python/QuantLib-Python.spec.in | 2 +-
- Python/setup.py                | 4 ++--
- Python/setup.py.in             | 4 ++--
- R/DESCRIPTION                  | 2 +-
- R/DESCRIPTION.in               | 2 +-
- README.md                      | 6 +++---
- 6 files changed, 10 insertions(+), 10 deletions(-)
-
-commit 724819ba8417dc8647fe701f93d07c83fa403e3c
-Merge: 303db59 1907b78
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sat, 12 Mar 2022 00:00:51 +0100
-
-    Merge pull request #447.
+    Merge pull request #468.
     
-    Use .Net for C# projects and CI build
+    Expose quanto term structure
 
-commit 1907b788a16276627a5a0bc167a8ef77460fb0cc
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 11 Mar 2022 22:31:59 +0100
+commit 521492665e7dd06b85dc8bcb3df6e1ef5d4ef897
+Author: itsguccy <bohlensebastian@aol.de>
+Date:   Sat, 4 Jun 2022 22:56:54 +0200
 
-    Rename docker image for .Net CI build
+    satisfy linter
 
- .build/dotnet.build         | 6 ------
- .github/workflows/linux.yml | 2 +-
- 2 files changed, 1 insertion(+), 7 deletions(-)
-
-commit c61bbe1cf42e657babcca9951c3fbad5ccfaf50c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 11 Mar 2022 18:33:43 +0100
-
-    Fix condition
-
- CSharp/csharp/NQuantLib.csproj | 2 +-
+ Python/test/termstructures.py | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 72dc7a95ad0c1389e336b36f2db7b6bf3a80baf0
+commit 785637d1b751783145b14d8a36489fb0da59efec
+Author: itsguccy <bohlensebastian@aol.de>
+Date:   Sat, 4 Jun 2022 22:13:04 +0200
+
+    add fail message to quanto term structure test
+
+ Python/test/termstructures.py | 20 +++++++++++++++++++-
+ 1 file changed, 19 insertions(+), 1 deletion(-)
+
+commit 0b06df8974960605a6a495932a2386a0db67d040
+Author: itsguccy <bohlensebastian@aol.de>
+Date:   Sat, 4 Jun 2022 21:51:31 +0200
+
+    test QuantoTermStructure exposure against QuantoEuropeanEngine
+
+ Python/test/termstructures.py | 71 +++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 71 insertions(+)
+
+commit 2ce27b4b38b7b5fb054590dcae886da7381ed840
+Author: itsguccy <bohlensebastian@aol.de>
+Date:   Sat, 4 Jun 2022 21:07:16 +0200
+
+    expose QuantoTermStructure
+
+ SWIG/termstructures.i | 19 +++++++++++++++++++
+ 1 file changed, 19 insertions(+)
+
+commit 9a187bd1f4721766eaafea4e1db0eafdb0a530ca
+Author: jackgillett101 <jack.gillett@cantab.net>
+Date:   Sat, 4 Jun 2022 21:37:19 +0800
+
+    Exposing Turnbul-Wakeman engine to SWIG (community request)
+
+ SWIG/asianoptions.i | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+commit 56d9cac17439ed8f42daf2c84c0bb9ac45ae777d
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Thu, 5 May 2022 07:19:24 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit f7c20c15f9c88cf1985246771a2b8d3a4ef7360c
+Merge: 9696087 9c1825d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 11 Mar 2022 18:26:40 +0100
+Date:   Thu, 5 May 2022 09:19:07 +0200
 
-    Move C# examples to own folder to avoid workarounds
-
- .gitignore                                         |  4 +-
- CSharp/Makefile.am                                 | 22 ++++--
- CSharp/QuantLib.sln                                | 90 +++++++++++-----------
- CSharp/cpp/QuantLibWrapper.vcxproj                 | 12 +++
- CSharp/csharp/NQuantLib.csproj                     |  8 +-
- CSharp/examples/BermudanSwaption.csproj            | 34 --------
- .../{ => BermudanSwaption}/BermudanSwaption.cs     |  0
- .../BermudanSwaption/BermudanSwaption.csproj       | 17 ++++
- CSharp/examples/EquityOption.csproj                | 34 --------
- CSharp/examples/{ => EquityOption}/EquityOption.cs |  0
- CSharp/examples/EquityOption/EquityOption.csproj   | 17 ++++
- CSharp/examples/FiniteDifferenceMethods.csproj     | 34 --------
- .../FiniteDifferenceMethods.cs                     |  0
- .../FiniteDifferenceMethods.csproj                 | 17 ++++
- CSharp/examples/Times.csproj                       | 34 --------
- CSharp/examples/{ => Times}/Times.cs               |  0
- CSharp/examples/Times/Times.csproj                 | 17 ++++
- 17 files changed, 149 insertions(+), 191 deletions(-)
-
-commit 4d8a06fd70d32c8282d648dd1c83c2987f5afcb5
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 11 Mar 2022 16:18:36 +0100
-
-    Unset executable bit
-
- CSharp/examples/FiniteDifferenceMethods.csproj | 0
- 1 file changed, 0 insertions(+), 0 deletions(-)
-
-commit 42a2e4cf2490df4bced20fc7339c668b52417f38
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 11 Mar 2022 12:39:04 +0100
-
-    Make sure examples find locally-compiled dynamic library
-
- CSharp/Makefile.am | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-commit f2a1c99beffaedf833d4cd8b85d8eabaeab5f2d4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 10 Mar 2022 17:01:25 +0100
-
-    Try out dotnet build on Linux
-
- .build/dotnet.build         | 6 ++++++
- .github/workflows/linux.yml | 2 +-
- 2 files changed, 7 insertions(+), 1 deletion(-)
-
-commit 29bf451f17bfa6b193e577570fd89fc000c12390
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 10 Mar 2022 15:40:16 +0100
-
-    Use .Net for C# compilation on Linux/macOS
-
- .gitignore                                     |   1 +
- CSharp/Makefile.am                             |  42 ++++---
- CSharp/csharp/NQuantLib.csproj                 | 136 ++--------------------
- CSharp/examples/BermudanSwaption.csproj        | 151 ++++---------------------
- CSharp/examples/EquityOption.csproj            | 151 ++++---------------------
- CSharp/examples/FiniteDifferenceMethods.csproj | 151 ++++---------------------
- CSharp/examples/Times.csproj                   | 151 ++++---------------------
- configure.ac                                   |  13 ++-
- 8 files changed, 134 insertions(+), 662 deletions(-)
-
-commit 303db59fd095c284d4c1574dc9e87daae84df663
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 9 Mar 2022 17:50:20 +0100
-
-    Remove useless files
-
- CSharp/Makefile.am                         |  2 --
- CSharp/cpp/QuantLibWrapper.vcxproj         |  3 ---
- CSharp/cpp/QuantLibWrapper.vcxproj.filters |  9 --------
- CSharp/cpp/QuantlibWrapper.cpp             | 36 ------------------------------
- CSharp/cpp/QuantlibWrapper.h               | 22 ------------------
- CSharp/cpp/stdafx.h                        | 13 -----------
- 6 files changed, 85 deletions(-)
-
-commit 8bbed7c2d85cef7387ccf6a72b5d23cb83efc0dc
-Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 7 Mar 2022 18:00:54 +0000
-
-    Bump actions/checkout from 2 to 3
+    Merge pull request #462.
     
-    Bumps [actions/checkout](https://github.com/actions/checkout) from 2 to 3.
-    - [Release notes](https://github.com/actions/checkout/releases)
-    - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
-    - [Commits](https://github.com/actions/checkout/compare/v2...v3)
-    
-    ---
-    updated-dependencies:
-    - dependency-name: actions/checkout
-      dependency-type: direct:production
-      update-type: version-update:semver-major
-    ...
-    
-    Signed-off-by: dependabot[bot] <support@github.com>
+    Export `SviSmileSection` and `SviInterpolatedSmileSection`
 
- .github/workflows/copyrights.yml | 2 +-
- .github/workflows/link-check.yml | 2 +-
- .github/workflows/linux.yml      | 2 +-
- .github/workflows/misspell.yml   | 2 +-
- .github/workflows/namespaces.yml | 2 +-
- 5 files changed, 5 insertions(+), 5 deletions(-)
+commit 9c1825d2e19c4fbc57149278985823f90e48d93b
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Wed, 4 May 2022 18:15:39 +0200
 
-commit 30cf3481fc953ff668deaf06ce7b7ba4ff77b91e
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Wed, 2 Mar 2022 16:28:46 +0100
+    Fix Codacy issues
 
-    Exposed Akima cubic interpolation scheme.
+ Python/test/volatilities.py | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
- SWIG/discountcurve.i |  2 ++
- SWIG/interpolation.i | 16 ++++++++++++++++
- SWIG/zerocurve.i     |  2 ++
- 3 files changed, 20 insertions(+)
+commit 2ab6f7bc5b4e2e35e015ebf65eb1cf92900af570
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Wed, 4 May 2022 17:53:59 +0200
 
-commit a99320cdc1c7ce48e482ca3b32a9b010c17b8e6b
+    Add docstrings to explain SVI tests
+
+ Python/test/volatilities.py | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit bc2c66bbc88ef4cfb308d59c6bcd796134c2cd3e
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Wed, 4 May 2022 17:53:46 +0200
+
+    Add shared setup for SVI tests
+
+ Python/test/volatilities.py | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+commit eb35fbce78cd1c981648d06981601a7f2f4216fa
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Wed, 4 May 2022 16:45:39 +0200
+
+    Add two unit tests for SVI smile sections
+
+ Python/test/QuantLibTestSuite.py |  3 ++-
+ Python/test/volatilities.py      | 42 ++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 44 insertions(+), 1 deletion(-)
+
+commit 86f2dae7219d3c30dd2bac95a626e84b3b00d624
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Wed, 4 May 2022 16:44:20 +0200
+
+    Add wrappers for `SviInterpolatedSmileSection`
+
+ SWIG/volatilities.i | 60 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
+
+commit f7b3c7243f80a47dc51f160fe445c31e01257d15
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Wed, 4 May 2022 16:44:02 +0200
+
+    Add wrappers for `SviSmileSection`
+
+ SWIG/volatilities.i | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+commit 9696087250f540bea27bc2bf4df94711c5b441a1
+Merge: a88a28b 55b28f2
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 1 Mar 2022 10:05:23 +0100
+Date:   Mon, 2 May 2022 18:25:04 +0200
 
-    Remove exported constructor body
-
- SWIG/stochasticprocess.i | 21 ++++++---------------
- 1 file changed, 6 insertions(+), 15 deletions(-)
-
-commit 0cc2dd449ec743eba0a370e4882d182dfc6baee0
-Merge: 0ff0103 1b1005d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 18 Feb 2022 10:20:18 +0100
-
-    Merge pull request #445.
+    Merge pull request #461.
     
-    Don't use deprecated `std::unary_function` in wrappers
+    Remove deleted `FDShoutEngine` from wrappers
 
-commit 1b1005d3fabbf87686418e0cb6f61371b8d9f707
+commit 55b28f2b447b35c41c6b53540f047b125bb489fd
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Mon, 2 May 2022 17:42:01 +0200
+
+    Remove FDShoutEngine from options interface
+
+ SWIG/options.i | 18 ------------------
+ 1 file changed, 18 deletions(-)
+
+commit a88a28b95e7abdacd1112f23864a63523433711b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 18 Feb 2022 09:53:34 +0100
+Date:   Wed, 27 Apr 2022 09:29:34 +0200
 
-    Avoid unary_function in Java wrappers too
+    Disable broken link checker
 
- SWIG/functions.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .github/workflows/link-check.yml | 12 ------------
+ 1 file changed, 12 deletions(-)
 
-commit 0ff01035312f077e6c9249269556fc3a0fab628d
-Merge: 6513254 d4d2d28
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 18 Feb 2022 09:32:33 +0100
-
-    Merge pull request #444.
-    
-    Update for interpolation and cash flows.
-
-commit 8c94ae215a19c74511d10c7d3bae722bc13c1bb6
-Author: jonghee <jonghee.lee@miraeasset.com>
-Date:   Fri, 18 Feb 2022 10:02:52 +0900
-
-    remove unary_function in CSHARP
-
- SWIG/functions.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit d4d2d289550a6587136fae7a43e9012b80f74cf3
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Thu, 10 Feb 2022 13:32:40 +0100
-
-    Aligned naming.
-
- SWIG/discountcurve.i | 2 +-
- SWIG/zerocurve.i     | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit 4691a709eb089c0778b6906c7749c159b8486c6f
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Thu, 10 Feb 2022 13:13:30 +0100
-
-    Added a cast to OvernightIndexedCoupon.
-
- SWIG/cashflows.i | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-commit 1ceb1f87a37008de71538f4aee8292130345c3b4
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Thu, 10 Feb 2022 13:12:59 +0100
-
-    Exposed Kruger interpolation scheme for zero and discount curves.
-
- SWIG/discountcurve.i | 2 ++
- SWIG/zerocurve.i     | 2 ++
- 2 files changed, 4 insertions(+)
-
-commit 6513254295eaea07824e6a786c9823950d3e717b
-Merge: a6ed59c 34560a0
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 28 Jan 2022 22:34:32 +0100
-
-    Merge pull request #442.
-    
-    FRA rate helper constructors
-
-commit 34560a05176aeb25511cf4a63318a9b1e90ff077
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Fri, 28 Jan 2022 19:11:47 +0100
-
-    Exposed additional FraRateHelper constuctors.
-
- SWIG/ratehelpers.i | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-commit a6ed59c032e4e266d13ec492b857e2d80493025a
+commit 8f360cb82dfb4b280546df3b37bd461746d6c37d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Tue, 18 Jan 2022 11:02:58 +0100
 
-    Set version to 1.26-dev.
+    Set version to 1.27-dev.
 
  Python/setup.py | 2 +-
  R/DESCRIPTION   | 2 +-
  configure.ac    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-commit 4d692dd7adf0832a3b55765c21e67f6f047c38db
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Thu, 6 Jan 2022 10:13:46 +0100
+commit 687d8924c1c73a62fa4cc17977dc0789dcc2dafa
+Merge: 9109f58 b651886
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 Apr 2022 11:29:54 +0200
 
-    Fixed build.
+    Merge pull request #455.
+    
+    Replace Disposable<T> with T
 
- SWIG/barrieroptions.i | 12 ++++++------
- 1 file changed, 6 insertions(+), 6 deletions(-)
+commit b65188617ae4363437e76b8f52278193c651f522
+Author: Jonathan Sweemer <sweemer@gmail.com>
+Date:   Mon, 4 Apr 2022 20:59:05 +0900
+
+    Replace Disposable<T> with T
+
+ SWIG/fdm.i           | 27 +++++++++++----------------
+ SWIG/functions.i     | 11 +++++------
+ SWIG/linearalgebra.i |  9 +++------
+ SWIG/ode.i           | 12 ++----------
+ SWIG/volatilities.i  |  6 +++---
+ 5 files changed, 24 insertions(+), 41 deletions(-)
