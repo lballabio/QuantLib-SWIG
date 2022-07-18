@@ -219,11 +219,7 @@ using QuantLib::Gaussian1dFloatFloatSwaptionEngine;
 
 %shared_ptr(Gaussian1dCapFloorEngine)
 class Gaussian1dCapFloorEngine : public PricingEngine {
-//    #if defined(SWIGPYTHON)
-//    %rename(NoProb) None;
-//    #endif
-//  public:
-//    enum Probabilities { None, Naive, Digital };
+  public:
     Gaussian1dCapFloorEngine(const ext::shared_ptr<Gaussian1dModel> &model,
                              const int integrationPoints = 64, const Real stddevs = 7.0,
                              const bool extrapolatePayoff = true,
