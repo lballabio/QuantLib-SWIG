@@ -229,9 +229,7 @@ class Gaussian1dCapFloorEngine : public PricingEngine {
                              const bool extrapolatePayoff = true,
                              const bool flatPayoffExtrapolation = false,
                              const Handle<YieldTermStructure> &discountCurve =
-                                                           Handle<YieldTermStructure>(),
-                             const Gaussian1dCapFloorEngine::Probabilities probabilities =
-                                                        Gaussian1dCapFloorEngine::None);
+                                                           Handle<YieldTermStructure>();
 };
 
 %shared_ptr(Gaussian1dSwaptionEngine)
