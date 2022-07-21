@@ -1,3 +1,52 @@
+commit cb7c5fe30c4d82e88b874938bfe7d502d3988676
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Apr 2021 11:12:19 +0200
+
+    Set version to 1.27 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit e8ffe044d457673b0793853bb34c1e8f16fc32c0
+Merge: 5d54473 ea832ff
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 Jul 2022 12:12:02 +0200
+
+    Merge pull request #478.
+    
+    Map `pair<Size,Size>` to `pair<unsigned int, unsigned int>` for 32-bit compatibility
+
+commit ea832ffbb3fc49e7ba20a961aecabd3e32a801ff
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 15 Jul 2022 11:09:19 +0200
+
+    Map pair<Size,Size> to pair<unsigned,unsigned> for 32-bit compatibility
+
+ SWIG/vectors.i      |  3 +--
+ SWIG/volatilities.i | 18 ++++++++++++------
+ 2 files changed, 13 insertions(+), 8 deletions(-)
+
+commit 5d54473af444c6be76f97dd32e4d7ee9af7c9055
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Apr 2022 18:29:12 +0200
+
+    Set version to 1.27 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a1f0f6329452b188739d9225e46e9323f0f80a28
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 13 Jul 2022 17:29:56 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt | 504 ++++++++++++++++++++++++++--------------------------------
+ News.md       |  42 ++---
+ 2 files changed, 248 insertions(+), 298 deletions(-)
+
 commit f4fc9fe1da48ea7e25d473128811ade78ec2bee6
 Merge: 5fbd5aa e108360
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
