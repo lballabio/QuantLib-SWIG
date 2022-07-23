@@ -80,7 +80,7 @@ class TermStructureTest(unittest.TestCase):
                 self.calendar,
                 ql.Annual,
                 ql.Unadjusted,
-                ql.Thirty360(),
+                ql.Thirty360(ql.Thirty360.BondBasis),
                 ql.Euribor6M(),
             )
             for (years, rate) in [(1, 4.54), (5, 4.99), (10, 5.47), (20, 5.89), (30, 5.96)]

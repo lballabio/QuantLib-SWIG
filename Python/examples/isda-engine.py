@@ -69,7 +69,7 @@ isda_ibor = ql.IborIndex('IsdaIbor',3*ql.Period(ql.Monthly),2,
 isdaRateHelpers = isdaRateHelpers + [
     ql.SwapRateHelper(swap_quotes[i],swap_tenors[i]*ql.Period(ql.Annual),
                       ql.WeekendsOnly(),ql.Semiannual,ql.ModifiedFollowing,
-                      ql.Thirty360(),isda_ibor)
+                      ql.Thirty360(ql.Thirty360.BondBasis),isda_ibor)
     for i in range(len(swap_tenors))]
 
 spot_date = ql.WeekendsOnly().advance(trade_date, 2 * ql.Period(ql.Daily))

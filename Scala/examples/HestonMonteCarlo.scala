@@ -33,7 +33,7 @@ object HestonMonteCarlo {
             }
         }
 
-        val dayCounter     = new ActualActual();
+        val dayCounter     = new ActualActual(ActualActual.Convention.ISDA);
         val settlementDate = new Date(27, Month.December, 2004)
         Settings.instance setEvaluationDate settlementDate
 

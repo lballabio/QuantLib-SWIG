@@ -146,7 +146,7 @@ settlementDays = 2
 fixedLegFrequency = ql.Annual
 fixedLegTenor = ql.Period(1, ql.Years)
 fixedLegAdjustment = ql.Unadjusted
-fixedLegDayCounter = ql.Thirty360()
+fixedLegDayCounter = ql.Thirty360(ql.Thirty360.BondBasis)
 floatingLegFrequency = ql.Quarterly
 floatingLegTenor = ql.Period(3, ql.Months)
 floatingLegAdjustment = ql.ModifiedFollowing
@@ -195,7 +195,7 @@ payFixed = True
 # %%
 fixedLegFrequency = ql.Annual
 fixedLegAdjustment = ql.Unadjusted
-fixedLegDayCounter = ql.Thirty360()
+fixedLegDayCounter = ql.Thirty360(ql.Thirty360.BondBasis)
 fixedRate = 0.04
 
 # %%
