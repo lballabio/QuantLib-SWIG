@@ -512,15 +512,6 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
             const ext::shared_ptr<ZeroInflationIndex>& index,
             CPI::InterpolationType observationInterpolation,
             const Handle<YieldTermStructure>& nominalTS);
-    ZeroCouponInflationSwapHelper(
-            const Handle<Quote>& quote,
-            const Period& lag,   // lag on swap observation of index
-            const Date& maturity,
-            const Calendar& calendar,
-            BusinessDayConvention bcd,
-            const DayCounter& dayCounter,
-            const ext::shared_ptr<ZeroInflationIndex>& index,
-            const Handle<YieldTermStructure>& nominalTS);
 };
 
 %shared_ptr(YearOnYearInflationSwapHelper)
@@ -693,20 +684,6 @@ class ZeroCouponInflationSwap : public Swap {
                    const ext::shared_ptr<ZeroInflationIndex>& index,
                    const Period& lag,
                    CPI::InterpolationType observationInterpolation,
-                   bool adjustInfObsDates = false,
-                   Calendar infCalendar = Calendar(),
-                   BusinessDayConvention infConvention = BusinessDayConvention());
-    ZeroCouponInflationSwap(
-                   Type type,
-                   Real nominal,
-                   const Date& start,
-                   const Date& maturity,
-                   const Calendar& calendar,
-                   BusinessDayConvention convention,
-                   const DayCounter& dayCounter,
-                   Rate fixedRate,
-                   const ext::shared_ptr<ZeroInflationIndex>& index,
-                   const Period& lag,
                    bool adjustInfObsDates = false,
                    Calendar infCalendar = Calendar(),
                    BusinessDayConvention infConvention = BusinessDayConvention());

@@ -132,7 +132,7 @@ class SwaptionTest(unittest.TestCase):
                             l, self.idx, strike, ql.Period(0, ql.Days),
                             effectiveDate=start_date,
                             fixedLegTenor=ql.Period(1, ql.Years),
-                            fixedLegDayCount=ql.Thirty360(),
+                            fixedLegDayCount=ql.Thirty360(ql.Thirty360.BondBasis),
                             floatingLegSpread=0.0,
                             swapType=t)
                         underlying.setPricingEngine(self.swap_engine)

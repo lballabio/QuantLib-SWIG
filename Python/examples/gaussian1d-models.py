@@ -156,7 +156,7 @@ spread          = [0]*(len(floatSchedule)-1)
 underlying = ql.NonstandardSwap(
     ql.Swap.Payer,
     fixedNominal, floatingNominal, fixedSchedule, strike,
-    ql.Thirty360(), floatSchedule,
+    ql.Thirty360(ql.Thirty360.BondBasis), floatSchedule,
     euribor6m, gearing, spread, ql.Actual360(), False, False, ql.ModifiedFollowing)
 
 # %%
@@ -264,7 +264,7 @@ for i in range(0,len(fixedSchedule)-1):
 # %%
 underlying2 = ql.NonstandardSwap(ql.Swap.Payer,
                             fixedNominal, floatingNominal, fixedSchedule, strike,
-                            ql.Thirty360(), floatSchedule,
+                            ql.Thirty360(ql.Thirty360.BondBasis), floatSchedule,
                             euribor6m, gearing, spread, ql.Actual360(), False, False, ql.ModifiedFollowing)
 
 # %%
@@ -290,7 +290,7 @@ floatingNominal2 = [0]*(len(floatSchedule)-1) #null the second leg
 # %%
 underlying3 = ql.NonstandardSwap(ql.Swap.Receiver,
                             fixedNominal2, floatingNominal2, fixedSchedule, strike,
-                            ql.Thirty360(), floatSchedule,
+                            ql.Thirty360(ql.Thirty360.BondBasis), floatSchedule,
                             euribor6m, gearing, spread, ql.Actual360(), False, True, ql.ModifiedFollowing)
 
 # %%
@@ -362,7 +362,7 @@ Euriborgearing = [1]*(len(floatSchedule)-1)
 Euriborspread  = [0.001]*(len(floatSchedule)-1)
 underlying4 = ql.FloatFloatSwap(ql.Swap.Payer,
                                 CMSNominal, EuriborNominal,
-                                fixedSchedule, swapBase, ql.Thirty360(),
+                                fixedSchedule, swapBase, ql.Thirty360(ql.Thirty360.BondBasis),
                                 floatSchedule, euribor6m, ql.Actual360(),
                                 False, False, CMSgearing, CMSspread, [], [],
                                 Euriborgearing, Euriborspread)

@@ -77,15 +77,13 @@ namespace QuantLib {
     class Thirty360 : public DayCounter {
       public:
         enum Convention { USA, BondBasis, European, EurobondBasis, Italian, German, ISMA, ISDA, NASD };
-        Thirty360();
         Thirty360(Convention c, const Date& terminationDate = Date());
-        Thirty360(Convention c, bool isLastPeriod);
     };
     class Thirty365 : public DayCounter {};
     class ActualActual : public DayCounter {
       public:
         enum Convention { ISMA, Bond, ISDA, Historical, Actual365, AFB, Euro };
-        ActualActual(Convention c = ISDA, const Schedule& schedule = Schedule());
+        ActualActual(Convention c, const Schedule& schedule = Schedule());
     };
     class OneDayCounter : public DayCounter {};
     class SimpleDayCounter : public DayCounter {};

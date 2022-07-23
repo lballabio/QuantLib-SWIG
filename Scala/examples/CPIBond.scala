@@ -43,7 +43,7 @@ object CPIBond {
         val startTime = System.currentTimeMillis
 
         val calendar = new UnitedKingdom()
-        val dayCounter = new ActualActual();
+        val dayCounter = new ActualActual(ActualActual.Convention.ISDA);
         val convention = BusinessDayConvention.ModifiedFollowing
         
         val today = new Date(25, November, 2009)
