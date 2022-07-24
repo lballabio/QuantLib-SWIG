@@ -6,7 +6,7 @@ BUILT_SOURCES = cpp/quantlib_wrap.cpp cpp/quantlib_wrap.h
 if HAVE_DOTNET
 if BUILD_DOTNET
 
-all-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
+all-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net6.0/NQuantLib.dll
 
 cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@: cpp/quantlib_wrap.o
 	$(CXX) -shared cpp/quantlib_wrap.o -o cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ `quantlib-config --libs`
@@ -14,13 +14,13 @@ cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@: cpp/quantlib_wrap.o
 cpp/quantlib_wrap.o: $(BUILT_SOURCES)
 	$(CXX) -c -fpic $(CXXFLAGS) cpp/quantlib_wrap.cpp -o cpp/quantlib_wrap.o `quantlib-config --cflags`
 
-csharp/bin/Release/net5.0/NQuantLib.dll: $(BUILT_SOURCES)
+csharp/bin/Release/net6.0/NQuantLib.dll: $(BUILT_SOURCES)
 	$(DOTNET) build --nologo -c Release -p:Version=$(PACKAGE_VERSION) csharp/NQuantLib.csproj
 
-nupkg: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
+nupkg: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net6.0/NQuantLib.dll
 	$(DOTNET) pack --no-build -c Release -p:PackageVersion=$(PACKAGE_VERSION) --include-symbols --include-source csharp/NQuantLib.csproj
 
-check-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net5.0/NQuantLib.dll
+check-local: cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ csharp/bin/Release/net6.0/NQuantLib.dll
 	ln -f cpp/libNQuantLibc.@SHARED_LIB_EXTENSION@ examples/
 	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project BermudanSwaption/BermudanSwaption.csproj
 	cd examples && LD_LIBRARY_PATH=. $(DOTNET) run -c Release --project EquityOption/EquityOption.csproj
