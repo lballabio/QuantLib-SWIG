@@ -210,11 +210,23 @@ class MarkovFunctional : public Gaussian1dModel {
 // Pricing Engines
 
 %{
+using QuantLib::Gaussian1dCapFloorEngine;
 using QuantLib::Gaussian1dSwaptionEngine;
 using QuantLib::Gaussian1dJamshidianSwaptionEngine;
 using QuantLib::Gaussian1dNonstandardSwaptionEngine;
 using QuantLib::Gaussian1dFloatFloatSwaptionEngine;
 %}
+
+%shared_ptr(Gaussian1dCapFloorEngine)
+class Gaussian1dCapFloorEngine : public PricingEngine {
+  public:
+    Gaussian1dCapFloorEngine(const ext::shared_ptr<Gaussian1dModel> &model,
+                             const int integrationPoints = 64, const Real stddevs = 7.0,
+                             const bool extrapolatePayoff = true,
+                             const bool flatPayoffExtrapolation = false,
+                             const Handle<YieldTermStructure> &discountCurve =
+                                                           Handle<YieldTermStructure>());
+};
 
 %shared_ptr(Gaussian1dSwaptionEngine)
 class Gaussian1dSwaptionEngine : public PricingEngine {
