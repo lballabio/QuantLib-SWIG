@@ -292,6 +292,27 @@ class TermStructureTest(unittest.TestCase):
             msg=message
         )
 
+    def testLazyObject(self):
+        evaluationDate = ql.Settings.instance().evaluationDate
+        nodes = self.termStructure.nodes()
+        self.termStructure.freeze()
+
+        ql.Settings.instance().evaluationDate = self.calendar.advance(evaluationDate, 100, ql.Days)
+
+        # Check that dates and rates are unchanged
+        for i in range(len(self.termStructure.nodes())):
+            self.assertEqual(nodes[i][0], self.termStructure.nodes()[i][0])
+            self.assertEqual(nodes[i][1], self.termStructure.nodes()[i][1])
+
+        self.termStructure.recalculate()
+
+        # Check that rates have changed
+        for i in range(len(self.termStructure.nodes())):
+            self.assertNotEqual(nodes[i][1], self.termStructure.nodes()[i][1])
+
+        ql.Settings.instance().evaluationDate = evaluationDate
+
+        self.termStructure.unfreeze()
 
 if __name__ == "__main__":
     print("testing QuantLib " + ql.__version__)
