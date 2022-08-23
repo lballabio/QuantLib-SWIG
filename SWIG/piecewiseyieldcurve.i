@@ -117,6 +117,10 @@ class Name : public YieldTermStructure {
     #if !defined(SWIGR)
     std::vector<std::pair<Date,Real> > nodes() const;
     #endif
+
+    void recalculate();
+    void freeze();
+    void unfreeze();
 };
 
 %enddef
