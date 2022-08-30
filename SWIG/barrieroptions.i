@@ -54,7 +54,7 @@ class BarrierOption : public OneAssetOption {
 };
 
 %{
-using QuantLib::partialtimebarrieroption;
+using QuantLib::PartialTimeBarrierOption;
 %}
 
 struct PartialBarrier : public Barrier {
@@ -72,6 +72,21 @@ class PartialTimeBarrierOption : public OneAssetOption {
             const ext::shared_ptr<StrikedTypePayoff>& payoff,
             const ext::shared_ptr<Exercise>& exercise);
 }; 
+
+%{
+using QuantLib::AnalyticPartialTimeBarrierOptionEngine;
+%}
+
+#if defined(SWIGPYTHON)
+%feature("docstring") AnalyticPartialTimeBarrierOptionEngine "Partial Time Barrier Option Engine"
+#endif
+%shared_ptr(AnalyticPartialTimeBarrierOptionEngine )
+class AnalyticPartialTimeBarrierOptionEngine : public PricingEngine {
+  public:
+    AnalyticPartialTimeBarrierOptionEngine (
+                           const ext::shared_ptr<GeneralizedBlackScholesProcess>& process
+                 );
+};
 
 
 %shared_ptr(DividendBarrierOption)
