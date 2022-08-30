@@ -53,6 +53,27 @@ class BarrierOption : public OneAssetOption {
                          Volatility maxVol = 4.0);
 };
 
+%{
+using QuantLib::partialtimebarrieroption;
+%}
+
+struct PartialBarrier : public Barrier {
+    enum Range { Start, End, EndB1, EndB2 };
+};
+
+%shared_ptr(PartialTimeBarrierOption)
+class PartialTimeBarrierOption : public OneAssetOption {
+      public:
+        PartialTimeBarrierOption(PartialBarrier::Type barrierType,
+            PartialBarrier::Range barrierRange,
+            Real barrier,
+            Real rebate,
+            Date coverEventDate,
+            const ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const ext::shared_ptr<Exercise>& exercise);
+}; 
+
+
 %shared_ptr(DividendBarrierOption)
 class DividendBarrierOption : public BarrierOption {
   public:
