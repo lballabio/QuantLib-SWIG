@@ -2,6 +2,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2022 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -54,12 +55,16 @@ class BarrierOption : public OneAssetOption {
 };
 
 %{
-using QuantLib::PartialTimeBarrierOption;
+using QuantLib::PartialBarrier;
 %}
 
 struct PartialBarrier : public Barrier {
     enum Range { Start, End, EndB1, EndB2 };
 };
+
+%{
+using QuantLib::PartialTimeBarrierOption;
+%}
 
 %shared_ptr(PartialTimeBarrierOption)
 class PartialTimeBarrierOption : public OneAssetOption {
