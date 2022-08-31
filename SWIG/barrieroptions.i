@@ -2,6 +2,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2022 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -52,6 +53,46 @@ class BarrierOption : public OneAssetOption {
                          Volatility minVol = 1.0e-4,
                          Volatility maxVol = 4.0);
 };
+
+%{
+using QuantLib::PartialBarrier;
+%}
+
+struct PartialBarrier : public Barrier {
+    enum Range { Start, End, EndB1, EndB2 };
+};
+
+%{
+using QuantLib::PartialTimeBarrierOption;
+%}
+
+%shared_ptr(PartialTimeBarrierOption)
+class PartialTimeBarrierOption : public OneAssetOption {
+      public:
+        PartialTimeBarrierOption(PartialBarrier::Type barrierType,
+            PartialBarrier::Range barrierRange,
+            Real barrier,
+            Real rebate,
+            Date coverEventDate,
+            const ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const ext::shared_ptr<Exercise>& exercise);
+}; 
+
+%{
+using QuantLib::AnalyticPartialTimeBarrierOptionEngine;
+%}
+
+#if defined(SWIGPYTHON)
+%feature("docstring") AnalyticPartialTimeBarrierOptionEngine "Partial Time Barrier Option Engine"
+#endif
+%shared_ptr(AnalyticPartialTimeBarrierOptionEngine )
+class AnalyticPartialTimeBarrierOptionEngine : public PricingEngine {
+  public:
+    AnalyticPartialTimeBarrierOptionEngine (
+                           const ext::shared_ptr<GeneralizedBlackScholesProcess>& process
+                 );
+};
+
 
 %shared_ptr(DividendBarrierOption)
 class DividendBarrierOption : public BarrierOption {
