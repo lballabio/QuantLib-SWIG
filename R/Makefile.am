@@ -16,7 +16,12 @@ all-local: .build-stamp
 	cd .. && R CMD check R && cd -
 	touch .build-stamp
 
-check-local: .build-stamp
+check-local: .build-stamp    
+	cd ../R.Rcheck/QuantLib && R CMD INSTALL .
+	pwd && echo Test Curves && Rscript ./demo/curves.R
+	pwd && echo Test European Option && Rscript ./demo/european-option.R
+	echo Remove TestInstall QuantLib && R CMD REMOVE QuantLib
+	
 
 install-exec-local: .build-stamp
 	R CMD INSTALL .
