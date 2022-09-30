@@ -52,6 +52,7 @@ class TermStructureTest(unittest.TestCase):
     def setUp(self):
         self.calendar = ql.TARGET()
         today = self.calendar.adjust(ql.Date.todaysDate())
+        ql.Settings.instance().evaluationDate = today
         self.settlementDays = 2
         self.dayCounter = ql.Actual360()
         settlement = self.calendar.advance(today, self.settlementDays, ql.Days)
@@ -88,6 +89,9 @@ class TermStructureTest(unittest.TestCase):
 
         self.termStructure = ql.PiecewiseFlatForward(
             settlement, deposits + swaps, self.dayCounter)
+
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
 
     def testImpliedObs(self):
         "Testing observability of implied term structure"
