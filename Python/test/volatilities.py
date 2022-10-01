@@ -263,8 +263,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
     def tearDown(self):
         ql.Settings.instance().evaluationDate = ql.Date()
 
-    def _get_fair_rate(self, option_tenor, swap_tenor):
-        exercise_date = CAL.advance(self.today, option_tenor)
+    def _get_fair_rate(self, exercise_date, swap_tenor):
         start_date = CAL.advance(exercise_date, ql.Period(2, ql.Days))
         underlying = ql.MakeVanillaSwap(
             swap_tenor, self.idx, 0.0, ql.Period(0, ql.Days),
@@ -280,9 +279,9 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
             self, cube, interpolation, vol_type):
         opt_tenor = ql.Period(1, ql.Years)
         swap_tenor = ql.Period(10, ql.Years)
-        expected_atm_strike = self._get_fair_rate(opt_tenor, swap_tenor)
-        actual_atm_strike = cube.atmStrike(
-            cube.optionDateFromTenor(opt_tenor), swap_tenor)
+        exercise_date = cube.optionDateFromTenor(opt_tenor)
+        expected_atm_strike = self._get_fair_rate(exercise_date, swap_tenor)
+        actual_atm_strike = cube.atmStrike(exercise_date, swap_tenor)
         fail_msg = """ ATM strike test failed for:
                         cube interpolation: {interpolation}
                         volatility_type: {vol_type}

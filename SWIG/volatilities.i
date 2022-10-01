@@ -175,7 +175,8 @@ class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
 };
 
 %template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
-%template(RelinkableYoYOptionletVolatilitySurface) RelinkableHandle<YoYOptionletVolatilitySurface>;
+%template(RelinkableYoYOptionletVolatilitySurfaceHandle) RelinkableHandle<YoYOptionletVolatilitySurface>;
+deprecate_feature(RelinkableYoYOptionletVolatilitySurface, RelinkableYoYOptionletVolatilitySurfaceHandle);
 
 
 %{

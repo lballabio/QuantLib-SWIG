@@ -25,7 +25,6 @@
 %{
 using QuantLib::FittedBondDiscountCurve;
 
-typedef ext::shared_ptr<YieldTermStructure> FittedBondDiscountCurvePtr;
 typedef QuantLib::FittedBondDiscountCurve::FittingMethod FittingMethod;
 
 std::vector<ext::shared_ptr<BondHelper> > convert_bond_helpers(
