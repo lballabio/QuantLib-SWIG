@@ -428,6 +428,9 @@ function(from) {Period(from)})
     public static Date operator-(Date d, Period p) {
         return d.Subtract(p);
     }
+    public static int operator-(Date d1, Date d2) {
+        return d1.Subtract(d2);
+    }
     public static bool operator==(Date d1, Date d2) {
         object o1 = (object)d1;
         object o2 = (object)d2;
@@ -628,12 +631,10 @@ class Date {
     static bool isEndOfMonth(const Date&);
     static Date nextWeekday(const Date&, Weekday);
     static Date nthWeekday(Size n, Weekday, Month m, Year y);
-    #if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGR) || defined(SWIGCSHARP)
     Date operator+(BigInteger days) const;
     Date operator-(BigInteger days) const;
     Date operator+(const Period&) const;
     Date operator-(const Period&) const;
-    #endif
     %extend {
         Date(const std::string& str, std::string fmt) {
             // convert our old format into the corresponding Boost one
@@ -681,10 +682,10 @@ class Date {
             out << QuantLib::io::iso_date(*self);
             return out.str();
         }
-        #if defined(SWIGPYTHON) || defined(SWIGR)
         BigInteger operator-(const Date& other) {
             return *self - other;
         }
+        #if defined(SWIGPYTHON) || defined(SWIGR)
         bool __eq__(const Date& other) {
             return *self == other;
         }
