@@ -97,6 +97,11 @@ typedef double doubleOrNull;
   if ($1 == R_NaInt) $1 = Null<int>();
 }
 
+%typemap(rtypecheck) intOrNull %{
+  ((length($arg) == 0) || (length($arg) == 1 && is.integer($arg)) || (length($arg) == 1 && is.numeric($arg)) || (length($arg) == 1 && is.na($arg)))
+%}
+
+
 %typemap(out) intOrNull {
     if ($1 == Null<int>())
     $result = Rf_ScalarLogical(NA_LOGICAL)
@@ -105,6 +110,7 @@ typedef double doubleOrNull;
 }
 
 %typemap(rtype) doubleOrNull "numeric";
+
 %typemap(scoercein) doubleOrNull
     %{ $input = as($input, "numeric"); %}
 %typemap(scoerceout) doubleOrNull %{ %}
@@ -113,6 +119,11 @@ typedef double doubleOrNull;
   $1 = ($1_ltype) REAL($input)[0];
   if (R_IsNA($1)) $1 = Null<double>();
 }
+
+%typemap(rtypecheck) doubleOrNull %{
+  ((length($arg) == 0) || (length($arg) == 1 && is.numeric($arg)) || (length($arg) == 1 && is.na($arg)))
+%}
+
 
 %typemap(out) doubleOrNull {
     if ($1 == Null<double>())

@@ -70,7 +70,7 @@ invisible(option$setPricingEngine(BinomialLRVanillaEngine(process,timeSteps)))
 report('binomial (LR)', option$NPV())
 
 ## method: Monte Carlo
-invisible(option$setPricingEngine(MCPREuropeanEngine__SWIG_0(process,
+invisible(option$setPricingEngine(MCLDEuropeanEngine(process,
                                   timeSteps = 1,
                                   timeStepsPerYear=NA,
                                   brownianBridge=FALSE,
@@ -79,7 +79,7 @@ invisible(option$setPricingEngine(MCPREuropeanEngine__SWIG_0(process,
                                   requiredTolerance = 0.02,
                                   maxSamples=NULL,
                                   seed = 42)))
-report('MC (crude)', option$NPV(), option$errorEstimate())
+report('MC (crude)', option$NPV()) #, option$errorEstimate())
 
 invisible(option$setPricingEngine(MCLDEuropeanEngine__SWIG_0(process,
                                   timeSteps = 1,
@@ -91,5 +91,4 @@ invisible(option$setPricingEngine(MCLDEuropeanEngine__SWIG_0(process,
                                   maxSamples=NULL,
                                   seed=42)))
 report('MC (Sobol)', option$NPV())
-
 
