@@ -154,6 +154,9 @@ using QuantLib::LogLinear;
 using QuantLib::Cubic;
 using QuantLib::Bicubic;
 using QuantLib::ConvexMonotone;
+using QuantLib::DefaultLogCubic;
+using QuantLib::MonotonicLogCubic;
+using QuantLib::KrugerLog;
 
 class MonotonicCubic : public Cubic {
   public:
@@ -175,28 +178,6 @@ class Kruger : public Cubic {
   public:
     Kruger()
     : Cubic(QuantLib::CubicInterpolation::Kruger) {}
-};
-
-class DefaultLogCubic : public QuantLib::LogCubic {
-  public:
-    DefaultLogCubic()
-    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger) {}
-};
-
-class MonotonicLogCubic : public QuantLib::LogCubic {
-  public:
-    MonotonicLogCubic()
-    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Spline, true,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
-};
-
-class KrugerLog : public QuantLib::LogCubic {
-  public:
-    KrugerLog()
-    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger, false,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
 class SplineLogCubic : public QuantLib::LogCubic {
