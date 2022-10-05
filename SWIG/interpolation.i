@@ -221,10 +221,10 @@ class SafeSABRInterpolation {
                           Real beta,
                           Real nu,
                           Real rho,
-                          bool alphaIsFixed,
-                          bool betaIsFixed,
-                          bool nuIsFixed,
-                          bool rhoIsFixed,
+                          bool alphaIsFixed = false,
+                          bool betaIsFixed = false,
+                          bool nuIsFixed = false,
+                          bool rhoIsFixed = false,
                           bool vegaWeighted = true,
                           const ext::shared_ptr<EndCriteria>& endCriteria
                                   = ext::shared_ptr<EndCriteria>(),
@@ -233,7 +233,7 @@ class SafeSABRInterpolation {
                           const Real errorAccept=0.0020,
                           const bool useMaxError=false,
                           const Size maxGuesses=50,
-			  const Real shift = 0.0)
+                          const Real shift = 0.0)
     : x_(x), y_(y), forward_(forward),
       f_(x_.begin(),x_.end(),y_.begin(),
          t, forward_, alpha, beta, nu, rho,
@@ -261,6 +261,9 @@ class SafeSABRInterpolation {
     #if defined(SWIGCSHARP)
     %rename(call) operator();
     #endif
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") SafeSABRInterpolation;
+    #endif
   public:
     SafeSABRInterpolation(const Array& x, const Array& y,
                           Time t,
@@ -269,10 +272,10 @@ class SafeSABRInterpolation {
                           Real beta,
                           Real nu,
                           Real rho,
-                          bool alphaIsFixed,
-                          bool betaIsFixed,
-                          bool nuIsFixed,
-                          bool rhoIsFixed,
+                          bool alphaIsFixed = false,
+                          bool betaIsFixed = false,
+                          bool nuIsFixed = false,
+                          bool rhoIsFixed = false,
                           bool vegaWeighted = true,
                           const ext::shared_ptr<EndCriteria>& endCriteria
                                   = ext::shared_ptr<EndCriteria>(),
@@ -281,7 +284,7 @@ class SafeSABRInterpolation {
                           const Real errorAccept=0.0020,
                           const bool useMaxError=false,
                           const Size maxGuesses=50,
-			  const Real shift = 0.0);
+                          const Real shift = 0.0);
     Real operator()(Real x, bool allowExtrapolation=false) const;
     Real alpha() const;
     Real beta() const;
