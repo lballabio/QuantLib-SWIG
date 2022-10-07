@@ -58,6 +58,20 @@ if (PyBool_Check($input) || Py_None == $input)
 else
 	$1 = 0;
 }
+#else
+#if defined(SWIGCSHARP)
+%typemap(cscode) boost::optional<bool> %{
+    public static implicit operator OptionalBool(bool b) => new OptionalBool(b);
+%}
+#endif
+namespace boost {
+    template<class T>
+    class optional {
+      public:
+        optional(T t);
+    };
+}
+%template(OptionalBool) boost::optional<bool>;
 #endif
 
 %{
