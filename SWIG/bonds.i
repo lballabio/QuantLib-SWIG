@@ -481,6 +481,14 @@ class CallableBond : public Bond {
   public:
     const std::vector<ext::shared_ptr<Callability> >& callability() const;
 
+    Volatility impliedVolatility(const BondPrice& targetPrice,
+                                 const Handle<YieldTermStructure>& discountCurve,
+                                 Real accuracy,
+                                 Size maxEvaluations,
+                                 Volatility minVol,
+                                 Volatility maxVol) const;
+
+    // old version, deprecated
     Volatility impliedVolatility(Real targetValue,
                                  const Handle<YieldTermStructure>& discountCurve,
                                  Real accuracy,
