@@ -334,7 +334,8 @@ class OISRateHelper : public RateHelper {
             const Spread overnightSpread = 0.0,
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(), 
-            RateAveraging::Type averagingMethod = RateAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound,
+            boost::optional<bool> endOfMonth = boost::none);
     ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 
