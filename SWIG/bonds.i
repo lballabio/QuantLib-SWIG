@@ -133,7 +133,19 @@ class Bond : public Instrument {
 
 %}
 
+namespace QuantLib {
 
+    Schedule sinkingSchedule(const Date& startDate,
+                             const Period& bondLength,
+                             const Frequency& frequency,
+                             const Calendar& paymentCalendar);
+
+    std::vector<Real> sinkingNotionals(const Period& bondLength,
+                                       const Frequency& frequency,
+                                       Rate couponRate,
+                                       Real initialNotional);
+
+}
 
 %shared_ptr(ZeroCouponBond)
 class ZeroCouponBond : public Bond {
