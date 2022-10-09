@@ -1,7 +1,7 @@
 
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
- Copyright (C) 2013 Klaus Spanderen
+ Copyright (C) 2013, 2022 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -50,7 +50,7 @@ using QuantLib::GaussGegenbauerIntegration;
             UnaryFunction f(pyFunction);
             return (*self)(f, a, b);
         }
-        #elif defined(SWIGJAVA)
+        #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
         Real calculate(UnaryFunctionDelegate* f, Real a, Real b) {
             return (*self)(UnaryFunction(f), a, b);		
         }
@@ -65,7 +65,7 @@ using QuantLib::GaussGegenbauerIntegration;
             UnaryFunction f(pyFunction);
             return (*self)(f);
         }
-        #elif defined(SWIGJAVA)
+        #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
         Real calculate(UnaryFunctionDelegate* f) {
             return (*self)(UnaryFunction(f));		
         }
@@ -121,7 +121,26 @@ class GaussLobattoIntegral {
     INTEGRATION_METHODS;
 };
 
-class GaussLaguerreIntegration {
+%{
+using QuantLib::GaussianQuadrature;
+%}
+
+class GaussianQuadrature {
+  private:
+    GaussianQuadrature();
+  public:
+    Size order() const;
+    %extend {
+      Array weights() { 
+        return self->weights(); 
+      }      
+      Array x() { 
+        return self->x(); 
+      }
+    }
+};
+
+class GaussLaguerreIntegration: public GaussianQuadrature {
   public:
     GaussLaguerreIntegration(Size n, Real s = 0.0);
     GAUSSIAN_QUADRATURE_METHODS;
@@ -133,41 +152,57 @@ class GaussHermiteIntegration {
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
-class GaussJacobiIntegration {
+class GaussJacobiIntegration: public GaussianQuadrature {
   public:
     GaussJacobiIntegration(Size n, Real alpha, Real beta);
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
-class GaussHyperbolicIntegration {
+class GaussHyperbolicIntegration: public GaussianQuadrature {
   public:
     GaussHyperbolicIntegration(Size n);
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
-class GaussLegendreIntegration {
+class GaussLegendreIntegration: public GaussianQuadrature {
   public:
     GaussLegendreIntegration(Size n);
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
-class GaussChebyshevIntegration {
+class GaussChebyshevIntegration: public GaussianQuadrature {
   public:
     GaussChebyshevIntegration(Size n);
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
-class GaussChebyshev2ndIntegration {
+class GaussChebyshev2ndIntegration: public GaussianQuadrature {
   public:
     GaussChebyshev2ndIntegration(Size n);
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
-class GaussGegenbauerIntegration {
+class GaussGegenbauerIntegration: public GaussianQuadrature {
   public:
     GaussGegenbauerIntegration(Size n, Real lambda);
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
+
+#ifdef QL_BOOST_HAS_TANH_SINH
+%{
+using QuantLib::TanhSinhIntegral;
+%}
+
+class TanhSinhIntegral {
+  public:
+    TanhSinhIntegral(
+        Real relTolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
+        Size maxRefinements = 15,
+        Real minComplement = std::numeric_limits<Real>::min() * 4
+    );
+    INTEGRATION_METHODS;
+};
+#endif
 
 #endif

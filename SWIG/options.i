@@ -995,6 +995,93 @@ class AnalyticDividendEuropeanEngine : public PricingEngine {
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
+%{
+using QuantLib::QdPlusAmericanEngine;
+%}
+
+%shared_ptr(QdPlusAmericanEngine)
+class QdPlusAmericanEngine: public PricingEngine {
+  public:
+    enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
+
+    explicit QdPlusAmericanEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess>,
+        Size interpolationPoints = 8,
+        SolverType solverType = Halley,
+        Real eps = 1e-6,
+        Size maxIter = Null<Size>());
+        
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") make;
+    %extend {
+        static ext::shared_ptr<QdPlusAmericanEngine> make(
+                const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                Size interpolationPoints = 8,
+                SolverType solverType = Halley,
+                Real eps = 1e-6,
+                Size maxIter = Null<Size>()) {
+                
+            return ext::shared_ptr<QdPlusAmericanEngine>(
+                new QdPlusAmericanEngine(
+                    process, interpolationPoints, solverType, eps, maxIter));
+        }
+    }
+    #endif
+};
+
+%{
+using QuantLib::QdFpLegendreScheme;
+using QuantLib::QdFpIterationScheme;
+using QuantLib::QdFpLegendreTanhSinhScheme;
+using QuantLib::QdFpTanhSinhIterationScheme;
+using QuantLib::QdFpIterationSchemeStdFactory;
+using QuantLib::QdFpAmericanEngine;
+%}
+
+%shared_ptr(QdFpIterationScheme)
+class QdFpIterationScheme {
+  private:
+    QdFpIterationSchem();
+};
+
+%shared_ptr(QdFpLegendreScheme)
+class QdFpLegendreScheme: public QdFpIterationScheme {
+  public:
+    QdFpLegendreScheme(Size l, Size m, Size n, Size p);
+};
+
+%shared_ptr(QdFpLegendreTanhSinhScheme)
+class QdFpLegendreTanhSinhScheme: public QdFpLegendreScheme {
+  public:
+    QdFpLegendreTanhSinhScheme(Size l, Size m, Size n, Real eps);
+};
+
+%shared_ptr(QdFpTanhSinhIterationScheme)
+class QdFpTanhSinhIterationScheme : public QdFpIterationScheme {
+  public:
+    QdFpTanhSinhIterationScheme(Size m, Size n, Real eps);
+};
+
+
+class QdFpIterationSchemeStdFactory {
+  public:
+    static ext::shared_ptr<QdFpIterationScheme> fastScheme();
+    static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
+    static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
+};
+
+%shared_ptr(QdFpAmericanEngine)
+class QdFpAmericanEngine : public PricingEngine {
+  public:
+    enum FixedPointEquation { FP_A, FP_B, Auto };
+
+    explicit QdFpAmericanEngine(
+      ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+      ext::shared_ptr<QdFpIterationScheme> iterationScheme =
+          QdFpIterationSchemeStdFactory::accurateScheme(),
+      FixedPointEquation fpEquation = Auto);
+};
+
 
 %{
 using QuantLib::FdmSchemeDesc;
