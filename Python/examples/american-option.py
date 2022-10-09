@@ -116,7 +116,7 @@ results.append(("QD+", option.NPV()))
 
 # %%
 option.setPricingEngine(ql.QdFpAmericanEngine(
-    process, ql.QdFpIterationSchemeStdFactory_highPrecisionScheme()))
+    process, ql.QdFpIterationSchemeStdFactory_accurateScheme()))
 results.append(("QD+ fixed point", option.NPV()))
 
 
