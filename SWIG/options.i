@@ -1004,29 +1004,15 @@ class QdPlusAmericanEngine: public PricingEngine {
   public:
     enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
 
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") QdPlusAmericanEngine;
+    #endif
     explicit QdPlusAmericanEngine(
-        ext::shared_ptr<GeneralizedBlackScholesProcess>,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Size interpolationPoints = 8,
         SolverType solverType = Halley,
         Real eps = 1e-6,
-        Size maxIter = Null<Size>());
-        
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") make;
-    %extend {
-        static ext::shared_ptr<QdPlusAmericanEngine> make(
-                const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                Size interpolationPoints = 8,
-                SolverType solverType = Halley,
-                Real eps = 1e-6,
-                Size maxIter = Null<Size>()) {
-                
-            return ext::shared_ptr<QdPlusAmericanEngine>(
-                new QdPlusAmericanEngine(
-                    process, interpolationPoints, solverType, eps, maxIter));
-        }
-    }
-    #endif
+        Size maxIter = Null<Size>());        
 };
 
 %{
