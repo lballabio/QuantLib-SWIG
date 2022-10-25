@@ -249,7 +249,7 @@ class FixedRateBondKwargsTest(unittest.TestCase):
             faceAmount=self.face_amount,
             coupons=self.coupons,
             issueDate=self.issue_date,
-            couponCalendar=ql.UnitedStates(),
+            couponCalendar=ql.UnitedStates(ql.UnitedStates.GovernmentBond),
             startDate=ql.Date(2, 1, 2010),
             maturityDate=self.maturity_date,
             tenor=ql.Period(3, ql.Months),
