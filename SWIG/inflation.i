@@ -75,7 +75,6 @@ class InflationTermStructure : public TermStructure {
     virtual Frequency frequency() const;
     virtual bool indexIsInterpolated() const;
     virtual Rate baseRate() const;
-    virtual Handle<YieldTermStructure> nominalTermStructure() const;
     virtual Date baseDate() const;
     void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality =
                                             ext::shared_ptr<Seasonality>());

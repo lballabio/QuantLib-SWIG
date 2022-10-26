@@ -6,7 +6,7 @@ class DayCountersTest(unittest.TestCase):
     def runTest(self):
         "Testing daycounters"
 
-        calendar = ql.UnitedStates()
+        calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         #
         # Check that SWIG signature for Business252 calendar allows to
