@@ -47,7 +47,7 @@ if test "x$SWIG" != x; then
 	fi
 fi
 
-AC_PATH_PROG([PYTHON], [python])
+AC_PATH_PROG([PYTHON], [python3 python])
 AM_CONDITIONAL(HAVE_PYTHON, test "x${PYTHON}" != "x")
 AC_ARG_ENABLE([python],
               AS_HELP_STRING([--disable-python],
