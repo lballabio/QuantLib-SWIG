@@ -1020,7 +1020,6 @@ using QuantLib::QdFpLegendreScheme;
 using QuantLib::QdFpIterationScheme;
 using QuantLib::QdFpLegendreTanhSinhScheme;
 using QuantLib::QdFpTanhSinhIterationScheme;
-using QuantLib::QdFpIterationSchemeStdFactory;
 using QuantLib::QdFpAmericanEngine;
 %}
 
@@ -1049,13 +1048,6 @@ class QdFpTanhSinhIterationScheme : public QdFpIterationScheme {
 };
 
 
-class QdFpIterationSchemeStdFactory {
-  public:
-    static ext::shared_ptr<QdFpIterationScheme> fastScheme();
-    static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
-    static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();
-};
-
 %shared_ptr(QdFpAmericanEngine)
 class QdFpAmericanEngine : public PricingEngine {
   public:
@@ -1064,8 +1056,12 @@ class QdFpAmericanEngine : public PricingEngine {
     explicit QdFpAmericanEngine(
       ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
       ext::shared_ptr<QdFpIterationScheme> iterationScheme =
-          QdFpIterationSchemeStdFactory::accurateScheme(),
+          accurateScheme(),
       FixedPointEquation fpEquation = Auto);
+      
+    static ext::shared_ptr<QdFpIterationScheme> fastScheme();
+    static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
+    static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();      
 };
 
 
