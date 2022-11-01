@@ -333,7 +333,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         calendar = ql.JointCalendar(ql.TARGET(), ql.Poland())
         spot_date_lag = 2
-        trading_calendar = ql.UnitedStates()
+        trading_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         # build rate helpers
 
@@ -441,7 +441,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         spot_date = ql.Date(5, 7, 2016)
         self.build_curves(today)
 
-        us_calendar = ql.UnitedStates()
+        us_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         joint_calendar = ql.JointCalendar(ql.TARGET(), ql.Poland())
 
@@ -477,7 +477,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # dates
         base_ccy_yts = ql.RelinkableYieldTermStructureHandle()
 
-        us_calendar = ql.UnitedStates()
+        us_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         joint_calendar = ql.JointCalendar(ql.TARGET(), ql.Poland())
 
@@ -506,7 +506,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         today = ql.Date(30, 6, 2016)
         spot_date = ql.Date(5, 7, 2016)
         self.build_curves(today)
-        us_calendar = ql.UnitedStates()
+        us_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
         joint_calendar = ql.JointCalendar(ql.TARGET(), ql.Poland())
 
         settlement_calendar = ql.JointCalendar(joint_calendar, us_calendar)
@@ -545,7 +545,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # and one day in US, therefore it is sufficient to pass only Target
         # as a base calendar
         calendar = ql.TARGET()
-        trading_calendar = ql.UnitedStates()
+        trading_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         on_rate_helper = ql.FxSwapRateHelper(
             ql.QuoteHandle(ql.SimpleQuote(fwd_points)),
@@ -585,7 +585,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # as a base calendar. Passing joint calendar would result in wrong
         # spot date of the trade
         calendar = ql.TARGET()
-        trading_calendar = ql.UnitedStates()
+        trading_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         rate_helper = ql.FxSwapRateHelper(
             ql.QuoteHandle(ql.SimpleQuote(fwd_points)),

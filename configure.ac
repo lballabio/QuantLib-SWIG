@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script.
-AC_INIT([QuantLib-SWIG], [1.28-dev],
+AC_INIT([QuantLib-SWIG], [1.29-dev],
         [quantlib-dev@lists.sourceforge.net],
         [QuantLib-SWIG])
 AC_PREREQ(2.50)
@@ -47,7 +47,7 @@ if test "x$SWIG" != x; then
 	fi
 fi
 
-AC_PATH_PROG([PYTHON], [python])
+AC_PATH_PROG([PYTHON], [python3 python])
 AM_CONDITIONAL(HAVE_PYTHON, test "x${PYTHON}" != "x")
 AC_ARG_ENABLE([python],
               AS_HELP_STRING([--disable-python],

@@ -51,18 +51,18 @@
       #pragma message(\
           "Quantlib has not been compiled with the thread-safe "           \
           "observer pattern being enabled. This can lead to spurious "     \
-          "crashes or pure virtual function call within the JVM or .NET "  \
+          "crashes or pure virtual function calls within the JVM or .NET "  \
           "ecosystem due to the async garbage collector. Please consider " \
           "enabling QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN "               \
           "in ql/userconfig.hpp.")
     #else
       #warning \
-          Quantlib has not been compiled with the thread-safe           \
-          observer pattern being enabled. This can lead to spurious     \
-          crashes or pure virtual function call within the JVM or .NET  \
-          ecosystem due to the async garbage collector. Please consider \
-          passing --enable-thread-safe-observer-pattern when using the  \
-          GNU autoconf configure script.
+Quantlib has not been compiled with the thread-safe \
+observer pattern being enabled. This can lead to spurious \
+crashes or pure virtual function calls within the JVM or .NET \
+ecosystem due to the async garbage collector. Please consider \
+passing --enable-thread-safe-observer-pattern when using the \
+GNU autoconf configure script.
     #endif
   #endif
 #endif
