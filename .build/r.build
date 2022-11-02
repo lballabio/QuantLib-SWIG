@@ -7,4 +7,6 @@ echo 'CXX=clang++' >> ~/.R/Makevars
 ./autogen.sh \
 && ./configure CXXFLAGS='-O0' \
 && make -C R \
-&& make -C R check
+&& R CMD INSTALL ./R.Rcheck/QuantLib \
+&& echo Test curves.R && Rscript ./R/demo/curves.R \
+&& echo Test european-option.R && Rscript ./R/demo/european-option.R
