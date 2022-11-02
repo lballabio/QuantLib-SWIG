@@ -133,7 +133,19 @@ class Bond : public Instrument {
 
 %}
 
+namespace QuantLib {
 
+    Schedule sinkingSchedule(const Date& startDate,
+                             const Period& bondLength,
+                             const Frequency& frequency,
+                             const Calendar& paymentCalendar);
+
+    std::vector<Real> sinkingNotionals(const Period& bondLength,
+                                       const Frequency& frequency,
+                                       Rate couponRate,
+                                       Real initialNotional);
+
+}
 
 %shared_ptr(ZeroCouponBond)
 class ZeroCouponBond : public Bond {
@@ -469,6 +481,14 @@ class CallableBond : public Bond {
   public:
     const std::vector<ext::shared_ptr<Callability> >& callability() const;
 
+    Volatility impliedVolatility(const BondPrice& targetPrice,
+                                 const Handle<YieldTermStructure>& discountCurve,
+                                 Real accuracy,
+                                 Size maxEvaluations,
+                                 Volatility minVol,
+                                 Volatility maxVol) const;
+
+    // old version, deprecated
     Volatility impliedVolatility(Real targetValue,
                                  const Handle<YieldTermStructure>& discountCurve,
                                  Real accuracy,

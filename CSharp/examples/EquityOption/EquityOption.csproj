@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent" Condition=" '$(OS)' == 'Windows_NT' ">
-    <Exec Command="copy &quot;$(SolutionDir)cpp\NQuantLibc.dll&quot; &quot;$(TargetDir)&quot;" />
+    <Exec Command="copy &quot;$(ProjectDir)..\..\cpp\NQuantLibc.dll&quot; &quot;$(TargetDir)&quot;" />
   </Target>
 
 </Project>

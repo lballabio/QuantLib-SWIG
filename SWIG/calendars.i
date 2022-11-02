@@ -294,7 +294,7 @@ namespace QuantLib {
       public:
         enum Market { Settlement, NYSE, GovernmentBond,
                       NERC, LiborImpact, FederalReserve };
-        UnitedStates(Market m = Settlement);
+        UnitedStates(Market m);
     };
 
     // others

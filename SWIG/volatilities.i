@@ -614,7 +614,14 @@ class SabrSmileSection : public SmileSection {
     SabrSmileSection(const Date& d,
                      Rate forward,
                      const std::vector<Real>& sabrParameters,
+                     const Date& referenceDate = Date(),
                      const DayCounter& dc = Actual365Fixed(),
+                     Real shift = 0.0,
+                     VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
+    SabrSmileSection(const Date& d,
+                     Rate forward,
+                     const std::vector<Real>& sabrParameters,
+                     const DayCounter& dc,
                      Real shift = 0.0,
                      VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
     SabrSmileSection(Time timeToExpiry,
@@ -772,6 +779,7 @@ class SwaptionVolCube2 : public SwaptionVolatilityCube {
                      bool vegaWeightedSmileFit);
 };
 
+
 %{
 using QuantLib::ConstantYoYOptionletVolatility;
 %}
@@ -790,6 +798,8 @@ class ConstantYoYOptionletVolatility : public YoYOptionletVolatilitySurface {
                                    Real minStrike = -1.0,
                                    Real maxStrike = 100.0);
 };
+
+
 %{
 using QuantLib::FlatSmileSection;
 %}

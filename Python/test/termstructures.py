@@ -310,9 +310,9 @@ class TermStructureTest(unittest.TestCase):
 
         self.termStructure.recalculate()
 
-        # Check that rates have changed
-        for i in range(len(self.termStructure.nodes())):
-            self.assertNotEqual(nodes[i][1], self.termStructure.nodes()[i][1])
+        # Check that dates have changed (except the reference, which is fixed)
+        for i in range(1, len(self.termStructure.nodes())):
+            self.assertNotEqual(nodes[i][0], self.termStructure.nodes()[i][0])
 
         ql.Settings.instance().evaluationDate = evaluationDate
 
