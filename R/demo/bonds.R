@@ -149,7 +149,6 @@ discountingTermStructure <- RelinkableYieldTermStructureHandle()
 ## the one used for forward rate forecasting
 forecastingTermStructure <- RelinkableYieldTermStructureHandle()
 
-
 ########################################
 ##        BONDS TO BE PRICED           #
 ########################################
@@ -237,11 +236,25 @@ invisible(setCouponPricer(Bond_cashflows(floatingRateBond), pricer))
 
 
 ## Yield curve bootstrapping
-invisible(RelinkableQuoteHandle_linkTo(forecastingTermStructure, depoSwapTermStructure))
-invisible(RelinkableQuoteHandle_linkTo(discountingTermStructure, bondDiscountingTermStructure))
+if (FALSE) {
+  # equivalent to the method in else
+  invisible(forecastingTermStructure$linkTo(depoSwapTermStructure))
+  invisible(discountingTermStructure$linkTo(bondDiscountingTermStructure))
+} else {
+  # equivalent to the previous method
+  invisible(RelinkableYieldTermStructureHandle_linkTo(forecastingTermStructure, depoSwapTermStructure))
+  invisible(RelinkableYieldTermStructureHandle_linkTo(discountingTermStructure, bondDiscountingTermStructure))
+}
+
 
 ## We are using the depo & swap curve to estimate the future Libor rates
-invisible(RelinkableQuoteHandle_linkTo(liborTermStructure, depoSwapTermStructure))
+if (FALSE) {
+  # equivalent to the method in else
+  liborTermStructure$linkTo(depoSwapTermStructure)
+} else {
+  # equivalent to the previous method
+  invisible(RelinkableYieldTermStructureHandle_linkTo(liborTermStructure, depoSwapTermStructure))
+}
 
 ##
 df <- data.frame(zeroCoupon=c(Instrument_NPV(zeroCouponBond),
