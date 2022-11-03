@@ -9,4 +9,5 @@ echo 'CXX=clang++' >> ~/.R/Makevars
 && make -C R \
 && R CMD INSTALL ./R.Rcheck/QuantLib \
 && echo Test curves.R && Rscript ./R/demo/curves.R \
-&& echo Test european-option.R && Rscript ./R/demo/european-option.R
+&& echo Test european-option.R && Rscript ./R/demo/european-option.R \
+&& echo Test bonds.R && Rscript ./R/demo/bonds.R
