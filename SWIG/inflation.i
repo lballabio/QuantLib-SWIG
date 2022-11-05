@@ -261,8 +261,12 @@ using QuantLib::CPI;
 
 struct CPI {
     enum InterpolationType { AsIndex, Flat, Linear };
-};
 
+    static Real laggedFixing(const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const Date& date,
+                             const Period& observationLag,
+                             InterpolationType interpolationType);
+};
 
 // cashflows
 
