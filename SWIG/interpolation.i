@@ -344,6 +344,44 @@ class SafeConvexMonotoneInterpolation {
 };
 %}
 
+
+%{
+using QuantLib::ChebyshevInterpolation;
+%}
+
+class ChebyshevInterpolation {
+    #if defined(SWIGCSHARP)
+    %rename(call) operator();
+    #endif
+
+  public:
+    enum PointsType {FirstKind, SecondKind};
+    ChebyshevInterpolation(const Array& f, PointsType pointsType = SecondKind);
+#if defined(SWIGPYTHON)
+    %extend {
+        ChebyshevInterpolation(
+            Size n, PyObject* fct, PointsType pointsType = SecondKind) {
+        
+            UnaryFunction f(fct);
+            return new ChebyshevInterpolation(n, f, pointsType); 
+        }
+    }
+#elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+    %extend {
+        ChebyshevInterpolation(
+            Size n, UnaryFunctionDelegate* fct, PointsType pointsType = SecondKind) {
+        
+            UnaryFunction f(fct);
+            return new ChebyshevInterpolation(n, f, pointsType); 
+        }
+    }
+#endif
+    
+    Real operator()(Real z, bool allowExtrapolation=false) const;
+    static Array nodes(Size n, PointsType pointsType);
+};
+
+
 %rename(ConvexMonotoneInterpolation) SafeConvexMonotoneInterpolation;
 class SafeConvexMonotoneInterpolation {
     #if defined(SWIGCSHARP)

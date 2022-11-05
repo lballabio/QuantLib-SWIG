@@ -102,6 +102,24 @@ gridPoints = 800
 option.setPricingEngine(ql.FdBlackScholesVanillaEngine(process, timeSteps, gridPoints))
 results.append(("finite differences", option.NPV()))
 
+
+# %% [markdown]
+# #### Li, M. QD+ American engine
+
+# %%
+option.setPricingEngine(ql.QdPlusAmericanEngine(process))
+results.append(("QD+", option.NPV()))
+
+
+# %% [markdown]
+# #### Leif Andersen, Mark Lake and Dimitri Offengenden high performance American engine
+
+# %%
+option.setPricingEngine(ql.QdFpAmericanEngine(
+    process, ql.QdFpAmericanEngine.accurateScheme()))
+results.append(("QD+ fixed point", option.NPV()))
+
+
 # %% [markdown]
 # #### Binomial method
 
