@@ -236,25 +236,11 @@ invisible(setCouponPricer(Bond_cashflows(floatingRateBond), pricer))
 
 
 ## Yield curve bootstrapping
-if (FALSE) {
-  # equivalent to the method in else
-  invisible(forecastingTermStructure$linkTo(depoSwapTermStructure))
-  invisible(discountingTermStructure$linkTo(bondDiscountingTermStructure))
-} else {
-  # equivalent to the previous method
-  invisible(RelinkableYieldTermStructureHandle_linkTo(forecastingTermStructure, depoSwapTermStructure))
-  invisible(RelinkableYieldTermStructureHandle_linkTo(discountingTermStructure, bondDiscountingTermStructure))
-}
-
+invisible(RelinkableYieldTermStructureHandle_linkTo(forecastingTermStructure, depoSwapTermStructure))
+invisible(RelinkableYieldTermStructureHandle_linkTo(discountingTermStructure, bondDiscountingTermStructure))
 
 ## We are using the depo & swap curve to estimate the future Libor rates
-if (FALSE) {
-  # equivalent to the method in else
-  liborTermStructure$linkTo(depoSwapTermStructure)
-} else {
-  # equivalent to the previous method
-  invisible(RelinkableYieldTermStructureHandle_linkTo(liborTermStructure, depoSwapTermStructure))
-}
+invisible(RelinkableYieldTermStructureHandle_linkTo(liborTermStructure, depoSwapTermStructure))
 
 ##
 df <- data.frame(zeroCoupon=c(Instrument_NPV(zeroCouponBond),
