@@ -392,7 +392,7 @@ class InflationTest(unittest.TestCase):
         lag = ql.Period(3, ql.Months)
         indexation = ql.CPI.Flat
 
-        actual_fixing = ql.laggedFixing(inflation_idx, maturity_date, lag, indexation)
+        actual_fixing = ql.CPI.laggedFixing(inflation_idx, maturity_date, lag, indexation)
         expected_fixing = inflation_idx.fixing(ql.Date(1, ql.July, 2027))
 
         fail_msg = """ Failed to replicate lagged fixing:
