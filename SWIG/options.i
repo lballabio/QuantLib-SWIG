@@ -995,6 +995,75 @@ class AnalyticDividendEuropeanEngine : public PricingEngine {
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
+%{
+using QuantLib::QdPlusAmericanEngine;
+%}
+
+%shared_ptr(QdPlusAmericanEngine)
+class QdPlusAmericanEngine: public PricingEngine {
+  public:
+    enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
+
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") QdPlusAmericanEngine;
+    #endif
+    explicit QdPlusAmericanEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size interpolationPoints = 8,
+        SolverType solverType = Halley,
+        Real eps = 1e-6,
+        Size maxIter = Null<Size>());        
+};
+
+%{
+using QuantLib::QdFpLegendreScheme;
+using QuantLib::QdFpIterationScheme;
+using QuantLib::QdFpLegendreTanhSinhScheme;
+using QuantLib::QdFpTanhSinhIterationScheme;
+using QuantLib::QdFpAmericanEngine;
+%}
+
+%shared_ptr(QdFpIterationScheme)
+class QdFpIterationScheme {
+  private:
+    QdFpIterationSchem();
+};
+
+%shared_ptr(QdFpLegendreScheme)
+class QdFpLegendreScheme: public QdFpIterationScheme {
+  public:
+    QdFpLegendreScheme(Size l, Size m, Size n, Size p);
+};
+
+%shared_ptr(QdFpLegendreTanhSinhScheme)
+class QdFpLegendreTanhSinhScheme: public QdFpLegendreScheme {
+  public:
+    QdFpLegendreTanhSinhScheme(Size l, Size m, Size n, Real eps);
+};
+
+%shared_ptr(QdFpTanhSinhIterationScheme)
+class QdFpTanhSinhIterationScheme : public QdFpIterationScheme {
+  public:
+    QdFpTanhSinhIterationScheme(Size m, Size n, Real eps);
+};
+
+
+%shared_ptr(QdFpAmericanEngine)
+class QdFpAmericanEngine : public PricingEngine {
+  public:
+    enum FixedPointEquation { FP_A, FP_B, Auto };
+
+    explicit QdFpAmericanEngine(
+      ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+      ext::shared_ptr<QdFpIterationScheme> iterationScheme =
+          accurateScheme(),
+      FixedPointEquation fpEquation = Auto);
+      
+    static ext::shared_ptr<QdFpIterationScheme> fastScheme();
+    static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
+    static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();      
+};
+
 
 %{
 using QuantLib::FdmSchemeDesc;
