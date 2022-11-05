@@ -41,6 +41,7 @@ using QuantLib::GaussLegendreIntegration;
 using QuantLib::GaussChebyshevIntegration;
 using QuantLib::GaussChebyshev2ndIntegration;
 using QuantLib::GaussGegenbauerIntegration;
+using QuantLib::TanhSinhIntegral;
 %}
 
 %define INTEGRATION_METHODS
@@ -188,12 +189,6 @@ class GaussGegenbauerIntegration: public GaussianQuadrature {
     GAUSSIAN_QUADRATURE_METHODS;
 };
 
-
-#ifdef QL_BOOST_HAS_TANH_SINH
-%{
-using QuantLib::TanhSinhIntegral;
-%}
-
 class TanhSinhIntegral {
   public:
     TanhSinhIntegral(
@@ -203,6 +198,5 @@ class TanhSinhIntegral {
     );
     INTEGRATION_METHODS;
 };
-#endif
 
 #endif
