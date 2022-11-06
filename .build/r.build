@@ -1,13 +1,24 @@
 #!/bin/bash
+set -e 
 
 mkdir -p ~/.R
 echo 'CC=clang' > ~/.R/Makevars
 echo 'CXX=clang++' >> ~/.R/Makevars
 
-./autogen.sh \
-&& ./configure CXXFLAGS='-O0' \
-&& make -C R \
-&& R CMD INSTALL ./R.Rcheck/QuantLib \
-&& echo Test curves.R && Rscript ./R/demo/curves.R \
-&& echo Test european-option.R && Rscript ./R/demo/european-option.R \
-&& echo Test bonds.R && Rscript ./R/demo/bonds.R
+pwd
+
+echo Make Library
+./autogen.sh
+./configure CXXFLAGS='-O0'
+make -C R
+
+echo Install Library
+R CMD INSTALL ./R.Rcheck/QuantLib
+
+echo Execute Scripts in demo folder
+for fn in ./R/demo/*.R
+do
+echo Test $fn
+Rscript "$fn"
+done 
+
