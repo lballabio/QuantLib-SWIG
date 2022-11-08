@@ -59,21 +59,6 @@ using QuantLib::TanhSinhIntegral;
     }
 %enddef
 
-%define GAUSSIAN_QUADRATURE_METHODS
-    %extend {
-        #if defined(SWIGPYTHON)
-        Real __call__(PyObject* pyFunction) {
-            UnaryFunction f(pyFunction);
-            return (*self)(f);
-        }
-        #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
-        Real calculate(UnaryFunctionDelegate* f) {
-            return (*self)(UnaryFunction(f));		
-        }
-        #endif
-    }
-%enddef
-
 class SegmentIntegral {
   public:
     SegmentIntegral(Size intervals);
@@ -138,55 +123,57 @@ class GaussianQuadrature {
       Array x() { 
         return self->x(); 
       }
+      #if defined(SWIGPYTHON)
+      Real __call__(PyObject* pyFunction) {
+          UnaryFunction f(pyFunction);
+          return (*self)(f);
+      }
+      #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+      Real calculate(UnaryFunctionDelegate* f) {
+          return (*self)(UnaryFunction(f));
+      }
+      #endif
     }
 };
 
 class GaussLaguerreIntegration: public GaussianQuadrature {
   public:
     GaussLaguerreIntegration(Size n, Real s = 0.0);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
-class GaussHermiteIntegration {
+class GaussHermiteIntegration: public GaussianQuadrature {
   public:
     GaussHermiteIntegration(Size n, Real mu = 0.0);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
 class GaussJacobiIntegration: public GaussianQuadrature {
   public:
     GaussJacobiIntegration(Size n, Real alpha, Real beta);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
 class GaussHyperbolicIntegration: public GaussianQuadrature {
   public:
     GaussHyperbolicIntegration(Size n);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
 class GaussLegendreIntegration: public GaussianQuadrature {
   public:
     GaussLegendreIntegration(Size n);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
 class GaussChebyshevIntegration: public GaussianQuadrature {
   public:
     GaussChebyshevIntegration(Size n);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
 class GaussChebyshev2ndIntegration: public GaussianQuadrature {
   public:
     GaussChebyshev2ndIntegration(Size n);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
 class GaussGegenbauerIntegration: public GaussianQuadrature {
   public:
     GaussGegenbauerIntegration(Size n, Real lambda);
-    GAUSSIAN_QUADRATURE_METHODS;
 };
 
 class TanhSinhIntegral {
