@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+make -C Python check
+for i in Python/examples/*.py
+do
+    echo "$i"
+    /usr/bin/python3 "$i" || break -1
+done

@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+
+echo Execute Scripts in demo folder
+for fn in ./R/demo/*.R
+do
+    echo $fn
+    Rscript "$fn" || break -1
+done 

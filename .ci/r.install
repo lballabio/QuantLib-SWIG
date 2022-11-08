@@ -1,0 +1,4 @@
+#!/bin/bash
+set -e
+
+R CMD INSTALL ./R.Rcheck/QuantLib
