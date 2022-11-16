@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+./autogen.sh
+./configure CC=clang CXX=clang++ CXXFLAGS='-O2'
+make -C CSharp
