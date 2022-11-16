@@ -9,7 +9,8 @@ calendar <- TARGET()
 todaysDate <- DateParser_parseISO("2001-09-06")
 invisible(Settings_instance()$setEvaluationDate(d=todaysDate))
 
-settlementDate <- DateParser_parseISO("2001-09-08")
+settlementDays = 2
+settlementDate = Calendar_advance(calendar, todaysDate, settlementDays, "Days")
 
 cat('Today          : ', Date_ISO(todaysDate), "\n")
 cat('Settlement Date: ', Date_ISO(settlementDate), "\n")
@@ -61,7 +62,6 @@ for (it in names(deposits)) {
   itVal = deposits[[it]]  
   
   dayCounter = Actual360()
-  settlementDays = 2
   
   dh = DepositRateHelper(
       QuoteHandle(SimpleQuote(itVal)),
@@ -88,8 +88,7 @@ for (it in names(FRAs)) {
   
   dayCounter = Actual360()
   months = 3
-  settlementDays = 2
-  
+
   dh = FraRateHelper(
     QuoteHandle(SimpleQuote(itVal)), n, m, settlementDays, calendar, "ModifiedFollowing", F, dayCounter
   )
@@ -105,8 +104,7 @@ for (it in names(futures)) {
 
   dayCounter = Actual360()
   months = 3
-  settlementDays = 2
-  
+
   dh = FuturesRateHelper(
     QuoteHandle(SimpleQuote(itVal)),
     DateParser_parseISO(it),
@@ -131,7 +129,7 @@ for (it in names(futures)) {
 discountTermStructure = YieldTermStructureHandle(FlatForward(settlementDate, 0.04, Actual360()))
 
 # %%
-settlementDays = 2
+
 fixedLegFrequency = "Annual"
 fixedLegTenor = PeriodParser_parse("1Y") 
 fixedLegAdjustment = "Unadjusted"
@@ -167,14 +165,15 @@ printCurve <- function(curve, helpers) {
   for (i in seq(1, helpers$size())) {
     h = helpers[i][[1]]
     pillar = RateHelper_pillarDate(h)
-    
+
     day_counter = Actual365Fixed()
     compounding = "Continuous"
     
     r = YieldTermStructure_zeroRate(curve, pillar, day_counter, compounding, "Annual")
+    disc = YieldTermStructure_discount(curve, pillar)
     
     df = rbind(df, data.frame(
-      pillar=Date_ISO(pillar), zeroRate=InterestRate_rate(r)*100.0
+      pillar=Date_ISO(pillar), zeroRate=InterestRate_rate(r)*100.0, df=disc, impliedRate=RateHelper_impliedQuote(h)
     ))
   }
   print(df)
@@ -187,6 +186,7 @@ forecastTermStructure = RelinkableYieldTermStructureHandle()
 # %%
 depoFuturesSwapCurve = PiecewiseFlatForward(settlementDate, allHelpers_DepoFutSwap, Actual360())
 printCurve(depoFuturesSwapCurve, allHelpers_DepoFutSwap)
+
 
 # %%
 depoFraSwapCurve = PiecewiseFlatForward(settlementDate, allHelpers_DepoFraSwap, Actual360())
@@ -209,7 +209,7 @@ payFixed = T
 fixedLegFrequency = "Annual"
 fixedLegAdjustment = "Unadjusted"
 fixedLegDayCounter = Thirty360(Thirty360_BondBasis_get())
-fixedRate = 0.04
+fixedRate = swaps[["5Y"]] # 0.04
 
 # %%
 floatingLegFrequency = "Quarterly"
