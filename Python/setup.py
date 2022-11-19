@@ -145,12 +145,12 @@ class my_build_ext(build_ext):
             extra_link_args = ['/subsystem:windows', machinetype]
 
             if self.debug:
-                if self.static:
+                if self.static or 'QL_STATIC_RUNTIME' in os.environ:
                     extra_compile_args.append('/MTd')
                 else:
                     extra_compile_args.append('/MDd')
             else:
-                if self.static:
+                if self.static or 'QL_STATIC_RUNTIME' in os.environ:
                     extra_compile_args.append('/MT')
                 else:
                     extra_compile_args.append('/MD')

@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+
+./autogen.sh
+./configure PYTHON=/usr/bin/python3 CC=clang CXX=clang++ CXXFLAGS='-O1'
+make -C Python
+make -C Python wheel

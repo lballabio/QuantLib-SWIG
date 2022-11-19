@@ -143,7 +143,6 @@ class CustomRegion : public Region {
 };
 
 %shared_ptr(InflationIndex)
-
 class InflationIndex : public Index {
   protected:
     InflationIndex();
@@ -158,7 +157,6 @@ class InflationIndex : public Index {
 };
 
 %shared_ptr(ZeroInflationIndex)
-
 class ZeroInflationIndex : public InflationIndex {
   public:
       ZeroInflationIndex(const std::string& familyName,
@@ -174,8 +172,13 @@ class ZeroInflationIndex : public InflationIndex {
       ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
 };
 
-%shared_ptr(YoYInflationIndex)
+%inline %{
+    ext::shared_ptr<ZeroInflationIndex> as_zero_inflation_index(const ext::shared_ptr<Index>& i) {
+        return ext::dynamic_pointer_cast<ZeroInflationIndex>(i);
+    }
+%}
 
+%shared_ptr(YoYInflationIndex)
 class YoYInflationIndex : public InflationIndex {
   public:
     YoYInflationIndex(const std::string& familyName,
@@ -261,8 +264,12 @@ using QuantLib::CPI;
 
 struct CPI {
     enum InterpolationType { AsIndex, Flat, Linear };
-};
 
+    static Real laggedFixing(const ext::shared_ptr<ZeroInflationIndex>& index,
+                             const Date& date,
+                             const Period& observationLag,
+                             InterpolationType interpolationType);
+};
 
 // cashflows
 
@@ -602,6 +609,22 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
 
 // utilities
 
+%{
+using QuantLib::inflationPeriod;
+using QuantLib::inflationYearFraction;
+%}
+
+%template(DatePair) std::pair<Date,Date>;
+
+std::pair<Date,Date> inflationPeriod(const Date & d,
+                                     Frequency f);
+
+Time inflationYearFraction(Frequency f,
+                           bool indexIsInterpolated,
+                           const DayCounter& dayCount,
+                           const Date& d1, const Date& d2);
+
+
 %inline %{
 
     Date inflationBaseDate(const Date& referenceDate,
@@ -618,7 +641,87 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
 
 %}
 
-// inflation coupons
+// year-on-year inflation coupons
+
+%{
+using QuantLib::YoYInflationCoupon;
+using QuantLib::CappedFlooredYoYInflationCoupon;
+using QuantLib::YoYInflationCouponPricer;
+using QuantLib::setCouponPricer;
+using QuantLib::BlackYoYInflationCouponPricer;
+using QuantLib::UnitDisplacedBlackYoYInflationCouponPricer;
+using QuantLib::BachelierYoYInflationCouponPricer;
+%}
+
+%shared_ptr(YoYInflationCouponPricer)
+class YoYInflationCouponPricer {
+  private:
+    YoYInflationCouponPricer();
+};
+
+void setCouponPricer(const Leg&, const ext::shared_ptr<YoYInflationCouponPricer>&);
+
+%shared_ptr(YoYInflationCoupon)
+class YoYInflationCoupon : public InflationCoupon {
+  public:
+    YoYInflationCoupon(const Date& paymentDate,
+                       Real nominal,
+                       const Date& startDate,
+                       const Date& endDate,
+                       Natural fixingDays,
+                       const ext::shared_ptr<YoYInflationIndex>& index,
+                       const Period& observationLag,
+                       const DayCounter& dayCounter,
+                       Real gearing = 1.0,
+                       Spread spread = 0.0,
+                       const Date& refPeriodStart = Date(),
+                       const Date& refPeriodEnd = Date());
+    Real gearing() const;
+    Spread spread() const;
+    Rate adjustedFixing() const;
+    ext::shared_ptr<YoYInflationIndex> yoyIndex() const;
+};
+
+%inline %{
+    ext::shared_ptr<YoYInflationCoupon> as_yoy_inflation_coupon(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<YoYInflationCoupon>(cf);
+    }
+%}
+
+%shared_ptr(CappedFlooredYoYInflationCoupon)
+class CappedFlooredYoYInflationCoupon : public YoYInflationCoupon {
+  public:
+    CappedFlooredYoYInflationCoupon(const Date& paymentDate,
+                                    Real nominal,
+                                    const Date& startDate,
+                                    const Date& endDate,
+                                    Natural fixingDays,
+                                    const ext::shared_ptr<YoYInflationIndex>& index,
+                                    const Period& observationLag,
+                                    const DayCounter& dayCounter,
+                                    Real gearing = 1.0,
+                                    Spread spread = 0.0,
+                                    const Rate cap = Null<Rate>(),
+                                    const Rate floor = Null<Rate>(),
+                                    const Date& refPeriodStart = Date(),
+                                    const Date& refPeriodEnd = Date());
+    Rate rate() const;
+    Rate cap() const;
+    Rate floor() const;
+    Rate effectiveCap() const;
+    Rate effectiveFloor() const;
+    Rate underlyingRate() const;
+    bool isCapped() const;
+    bool isFloored() const;
+};
+
+%inline %{
+    ext::shared_ptr<CappedFlooredYoYInflationCoupon> as_capped_floored_yoy_inflation_coupon(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<CappedFlooredYoYInflationCoupon>(cf);
+    }
+%}
 
 %{
 Leg _yoyInflationLeg(const Schedule& schedule,
@@ -658,6 +761,30 @@ Leg _yoyInflationLeg(const Schedule& schedule,
                      const std::vector<Spread>& spreads = std::vector<Spread>(),
                      const std::vector<Rate>& caps = std::vector<Rate>(),
                      const std::vector<Rate>& floors = std::vector<Rate>());
+
+%shared_ptr(BlackYoYInflationCouponPricer)
+class BlackYoYInflationCouponPricer : public YoYInflationCouponPricer {
+  public:
+    BlackYoYInflationCouponPricer(
+        const Handle<YoYOptionletVolatilitySurface>& capletVol,
+        const Handle<YieldTermStructure>& nominalTermStructure);
+};
+
+%shared_ptr(UnitDisplacedBlackYoYInflationCouponPricer)
+class UnitDisplacedBlackYoYInflationCouponPricer : public YoYInflationCouponPricer {
+  public:
+    UnitDisplacedBlackYoYInflationCouponPricer(
+        const Handle<YoYOptionletVolatilitySurface>& capletVol,
+        const Handle<YieldTermStructure>& nominalTermStructure);
+};
+
+%shared_ptr(BachelierYoYInflationCouponPricer)
+class BachelierYoYInflationCouponPricer : public YoYInflationCouponPricer {
+  public:
+    BachelierYoYInflationCouponPricer(
+        const Handle<YoYOptionletVolatilitySurface>& capletVol,
+        const Handle<YieldTermStructure>& nominalTermStructure);
+};
 
 
 // inflation instruments

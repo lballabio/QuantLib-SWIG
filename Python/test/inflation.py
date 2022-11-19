@@ -375,6 +375,41 @@ class InflationTest(unittest.TestCase):
             msg=fail_msg,
             delta=EPSILON)
 
+    def test_lagged_fixing_method(self):
+        """Testing lagged fixing method"""
+
+        inflation_idx = build_hicp_index(
+            EU_FIXING_DATA, self.inflation_ts_handle)
+        inflation_ts = build_inflation_term_structure(
+            VALUATION_DATE,
+            EUR_BEI_SWAP_RATES,
+            inflation_idx,
+            ql.CPI.Flat,
+            self.nominal_ts_handle)
+        self.inflation_ts_handle.linkTo(inflation_ts)
+
+        maturity_date = ql.Date(25, ql.October, 2027)
+        lag = ql.Period(3, ql.Months)
+        indexation = ql.CPI.Flat
+
+        actual_fixing = ql.CPI.laggedFixing(inflation_idx, maturity_date, lag, indexation)
+        expected_fixing = inflation_idx.fixing(ql.Date(1, ql.July, 2027))
+
+        fail_msg = """ Failed to replicate lagged fixing:
+                            index: {inflation_idx}
+                            actual fixing: {actual_fixing}
+                            expected fixing: {expected_fixing}
+                            tolerance: {tolerance}
+                   """.format(inflation_idx=inflation_idx.familyName(),
+                              actual_fixing=actual_fixing,
+                              expected_fixing=expected_fixing,
+                              tolerance=EPSILON)
+        self.assertAlmostEquals(
+            first=actual_fixing,
+            second=expected_fixing,
+            msg=fail_msg,
+            delta=EPSILON)
+
 
 if __name__ == '__main__':
     print('testing QuantLib ' + ql.__version__)
