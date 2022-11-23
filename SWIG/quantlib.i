@@ -89,8 +89,8 @@ import java.lang.AutoCloseable;
 %typemap(javafinalize) SWIGTYPE %{%}
 #endif
 
-//#if defined(SWIGPYTHON)
-//%feature("autodoc");
-//#endif
+#if defined(SWIGPYTHON)
+%feature("autodoc");
+#endif
 
 %include ql.i
