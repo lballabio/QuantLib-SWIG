@@ -25,6 +25,7 @@
 %include stochasticprocess.i
 %include calibrationhelpers.i
 %include fdm.i
+%include randomnumbers.i
 
 %{
 using QuantLib::HestonSLVProcess;
@@ -41,39 +42,7 @@ class HestonSLVProcess : public StochasticProcess {
 
 %{
 using QuantLib::HestonSLVMCModel;
-using QuantLib::BrownianGeneratorFactory;
-using QuantLib::MTBrownianGeneratorFactory;
-using QuantLib::SobolBrownianGeneratorFactory;
 %}
-
-%shared_ptr(BrownianGeneratorFactory);
-class BrownianGeneratorFactory {
-  private:
-    BrownianGeneratorFactory();
-};
-
-
-%shared_ptr(MTBrownianGeneratorFactory);
-class MTBrownianGeneratorFactory : public BrownianGeneratorFactory {
-  public:
-    MTBrownianGeneratorFactory(unsigned long seed = 0);
-};
-
-class SobolBrownianGenerator {
-  public:
-    enum Ordering { Factors, Steps, Diagonal };
-  private: 
-    SobolBrownianGenerator();
-};
-
-%shared_ptr(SobolBrownianGeneratorFactory);
-class SobolBrownianGeneratorFactory : public BrownianGeneratorFactory {
-  public:
-    SobolBrownianGeneratorFactory(
-            SobolBrownianGenerator::Ordering ordering,
-            unsigned long seed = 0,
-            SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel);
-};
 
 class HestonSLVMCModel {
   public:

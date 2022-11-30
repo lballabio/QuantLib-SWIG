@@ -302,4 +302,73 @@ class GaussianLowDiscrepancySequenceGenerator {
 };
 
 
+
+/************* LMM-style sequence generators *************/
+
+
+%{
+using QuantLib::BrownianGenerator;
+using QuantLib::MTBrownianGenerator;
+using QuantLib::SobolBrownianGenerator;
+using QuantLib::BrownianGeneratorFactory;
+using QuantLib::MTBrownianGeneratorFactory;
+using QuantLib::SobolBrownianGeneratorFactory;
+%}
+
+%shared_ptr(BrownianGenerator)
+class BrownianGenerator {
+  public:
+    Real nextStep(std::vector<Real>&);
+    Real nextPath();
+
+    Size numberOfFactors() const;
+    Size numberOfSteps() const;
+  private:
+    BrownianGenerator();
+};
+
+%shared_ptr(BrownianGeneratorFactory)
+class BrownianGeneratorFactory {
+  public:
+    ext::shared_ptr<BrownianGenerator> create(Size factors,
+                                              Size steps) const;
+  private:
+    BrownianGeneratorFactory();
+};
+
+%shared_ptr(MTBrownianGenerator)
+class MTBrownianGenerator : public BrownianGenerator {
+  public:
+    MTBrownianGenerator(Size factors,
+                        Size steps,
+                        unsigned long seed = 0);
+};
+
+%shared_ptr(MTBrownianGeneratorFactory)
+class MTBrownianGeneratorFactory : public BrownianGeneratorFactory {
+  public:
+    MTBrownianGeneratorFactory(unsigned long seed = 0);
+};
+
+%shared_ptr(SobolBrownianGenerator)
+class SobolBrownianGenerator : public BrownianGenerator {
+  public:
+    enum Ordering { Factors, Steps, Diagonal };
+    SobolBrownianGenerator(Size factors,
+                           Size steps,
+                           Ordering ordering,
+                           unsigned long seed = 0,
+                           SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel);
+};
+
+%shared_ptr(SobolBrownianGeneratorFactory)
+class SobolBrownianGeneratorFactory : public BrownianGeneratorFactory {
+  public:
+    SobolBrownianGeneratorFactory(
+                           SobolBrownianGenerator::Ordering ordering,
+                           unsigned long seed = 0,
+                           SobolRsg::DirectionIntegers directionIntegers = SobolRsg::Jaeckel);
+};
+
+
 #endif
