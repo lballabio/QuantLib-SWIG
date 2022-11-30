@@ -47,9 +47,10 @@ namespace std {
     %template(BoolVector) vector<bool>;
 
     %template(DoublePair) pair<double,double>;
-    %template(DoublePairVector) vector<pair<double,double> >;
-    %template(PairDoubleVector) pair<vector<double>,vector<double> >;
+    %template(DoublePairVector) vector<pair<double,double>>;
+    %template(PairDoubleVector) pair<vector<double>,vector<double>>;
     %template(UnsignedIntPair) pair<unsigned int,unsigned int>;
+    %template(UnsignedIntPairVector) vector<pair<unsigned int,unsigned int>>;
 
 #if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;
