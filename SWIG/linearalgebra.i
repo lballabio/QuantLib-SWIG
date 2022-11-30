@@ -520,25 +520,42 @@ class DefaultLexicographicalView {
 
 // matrix class
 %{
-typedef QuantLib::Matrix::row_iterator MatrixRow;
 using QuantLib::outerProduct;
 using QuantLib::transpose;
 using QuantLib::SVD;
 %}
 
 #if defined(SWIGPYTHON)
+%{
 class MatrixRow {
-  private:
+    Matrix::row_iterator begin_;
+    Integer columns_;
+  public:
+    MatrixRow(Matrix::row_iterator begin, Size columns) : begin_(begin), columns_((Integer)columns) {}
+    Real __getitem__(Integer i) {
+        if (i >= 0 && i < columns_)
+            return begin_[i];
+        else if (i < 0 && -i <= columns_)
+            return begin_[columns_+i];
+        else
+            throw std::out_of_range("matrix indexes out of range");
+    }
+    void __setitem__(Integer i, Real x) {
+        if (i >= 0 && i < columns_)
+            begin_[i] = x;
+        else if (i < 0 && -i <= columns_)
+            begin_[columns_+i] = x;
+        else
+            throw std::out_of_range("matrix indexes out of range");
+    }
+};
+%}
+
+class MatrixRow {
     MatrixRow();
   public:
-    %extend {
-        Real __getitem__(Size i) {
-            return (*self)[i];
-        }
-        void __setitem__(Size i, Real x) {
-            (*self)[i] = x;
-        }
-    }
+    Real __getitem__(Integer i);
+    void __setitem__(Integer i, Real x);
 };
 #endif
 
@@ -576,22 +593,40 @@ class Matrix {
         }
         #endif
         #if defined(SWIGPYTHON)
-        MatrixRow __getitem__(Size i) {
-            return (*self)[i];
+        MatrixRow __getitem__(Integer i) {
+            Integer rows_ = static_cast<Integer>($self->rows());
+            if (i >= 0 && i < $self->rows())
+                return MatrixRow((*$self)[i], $self->columns());
+            else if (i < 0 && -i <= rows_)
+                return MatrixRow((*$self)[rows_+i], $self->columns());
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         #elif defined(SWIGR)
         Real ref(Size i, Size j) {
-            return (*self)[i][j];
+            if (i < $self->rows() && j < $self->columns())
+                return (*self)[i][j];
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         void setitem(Size i, Size j, Real x) {
-            (*self)[i][j] = x;
+            if (i < $self->rows() && j < $self->columns())
+                (*self)[i][j] = x;
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         #elif defined(SWIGCSHARP) || defined(SWIGJAVA)
         Real get(Size i, Size j) {
-            return (*self)[i][j];
+            if (i < $self->rows() && j < $self->columns())
+                return (*self)[i][j];
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         void set(Size i, Size j, Real x) {
-            (*self)[i][j] = x;
+            if (i < $self->rows() && j < $self->columns())
+                (*self)[i][j] = x;
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         #endif
         #if defined(SWIGR)
