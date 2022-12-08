@@ -402,6 +402,7 @@ class FloatingRateBond : public Bond {
 
 %{
 using QuantLib::CmsRateBond;
+using QuantLib::AmortizingCmsRateBond;
 %}
 
 %shared_ptr(CmsRateBond)
@@ -424,6 +425,29 @@ class CmsRateBond : public Bond {
                    bool inArrears = false,
                    Real redemption = 100.0,
                    const Date& issueDate = Date());
+};
+
+
+%shared_ptr(AmortizingCmsRateBond)
+class AmortizingCmsRateBond : public Bond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") AmortizingCmsRateBond;
+    #endif
+  public:
+    AmortizingCmsRateBond(
+                Natural settlementDays,
+                const std::vector<Real>& notionals,
+                const Schedule& schedule,
+                const ext::shared_ptr<SwapIndex>& index,
+                const DayCounter& paymentDayCounter,
+                BusinessDayConvention paymentConvention = Following,
+                Natural fixingDays = Null<Natural>(),
+                const std::vector<Real>& gearings = { 1.0 },
+                const std::vector<Spread>& spreads = { 0.0 },
+                const std::vector<Rate>& caps = {},
+                const std::vector<Rate>& floors = {},
+                bool inArrears = false,
+                const Date& issueDate = Date());
 };
 
 

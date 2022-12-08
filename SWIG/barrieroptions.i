@@ -34,6 +34,7 @@ struct Barrier {
 %{
 using QuantLib::BarrierOption;
 using QuantLib::DividendBarrierOption;
+using QuantLib::QuantoBarrierOption;
 %}
 
 %shared_ptr(BarrierOption)
@@ -52,6 +53,17 @@ class BarrierOption : public OneAssetOption {
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
                          Volatility maxVol = 4.0);
+};
+
+%shared_ptr(QuantoBarrierOption)
+class QuantoBarrierOption : public BarrierOption {
+  public:
+    QuantoBarrierOption(
+               Barrier::Type barrierType,
+               Real barrier,
+               Real rebate,
+               const ext::shared_ptr<StrikedTypePayoff>& payoff,
+               const ext::shared_ptr<Exercise>& exercise);
 };
 
 %{
@@ -188,6 +200,20 @@ class MCBarrierEngine : public PricingEngine {
                    seed)
 %}
 #endif
+
+%{
+using QuantLib::QuantoEngine;
+typedef QuantoEngine<BarrierOption,AnalyticBarrierEngine> QuantoBarrierEngine;
+%}
+
+%shared_ptr(QuantoBarrierEngine);
+class QuantoBarrierEngine : public PricingEngine {
+      public:
+        QuantoBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess>,
+                            Handle<YieldTermStructure> foreignRiskFreeRate,
+                            Handle<BlackVolTermStructure> exchangeRateVolatility,
+                            Handle<Quote> correlation);
+ };
 
 %{
 using QuantLib::FdBlackScholesBarrierEngine;
