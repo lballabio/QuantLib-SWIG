@@ -71,29 +71,35 @@ class CreditDefaultSwap : public Instrument {
     };
 
     CreditDefaultSwap(Protection::Side side,
-                         Real notional,
-                         Rate spread,
-                         const Schedule& schedule,
-                         BusinessDayConvention paymentConvention,
-                         const DayCounter& dayCounter,
-                         bool settlesAccrual = true,
-                         bool paysAtDefaultTime = true,
-                         const Date& protectionStart = Date());
+                      Real notional,
+                      Rate spread,
+                      const Schedule& schedule,
+                      BusinessDayConvention paymentConvention,
+                      const DayCounter& dayCounter,
+                      bool settlesAccrual = true,
+                      bool paysAtDefaultTime = true,
+                      const Date& protectionStart = Date(),
+                      const ext::shared_ptr<Claim>& claim = {},
+                      const DayCounter& lastPeriodDayCounter = DayCounter(),
+                      const bool rebatesAccrual = true,
+                      const Date& tradeDate = Date(),
+                      Natural cashSettlementDays = 3);
     CreditDefaultSwap(Protection::Side side,
-                         Real notional,
-                         Rate upfront,
-                         Rate spread,
-                         const Schedule& schedule,
-                         BusinessDayConvention paymentConvention,
-                         const DayCounter& dayCounter,
-                         bool settlesAccrual = true,
-                         bool paysAtDefaultTime = true,
-                         const Date& protectionStart = Date(),
-                         const Date& upfrontDate = Date(),
-                         const ext::shared_ptr<Claim>& claim =
-                                                    ext::shared_ptr<Claim>(),
-                         const DayCounter& lastPeriodDayCounter = DayCounter(),
-                         const bool rebatesAccrual = true);
+                      Real notional,
+                      Rate upfront,
+                      Rate spread,
+                      const Schedule& schedule,
+                      BusinessDayConvention paymentConvention,
+                      const DayCounter& dayCounter,
+                      bool settlesAccrual = true,
+                      bool paysAtDefaultTime = true,
+                      const Date& protectionStart = Date(),
+                      const Date& upfrontDate = Date(),
+                      const ext::shared_ptr<Claim>& claim = {},
+                      const DayCounter& lastPeriodDayCounter = DayCounter(),
+                      const bool rebatesAccrual = true,
+                      const Date& tradeDate = Date(),
+                      Natural cashSettlementDays = 3);
     Protection::Side side() const;
     Real notional() const;
     Rate runningSpread() const;
