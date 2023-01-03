@@ -40,6 +40,7 @@ using QuantLib::Preceding;
 using QuantLib::ModifiedPreceding;
 using QuantLib::Unadjusted;
 using QuantLib::HalfMonthModifiedFollowing;
+using QuantLib::Nearest;
 %}
 
 enum BusinessDayConvention {
@@ -48,7 +49,8 @@ enum BusinessDayConvention {
     Preceding,
     ModifiedPreceding,
     Unadjusted,
-    HalfMonthModifiedFollowing
+    HalfMonthModifiedFollowing,
+    Nearest
 };
 
 %{
