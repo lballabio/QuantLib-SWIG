@@ -105,6 +105,8 @@ class IndexedCashFlow : public CashFlow {
     Real notional() const;
     Date baseDate() const;
     Date fixingDate() const;
+    Real baseFixing() const;
+    Real indexFixing() const;
     ext::shared_ptr<Index> index() const;
     bool growthOnly() const;
 };
