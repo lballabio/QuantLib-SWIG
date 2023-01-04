@@ -358,7 +358,6 @@ class CPICashFlow : public IndexedCashFlow {
                 bool growthOnly = false,
                 CPI::InterpolationType interpolation = CPI::AsIndex,
                 const Frequency& frequency = NoFrequency);
-    Real baseFixing() const;
     CPI::InterpolationType interpolation() const;
     Frequency frequency() const;
 };
