@@ -1113,6 +1113,29 @@ class CashFlows {
                     Date npvDate = Date());
 
     %extend {
+        static std::pair<Real,Real> npvbps(
+                   const Leg& leg,
+                   const ext::shared_ptr<YieldTermStructure>& discountCurve,
+                   bool includeSettlementDateFlows,
+                   const Date& settlementDate = Date(),
+                   const Date& npvDate = Date()) {
+            return QuantLib::CashFlows::npvbps(leg, *discountCurve,
+                                               includeSettlementDateFlows,
+                                               settlementDate, npvDate);
+        }
+        static std::pair<Real,Real> npvbps(
+                   const Leg& leg,
+                   const Handle<YieldTermStructure>& discountCurve,
+                   bool includeSettlementDateFlows,
+                   const Date& settlementDate = Date(),
+                   const Date& npvDate = Date()) {
+            return QuantLib::CashFlows::npvbps(leg, **discountCurve,
+                                               includeSettlementDateFlows,
+                                               settlementDate, npvDate);
+        }
+    }
+
+    %extend {
         static Rate atmRate(
                    const Leg& leg,
                    const ext::shared_ptr<YieldTermStructure>& discountCurve,
