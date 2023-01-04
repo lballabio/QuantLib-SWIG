@@ -346,7 +346,6 @@ class AmortizingFixedRateBondTest(unittest.TestCase):
             coupons
         )
 
-        tolerance = 1.0e-6
         cashflows = bond.cashflows()
 
         self.assertEqual(len(cashflows), 2 * len(nominals))
