@@ -638,10 +638,12 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   BusinessDayConvention exCouponConvention = Unadjusted,
                   bool exCouponEndOfMonth = false,
                   const Calendar& paymentCalendar = Calendar(),
-                  const Natural paymentLag = 0) {
+                  const Natural paymentLag = 0,
+                  Compounding comp = Simple,
+                  Frequency freq = Annual) {
     return QuantLib::FixedRateLeg(schedule)
         .withNotionals(nominals)
-        .withCouponRates(couponRates,dayCount)
+        .withCouponRates(couponRates, dayCount, comp, freq)
         .withPaymentAdjustment(paymentAdjustment)
         .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar)
         .withPaymentLag(paymentLag)
@@ -667,7 +669,9 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   BusinessDayConvention exCouponConvention = Unadjusted,
                   bool exCouponEndOfMonth = false,
                   const Calendar& paymentCalendar = Calendar(),
-                  Natural paymentLag = 0);
+                  Natural paymentLag = 0,
+                  Compounding compounding = Simple,
+                  Frequency compoundingFrequency = Annual);
 
 %{
 Leg _IborLeg(const std::vector<Real>& nominals,
