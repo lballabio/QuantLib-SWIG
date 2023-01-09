@@ -1,49 +1,52 @@
 
-Main changes for QuantLib-SWIG 1.28
+Main changes for QuantLib-SWIG 1.29
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/21?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/22?closed=1>.
+
+- Enabled autodoc feature in Python; exported methods and classes have
+  now docstrings reporting their interface and the types of the parameters.
+
+- Enabled CI build and tests for the R wrappers; thanks to @AndLLA.
 
 - **Removed** deprecated features no longer available in the
   underlying C++ library:
-  - the constructors of `ZeroCouponInflationSwap` and
-    `ZeroCouponInflationSwapHelper` missing an explicit CPI
-    interpolation type;
-  - the constructors of `ActualActual` and `Thirty360` missing an
-    explicit choice of convention.
+  - the constructor of `UnitedStates` missing an explicit market;
+  - the `nominalTermStructure` method of `InflationTermStructure`;
+  - the `CrossCurrencyBasisSwapRateHelper` class.
 
-- **Renamed** `RelinkableYoYOptionletVolatilitySurface` to
-  `RelinkableYoYOptionletVolatilitySurfaceHandle`.  The old name is
-  still available in Python as deprecated. Currently we have no way to
-  do so in other languages.
+- Added `compounding` and `compoundingFrequency` parameters to
+  `FixedRateLeg` (@lballabio).
 
-- Added an implicit conversion in C# from `bool` to
-  `boost::optional<bool>`, making it possible to pass parameters of
-  this type.  Python already had typemaps defined.  Other languages
-  can pass `OptionalBool(b)` where `b` is the desired bool.
+- Exported `CashFlows::npvbps` method (@lballabio).
 
-- Exported the `Gaussian1dCapFloorEngine` class; thanks to @jacek-bator.
+- Exported `baseFixing` and `indexFixing` methods in `IndexedCashFlow`
+  (@lballabio).
 
-- Exported `LazyObject` methods in `PiecewiseYieldCurve`; thanks to
-  Francois Botha (@igitur).
+- Exported new constructors for zero-inflation indexes (@lballabio).
 
-- Exported Act/366 and Act/365.25 day counters; thanks to Ignacio
-  Anguita (@IgnacioAnguita).
+- Exported missing arguments in `CreditDefaultSwap` constructor (@lballabio).
 
-- Exported `PartialTimeBarrierOption` class and related engine; thanks
-  to Ignacio Anguita (@IgnacioAnguita).
+- Exported `Nearest` business-day convention (@lballabio).
 
-- Added missing `operator-` to `Date` in C#.
+- Exported `AmortizingCmsRateBond`; thanks to @chenyanlann.
 
-- Added a few default parameters to the `SABRInterpolation` constructor.
+- Exported `QuantoBarrierOption` and `QuantoBarrierEngine`; thanks to
+  @chenyanlann.
 
-- Exported new constructor for `SabrSmileSection`.
+- Avoided out-of-bound access to `Matrix` elements (@lballabio).
 
-- Exported new `sinkingSchedule` and `sinkingNotionals` functions.
+- Exported a number of LMM-related classes (@lballabio).
 
-- Exported new overload for `CallableBond::impliedVolatility`.
+- Exported YoY inflation coupons and related classes (@lballabio).
 
-- Exported missing end-of-month optional parameter for `OISRateHelper`
-  constructor.
+- Exported the `CPI::laggedFixing` method; thanks to Marcin Rybacki
+  (@marcin-rybacki).
+
+- Exported `QdPlusAmericanEngine`, `QdFpAmericanEngine` and related
+  classes; thanks to Klaus Spanderen (@klausspanderen).
+
+- Added Python test case for Andreasen-Huge local volatility; thanks
+  to Klaus Spanderen (@klausspanderen).
 
