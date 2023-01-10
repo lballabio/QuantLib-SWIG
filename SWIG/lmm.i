@@ -54,30 +54,34 @@ class EvolutionDescription {
     Size numberOfSteps() const;
 };
 
+%rename(checkCompatibility) _checkCompatibility;
+%rename(isInTerminalMeasure) _isInTerminalMeasure;
+%rename(isInMoneyMarketPlusMeasure) _isInMoneyMarketPlusMeasure;
+%rename(isInMoneyMarketMeasure) _isInMoneyMarketMeasure;
 %rename(terminalMeasure) _terminalMeasure;
 %rename(moneyMarketPlusMeasure) _moneyMarketPlusMeasure;
 %rename(moneyMarketMeasure) _moneyMarketMeasure;
 
 %inline %{
 
-    void checkCompatibility(const EvolutionDescription& evolution,
-                            const std::vector<unsigned int>& numeraires) {
+    void _checkCompatibility(const EvolutionDescription& evolution,
+                             const std::vector<unsigned int>& numeraires) {
         QuantLib::checkCompatibility(evolution, to_vector<Size>(numeraires));
     }
 
-    bool isInTerminalMeasure(const EvolutionDescription& evolution,
-                             const std::vector<unsigned int>& numeraires) {
+    bool _isInTerminalMeasure(const EvolutionDescription& evolution,
+                              const std::vector<unsigned int>& numeraires) {
         return QuantLib::isInTerminalMeasure(evolution, to_vector<Size>(numeraires));
     }
 
-    bool isInMoneyMarketPlusMeasure(const EvolutionDescription& evolution,
-                                    const std::vector<unsigned int>& numeraires,
-                                    Size offset = 1) {
+    bool _isInMoneyMarketPlusMeasure(const EvolutionDescription& evolution,
+                                     const std::vector<unsigned int>& numeraires,
+                                     Size offset = 1) {
         return QuantLib::isInMoneyMarketPlusMeasure(evolution, to_vector<Size>(numeraires), offset);
     }
 
-    bool isInMoneyMarketMeasure(const EvolutionDescription& evolution,
-                                const std::vector<unsigned int>& numeraires) {
+    bool _isInMoneyMarketMeasure(const EvolutionDescription& evolution,
+                                 const std::vector<unsigned int>& numeraires) {
         return QuantLib::isInMoneyMarketMeasure(evolution, to_vector<Size>(numeraires));
     }
 
