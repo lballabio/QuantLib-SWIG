@@ -569,8 +569,7 @@ class AndreasenHugeVolatilityTest(unittest.TestCase):
     def testLocalVolCalibration(self):
         """ Testing Andreasen-Huge Local Volatility calibration"""
 
-        today = ql.Date.todaysDate()
-        ql.Settings.instance().evaluationDate = today
+        today = ql.Settings.instance().evaluationDate
 
         spot = ql.QuoteHandle(ql.SimpleQuote(100))
 
