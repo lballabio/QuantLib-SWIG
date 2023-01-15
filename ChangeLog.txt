@@ -1,3 +1,51 @@
+commit 66805decdd12e6a6b5994a9212ac7ba5ddfd49c0
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Apr 2021 11:12:19 +0200
+
+    Set version to 1.29 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8a5c8cf0d01e955a4136d7802ebc35d622d85f09
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 10 Jan 2023 14:38:15 +0100
+
+    Avoid changing evaluation date in test
+
+ Python/test/volatilities.py | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+commit 2f8c1b61ca1ea5b511016703bd9b4b5762458581
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 10 Jan 2023 13:05:18 +0100
+
+    Avoid ambiguous calls on 32-bit systems
+
+ SWIG/lmm.i | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+commit 4a4eb0728429cbd5fe98e69dd33211f1b55b8bad
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Apr 2022 18:29:12 +0200
+
+    Set version to 1.29 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 3fa244750459277030eecdf157d79bc0f4f957b1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 9 Jan 2023 18:41:38 +0100
+
+    Update news and changelog
+
+ ChangeLog.txt | 712 +++++++++++++++++++++++++++++++++++-----------------------
+ News.md       |  61 ++---
+ 2 files changed, 466 insertions(+), 307 deletions(-)
+
 commit f61840196fd950d41a2f7f9ab14a53be0296dd7a
 Merge: 4fb2e63 687b99e
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
