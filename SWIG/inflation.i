@@ -73,7 +73,6 @@ class InflationTermStructure : public TermStructure {
   public:
     virtual Period observationLag() const;
     virtual Frequency frequency() const;
-    virtual bool indexIsInterpolated() const;
     virtual Rate baseRate() const;
     virtual Date baseDate() const;
     void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality =
@@ -92,6 +91,7 @@ class YoYInflationTermStructure : public InflationTermStructure {
                  bool extrapolate = false) const;
     Rate yoyRate(Time t,
                  bool extrapolate = false) const;
+    bool indexIsInterpolated() const;
 };
 
 %template(YoYInflationTermStructureHandle) Handle<YoYInflationTermStructure>;
@@ -562,17 +562,6 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
               const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
-    PiecewiseZeroInflationCurve(
-              const Date& referenceDate,
-              const Calendar& calendar,
-              const DayCounter& dayCounter,
-              const Period& lag,
-              Frequency frequency,
-              bool indexIsInterpolated,
-              Rate baseRate,
-              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     #if !defined(SWIGR)
@@ -952,15 +941,6 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
                                    const DayCounter& dayCounter,
                                    const Period& lag,
                                    Frequency frequency,
-                                   const std::vector<Date>& dates,
-                                   const std::vector<Rate>& rates,
-                                   const Interpolator &interpolator = Interpolator());
-    InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   bool indexIsInterpolated,
                                    const std::vector<Date>& dates,
                                    const std::vector<Rate>& rates,
                                    const Interpolator &interpolator = Interpolator());
