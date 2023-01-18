@@ -386,22 +386,6 @@ class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
                          Month referenceMonth,
                          Year referenceYear,
                          Frequency referenceFreq,
-                         const ext::shared_ptr<OvernightIndex>& index,
-                         const Handle<Quote>& convexityAdjustment = Handle<Quote>(),
-                         RateAveraging::Type averagingMethod = RateAveraging::Compound);
-
-    SofrFutureRateHelper(Real price,
-                         Month referenceMonth,
-                         Year referenceYear,
-                         Frequency referenceFreq,
-                         const ext::shared_ptr<OvernightIndex>& index,
-                         Real convexityAdjustment = 0.0,
-                         RateAveraging::Type averagingMethod = RateAveraging::Compound);
-
-    SofrFutureRateHelper(const Handle<Quote>& price,
-                         Month referenceMonth,
-                         Year referenceYear,
-                         Frequency referenceFreq,
                          const Handle<Quote>& convexityAdjustment = Handle<Quote>());
 
     SofrFutureRateHelper(Real price,

@@ -134,7 +134,6 @@ def build_inflation_term_structure(
         DAY_COUNTER,
         observation_lag,
         inflation_index.frequency(),
-        inflation_index.interpolated(),
         base_zero_rate,
         helpers)
     if include_seasonality:
