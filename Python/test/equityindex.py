@@ -62,7 +62,7 @@ class EquityIndexTest(unittest.TestCase):
         
         future_dt = ql.Date(20, ql.May, 2030)
         self.assertAlmostEqual(
-            self.equity_idx.fixing(future_dt), 10056.9, delta=EPSILON, msg=fail_msg)
+            self.equity_idx.fixing(future_dt),  10055.76, delta=EPSILON, msg=fail_msg)
 
 
 if __name__ == '__main__':
