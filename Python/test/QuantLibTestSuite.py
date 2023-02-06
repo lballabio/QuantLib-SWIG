@@ -59,6 +59,7 @@ from coupons import (
 from options import OptionsTest
 from swap import ZeroCouponSwapTest
 from currencies import CurrencyTest
+from equityindex import EquityIndexTest
 
 
 def test():
@@ -106,6 +107,7 @@ def test():
     suite.addTest(unittest.makeSuite(CurrencyTest, "test"))
     suite.addTest(unittest.makeSuite(SviSmileSectionTest, "test"))
     suite.addTest(unittest.makeSuite(AndreasenHugeVolatilityTest, "test"))
+    suite.addTest(unittest.makeSuite(EquityIndexTest, "test"))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
