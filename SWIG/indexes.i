@@ -363,12 +363,9 @@ using QuantLib::EquityIndex;
 class EquityIndex : public Index {
   public:
     EquityIndex(std::string name,
-                Currency currency,
                 Calendar fixingCalendar,
                 Handle<YieldTermStructure> interest = {},
                 Handle<YieldTermStructure> dividend = {});
-    
-    const Currency& currency() const;
 
     Handle<YieldTermStructure> equityInterestRateCurve() const;
     Handle<YieldTermStructure> equityDividendCurve() const;

@@ -22,7 +22,6 @@ import unittest
 
 EPSILON = 1.e-2
 
-CCY = ql.EURCurrency()
 CAL = ql.TARGET()
 DCT = ql.Actual365Fixed()
 VALUATION_DATE = CAL.adjust(ql.Date(31, ql.January, 2023))
@@ -41,7 +40,7 @@ class EquityIndexTest(unittest.TestCase):
         self.dividend_handle = ql.YieldTermStructureHandle(flat_rate(0.01))
         
         self.equity_idx = ql.EquityIndex(
-            "eq_idx", CCY, CAL, self.interest_handle, self.dividend_handle)
+            "eq_idx", CAL, self.interest_handle, self.dividend_handle)
 
         self.equity_idx.addFixing(VALUATION_DATE, 8690.0)
 
@@ -51,7 +50,6 @@ class EquityIndexTest(unittest.TestCase):
 
         self.assertEqual(self.equity_idx.name(), "eq_idx", msg=fail_msg)
         self.assertEqual(self.equity_idx.fixingCalendar(), CAL, msg=fail_msg)
-        self.assertEqual(self.equity_idx.currency(), CCY, msg=fail_msg)
 
     def test_equity_index_projections(self):
         """Testing equity index projections"""
