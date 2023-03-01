@@ -363,18 +363,18 @@ using QuantLib::EquityIndex;
 class EquityIndex : public Index {
   public:
     EquityIndex(std::string name,
-                Currency currency,
                 Calendar fixingCalendar,
                 Handle<YieldTermStructure> interest = {},
-                Handle<YieldTermStructure> dividend = {});
-    
-    const Currency& currency() const;
+                Handle<YieldTermStructure> dividend = {},
+                Handle<Quote> spot = {});
 
     Handle<YieldTermStructure> equityInterestRateCurve() const;
     Handle<YieldTermStructure> equityDividendCurve() const;
+    Handle<Quote> spot() const;
 
     ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
-                                       const Handle<YieldTermStructure>& dividend) const;
+                                       const Handle<YieldTermStructure>& dividend,
+                                       const Handle<Quote>& spot) const;
 };
 
 export_xibor_instance(AUDLibor);
