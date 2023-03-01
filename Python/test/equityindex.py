@@ -38,11 +38,10 @@ class EquityIndexTest(unittest.TestCase):
         
         self.interest_handle = ql.YieldTermStructureHandle(flat_rate(0.03))
         self.dividend_handle = ql.YieldTermStructureHandle(flat_rate(0.01))
+        spot_handle = ql.QuoteHandle(ql.SimpleQuote(8690.0))
         
         self.equity_idx = ql.EquityIndex(
-            "eq_idx", CAL, self.interest_handle, self.dividend_handle)
-
-        self.equity_idx.addFixing(VALUATION_DATE, 8690.0)
+            "eq_idx", CAL, self.interest_handle, self.dividend_handle, spot_handle)
 
     def test_equity_index_inspectors(self):
         """Testing equity index inspectors"""
