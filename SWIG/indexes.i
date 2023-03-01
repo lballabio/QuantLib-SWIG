@@ -365,13 +365,16 @@ class EquityIndex : public Index {
     EquityIndex(std::string name,
                 Calendar fixingCalendar,
                 Handle<YieldTermStructure> interest = {},
-                Handle<YieldTermStructure> dividend = {});
+                Handle<YieldTermStructure> dividend = {},
+                Handle<Quote> spot = {});
 
     Handle<YieldTermStructure> equityInterestRateCurve() const;
     Handle<YieldTermStructure> equityDividendCurve() const;
+    Handle<Quote> spot() const;
 
     ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
-                                       const Handle<YieldTermStructure>& dividend) const;
+                                       const Handle<YieldTermStructure>& dividend,
+                                       const Handle<Quote>& spot) const;
 };
 
 export_xibor_instance(AUDLibor);
