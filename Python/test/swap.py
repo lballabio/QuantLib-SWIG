@@ -26,25 +26,21 @@ CAL = ql.TARGET()
 
 DCT = ql.Actual365Fixed()
 
-VALUATION_DATE = CAL.adjust(ql.Date(1, ql.June, 2021))
-
 IR_FIXINGS = [(ql.Date(3, ql.January, 2023), 0.033),
               (ql.Date(4, ql.January, 2023), 0.033),
               (ql.Date(5, ql.January, 2023), 0.033),
               (ql.Date(6, ql.January, 2023), 0.033),
-              (ql.Date(7, ql.January, 2023), 0.033),
+              (ql.Date(9, ql.January, 2023), 0.03),
               (ql.Date(10, ql.January, 2023), 0.03),
               (ql.Date(11, ql.January, 2023), 0.03),
               (ql.Date(12, ql.January, 2023), 0.03),
               (ql.Date(13, ql.January, 2023), 0.03),
-              (ql.Date(14, ql.January, 2023), 0.03),
-              (ql.Date(18, ql.January, 2023), 0.03),
-              (ql.Date(19, ql.January, 2023), 0.03),
+              (ql.Date(17, ql.January, 2023), 0.03),
               (ql.Date(20, ql.January, 2023), 0.03),
-              (ql.Date(21, ql.January, 2023), 0.03),
+              (ql.Date(23, ql.January, 2023), 0.03),
               (ql.Date(24, ql.January, 2023), 0.03),
               (ql.Date(25, ql.January, 2023), 0.03),
-              (ql.Date(26, ql.January, 2023), 0.03),]
+              (ql.Date(26, ql.January, 2023), 0.03)]
 
 
 def flat_rate(rate):
@@ -174,7 +170,8 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
         ql.IndexManager.instance().clearHistory(self.equity_idx.name())
         self.equity_idx.addFixing(ql.Date(5, ql.January, 2023), 9010.0)
 
-        self.ibor_idx = ql.Euribor6M(self.interest_handle)
+        self.ibor_idx = ql.USDLibor(
+            ql.Period(3, ql.Months), self.interest_handle)
         ql.IndexManager.instance().clearHistory(self.ibor_idx.name())
         self.sofr_idx = ql.Sofr(self.interest_handle)
         ql.IndexManager.instance().clearHistory(self.sofr_idx.name())
@@ -212,10 +209,10 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
         fail_msg = "Incorrect interest rate index set to TRS."
 
         self.assertEqual(trs_vs_ibor.interestRateIndex().name(), 
-                         "USD Libor 3M",
+                         "USDLibor3M Actual/360",
                          msg=fail_msg)
         self.assertEqual(trs_vs_sofr.interestRateIndex().name(), 
-                         "SOFR",
+                         "SOFRON Actual/360",
                          msg=fail_msg)
     
     def test_trs_npv(self):
@@ -233,8 +230,10 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
 
         par_trs_vs_ibor = self.build_trs(
             self.ibor_idx, start, end, trs_vs_ibor.fairMargin())
+        par_trs_vs_ibor.setPricingEngine(pricer)
         par_trs_vs_sofr = self.build_trs(
             self.sofr_idx, start, end, trs_vs_sofr.fairMargin())
+        par_trs_vs_sofr.setPricingEngine(pricer)
         
         fail_msg = "Par TRS expected to have NPV equal to zero."
 
