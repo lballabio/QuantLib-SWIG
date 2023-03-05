@@ -62,11 +62,27 @@ accrual_daycount = ql.ActualActual(ql.ActualActual.Bond)
 coupon = 0.025
 bond = ql.CallableFixedRateBond(settlement_days, faceAmount, schedule, [coupon], accrual_daycount, ql.Following, faceAmount, issueDate, callabilitySchedule)
 
+maxIterations = 1000
+accuracy = 1e-8
+gridIntervals = 40
+reversionParameter = .03
+
 def value_bond(a, s, grid_points, bond): 
     model = ql.HullWhite(term_Structure_Handle, a, s)
     engine = ql.TreeCallableFixedRateBondEngine(model, grid_points) 
     bond.setPricingEngine(engine)
     return bond
+
+def value_bond2(reversionParameter, s, gridIntervals, bond): 
+    model2 = ql.HullWhite(term_Structure_Handle, reversionParameter, s)
+    engine2 = ql.TreeCallableFixedRateBondEngine(model2, gridIntervals) 
+    bond.setPricingEngine(engine2)
+    return bond
+
+# 6% mean reversion and 20% volatility
+value_bond2(0.06, 0.20, 40, bond) 
+print("Bond price using clean price: ", bond.cleanPrice())
+print("Bond price using net present value: ", bond.NPV())
 
 value_bond(0.03, 0.15, 40, bond) 
 print("Bond price using clean price: ", bond.cleanPrice())
