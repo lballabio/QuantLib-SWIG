@@ -6,6 +6,7 @@
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
  Copyright (C) 2018 Matthias Groncki
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
