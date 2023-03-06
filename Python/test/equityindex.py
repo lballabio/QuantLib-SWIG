@@ -34,11 +34,11 @@ def flat_rate(rate):
 class EquityIndexTest(unittest.TestCase):
     def setUp(self):
         ql.Settings.instance().evaluationDate = VALUATION_DATE
-        
+
         self.interest_handle = ql.YieldTermStructureHandle(flat_rate(0.03))
         self.dividend_handle = ql.YieldTermStructureHandle(flat_rate(0.01))
         spot_handle = ql.QuoteHandle(ql.SimpleQuote(8690.0))
-        
+
         ql.IndexManager.instance().clearHistory("eq_idx")
         self.equity_idx = ql.EquityIndex(
             "eq_idx", CAL, self.interest_handle, self.dividend_handle, spot_handle)
@@ -56,7 +56,7 @@ class EquityIndexTest(unittest.TestCase):
 
         self.assertAlmostEqual(
             self.equity_idx.fixing(VALUATION_DATE), 8690.0, delta=EPSILON, msg=fail_msg)
-        
+
         future_dt = ql.Date(20, ql.May, 2030)
         self.assertAlmostEqual(
             self.equity_idx.fixing(future_dt),  10055.76, delta=EPSILON, msg=fail_msg)

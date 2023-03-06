@@ -162,8 +162,8 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
         equity_spot = ql.QuoteHandle(ql.SimpleQuote(8690.0))
 
         self.equity_idx = ql.EquityIndex(
-            "eq_idx", 
-            CAL, 
+            "eq_idx",
+            CAL,
             self.interest_handle,
             self.dividend_handle,
             equity_spot)
@@ -197,34 +197,34 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
                                         interest_idx,
                                         DCT,
                                         margin)
-    
+
     def test_trs_interest_rate_index(self):
         """Testing equity total return swap interest rate index"""
         start = ql.Date(5, ql.January, 2023)
         end = ql.Date(5, ql.April, 2023)
-        
+
         trs_vs_ibor = self.build_trs(self.ibor_idx, start, end)
         trs_vs_sofr = self.build_trs(self.sofr_idx, start, end)
-        
+
         fail_msg = "Incorrect interest rate index set to TRS."
 
-        self.assertEqual(trs_vs_ibor.interestRateIndex().name(), 
+        self.assertEqual(trs_vs_ibor.interestRateIndex().name(),
                          "USDLibor3M Actual/360",
                          msg=fail_msg)
-        self.assertEqual(trs_vs_sofr.interestRateIndex().name(), 
+        self.assertEqual(trs_vs_sofr.interestRateIndex().name(),
                          "SOFRON Actual/360",
                          msg=fail_msg)
-    
+
     def test_trs_npv(self):
         """Testing equity total return swap NPV"""
         start = ql.Date(5, ql.January, 2023)
         end = ql.Date(5, ql.April, 2023)
-        
+
         pricer = ql.DiscountingSwapEngine(self.interest_handle)
-        
+
         trs_vs_ibor = self.build_trs(self.ibor_idx, start, end)
         trs_vs_ibor.setPricingEngine(pricer)
-        
+
         trs_vs_sofr = self.build_trs(self.sofr_idx, start, end)
         trs_vs_sofr.setPricingEngine(pricer)
 
@@ -234,7 +234,7 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
         par_trs_vs_sofr = self.build_trs(
             self.sofr_idx, start, end, trs_vs_sofr.fairMargin())
         par_trs_vs_sofr.setPricingEngine(pricer)
-        
+
         fail_msg = "Par TRS expected to have NPV equal to zero."
 
         self.assertAlmostEqual(
