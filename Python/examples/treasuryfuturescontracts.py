@@ -45,121 +45,108 @@ daysCount = ql.ActualActual(ql.ActualActual.Bond)
 
 # ### Option on Treasury Futures Contracts
 
-# ### 2-Year Note 
+# ------------------------------------------------------- #
 
-interestRate = 0.003
-calcDate = ql.Date(1,12,2023)
-yieldCurve = ql.FlatForward(calcDate, interestRate, daysCount, ql.Compounded, ql.Continuous)
+# ### 5-Year Note Options (Call)
+
+calendar = ql.UnitedStates()
+business_convention = ql.ModifiedFollowing
+settlement_days = 0
+dayCount = ql.ActualActual(ql.ActualActual.Bond)
+
+interestRate = 0.0011
+calcDate = ql.Date(1, 1, 2022)
+yieldCurve = ql.FlatForward(calcDate, interestRate, dayCount, ql.Compounded, ql.Continuous)
 
 ql.Settings.instance().evaluationDate = calcDate
-optionMaturityDate = ql.Date(24,12,2025)
-strike = 100
-spot = 125 # spot price is the futures price
-volatility = 20/100.
-optionType = ql.Option.Call
 
-discount = yieldCurve.discount(optionMaturityDate)
-strikepayoff = ql.PlainVanillaPayoff(optionType, strike)
-T = yieldCurve.dayCounter().yearFraction(calcDate, optionMaturityDate)
+maturity = ql.Date(1, 1, 2027)
 
-stddev = volatility*math.sqrt(T)
+strike = 120
+spot = 125
+volatility = 0.20
+type = ql.Option.Call
+
+discount = yieldCurve.discount(maturity)
+
+time = yieldCurve.dayCounter().yearFraction(calcDate, maturity)
+
+stddev = volatility*math.sqrt(time)
+
+strikepayoff = ql.PlainVanillaPayoff(type, strike)
 
 black = ql.BlackCalculator(strikepayoff, spot, stddev, discount)
 
-print("%-20s: %4.4f" %("Option Price for Treasury Futures Contract (2-Year Note)", black.value() )) 
+print("%-20s: %4.4f" %("Option values on Treasury Futures Put", black.value()))
 print("%-20s: %4.4f" %("Delta", black.delta(spot)))
 print("%-20s: %4.4f" %("Gamma", black.gamma(spot)))
-print("%-20s: %4.4f" %("Theta", black.theta(spot, T))) 
+print("%-20s: %4.4f" %("Theta", black.theta(spot, T)))
 print("%-20s: %4.4f" %("Vega", black.vega(T)))
 print("%-20s: %4.4f" %("Rho", black.rho( T)))
 
 # ------------------------------------------------------- #
 
-# ### 3-Year Note
+# ### 10-Year Note Options (Put)
 
-interestRate = 0.003
-calcDate = ql.Date(1,12,2023)
-yieldCurve = ql.FlatForward(calcDate, interestRate, daysCount, ql.Compounded, ql.Continuous)
+calendar = ql.UnitedStates()
+business_convention = ql.ModifiedFollowing
+settlement_days = 0
+dayCount = ql.ActualActual(ql.ActualActual.Bond)
+
+interestRate = 0.0011
+calcDate = ql.Date(1, 1, 2022)
+yieldCurve = ql.FlatForward(calcDate, interestRate, dayCount, ql.Compounded, ql.Continuous)
 
 ql.Settings.instance().evaluationDate = calcDate
-optionMaturityDate = ql.Date(24,12,2026)
-strike = 100
-spot = 125 # spot price is the futures price
-volatility = 20/100.
-optionType = ql.Option.Call
 
-discount = yieldCurve.discount(optionMaturityDate)
-strikepayoff = ql.PlainVanillaPayoff(optionType, strike)
-T = yieldCurve.dayCounter().yearFraction(calcDate, optionMaturityDate)
+maturity = ql.Date(28, 6, 2022)
 
-stddev = volatility*math.sqrt(T)
+strike = 120
+spot = 125
+volatility = 0.20
+type = ql.Option.Put
+
+discount = yieldCurve.discount(maturity)
+
+time = yieldCurve.dayCounter().yearFraction(calcDate, maturity)
+
+stddev = volatility*math.sqrt(time)
+
+strikepayoff = ql.PlainVanillaPayoff(type, strike)
+
 black = ql.BlackCalculator(strikepayoff, spot, stddev, discount)
 
-print("%-20s: %4.4f" %("Option Price for Treasury Futures Contract (3-Year Note)", black.value() )) 
+print("%-20s: %4.4f" %("Option values on Treasury Futures Put", black.value()))
 print("%-20s: %4.4f" %("Delta", black.delta(spot)))
 print("%-20s: %4.4f" %("Gamma", black.gamma(spot)))
-print("%-20s: %4.4f" %("Theta", black.theta(spot, T))) 
+print("%-20s: %4.4f" %("Theta", black.theta(spot, T)))
 print("%-20s: %4.4f" %("Vega", black.vega(T)))
 print("%-20s: %4.4f" %("Rho", black.rho( T)))
 
 # ------------------------------------------------------- #
 
-# ### 5-Year Note
+# ### Natural Silver Futures Options (Call)
 
-interestRate = 0.003
-calcDate = ql.Date(1,12,2023)
-yieldCurve = ql.FlatForward(calcDate, interestRate, daysCount, ql.Compounded, ql.Continuous)
-
-ql.Settings.instance().evaluationDate = calcDate
-optionMaturityDate = ql.Date(24,12,2028)
-strike = 100
-spot = 125 # spot price is the futures price
-volatility = 20/100.
-optionType = ql.Option.Call
-
-discount = yieldCurve.discount(optionMaturityDate)
-strikepayoff = ql.PlainVanillaPayoff(optionType, strike)
-T = yieldCurve.dayCounter().yearFraction(calcDate, optionMaturityDate)
-
-stddev = volatility*math.sqrt(T)
-
-black = ql.BlackCalculator(strikepayoff, spot, stddev, discount)
-
-print("%-20s: %4.4f" %("Option Price for Treasury Futures Contract (5-Year Note)", black.value() )) 
-print("%-20s: %4.4f" %("Delta", black.delta(spot)))
-print("%-20s: %4.4f" %("Gamma", black.gamma(spot)))
-print("%-20s: %4.4f" %("Theta", black.theta(spot, T))) 
-print("%-20s: %4.4f" %("Vega", black.vega(T)))
-print("%-20s: %4.4f" %("Rho", black.rho( T)))
-
-# ------------------------------------------------------- #
-
-# ### 10-Year Note
-
-interestRate = 0.003
-calcDate = ql.Date(1,12,2023)
-yieldCurve = ql.FlatForward(calcDate, interestRate, daysCount, ql.Compounded, ql.Continuous)
+interestRate = 0.05
+calcDate = ql.Date(1, 1, 2022)
+yieldCurve = ql.FlatForward(calcDate, interestRate, dayCount, ql.Compounded, ql.Continuous)
 
 ql.Settings.instance().evaluationDate = calcDate
-optionMaturityDate = ql.Date(24,12,2033)
-strike = 100
-spot = 125 # futures price
-volatility = 20/100.
-optionType = ql.Option.Call
+T = 31/365.
 
-discount = yieldCurve.discount(optionMaturityDate)
-strikepayoff = ql.PlainVanillaPayoff(optionType, strike)
-T = yieldCurve.dayCounter().yearFraction(calcDate, optionMaturityDate)
+strike = 120
+spot = 125
+volatility = 0.20
+type = ql.Option.Put
 
+discount = yieldCurve.discount(T)
 stddev = volatility*math.sqrt(T)
+strikepayoff = ql.PlainVanillaPayoff(type, strike)
 black = ql.BlackCalculator(strikepayoff, spot, stddev, discount)
 
-print("%-20s: %4.4f" %("Option Price for Treasury Futures Contract (10-Year Note)", black.value() )) 
+print("%-20s: %4.4f" %("Option Commodity Price for Put", black.value()))
 print("%-20s: %4.4f" %("Delta", black.delta(spot)))
 print("%-20s: %4.4f" %("Gamma", black.gamma(spot)))
-print("%-20s: %4.4f" %("Theta", black.theta(spot, T))) 
+print("%-20s: %4.4f" %("Theta", black.theta(spot, T)))
 print("%-20s: %4.4f" %("Vega", black.vega(T)))
 print("%-20s: %4.4f" %("Rho", black.rho( T)))
-
-# ------------------------------------------------------- #
-
