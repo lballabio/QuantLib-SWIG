@@ -12,7 +12,7 @@ QuantLib-SWIG: language bindings for QuantLib
 ---
 
 QuantLib-SWIG provides the means to use QuantLib from a number of
-languages including Python, Ruby, Perl, C# and Java.
+languages; currently their list includes Python, C#, Java and R.
 
 The QuantLib project (<https://www.quantlib.org>) is aimed at providing a
 comprehensive software framework for quantitative finance. QuantLib is
