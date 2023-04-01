@@ -56,7 +56,7 @@ dayCount = ql.ActualActual(ql.ActualActual.Bond)
 
 interestRate = 0.0011
 calcDate = ql.Date(1, 1, 2022)
-yieldCurve = ql.FlatForward(calcDate, interestRate, dayCount, ql.Compounded, ql.Continuous)
+yieldCurve = ql.FlatForward(calcDate, interestRate, dayCount, ql.Continuous)
 
 ql.Settings.instance().evaluationDate = calcDate
 
