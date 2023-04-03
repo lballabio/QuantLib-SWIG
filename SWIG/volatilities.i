@@ -468,18 +468,19 @@ class FixedLocalVolSurface : public LocalVolTermStructure {
                 ext::make_shared<Matrix>(std::move(localVolMatrix)), 
                 dayCounter, lowerExtrapolation, upperExtrapolation);
         }
-    }
-
-    void setInterpolation(const std::string& interpolator = "") {
-        const std::string s = boost::to_lower_copy(interpolator);
-        if (s == "" || s == "bilinear") {
-            self->setInterpolation<QuantLib::Bilinear>();
-        } else if (s == "bicubic") {
-            self->setInterpolation<QuantLib::Bicubic>();
-        } else {
-            QL_FAIL("Unknown interpolator: " << interpolator);
+        
+        void setInterpolation(const std::string& interpolator = "") {
+            const std::string s = boost::to_lower_copy(interpolator);
+            if (s == "" || s == "bilinear") {
+                self->setInterpolation<QuantLib::Bilinear>();
+            } else if (s == "bicubic") {
+                self->setInterpolation<QuantLib::Bicubic>();
+            } else {
+                QL_FAIL("Unknown interpolator: " << interpolator);
+            }
         }
     }
+
 };
 
 %shared_ptr(GridModelLocalVolSurface);
