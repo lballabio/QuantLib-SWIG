@@ -24,7 +24,6 @@
 #ifndef quantlib_volatilities_i
 #define quantlib_volatilities_i
 
-%include calibrationhelpers.i
 %include common.i
 %include date.i
 %include daycounters.i

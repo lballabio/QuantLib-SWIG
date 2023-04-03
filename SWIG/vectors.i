@@ -27,7 +27,6 @@
 
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( std::pair<Date,double> )
-SWIG_STD_VECTOR_ENHANCED( vector<double> )
 #endif
 
 %{
