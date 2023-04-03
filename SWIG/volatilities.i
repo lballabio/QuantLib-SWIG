@@ -470,8 +470,16 @@ class FixedLocalVolSurface : public LocalVolTermStructure {
         }
     }
 
-    template <class Interpolator>
-    void setInterpolation(const Interpolator& i = Interpolator());    
+    void setInterpolation(const std::string& interpolator = "") {
+        const std::string s = boost::to_lower_copy(interpolator);
+        if (s == "" || s == "bilinear") {
+            self->setInterpolation<QuantLib::Bilinear>();
+        } else if (s == "bicubic") {
+            self->setInterpolation<QuantLib::Bicubic>();
+        } else {
+            QL_FAIL("Unknown interpolator: " << interpolator);
+        }
+    }
 };
 
 %shared_ptr(GridModelLocalVolSurface);
