@@ -24,6 +24,7 @@
 #ifndef quantlib_volatilities_i
 #define quantlib_volatilities_i
 
+%include calibrationhelpers.i
 %include common.i
 %include date.i
 %include daycounters.i
@@ -444,6 +445,66 @@ class NoExceptLocalVolSurface : public LocalVolSurface {
 };
 
 
+%{
+using QuantLib::FixedLocalVolSurface;
+using QuantLib::GridModelLocalVolSurface;
+%}
+
+%shared_ptr(FixedLocalVolSurface);
+class FixedLocalVolSurface : public LocalVolTermStructure {
+  public:
+    enum Extrapolation { ConstantExtrapolation,
+                         InterpolatorDefaultExtrapolation };
+
+    %extend {
+        FixedLocalVolSurface(const Date& referenceDate,
+                             const std::vector<Time>& times,
+                             const std::vector<Real>& strikes,
+                             Matrix localVolMatrix,
+                             const DayCounter& dayCounter,
+                             Extrapolation lowerExtrapolation = ConstantExtrapolation,
+                             Extrapolation upperExtrapolation = ConstantExtrapolation) {
+            return new FixedLocalVolSurface(
+                referenceDate, times, strikes, 
+                ext::make_shared<Matrix>(std::move(localVolMatrix)), 
+                dayCounter, lowerExtrapolation, upperExtrapolation);
+        }
+    }
+
+    template <class Interpolator>
+    void setInterpolation(const Interpolator& i = Interpolator());    
+};
+
+%shared_ptr(GridModelLocalVolSurface);
+class GridModelLocalVolSurface: public LocalVolTermStructure {
+  public:
+    typedef FixedLocalVolSurface::Extrapolation Extrapolation;
+    
+    %extend {
+        GridModelLocalVolSurface(
+            const Date& referenceDate,
+            const std::vector<Date>& dates,
+            const const std::vector<std::vector<Real> >& strikes,
+            const DayCounter& dayCounter,
+            Extrapolation lowerExtrapolation
+                = FixedLocalVolSurface::ConstantExtrapolation,
+            Extrapolation upperExtrapolation
+                = FixedLocalVolSurface::ConstantExtrapolation) {
+
+            std::vector<ext::shared_ptr<std::vector<Real> > > _strikes;
+            std::transform(strikes.begin(), strikes.end(), std::back_inserter(_strikes), 
+                [](std::vector<Real> slice) {
+                    return ext::make_shared<std::vector<Real> >(std::move(slice));
+                });
+            return new GridModelLocalVolSurface(
+                referenceDate, dates, _strikes, 
+                dayCounter, lowerExtrapolation, upperExtrapolation);
+                
+        }
+    }
+    
+};
+        
 
 // constant caplet constant term structure
 %{
