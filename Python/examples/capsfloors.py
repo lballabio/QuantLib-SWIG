@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.14.5
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -44,18 +44,16 @@ yields = [0.000000, 0.006616, 0.007049, 0.007795,
           0.018998, 0.020080]
 
 dayCount = ql.ActualActual(ql.ActualActual.Bond)
-calendar = ql.UnitedStates()
+calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 interpolation = ql.Linear()
 compounding = ql.Compounded
 compoundingFrequency = ql.Annual
 term_structure = ql.ZeroCurve(dates, yields, dayCount, calendar, interpolation, compounding, compoundingFrequency)
 ts_handle = ql.YieldTermStructureHandle(term_structure)
 
-
 start_date = ql.Date(14, 6, 2016)
 end_date = ql.Date(14, 6 , 2026)
 period = ql.Period(3, ql.Months)
-calendar = ql.UnitedStates()
 buss_convention = ql.ModifiedFollowing
 rule = ql.DateGeneration.Forward
 end_of_month = False
@@ -69,5 +67,5 @@ strike = 0.02
 cap = ql.Cap(ibor_leg, [strike])
 vols = ql.QuoteHandle(ql.SimpleQuote(0.547295))
 engine = ql.BlackCapFloorEngine(ts_handle, vols)
-cap.setPricingEngine(engine) 
+cap.setPricingEngine(engine)
 print("Value of Caps given constant volatility:", cap.NPV())

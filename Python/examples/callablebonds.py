@@ -6,14 +6,14 @@
 #       extension: .py
 #       format_name: light
 #       format_version: '1.5'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.14.5
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
 
-# # Callable bonds (Calls)
+# # Callable bonds
 #
 # This file is part of QuantLib, a free-software/open-source library
 # for financial quantitative analysts and developers - https://www.quantlib.org/
@@ -30,17 +30,18 @@
 
 import QuantLib as ql
 import numpy as np
-calcDate = ql.Date(16, 8, 2006) 
+
+calcDate = ql.Date(16, 8, 2006)
 ql.Settings.instance().evaluationDate = calcDate
 
 dayCount = ql.ActualActual(ql.ActualActual.Bond)
 rate = 0.0465
 termStructure = ql.FlatForward(calcDate, rate, dayCount, ql.Compounded, ql.Semiannual)
-term_Structure_Handle = ql.RelinkableYieldTermStructureHandle(termStructure)
+term_structure_handle = ql.RelinkableYieldTermStructureHandle(termStructure)
 
 callabilitySchedule = ql.CallabilitySchedule()
 callPrice = 100.0
-callDate = ql.Date(15, ql.September, 2006); 
+callDate = ql.Date(15, ql.September, 2006);
 nc = ql.NullCalendar()
 
 # Number of calldates is 24
@@ -54,25 +55,27 @@ maturityDate = ql.Date(15, ql.September, 2012)
 calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 tenor = ql.Period(ql.Quarterly)
 accrualConvention = ql.Unadjusted
-schedule = ql.Schedule(issueDate, maturityDate, tenor, calendar, accrualConvention, accrualConvention, ql.DateGeneration.Backward, False)
+schedule = ql.Schedule(issueDate, maturityDate, tenor, calendar,
+                       accrualConvention, accrualConvention, ql.DateGeneration.Backward, False)
 
 settlement_days = 3
 faceAmount = 100
 accrual_daycount = ql.ActualActual(ql.ActualActual.Bond)
 coupon = 0.025
-bond = ql.CallableFixedRateBond(settlement_days, faceAmount, schedule, [coupon], accrual_daycount, ql.Following, faceAmount, issueDate, callabilitySchedule)
+bond = ql.CallableFixedRateBond(settlement_days, faceAmount, schedule,
+                                [coupon], accrual_daycount, ql.Following,
+                                faceAmount, issueDate, callabilitySchedule)
 
-def value_bond(a, s, grid_points, bond): 
-    model = ql.HullWhite(term_Structure_Handle, a, s)
-    engine = ql.TreeCallableFixedRateBondEngine(model, grid_points) 
-    bond.setPricingEngine(engine)
-    return bond
+def engine(a, s, grid_points):
+    model = ql.HullWhite(term_structure_handle, a, s)
+    return ql.TreeCallableFixedRateBondEngine(model, grid_points)
 
 # 6% mean reversion and 20% volatility
-value_bond2(0.06, 0.20, 40, bond) 
+bond.setPricingEngine(engine(0.06, 0.20, 40))
 print("Bond price using clean price: ", bond.cleanPrice())
 print("Bond price using net present value: ", bond.NPV())
 
-value_bond(0.03, 0.15, 40, bond) 
+# 3% mean reversion and 15% volatility
+bond.setPricingEngine(engine(0.03, 0.15, 40))
 print("Bond price using clean price: ", bond.cleanPrice())
 print("Bond price using net present value: ", bond.NPV())
