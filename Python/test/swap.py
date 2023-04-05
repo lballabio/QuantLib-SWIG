@@ -1,5 +1,6 @@
 """
  Copyright (C) 2021 Marcin Rybacki
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -25,7 +26,21 @@ CAL = ql.TARGET()
 
 DCT = ql.Actual365Fixed()
 
-VALUATION_DATE = CAL.adjust(ql.Date(1, ql.June, 2021))
+IR_FIXINGS = [(ql.Date(3, ql.January, 2023), 0.033),
+              (ql.Date(4, ql.January, 2023), 0.033),
+              (ql.Date(5, ql.January, 2023), 0.033),
+              (ql.Date(6, ql.January, 2023), 0.033),
+              (ql.Date(9, ql.January, 2023), 0.03),
+              (ql.Date(10, ql.January, 2023), 0.03),
+              (ql.Date(11, ql.January, 2023), 0.03),
+              (ql.Date(12, ql.January, 2023), 0.03),
+              (ql.Date(13, ql.January, 2023), 0.03),
+              (ql.Date(17, ql.January, 2023), 0.03),
+              (ql.Date(20, ql.January, 2023), 0.03),
+              (ql.Date(23, ql.January, 2023), 0.03),
+              (ql.Date(24, ql.January, 2023), 0.03),
+              (ql.Date(25, ql.January, 2023), 0.03),
+              (ql.Date(26, ql.January, 2023), 0.03)]
 
 
 def flat_rate(rate):
@@ -35,7 +50,8 @@ def flat_rate(rate):
 
 class ZeroCouponSwapTest(unittest.TestCase):
     def setUp(self):
-        ql.Settings.instance().evaluationDate = VALUATION_DATE
+        valuation_date = CAL.adjust(ql.Date(1, ql.June, 2021))
+        ql.Settings.instance().evaluationDate = valuation_date
         self.nominal_ts_handle = ql.YieldTermStructureHandle(flat_rate(0.007))
         self.ibor_idx = ql.Euribor6M(self.nominal_ts_handle)
         self.engine = ql.DiscountingSwapEngine(self.nominal_ts_handle)
@@ -132,11 +148,104 @@ class ZeroCouponSwapTest(unittest.TestCase):
         fail_msg_flt = """Floating leg cash flow type should be SubPeriodsCoupon
                           but was {actual}.
                        """.format(actual=type(flt_cf))
-        self.assertTrue(isinstance(flt_cf, ql.SubPeriodsCoupon), msg=fail_msg_flt)
+        self.assertTrue(isinstance(
+            flt_cf, ql.SubPeriodsCoupon), msg=fail_msg_flt)
+
+
+class EquityTotalReturnSwapTest(unittest.TestCase):
+    def setUp(self):
+        valuation_date = ql.Date(27, ql.January, 2023)
+        ql.Settings.instance().evaluationDate = valuation_date
+
+        self.interest_handle = ql.YieldTermStructureHandle(flat_rate(0.03))
+        self.dividend_handle = ql.YieldTermStructureHandle(flat_rate(0.0))
+        equity_spot = ql.QuoteHandle(ql.SimpleQuote(8690.0))
+
+        self.equity_idx = ql.EquityIndex(
+            "eq_idx",
+            CAL,
+            self.interest_handle,
+            self.dividend_handle,
+            equity_spot)
+        ql.IndexManager.instance().clearHistory(self.equity_idx.name())
+        self.equity_idx.addFixing(ql.Date(5, ql.January, 2023), 9010.0)
+
+        self.ibor_idx = ql.USDLibor(
+            ql.Period(3, ql.Months), self.interest_handle)
+        ql.IndexManager.instance().clearHistory(self.ibor_idx.name())
+        self.sofr_idx = ql.Sofr(self.interest_handle)
+        ql.IndexManager.instance().clearHistory(self.sofr_idx.name())
+
+        for f_dt, f_val in IR_FIXINGS:
+            self.ibor_idx.addFixing(f_dt, f_val)
+            self.sofr_idx.addFixing(f_dt, f_val)
+
+    def build_trs(self, interest_idx, start, end, margin=0.025):
+        schedule = ql.Schedule(
+            start,
+            end,
+            interest_idx.tenor(),
+            interest_idx.fixingCalendar(),
+            interest_idx.businessDayConvention(),
+            interest_idx.businessDayConvention(),
+            ql.DateGeneration.Backward,
+            False)
+        return ql.EquityTotalReturnSwap(ql.Swap.Receiver,
+                                        1.0e6,
+                                        schedule,
+                                        self.equity_idx,
+                                        interest_idx,
+                                        DCT,
+                                        margin)
+
+    def test_trs_interest_rate_index(self):
+        """Testing equity total return swap interest rate index"""
+        start = ql.Date(5, ql.January, 2023)
+        end = ql.Date(5, ql.April, 2023)
+
+        trs_vs_ibor = self.build_trs(self.ibor_idx, start, end)
+        trs_vs_sofr = self.build_trs(self.sofr_idx, start, end)
+
+        fail_msg = "Incorrect interest rate index set to TRS."
+
+        self.assertEqual(trs_vs_ibor.interestRateIndex().name(),
+                         "USDLibor3M Actual/360",
+                         msg=fail_msg)
+        self.assertEqual(trs_vs_sofr.interestRateIndex().name(),
+                         "SOFRON Actual/360",
+                         msg=fail_msg)
+
+    def test_trs_npv(self):
+        """Testing equity total return swap NPV"""
+        start = ql.Date(5, ql.January, 2023)
+        end = ql.Date(5, ql.April, 2023)
+
+        pricer = ql.DiscountingSwapEngine(self.interest_handle)
+
+        trs_vs_ibor = self.build_trs(self.ibor_idx, start, end)
+        trs_vs_ibor.setPricingEngine(pricer)
+
+        trs_vs_sofr = self.build_trs(self.sofr_idx, start, end)
+        trs_vs_sofr.setPricingEngine(pricer)
+
+        par_trs_vs_ibor = self.build_trs(
+            self.ibor_idx, start, end, trs_vs_ibor.fairMargin())
+        par_trs_vs_ibor.setPricingEngine(pricer)
+        par_trs_vs_sofr = self.build_trs(
+            self.sofr_idx, start, end, trs_vs_sofr.fairMargin())
+        par_trs_vs_sofr.setPricingEngine(pricer)
+
+        fail_msg = "Par TRS expected to have NPV equal to zero."
+
+        self.assertAlmostEqual(
+            par_trs_vs_ibor.NPV(), 0.0, delta=EPSILON, msg=fail_msg)
+        self.assertAlmostEqual(
+            par_trs_vs_sofr.NPV(), 0.0, delta=EPSILON, msg=fail_msg)
 
 
 if __name__ == '__main__':
     print('testing QuantLib ' + ql.__version__)
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(ZeroCouponSwapTest, 'test'))
+    suite.addTest(unittest.makeSuite(EquityTotalReturnSwapTest, 'test'))
     unittest.TextTestRunner(verbosity=2).run(suite)

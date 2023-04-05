@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2005 Johan Witters
  Copyright (C) 2018 Matthias Groncki
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -138,6 +139,14 @@ namespace QuantLib {
 
     class Australia : public Calendar {};
 
+    class Austria : public Calendar {
+      public:
+        enum Market { Settlement, Exchange };
+        Austria(Market m = Settlement);
+    };
+
+    class Botswana : public Calendar {};
+
     class Brazil : public Calendar {
       public:
         enum Market { Settlement, Exchange };
@@ -233,13 +242,17 @@ namespace QuantLib {
     class Norway : public Calendar {};
     class Poland : public Calendar {};
 
+    class Romania : public Calendar {
+      public:
+        enum Market { Public, BVB };
+        Romania(Market m = BVB);
+    };
+
     class Russia : public Calendar {
       public:
         enum Market { Settlement, MOEX };
         Russia(Market m = Settlement);
     };
-
-    class Romania : public Calendar {};
 
     class SaudiArabia : public Calendar {
       public:

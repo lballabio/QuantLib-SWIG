@@ -6,6 +6,7 @@
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
  Copyright (C) 2018 Matthias Groncki
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,10 +42,12 @@ using QuantLib::FloatFloatSwap;
 using QuantLib::OvernightIndexedSwap;
 using QuantLib::MakeOIS;
 using QuantLib::ZeroCouponSwap;
+using QuantLib::EquityTotalReturnSwap;
 %}
 
 %shared_ptr(Swap)
 class Swap : public Instrument {
+    %warnfilter(509) Swap;
   public:
     enum Type { Receiver = -1, Payer = 1 };
     Swap(const std::vector<ext::shared_ptr<CashFlow> >& firstLeg,
@@ -558,5 +561,55 @@ class ZeroCouponSwap : public Swap {
     Real floatingLegNPV() const;
     Real fairFixedPayment() const;
     Rate fairFixedRate(const DayCounter& dayCounter) const;
+};
+
+%shared_ptr(EquityTotalReturnSwap)
+class EquityTotalReturnSwap : public Swap {
+  public:
+    EquityTotalReturnSwap(Type type,
+                          Real nominal,
+                          Schedule schedule,
+                          ext::shared_ptr<EquityIndex> equityIndex,
+                          const ext::shared_ptr<IborIndex>& interestRateIndex,
+                          DayCounter dayCounter,
+                          Rate margin,
+                          Real gearing = 1.0,
+                          Calendar paymentCalendar = Calendar(),
+                          BusinessDayConvention paymentConvention = Unadjusted,
+                          Natural paymentDelay = 0);
+
+    EquityTotalReturnSwap(Type type,
+                          Real nominal,
+                          Schedule schedule,
+                          ext::shared_ptr<EquityIndex> equityIndex,
+                          const ext::shared_ptr<OvernightIndex>& interestRateIndex,
+                          DayCounter dayCounter,
+                          Rate margin,
+                          Real gearing = 1.0,
+                          Calendar paymentCalendar = Calendar(),
+                          BusinessDayConvention paymentConvention = Unadjusted,
+                          Natural paymentDelay = 0);
+
+    // Inspectors
+    Type type() const;
+    Real nominal() const;
+    
+    const ext::shared_ptr<EquityIndex>& equityIndex() const;
+    const ext::shared_ptr<InterestRateIndex>& interestRateIndex() const;
+    
+    const Schedule& schedule() const;
+    const DayCounter& dayCounter() const;
+    Rate margin() const;
+    Real gearing() const;
+    const Calendar& paymentCalendar() const;
+    BusinessDayConvention paymentConvention() const;
+    Natural paymentDelay() const;
+
+    const Leg& equityLeg() const;
+    const Leg& interestRateLeg() const;
+
+    Real equityLegNPV() const;
+    Real interestRateLegNPV() const;
+    Real fairMargin() const;
 };
 #endif

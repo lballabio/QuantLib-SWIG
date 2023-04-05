@@ -5,6 +5,7 @@
  Copyright (C) 2015, 2018 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -351,6 +352,29 @@ class SwapSpreadIndex : public InterestRateIndex {
     ext::shared_ptr<SwapIndex> swapIndex2();
     Real gearing1();
     Real gearing2();
+};
+
+%{
+using QuantLib::EquityIndex;
+%}
+
+%shared_ptr(EquityIndex)
+
+class EquityIndex : public Index {
+  public:
+    EquityIndex(std::string name,
+                Calendar fixingCalendar,
+                Handle<YieldTermStructure> interest = {},
+                Handle<YieldTermStructure> dividend = {},
+                Handle<Quote> spot = {});
+
+    Handle<YieldTermStructure> equityInterestRateCurve() const;
+    Handle<YieldTermStructure> equityDividendCurve() const;
+    Handle<Quote> spot() const;
+
+    ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
+                                       const Handle<YieldTermStructure>& dividend,
+                                       const Handle<Quote>& spot) const;
 };
 
 export_xibor_instance(AUDLibor);
