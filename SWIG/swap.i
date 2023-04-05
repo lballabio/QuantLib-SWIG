@@ -47,6 +47,7 @@ using QuantLib::EquityTotalReturnSwap;
 
 %shared_ptr(Swap)
 class Swap : public Instrument {
+    %warnfilter(509) Swap;
   public:
     enum Type { Receiver = -1, Payer = 1 };
     Swap(const std::vector<ext::shared_ptr<CashFlow> >& firstLeg,
