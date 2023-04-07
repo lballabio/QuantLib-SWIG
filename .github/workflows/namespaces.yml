@@ -19,7 +19,7 @@ jobs:
     - uses: peter-evans/create-pull-request@v4
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: fix-boost-namespace-${{ github.ref }}
+        branch: fix-boost-namespace-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Fix uses of boost namespace'
         title: 'Fix uses of boost namespace'
