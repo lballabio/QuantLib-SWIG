@@ -27,6 +27,7 @@
 
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( std::pair<Date,double> )
+SWIG_STD_VECTOR_ENHANCED( vector<double> )
 #endif
 
 %{
@@ -57,6 +58,7 @@ namespace std {
 #if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;
     %template(NodeVector) vector<pair<Date,double> >;
+    %template(DoubleVectorVector) vector<vector<double> >;
 #endif
 
 #if defined(SWIGR)
