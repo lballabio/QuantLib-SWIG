@@ -150,6 +150,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include interestrate.i
 %include interpolation.i
 %include linearalgebra.i
+%include localvolatilities.i
 %include lmm.i
 %include lookbackoptions.i
 %include marketelements.i
