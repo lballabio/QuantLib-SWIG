@@ -49,11 +49,14 @@ class FractionalDividend : public Dividend {
 };
 
 
+%{
+using QuantLib::DividendSchedule;
+%}
+
 #if defined(SWIGCSHARP)
 SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<Dividend> )
 #endif
-namespace std {
-    %template(DividendSchedule) vector<ext::shared_ptr<Dividend> >;
-}
+%template(DividendSchedule) std::vector<ext::shared_ptr<Dividend>>;
+typedef std::vector<ext::shared_ptr<Dividend>> DividendSchedule;
 
 #endif
