@@ -491,8 +491,6 @@ class SuoWangDoubleBarrierEngine : public PricingEngine {
                            int series = 5);
 };
 
-deprecate_feature(WulinYongDoubleBarrierEngine, SuoWangDoubleBarrierEngine);
-
 
 %{
 using QuantLib::VannaVolgaDoubleBarrierEngine;
