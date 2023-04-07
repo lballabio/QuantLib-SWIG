@@ -646,8 +646,8 @@ class SviInterpolatedSmileSection : public SmileSection {
 
 %{
 using QuantLib::SwaptionVolatilityCube;
-using QuantLib::SwaptionVolCube1;
-using QuantLib::SwaptionVolCube2;
+using QuantLib::SabrSwaptionVolatilityCube;
+using QuantLib::InterpolatedSwaptionVolatilityCube;
 %}
 
 %shared_ptr(SwaptionVolatilityCube);
@@ -659,10 +659,10 @@ class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
                        const Period& swapTenor) const;
 };
 
-%shared_ptr(SwaptionVolCube1);
-class SwaptionVolCube1 : public SwaptionVolatilityCube {
+%shared_ptr(SabrSwaptionVolatilityCube);
+class SabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
   public:
-    SwaptionVolCube1(
+    SabrSwaptionVolatilityCube(
              const Handle<SwaptionVolatilityStructure>& atmVolStructure,
              const std::vector<Period>& optionTenors,
              const std::vector<Period>& swapTenors,
@@ -700,18 +700,22 @@ class SwaptionVolCube1 : public SwaptionVolatilityCube {
     }
 };
 
-%shared_ptr(SwaptionVolCube2);
-class SwaptionVolCube2 : public SwaptionVolatilityCube {
+deprecate_feature(SwaptionVolCube1, SabrSwaptionVolatilityCube)
+
+%shared_ptr(InterpolatedSwaptionVolatilityCube);
+class InterpolatedSwaptionVolatilityCube : public SwaptionVolatilityCube {
   public:
-    SwaptionVolCube2(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-                     const std::vector<Period>& optionTenors,
-                     const std::vector<Period>& swapTenors,
-                     const std::vector<Spread>& strikeSpreads,
-                     const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-                     const ext::shared_ptr<SwapIndex>& swapIndex,
-                     const ext::shared_ptr<SwapIndex>& shortSwapIndex,
-                     bool vegaWeightedSmileFit);
+    InterpolatedSwaptionVolatilityCube(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
+                                       const std::vector<Period>& optionTenors,
+                                       const std::vector<Period>& swapTenors,
+                                       const std::vector<Spread>& strikeSpreads,
+                                       const std::vector<std::vector<Handle<Quote> > >& volSpreads,
+                                       const ext::shared_ptr<SwapIndex>& swapIndex,
+                                       const ext::shared_ptr<SwapIndex>& shortSwapIndex,
+                                       bool vegaWeightedSmileFit);
 };
+
+deprecate_feature(SwaptionVolCube2, InterpolatedSwaptionVolatilityCube)
 
 
 %{
