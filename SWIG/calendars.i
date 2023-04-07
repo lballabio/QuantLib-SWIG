@@ -137,7 +137,11 @@ namespace QuantLib {
         Argentina(Market m = Merval);
     };
 
-    class Australia : public Calendar {};
+    class Australia : public Calendar {
+      public:
+        enum Market { Settlement, ASX };
+        Australia(Market market = Settlement);
+    };
 
     class Austria : public Calendar {
       public:
