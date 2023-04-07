@@ -34,7 +34,6 @@
 %include interpolation.i
 %include indexes.i
 %include optimizers.i
-%include options.i
 %include termstructures.i
 %include vectors.i
 %include tuple.i
@@ -516,7 +515,7 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
                                  const bool flatExtrapolation = false,
                                  const VolatilityType type = ShiftedLognormal,
                                  const Matrix& shifts = Matrix()) {
-            return new SwaptionVolatilityMatrix(referenceDate, NullCalendar(), Following,
+            return new SwaptionVolatilityMatrix(referenceDate, QuantLib::NullCalendar(), Following,
                                                 dates, lengths, vols, dayCounter,
                                                 flatExtrapolation, type, shifts);
         }

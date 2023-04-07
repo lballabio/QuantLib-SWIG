@@ -24,14 +24,13 @@
 #ifndef quantlib_calibration_helpers_i
 #define quantlib_calibration_helpers_i
 
+%include calibratedmodel.i
 %include date.i
 %include calendars.i
 %include daycounters.i
 %include cashflows.i
 %include marketelements.i
 %include termstructures.i
-%include optimizers.i
-%include options.i
 %include linearalgebra.i
 %include types.i
 %include vectors.i
@@ -39,21 +38,11 @@
 %{
 using QuantLib::VanillaSwap;
 using QuantLib::Swaption;
-using QuantLib::CalibrationHelper;
 using QuantLib::BlackCalibrationHelper;
 using QuantLib::SwaptionHelper;
 using QuantLib::CapHelper;
 using QuantLib::HestonModelHelper;
 %}
-
-// calibration helpers
-%shared_ptr(CalibrationHelper)
-class CalibrationHelper {
-  public:
-    Real calibrationError();
-  private:
-    CalibrationHelper();
-};
 
 %shared_ptr(BlackCalibrationHelper)
 class BlackCalibrationHelper : public CalibrationHelper {
@@ -196,57 +185,11 @@ class HestonModelHelper : public BlackCalibrationHelper {
 
 // allow use of vectors of helpers
 #if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<CalibrationHelper> )
 SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<BlackCalibrationHelper> )
 #endif
 namespace std {
-    %template(CalibrationHelperVector)
-        vector<ext::shared_ptr<CalibrationHelper> >;
     %template(BlackCalibrationHelperVector)
         vector<ext::shared_ptr<BlackCalibrationHelper> >;
 }
-
-// the base class for calibrated models
-%{
-using QuantLib::CalibratedModel;
-using QuantLib::TermStructureConsistentModel;
-%}
-
-%shared_ptr(CalibratedModel)
-class CalibratedModel : public virtual Observable {
-    #if defined(SWIGCSHARP)
-    %rename("parameters") params;
-    #endif
-  public:
-    Array params() const;
-    virtual void calibrate(
-        const std::vector<ext::shared_ptr<CalibrationHelper> >&,
-        OptimizationMethod&, const EndCriteria &,
-        const Constraint& constraint = Constraint(),
-        const std::vector<Real>& weights = std::vector<Real>(),
-        const std::vector<bool>& fixParameters = std::vector<bool>());
-
-    void setParams(const Array& params);
-    Real value(const Array& params,
-               const std::vector<ext::shared_ptr<CalibrationHelper> >&);
-    const ext::shared_ptr<Constraint>& constraint() const;
-    EndCriteria::Type endCriteria() const;
-    const Array& problemValues() const;
-    Integer functionEvaluation() const;
-  private:
-    CalibratedModel();
-};
-
-%shared_ptr(TermStructureConsistentModel)
-class TermStructureConsistentModel : public virtual Observable{
-  public:
-    const Handle<YieldTermStructure>& termStructure() const;
-  private:
-    TermStructureConsistentModel();
-};
-
-%template(CalibratedModelHandle) Handle<CalibratedModel>;
-%template(RelinkableCalibratedModelHandle)
-RelinkableHandle<CalibratedModel>;
 
 #endif

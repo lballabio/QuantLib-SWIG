@@ -54,8 +54,7 @@ class OptionsTest(unittest.TestCase):
         option.setPricingEngine(
             ql.FdHestonHullWhiteVanillaEngine(
                 ql.HestonModel(heston_process), hull_white_process, -0.5,
-                10, 200, 25, 10,
-                controlVariate=True
+                10, 200, 25, 10, 0, True
             )
         )
 

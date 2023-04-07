@@ -118,6 +118,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include bonds.i
 %include bondfunctions.i
 %include calendars.i
+%include calibratedmodel.i
 %include calibrationhelpers.i
 %include capfloor.i
 %include cashflows.i
