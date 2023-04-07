@@ -163,6 +163,8 @@ class SlvTest(unittest.TestCase):
             dc
         )
         
+        fixed_local_vol_surf.setInterpolation("linear")
+        
         self.assertEqual(60, fixed_local_vol_surf.minStrike())
         self.assertEqual(130, fixed_local_vol_surf.maxStrike())
         
