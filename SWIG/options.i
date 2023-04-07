@@ -1554,6 +1554,7 @@ class BlackCalculator {
     Real itmCashProbability() const;
     Real itmAssetProbability() const;
     Real strikeSensitivity() const;
+    Real strikeGamma() const;
     Real alpha() const;
     Real beta() const;
 };

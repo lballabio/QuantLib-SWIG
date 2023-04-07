@@ -234,6 +234,16 @@ export_zii_instance(UKRPI);
 export_zii_instance(USCPI);
 export_zii_instance(ZACPI);
 
+%{
+using QuantLib::UKHICP;
+%}
+%shared_ptr(UKHICP)
+class UKHICP : public ZeroInflationIndex {
+  public:
+    UKHICP(const Handle<ZeroInflationTermStructure>& h = {});
+};
+
+
 export_yii_instance(YYEUHICP);
 export_yii_instance(YYEUHICPXT);
 export_yii_instance(YYEUHICPr);
