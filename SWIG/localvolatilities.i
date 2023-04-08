@@ -139,6 +139,17 @@ class FixedLocalVolSurface : public LocalVolTermStructure {
             return new FixedLocalVolSurface(referenceDate, times, pStrikes, pMatrix,
                                             dayCounter, lowerExtrapolation, upperExtrapolation);
         }
+                
+        void setInterpolation(const std::string& interpolator = "") {
+            const std::string s = boost::to_lower_copy(interpolator);
+            if (s == "" || s == "linear") {
+                self->setInterpolation<QuantLib::Linear>();
+            } else if (s == "cubic") {
+                self->setInterpolation<QuantLib::Cubic>();
+            } else {
+                QL_FAIL("Unknown interpolator: " << interpolator);
+            }
+        }        
     }
 };
 
