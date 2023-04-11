@@ -72,9 +72,9 @@ class VanillaSwap : public Swap {
                     const ext::shared_ptr<IborIndex>& index,
                     Spread spread,
                     const DayCounter& floatingDayCount,
-                    ext::optional<bool> withIndexedCoupons = ext::nullopt) {
+                    boost::optional<bool> withIndexedCoupons = boost::none) {
             // work around the lack of typemap for this argument
-            ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt;
+            boost::optional<BusinessDayConvention> paymentConvention = boost::none;
 
             return new VanillaSwap(type, nominal, fixedSchedule, fixedRate, fixedDayCount,
                                    floatSchedule, index, spread, floatingDayCount,
