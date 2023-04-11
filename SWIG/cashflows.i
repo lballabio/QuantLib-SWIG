@@ -624,6 +624,45 @@ class LognormalCmsSpreadPricer : public CmsSpreadCouponPricer {
     Rate floorletRate(Rate effectiveFloor) const;
 };
 
+
+
+%{
+using QuantLib::EquityCashFlow;
+using QuantLib::EquityCashFlowPricer;
+using QuantLib::EquityQuantoCashFlowPricer;
+%}
+
+%shared_ptr(EquityCashFlowPricer)
+class EquityCashFlowPricer {
+  private:
+    EquityCashFlowPricer();
+};
+
+void setCouponPricer(const Leg&,
+                     const ext::shared_ptr<EquityCashFlowPricer>&);
+
+%shared_ptr(EquityCashFlow)
+class EquityCashFlow : public IndexedCashFlow {
+  public:
+    EquityCashFlow(Real notional,
+                   ext::shared_ptr<EquityIndex> index,
+                   const Date& baseDate,
+                   const Date& fixingDate,
+                   const Date& paymentDate,
+                   bool growthOnly = true);
+    void setPricer(const ext::shared_ptr<EquityCashFlowPricer>&);
+};
+
+%shared_ptr(EquityQuantoCashFlowPricer)
+class EquityQuantoCashFlowPricer : public EquityCashFlowPricer {
+  public:
+    EquityQuantoCashFlowPricer(Handle<YieldTermStructure> quantoCurrencyTermStructure,
+                               Handle<BlackVolTermStructure> equityVolatility,
+                               Handle<BlackVolTermStructure> fxVolatility,
+                               Handle<Quote> correlation);
+};
+
+
 // cash flow vector builders
 
 %{
