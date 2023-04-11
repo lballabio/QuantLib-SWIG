@@ -694,7 +694,7 @@ class MCAmericanEngine : public PricingEngine {
                          intOrNull polynomOrder = 2,
                          LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial,
                          int nCalibrationSamples = 2048,
-                         boost::optional<bool> antitheticVariateCalibration = boost::none,
+                         ext::optional<bool> antitheticVariateCalibration = ext::nullopt,
                          BigNatural seedCalibration = Null<Size>()) {
             return new MCAmericanEngine<RNG>(process,
                                              timeSteps,

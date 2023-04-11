@@ -49,15 +49,15 @@ using QuantLib::Normal;
 enum VolatilityType { ShiftedLognormal, Normal };
 
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<VolatilityType> %{
+%typemap(in) ext::optional<VolatilityType> %{
     if($input == Py_None)
-        $1 = boost::none;
+        $1 = ext::nullopt;
     else if (PyInt_Check($input))
         $1 = (VolatilityType) PyInt_AsLong($input);
     else
         $1 = (VolatilityType) PyLong_AsLong($input);
 %}
-%typecheck (QL_TYPECHECK_VOLATILITYTYPE) boost::optional<VolatilityType> {
+%typecheck (QL_TYPECHECK_VOLATILITYTYPE) ext::optional<VolatilityType> {
 if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
     $1 = 1;
 else
