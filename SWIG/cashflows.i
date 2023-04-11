@@ -391,7 +391,7 @@ class BlackIborCouponPricer : public IborCouponPricer {
                           const TimingAdjustment timingAdjustment = Black76,
                           const Handle<Quote> correlation =
                                     Handle<Quote>(ext::shared_ptr<Quote>(new SimpleQuote(1.0))),
-                          boost::optional<bool> useIndexedCoupon = boost::none);
+                          ext::optional<bool> useIndexedCoupon = ext::nullopt);
 };
 
 %shared_ptr(SubPeriodsPricer)
@@ -614,7 +614,7 @@ class LognormalCmsSpreadPricer : public CmsSpreadCouponPricer {
             const Handle<YieldTermStructure> &couponDiscountCurve =
                 Handle<YieldTermStructure>(),
             const Size IntegrationPoints = 16,
-            const boost::optional<VolatilityType> volatilityType = boost::none,
+            const ext::optional<VolatilityType> volatilityType = ext::nullopt,
             const Real shift1 = Null<Real>(), const Real shift2 = Null<Real>());
     Real swapletPrice() const;
     Rate swapletRate() const;
@@ -691,7 +691,7 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              bool exCouponEndOfMonth = false,
              const Calendar& paymentCalendar = Calendar(),
              const Natural paymentLag = 0,
-             boost::optional<bool> withIndexedCoupons = boost::none) {
+             ext::optional<bool> withIndexedCoupons = ext::nullopt) {
     return QuantLib::IborLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
@@ -732,7 +732,7 @@ Leg _IborLeg(const std::vector<Real>& nominals,
              bool exCouponEndOfMonth = false,
              const Calendar& paymentCalendar = Calendar(),
              Natural paymentLag = 0,
-             boost::optional<bool> withIndexedCoupons = boost::none);
+             ext::optional<bool> withIndexedCoupons = ext::nullopt);
 
 %{
 Leg _OvernightLeg(const std::vector<Real>& nominals,

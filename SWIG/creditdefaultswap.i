@@ -104,8 +104,8 @@ class CreditDefaultSwap : public Instrument {
     Real notional() const;
     Rate runningSpread() const;
     %extend {
-    doubleOrNull upfront() const {
-            boost::optional<Rate> result =
+        doubleOrNull upfront() const {
+            ext::optional<Rate> result =
                 self->upfront();
             if (result)
                 return *result;
