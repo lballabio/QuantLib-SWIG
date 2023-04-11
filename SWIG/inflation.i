@@ -330,6 +330,34 @@ class CPICoupon : public InflationCoupon {
               Real nominal,
               const Date& startDate,
               const Date& endDate,
+              const ext::shared_ptr<ZeroInflationIndex>& index,
+              const Period& observationLag,
+              CPI::InterpolationType observationInterpolation,
+              const DayCounter& dayCounter,
+              Real fixedRate,
+              Spread spread = 0.0,
+              const Date& refPeriodStart = Date(),
+              const Date& refPeriodEnd = Date(),
+              const Date& exCouponDate = Date());
+    CPICoupon(const Date& baseDate,
+              const Date& paymentDate,
+              Real nominal,
+              const Date& startDate,
+              const Date& endDate,
+              const ext::shared_ptr<ZeroInflationIndex>& index,
+              const Period& observationLag,
+              CPI::InterpolationType observationInterpolation,
+              const DayCounter& dayCounter,
+              Real fixedRate,
+              Spread spread = 0.0,
+              const Date& refPeriodStart = Date(),
+              const Date& refPeriodEnd = Date(),
+              const Date& exCouponDate = Date());
+    CPICoupon(Real baseCPI,
+              const Date& paymentDate,
+              Real nominal,
+              const Date& startDate,
+              const Date& endDate,
               Natural fixingDays,
               const ext::shared_ptr<ZeroInflationIndex>& index,
               const Period& observationLag,
@@ -344,6 +372,7 @@ class CPICoupon : public InflationCoupon {
     Spread spread() const;
     Rate adjustedFixing() const;
     Rate baseCPI() const;
+    Date baseDate() const;
     CPI::InterpolationType observationInterpolation() const;
     ext::shared_ptr<ZeroInflationIndex> cpiIndex() const;
     void setPricer(const ext::shared_ptr<CPICouponPricer>&);
