@@ -1,52 +1,44 @@
 
-Main changes for QuantLib-SWIG 1.29
+Main changes for QuantLib-SWIG 1.30
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/22?closed=1>.
-
-- Enabled autodoc feature in Python; exported methods and classes have
-  now docstrings reporting their interface and the types of the parameters.
-
-- Enabled CI build and tests for the R wrappers; thanks to @AndLLA.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/23?closed=1>.
 
 - **Removed** deprecated features no longer available in the
   underlying C++ library:
-  - the constructor of `UnitedStates` missing an explicit market;
-  - the `nominalTermStructure` method of `InflationTermStructure`;
-  - the `CrossCurrencyBasisSwapRateHelper` class.
+  - the `WulinYongDoubleBarrierEngine` alias for `SuoWangDoubleBarrierEngine`;
+  - the `spotIncome` and `spotValue` methods of `ForwardRateAgreement`;
+  - constructors for `InterpolatedZeroInflationCurve` and
+    `PiecewiseZeroInflationCurve` taking an `indexIsInterpolated`
+    parameter;
+  - the `indexIsInterpolated` method of `InflationTermStructure`;
+  - some overloaded constructors of `SofrFutureRateHelper`.
 
-- Added `compounding` and `compoundingFrequency` parameters to
-  `FixedRateLeg` (@lballabio).
+- **Renamed** `SwaptionVolCube1` to `SabrSwaptionVolatilityCube` and
+  `SwaptionVolCube2` to `InterpolatedSwaptionVolatilityCube`, as in
+  the underlying C++ library; the old names remain available in Python
+  but not in other languages.
 
-- Exported `CashFlows::npvbps` method (@lballabio).
+- Exported new `EquityCashFlow`, `EquityIndex` and
+  `EquityTotalReturnSwap` classes with a few tests; thanks to Marcin
+  Rybacki (@marcin-rybacki).
 
-- Exported `baseFixing` and `indexFixing` methods in `IndexedCashFlow`
-  (@lballabio).
+- Exported constructors for vanilla and barrier pricing engines taking
+  discrete dividends; this makes `DividendVanillaOption` and
+  `DividendBarrierOption` obsolete (@lballabio).
 
-- Exported new constructors for zero-inflation indexes (@lballabio).
+- Exported new calendars for Austria, Botswana and Romania; thanks to
+  Fredrik Gerdin Börjesson (@gbfredrik).
 
-- Exported missing arguments in `CreditDefaultSwap` constructor (@lballabio).
+- Exported new ASX calendar for Australia (@lballabio).
 
-- Exported `Nearest` business-day convention (@lballabio).
+- Exported `FixedLocalVolSurface` and `GridModelLocalVolSurface`
+  classes with a test; thanks to Klaus Spanderen (@klausspanderen).
 
-- Exported `AmortizingCmsRateBond`; thanks to @chenyanlann.
+- Exported new CPICoupon constructors (@lballabio).
 
-- Exported `QuantoBarrierOption` and `QuantoBarrierEngine`; thanks to
-  @chenyanlann.
+- Exported UKHICP index (@lballabio).
 
-- Avoided out-of-bound access to `Matrix` elements (@lballabio).
-
-- Exported a number of LMM-related classes (@lballabio).
-
-- Exported YoY inflation coupons and related classes (@lballabio).
-
-- Exported the `CPI::laggedFixing` method; thanks to Marcin Rybacki
-  (@marcin-rybacki).
-
-- Exported `QdPlusAmericanEngine`, `QdFpAmericanEngine` and related
-  classes; thanks to Klaus Spanderen (@klausspanderen).
-
-- Added Python test case for Andreasen-Huge local volatility; thanks
-  to Klaus Spanderen (@klausspanderen).
+- Exported a few African currencies (@lballabio).
 
