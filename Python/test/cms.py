@@ -104,7 +104,7 @@ class CmsTest(unittest.TestCase):
 
         self.vegaWeightedSmileFit = False
         self.SabrVolCube2 = ql.SwaptionVolatilityStructureHandle(
-            ql.SwaptionVolCube2(
+            ql.InterpolatedSwaptionVolatilityCube(
                 self.atmVol,
                 self.optionTenors,
                 self.swapTenors,
@@ -141,7 +141,7 @@ class CmsTest(unittest.TestCase):
         self.isAtmCalibrated = False
         ##
         self.SabrVolCube1 = ql.SwaptionVolatilityStructureHandle(
-            ql.SwaptionVolCube1(
+            ql.SabrSwaptionVolatilityCube(
                 self.atmVol,
                 self.optionTenors,
                 self.swapTenors,

@@ -193,7 +193,7 @@ def build_linear_swaption_cube(
         vega_weighted_smile_fit=False):
     vol_spreads = [[ql.QuoteHandle(ql.SimpleQuote(v)) for v in row]
                    for row in vol_spreads]
-    cube = ql.SwaptionVolCube2(
+    cube = ql.InterpolatedSwaptionVolatilityCube(
         ql.SwaptionVolatilityStructureHandle(volatility_matrix),
         spread_opt_tenors,
         spread_swap_tenors,
@@ -232,7 +232,7 @@ def build_sabr_swaption_cube(
                  for row in vol_spreads]
     guess = sabr_parameters_guess(
         len(spread_opt_tenors), len(spread_swap_tenors))
-    cube = ql.SwaptionVolCube1(
+    cube = ql.SabrSwaptionVolatilityCube(
         ql.SwaptionVolatilityStructureHandle(volatility_matrix),
         spread_opt_tenors,
         spread_swap_tenors,
