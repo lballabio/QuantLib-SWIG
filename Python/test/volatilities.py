@@ -527,6 +527,13 @@ class SviSmileSectionTest(unittest.TestCase):
     def setUp(self):
         ql.Settings.instance().evaluationDate = ql.Date(3, ql.May, 2022)
 
+    def tearDown(self):
+        # The objects created in this test are not immediately garbage-collected
+        # by PyPy, and can throw errors when the global evaluation date changes.
+        # Thus, we need to force a collection when we're done with them.
+        import gc
+        gc.collect()
+
     def test_svi_smile_section(self):
         """Testing the SviSmileSection against already fitted parameters"""
         expiry_date = ql.Date(16, ql.December, 2022)
