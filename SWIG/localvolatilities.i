@@ -154,8 +154,15 @@ class FixedLocalVolSurface : public LocalVolTermStructure {
 };
 
 %shared_ptr(GridModelLocalVolSurface);
-class GridModelLocalVolSurface : public LocalVolTermStructure,
-                                 public CalibratedModel {
+class GridModelLocalVolSurface
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    : public LocalVolTermStructure,
+      public CalibratedModel
+#else
+    // multiple inheritance not allowed
+    : public LocalVolTermStructure
+#endif
+{
   public:
     typedef FixedLocalVolSurface::Extrapolation Extrapolation;
 
@@ -174,6 +181,22 @@ class GridModelLocalVolSurface : public LocalVolTermStructure,
                                                 dayCounter, lowerExtrapolation, upperExtrapolation);
         }
     }
+
+    #if defined(SWIGCSHARP) || defined(SWIGJAVA)
+    // not inheriting from CalibratedModel, add minimal set of methods
+    #if defined(SWIGCSHARP)
+    %rename("parameters") params;
+    #endif
+    Array params() const;
+    virtual void calibrate(
+        const std::vector<ext::shared_ptr<CalibrationHelper> >&,
+        OptimizationMethod&, const EndCriteria &,
+        const Constraint& constraint = Constraint(),
+        const std::vector<Real>& weights = std::vector<Real>(),
+        const std::vector<bool>& fixParameters = std::vector<bool>());
+    EndCriteria::Type endCriteria() const;
+    #endif
+
 };
 
 
