@@ -735,6 +735,20 @@ class Date {
         return Date(date.day, date.month, date.year)
     %}
     #endif
+
+    #if defined(SWIGJAVA)
+    %proxycode %{
+    // convenience method to use java.time API
+    public static Date of(java.time.LocalDate localDate) {
+      return new Date(localDate.getDayOfMonth(), Month.swigToEnum(localDate.getMonthValue()), localDate.getYear());
+    }
+
+    // convenience method to use java.time API
+    public java.time.LocalDate toLocalDate() {
+      return java.time.LocalDate.of(this.year(), this.month().swigValue(), this.dayOfMonth());
+    }
+    %}
+    #endif
 };
 
 class DateParser {
