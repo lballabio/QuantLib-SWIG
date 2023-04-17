@@ -1,3 +1,62 @@
+commit fc8b7c1b5aa0d39b0b20b7705128f2277e1d9290
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Apr 2021 11:12:19 +0200
+
+    Set version to 1.30 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 8b28d76cfb91d9e08137677094a11a3411bcb6d6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 14 Apr 2023 10:29:18 +0200
+
+    Work around multiple inheritance in C# and Java
+
+ SWIG/localvolatilities.i | 27 +++++++++++++++++++++++++--
+ 1 file changed, 25 insertions(+), 2 deletions(-)
+
+commit 27ba38b0732690a607dc5a61a064eb8c5fe30288
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 13 Apr 2023 09:14:24 +0200
+
+    Avoid deprecated names
+
+ Python/test/cms.py          | 4 ++--
+ Python/test/ratehelpers.py  | 1 -
+ Python/test/volatilities.py | 4 ++--
+ 3 files changed, 4 insertions(+), 5 deletions(-)
+
+commit b4a56c1ac42a13384fcb34e532b11f803ba9ffbd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 13 Apr 2023 09:02:13 +0200
+
+    Avoid test failure when using PyPy
+
+ Python/test/volatilities.py | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+commit 7758104ed00c42740c7cf91a4f0e1fb7a7ce7e93
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Apr 2022 18:29:12 +0200
+
+    Set version to 1.30 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 41fca6eec76ddfa20568914427144fc12a7c0f68
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Apr 2023 14:53:38 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt | 785 ++++++++++++++++++++++------------------------------------
+ News.md       |  62 ++---
+ 2 files changed, 327 insertions(+), 520 deletions(-)
+
 commit 3abd4fd6e01f6ab5e4f1c08f9b3476447a674896
 Merge: 22311d2 e2c127d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
