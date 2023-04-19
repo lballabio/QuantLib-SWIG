@@ -598,8 +598,8 @@ using QuantLib::LsmBasisSystem;
 %}
 
 struct LsmBasisSystem {
-    enum PolynomType  {Monomial, Laguerre, Hermite, Hyperbolic,
-                           Legendre, Chebyshev, Chebyshev2nd };
+    enum PolynomialType { Monomial, Laguerre, Hermite, Hyperbolic,
+                          Legendre, Chebyshev, Chebyshev2nd };
 };
 
 %shared_ptr(MCEuropeanEngine<PseudoRandom>);
@@ -692,7 +692,7 @@ class MCAmericanEngine : public PricingEngine {
                          intOrNull maxSamples = Null<Size>(),
                          BigInteger seed = 0,
                          intOrNull polynomOrder = 2,
-                         LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial,
+                         LsmBasisSystem::PolynomialType polynomType = LsmBasisSystem::Monomial,
                          int nCalibrationSamples = 2048,
                          ext::optional<bool> antitheticVariateCalibration = ext::nullopt,
                          BigNatural seedCalibration = Null<Size>()) {

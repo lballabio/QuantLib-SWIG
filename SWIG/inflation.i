@@ -354,11 +354,11 @@ class CPICoupon : public InflationCoupon {
               const Date& refPeriodEnd = Date(),
               const Date& exCouponDate = Date());
     CPICoupon(Real baseCPI,
+              const Date& baseDate,
               const Date& paymentDate,
               Real nominal,
               const Date& startDate,
               const Date& endDate,
-              Natural fixingDays,
               const ext::shared_ptr<ZeroInflationIndex>& index,
               const Period& observationLag,
               CPI::InterpolationType observationInterpolation,
@@ -370,7 +370,8 @@ class CPICoupon : public InflationCoupon {
               const Date& exCouponDate = Date());
     Rate fixedRate() const;
     Spread spread() const;
-    Rate adjustedFixing() const;
+    Rate adjustedIndexGrowth() const;
+    Rate indexFixing() const;
     Rate baseCPI() const;
     Date baseDate() const;
     CPI::InterpolationType observationInterpolation() const;
@@ -392,11 +393,11 @@ class CPICashFlow : public IndexedCashFlow {
                 const ext::shared_ptr<ZeroInflationIndex>& index,
                 const Date& baseDate,
                 Real baseFixing,
-                const Date& fixingDate,
+                const Date& observationDate,
+                const Period& observationLag,
+                CPI::InterpolationType interpolation,
                 const Date& paymentDate,
-                bool growthOnly = false,
-                CPI::InterpolationType interpolation = CPI::AsIndex,
-                const Frequency& frequency = NoFrequency);
+                bool growthOnly = false);
     CPI::InterpolationType interpolation() const;
     Frequency frequency() const;
 };
@@ -418,7 +419,6 @@ Leg _CPILeg(const std::vector<Real>& nominals,
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Real>& fixedRates = std::vector<Real>(),
             const std::vector<Spread>& spreads = std::vector<Spread>(),
-            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
             const Period& exCouponPeriod = Period(),
@@ -433,7 +433,6 @@ Leg _CPILeg(const std::vector<Real>& nominals,
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
         .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar)
-        .withFixingDays(fixingDays)
         .withFixedRates(fixedRates)
         .withSpreads(spreads)
         .withCaps(caps)
@@ -459,7 +458,6 @@ Leg _CPILeg(const std::vector<Real>& nominals,
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Real>& fixedRates = std::vector<Real>(),
             const std::vector<Spread>& spreads = std::vector<Spread>(),
-            const std::vector<Natural>& fixingDays = std::vector<Natural>(),
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
             const Period& exCouponPeriod = Period(),
@@ -479,16 +477,6 @@ class ZeroInflationCashFlow : public CashFlow {
                           const Date& startDate,
                           const Date& endDate,
                           const Period& observationLag,
-                          const Date& paymentDate,
-                          bool growthOnly = false);
-    ZeroInflationCashFlow(Real notional,
-                          const ext::shared_ptr<ZeroInflationIndex>& index,
-                          CPI::InterpolationType observationInterpolation,
-                          const Date& startDate,
-                          const Date& endDate,
-                          const Period& observationLag,
-                          const Calendar& calendar,
-                          BusinessDayConvention convention,
                           const Date& paymentDate,
                           bool growthOnly = false);
     Real notional() const;
