@@ -22,6 +22,7 @@
 #define quantlib_barrier_options_i
 
 %include options.i
+%include dividends.i
 
 %{
 using QuantLib::Barrier;
@@ -49,6 +50,14 @@ class BarrierOption : public OneAssetOption {
     Volatility impliedVolatility(
                          Real targetValue,
                          const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         Real accuracy = 1.0e-4,
+                         Size maxEvaluations = 100,
+                         Volatility minVol = 1.0e-4,
+                         Volatility maxVol = 4.0);
+    Volatility impliedVolatility(
+                         Real targetValue,
+                         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const DividendSchedule& dividends,
                          Real accuracy = 1.0e-4,
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
@@ -230,12 +239,24 @@ class FdBlackScholesBarrierEngine : public PricingEngine {
                                 const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                                 bool localVol = false,
                                 Real illegalLocalVolOverwrite = -Null<Real>());
+    FdBlackScholesBarrierEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                DividendSchedule dividends,
+                                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+                                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                                bool localVol = false,
+                                Real illegalLocalVolOverwrite = -Null<Real>());
 };
 
 %shared_ptr(FdBlackScholesRebateEngine)
 class FdBlackScholesRebateEngine : public PricingEngine {
   public:
     FdBlackScholesRebateEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                               Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+                               const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+                               bool localVol = false,
+                               Real illegalLocalVolOverwrite = -Null<Real>());
+    FdBlackScholesRebateEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                               DividendSchedule dividends,
                                Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                                bool localVol = false,
@@ -248,8 +269,13 @@ class FdHestonBarrierEngine : public PricingEngine {
     FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
                           Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
                           const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                          const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                              = ext::shared_ptr<LocalVolTermStructure>(),
+                          const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
+                          const Real mixingFactor = 1.0);
+    FdHestonBarrierEngine(const ext::shared_ptr<HestonModel>& model,
+                          DividendSchedule dividends,
+                          Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
+                          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                          const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
                           const Real mixingFactor = 1.0);
 };
 
@@ -259,8 +285,13 @@ class FdHestonRebateEngine : public PricingEngine {
     FdHestonRebateEngine(const ext::shared_ptr<HestonModel>& model,
                          Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
                          const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                         const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                             = ext::shared_ptr<LocalVolTermStructure>(),
+                         const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
+                         const Real mixingFactor = 1.0);
+    FdHestonRebateEngine(const ext::shared_ptr<HestonModel>& model,
+                         DividendSchedule dividends,
+                         Size tGrid = 100, Size xGrid = 100, Size vGrid = 50, Size dampingSteps = 0,
+                         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+                         const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
                          const Real mixingFactor = 1.0);
 };
 
@@ -459,8 +490,6 @@ class SuoWangDoubleBarrierEngine : public PricingEngine {
                            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                            int series = 5);
 };
-
-deprecate_feature(WulinYongDoubleBarrierEngine, SuoWangDoubleBarrierEngine);
 
 
 %{

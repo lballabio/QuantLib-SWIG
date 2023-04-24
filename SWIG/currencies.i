@@ -92,6 +92,7 @@ class Currency {
 
 
 namespace QuantLib {
+class AOACurrency : public Currency {};
 class ARSCurrency : public Currency {};
 class ATSCurrency : public Currency {};
 class AUDCurrency : public Currency {};
@@ -99,6 +100,7 @@ class BDTCurrency : public Currency {};
 class BEFCurrency : public Currency {};
 class BGLCurrency : public Currency {};
 class BRLCurrency : public Currency {};
+class BWPCurrency : public Currency {};
 class BYRCurrency : public Currency {};
 class CADCurrency : public Currency {};
 class CHFCurrency : public Currency {};
@@ -111,15 +113,17 @@ class DEMCurrency : public Currency {};
 class DKKCurrency : public Currency {};
 class EEKCurrency : public Currency {};
 class ESPCurrency : public Currency {};
+class ETBCurrency : public Currency {};
 class EURCurrency : public Currency {};
 class FIMCurrency : public Currency {};
 class FRFCurrency : public Currency {};
 class GBPCurrency : public Currency {};
+class GHSCurrency : public Currency {};
 class GRDCurrency : public Currency {};
 class HKDCurrency : public Currency {};
 class HUFCurrency : public Currency {};
-class IEPCurrency : public Currency {};
 class IDRCurrency : public Currency {};
+class IEPCurrency : public Currency {};
 class ILSCurrency : public Currency {};
 class INRCurrency : public Currency {};
 class IQDCurrency : public Currency {};
@@ -127,14 +131,17 @@ class IRRCurrency : public Currency {};
 class ISKCurrency : public Currency {};
 class ITLCurrency : public Currency {};
 class JPYCurrency : public Currency {};
+class KESCurrency : public Currency {};
 class KRWCurrency : public Currency {};
 class KWDCurrency : public Currency {};
 class LTLCurrency : public Currency {};
 class LUFCurrency : public Currency {};
 class LVLCurrency : public Currency {};
 class MTLCurrency : public Currency {};
+class MURCurrency : public Currency {};
 class MXNCurrency : public Currency {};
 class MYRCurrency : public Currency {};
+class NGNCurrency : public Currency {};
 class NLGCurrency : public Currency {};
 class NOKCurrency : public Currency {};
 class NPRCurrency : public Currency {};
@@ -154,14 +161,17 @@ class SGDCurrency : public Currency {};
 class SITCurrency : public Currency {};
 class SKKCurrency : public Currency {};
 class THBCurrency : public Currency {};
+class TNDCurrency : public Currency {};
 class TRLCurrency : public Currency {};
 class TRYCurrency : public Currency {};
 class TTDCurrency : public Currency {};
 class TWDCurrency : public Currency {};
+class UGXCurrency : public Currency {};
 class USDCurrency : public Currency {};
 class VEBCurrency : public Currency {};
 class VNDCurrency : public Currency {};
 class ZARCurrency : public Currency {};
+class ZMWCurrency : public Currency {};
 }
 
 

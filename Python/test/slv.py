@@ -147,6 +147,30 @@ class SlvTest(unittest.TestCase):
             "double barrier option price with Black-Scholes Double Barrier Binary Engine",
         )
 
+    def testFixedLocalVolSurface(self):
+        """ Testing FixedLocalVolSurface interpolation """
+
+        dc = ql.Actual365Fixed()
+        maturities = [ql.Date(1, 3, 2020), ql.Date(1, 6, 2020)]
+        strikes = [60, 100, 130]
+        local_vols = [[0.2, 0.3], [0.25, 0.4], [0.3, 0.4]]
+
+        fixed_local_vol_surf = ql.FixedLocalVolSurface(
+            self.todaysDate,
+            [dc.yearFraction(self.todaysDate, d) for d in maturities],
+            strikes,
+            local_vols,
+            dc
+        )
+
+        fixed_local_vol_surf.setInterpolation("linear")
+
+        self.assertEqual(60, fixed_local_vol_surf.minStrike())
+        self.assertEqual(130, fixed_local_vol_surf.maxStrike())
+
+        self.assertAlmostEqual(0.2, fixed_local_vol_surf.localVol(ql.Date(1, 3, 2020), 60))
+        self.assertAlmostEqual(0.3, fixed_local_vol_surf.localVol(ql.Date(1, 6, 2020), 60))
+        self.assertAlmostEqual(0.25, fixed_local_vol_surf.localVol(ql.Date(16, 4, 2020), 60))
 
 
 if __name__ == "__main__":

@@ -172,7 +172,7 @@ class MCAmericanBasketEngine : public PricingEngine {
                                BigInteger seed = 0,
                                Size nCalibrationSamples = Null<Size>(),
                                Size polynomOrder = 2,
-                               LsmBasisSystem::PolynomType polynomType 
+                               LsmBasisSystem::PolynomialType polynomType 
                                   	= LsmBasisSystem::Monomial) {
             return new MCAmericanBasketEngine<RNG>(process,
                                                    timeSteps,

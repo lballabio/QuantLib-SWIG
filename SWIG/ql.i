@@ -118,6 +118,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include bonds.i
 %include bondfunctions.i
 %include calendars.i
+%include calibratedmodel.i
 %include calibrationhelpers.i
 %include capfloor.i
 %include cashflows.i
@@ -150,6 +151,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include interestrate.i
 %include interpolation.i
 %include linearalgebra.i
+%include localvolatilities.i
 %include lmm.i
 %include lookbackoptions.i
 %include marketelements.i

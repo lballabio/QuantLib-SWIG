@@ -227,13 +227,12 @@ class SwapRateHelper : public RateHelper {
             const ext::shared_ptr<IborIndex>& index,
             const Handle<Quote>& spread = Handle<Quote>(),
             const Period& fwdStart = 0*Days,
-            const Handle<YieldTermStructure>& discountingCurve
-                                        = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& discountingCurve = {},
             Natural settlementDays = Null<Natural>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            boost::optional<bool> withIndexedCoupons = boost::none);
+            ext::optional<bool> withIndexedCoupons = ext::nullopt);
     SwapRateHelper(
             Rate rate,
             const Period& tenor,
@@ -244,35 +243,32 @@ class SwapRateHelper : public RateHelper {
             const ext::shared_ptr<IborIndex>& index,
             const Handle<Quote>& spread = Handle<Quote>(),
             const Period& fwdStart = 0*Days,
-            const Handle<YieldTermStructure>& discountingCurve
-                                        = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& discountingCurve = {},
             Natural settlementDays = Null<Natural>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            boost::optional<bool> withIndexedCoupons = boost::none);
+            ext::optional<bool> withIndexedCoupons = ext::nullopt);
     SwapRateHelper(
             const Handle<Quote>& rate,
             const ext::shared_ptr<SwapIndex>& index,
             const Handle<Quote>& spread = Handle<Quote>(),
             const Period& fwdStart = 0*Days,
-            const Handle<YieldTermStructure>& discountingCurve
-                                        = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& discountingCurve = {},
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            boost::optional<bool> withIndexedCoupons = boost::none);
+            ext::optional<bool> withIndexedCoupons = ext::nullopt);
     SwapRateHelper(
             Rate rate,
             const ext::shared_ptr<SwapIndex>& index,
             const Handle<Quote>& spread = Handle<Quote>(),
             const Period& fwdStart = 0*Days,
-            const Handle<YieldTermStructure>& discountingCurve
-                                        = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& discountingCurve = {},
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            boost::optional<bool> withIndexedCoupons = boost::none);
+            ext::optional<bool> withIndexedCoupons = ext::nullopt);
     Spread spread();
     ext::shared_ptr<VanillaSwap> swap();
 };
@@ -322,8 +318,7 @@ class OISRateHelper : public RateHelper {
             const Period& tenor,
             const Handle<Quote>& rate,
             const ext::shared_ptr<OvernightIndex>& index,
-            const Handle<YieldTermStructure>& discountingCurve
-                                        = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& discountingCurve = {},
             bool telescopicValueDates = false,
             Natural paymentLag = 0,
             BusinessDayConvention paymentConvention = Following,
@@ -334,7 +329,7 @@ class OISRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(), 
             RateAveraging::Type averagingMethod = RateAveraging::Compound,
-            boost::optional<bool> endOfMonth = boost::none);
+            ext::optional<bool> endOfMonth = ext::nullopt);
     ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 

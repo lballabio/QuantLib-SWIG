@@ -347,18 +347,18 @@ class Period {
 };
 
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<Period> %{
+%typemap(in) ext::optional<Period> %{
     if($input == Py_None)
-        $1 = boost::none;
+        $1 = ext::nullopt;
     else
     {
         Period *temp;
         if (!SWIG_IsOK(SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0)))
             SWIG_exception_fail(SWIG_TypeError, "in method '$symname', expecting type Period");
-        $1 = (boost::optional<Period>) *temp;
+        $1 = (ext::optional<Period>) *temp;
     }
 %}
-%typecheck (QL_TYPECHECK_PERIOD) boost::optional<Period> {
+%typecheck (QL_TYPECHECK_PERIOD) ext::optional<Period> {
     if($input == Py_None)
         $1 = 1;
     else {
@@ -733,6 +733,20 @@ class Date {
     @staticmethod
     def from_date(date):
         return Date(date.day, date.month, date.year)
+    %}
+    #endif
+
+    #if defined(SWIGJAVA)
+    %proxycode %{
+    // convenience method to use java.time API
+    public static Date of(java.time.LocalDate localDate) {
+      return new Date(localDate.getDayOfMonth(), Month.swigToEnum(localDate.getMonthValue()), localDate.getYear());
+    }
+
+    // convenience method to use java.time API
+    public java.time.LocalDate toLocalDate() {
+      return java.time.LocalDate.of(this.year(), this.month().swigValue(), this.dayOfMonth());
+    }
     %}
     #endif
 };

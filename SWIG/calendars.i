@@ -63,15 +63,15 @@ using QuantLib::JoinBusinessDays;
 enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
 
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<BusinessDayConvention> %{
+%typemap(in) ext::optional<BusinessDayConvention> %{
 	if($input == Py_None)
-		$1 = boost::none;
+		$1 = ext::nullopt;
     else if (PyInt_Check($input))
         $1 = (BusinessDayConvention) PyInt_AsLong($input);
 	else
 		$1 = (BusinessDayConvention) PyLong_AsLong($input);
 %}
-%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) boost::optional<BusinessDayConvention> {
+%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) ext::optional<BusinessDayConvention> {
 if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
 	$1 = 1;
 else
@@ -137,7 +137,11 @@ namespace QuantLib {
         Argentina(Market m = Merval);
     };
 
-    class Australia : public Calendar {};
+    class Australia : public Calendar {
+      public:
+        enum Market { Settlement, ASX };
+        Australia(Market market = Settlement);
+    };
 
     class Austria : public Calendar {
       public:

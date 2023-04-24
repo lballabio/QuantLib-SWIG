@@ -204,7 +204,6 @@ class OISRateHelperTest(unittest.TestCase):
                                          ql.Following)
         self.assertEqual(expected_date, ql.Date(4, 4, 2018))
         ois = ql.MakeOIS(ql.Period('1Y'), eonia, -0.003, ql.Period(0, ql.Days))
-        print(ois.startDate())
         self.assertEqual(expected_date, ois.startDate())
 
     def tearDown(self):

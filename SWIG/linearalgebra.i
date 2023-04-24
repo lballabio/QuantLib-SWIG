@@ -459,64 +459,6 @@ class Array {
     }
 };
 
-// 2-D view
-
-%{
-typedef QuantLib::LexicographicalView<Array::iterator>
-    DefaultLexicographicalView;
-typedef QuantLib::LexicographicalView<Array::iterator>::y_iterator
-    DefaultLexicographicalViewColumn;
-%}
-
-#if defined(SWIGPYTHON) || defined(SWIGR)
-class DefaultLexicographicalViewColumn {
-  private:
-    // access control - no constructor exported
-    DefaultLexicographicalViewColumn();
-  public:
-    %extend {
-        Real __getitem__(Size i) {
-            return (*self)[i];
-        }
-        void __setitem__(Size i, Real x) {
-            (*self)[i] = x;
-        }
-    }
-};
-#endif
-
-%rename(LexicographicalView) DefaultLexicographicalView;
-class DefaultLexicographicalView {
-  public:
-    Size xSize() const;
-    Size ySize() const;
-    %extend {
-        DefaultLexicographicalView(Array& a, Size xSize) {
-            return new DefaultLexicographicalView(a.begin(),a.end(),xSize);
-        }
-        std::string __str__() {
-            std::ostringstream s;
-            for (Size j=0; j<self->ySize(); j++) {
-                s << "\n";
-                for (Size i=0; i<self->xSize(); i++) {
-                    if (i != 0)
-                        s << ",";
-                    Array::value_type value = (*self)[i][j];
-                    s << value;
-                }
-            }
-            s << "\n";
-            return s.str();
-        }
-        #if defined(SWIGPYTHON) || defined(SWIGR)
-        DefaultLexicographicalViewColumn __getitem__(Size i) {
-            return (*self)[i];
-        }
-        #endif
-    }
-};
-
-
 
 // matrix class
 %{
