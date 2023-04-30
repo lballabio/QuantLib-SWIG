@@ -266,6 +266,9 @@ liborTermStructure.linkTo(depoSwapTermStructure)
 # +
 data = []
 data.append(
+    (zeroCouponBond.NPV(), fixedRateBond.NPV(), floatingRateBond.NPV())
+)
+data.append(
     (zeroCouponBond.cleanPrice(), fixedRateBond.cleanPrice(), floatingRateBond.cleanPrice())
 )
 data.append(
@@ -289,7 +292,7 @@ data.append(
 )
 
 df = pd.DataFrame(data, columns=["ZC", "Fixed", "Floating"],
-                  index=["Clean price", "Dirty price", "Accrued coupon",
+                  index=["Net Present Value", "Clean price", "Dirty price", "Accrued coupon",
                          "Previous coupon rate", "Next coupon rate", "Yield"])
 if not interactive:
     print(df)
