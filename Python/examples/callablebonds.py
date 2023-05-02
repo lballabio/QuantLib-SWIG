@@ -72,10 +72,8 @@ def engine(a, s, grid_points):
 
 # 6% mean reversion and 20% volatility
 bond.setPricingEngine(engine(0.06, 0.20, 40))
-print("Bond price using clean price: ", bond.cleanPrice())
-print("Bond price using net present value: ", bond.NPV())
+print("Bond price: ", bond.cleanPrice())
 
 # 3% mean reversion and 15% volatility
 bond.setPricingEngine(engine(0.03, 0.15, 40))
-print("Bond price using clean price: ", bond.cleanPrice())
-print("Bond price using net present value: ", bond.NPV())
+print("Bond price: ", bond.cleanPrice())
