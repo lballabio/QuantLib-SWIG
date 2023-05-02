@@ -83,19 +83,19 @@ basketoption = ql.BasketOption(ql.MaxBasketPayoff(payoff), exercise)
 basketoption.setPricingEngine(
     ql.MCEuropeanBasketEngine(process, "pseudorandom", timeStepsPerYear=1, requiredTolerance=0.02, seed=42)
 )
-print(basketoption.NPV())
+print("Maximum Basket Payoff: ", basketoption.NPV())
 
 basketoption = ql.BasketOption(ql.MinBasketPayoff(payoff), exercise)
 basketoption.setPricingEngine(
     ql.MCEuropeanBasketEngine(process, "pseudorandom", timeStepsPerYear=1, requiredTolerance=0.02, seed=42)
 )
-print(basketoption.NPV())
+print("Minimum Basket Payoff: ", basketoption.NPV())
 
 basketoption = ql.BasketOption(ql.AverageBasketPayoff(payoff, 2), exercise)
 basketoption.setPricingEngine(
     ql.MCEuropeanBasketEngine(process, "pseudorandom", timeStepsPerYear=1, requiredTolerance=0.02, seed=42)
 )
-print(basketoption.NPV())
+print("Average Basket Payoff: ", basketoption.NPV())
 
 americanExercise = ql.AmericanExercise(settlementDate, ql.Date(17, ql.May, 1999))
 americanbasketoption = ql.BasketOption(ql.MaxBasketPayoff(payoff), americanExercise)
@@ -110,4 +110,4 @@ americanbasketoption.setPricingEngine(
         polynomType=ql.LsmBasisSystem.Hermite,
     )
 )
-print(americanbasketoption.NPV())
+print("Basket American Exercise: ", americanbasketoption.NPV())
