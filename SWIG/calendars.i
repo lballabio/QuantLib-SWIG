@@ -33,6 +33,11 @@
 using QuantLib::Calendar;
 %}
 
+
+namespace std {
+    %template(CalendarVector) vector<Calendar>;
+}
+
 %{
 using QuantLib::BusinessDayConvention;
 using QuantLib::Following;
@@ -331,6 +336,8 @@ namespace QuantLib {
         JointCalendar(const Calendar&, const Calendar&,
                       const Calendar&, const Calendar&,
                       JointCalendarRule rule = QuantLib::JoinHolidays);
+        explicit JointCalendar(const std::vector<Calendar>&,
+                               JointCalendarRule = QuantLib::JoinHolidays);
     };
 
     class BespokeCalendar : public Calendar {
