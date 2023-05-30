@@ -33,11 +33,6 @@
 using QuantLib::Calendar;
 %}
 
-
-namespace std {
-    %template(CalendarVector) vector<Calendar>;
-}
-
 %{
 using QuantLib::BusinessDayConvention;
 using QuantLib::Following;
@@ -133,6 +128,10 @@ class Calendar {
     %}
     #endif
 };
+
+namespace std {
+    %template(CalendarVector) vector<Calendar>;
+}
 
 namespace QuantLib {
 
