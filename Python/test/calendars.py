@@ -24,7 +24,7 @@ class JointCalendarTest(unittest.TestCase):
 
     def test_joint_calendar_holidays(self):
         base_calendars = [ql.Sweden(), ql.Denmark(), ql.Finland(), ql.Norway(), ql.Iceland()]
-        joint_nordics = ql.JointCalendar(ql.CalendarVector(base_calendars))
+        joint_nordics = ql.JointCalendar(base_calendars)
         start_date = ql.Date(1, ql.January, 2023)
         end_date = ql.Date(31, ql.December, 2023)
 
