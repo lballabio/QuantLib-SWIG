@@ -35,6 +35,7 @@ from ratehelpers import (
     FxSwapRateHelperTest,
     OISRateHelperTest,
     CrossCurrencyBasisSwapRateHelperTest)
+from calendars import JointCalendarTest
 from cms import CmsTest
 from assetswap import AssetSwapTest
 from capfloor import CapFloorTest
@@ -109,6 +110,7 @@ def test():
     suite.addTest(unittest.makeSuite(AndreasenHugeVolatilityTest, "test"))
     suite.addTest(unittest.makeSuite(EquityIndexTest, "test"))
     suite.addTest(unittest.makeSuite(EquityTotalReturnSwapTest, "test"))
+    suite.addTest(unittest.makeSuite(JointCalendarTest, "test"))
 
     result = unittest.TextTestRunner(verbosity=2).run(suite)
 
