@@ -32,7 +32,7 @@ class JointCalendarTest(unittest.TestCase):
         base_holidays = [calendar.holidayList(start_date, end_date) for calendar in base_calendars]
         base_holidays = set(itertools.chain.from_iterable(base_holidays))
         for holiday in base_holidays:
-            assert holiday in joint_holidays
+            self.assertIn(holiday, joint_holidays)
 
 
 if __name__ == "__main__":
