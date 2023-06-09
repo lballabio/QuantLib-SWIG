@@ -140,8 +140,7 @@ class OISRateHelperTest(unittest.TestCase):
         self.oisHelpers = [
             ql.OISRateHelper(
                 settlementDays, ql.Period(n, unit),
-                ql.QuoteHandle(self.ois[(n, unit)]), self.on_index,
-                self.discounting_yts_handle)
+                ql.QuoteHandle(self.ois[(n, unit)]), self.on_index)
             for n, unit in self.ois.keys()
         ]
 
@@ -293,7 +292,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
         oisHelpers = [
             ql.OISRateHelper(
                 settlementDays, ql.Period(n, unit),
-                ql.QuoteHandle(ois[(n, unit)]), on_index, discounting_yts_handle
+                ql.QuoteHandle(ois[(n, unit)]), on_index
             )
             for n, unit in ois.keys()
         ]
