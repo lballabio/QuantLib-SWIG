@@ -125,29 +125,27 @@ class ForwardSpreadedTermStructure : public YieldTermStructure {
                                  const Handle<Quote>& spreadHandle);
 };
 
+%define export_ipzsts_instance(Name,Interpolator)
 %{
-using QuantLib::InterpolatedPiecewiseZeroSpreadedTermStructure;
+using Name = QuantLib::InterpolatedPiecewiseZeroSpreadedTermStructure<Interpolator>;
 %}
 
-%shared_ptr(InterpolatedPiecewiseZeroSpreadedTermStructure<Linear>);
-%shared_ptr(InterpolatedPiecewiseZeroSpreadedTermStructure<BackwardFlat>);
-
-template <class Interpolator>
-class InterpolatedPiecewiseZeroSpreadedTermStructure : public YieldTermStructure {
+%shared_ptr(Name)
+class Name : public YieldTermStructure {
   public:
-    InterpolatedPiecewiseZeroSpreadedTermStructure(
-                const Handle<YieldTermStructure>& curveHandle,
-                const std::vector< Handle<Quote> >& spreadHandles,
-                const std::vector<Date>& dates,
-                Compounding comp = QuantLib::Continuous,
-                Frequency freq = QuantLib::NoFrequency,
-                const DayCounter& dc = DayCounter(),
-                const Interpolator& factory = Interpolator());
+    Name(const Handle<YieldTermStructure>& curveHandle,
+         const std::vector< Handle<Quote> >& spreadHandles,
+         const std::vector<Date>& dates,
+         Compounding comp = QuantLib::Continuous,
+         Frequency freq = QuantLib::NoFrequency,
+         const DayCounter& dc = DayCounter(),
+         const Interpolator& factory = Interpolator());
 };
+%enddef
 
-%template(PiecewiseZeroSpreadedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<Linear>;
-%template(SpreadedLinearZeroInterpolatedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<Linear>;
-%template(SpreadedBackwardFlatZeroInterpolatedTermStructure) InterpolatedPiecewiseZeroSpreadedTermStructure<BackwardFlat>;
+export_ipzsts_instance(PiecewiseZeroSpreadedTermStructure, Linear)
+export_ipzsts_instance(SpreadedLinearZeroInterpolatedTermStructure, Linear)
+export_ipzsts_instance(SpreadedBackwardFlatZeroInterpolatedTermStructure, BackwardFlat)
 
 
 // flat forward curve
