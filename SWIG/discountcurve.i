@@ -33,6 +33,7 @@ using QuantLib::InterpolatedDiscountCurve;
 %shared_ptr(InterpolatedDiscountCurve<SplineCubic>);
 %shared_ptr(InterpolatedDiscountCurve<KrugerLog>);
 %shared_ptr(InterpolatedDiscountCurve<SplineLogCubic>);
+%shared_ptr(InterpolatedDiscountCurve<LogMixedLinearCubic>);
 
 template <class Interpolator>
 class InterpolatedDiscountCurve : public YieldTermStructure {
@@ -56,5 +57,6 @@ class InterpolatedDiscountCurve : public YieldTermStructure {
 %template(NaturalCubicDiscountCurve) InterpolatedDiscountCurve<SplineCubic>;
 %template(KrugerLogDiscountCurve) InterpolatedDiscountCurve<KrugerLog>;
 %template(NaturalLogCubicDiscountCurve) InterpolatedDiscountCurve<SplineLogCubic>;
+%template(LogMixedLinearCubicDiscountCurve) InterpolatedDiscountCurve<LogMixedLinearCubic>;
 
 #endif
