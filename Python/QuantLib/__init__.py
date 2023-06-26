@@ -16,14 +16,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import sys
-if sys.version_info.major >= 3:
-    from .QuantLib import *
-    from .QuantLib import _QuantLib
-else:
-    from QuantLib import *
-    from QuantLib import _QuantLib
-del sys
+from .QuantLib import *
+from . import _QuantLib
 
 __author__ = 'The QuantLib Group'
 __email__ = 'quantlib-users@lists.sourceforge.net'
