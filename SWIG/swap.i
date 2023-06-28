@@ -54,11 +54,16 @@ class Swap : public Instrument {
          const std::vector<ext::shared_ptr<CashFlow> >& secondLeg);
     Swap(const std::vector<Leg>& legs,
          const std::vector<bool>& payer);
+    Size numberOfLegs() const;
     Date startDate() const;
     Date maturityDate() const;
     const Leg & leg(Size i);
     Real legNPV(Size j) const;
     Real legBPS(Size k) const;
+    DiscountFactor startDiscounts(Size j) const;
+    DiscountFactor endDiscounts(Size j) const;
+    DiscountFactor npvDateDiscount() const;
+    bool payer(Size j) const;
 };
 
 %shared_ptr(VanillaSwap)
@@ -384,6 +389,7 @@ class OvernightIndexedSwap : public Swap {
     Frequency paymentFrequency();
     Rate fixedRate();
     const DayCounter& fixedDayCount();
+    ext::shared_ptr<OvernightIndex> overnightIndex() const;
     Spread spread();
     const Leg& fixedLeg();
     const Leg& overnightLeg();
