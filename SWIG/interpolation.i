@@ -147,6 +147,8 @@ make_safe_interpolation2d(BicubicSpline,BicubicSpline);
 // interpolation traits
 
 %{
+using QuantLib::CubicInterpolation;
+using QuantLib::MixedInterpolation;
 using QuantLib::BackwardFlat;
 using QuantLib::ForwardFlat;
 using QuantLib::Linear;
@@ -161,33 +163,66 @@ using QuantLib::KrugerLog;
 class MonotonicCubic : public Cubic {
   public:
     MonotonicCubic()
-    : Cubic(QuantLib::CubicInterpolation::Spline, true,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+    : Cubic(CubicInterpolation::Spline, true,
+            CubicInterpolation::SecondDerivative, 0.0,
+            CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
 class SplineCubic : public Cubic {
   public:
     SplineCubic()
-    : Cubic(QuantLib::CubicInterpolation::Spline, false,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+    : Cubic(CubicInterpolation::Spline, false,
+            CubicInterpolation::SecondDerivative, 0.0,
+            CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
 class Kruger : public Cubic {
   public:
     Kruger()
-    : Cubic(QuantLib::CubicInterpolation::Kruger) {}
+    : Cubic(CubicInterpolation::Kruger) {}
 };
 
 class SplineLogCubic : public QuantLib::LogCubic {
   public:
     SplineLogCubic()
-    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Spline, false,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+    : QuantLib::LogCubic(CubicInterpolation::Spline, false,
+                         CubicInterpolation::SecondDerivative, 0.0,
+                         CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
+class LogMixedLinearCubic : public QuantLib::LogMixedLinearCubic {
+  public:
+    // We add defaults for all constructor arguments because wrappers for
+    // InterpolatedDiscountCurve and PiecewiseYieldCurve assume that all
+    // interpolators have default constructors.
+    LogMixedLinearCubic(
+        Size n = 0,
+        MixedInterpolation::Behavior behavior = MixedInterpolation::ShareRanges,
+        CubicInterpolation::DerivativeApprox da = CubicInterpolation::Spline,
+        bool monotonic = true)
+    : QuantLib::LogMixedLinearCubic(n, behavior, da, monotonic) {}
 };
 %}
+
+%nodefaultctor CubicInterpolation;
+struct CubicInterpolation {
+    enum DerivativeApprox {
+        Spline,
+        SplineOM1,
+        SplineOM2,
+        FourthOrder,
+        Parabolic,
+        FritschButland,
+        Akima,
+        Kruger,
+        Harmonic,
+    };
+};
+
+%nodefaultctor MixedInterpolation;
+struct MixedInterpolation {
+    enum Behavior { ShareRanges, SplitRanges };
+};
 
 struct BackwardFlat {};
 struct ForwardFlat {};
@@ -208,7 +243,16 @@ struct ConvexMonotone {
                    bool forcePositive = true);
 };
 
-
+struct LogMixedLinearCubic {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") LogMixedLinearCubic;
+    #endif
+    LogMixedLinearCubic(
+        Size n = 0,
+        MixedInterpolation::Behavior behavior = MixedInterpolation::ShareRanges,
+        CubicInterpolation::DerivativeApprox da = CubicInterpolation::Spline,
+        bool monotonic = true);
+};
 
 %{
 // safe version which copies its arguments

@@ -54,6 +54,11 @@ struct _IterativeBootstrap {
                         double maxValue = Null<double>())
     : accuracy(accuracy), minValue(minValue), maxValue(maxValue) {}
 };
+
+template <class PiecewiseYieldCurve>
+inline typename PiecewiseYieldCurve::bootstrap_type make_bootstrap(const _IterativeBootstrap& b) {
+    return {b.accuracy, b.minValue, b.maxValue};
+}
 %}
 
 %rename(IterativeBootstrap) _IterativeBootstrap;
@@ -84,7 +89,7 @@ class Name : public YieldTermStructure {
              const Interpolator& i = Interpolator(),
              const _IterativeBootstrap& b = _IterativeBootstrap()) {
             return new Name(referenceDate, instruments, dayCounter, jumps, jumpDates,
-                            i, Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
+                            i, make_bootstrap<Name>(b));
         }
         Name(Integer settlementDays, const Calendar& calendar,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
@@ -94,22 +99,23 @@ class Name : public YieldTermStructure {
              const Interpolator& i = Interpolator(),
              const _IterativeBootstrap& b = _IterativeBootstrap()) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
-                            jumps, jumpDates, Interpolator(),
-                            Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
+                            jumps, jumpDates, i, make_bootstrap<Name>(b));
         }
         Name(const Date& referenceDate,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const _IterativeBootstrap& b) {
-            return new Name(referenceDate, instruments, dayCounter, Interpolator(),
-                            Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
+             const _IterativeBootstrap& b,
+             const Interpolator& i = Interpolator()) {
+            return new Name(referenceDate, instruments, dayCounter, i,
+                            make_bootstrap<Name>(b));
         }
         Name(Integer settlementDays, const Calendar& calendar,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const _IterativeBootstrap& b) {
+             const _IterativeBootstrap& b,
+             const Interpolator& i = Interpolator()) {
             return new Name(settlementDays, calendar, instruments, dayCounter,
-                            Interpolator(), Name::bootstrap_type(b.accuracy, b.minValue, b.maxValue));
+                            i, make_bootstrap<Name>(b));
         }
     }
     const std::vector<Date>& dates() const;
@@ -138,6 +144,7 @@ export_piecewise_curve(PiecewiseKrugerLogDiscount,Discount,KrugerLog);
 export_piecewise_curve(PiecewiseConvexMonotoneZero,ZeroYield,ConvexMonotone);
 export_piecewise_curve(PiecewiseNaturalCubicZero,ZeroYield,SplineCubic);
 export_piecewise_curve(PiecewiseNaturalLogCubicDiscount,Discount,SplineLogCubic);
+export_piecewise_curve(PiecewiseLogMixedLinearCubicDiscount,Discount,LogMixedLinearCubic);
 
 
 // global boostrapper
