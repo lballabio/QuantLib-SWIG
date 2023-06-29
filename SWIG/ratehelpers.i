@@ -336,15 +336,25 @@ class OISRateHelper : public RateHelper {
 
 %shared_ptr(DatedOISRateHelper)
 class DatedOISRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") DatedOISRateHelper;
+    #endif
   public:
     DatedOISRateHelper(
             const Date& startDate,
             const Date& endDate,
             const Handle<Quote>& rate,
             const ext::shared_ptr<OvernightIndex>& index,
-            const Handle<YieldTermStructure>& discountingCurve = Handle<YieldTermStructure>(),
+            const Handle<YieldTermStructure>& discountingCurve = {},
             bool telescopicValueDates = false, 
-            RateAveraging::Type averagingMethod = RateAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound,
+            Natural paymentLag = 0,
+            BusinessDayConvention paymentConvention = Following,
+            Frequency paymentFrequency = Annual,
+            const Calendar& paymentCalendar = Calendar(),
+            const Period& forwardStart = 0 * Days,
+            Spread overnightSpread = 0.0,
+            ext::optional<bool> endOfMonth = ext::nullopt);
 };
 
 %shared_ptr(FxSwapRateHelper)
