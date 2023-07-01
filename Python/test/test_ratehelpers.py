@@ -678,7 +678,7 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
 
         # Trigger bootstrap
         discount_at_origin = term_structure.discount(settlement_date)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=discount_at_origin, second=1.0, delta=eps)
 
         for q, h in zip(self.cross_currency_basis_quotes, helpers):
@@ -694,7 +694,7 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
                                   actual_rate=actual_rate,
                                   expected_rate=expected_rate,
                                   tolerance=eps)
-            self.assertAlmostEquals(
+            self.assertAlmostEqual(
                 first=actual_rate,
                 second=expected_rate,
                 delta=eps,
@@ -733,11 +733,5 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print("testing QuantLib " + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(FixedRateBondHelperTest, "test"))
-    suite.addTest(unittest.makeSuite(OISRateHelperTest, "test"))
-    suite.addTest(unittest.makeSuite(FxSwapRateHelperTest, "test"))
-    suite.addTest(unittest.makeSuite(
-        CrossCurrencyBasisSwapRateHelperTest, "test"))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

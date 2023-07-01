@@ -26,38 +26,41 @@ def raiseFlag():
     flag = 1
 
 
-class MarketElementTest(unittest.TestCase):
+class InstrumentTest(unittest.TestCase):
     def testObservable(self):
-        "Testing observability of market elements"
-        global flag
-        flag = None
-        me = ql.SimpleQuote(0.0)
-        obs = ql.Observer(raiseFlag)
-        obs.registerWith(me)
-        me.setValue(3.14)
-        if not flag:
-            self.fail("Observer was not notified of market element change")
-
-    def testObservableHandle(self):
-        "Testing observability of market element handles"
+        "Testing observability of stocks"
         global flag
         flag = None
         me1 = ql.SimpleQuote(0.0)
         h = ql.RelinkableQuoteHandle(me1)
+        s = ql.Stock(h)
+        s.NPV()
+
         obs = ql.Observer(raiseFlag)
-        obs.registerWith(h)
+        obs.registerWith(s)
+
         me1.setValue(3.14)
         if not flag:
-            self.fail("Observer was not notified of market element change")
+            self.fail("Observer was not notified of instrument change")
+
+        s.NPV()
         flag = None
         me2 = ql.SimpleQuote(0.0)
         h.linkTo(me2)
         if not flag:
-            self.fail("Observer was not notified of market element change")
+            self.fail("Observer was not notified of instrument change")
+
+        s.NPV()
+        flag = None
+        s.freeze()
+        me2.setValue(2.71)
+        if flag:
+            self.fail("Observer was notified of frozen instrument change")
+        s.unfreeze()
+        if not flag:
+            self.fail("Observer was not notified of instrument change")
 
 
 if __name__ == "__main__":
-    print("testing QuantLib " + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(MarketElementTest, "test"))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

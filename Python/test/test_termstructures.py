@@ -169,7 +169,7 @@ class TermStructureTest(unittest.TestCase):
                         actual zero rate: {actual}
                   """.format(expected=expectedZeroRate,
                              actual=actualZeroRate)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=expectedZeroRate,
             second=actualZeroRate,
             delta=1.0e-12,
@@ -201,7 +201,7 @@ class TermStructureTest(unittest.TestCase):
                       """.format(timeToMaturity=t,
                                  expected=expectedForward,
                                  actual=actualForward)
-            self.assertAlmostEquals(
+            self.assertAlmostEqual(
                 first=expectedForward,
                 second=actualForward,
                 delta=1.0e-12,
@@ -289,7 +289,7 @@ class TermStructureTest(unittest.TestCase):
             vanilla_pv=vanilla_option_pv
         )
 
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             quanto_option_pv,
             vanilla_option_pv,
             delta=1e-12,
@@ -319,7 +319,5 @@ class TermStructureTest(unittest.TestCase):
         self.termStructure.unfreeze()
 
 if __name__ == "__main__":
-    print("testing QuantLib " + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(TermStructureTest, "test"))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

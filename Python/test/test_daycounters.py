@@ -3,8 +3,8 @@ import unittest
 
 
 class DayCountersTest(unittest.TestCase):
-    def runTest(self):
-        "Testing daycounters"
+    def test_bus252(self):
+        """Test Business252 daycounter"""
 
         calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
@@ -21,7 +21,5 @@ class DayCountersTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print("testing QuantLib " + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(DayCountersTest())
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

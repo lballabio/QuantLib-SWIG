@@ -171,7 +171,7 @@ class SwaptionTest(unittest.TestCase):
                                               method=SETTLEMENT_METHOD_MAP[m],
                                               annuity=annuity,
                                               expected_annuity=expected_annuity)
-                        self.assertAlmostEquals(
+                        self.assertAlmostEqual(
                             first=annuity,
                             second=expected_annuity,
                             delta=EPSILON,
@@ -191,7 +191,5 @@ class SwaptionTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print("testing QuantLib " + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SwaptionTest, "test"))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

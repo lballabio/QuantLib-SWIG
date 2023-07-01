@@ -283,7 +283,7 @@ class InflationTest(unittest.TestCase):
                               actual_payment=actual_inflation_leg_payment,
                               expected_payment=expected_inflation_leg_payment,
                               tolerance=EPSILON)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=actual_inflation_leg_payment,
             second=expected_inflation_leg_payment,
             delta=EPSILON,
@@ -332,7 +332,7 @@ class InflationTest(unittest.TestCase):
                               base_index=swap_base_fixing,
                               expected_base_index=expected_swap_base_index,
                               tolerance=EPSILON)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=swap_base_fixing,
             second=expected_swap_base_index,
             delta=EPSILON,
@@ -368,7 +368,7 @@ class InflationTest(unittest.TestCase):
                               base_fixing=curve_base_fixing,
                               expected_base_fixing=expected_curve_base_fixing,
                               tolerance=EPSILON)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=curve_base_fixing,
             second=expected_curve_base_fixing,
             msg=fail_msg,
@@ -403,7 +403,7 @@ class InflationTest(unittest.TestCase):
                               actual_fixing=actual_fixing,
                               expected_fixing=expected_fixing,
                               tolerance=EPSILON)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=actual_fixing,
             second=expected_fixing,
             msg=fail_msg,
@@ -411,7 +411,5 @@ class InflationTest(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    print('testing QuantLib ' + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(InflationTest, 'test'))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)
