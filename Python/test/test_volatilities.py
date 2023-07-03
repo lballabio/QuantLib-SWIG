@@ -296,7 +296,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
                               swap_tenor=swap_tenor,
                               strike=actual_atm_strike,
                               replicated_strike=expected_atm_strike)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=actual_atm_strike,
             second=expected_atm_strike,
             delta=TOLERANCE,
@@ -331,7 +331,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
                               vol=actual_vol,
                               expected_vol=expected_vol,
                               eps=epsilon)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=actual_vol,
             second=expected_vol,
             delta=epsilon,
@@ -367,7 +367,7 @@ class SwaptionVolatilityCubeTest(unittest.TestCase):
                               vol=actual_vol,
                               expected_vol=expected_vol,
                               eps=epsilon)
-        self.assertAlmostEquals(
+        self.assertAlmostEqual(
             first=actual_vol,
             second=expected_vol,
             delta=epsilon,
@@ -630,9 +630,5 @@ class AndreasenHugeVolatilityTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print("testing QuantLib " + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SwaptionVolatilityCubeTest, "test"))
-    suite.addTest(unittest.makeSuite(SviSmileSectionTest, "test"))
-    suite.addTest(unittest.makeSuite(AndreasenHugeVolatilityTest, "test"))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

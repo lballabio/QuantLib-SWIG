@@ -116,7 +116,5 @@ class SabrTest(unittest.TestCase):
                                msg="Unable to match PDE CEV value with analytic CEV value")
 
 if __name__ == '__main__':
-    print('testing QuantLib ' + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(SabrTest, "test"))
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

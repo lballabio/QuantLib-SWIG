@@ -43,10 +43,10 @@ class BlackFormulaTest(unittest.TestCase):
                                  self.vol,
                                  self.df,
                                  self.displacement)
-        self.assertAlmostEquals(expected, res, delta=1e-4,
-                                msg="Failed to calculate simple  "
-                                    "Black-Scholes-Merton price rounded to "
-                                    "four decimal places.")
+        self.assertAlmostEqual(expected, res, delta=1e-4,
+                               msg="Failed to calculate simple  "
+                                   "Black-Scholes-Merton price rounded to "
+                                   "four decimal places.")
 
     def test_black_formula_implied_stdev(self):
         """Testing implied volatility calculator"""
@@ -57,9 +57,9 @@ class BlackFormulaTest(unittest.TestCase):
                                               self.forward,
                                               black_price,
                                               self.df)
-        self.assertAlmostEquals(expected, res, delta=1e-4,
-                                msg="Failed to determine Implied Vol rounded "
-                                    "to a single vol bps.")
+        self.assertAlmostEqual(expected, res, delta=1e-4,
+                               msg="Failed to determine Implied Vol rounded "
+                                   "to a single vol bps.")
 
 
 class BlackDeltaCalculatorTest(unittest.TestCase):
@@ -109,7 +109,7 @@ class BlackDeltaCalculatorTest(unittest.TestCase):
 
         strike = black_calculator.strikeFromDelta(spot_delta_level)
 
-        self.assertAlmostEquals(expected_strike, strike, delta=1e-4)
+        self.assertAlmostEqual(expected_strike, strike, delta=1e-4)
 
     def test_spot_atm_delta_calculator(self):
         """Test for 0-delta straddle strike"""
@@ -134,8 +134,9 @@ class BlackDeltaCalculatorTest(unittest.TestCase):
 
         strike = black_calculator.atmStrike(ql.DeltaVolQuote.AtmDeltaNeutral)
 
-        self.assertAlmostEquals(expected_strike, strike, delta=1e-4)
+        self.assertAlmostEqual(expected_strike, strike, delta=1e-4)
 
 
 if __name__ == '__main__':
-    unittest.main()
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)

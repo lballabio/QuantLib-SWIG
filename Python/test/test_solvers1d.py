@@ -28,7 +28,7 @@ class Foo:
 
 
 class Solver1DTest(unittest.TestCase):
-    def runTest(self):
+    def test_solve(self):
         "Testing 1-D solvers"
         for factory in [ql.Brent, ql.Bisection, ql.FalsePosition, ql.Ridder, ql.Secant]:
             solver = factory()
@@ -87,7 +87,5 @@ class Solver1DTest(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    print("testing QuantLib " + ql.__version__)
-    suite = unittest.TestSuite()
-    suite.addTest(Solver1DTest())
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    print("testing QuantLib", ql.__version__)
+    unittest.main(verbosity=2)
