@@ -81,7 +81,7 @@ class my_wrap(Command):
         os.system('swig -python -c++ -modern ' +
                   '-I%s ' % swig_dir +
                   '-outdir QuantLib -o QuantLib/quantlib_wrap.cpp ' +
-                  'quantlib.i')
+                  '%s/quantlib.i' % swig_dir)
 
 class my_build(build):
     user_options = build.user_options + [

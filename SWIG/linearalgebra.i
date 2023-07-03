@@ -70,7 +70,7 @@ bool extractArray(PyObject* source, Array* target) {
             $1 = *v;
         else {
             PyErr_SetString(PyExc_TypeError, "Array expected");
-            return NULL;
+            SWIG_fail;
         }
     }
 };
@@ -80,7 +80,7 @@ bool extractArray(PyObject* source, Array* target) {
     } else {
         if (SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1) == -1) {
             PyErr_SetString(PyExc_TypeError, "Array expected");
-            return NULL;
+            SWIG_fail;
         }
     }
 };
@@ -152,7 +152,7 @@ bool extractArray(PyObject* source, Array* target) {
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         } else {
             cols = 0;
@@ -168,7 +168,7 @@ bool extractArray(PyObject* source, Array* target) {
                     PyErr_SetString(PyExc_TypeError,
                         "Matrix must have equal-length rows");
                     Py_DECREF(o);
-                    return NULL;
+                    SWIG_fail;
                 }
                 for (Size j=0; j<cols; j++) {
                     PyObject* d = PySequence_GetItem(o,j);
@@ -182,14 +182,14 @@ bool extractArray(PyObject* source, Array* target) {
                         PyErr_SetString(PyExc_TypeError,"doubles expected");
                         Py_DECREF(d);
                         Py_DECREF(o);
-                        return NULL;
+                        SWIG_fail;
                     }
                 }
                 Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         }
     } else {
@@ -214,7 +214,7 @@ bool extractArray(PyObject* source, Array* target) {
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         } else {
             cols = 0;
@@ -231,7 +231,7 @@ bool extractArray(PyObject* source, Array* target) {
                     PyErr_SetString(PyExc_TypeError,
                         "Matrix must have equal-length rows");
                     Py_DECREF(o);
-                    return NULL;
+                    SWIG_fail;
                 }
                 for (Size j=0; j<cols; j++) {
                     PyObject* d = PySequence_GetItem(o,j);
@@ -245,14 +245,14 @@ bool extractArray(PyObject* source, Array* target) {
                         PyErr_SetString(PyExc_TypeError,"doubles expected");
                         Py_DECREF(d);
                         Py_DECREF(o);
-                        return NULL;
+                        SWIG_fail;
                     }
                 }
                 Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         }
         $1 = &temp;
