@@ -78,7 +78,7 @@ class my_wrap(Command):
                  ' is recommended. \nSome features may not work.'
                  .format(swig_version))
         swig_dir = os.path.join("..","SWIG")
-        os.system('swig -python -c++ -modern ' +
+        os.system('swig -python -c++ ' +
                   '-I%s ' % swig_dir +
                   '-outdir QuantLib -o QuantLib/quantlib_wrap.cpp ' +
                   '%s/quantlib.i' % swig_dir)
