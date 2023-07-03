@@ -187,6 +187,24 @@ class ZeroInflationIndex : public InflationIndex {
 %shared_ptr(YoYInflationIndex)
 class YoYInflationIndex : public InflationIndex {
   public:
+    // Constructor for year-on-year indices defined as a ratio.
+    YoYInflationIndex(
+            const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
+            bool interpolated,
+            Handle<YoYInflationTermStructure> ts = {});
+
+    // Constructor for quoted year-on-year indices.
+    YoYInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            bool interpolated,
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<YoYInflationTermStructure> ts = {});
+
+    // Deprecated constructor.
     YoYInflationIndex(const std::string& familyName,
                       const Region& region,
                       bool revised,
@@ -197,6 +215,7 @@ class YoYInflationIndex : public InflationIndex {
                       const Currency& currency,
                       const Handle<YoYInflationTermStructure>& ts = {});
     bool ratio() const;
+    ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
     Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
     ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
 };
