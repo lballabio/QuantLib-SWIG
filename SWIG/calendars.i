@@ -316,7 +316,7 @@ namespace QuantLib {
     class UnitedStates : public Calendar {
       public:
         enum Market { Settlement, NYSE, GovernmentBond,
-                      NERC, LiborImpact, FederalReserve };
+                      NERC, LiborImpact, FederalReserve, SOFR };
         UnitedStates(Market m);
     };
 
