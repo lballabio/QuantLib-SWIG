@@ -1,44 +1,56 @@
 
-Main changes for QuantLib-SWIG 1.30
+Main changes for QuantLib-SWIG 1.31
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/23?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/24?closed=1>.
 
 - **Removed** deprecated features no longer available in the
   underlying C++ library:
-  - the `WulinYongDoubleBarrierEngine` alias for `SuoWangDoubleBarrierEngine`;
-  - the `spotIncome` and `spotValue` methods of `ForwardRateAgreement`;
-  - constructors for `InterpolatedZeroInflationCurve` and
-    `PiecewiseZeroInflationCurve` taking an `indexIsInterpolated`
-    parameter;
-  - the `indexIsInterpolated` method of `InflationTermStructure`;
-  - some overloaded constructors of `SofrFutureRateHelper`.
+  - The `CPICoupon` constructor taking a number of fixing days and its
+    `adjustedFixing` method.
+  - The `withFixingDays` methods of `CPILeg`.
+  - The `ZeroInflationCashFlow` constructor taking a calendar and
+    business-day convention.
+  - The `LexicographicalView` class.
 
-- **Renamed** `SwaptionVolCube1` to `SabrSwaptionVolatilityCube` and
-  `SwaptionVolCube2` to `InterpolatedSwaptionVolatilityCube`, as in
-  the underlying C++ library; the old names remain available in Python
-  but not in other languages.
+- Exported new U.S. SOAR calendar (@lballabio).
 
-- Exported new `EquityCashFlow`, `EquityIndex` and
-  `EquityTotalReturnSwap` classes with a few tests; thanks to Marcin
-  Rybacki (@marcin-rybacki).
+- Exported new constructors and `indexRatio` method for `CPICoupon`
+  (@lballabio).
 
-- Exported constructors for vanilla and barrier pricing engines taking
-  discrete dividends; this makes `DividendVanillaOption` and
-  `DividendBarrierOption` obsolete (@lballabio).
+- Exported new constructors and `underlyingIndex` method for
+  `YoYInflationIndex` (@lballabio).
 
-- Exported new calendars for Austria, Botswana and Romania; thanks to
-  Fredrik Gerdin Börjesson (@gbfredrik).
+- Exported new constructors for `ForwardRateAgreement` (@lballabio).
 
-- Exported new ASX calendar for Australia (@lballabio).
+- Rework Python tests to follow standard conventions; thanks to Eugene
+  Toder (@eltoder).
 
-- Exported `FixedLocalVolSurface` and `GridModelLocalVolSurface`
-  classes with a test; thanks to Klaus Spanderen (@klausspanderen).
+- Updated constructor of `DatedOISRateHelper` to take new parameters;
+  thanks to Eugene Toder (@eltoder).
 
-- Exported new CPICoupon constructors (@lballabio).
+- Exported missing currencies and crypto; thanks to Fredrik Gerdin
+  Börjesson (@gbfredrik).
 
-- Exported UKHICP index (@lballabio).
+- Exported `LogMixedLinearCubic` interpolator and corresponding
+  discount curves; thanks to Eugene Toder (@eltoder).
 
-- Exported a few African currencies (@lballabio).
+- Exported `ArithmeticAverageOIS` and the corresponding rate helper;
+  thanks to Eugene Toder (@eltoder).
 
+- Exported a few missing inspectors for `Swap`; thanks to Eugene Toder
+  (@eltoder).
+
+- Exported CORRA, SWESTR and DESTR indexes; thanks to Fredrik Gerdin
+  Börjesson (@gbfredrik).
+
+- Exported new constructor and Python tests for `JointCalendar`;
+  thanks to Fredrik Gerdin Börjesson (@gbfredrik).
+
+- Added Python examples for callable bonds and caps; thanks to Nijaz
+  Kovacevic (@NijazK).
+
+- Added convenience methods `of` and `toLocalDate` to Java wrappers
+  that convert QuantLib dates from and to `java.time.LocalDate`; and
+  example is provided.  Thanks to Ralf Konrad (@ralfkonrad).
