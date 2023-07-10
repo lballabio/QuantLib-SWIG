@@ -150,6 +150,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include integrals.i
 %include interestrate.i
 %include interpolation.i
+%include lazyobject.i
 %include linearalgebra.i
 %include localvolatilities.i
 %include lmm.i
