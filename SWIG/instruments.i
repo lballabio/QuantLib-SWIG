@@ -24,6 +24,7 @@
 %include types.i
 %include marketelements.i
 %include observer.i
+%include lazyobject.i
 %include stl.i
 
 // pricing engine
@@ -45,15 +46,12 @@ using QuantLib::Instrument;
 %}
     
 %shared_ptr(Instrument)
-class Instrument : public Observable {
+class Instrument : public LazyObject {
   public:
     Real NPV() const;
     Real errorEstimate() const;
     bool isExpired() const;
     void setPricingEngine(const ext::shared_ptr<PricingEngine>&);
-    void recalculate();
-    void freeze();
-    void unfreeze();
   private:
     Instrument();
 };
