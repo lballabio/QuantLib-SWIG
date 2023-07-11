@@ -1,3 +1,41 @@
+commit 62eb1b180c1f296cbf8f752129e674bd3bd96a7c
+Merge: 4928c05 6a1f47a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Jul 2023 14:59:35 +0200
+
+    Export new `LazyObject` interface (#574)
+
+commit 6a1f47a12a17d4b4177d28279504577d513c5ae8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 10 Jul 2023 21:26:32 +0200
+
+    Export LazyObject interface
+
+ SWIG/instruments.i |  6 ++----
+ SWIG/lazyobject.i  | 53 +++++++++++++++++++++++++++++++++++++++++++++++++++++
+ SWIG/ql.i          |  1 +
+ 3 files changed, 56 insertions(+), 4 deletions(-)
+
+commit 4928c05f404f24d3bea0ed6c948fa18fa6eb7bca
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Apr 2022 18:29:12 +0200
+
+    Set version to 1.31 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit fa8cd7182b29ccc11126a42d96745e1bd1d95ccd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 4 Jul 2023 13:28:06 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt | 815 ++++++++++++++++++++++++++++++++--------------------------
+ News.md       |  66 +++--
+ 2 files changed, 488 insertions(+), 393 deletions(-)
+
 commit dadc11fff9190d027e2f789e82df152ae587a83d
 Merge: 824840d 2b4f2e9
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>

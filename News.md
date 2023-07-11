@@ -14,7 +14,7 @@ More details on the changes are available in ChangeLog.txt and at
     business-day convention.
   - The `LexicographicalView` class.
 
-- Exported new U.S. SOAR calendar (@lballabio).
+- Exported new U.S. SOFR calendar (@lballabio).
 
 - Exported new constructors and `indexRatio` method for `CPICoupon`
   (@lballabio).
@@ -47,6 +47,8 @@ More details on the changes are available in ChangeLog.txt and at
 
 - Exported new constructor and Python tests for `JointCalendar`;
   thanks to Fredrik Gerdin Börjesson (@gbfredrik).
+
+- Exported new LazyObject interface (@lballabio).
 
 - Added Python examples for callable bonds and caps; thanks to Nijaz
   Kovacevic (@NijazK).
