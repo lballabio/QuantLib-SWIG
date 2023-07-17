@@ -1,3 +1,47 @@
+commit 92b2946ea333f9a19580f00343e5d5bdc20602ac
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 12 Apr 2021 11:12:19 +0200
+
+    Set version to 1.31 final.
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b92acc28524ff99ee46937340c42bd4304202d72
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 12 Jul 2023 23:28:01 +0200
+
+    Set version to 1.31-rc2
+    
+    C# and R don't like it without the hyphen.
+
+ Python/setup.py | 2 +-
+ R/DESCRIPTION   | 2 +-
+ configure.ac    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit 2a6d872d205eb34f84fc901a2e90fced55176752
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 14 Apr 2022 18:29:12 +0200
+
+    Set version to 1.31rc2
+
+ Python/setup.py | 2 +-
+ R/DESCRIPTION   | 2 +-
+ configure.ac    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit e5ed727ee638a75070bca5fe5c963da8e014dde7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 11 Jul 2023 15:01:57 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt | 38 ++++++++++++++++++++++++++++++++++++++
+ News.md       |  4 +++-
+ 2 files changed, 41 insertions(+), 1 deletion(-)
+
 commit 62eb1b180c1f296cbf8f752129e674bd3bd96a7c
 Merge: 4928c05 6a1f47a
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
