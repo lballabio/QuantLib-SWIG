@@ -24,6 +24,7 @@
 %include common.i
 %include observer.i
 %include functions.i
+%include indexes.i
 
 %{
 using QuantLib::Quote;
@@ -45,6 +46,7 @@ class Quote : public Observable {
 // actual quotes
 %{
 using QuantLib::SimpleQuote;
+using QuantLib::LastFixingQuote;
 %}
 
 %shared_ptr(SimpleQuote)
@@ -53,6 +55,15 @@ class SimpleQuote : public Quote {
   public:
     SimpleQuote(Real value);
     void setValue(Real value);
+};
+
+%shared_ptr(LastFixingQuote)
+
+class LastFixingQuote : public Quote {
+  public:
+    LastFixingQuote(ext::shared_ptr<Index> index);
+    ext::shared_ptr<Index> index() const;
+    Date referenceDate() const;
 };
 
 
