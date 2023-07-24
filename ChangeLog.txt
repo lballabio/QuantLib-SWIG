@@ -1,3 +1,32 @@
+commit 1bf2eb83a099b3560b59026d59eae6897a5031be
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 23:16:45 +0200
+
+    Set version to 1.31.1
+
+ Python/setup.py | 2 +-
+ R/DESCRIPTION   | 2 +-
+ configure.ac    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit d5cb6e00e40ad959a5e89a7f8a4e5ab97aca5b2b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 22 Jul 2023 22:28:03 +0200
+
+    Update news
+
+ News.md | 61 ++++++-------------------------------------------------------
+ 1 file changed, 6 insertions(+), 55 deletions(-)
+
+commit 2d6196235557530fa51648d42f7ba631b5d00414
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 17 Jul 2023 11:13:28 +0200
+
+    Update changelog
+
+ ChangeLog.txt | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
 commit 92b2946ea333f9a19580f00343e5d5bdc20602ac
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 12 Apr 2021 11:12:19 +0200
