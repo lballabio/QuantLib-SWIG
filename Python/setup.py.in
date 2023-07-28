@@ -18,15 +18,11 @@
 """
 
 import os, sys, math
-try:
-    from setuptools import setup, Extension
-    from setuptools import Command
-except:
-    from distutils.core import setup, Extension
-    from distutils.cmd import Command
-from distutils.command.build_ext import build_ext
-from distutils.command.build import build
-from distutils.ccompiler import get_default_compiler
+from setuptools import setup, Extension
+from setuptools import Command
+from setuptools.command.build_ext import build_ext
+from setuptools.command.build import build
+from setuptools._distutils.ccompiler import get_default_compiler
 
 class test(Command):
     # Original version of this class posted
@@ -215,10 +211,11 @@ setup(name             = "QuantLib",
       version          = "@PACKAGE_VERSION@",
       description      = "Python bindings for the QuantLib library",
       long_description = """
-QuantLib (https://www.quantlib.org/) is a C++ library for financial quantitative
-analysts and developers, aimed at providing a comprehensive software
-framework for quantitative finance.
+QuantLib (https://www.quantlib.org/) is a free/open-source C++ library
+for financial quantitative analysts and developers, aimed at providing
+a comprehensive software framework for quantitative finance.
       """,
+      long_description_content_type = "text/x-rst",
       author           = "QuantLib Team",
       author_email     = "quantlib-users@lists.sourceforge.net",
       url              = "https://www.quantlib.org",
