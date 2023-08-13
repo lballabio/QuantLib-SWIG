@@ -348,25 +348,33 @@ class Period {
 
 #if defined(SWIGPYTHON)
 %typemap(in) ext::optional<Period> %{
-    if($input == Py_None)
+    if($input == Py_None) {
         $1 = ext::nullopt;
-    else
-    {
-        Period *temp;
-        if (!SWIG_IsOK(SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0)))
-            SWIG_exception_fail(SWIG_TypeError, "in method '$symname', expecting type Period");
-        $1 = (ext::optional<Period>) *temp;
+    } else {
+        void *argp;
+        int res = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $descriptor(Period*), SWIG_POINTER_NO_NULL);
+        if (!SWIG_IsOK(res)) {
+            SWIG_exception_fail(SWIG_ArgError(res), "in method '$symname', argument $argnum of type '$type'");
+        }
+        if (!argp) {
+            SWIG_exception_fail(SWIG_ValueError, "invalid null reference in method '$symname', argument $argnum of type '$type'");
+        } else {
+            Period p = *reinterpret_cast<Period*>(argp);
+            $1 = (ext::optional<Period>) p;
+        }
     }
 %}
 %typecheck (QL_TYPECHECK_PERIOD) ext::optional<Period> {
-    if($input == Py_None)
+    if($input == Py_None) {
         $1 = 1;
-    else {
-        Period *temp;
-        int res = SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0);
-        $1 = SWIG_IsOK(res) ? 1 : 0;
+    } else {
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $descriptor(Period*), SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
-
 }
 #endif
 
