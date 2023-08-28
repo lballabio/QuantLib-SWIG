@@ -7,7 +7,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - language: python3
+          - language: python
           - language: java
             config: -old
           - language: java
