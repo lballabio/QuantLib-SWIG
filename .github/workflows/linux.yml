@@ -17,7 +17,7 @@ jobs:
           - language: scala
     container: ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.language }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Build
       run: |
         ./.ci/${{ matrix.language }}${{ matrix.config }}.build
