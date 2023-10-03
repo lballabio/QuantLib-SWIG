@@ -1770,4 +1770,102 @@ class MCEuropeanGJRGARCHEngine : public PricingEngine {
 #endif
 
 
+%{
+using QuantLib::MargrabeOption;
+using QuantLib::AnalyticEuropeanMargrabeEngine;
+using QuantLib::AnalyticAmericanMargrabeEngine;
+%}
+
+%shared_ptr(MargrabeOption)
+class MargrabeOption : public MultiAssetOption {
+  public:
+    MargrabeOption(Integer Q1,
+                   Integer Q2,
+                   const ext::shared_ptr<Exercise>&);
+    Real delta1() const;
+    Real delta2() const;
+    Real gamma1() const;
+    Real gamma2() const;
+};
+
+%shared_ptr(AnalyticEuropeanMargrabeEngine)
+class AnalyticEuropeanMargrabeEngine : public PricingEngine {
+  public:
+    AnalyticEuropeanMargrabeEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                                   ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+                                   Real correlation);
+};
+
+%shared_ptr(AnalyticAmericanMargrabeEngine)
+class AnalyticAmericanMargrabeEngine : public PricingEngine {
+  public:
+    AnalyticAmericanMargrabeEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                                   ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+                                   Real correlation);
+};
+
+
+%{
+using QuantLib::CompoundOption;
+using QuantLib::AnalyticCompoundOptionEngine;
+%}
+
+%shared_ptr(CompoundOption)
+class CompoundOption : public OneAssetOption {
+  public:
+    CompoundOption(const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
+                   const ext::shared_ptr<Exercise>& motherExercise,
+                   ext::shared_ptr<StrikedTypePayoff> daughterPayoff,
+                   ext::shared_ptr<Exercise> daughterExercise);
+};
+
+%shared_ptr(AnalyticCompoundOptionEngine)
+class AnalyticCompoundOptionEngine : public PricingEngine {
+  public:
+    AnalyticCompoundOptionEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
+%{
+using QuantLib::SimpleChooserOption;
+using QuantLib::AnalyticSimpleChooserEngine;
+%}
+
+%shared_ptr(SimpleChooserOption)
+class SimpleChooserOption : public OneAssetOption {
+  public:
+    SimpleChooserOption(Date choosingDate,
+                        Real strike,
+                        const ext::shared_ptr<Exercise>& exercise);
+};
+
+%shared_ptr(AnalyticSimpleChooserEngine)
+class AnalyticSimpleChooserEngine : public PricingEngine {
+  public:
+    AnalyticSimpleChooserEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
+%{
+using QuantLib::ComplexChooserOption;
+using QuantLib::AnalyticComplexChooserEngine;
+%}
+
+%shared_ptr(ComplexChooserOption)
+class ComplexChooserOption : public OneAssetOption {
+  public:
+    ComplexChooserOption(Date choosingDate,
+                         Real strikeCall,
+                         Real strikePut,
+                         const ext::shared_ptr<Exercise>& exerciseCall,
+                         const ext::shared_ptr<Exercise>& exercisePut);
+};
+
+%shared_ptr(AnalyticComplexChooserEngine)
+class AnalyticComplexChooserEngine : public PricingEngine {
+  public:
+    AnalyticComplexChooserEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
 #endif
