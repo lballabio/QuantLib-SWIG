@@ -381,6 +381,21 @@ class OvernightIndexedSwap : public Swap {
             bool telescopicValueDates = false,
             RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
+    OvernightIndexedSwap(Type type,
+                         const std::vector<Real>& fixedNominals,
+                         const Schedule& fixedSchedule,
+                         Rate fixedRate,
+                         const DayCounter& fixedDC,
+                         const std::vector<Real>& overnightNominals,
+                         const Schedule& overnightSchedule,
+                         const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                         Spread spread = 0.0,
+                         Natural paymentLag = 0,
+                         BusinessDayConvention paymentAdjustment = Following,
+                         const Calendar& paymentCalendar = Calendar(),
+                         bool telescopicValueDates = false,
+                         RateAveraging::Type averagingMethod = RateAveraging::Compound);
+
     Rate fixedLegBPS();
     Real fixedLegNPV();
     Real fairRate();
