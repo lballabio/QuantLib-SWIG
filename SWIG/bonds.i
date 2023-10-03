@@ -43,6 +43,7 @@ using QuantLib::AmortizingFixedRateBond;
 using QuantLib::FloatingRateBond;
 using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
+using QuantLib::simplifyNotificationGraph;
 %}
 
 class BondPrice {
@@ -113,6 +114,8 @@ class Bond : public Instrument {
     Real settlementValue() const;
     Real settlementValue(Real cleanPrice) const;
 };
+
+void simplifyNotificationGraph(Bond& bond, bool unregisterCoupons = false);
 
 
 %inline %{

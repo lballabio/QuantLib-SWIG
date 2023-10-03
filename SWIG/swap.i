@@ -44,6 +44,7 @@ using QuantLib::MakeOIS;
 using QuantLib::ZeroCouponSwap;
 using QuantLib::EquityTotalReturnSwap;
 using QuantLib::ArithmeticAverageOIS;
+using QuantLib::simplifyNotificationGraph;
 %}
 
 %shared_ptr(Swap)
@@ -66,6 +67,9 @@ class Swap : public Instrument {
     DiscountFactor npvDateDiscount() const;
     bool payer(Size j) const;
 };
+
+void simplifyNotificationGraph(Swap& swap, bool unregisterCoupons = false);
+
 
 %shared_ptr(VanillaSwap)
 class VanillaSwap : public Swap {
