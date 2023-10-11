@@ -1,0 +1,89 @@
+name: Build quantlib-swig-devenv Docker images
+on: workflow_dispatch
+jobs:
+  docker-images-base:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: Checkout latest QuantLib master
+      uses: actions/checkout@v4
+      with:
+        repository: lballabio/QuantLib
+        path: dockerfiles/QuantLib
+    - name: Build Docker images
+      working-directory: dockerfiles
+      run: |
+        rm -rf QuantLib/.git
+        docker build -f ci.base.Dockerfile --build-arg tag=rolling -t ghcr.io/lballabio/quantlib-swig-devenv:base .
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_PAT }}
+    - name: Push Docker images
+      run: |
+        docker push ghcr.io/lballabio/quantlib-swig-devenv:base
+  docker-images-ql:
+    runs-on: ubuntu-20.04
+    needs: docker-images-base
+    strategy:
+      matrix:
+        tag: [default, threadsafe]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build Docker images
+      working-directory: dockerfiles
+      run: |
+        docker build -f ci.${{ matrix.tag }}.Dockerfile -t ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.tag }} .
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_PAT }}
+    - name: Push Docker images
+      run: |
+        docker push ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.tag }}
+  docker-images-base-languages:
+    runs-on: ubuntu-20.04
+    needs: docker-images-ql
+    strategy:
+      matrix:
+        lang: [python, csharp, java, r]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build Docker images
+      working-directory: dockerfiles
+      run: |
+        docker build -f ci.${{ matrix.lang }}.Dockerfile -t ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.lang }} .
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_PAT }}
+    - name: Push Docker images
+      run: |
+        docker push ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.lang }}
+  docker-images-dependent-languages:
+    runs-on: ubuntu-20.04
+    needs: docker-images-base-languages
+    strategy:
+      matrix:
+        lang: [scala]
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build Docker images
+      working-directory: dockerfiles
+      run: |
+        docker build -f ci.${{ matrix.lang }}.Dockerfile -t ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.lang }} .
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ghcr.io
+        username: ${{ github.repository_owner }}
+        password: ${{ secrets.GHCR_PAT }}
+    - name: Push Docker images
+      run: |
+        docker push ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.lang }}

@@ -36,7 +36,7 @@ using QuantLib::SampledCurve;
 
 #if defined(SWIGPYTHON)
 %{
-bool extractArray(PyObject* source, Array* target) {
+bool ArrayFromSequence(PyObject* source, Array* target) {
     if (PyTuple_Check(source) || PyList_Check(source)) {
         Size size = (PyTuple_Check(source) ?
                      PyTuple_Size(source) :
@@ -62,26 +62,33 @@ bool extractArray(PyObject* source, Array* target) {
 }
 %}
 
-%typemap(in) Array (Array* v) {
-    if (extractArray($input,&$1)) {
+%typemap(in) Array (Array* v, void *argp, int res = 0) {
+    if (ArrayFromSequence($input,&$1)) {
         ;
     } else {
-        if (SWIG_ConvertPtr($input,(void **) &v, $&1_descriptor,1) != -1)
-            $1 = *v;
-        else {
-            PyErr_SetString(PyExc_TypeError, "Array expected");
-            SWIG_fail;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $&descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
+        }
+        if (!argp) {
+            %argument_nullref("$type", $symname, $argnum);
+        } else {
+            $1 = *(%reinterpret_cast(argp, $&ltype));
         }
     }
 };
-%typemap(in) const Array& (Array temp) {
-    if (extractArray($input,&temp)) {
+%typemap(in) const Array& (Array temp, void *argp = 0, int res = 0) {
+    if (ArrayFromSequence($input,&temp)) {
         $1 = &temp;
     } else {
-        if (SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1) == -1) {
-            PyErr_SetString(PyExc_TypeError, "Array expected");
-            SWIG_fail;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
         }
+        if (!argp) { %argument_nullref("$type", $symname, $argnum); }
+        $1 = %reinterpret_cast(argp, $ltype);
     }
 };
 %typecheck(QL_TYPECHECK_ARRAY) Array {
@@ -99,13 +106,10 @@ bool extractArray(PyObject* source, Array* target) {
             Py_DECREF(o);
         }
     } else {
-        /* wrapped Array? */
-        Array* v;
-        if (SWIG_ConvertPtr($input,(void **) &v,
-                            $&1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $&descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 %typecheck(QL_TYPECHECK_ARRAY) const Array & {
@@ -123,19 +127,16 @@ bool extractArray(PyObject* source, Array* target) {
             Py_DECREF(o);
         }
     } else {
-        /* wrapped Array? */
-        Array* v;
-        if (SWIG_ConvertPtr($input,(void **) &v,
-                            $1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 
 
 
-%typemap(in) Matrix (Matrix* m) {
+%typemap(in) Matrix (Matrix* m, void *argp, int res = 0) {
     if (PyTuple_Check($input) || PyList_Check($input)) {
         Size rows, cols;
         rows = (PyTuple_Check($input) ?
@@ -162,8 +163,8 @@ bool extractArray(PyObject* source, Array* target) {
             PyObject* o = PySequence_GetItem($input,i);
             if (PyTuple_Check(o) || PyList_Check(o)) {
                 Size items = (PyTuple_Check(o) ?
-                                        PyTuple_Size(o) :
-                                        PyList_Size(o));
+                              PyTuple_Size(o) :
+                              PyList_Size(o));
                 if (items != cols) {
                     PyErr_SetString(PyExc_TypeError,
                         "Matrix must have equal-length rows");
@@ -193,11 +194,19 @@ bool extractArray(PyObject* source, Array* target) {
             }
         }
     } else {
-        SWIG_ConvertPtr($input,(void **) &m,$&1_descriptor,1);
-        $1 = *m;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $&descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
+        }
+        if (!argp) {
+            %argument_nullref("$type", $symname, $argnum);
+        } else {
+            $1 = *(%reinterpret_cast(argp, $&ltype));
+        }
     }
 };
-%typemap(in) const Matrix & (Matrix temp) {
+%typemap(in) const Matrix & (Matrix temp, void *argp = 0, int res = 0) {
     if (PyTuple_Check($input) || PyList_Check($input)) {
         Size rows, cols;
         rows = (PyTuple_Check($input) ?
@@ -257,7 +266,13 @@ bool extractArray(PyObject* source, Array* target) {
         }
         $1 = &temp;
     } else {
-        SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1);
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
+        }
+        if (!argp) { %argument_nullref("$type", $symname, $argnum); }
+        $1 = %reinterpret_cast(argp, $ltype);
     }
 };
 %typecheck(QL_TYPECHECK_MATRIX) Matrix {
@@ -266,12 +281,10 @@ bool extractArray(PyObject* source, Array* target) {
         $1 = 1;
     /* wrapped Matrix? */
     } else {
-        Matrix* m;
-        if (SWIG_ConvertPtr($input,(void **) &m,
-                            $&1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $&descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 %typecheck(QL_TYPECHECK_MATRIX) const Matrix & {
@@ -280,12 +293,10 @@ bool extractArray(PyObject* source, Array* target) {
         $1 = 1;
     /* wrapped Matrix? */
     } else {
-        Matrix* m;
-        if (SWIG_ConvertPtr($input,(void **) &m,
-                            $1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 #endif

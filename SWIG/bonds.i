@@ -43,6 +43,7 @@ using QuantLib::AmortizingFixedRateBond;
 using QuantLib::FloatingRateBond;
 using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
+using QuantLib::simplifyNotificationGraph;
 %}
 
 class BondPrice {
@@ -113,6 +114,8 @@ class Bond : public Instrument {
     Real settlementValue() const;
     Real settlementValue(Real cleanPrice) const;
 };
+
+void simplifyNotificationGraph(Bond& bond, bool unregisterCoupons = false);
 
 
 %inline %{
@@ -316,7 +319,9 @@ class AmortizingFixedRateBond : public Bond {
             const Period& exCouponPeriod = Period(),
             const Calendar& exCouponCalendar = Calendar(),
             const BusinessDayConvention exCouponConvention = Unadjusted,
-            bool exCouponEndOfMonth = false);
+            bool exCouponEndOfMonth = false,
+            const std::vector<Real>& redemptions = { 100.0 },
+            Natural paymentLag = 0);
     AmortizingFixedRateBond(
             Integer settlementDays,
             const Calendar& paymentCalendar,
@@ -368,7 +373,9 @@ class AmortizingFloatingRateBond : public Bond {
         const Period& exCouponPeriod = Period(),
         const Calendar& exCouponCalendar = Calendar(),
         const BusinessDayConvention exCouponConvention = Unadjusted,
-        bool exCouponEndOfMonth = false);
+        bool exCouponEndOfMonth = false,
+        const std::vector<Real>& redemptions = { 100.0 },
+        Natural paymentLag = 0);;
 };
 
 

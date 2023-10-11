@@ -1,9 +1,26 @@
 
-Changes for QuantLib-SWIG 1.31.1
-================================
+Main changes for QuantLib-SWIG 1.32
+===================================
 
-QuantLib-SWIG 1.31.1 is a bug-fix release for version 1.31.
+More details on the changes are available in ChangeLog.txt and at
+<https://github.com/lballabio/QuantLib-SWIG/milestone/25?closed=1>.
 
-It includes a change in the underlying C++ library that fixes a
-regression that could cause a segmentation fault when bootstrapping an
-interest-rate curve using OIS rates.
+- Avoid using the deprecated `distutils` module; `setuptools` is now
+  required for building (@lballabio).
+
+- Exported `LastFixingQuote`; thanks to Eugene Toder (@eltoder).
+
+- Added `redemptions` and `paymentLag` arguments to amortizing bond
+  constructors; thanks to Gyan Sinha (@gyansinha).
+
+- Exported utility function to simplify notification graph (@lballabio).
+
+- Exported a few exotic options (Margrabe, compound, chooser) and
+  related engines (@lballabio).
+
+- Exported new constructor for OIS (@lballabio).
+
+- Exported missing parameters for iterative bootstrap (@lballabio).
+
+- Exported Xoshiro256** RNG (@lballabio).
+
