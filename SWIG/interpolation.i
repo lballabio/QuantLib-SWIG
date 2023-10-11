@@ -78,6 +78,8 @@ make_safe_interpolation(LogParabolic,LogParabolic);
 make_safe_interpolation(MonotonicParabolic,MonotonicParabolic);
 make_safe_interpolation(MonotonicLogParabolic,MonotonicLogParabolic);
 
+make_safe_interpolation(LagrangeInterpolation,LagrangeInterpolation); 
+
 %define extend_spline(T)
 %extend Safe##T {
     Real derivative(Real x, bool extrapolate = false) {
