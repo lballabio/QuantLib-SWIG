@@ -20,7 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using ql = QuantLib;
+using QL = QuantLib;
 
 namespace TimesTest
 {
@@ -55,7 +55,7 @@ namespace TimesTest
 
         private static void RunTestCases()
         {
-            Action<string, IEnumerable<ql.Period>> writePeriods = (heading, periods2Write) =>
+            Action<string, IEnumerable<QL.Period>> writePeriods = (heading, periods2Write) =>
             {
                 Console.Write($"  {heading}:  ");
                 foreach (var item in periods2Write)
@@ -71,15 +71,15 @@ namespace TimesTest
                 if (!testResult) throw new TestCaseException();
             };
 
-            var tenorNull = null as ql.Period;
-            var tenor91D = new ql.Period("91D");
-            var tenor03M = new ql.Period("03M");
-            var tenor06M = new ql.Period("06M");
-            var tenor12M = new ql.Period("12M");
-            var tenor01Y = new ql.Period("01Y");
-            var tenor02Y = new ql.Period("02Y");
+            var tenorNull = null as QL.Period;
+            var tenor91D = new QL.Period("91D");
+            var tenor03M = new QL.Period("03M");
+            var tenor06M = new QL.Period("06M");
+            var tenor12M = new QL.Period("12M");
+            var tenor01Y = new QL.Period("01Y");
+            var tenor02Y = new QL.Period("02Y");
 
-            var periods = new List<ql.Period>() { tenor01Y, tenorNull, tenor02Y, tenor06M, tenor03M };
+            var periods = new List<QL.Period>() { tenor01Y, tenorNull, tenor02Y, tenor06M, tenor03M };
 
             Console.WriteLine("Testing sorting of a list.");
             writePeriods("Before sorting", periods);
