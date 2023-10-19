@@ -5,8 +5,8 @@ Main changes for QuantLib-SWIG 1.32
 More details on the changes are available in ChangeLog.txt and at
 <https://github.com/lballabio/QuantLib-SWIG/milestone/25?closed=1>.
 
-- Avoid using the deprecated `distutils` module; `setuptools` is now
-  required for building (@lballabio).
+- Avoid using the deprecated `distutils` module for the Python
+  wrappers; `setuptools` is now required for building (@lballabio).
 
 - Exported `LastFixingQuote`; thanks to Eugene Toder (@eltoder).
 
