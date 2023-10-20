@@ -208,7 +208,16 @@ class FixedRateBondKwargsTest(unittest.TestCase):
         )
         self.coupons = [0.05]
 
-    def check_construction(self, bond):
+    def testConstructor(self):
+        """ Testing FixedRateBond constructor with keyword arguments. """
+        bond = ql.FixedRateBond(
+            settlementDays=self.settlement_days,
+            schedule=self.sched,
+            paymentDayCounter=self.day_counter,
+            issueDate=self.issue_date,
+            coupons=self.coupons,
+            faceAmount=self.face_amount,
+        )
         self.assertTrue(type(bond) is ql.FixedRateBond)
         self.assertEqual(bond.dayCounter(), self.day_counter)
         self.assertEqual(bond.settlementDays(), self.settlement_days)
@@ -219,43 +228,6 @@ class FixedRateBondKwargsTest(unittest.TestCase):
         self.assertEqual(bond.notional(self.issue_date), 100.0)
         self.assertEqual(bond.notionals(), (100.0, 0))
 
-    def testFromRates(self):
-        """ Testing FixedRateBond from_rates method. """
-        bond = ql.FixedRateBond.from_rates(
-            settlementDays=self.settlement_days,
-            schedule=self.sched,
-            paymentDayCounter=self.day_counter,
-            issueDate=self.issue_date,
-            coupons=self.coupons,
-            faceAmount=self.face_amount,
-        )
-        self.check_construction(bond)
-
-    def testFromInterestRates(self):
-        """ Testing FixedRateBond from_interest_rates method. """
-        bond = ql.FixedRateBond.from_interest_rates(
-            settlementDays=self.settlement_days,
-            faceAmount=self.face_amount,
-            schedule=self.sched,
-            coupons=[ql.InterestRate(0.05, self.day_counter, ql.Continuous, ql.Annual)],
-            issueDate=self.issue_date,
-        )
-        self.check_construction(bond)
-
-    def testFromDateInfo(self):
-        """ Testing FixedRateBond from_interest_rates method. """
-        bond = ql.FixedRateBond.from_date_info(
-            settlementDays=self.settlement_days,
-            faceAmount=self.face_amount,
-            coupons=self.coupons,
-            issueDate=self.issue_date,
-            couponCalendar=ql.UnitedStates(ql.UnitedStates.GovernmentBond),
-            startDate=ql.Date(2, 1, 2010),
-            maturityDate=self.maturity_date,
-            tenor=ql.Period(3, ql.Months),
-            accrualDayCounter=self.day_counter,
-        )
-        self.check_construction(bond)
 
 class AmortizingFixedRateBondTest(unittest.TestCase):
     def test_interest_rates(self):
