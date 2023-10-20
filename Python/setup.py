@@ -202,7 +202,7 @@ py_limited_api = platform.python_implementation() == "CPython"
 
 setup(
     name="QuantLib",
-    version="1.36",
+    version="1.37-dev",
     description="Python bindings for the QuantLib library",
     long_description=long_description,
     long_description_content_type="text/x-rst",
