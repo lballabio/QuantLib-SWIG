@@ -208,7 +208,7 @@ classifiers = [
 ]
 
 setup(name             = "QuantLib",
-      version          = "1.33",
+      version          = "1.34-dev",
       description      = "Python bindings for the QuantLib library",
       long_description = """
 QuantLib (https://www.quantlib.org/) is a free/open-source C++ library

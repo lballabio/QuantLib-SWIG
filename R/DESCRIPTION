@@ -1,6 +1,6 @@
 Package: QuantLib
 Title: QuantLib bindings for R
-Version: 1.33
+Version: 1.34
 Date: $Date$
 Maintainer: Dirk Eddelbuettel <edd@debian.org>
 Author: The QuantLib Group
