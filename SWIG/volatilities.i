@@ -552,12 +552,6 @@ class SabrSmileSection : public SmileSection {
                      const DayCounter& dc = Actual365Fixed(),
                      Real shift = 0.0,
                      VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
-    SabrSmileSection(const Date& d,
-                     Rate forward,
-                     const std::vector<Real>& sabrParameters,
-                     const DayCounter& dc,
-                     Real shift = 0.0,
-                     VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
     SabrSmileSection(Time timeToExpiry,
                      Rate forward,
                      const std::vector<Real>& sabrParameters,
