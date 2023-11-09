@@ -361,7 +361,7 @@ class OvernightIndexedSwap : public Swap {
             const DayCounter& fixedDC,
             const ext::shared_ptr<OvernightIndex>& index,
             Spread spread = 0.0,
-            Natural paymentLag = 0,
+            Integer paymentLag = 0,
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
@@ -375,7 +375,7 @@ class OvernightIndexedSwap : public Swap {
             const DayCounter& fixedDC,
             const ext::shared_ptr<OvernightIndex>& index,
             Spread spread = 0.0,
-            Natural paymentLag = 0,
+            Integer paymentLag = 0,
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
@@ -390,7 +390,7 @@ class OvernightIndexedSwap : public Swap {
                          const Schedule& overnightSchedule,
                          const ext::shared_ptr<OvernightIndex>& overnightIndex,
                          Spread spread = 0.0,
-                         Natural paymentLag = 0,
+                         Integer paymentLag = 0,
                          BusinessDayConvention paymentAdjustment = Following,
                          const Calendar& paymentCalendar = Calendar(),
                          bool telescopicValueDates = false,
@@ -441,7 +441,7 @@ class MakeOIS {
         MakeOIS& withRule(DateGeneration::Rule r);
         MakeOIS& withPaymentFrequency(Frequency f);
         MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
-        MakeOIS& withPaymentLag(Natural lag);
+        MakeOIS& withPaymentLag(Integer lag);
         MakeOIS& withPaymentCalendar(const Calendar& cal);
         MakeOIS& withEndOfMonth(bool flag = true);
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
