@@ -35,6 +35,21 @@ class JointCalendarTest(unittest.TestCase):
             self.assertIn(holiday, joint_holidays)
 
 
+class ResetBespokeCalendarTest(unittest.TestCase):
+
+    def test_reset_added_holidays(self):
+        calendar = ql.BespokeCalendar("bespoke thing")
+
+        test_date: ql.Date = ql.Date(1, ql.January, 2024)
+        self.assertFalse(calendar.isHoliday(test_date))
+        calendar.addHoliday(test_date)
+        self.assertTrue(calendar.isHoliday(test_date))
+        # TODO: Can extend test with this, if exposed:
+        # self.assertEqual(len(calendar.addedHolidays()), 1)
+        calendar.resetAddedAndRemovedHolidays()
+        self.assertFalse(calendar.isHoliday(test_date))
+
+
 if __name__ == "__main__":
     print("testing QuantLib", ql.__version__)
     unittest.main(verbosity=2)
