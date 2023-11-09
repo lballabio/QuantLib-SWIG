@@ -210,7 +210,7 @@ class AmortizingFixedRateBond : public Bond {
             const BusinessDayConvention exCouponConvention = Unadjusted,
             bool exCouponEndOfMonth = false,
             const std::vector<Real>& redemptions = { 100.0 },
-            Natural paymentLag = 0);
+            Integer paymentLag = 0);
     Frequency frequency() const;
     DayCounter dayCounter() const;
 };
@@ -241,7 +241,7 @@ class AmortizingFloatingRateBond : public Bond {
         const BusinessDayConvention exCouponConvention = Unadjusted,
         bool exCouponEndOfMonth = false,
         const std::vector<Real>& redemptions = { 100.0 },
-        Natural paymentLag = 0);;
+        Integer paymentLag = 0);
 };
 
 
