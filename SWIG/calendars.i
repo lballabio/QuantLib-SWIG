@@ -90,6 +90,8 @@ class Calendar {
     bool isEndOfMonth(const Date&);
     void addHoliday(const Date&);
     void removeHoliday(const Date&);
+    void resetAddedAndRemovedHolidays();
+
     Date adjust(const Date& d,
                 BusinessDayConvention convention = QuantLib::Following);
     Date advance(const Date& d, Integer n, TimeUnit unit,
