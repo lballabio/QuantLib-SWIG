@@ -467,12 +467,11 @@ using QuantLib::ExponentialFittingHestonEngine;
 %shared_ptr(ExponentialFittingHestonEngine)
 class ExponentialFittingHestonEngine : public PricingEngine {
   public:
-    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV,
-                          AsymptoticChF, AngledContour, AngledContourNoCV, OptimalCV };
+    typedef AnalyticHestonEngine::ComplexLogFormula ControlVariate;
     
     ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model,
-        ControlVariate cv = AndersenPiterbargOptCV,
+        ControlVariate cv = ControlVariate::OptimalCV,
         doubleOrNull scaling = Null<Real>(),
         Real alpha = -0.5);
 };
