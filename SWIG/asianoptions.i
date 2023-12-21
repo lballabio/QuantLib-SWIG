@@ -22,6 +22,7 @@
 #define quantlib_asian_options_i
 
 %include options.i
+%include grid.i
 
 %{
 using QuantLib::Average;
