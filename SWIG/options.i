@@ -369,6 +369,8 @@ class AnalyticHestonEngine : public PricingEngine {
     };
 
     class Integration {
+      private:
+        Integration();
       public:
         static Integration gaussLaguerre    (Size integrationOrder = 128);
         static Integration gaussLegendre    (Size integrationOrder = 128);
