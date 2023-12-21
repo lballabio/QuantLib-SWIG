@@ -29,6 +29,7 @@
 %include common.i
 %include dividends.i
 %include exercise.i
+%include grid.i
 %include stochasticprocess.i
 %include instruments.i
 %include stl.i
