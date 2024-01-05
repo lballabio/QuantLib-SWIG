@@ -48,6 +48,8 @@ using QuantLib::SobolBrownianGenerator;
 using QuantLib::HaltonRsg;
 using QuantLib::SobolRsg;
 using QuantLib::SobolBrownianBridgeRsg;
+using QuantLib::Burley2020SobolRsg;
+using QuantLib::Burley2020SobolBrownianBridgeRsg;
 
 typedef QuantLib::LowDiscrepancy::ursg_type
     UniformLowDiscrepancySequenceGenerator;
@@ -210,6 +212,22 @@ class SobolRsg {
     }
 };
 
+class Burley2020SobolRsg {
+  public:
+    Burley2020SobolRsg(Size dimensionality,
+                       BigInteger seed = 42,
+                       SobolRsg::DirectionIntegers directionIntegers = QuantLib::SobolRsg::Jaeckel,
+                       BigInteger scrambleSeed = 43);
+    const Sample<std::vector<Real> >& nextSequence() const;
+    const Sample<std::vector<Real> >& lastSequence() const;
+    Size dimension() const;
+    %extend{
+      std::vector<unsigned int> nextInt32Sequence(){
+          return to_vector<unsigned int>($self->nextInt32Sequence());
+      }
+    }
+};
+
 
 class SobolBrownianBridgeRsg {
   public:
@@ -219,12 +237,21 @@ class SobolBrownianBridgeRsg {
     Size dimension() const;
 };
 
+class Burley2020SobolBrownianBridgeRsg {
+  public:
+    Burley2020SobolBrownianBridgeRsg(Size factors, Size steps);
+    const Sample<std::vector<Real> >&  nextSequence() const;
+    const Sample<std::vector<Real> >&  lastSequence() const;
+    Size dimension() const;
+};
+
+
 template<class RNG> class RandomSequenceGenerator {
   public:
     RandomSequenceGenerator(Size dimensionality,
                             const RNG& rng);
     RandomSequenceGenerator(Size dimensionality,
-                                BigNatural seed = 0);
+                            BigNatural seed = 0);
     const Sample<std::vector<Real> >& nextSequence() const;
     Size dimension() const;
 };
@@ -285,6 +312,8 @@ class InverseCumulativeRsg {
     InverseCumulativeRsg<HaltonRsg,MoroInverseCumulativeNormal>;
 %template(MoroInvCumulativeSobolGaussianRsg)
     InverseCumulativeRsg<SobolRsg,MoroInverseCumulativeNormal>;
+%template(MoroInvCumulativeBurley2020SobolGaussianRsg)
+    InverseCumulativeRsg<Burley2020SobolRsg,MoroInverseCumulativeNormal>;
 
 %template(InvCumulativeLecuyerGaussianRsg)
     InverseCumulativeRsg<RandomSequenceGenerator<LecuyerUniformRng>,
@@ -302,7 +331,9 @@ class InverseCumulativeRsg {
     InverseCumulativeRsg<HaltonRsg,InverseCumulativeNormal>;
 %template(InvCumulativeSobolGaussianRsg)
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal>;
-    
+%template(InvCumulativeBurley2020SobolGaussianRsg)
+    InverseCumulativeRsg<Burley2020SobolRsg,InverseCumulativeNormal>;
+
 class GaussianRandomSequenceGenerator {
   public:
     GaussianRandomSequenceGenerator(
