@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2008 Tito Ingargiola
- Copyright (C) 2010, 2012, 2018, 2019 Klaus Spanderen
+ Copyright (C) 2010, 2012, 2018, 2019, 2023 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2018, 2019 Matthias Lungwitz
@@ -29,14 +29,17 @@
 %include common.i
 %include dividends.i
 %include exercise.i
+%include grid.i
 %include stochasticprocess.i
 %include instruments.i
 %include stl.i
 %include linearalgebra.i
 %include calibratedmodel.i
-%include grid.i
 %include parameter.i
 %include vectors.i
+#if defined(SWIGCSHARP) || defined(SWIGPYTHON) 
+%include std_complex.i
+#endif
 
 // payoff
 
@@ -345,35 +348,39 @@ class PiecewiseTimeDependentHestonModel : public CalibratedModel {
 };
 
 
-
 %{
 using QuantLib::AnalyticHestonEngine;
 %}
 %rename (AnalyticHestonEngine_Integration) AnalyticHestonEngine::Integration;
+%rename (AnalyticHestonEngine_OptimalAlpha) AnalyticHestonEngine::OptimalAlpha;
+
 %shared_ptr(AnalyticHestonEngine)
 #if !defined(SWIGCSHARP)
 %feature ("flatnested") AnalyticHestonEngine::Integration;
+%feature ("flatnested") AnalyticHestonEngine::OptimalAlpha;
 #endif
 
 class AnalyticHestonEngine : public PricingEngine {
   public:
-    class Integration
-    {
-    public:
-        // non adaptive integration algorithms based on Gaussian quadrature
+    enum ComplexLogFormula {
+        Gatheral, BranchCorrection, AndersenPiterbarg,
+        AndersenPiterbargOptCV, AsymptoticChF, AngledContour, AngledContourNoCV,
+        OptimalCV
+    };
+
+    class Integration {
+      private:
+        Integration();
+      public:
         static Integration gaussLaguerre    (Size integrationOrder = 128);
         static Integration gaussLegendre    (Size integrationOrder = 128);
         static Integration gaussChebyshev   (Size integrationOrder = 128);
         static Integration gaussChebyshev2nd(Size integrationOrder = 128);
 
-        // for an adaptive integration algorithm Gatheral's version has to
-        // be used.Be aware: using a too large number for maxEvaluations might
-        // result in a stack overflow as the these integrations are based on
-        // recursive algorithms.
         static Integration gaussLobatto(Real relTolerance, Real absTolerance,
-                                        Size maxEvaluations = 1000);
+                                        Size maxEvaluations = 1000,
+                                        bool useConvergenceEstimate = false);
 
-        // usually these routines have a poor convergence behavior.
         static Integration gaussKronrod(Real absTolerance,
                                         Size maxEvaluations = 1000);
         static Integration simpson(Real absTolerance,
@@ -382,50 +389,57 @@ class AnalyticHestonEngine : public PricingEngine {
                                      Size maxEvaluations = 1000);
         static Integration discreteSimpson(Size evaluation = 1000);
         static Integration discreteTrapezoid(Size evaluation = 1000);
+        static Integration expSinh(Real relTolerance = 1e-8);
 
         static Real andersenPiterbargIntegrationLimit(
             Real c_inf, Real epsilon, Real v0, Real t);
 
-        Real calculate(Real c_inf,
-                       const ext::function<Real(Real)>& f,
-                       doubleOrNull maxBound = Null<Real>()) const;
-
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
-
-    private:
-      enum Algorithm
-        { GaussLobatto, GaussKronrod, Simpson, Trapezoid,
-          DiscreteTrapezoid, DiscreteSimpson,
-          GaussLaguerre, GaussLegendre,
-          GaussChebyshev, GaussChebyshev2nd };
-
-      Integration(Algorithm intAlgo,
-                const ext::shared_ptr<GaussianQuadrature>& quadrature);
-
-      Integration(Algorithm intAlgo,
-                const ext::shared_ptr<Integrator>& integrator);
     };
-    enum ComplexLogFormula { 
-        Gatheral, BranchCorrection, AndersenPiterbarg, 
-        AndersenPiterbargOptCV, AsymptoticChF, OptimalCV
+
+    class OptimalAlpha {
+      public:
+        %extend {
+            OptimalAlpha(
+                const Time t,
+                const ext::shared_ptr<AnalyticHestonEngine>& engine) {
+                    return new AnalyticHestonEngine::OptimalAlpha(t, engine.get());
+            }
+        }
+        Real operator()(Real strike) const;
+        std::pair<Real, Real> alphaGreaterZero(Real strike) const;
+        std::pair<Real, Real> alphaSmallerMinusOne(Real strike) const;
+
+        Size numberOfEvaluations() const;
+        Real M(Real k) const;
+        Real k(Real x, Integer sgn) const;
+        Real alphaMin(Real strike) const;
+        Real alphaMax(Real strike) const;
     };
+
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                          Real relTolerance,
                          Size maxEvaluations);
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
-                     ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
-                     Real andersenPiterbargEpsilon = 1e-8);
+                         ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
+                         Real andersenPiterbargEpsilon = 1e-8);
 
-    %extend {                     
+    Size numberOfEvaluations() const;
+#if defined(SWIGCSHARP) || defined(SWIGPYTHON)
+    std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
+    std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
+#else
+    %extend {
         std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
-            const std::complex<Real> tmp 
+            const std::complex<Real> tmp
                 = self->chF(std::complex<Real>(real, imag), t);
             return std::pair<Real, Real>(tmp.real(), tmp.imag());
         }
     }
+#endif
 };
 
 %{
@@ -446,13 +460,13 @@ using QuantLib::ExponentialFittingHestonEngine;
 %shared_ptr(ExponentialFittingHestonEngine)
 class ExponentialFittingHestonEngine : public PricingEngine {
   public:
-    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV,
-                          AsymptoticChF, OptimalCV };
+    typedef AnalyticHestonEngine::ComplexLogFormula ControlVariate;
     
     ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model,
-        ControlVariate cv = AndersenPiterbargOptCV,
-        doubleOrNull scaling = Null<Real>());
+        ControlVariate cv = ControlVariate::OptimalCV,
+        doubleOrNull scaling = Null<Real>(),
+        Real alpha = -0.5);
 };
 
 

@@ -42,9 +42,12 @@ using QuantLib::GaussChebyshevIntegration;
 using QuantLib::GaussChebyshev2ndIntegration;
 using QuantLib::GaussGegenbauerIntegration;
 using QuantLib::TanhSinhIntegral;
+using QuantLib::ExpSinhIntegral;
 %}
 
 %define INTEGRATION_METHODS
+	Size numberOfEvaluations() const;
+	
     %extend {
         #if defined(SWIGPYTHON)
         Real __call__(PyObject* pyFunction, Real a, Real b) {
@@ -178,12 +181,36 @@ class GaussGegenbauerIntegration: public GaussianQuadrature {
 
 class TanhSinhIntegral {
   public:
-    TanhSinhIntegral(
+    explicit TanhSinhIntegral(
         Real relTolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
         Size maxRefinements = 15,
         Real minComplement = std::numeric_limits<Real>::min() * 4
     );
     INTEGRATION_METHODS;
 };
+
+class ExpSinhIntegral {
+  public:
+    explicit ExpSinhIntegral(
+        Real relTolerance = std::sqrt(std::numeric_limits<Real>::epsilon()),
+        Size maxRefinements = 9
+    );
+    
+    %extend {
+        #if defined(SWIGPYTHON)
+        Real integrate(PyObject* pyFunction) {
+            UnaryFunction f(pyFunction);
+            return self->integrate(f);
+        }
+        #elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+        Real integrate(UnaryFunctionDelegate* f) {
+            return self->integrate(UnaryFunction(f));		
+        }
+        #endif
+    }
+
+    INTEGRATION_METHODS;
+};
+
 
 #endif

@@ -103,5 +103,11 @@ namespace QuantLib {
 
 }
 
+%{
+using QuantLib::yearFractionToDate;
+%}
+
+Date yearFractionToDate(
+    const DayCounter& dayCounter, const Date& referenceDate, Time t);
 
 #endif
