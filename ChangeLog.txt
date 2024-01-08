@@ -1,304 +1,248 @@
-commit 71ebe520b14e9ccdb3ed98e7abc71ee28474ef96
+commit 14d6885853693e60010c0cae983c5ae40172675b
+Merge: 6b3550d a282dc1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 19 Oct 2023 11:41:57 +0200
+Date:   Fri, 5 Jan 2024 21:45:52 +0100
 
-    Set version to 1.32 final
+    Export Burley 2020 Sobol generator (#604)
 
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit f57fd15616ad3701abab52313aa9db3bd2528011
+commit a282dc1f08d22149569006d6e5532ad8f9fbeee8
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 19 Oct 2023 11:23:07 +0200
+Date:   Fri, 5 Jan 2024 19:40:33 +0100
 
-    Update news
+    Export Burley 2020 Sobol generator
 
- News.md | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ SWIG/randomnumbers.i | 35 +++++++++++++++++++++++++++++++++--
+ 1 file changed, 33 insertions(+), 2 deletions(-)
 
-commit 2082d6d8c94bb1eb27fca6c6af368030898d944e
+commit 6b3550de89b02a2daf56e24545bea00ec95c57a5
+Merge: 51baf3b f456d98
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 13 Oct 2023 17:13:10 +0200
+Date:   Fri, 5 Jan 2024 12:39:37 +0100
 
-    Avoid warning in .Net 7.0
+    Allow different calendars and frequencies in OISRateHelper (#600)
 
- CSharp/examples/Times/Times.cs | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
-
-commit af25434fea781e188bc7910e4e0e3bfc4895775b
+commit f69bd4569c8b1de4b891fff89d352faecce60aca
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 4 Oct 2023 14:18:47 +0200
+Date:   Fri, 5 Jan 2024 11:38:53 +0100
 
-    Set version to 1.32 rc
+    Add typemap for optional<Frequency>
 
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ SWIG/date.i | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-commit 4999cf9c94274e429e4bfcc1d651f2a4e0127748
+commit 51baf3b94d93b9212b969718b3c79a98276502d9
+Merge: 9b338b7 9e7187b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 4 Oct 2023 11:28:30 +0200
+Date:   Fri, 5 Jan 2024 10:31:43 +0100
 
-    Update news and changelog
+    Export convex-monotone forward-rate curve (#603)
 
- ChangeLog.txt | 776 ++++++++++++----------------------------------------------
- News.md       |  29 ++-
- 2 files changed, 182 insertions(+), 623 deletions(-)
-
-commit 0eec1e1a6c38a086ecf2653d5be11b9f19407416
-Merge: cf9fb71 65aedc5
+commit 9e7187b55654428d0f1ed42f0c682ff5893d4315
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 14:32:36 +0200
+Date:   Fri, 5 Jan 2024 08:39:21 +0100
 
-    Export Xoshiro256** RNG (#590)
+    Export convex-monotone forward-rate curve
 
-commit cf9fb7116e42a3ca9a7b34aae61d6d5980afb520
-Merge: ade947c 206aee8
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 13:40:38 +0200
+ SWIG/piecewiseyieldcurve.i | 1 +
+ 1 file changed, 1 insertion(+)
 
-    Export missing parameters for iterative bootstrap (#589)
+commit 9b338b79e914475fc2c8d10ba32576bb379ae59c
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Thu, 21 Dec 2023 10:36:26 +0000
 
-commit ade947cfcf1f2bf77de628ac29f5f98d69859516
-Merge: 881eeab c3700bc
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 13:14:14 +0200
+    Update copyright list in license
 
-    Export new constructor for OIS (#588)
-
-commit 65aedc528cfa0bb24c86ec2447c53a4c4aa75a5e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 12:56:19 +0200
-
-    Export Xoshiro256** RNG
-
- SWIG/randomnumbers.i | 30 ++++++++++++++++++++++++------
- 1 file changed, 24 insertions(+), 6 deletions(-)
-
-commit 206aee80356bc68512ba5e8af1858370d48ace19
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 12:34:11 +0200
-
-    Export missing parameters for iterative bootstrap
-
- SWIG/piecewiseyieldcurve.i | 38 +++++++++++++++++++++++++++++++-------
- 1 file changed, 31 insertions(+), 7 deletions(-)
-
-commit 881eeab47e7926aa3c187384977e1fd9ff6bd03d
-Merge: 21d355c 2e93c4d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 12:33:35 +0200
-
-    Export a few exotic options (Margrabe, compound, chooser) and related engines (#587)
-
-commit c3700bc3ab83d2f5407d89a6169eb4073ee0c974
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 12:12:15 +0200
-
-    Export new constructor for OIS
-
- SWIG/swap.i | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-commit 21d355caed3410c360f1207a423f51c626380ca3
-Merge: 81fe511 47a058c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 12:07:54 +0200
-
-    Export utility function to simplify notification graph (#586)
-
-commit 2e93c4d2adbfb7a6129fbb4753034ca3f59d1868
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 11:36:47 +0200
-
-    Add some exotic options
-
- SWIG/options.i | 98 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 98 insertions(+)
-
-commit 47a058cf82fdbd4a1ace86426610dd868e4eb4a6
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 3 Oct 2023 11:01:42 +0200
-
-    Export utility function to simplify notification graph
-
- SWIG/bonds.i | 3 +++
- SWIG/swap.i  | 4 ++++
- 2 files changed, 7 insertions(+)
-
-commit 81fe5112ba7f6f532b4abcaf4902caad052d25cd
-Merge: 5fed0b8 5a41d2e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 24 Sep 2023 20:36:08 +0200
-
-    added redemption and paymentLag args to amortizingbond signatures (#584)
-
-commit 5a41d2ee76f42ecb9e104ab852252b82820c1f80
-Author: Gyan Sinha <gyanorama@gmail.com>
-Date:   Sun, 24 Sep 2023 08:52:09 -0400
-
-    added redemption and paymentLag args to amortizingbond signatures
-
- SWIG/bonds.i | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-commit 5fed0b85cadf29b685d21f474551918a1788a08f
-Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 18 Sep 2023 18:26:25 +0000
-
-    Bump docker/login-action from 2 to 3
-    
-    Bumps [docker/login-action](https://github.com/docker/login-action) from 2 to 3.
-    - [Release notes](https://github.com/docker/login-action/releases)
-    - [Commits](https://github.com/docker/login-action/compare/v2...v3)
-    
-    ---
-    updated-dependencies:
-    - dependency-name: docker/login-action
-      dependency-type: direct:production
-      update-type: version-update:semver-major
-    ...
-    
-    Signed-off-by: dependabot[bot] <support@github.com>
-
- .github/workflows/devenv-images.yml | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-commit 2458dd022acbc9eb0499e8a03fb0e15638783a3b
-Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 4 Sep 2023 18:22:30 +0000
-
-    Bump actions/checkout from 3 to 4
-    
-    Bumps [actions/checkout](https://github.com/actions/checkout) from 3 to 4.
-    - [Release notes](https://github.com/actions/checkout/releases)
-    - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
-    - [Commits](https://github.com/actions/checkout/compare/v3...v4)
-    
-    ---
-    updated-dependencies:
-    - dependency-name: actions/checkout
-      dependency-type: direct:production
-      update-type: version-update:semver-major
-    ...
-    
-    Signed-off-by: dependabot[bot] <support@github.com>
-
- .github/workflows/copyrights.yml    |  2 +-
- .github/workflows/devenv-images.yml | 10 +++++-----
- .github/workflows/linux.yml         |  2 +-
- .github/workflows/misspell.yml      |  2 +-
- .github/workflows/namespaces.yml    |  2 +-
- 5 files changed, 9 insertions(+), 9 deletions(-)
-
-commit 7760d2e4b457a3fffb0f8374ed37c40433e84d61
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 28 Aug 2023 19:07:36 +0200
-
-    Rename CI build for python
-
- .ci/{python3.build => python.build}     | 0
- .ci/{python3.check => python.check}     | 0
- .ci/{python3.install => python.install} | 0
- .github/workflows/linux.yml             | 2 +-
- 4 files changed, 1 insertion(+), 1 deletion(-)
-
-commit a67faf68db394ccf9fa1edfd9d8f6dbc9bfd6ad6
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 28 Aug 2023 19:45:40 +0200
-
-    Fix checkout location in devenv workflow
-
- .github/workflows/devenv-images.yml | 2 +-
+ LICENSE.TXT | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit a76baeadf30b287751eb4df7f21c200e89a0d307
+commit 5a99cf17ab29fccff39f784cfb917ab7c7f6ec50
+Merge: f6a7d43 e96ecf0
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 28 Aug 2023 19:41:05 +0200
+Date:   Thu, 21 Dec 2023 11:36:13 +0100
 
-    Clean up base dockerfile
+    SWIG changes for PR#1826, Heston Model: Support for Angled Contour Shift Integrals (#596)
 
- dockerfiles/ci.base.Dockerfile | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-commit 8a5ca9096a498f27aaab21503fedfc93684700ec
+commit e96ecf0519e96d82b19fcd517d33403d939a5c91
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 28 Aug 2023 18:56:06 +0200
+Date:   Thu, 21 Dec 2023 11:14:33 +0100
 
-    Add workflow and dockerfiles to build images for CI build
+    Prevent generating non-existing constructor
 
- .github/workflows/devenv-images.yml  | 89 ++++++++++++++++++++++++++++++++++++
- dockerfiles/ci.base.Dockerfile       | 27 +++++++++++
- dockerfiles/ci.csharp.Dockerfile     |  7 +++
- dockerfiles/ci.default.Dockerfile    | 13 ++++++
- dockerfiles/ci.java.Dockerfile       |  9 ++++
- dockerfiles/ci.python.Dockerfile     |  8 ++++
- dockerfiles/ci.r.Dockerfile          |  9 ++++
- dockerfiles/ci.scala.Dockerfile      |  9 ++++
- dockerfiles/ci.threadsafe.Dockerfile | 13 ++++++
- 9 files changed, 184 insertions(+)
+ SWIG/options.i | 2 ++
+ 1 file changed, 2 insertions(+)
 
-commit b999a2999d933a3adaeec9717fce8f3771ff9d1a
-Merge: 1560c21 0dc67c2
+commit f00a4c602edaf7074e76d806ca38cd079797a395
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 14 Aug 2023 10:28:24 +0200
+Date:   Thu, 21 Dec 2023 10:08:28 +0100
 
-    Update default typemap code in custom typemaps for `Matrix` and `Array` (#579)
-
-commit 0dc67c2cd03e396a0688d7524ff1a2ce51cfdfae
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 13 Aug 2023 22:04:10 +0200
-
-    Update default typemap code in bespoke typemaps
+    Fix error on Java
     
-    This avoids memory leaks in the old code.
+    Inner classes need to be declared before they're used
 
- SWIG/date.i          |  34 ++++++++++-------
- SWIG/linearalgebra.i | 103 ++++++++++++++++++++++++++++-----------------------
- 2 files changed, 78 insertions(+), 59 deletions(-)
+ SWIG/options.i | 134 ++++++++++++++++++++++++++-------------------------------
+ 1 file changed, 62 insertions(+), 72 deletions(-)
 
-commit 1560c21f07f28b61b0897bab7f0fa0be63c74c72
-Merge: 1a18fe2 e1a77ab
+commit d2d80f7ce5ac128448bbd5486a88701ba3af348e
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 28 Jul 2023 22:42:57 +0200
+Date:   Thu, 21 Dec 2023 08:52:47 +0100
 
-    Avoid using the deprecated `distutils` module; `setuptools` is now required for building (#577)
+    Add missing inclusions
 
-commit e1a77abbcc354cf78ff7d6e76dc452cae6027d55
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 28 Jul 2023 12:50:53 +0200
+ SWIG/asianoptions.i | 1 +
+ SWIG/options.i      | 1 +
+ 2 files changed, 2 insertions(+)
 
-    Avoid using the deprecated distutils module; setuptools is now required
+commit fb65c39dda32b54c2be790afb1cbafc70c576224
+Author: klaus spanderen <klaus@spanderen.de>
+Date:   Sun, 17 Dec 2023 18:38:31 +0100
 
- Python/README.txt  | 15 +++++++++------
- Python/setup.py    | 21 +++++++++------------
- Python/setup.py.in | 21 +++++++++------------
- 3 files changed, 27 insertions(+), 30 deletions(-)
+    eliminate separate enum
 
-commit 1a18fe255fffada71037262f05f1689cc51b4dda
-Merge: 7bd28bd dbadff1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 24 Jul 2023 12:37:55 +0200
+ SWIG/options.i | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-    Expose LastFixingQuote (#576)
+commit f6a7d43603afbcc47cf1cbb2ff2727c78bd3abb2
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 11 Dec 2023 18:46:45 +0000
 
-commit dbadff151e3c6352c079fac887137a219ca7f76e
+    Bump actions/stale from 8 to 9
+    
+    Bumps [actions/stale](https://github.com/actions/stale) from 8 to 9.
+    - [Release notes](https://github.com/actions/stale/releases)
+    - [Changelog](https://github.com/actions/stale/blob/main/CHANGELOG.md)
+    - [Commits](https://github.com/actions/stale/compare/v8...v9)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/stale
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/stale.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit d08a20ee1d343e4063075953b73e4ae2103f04df
 Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 21 Jul 2023 18:04:28 -0400
+Date:   Sat, 2 Dec 2023 07:09:03 -0500
 
-    Expose LastFixingQuote
+    Allow different calendars and frequencies in OISRateHelper
+    
+    Allow setting different calendars and payment frequencies for fixed and
+    overnight legs.
 
- SWIG/marketelements.i | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+ SWIG/ratehelpers.i | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-commit 44d476465e5b1f020f098eed9d5f59edf9c4ad8b
+commit 5babd27f2683dd798222b376f17edfe8ebf99596
+Merge: 0dba37c 403e8bd
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 18 Jan 2022 11:02:58 +0100
+Date:   Thu, 9 Nov 2023 17:29:04 +0100
 
-    Set version to 1.32-dev.
+    Change payment lag from Naturals to Ints (#598)
+
+commit 0dba37cf99ed25f5eff00979f684e75003ac69b0
+Merge: 84e1c52 995bdd4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 9 Nov 2023 15:23:27 +0100
+
+    Expose `reset` function in calendar base class (#597)
+
+commit 995bdd4fe356ce559e80dc69d9880e76a08d5011
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Thu, 9 Nov 2023 12:21:50 +0100
+
+    Expose `resetAddedAndRemovedHolidays` for calendar
+
+ Python/test/test_calendars.py | 15 +++++++++++++++
+ SWIG/calendars.i              |  2 ++
+ 2 files changed, 17 insertions(+)
+
+commit 403e8bd723f01988cf6b842350c79b603feb63bf
+Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
+Date:   Thu, 9 Nov 2023 12:16:36 +0100
+
+    Change payment lag from Naurals to Ints
+
+ SWIG/bonds.i       |  4 ++--
+ SWIG/cashflows.i   | 16 ++++++++--------
+ SWIG/ratehelpers.i |  4 ++--
+ SWIG/swap.i        |  8 ++++----
+ 4 files changed, 16 insertions(+), 16 deletions(-)
+
+commit 4a1d510abefcf879eb8cab5f16fb4147e5169f82
+Author: klaus spanderen <klaus@spanderen.de>
+Date:   Mon, 6 Nov 2023 22:52:11 +0100
+
+    make constructor explicit
+
+ SWIG/integrals.i | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 84e1c52af3f726b16654ca19df1c20d7d41dd183
+Merge: 8eeed9b d96b955
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 20 Oct 2023 22:08:48 +0200
+
+    Avoid features deprecated in version 1.28 and removed in 1.33 (#593)
+
+commit 8eeed9b624f55b8192e89c292677840afc33cdaf
+Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+Date:   Fri, 20 Oct 2023 13:24:21 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit f2ce94460fba41c0800139170e74273025bee34d
+Merge: 2a70b4c dbe9a48
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 20 Oct 2023 15:24:10 +0200
+
+    Add tests for ql.BondFunctions.* (#592)
+
+commit d96b955bccb50534e86ae59fb9ebce58ec4f7e65
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 20 Oct 2023 12:16:11 +0200
+
+    Avoid features deprecated in version 1.28 and removed in 1.33
+
+ Python/test/test_bonds.py |  48 ++++-----------
+ SWIG/bonds.i              | 150 ++--------------------------------------------
+ SWIG/volatilities.i       |   6 --
+ 3 files changed, 14 insertions(+), 190 deletions(-)
+
+commit 2a70b4c2a11dd3f2be0148643374abd0ab4db131
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 20 Oct 2023 11:34:41 +0200
+
+    Set version to 1.33-dev
 
  Python/setup.py | 2 +-
  R/DESCRIPTION   | 2 +-
  configure.ac    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit dbe9a484142577ddad970379867927a44f3fd5ac
+Author: Francois Botha <igitur@gmail.com>
+Date:   Wed, 18 Oct 2023 14:50:59 +0200
+
+    Add tests for ql.BondFunctions.*
+
+ Python/test/test_bondfunctions.py | 232 ++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 232 insertions(+)
+
+commit 0448ac9055765af678d22cde159706b45b3d2746
+Author: klaus spanderen <klaus@spanderen.de>
+Date:   Wed, 11 Oct 2023 22:42:16 +0200
+
+    Heston update
+
+ SWIG/daycounters.i   |   6 +++
+ SWIG/integrals.i     |  27 ++++++++++
+ SWIG/interpolation.i |   2 +
+ SWIG/options.i       | 144 +++++++++++++++++++++++++++++----------------------
+ 4 files changed, 118 insertions(+), 61 deletions(-)

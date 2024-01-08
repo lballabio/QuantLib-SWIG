@@ -1,26 +1,25 @@
 
-Main changes for QuantLib-SWIG 1.32
+Main changes for QuantLib-SWIG 1.33
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/25?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/26?closed=1>.
 
-- Avoid using the deprecated `distutils` module for the Python
-  wrappers; `setuptools` is now required for building (@lballabio).
+- Exported Burley 2020 Sobol generator (@lballabio).
 
-- Exported `LastFixingQuote`; thanks to Eugene Toder (@eltoder).
+- Allowed different calendars and frequencies for different legs in
+  `OISRateHelper`; thanks to Eugene Toder (@eltoder).
 
-- Added `redemptions` and `paymentLag` arguments to amortizing bond
-  constructors; thanks to Gyan Sinha (@gyansinha).
+- Exported convex-monotone forward-rate curve (@lballabio).
 
-- Exported utility function to simplify notification graph (@lballabio).
+- Exported support for angled contour shift integrals in Heston model;
+  thanks to Klaus Spanderen (@klausspanderen).
 
-- Exported a few exotic options (Margrabe, compound, chooser) and
-  related engines (@lballabio).
+- Allowed negative payment lag in swap legs; thanks to Fredrik Gerdin
+  Börjesson (@gbfredrik).
 
-- Exported new constructor for OIS (@lballabio).
+- Exported `reset` method in calendars; thanks to Fredrik Gerdin
+  Börjesson (@gbfredrik).
 
-- Exported missing parameters for iterative bootstrap (@lballabio).
-
-- Exported Xoshiro256** RNG (@lballabio).
-
+- Added Python tests for `BondFunctions`; thanks to Francois Botha
+  (@igitur).
