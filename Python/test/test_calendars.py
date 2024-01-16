@@ -29,18 +29,17 @@ class JointCalendarTest(unittest.TestCase):
         end_date = ql.Date(31, ql.December, 2023)
 
         joint_holidays = set(joint_nordics.holidayList(start_date, end_date))
-        base_holidays = [calendar.holidayList(start_date, end_date) for calendar in base_calendars]
-        base_holidays = set(itertools.chain.from_iterable(base_holidays))
-        for holiday in base_holidays:
-            self.assertIn(holiday, joint_holidays)
+        base_holidays = set(itertools.chain.from_iterable(
+            calendar.holidayList(start_date, end_date) for calendar in base_calendars
+        ))
+        self.assertEqual(joint_holidays, base_holidays)
 
 
-class ResetBespokeCalendarTest(unittest.TestCase):
+class BespokeCalendarTest(unittest.TestCase):
 
     def test_reset_added_holidays(self):
         calendar = ql.BespokeCalendar("bespoke thing")
-
-        test_date: ql.Date = ql.Date(1, ql.January, 2024)
+        test_date = ql.Date(1, ql.January, 2024)
         self.assertFalse(calendar.isHoliday(test_date))
         calendar.addHoliday(test_date)
         self.assertTrue(calendar.isHoliday(test_date))

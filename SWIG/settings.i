@@ -62,5 +62,26 @@ class Settings {
     #endif
 };
 
+#if defined(SWIGPYTHON)
+%{
+class _SavedSettings {
+    ext::optional<QuantLib::SavedSettings> saved_;
+  public:
+    void __enter__() {
+        saved_.emplace();
+    }
+    void __exit__(PyObject*, PyObject*, PyObject*) {
+        saved_.reset();
+    }
+};
+%}
+
+%rename(SavedSettings) _SavedSettings;
+class _SavedSettings {
+  public:
+    void __enter__();
+    void __exit__(PyObject*, PyObject*, PyObject*);
+};
+#endif
 
 #endif
