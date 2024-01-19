@@ -1,3 +1,42 @@
+commit d47205c9603c8539e58e3eccd96cae38f1cbe6d6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Oct 2023 11:41:57 +0200
+
+    Set version to 1.33 final
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f2ff537e22ba7388264fa114a7662b48bc9fe452
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 12 Jan 2024 13:36:29 +0100
+
+    Update test results
+
+ Python/test/test_bonds.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit a5618dd568ffb8bc69717ebf1bd7960d85186896
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 14:18:47 +0200
+
+    Set version to 1.33 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit a0df937f61e03287a2ad59e7f36a296949aeb5b9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jan 2024 13:13:07 +0100
+
+    Update news and changelog
+
+ ChangeLog.txt | 366 +++++++++++++++++++++++++---------------------------------
+ News.md       |  29 +++--
+ 2 files changed, 169 insertions(+), 226 deletions(-)
+
 commit 14d6885853693e60010c0cae983c5ae40172675b
 Merge: 6b3550d a282dc1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
