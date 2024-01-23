@@ -61,7 +61,7 @@ object CPIBond {
                                        DateGeneration.Rule.Backward, false)
         
         val cpiTS = new RelinkableZeroInflationTermStructureHandle
-        val inflationIndex = new UKRPI(false, cpiTS)
+        val inflationIndex = new UKRPI(cpiTS)
         val fixData = Array(206.1, 207.3, 208.0, 208.9, 209.7, 210.9,
                             209.8, 211.4, 212.1, 214.0, 215.1, 216.8,
                             216.5, 217.2, 218.4, 217.7, 216,
