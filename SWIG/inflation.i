@@ -150,7 +150,6 @@ class InflationIndex : public Index {
     std::string familyName() const;
     Region region() const;
     bool revised() const;
-    bool interpolated() const;
     Frequency frequency() const;
     Period availabilityLag() const;
     Currency currency() const;
@@ -162,14 +161,6 @@ class ZeroInflationIndex : public InflationIndex {
       ZeroInflationIndex(const std::string& familyName,
                          const Region& region,
                          bool revised,
-                         Frequency frequency,
-                         const Period& availabilityLag,
-                         const Currency& currency,
-                         const Handle<ZeroInflationTermStructure>& h = {});
-      ZeroInflationIndex(const std::string& familyName,
-                         const Region& region,
-                         bool revised,
-                         bool interpolated,
                          Frequency frequency,
                          const Period& availabilityLag,
                          const Currency& currency,
@@ -215,6 +206,7 @@ class YoYInflationIndex : public InflationIndex {
                       const Currency& currency,
                       const Handle<YoYInflationTermStructure>& ts = {});
     bool ratio() const;
+    bool interpolated() const;
     ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
     Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
     ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
@@ -228,8 +220,6 @@ using QuantLib::Name;
 class Name : public ZeroInflationIndex {
   public:
     Name(const Handle<ZeroInflationTermStructure>& h = {});
-    Name(bool interpolated,
-         const Handle<ZeroInflationTermStructure>& h = {});
 };
 %enddef
 
@@ -283,10 +273,6 @@ class AUCPI : public ZeroInflationIndex {
   public:
     AUCPI(Frequency frequency,
           bool revised,
-          const Handle<ZeroInflationTermStructure>& h = {});
-    AUCPI(Frequency frequency,
-          bool revised,
-          bool interpolated,
           const Handle<ZeroInflationTermStructure>& h = {});
 };
 

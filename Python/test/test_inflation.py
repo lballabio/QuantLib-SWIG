@@ -89,9 +89,8 @@ def build_nominal_term_structure(
 
 def build_hicp_index(
         fixing_data,
-        inflation_crv_handle,
-        interpolated=False):
-    index = ql.EUHICP(interpolated, inflation_crv_handle)
+        inflation_crv_handle):
+    index = ql.EUHICP(inflation_crv_handle)
     for x in fixing_data:
         # force override in case of multiple use
         index.addFixing(x[0], x[1], True)
@@ -288,91 +287,6 @@ class InflationTest(unittest.TestCase):
             second=expected_inflation_leg_payment,
             delta=EPSILON,
             msg=fail_msg)
-
-    def test_swap_base_fixing_linear_indexation_without_seasonality(self):
-        """Testing swap base fixing for linear indexation"""
-
-        inflation_idx = build_hicp_index(
-            EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
-        inflation_ts = build_inflation_term_structure(
-            VALUATION_DATE,
-            EUR_BEI_SWAP_RATES,
-            inflation_idx,
-            ql.CPI.Linear,
-            self.nominal_ts_handle)
-        self.inflation_ts_handle.linkTo(inflation_ts)
-
-        zciis = create_inflation_swap(
-            inflation_idx,
-            ql.Date(24, ql.August, 2018),
-            ql.Date(24, ql.August, 2023),
-            0.032,
-            ql.CPI.Linear)
-        zciis.setPricingEngine(self.discount_engine)
-
-        inflation_cf = ql.as_indexed_cashflow(
-            zciis.inflationLeg()[0])
-
-        swap_base_dt = inflation_cf.baseDate()
-        swap_base_fixing = inflation_idx.fixing(swap_base_dt)
-        expected_swap_base_index = interpolate_historic_index(
-            inflation_idx, swap_base_dt)
-
-        fail_msg = """ Failed to replicate inflation swap base index fixing
-                       for linear indexation:
-                            index: {inflation_idx}
-                            end date: {end_date}
-                            observation lag: {observation_lag}
-                            base index fixing: {base_index}
-                            replicated base index fixing: {expected_base_index}
-                            tolerance: {tolerance}
-                   """.format(inflation_idx=inflation_idx.familyName(),
-                              end_date=zciis.maturityDate(),
-                              observation_lag=OBSERVATION_LAG,
-                              base_index=swap_base_fixing,
-                              expected_base_index=expected_swap_base_index,
-                              tolerance=EPSILON)
-        self.assertAlmostEqual(
-            first=swap_base_fixing,
-            second=expected_swap_base_index,
-            delta=EPSILON,
-            msg=fail_msg)
-
-    def test_inflation_curve_base_fixing(self):
-        """Testing inflation curve base fixing for linear indexation"""
-
-        inflation_idx = build_hicp_index(
-            EU_FIXING_DATA, self.inflation_ts_handle, interpolated=True)
-        inflation_ts = build_inflation_term_structure(
-            VALUATION_DATE,
-            EUR_BEI_SWAP_RATES,
-            inflation_idx,
-            ql.CPI.Linear,
-            self.nominal_ts_handle)
-        self.inflation_ts_handle.linkTo(inflation_ts)
-
-        curve_base_dt = inflation_ts.baseDate()
-        curve_base_fixing = inflation_idx.fixing(curve_base_dt)
-        expected_curve_base_fixing = interpolate_historic_index(
-            inflation_idx, curve_base_dt)
-
-        fail_msg = """ Failed to replicate inflation curve base index fixing
-                       for linear indexation:
-                            index: {inflation_idx}
-                            inflation curve base date : {base_date}
-                            inflation curve base fixing: {base_fixing}
-                            expected base fixing: {expected_base_fixing}
-                            tolerance: {tolerance}
-                   """.format(inflation_idx=inflation_idx.familyName(),
-                              base_date=curve_base_dt,
-                              base_fixing=curve_base_fixing,
-                              expected_base_fixing=expected_curve_base_fixing,
-                              tolerance=EPSILON)
-        self.assertAlmostEqual(
-            first=curve_base_fixing,
-            second=expected_curve_base_fixing,
-            msg=fail_msg,
-            delta=EPSILON)
 
     def test_lagged_fixing_method(self):
         """Testing lagged fixing method"""
