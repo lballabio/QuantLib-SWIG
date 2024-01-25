@@ -49,7 +49,21 @@ class TimeSeries {
     }
     std::vector<Date> dates();
     std::vector<T> values();
+    Date firstDate();
+    Date lastDate();
     Size size();
+    #if defined(SWIGPYTHON)
+    %extend {
+        bool __nonzero__() {
+            return !self->empty();
+        }
+        bool __bool__() {
+            return !self->empty();
+        }
+    }
+    #else
+    bool empty();
+    #endif
     %extend {
         #if defined(SWIGPYTHON) || defined(SWIGR)
         T __getitem__(const Date& d) {
