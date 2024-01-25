@@ -416,8 +416,11 @@ using QuantLib::DateParser;
 %}
 
 #if defined(SWIGPYTHON)
-%pythoncode %{
-import datetime as _datetime
+%{
+#include <datetime.h>
+%}
+%init %{
+    PyDateTime_IMPORT;
 %}
 #endif
 
@@ -757,18 +760,17 @@ class Date {
         bool __ne__(const Date& other) {
             return *self != other;
         }
+        PyObject* to_date() {
+            return PyDate_FromDate(self->year(), self->month(), self->dayOfMonth());
+        }
+        static Date from_date(PyObject* date) {
+            if (!PyDate_Check(date))
+                throw std::invalid_argument("from_date requires a date");
+            return Date(PyDateTime_GET_DAY(date), Month(PyDateTime_GET_MONTH(date)),
+                        PyDateTime_GET_YEAR(date));
+        }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def to_date(self):
-        return _datetime.date(self.year(), self.month(), self.dayOfMonth())
-
-    @staticmethod
-    def from_date(date):
-        return Date(date.day, date.month, date.year)
-    %}
-    #endif
 
     #if defined(SWIGJAVA)
     %proxycode %{
