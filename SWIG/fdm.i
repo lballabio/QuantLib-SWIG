@@ -412,8 +412,9 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 
         QL_ENSURE(pyResult != NULL,
                   "failed to call size() on Python object");
+        QL_ENSURE(PyLong_Check(pyResult), "size() is not an int");
 
-        Size result = PyInt_AsLong(pyResult);
+        Size result = PyLong_AsLong(pyResult);
         Py_XDECREF(pyResult);
         
         return result;    
@@ -476,21 +477,14 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
   private:
-    Array apply(const Array& r, const std::string& methodName) const {
+    Array apply(const Array& r, const char* methodName) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-            
-#if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
-        std::vector<char> cstr(
-            methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
+
         PyObject* pyResult 
-            = PyObject_CallMethod(callback_, &cstr[0], "O", pyArray);
-#else
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, methodName.c_str(), "O", pyArray);
-#endif            
-        Py_XDECREF(pyArray); 
-        
+            = PyObject_CallMethod(callback_, methodName, "O", pyArray);
+
+        Py_DECREF(pyArray);
         return extractArray(pyResult, methodName);        
     }
 
@@ -1251,21 +1245,14 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
     }
     
   private: 
-      Real getValue(const FdmLinearOpIterator& iter, Time t, const std::string& methodName) {
+      Real getValue(const FdmLinearOpIterator& iter, Time t, const char* methodName) {
         PyObject* pyIter = SWIG_NewPointerObj(
             SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, 0);
 
-#if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
-        std::vector<char> cstr(
-            methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
         PyObject* pyResult 
-            = PyObject_CallMethod(callback_, &cstr[0], "Od",pyIter, t);
-#else
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, methodName.c_str(), "Od", pyIter, t);
-#endif            
-            
-        Py_XDECREF(pyIter);
+            = PyObject_CallMethod(callback_, methodName, "Od", pyIter, t);
+
+        Py_DECREF(pyIter);
 
         QL_ENSURE(pyResult != NULL, "failed to call innerValue function on Python object");
 

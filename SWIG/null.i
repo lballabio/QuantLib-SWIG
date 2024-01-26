@@ -38,20 +38,20 @@ double nullDouble() { return Null<double>(); }
 %typemap(in) intOrNull {
     if ($input == Py_None)
         $1 = Null<int>();
-    else if (PyInt_Check($input))
-        $1 = int(PyInt_AsLong($input));
+    else if (PyLong_Check($input))
+        $1 = int(PyLong_AsLong($input));
     else
-        SWIG_exception(SWIG_TypeError,"int expected");
+        SWIG_exception(SWIG_TypeError, "int expected");
 }
 %typecheck(SWIG_TYPECHECK_INTEGER) intOrNull {
-    $1 = ($input == Py_None || PyInt_Check($input)) ? 1 : 0;
+    $1 = ($input == Py_None || PyLong_Check($input)) ? 1 : 0;
 }
 %typemap(out) intOrNull {
     if ($1 == Null<int>()) {
         Py_INCREF(Py_None);
         $result = Py_None;
     } else {
-        $result = PyInt_FromLong(long($1));
+        $result = PyLong_FromLong($1);
     }
 }
 

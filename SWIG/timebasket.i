@@ -64,7 +64,6 @@ class TimeBasket {
             return self->hasDate(d);
         }
         PyObject* __iter__() {
-            %#if PY_VERSION_HEX >= 0x02020000
             PyObject* keyList = PyList_New(self->size());
             TimeBasket::iterator i;
             Size j;
@@ -77,11 +76,7 @@ class TimeBasket {
             PyObject* iter = PyObject_GetIter(keyList);
             Py_DECREF(keyList);
             return iter;
-            %#else
-            throw std::runtime_error("Python 2.2 or later is needed"
-                                     " for iterator support");
-            %#endif
-            }
+        }
         #endif
     }
 };
