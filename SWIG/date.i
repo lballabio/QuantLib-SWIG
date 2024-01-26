@@ -329,6 +329,7 @@ class Period {
         Period __mul__(Integer n) {
             return *self * n;
         }
+        #endif
         #if defined(SWIGPYTHON)
         Period __rmul__(Integer n) {
             return *self * n;
@@ -346,8 +347,19 @@ class Period {
             return !(*self < other);
         }
         #endif
+        #if defined(SWIGPYTHON) || defined(SWIGR) || defined(SWIGJAVA)
         bool __eq__(const Period& other) {
             return *self == other;
+        }
+        bool __ne__(const Period& other) {
+            return *self != other;
+        }
+        hash_t __hash__() {
+            size_t seed = 0;
+            Period p = self->normalized();
+            boost::hash_combine(seed, p.length());
+            boost::hash_combine(seed, p.units());
+            return seed;
         }
         int __cmp__(const Period& other) {
             return *self < other  ? -1 :
@@ -364,12 +376,6 @@ class Period {
         }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def __hash__(self):
-        return hash(str(self.normalized()))
-    %}
-    #endif
 };
 
 #if defined(SWIGPYTHON)
@@ -554,6 +560,10 @@ function(from) {Period(from)})
 %}
 
 class Date {
+    #if defined(SWIGJAVA)
+    %rename("repr")           __repr__;
+    %rename("compare")        __cmp__;
+    #endif
   public:
     Date();
     Date(Day d, Month m, Year y);
@@ -719,9 +729,15 @@ class Date {
         BigInteger operator-(const Date& other) {
             return *self - other;
         }
-        #if defined(SWIGPYTHON) || defined(SWIGR)
+        #if defined(SWIGPYTHON) || defined(SWIGR) || defined(SWIGJAVA)
         bool __eq__(const Date& other) {
             return *self == other;
+        }
+        bool __ne__(const Date& other) {
+            return *self != other;
+        }
+        hash_t __hash__() {
+            return std::hash<Date>()(*self);
         }
         int __cmp__(const Date& other) {
             if (*self < other)
@@ -739,9 +755,6 @@ class Date {
         bool __bool__() {
             return (*self != Date());
         }
-        int __hash__() {
-            return self->serialNumber();
-        }
         bool __lt__(const Date& other) {
             return *self < other;
         }
@@ -753,9 +766,6 @@ class Date {
         }
         bool __ge__(const Date& other) {
             return !(*self < other);
-        }
-        bool __ne__(const Date& other) {
-            return *self != other;
         }
         #endif
     }

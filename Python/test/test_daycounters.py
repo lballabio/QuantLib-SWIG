@@ -19,6 +19,14 @@ class DayCountersTest(unittest.TestCase):
         #
         ql.Business252(calendar)
 
+    def test_hash(self):
+        for dc1 in (ql.Actual360(), ql.Thirty365()):
+            for dc2 in (ql.Actual360(), ql.Thirty365()):
+                expected = dc1.name() == dc2.name()
+                self.assertEqual(dc1 == dc2, expected)
+                self.assertEqual(dc1 != dc2, not expected)
+                self.assertEqual(hash(dc1) == hash(dc2), expected)
+
 
 if __name__ == "__main__":
     print("testing QuantLib", ql.__version__)

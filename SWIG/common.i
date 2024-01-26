@@ -156,6 +156,14 @@ a
 #endif
 %enddef
 
+%inline %{
+#if defined(SWIGPYTHON)
+// This should be Py_hash_t, but SWIG does not know this type.
+typedef long hash_t;
+#else
+typedef int hash_t;
+#endif
+%}
 
 %define deprecate_feature(OldName, NewName)
 #if defined(SWIGPYTHON)

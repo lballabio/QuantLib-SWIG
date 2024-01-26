@@ -67,6 +67,9 @@ class Currency {
         bool __ne__(const Currency& other) {
             return (*self) != other;
         }
+        hash_t __hash__() {
+            return self->empty() ? 0 : std::hash<std::string>()(self->name());
+        }
         #endif
         #if defined(SWIGPYTHON)
         Money operator*(Decimal x) {
@@ -83,12 +86,6 @@ class Currency {
         }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def __hash__(self):
-        return hash(self.name())
-    %}
-    #endif
 };
 
 
