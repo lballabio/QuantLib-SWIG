@@ -408,9 +408,6 @@ class Array {
                       "arrays are not resizable");
             std::copy(rhs.begin(),rhs.end(),self->begin()+i);
         }
-        bool __nonzero__() {
-            return (self->size() != 0);
-        }
         bool __bool__() {
             return (self->size() != 0);
         }

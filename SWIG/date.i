@@ -282,7 +282,9 @@ else
   }
 %}
 #endif
-
+#if defined(SWIGJAVA)
+%typemap(javainterfaces) Period QL_JAVA_INTERFACES "Comparable<Period>"
+#endif
 
 %{
 using QuantLib::Period;
@@ -290,10 +292,6 @@ using QuantLib::PeriodParser;
 %}
 
 class Period {
-    #if defined(SWIGJAVA)
-    %rename("repr")           __repr__;
-    %rename("compare")        __cmp__;
-    #endif
   public:
     Period();
     Period(Integer n, TimeUnit units);
@@ -330,6 +328,7 @@ class Period {
             return *self * n;
         }
         #endif
+        #if defined(SWIGPYTHON) || defined(SWIGR) || defined(SWIGJAVA)
         #if defined(SWIGPYTHON)
         Period __rmul__(Integer n) {
             return *self * n;
@@ -346,8 +345,13 @@ class Period {
         bool __ge__(const Period& other) {
             return !(*self < other);
         }
+        #else
+        int __cmp__(const Period& other) {
+            return *self < other  ? -1 :
+                   *self == other ?  0 :
+                                     1;
+        }
         #endif
-        #if defined(SWIGPYTHON) || defined(SWIGR) || defined(SWIGJAVA)
         bool __eq__(const Period& other) {
             return *self == other;
         }
@@ -360,11 +364,6 @@ class Period {
             boost::hash_combine(seed, p.length());
             boost::hash_combine(seed, p.units());
             return seed;
-        }
-        int __cmp__(const Period& other) {
-            return *self < other  ? -1 :
-                   *self == other ?  0 :
-                                     1;
         }
         #endif
 
@@ -551,6 +550,9 @@ function(from) {Period(from)})
    }
 %}
 #endif
+#if defined(SWIGJAVA)
+%typemap(javainterfaces) Date QL_JAVA_INTERFACES "Comparable<Date>"
+#endif
 
 %{
     // used in Date(string, string) defined below
@@ -563,10 +565,6 @@ function(from) {Period(from)})
 %}
 
 class Date {
-    #if defined(SWIGJAVA)
-    %rename("repr")           __repr__;
-    %rename("compare")        __cmp__;
-    #endif
   public:
     Date();
     Date(Day d, Month m, Year y);
@@ -742,19 +740,7 @@ class Date {
         hash_t __hash__() {
             return std::hash<Date>()(*self);
         }
-        int __cmp__(const Date& other) {
-            if (*self < other)
-                return -1;
-            else if (*self == other)
-                return 0;
-            else
-                return 1;
-        }
-        #endif
         #if defined(SWIGPYTHON)
-        bool __nonzero__() {
-            return (*self != Date());
-        }
         bool __bool__() {
             return (*self != Date());
         }
@@ -779,6 +765,16 @@ class Date {
             return Date(PyDateTime_GET_DAY(date), Month(PyDateTime_GET_MONTH(date)),
                         PyDateTime_GET_YEAR(date));
         }
+        #else
+        int __cmp__(const Date& other) {
+            if (*self < other)
+                return -1;
+            else if (*self == other)
+                return 0;
+            else
+                return 1;
+        }
+        #endif
         #endif
     }
 
