@@ -829,11 +829,15 @@ Date._old___add__ = Date.__add__
 Date._old___sub__ = Date.__sub__
 def Date_new___add__(self,x):
     if type(x) is tuple and len(x) == 2:
+        from warnings import warn
+        warn(f'adding a tuple to a Date is deprecated; use a Period instance', FutureWarning, stacklevel=2)
         return self._old___add__(Period(x[0],x[1]))
     else:
         return self._old___add__(x)
 def Date_new___sub__(self,x):
     if type(x) is tuple and len(x) == 2:
+        from warnings import warn
+        warn(f'subtracting a tuple from a Date is deprecated; use a Period instance', FutureWarning, stacklevel=2)
         return self._old___sub__(Period(x[0],x[1]))
     else:
         return self._old___sub__(x)
