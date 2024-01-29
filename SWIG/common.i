@@ -162,7 +162,7 @@ a
 %pythoncode %{
 def OldName(*args, **kwargs):
     from warnings import warn
-    warn('%s is deprecated; use %s' % (OldName.__name__, NewName.__name__))
+    warn(f'{OldName.__name__} is deprecated; use {NewName.__name__}', FutureWarning, stacklevel=2)
     return NewName(*args, **kwargs)
 %}
 #endif
