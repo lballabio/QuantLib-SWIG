@@ -110,6 +110,7 @@ class Calendar {
     std::vector<Date> businessDayList(const Date& from,
                                       const Date& to);
     std::string name();
+    bool empty();
     %extend {
         std::string __str__() {
             return self->name()+" calendar";
@@ -121,14 +122,11 @@ class Calendar {
         bool __ne__(const Calendar& other) {
             return (*self) != other;
         }
+        hash_t __hash__() {
+            return self->empty() ? 0 : std::hash<std::string>()(self->name());
+        }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def __hash__(self):
-        return hash(self.name())
-    %}
-    #endif
 };
 
 namespace std {

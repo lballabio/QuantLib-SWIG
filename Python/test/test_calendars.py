@@ -37,6 +37,18 @@ class JointCalendarTest(unittest.TestCase):
 
 class BespokeCalendarTest(unittest.TestCase):
 
+    def test_hash(self):
+        empty1, empty2 = ql.CalendarVector(2)
+        for cal1 in (ql.BespokeCalendar("one"), ql.BespokeCalendar("two"), empty1):
+            for cal2 in (ql.BespokeCalendar("one"), ql.BespokeCalendar("two"), empty2):
+                if cal1.empty() or cal2.empty():
+                    expected = cal1.empty() == cal2.empty()
+                else:
+                    expected = cal1.name() == cal2.name()
+                self.assertEqual(cal1 == cal2, expected)
+                self.assertEqual(cal1 != cal2, not expected)
+                self.assertEqual(hash(cal1) == hash(cal2), expected)
+
     def test_reset_added_holidays(self):
         calendar = ql.BespokeCalendar("bespoke thing")
         test_date = ql.Date(1, ql.January, 2024)

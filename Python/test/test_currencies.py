@@ -40,6 +40,17 @@ class CurrencyTest(unittest.TestCase):
             "CCY", "CCY", 100, "#", "", 100, ql.Rounding(), "")
         self.assertFalse(custom_ccy.empty(), fail_msg)
 
+    def test_hash(self):
+        for ccy1 in (ql.EURCurrency(), ql.USDCurrency(), ql.Currency()):
+            for ccy2 in (ql.EURCurrency(), ql.USDCurrency(), ql.Currency()):
+                if ccy1.empty() or ccy2.empty():
+                    expected = ccy1.empty() == ccy2.empty()
+                else:
+                    expected = ccy1.name() == ccy2.name()
+                self.assertEqual(ccy1 == ccy2, expected)
+                self.assertEqual(ccy1 != ccy2, not expected)
+                self.assertEqual(hash(ccy1) == hash(ccy2), expected)
+
 
 if __name__ == '__main__':
     print("testing QuantLib", ql.__version__)

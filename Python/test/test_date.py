@@ -57,6 +57,14 @@ wrong day, month, year increment
             mold = m
             yold = y
 
+    def test_hash(self):
+        for date1 in (ql.Date(1, 2, 2020), ql.Date(3, 4, 2022), ql.Date()):
+            for date2 in (ql.Date(1, 2, 2020), ql.Date(3, 4, 2022), ql.Date()):
+                expected = str(date1) == str(date2)
+                self.assertEqual(date1 == date2, expected)
+                self.assertEqual(date1 != date2, not expected)
+                self.assertEqual(hash(date1) == hash(date2), expected)
+
     def testHolidayList(self):
         """ Testing Calendar testHolidayList() method. """
         holidayLstFunction = ql.Calendar.holidayList(ql.Poland(), ql.Date(31, 12, 2014), ql.Date(3, 4, 2015), False)
@@ -76,6 +84,16 @@ wrong day, month, year increment
 
         with self.assertRaisesRegex(RuntimeError, "from_date requires a date"):
             ql.Date.from_date("2020-01-02")
+
+
+class PeriodTest(unittest.TestCase):
+    def test_hash(self):
+        for per1 in (ql.Period("1D"), ql.Period("1W"), ql.Period("12M"), ql.Period()):
+            for per2 in (ql.Period("1D"), ql.Period("1Y"), ql.Period()):
+                expected = str(per1.normalized()) == str(per2.normalized())
+                self.assertEqual(per1 == per2, expected)
+                self.assertEqual(per1 != per2, not expected)
+                self.assertEqual(hash(per1) == hash(per2), expected)
 
 
 if __name__ == "__main__":

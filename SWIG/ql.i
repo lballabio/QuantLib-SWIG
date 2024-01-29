@@ -91,6 +91,7 @@ GNU autoconf configure script.
 %rename(getValue)      operator();
 %rename(equals)        __eq__;
 %rename(unEquals)      __ne__;
+%rename(hashCode)      __hash__;
 %rename(toString)      __str__;
 #elif defined(SWIGCSHARP)
 %rename(Add)           operator+;
