@@ -15,14 +15,12 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
+import datetime
 import QuantLib as ql
 import unittest
 
 
 class DateTest(unittest.TestCase):
-    def setUp(self):
-        pass
-
     def testArithmetics(self):
         "Testing date arithmetics"
         today = ql.Date.todaysDate()
@@ -74,8 +72,18 @@ wrong day, month, year increment
         # check if dates both from function and from manual imput are the same
         self.assertTrue(all([(a == b) for a, b in zip(holidayLstFunction, holidayLstManual)]))
 
-    def tearDown(self):
-        pass
+    def testConversion(self):
+        for m in range(1, 13):
+            ql_date = ql.Date(m * 2, m, 2020)
+            py_date = datetime.date(2020, m, m * 2)
+            self.assertEqual(ql_date.to_date(), py_date)
+            self.assertEqual(ql.Date.from_date(py_date), ql_date)
+            # datetime works as well
+            py_dt = datetime.datetime(2020, m, m * 2)
+            self.assertEqual(ql.Date.from_date(py_dt), ql_date)
+
+        with self.assertRaisesRegex(RuntimeError, "from_date requires a date"):
+            ql.Date.from_date("2020-01-02")
 
 
 class PeriodTest(unittest.TestCase):
