@@ -88,9 +88,6 @@ namespace ext {
             return (*self).operator->();
         }
         #if defined(SWIGPYTHON)
-        bool __nonzero__() {
-            return !!(*self);
-        }
         bool __bool__() {
             return !!(*self);
         }
@@ -111,9 +108,6 @@ class Handle {
     ext::shared_ptr<T> currentLink();
     #if defined(SWIGPYTHON)
     %extend {
-        bool __nonzero__() {
-            return !self->empty();
-        }
         bool __bool__() {
             return !self->empty();
         }

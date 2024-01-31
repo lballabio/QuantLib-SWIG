@@ -78,9 +78,6 @@ class Currency {
         Money __rmul__(Decimal x) {
             return *self*x;
         }
-        bool __nonzero__() {
-            return !self->empty();
-        }
         bool __bool__() {
             return !self->empty();
         }

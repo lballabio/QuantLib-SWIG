@@ -54,9 +54,6 @@ class TimeSeries {
     Size size();
     #if defined(SWIGPYTHON)
     %extend {
-        bool __nonzero__() {
-            return !self->empty();
-        }
         bool __bool__() {
             return !self->empty();
         }
