@@ -179,9 +179,9 @@ enum Frequency {
     else
         SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_FREQUENCY) ext::optional<Frequency> {
+%typecheck (QL_TYPECHECK_FREQUENCY) ext::optional<Frequency> %{
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
-}
+%}
 #else
 #if defined(SWIGCSHARP)
 %typemap(cscode) ext::optional<Frequency> %{
@@ -394,7 +394,7 @@ class Period {
         }
     }
 %}
-%typecheck (QL_TYPECHECK_PERIOD) ext::optional<Period> {
+%typecheck (QL_TYPECHECK_PERIOD) ext::optional<Period> %{
     if($input == Py_None) {
         $1 = 1;
     } else {
@@ -403,7 +403,7 @@ class Period {
         int res = SWIG_ConvertPtr($input, &vptr, $descriptor(Period*), SWIG_POINTER_NO_NULL);
         $1 = SWIG_CheckState(res);
     }
-}
+%}
 #endif
 
 namespace std {

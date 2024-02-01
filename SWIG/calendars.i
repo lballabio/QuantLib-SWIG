@@ -71,9 +71,9 @@ enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
     else
         SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) ext::optional<BusinessDayConvention> {
+%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) ext::optional<BusinessDayConvention> %{
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
-}
+%}
 #endif
 
 class Calendar {

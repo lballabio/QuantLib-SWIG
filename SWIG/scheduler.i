@@ -47,9 +47,9 @@ struct DateGeneration {
     else
         SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_DATEGENERATION) ext::optional<DateGeneration::Rule> {
+%typecheck (QL_TYPECHECK_DATEGENERATION) ext::optional<DateGeneration::Rule> %{
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
-}
+%}
 #endif
 
 class Schedule {
