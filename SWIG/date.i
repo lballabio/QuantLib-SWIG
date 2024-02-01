@@ -553,13 +553,15 @@ function(from) {Period(from)})
 #endif
 
 %{
-    // used in Date(string, string) defined below
-    void _replace_format(std::string& s, const std::string& old_format,
-                         const std::string& new_format) {
-        std::string::size_type i = s.find(old_format);
+    // used in DateParser_parse(string, string) defined below
+    void _replace_format(std::string& s, const char* old_format,
+                         const char* new_format) {
+        auto i = s.find(old_format);
         if (i != std::string::npos)
-            s.replace(i, old_format.length(), new_format);
+            s.replace(i, strlen(old_format), new_format);
     }
+
+    SWIGINTERN Date DateParser_parse(const std::string& str, std::string fmt);
 %}
 
 class Date {
@@ -684,16 +686,7 @@ class Date {
     Date operator-(const Period&) const;
     %extend {
         Date(const std::string& str, std::string fmt) {
-            // convert our old format into the corresponding Boost one
-            _replace_format(fmt, "YYYY", "%Y");
-            _replace_format(fmt, "yyyy", "%Y");
-            _replace_format(fmt, "YY", "%y");
-            _replace_format(fmt, "yy", "%y");
-            _replace_format(fmt, "MM", "%m");
-            _replace_format(fmt, "mm", "%m");
-            _replace_format(fmt, "DD", "%d");
-            _replace_format(fmt, "dd", "%d");
-            return new Date(DateParser::parseFormatted(str,fmt));
+            return new Date(DateParser_parse(str, fmt));
         }
         Integer weekdayNumber() {
             return int(self->weekday());
