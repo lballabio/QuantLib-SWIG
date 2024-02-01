@@ -34,7 +34,7 @@ import pandas as pd
 interactive = 'get_ipython' in globals()
 
 trade_date = ql.Date(21,5,2009)
-ql.Settings.instance().setEvaluationDate(trade_date)
+ql.Settings.instance().evaluationDate = trade_date
 
 ql.IborCoupon.createAtParCoupons()
 

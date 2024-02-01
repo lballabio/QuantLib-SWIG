@@ -94,7 +94,7 @@ def calibration_data(basket, volatilities):
 
 # %%
 refDate = ql.Date(30, 4, 2014)
-ql.Settings.instance().setEvaluationDate(refDate)
+ql.Settings.instance().evaluationDate = refDate
 
 # %% [markdown]
 # We assume a multicurve setup, for simplicity with flat yield term structures.
