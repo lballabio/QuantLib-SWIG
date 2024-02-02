@@ -45,18 +45,17 @@
 
 #if defined(SWIGPYTHON)
 %typemap(in) ext::optional<bool> %{
-	if($input == Py_None)
-		$1 = ext::nullopt;
-	else if ($input == Py_True)
-		$1 = true;
-	else
-		$1 = false;
+    if ($input == Py_None)
+        $1 = ext::nullopt;
+    else
+        $1 = $input == Py_True;
 %}
 %typecheck (QL_TYPECHECK_BOOL) ext::optional<bool> {
-if (PyBool_Check($input) || Py_None == $input) 
-	$1 = 1;
-else
-	$1 = 0;
+    $1 = (PyBool_Check($input) || $input == Py_None) ? 1 : 0;
+}
+%typemap(out) ext::optional<bool> {
+    $result = !$1 ? Py_None : *$1 ? Py_True : Py_False;
+    Py_INCREF($result);
 }
 #else
 #if defined(SWIGCSHARP)
@@ -170,5 +169,13 @@ def OldName(*args, **kwargs):
 #endif
 %enddef
 
+%{
+#if defined(SWIGPYTHON)
+#define cpp_deprecate_feature(OldName, NewName) \
+    PyErr_WarnEx(PyExc_FutureWarning, (#OldName " is deprecated; use " #NewName), 1)
+#else
+#define cpp_deprecate_feature(OldName, NewName)
+#endif
+%}
 
 #endif
