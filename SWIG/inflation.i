@@ -2,6 +2,7 @@
  Copyright (C) 2010 Joseph Wang
  Copyright (C) 2010, 2011, 2014 StatPro Italia srl
  Copyright (C) 2018, 2019, 2020 Matthias Lungwitz
+ Copyright (C) 2024 Skandinaviska Enskilda Banken AB (publ)
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -1058,7 +1059,7 @@ using QuantLib::InterpolatedYoYCapFloorTermPriceSurface;
 %}
 
 %shared_ptr(YoYCapFloorTermPriceSurface)
-class YoYCapFloorTermPriceSurface : public InflationTermStructure {
+class YoYCapFloorTermPriceSurface : public TermStructure {
   private:
     YoYCapFloorTermPriceSurface();
   public:
@@ -1067,6 +1068,8 @@ class YoYCapFloorTermPriceSurface : public InflationTermStructure {
     virtual ext::shared_ptr<YoYInflationTermStructure> YoYTS() const;
     ext::shared_ptr<YoYInflationIndex> yoyIndex();
     virtual BusinessDayConvention businessDayConvention() const;
+    virtual Period observationLag() const;
+    virtual Frequency frequency() const;
     virtual Natural fixingDays() const;
     virtual Real price(const Date& d, Rate k);
     virtual Real capPrice(const Date& d, Rate k);
@@ -1076,7 +1079,7 @@ class YoYCapFloorTermPriceSurface : public InflationTermStructure {
     virtual Rate atmYoYRate(const Date &d,
                             const Period &obsLag = Period(-1,Days),
                             bool extrapolate = true);
-
+    virtual Date baseDate() const = 0;
     virtual Real price(const Period& d, Rate k) const;
     virtual Real capPrice(const Period& d, Rate k) const;
     virtual Real floorPrice(const Period& d, Rate k) const;
