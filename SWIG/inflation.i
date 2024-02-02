@@ -1079,7 +1079,7 @@ class YoYCapFloorTermPriceSurface : public TermStructure {
     virtual Rate atmYoYRate(const Date &d,
                             const Period &obsLag = Period(-1,Days),
                             bool extrapolate = true);
-    virtual Date baseDate() const = 0;
+    virtual Date baseDate() const;
     virtual Real price(const Period& d, Rate k) const;
     virtual Real capPrice(const Period& d, Rate k) const;
     virtual Real floorPrice(const Period& d, Rate k) const;
