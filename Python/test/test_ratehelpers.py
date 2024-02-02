@@ -122,7 +122,7 @@ class OISRateHelperTest(unittest.TestCase):
 
         # build rate helpers
         dayCounter = ql.Actual360()
-        # looping left if somone wants two add more deposits to tests, e.g. T/N
+        # looping left if someone wants two add more deposits to tests, e.g. T/N
 
         self.depositHelpers = [
             ql.DepositRateHelper(
@@ -191,7 +191,7 @@ class OISRateHelperTest(unittest.TestCase):
         already set and additional calendar will have no impact. The test checks
         if the constructor exposed to Python maintains this desired property and
         verifies that the start date of a EUR plain vanilla OIS traded on March
-        29th, 2018 is equal to April 4th, 2018 (du to holiday on March 30th,
+        29th, 2018 is equal to April 4th, 2018 (due to holiday on March 30th,
         2018 in TARGET calendar.
         """
         test_date = ql.Date(29, 3, 2018)
