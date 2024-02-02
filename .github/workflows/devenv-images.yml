@@ -1,5 +1,8 @@
 name: Build quantlib-swig-devenv Docker images
-on: workflow_dispatch
+on:
+  schedule:
+    - cron: '0 0 * * 6'
+  workflow_dispatch:
 jobs:
   docker-images-base:
     runs-on: ubuntu-20.04
