@@ -69,7 +69,7 @@ wrong day, month, year increment
         """ Testing Calendar testHolidayList() method. """
         holidayLstFunction = ql.Calendar.holidayList(ql.Poland(), ql.Date(31, 12, 2014), ql.Date(3, 4, 2015), False)
         holidayLstManual = (ql.Date(1, 1, 2015), ql.Date(6, 1, 2015))
-        # check if dates both from function and from manual imput are the same
+        # check if dates both from function and from manual input are the same
         self.assertTrue(all([(a == b) for a, b in zip(holidayLstFunction, holidayLstManual)]))
 
     def testConversion(self):
