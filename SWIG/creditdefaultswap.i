@@ -144,6 +144,9 @@ class CreditDefaultSwap : public Instrument {
 };
 
 
+Date cdsMaturity(const Date& tradeDate, const Period& tenor, DateGeneration::Rule rule);
+
+
 %shared_ptr(MidPointCdsEngine)
 class MidPointCdsEngine : public PricingEngine {
   public:
