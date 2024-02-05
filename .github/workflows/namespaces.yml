@@ -18,7 +18,7 @@ jobs:
         sed -i -e 's/boost::function/ext::function/g' SWIG/*
         sed -i -e 's/boost::optional/ext::optional/g' SWIG/*
         sed -i -e 's/boost::none/ext::nullopt/g' SWIG/*
-    - uses: peter-evans/create-pull-request@v5
+    - uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: fix-boost-namespace-${{ github.ref_name }}
