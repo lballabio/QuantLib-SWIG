@@ -57,9 +57,9 @@ enum VolatilityType { ShiftedLognormal, Normal };
     else
         SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_VOLATILITYTYPE) ext::optional<VolatilityType> {
+%typecheck (QL_TYPECHECK_VOLATILITYTYPE) ext::optional<VolatilityType> %{
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
-}
+%}
 #endif
 
 %{

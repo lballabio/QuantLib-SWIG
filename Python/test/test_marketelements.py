@@ -37,6 +37,11 @@ class MarketElementTest(unittest.TestCase):
         me.setValue(3.14)
         if not flag:
             self.fail("Observer was not notified of market element change")
+        flag = None
+        obs.unregisterWith(me)
+        me.setValue(2.71)
+        if flag:
+            self.fail("Observer was notified after unregistering")
 
     def testObservableHandle(self):
         "Testing observability of market element handles"
@@ -54,6 +59,26 @@ class MarketElementTest(unittest.TestCase):
         h.linkTo(me2)
         if not flag:
             self.fail("Observer was not notified of market element change")
+        flag = None
+        obs.unregisterWith(h)
+        me2.setValue(2.71)
+        if flag:
+            self.fail("Observer was notified after unregistering")
+
+    def testObservableErrors(self):
+        class Handle:
+            def __init__(self, x):
+                self.x = x
+
+            def asObservable(self):
+                return 10 / self.x
+
+        obs = ql.Observer(raiseFlag)
+        self.assertRaises(TypeError, obs.registerWith, 123)
+        self.assertRaises(TypeError, obs.registerWith, obs)
+        self.assertRaises(TypeError, obs.registerWith, Handle)
+        self.assertRaises(ZeroDivisionError, obs.registerWith, Handle(0))
+        self.assertRaises(TypeError, obs.registerWith, Handle(1))
 
 
 if __name__ == "__main__":

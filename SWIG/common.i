@@ -47,16 +47,18 @@
 %typemap(in) ext::optional<bool> %{
     if ($input == Py_None)
         $1 = ext::nullopt;
-    else
+    else if (PyBool_Check($input))
         $1 = $input == Py_True;
+    else
+        SWIG_exception(SWIG_TypeError, "bool expected");
 %}
-%typecheck (QL_TYPECHECK_BOOL) ext::optional<bool> {
+%typecheck (QL_TYPECHECK_BOOL) ext::optional<bool> %{
     $1 = (PyBool_Check($input) || $input == Py_None) ? 1 : 0;
-}
-%typemap(out) ext::optional<bool> {
+%}
+%typemap(out) ext::optional<bool> %{
     $result = !$1 ? Py_None : *$1 ? Py_True : Py_False;
     Py_INCREF($result);
-}
+%}
 #else
 #if defined(SWIGCSHARP)
 %typemap(cscode) ext::optional<bool> %{
