@@ -53,8 +53,8 @@ using QuantLib::LastFixingQuote;
 
 class SimpleQuote : public Quote {
   public:
-    SimpleQuote(Real value);
-    void setValue(Real value);
+    SimpleQuote(Real value = Null<Real>());
+    void setValue(Real value = Null<Real>());
 };
 
 %shared_ptr(LastFixingQuote)
