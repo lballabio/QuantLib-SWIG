@@ -61,7 +61,7 @@ double nullDouble() { return Null<double>(); }
     else if (PyFloat_Check($input))
         $1 = PyFloat_AsDouble($input);
     else if (PyLong_Check($input))
-        $1 = int(PyLong_AsLong($input));
+        $1 = double(PyLong_AsLong($input));
     else
         SWIG_exception(SWIG_TypeError,"double expected");
 %}
