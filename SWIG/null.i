@@ -60,11 +60,13 @@ double nullDouble() { return Null<double>(); }
         $1 = Null<double>();
     else if (PyFloat_Check($input))
         $1 = PyFloat_AsDouble($input);
+    else if (PyLong_Check($input))
+        $1 = int(PyLong_AsLong($input));
     else
         SWIG_exception(SWIG_TypeError,"double expected");
 %}
 %typecheck(SWIG_TYPECHECK_DOUBLE) doubleOrNull %{
-    $1 = ($input == Py_None || PyFloat_Check($input)) ? 1 : 0;
+    $1 = ($input == Py_None || PyFloat_Check($input) || PyLong_Check($input)) ? 1 : 0;
 %}
 %typemap(out) doubleOrNull %{
     if ($1 == Null<double>()) {
