@@ -80,6 +80,10 @@ class MarketElementTest(unittest.TestCase):
         self.assertRaises(ZeroDivisionError, obs.registerWith, Handle(0))
         self.assertRaises(TypeError, obs.registerWith, Handle(1))
 
+    def test_SimpleQuote(self):
+        for value in (100, 2.71, 10**100):
+            self.assertAlmostEqual(ql.SimpleQuote(value).value(), value)
+
 
 if __name__ == "__main__":
     print("testing QuantLib", ql.__version__)

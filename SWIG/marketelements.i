@@ -25,6 +25,7 @@
 %include observer.i
 %include functions.i
 %include indexes.i
+%include null.i
 
 %{
 using QuantLib::Quote;
@@ -53,8 +54,8 @@ using QuantLib::LastFixingQuote;
 
 class SimpleQuote : public Quote {
   public:
-    SimpleQuote(Real value);
-    void setValue(Real value);
+    SimpleQuote(doubleOrNull value = Null<Real>());
+    void setValue(doubleOrNull value = Null<Real>());
 };
 
 %shared_ptr(LastFixingQuote)
