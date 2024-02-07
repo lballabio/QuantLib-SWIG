@@ -67,9 +67,6 @@ const char* __version__;
 %include stl.i
 
 #if defined(JAVA_AUTOCLOSEABLE)
-%typemap(javaimports) SWIGTYPE %{
-import java.lang.AutoCloseable;
-%}
 #define QL_JAVA_INTERFACES "AutoCloseable, "
 %typemap(javainterfaces) SWIGTYPE "AutoCloseable"
 %extend std::vector {
@@ -85,7 +82,9 @@ import java.lang.AutoCloseable;
   }
 %}
 #else
+#if !defined(QL_JAVA_INTERFACES)
 #define QL_JAVA_INTERFACES
+#endif
 #endif
 
 #if !defined(JAVA_FINALIZER)
