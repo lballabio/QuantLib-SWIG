@@ -48,7 +48,7 @@ bool ArrayFromSequence(PyObject* source, Array* target) {
                 (*target)[i] = PyFloat_AsDouble(o);
                 Py_DECREF(o);
             } else if (PyLong_Check(o)) {
-                (*target)[i] = Real(PyLong_AsLong(o));
+                (*target)[i] = PyLong_AsDouble(o);
                 Py_DECREF(o);
             } else {
                 Py_DECREF(o);
@@ -177,7 +177,7 @@ bool ArrayFromSequence(PyObject* source, Array* target) {
                         $1[i][j] = PyFloat_AsDouble(d);
                         Py_DECREF(d);
                     } else if (PyLong_Check(d)) {
-                        $1[i][j] = Real(PyLong_AsLong(d));
+                        $1[i][j] = PyLong_AsDouble(d);
                         Py_DECREF(d);
                     } else {
                         PyErr_SetString(PyExc_TypeError,"doubles expected");
@@ -248,7 +248,7 @@ bool ArrayFromSequence(PyObject* source, Array* target) {
                         temp[i][j] = PyFloat_AsDouble(d);
                         Py_DECREF(d);
                     } else if (PyLong_Check(d)) {
-                        temp[i][j] = Real(PyLong_AsLong(d));
+                        temp[i][j] = PyLong_AsDouble(d);
                         Py_DECREF(d);
                     } else {
                         PyErr_SetString(PyExc_TypeError,"doubles expected");
