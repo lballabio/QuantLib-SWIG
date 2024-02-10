@@ -16,6 +16,7 @@
 """
 
 import datetime
+import operator
 import QuantLib as ql
 import unittest
 
@@ -65,6 +66,14 @@ wrong day, month, year increment
                 self.assertEqual(date1 != date2, not expected)
                 self.assertEqual(hash(date1) == hash(date2), expected)
 
+    def test_order(self):
+        ops = [operator.eq, operator.ne, operator.lt, operator.le, operator.gt, operator.ge]
+        for date1 in (ql.Date(1, 2, 2020), ql.Date(3, 4, 2022), ql.Date()):
+            for date2 in (ql.Date(1, 2, 2020), ql.Date(3, 4, 2022), ql.Date()):
+                for op in ops:
+                    self.assertEqual(op(date1,  date2),
+                                     op(date1.serialNumber(), date2.serialNumber()))
+
     def testHolidayList(self):
         """ Testing Calendar testHolidayList() method. """
         holidayLstFunction = ql.Calendar.holidayList(ql.Poland(), ql.Date(31, 12, 2014), ql.Date(3, 4, 2015), False)
@@ -94,6 +103,13 @@ class PeriodTest(unittest.TestCase):
                 self.assertEqual(per1 == per2, expected)
                 self.assertEqual(per1 != per2, not expected)
                 self.assertEqual(hash(per1) == hash(per2), expected)
+
+    def test_order(self):
+        ops = [operator.eq, operator.ne, operator.lt, operator.le, operator.gt, operator.ge]
+        for per1 in (ql.Period("1D"), ql.Period("1W"), ql.Period("12M")):
+            for per2 in (ql.Period("1D"), ql.Period("1Y")):
+                for op in ops:
+                    self.assertEqual(op(per1,  per2), op(per2.frequency(), per1.frequency()))
 
 
 if __name__ == "__main__":

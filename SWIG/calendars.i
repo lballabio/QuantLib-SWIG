@@ -113,10 +113,10 @@ class Calendar {
             return self->name()+" calendar";
         }
         #if defined(SWIGPYTHON) || defined(SWIGJAVA)
-        bool __eq__(const Calendar& other) {
+        bool operator==(const Calendar& other) {
             return (*self) == other;
         }
-        bool __ne__(const Calendar& other) {
+        bool operator!=(const Calendar& other) {
             return (*self) != other;
         }
         hash_t __hash__() {
