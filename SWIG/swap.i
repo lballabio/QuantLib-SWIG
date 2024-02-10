@@ -426,8 +426,8 @@ class MakeOIS {
                 Rate fixedRate = Null<Rate>(),
                 const Period& fwdStart = 0*Days);
 
-        %extend{
-            ext::shared_ptr<OvernightIndexedSwap> makeOIS(){
+        %extend {
+            ext::shared_ptr<OvernightIndexedSwap> makeOIS() {
                 return (ext::shared_ptr<OvernightIndexedSwap>)(* $self);
             }
         }
@@ -439,11 +439,26 @@ class MakeOIS {
         MakeOIS& withEffectiveDate(const Date&);
         MakeOIS& withTerminationDate(const Date&);
         MakeOIS& withRule(DateGeneration::Rule r);
+        MakeOIS& withFixedLegRule(DateGeneration::Rule r);
+        MakeOIS& withOvernightLegRule(DateGeneration::Rule r);
         MakeOIS& withPaymentFrequency(Frequency f);
+        MakeOIS& withFixedLegPaymentFrequency(Frequency f);
+        MakeOIS& withOvernightLegPaymentFrequency(Frequency f);
         MakeOIS& withPaymentAdjustment(BusinessDayConvention convention);
         MakeOIS& withPaymentLag(Integer lag);
         MakeOIS& withPaymentCalendar(const Calendar& cal);
+        MakeOIS& withCalendar(const Calendar& cal);
+        MakeOIS& withFixedLegCalendar(const Calendar& cal);
+        MakeOIS& withOvernightLegCalendar(const Calendar& cal);
+        MakeOIS& withConvention(BusinessDayConvention bdc);
+        MakeOIS& withFixedLegConvention(BusinessDayConvention bdc);
+        MakeOIS& withOvernightLegConvention(BusinessDayConvention bdc);
+        MakeOIS& withTerminationDateConvention(BusinessDayConvention bdc);
+        MakeOIS& withFixedLegTerminationDateConvention(BusinessDayConvention bdc);
+        MakeOIS& withOvernightLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeOIS& withEndOfMonth(bool flag = true);
+        MakeOIS& withFixedLegEndOfMonth(bool flag = true);
+        MakeOIS& withOvernightLegEndOfMonth(bool flag = true);
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
         MakeOIS& withOvernightLegSpread(Spread sp);
         MakeOIS& withDiscountingTermStructure(
@@ -455,68 +470,52 @@ class MakeOIS {
 };
 
 #if defined(SWIGPYTHON)
-%pythoncode{
-def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days),
-            receiveFixed=True,
-            swapType=Swap.Payer,
-            nominal=1.0,
-            settlementDays=2,
-            effectiveDate=None,
-            terminationDate=None,
-            dateGenerationRule=DateGeneration.Backward,
-            paymentFrequency=Annual,
-            paymentAdjustmentConvention=Following,
-            paymentLag=0,
-            paymentCalendar=None,
-            endOfMonth=True,    
-            fixedLegDayCount=None,
-            overnightLegSpread=0.0,
-            discountingTermStructure=None,
-            telescopicValueDates=False,
-            pricingEngine=None,
-            averagingMethod=None):
+%pythoncode {
+_MAKEOIS_METHODS = {
+    "receiveFixed": "receiveFixed",
+    "swapType": "withType",
+    "nominal": "withNominal",
+    "settlementDays": "withSettlementDays",
+    "effectiveDate": "withEffectiveDate",
+    "terminationDate": "withTerminationDate",
+    "dateGenerationRule": "withRule",
+    "fixedLegRule": "withFixedLegRule",
+    "overnightLegRule": "withOvernightLegRule",
+    "paymentFrequency": "withPaymentFrequency",
+    "fixedLegPaymentFrequency": "withFixedLegPaymentFrequency",
+    "overnightLegPaymentFrequency": "withOvernightLegPaymentFrequency",
+    "paymentAdjustmentConvention": "withPaymentAdjustment",
+    "paymentLag": "withPaymentLag",
+    "paymentCalendar": "withPaymentCalendar",
+    "calendar": "withCalendar",
+    "fixedLegCalendar": "withFixedLegCalendar",
+    "overnightLegCalendar": "withOvernightLegCalendar",
+    "convention": "withConvention",
+    "fixedLegConvention": "withFixedLegConvention",
+    "overnightLegConvention": "withOvernightLegConvention",
+    "terminationDateConvention": "withTerminationDateConvention",
+    "fixedLegTerminationDateConvention": "withFixedLegTerminationDateConvention",
+    "overnightLegTerminationDateConvention": "withOvernightLegTerminationDateConvention",
+    "endOfMonth": "withEndOfMonth",
+    "fixedLegEndOfMonth": "withFixedLegEndOfMonth",
+    "overnightLegEndOfMonth": "withOvernightLegEndOfMonth",
+    "fixedLegDayCount": "withFixedLegDayCount",
+    "overnightLegSpread": "withOvernightLegSpread",
+    "discountingTermStructure": "withDiscountingTermStructure",
+    "telescopicValueDates": "withTelescopicValueDates",
+    "averagingMethod": "withAveragingMethod",
+    "pricingEngine": "withPricingEngine",
+}
 
+def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days), **kwargs):
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
-    
-    if not receiveFixed:
-        mv.receiveFixed(receiveFixed)
-    if swapType != Swap.Payer:
-        mv.withType(swapType)
-    if nominal != 1.0:
-        mv.withNominal(nominal)
-    if settlementDays != 2:
-        mv.withSettlementDays(settlementDays)
-    if effectiveDate is not None:
-        mv.withEffectiveDate(effectiveDate)
-    if terminationDate is not None:
-        mv.withTerminationDate(terminationDate)
-    if dateGenerationRule != DateGeneration.Backward:
-        mv.withRule(dateGenerationRule)  
-    if paymentFrequency != Annual:
-        mv.withPaymentFrequency(paymentFrequency)
-    if paymentAdjustmentConvention != Following:
-        mv.withPaymentAdjustment(paymentAdjustmentConvention)
-    if paymentLag != 0:
-        mv.withPaymentLag(paymentLag)
-    if paymentCalendar is not None:
-        mv.withPaymentCalendar(paymentCalendar)
-    if not endOfMonth:
-        mv.withEndOfMonth(endOfMonth)
-    if fixedLegDayCount is not None:
-        mv.withFixedLegDayCount(fixedLegDayCount)
-    else:
-        mv.withFixedLegDayCount(overnightIndex.dayCounter())
-    if overnightLegSpread != 0.0:
-        mv.withOvernightLegSpread(overnightLegSpread)
-    if discountingTermStructure is not None:
-        mv.withDiscountingTermStructure(discountingTermStructure)        
-    if telescopicValueDates:
-        mv.withTelescopicValueDates(telescopicValueDates)
-    if averagingMethod is not None:
-        mv.withAveragingMethod(averagingMethod)
-    if pricingEngine is not None:
-        mv.withPricingEngine(pricingEngine)
-
+    for name, value in kwargs.items():
+        try:
+            method = _MAKEOIS_METHODS[name]
+        except KeyError:
+            raise TypeError(f"MakeOIS() got an unexpected keyword argument {name!r}") from None
+        if value is not None:
+            getattr(mv, method)(value)
     return mv.makeOIS()
 }
 #endif
