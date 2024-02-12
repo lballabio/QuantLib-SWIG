@@ -89,8 +89,8 @@ GNU autoconf configure script.
 %rename(divide)        operator/;
 %rename(divide)        __div__;
 %rename(getValue)      operator();
-%rename(equals)        __eq__;
-%rename(unEquals)      __ne__;
+%rename(equals)        operator==;
+%rename(unEquals)      operator!=;
 %rename(compareTo)     __cmp__;
 %javamethodmodifiers   __cmp__ "@Override public"
 %rename(hashCode)      __hash__;

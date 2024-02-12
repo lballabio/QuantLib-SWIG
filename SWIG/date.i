@@ -330,16 +330,16 @@ class Period {
         Period __rmul__(Integer n) {
             return *self * n;
         }
-        bool __lt__(const Period& other) {
+        bool operator<(const Period& other) {
             return *self < other;
         }
-        bool __gt__(const Period& other) {
+        bool operator>(const Period& other) {
             return other < *self;
         }
-        bool __le__(const Period& other) {
+        bool operator<=(const Period& other) {
             return !(other < *self);
         }
-        bool __ge__(const Period& other) {
+        bool operator>=(const Period& other) {
             return !(*self < other);
         }
         #else
@@ -349,10 +349,10 @@ class Period {
                                      1;
         }
         #endif
-        bool __eq__(const Period& other) {
+        bool operator==(const Period& other) {
             return *self == other;
         }
-        bool __ne__(const Period& other) {
+        bool operator!=(const Period& other) {
             return *self != other;
         }
         hash_t __hash__() {
@@ -721,10 +721,10 @@ class Date {
             return *self - other;
         }
         #if defined(SWIGPYTHON) || defined(SWIGR) || defined(SWIGJAVA)
-        bool __eq__(const Date& other) {
+        bool operator==(const Date& other) {
             return *self == other;
         }
-        bool __ne__(const Date& other) {
+        bool operator!=(const Date& other) {
             return *self != other;
         }
         hash_t __hash__() {
@@ -734,16 +734,16 @@ class Date {
         bool __bool__() {
             return (*self != Date());
         }
-        bool __lt__(const Date& other) {
+        bool operator<(const Date& other) {
             return *self < other;
         }
-        bool __gt__(const Date& other) {
+        bool operator>(const Date& other) {
             return other < *self;
         }
-        bool __le__(const Date& other) {
+        bool operator<=(const Date& other) {
             return !(other < *self);
         }
-        bool __ge__(const Date& other) {
+        bool operator>=(const Date& other) {
             return !(*self < other);
         }
         PyObject* to_date() {

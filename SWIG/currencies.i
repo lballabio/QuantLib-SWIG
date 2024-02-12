@@ -61,10 +61,10 @@ class Currency {
             return self->name();
         }
         #if defined(SWIGPYTHON) || defined(SWIGJAVA)
-        bool __eq__(const Currency& other) {
+        bool operator==(const Currency& other) {
             return (*self) == other;
         }
-        bool __ne__(const Currency& other) {
+        bool operator!=(const Currency& other) {
             return (*self) != other;
         }
         hash_t __hash__() {

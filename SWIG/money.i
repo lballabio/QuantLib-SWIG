@@ -49,16 +49,16 @@ class Money {
         Decimal operator/(const Money& m) { return *self/m; }
         #if defined(SWIGPYTHON)
         Money __rmul__(Decimal x) { return *self*x; }
-        bool __lt__(const Money& other) {
+        bool operator<(const Money& other) {
             return *self < other;
         }
-        bool __gt__(const Money& other) {
+        bool operator>(const Money& other) {
             return other < *self;
         }
-        bool __le__(const Money& other) {
+        bool operator<=(const Money& other) {
             return !(other < *self);
         }
-        bool __ge__(const Money& other) {
+        bool operator>=(const Money& other) {
             return !(*self < other);
         }
         #else
@@ -71,10 +71,10 @@ class Money {
                 return 1;
         }
         #endif
-        bool __eq__(const Money& other) {
+        bool operator==(const Money& other) {
             return *self == other;
         }
-        bool __ne__(const Money& other) {
+        bool operator!=(const Money& other) {
             return *self != other;
         }
         std::string __str__() {

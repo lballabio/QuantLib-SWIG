@@ -48,10 +48,10 @@ class DayCounter {
             return self->name()+" day counter";
         }
         #if defined(SWIGPYTHON) || defined(SWIGJAVA)
-        bool __eq__(const DayCounter& other) {
+        bool operator==(const DayCounter& other) {
             return (*self) == other;
         }
-        bool __ne__(const DayCounter& other) {
+        bool operator!=(const DayCounter& other) {
             return (*self) != other;
         }
         hash_t __hash__() {
