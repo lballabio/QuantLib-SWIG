@@ -123,6 +123,7 @@ class MakeVanillaSwap {
         MakeVanillaSwap& withEffectiveDate(const Date&);
         MakeVanillaSwap& withTerminationDate(const Date&);
         MakeVanillaSwap& withRule(DateGeneration::Rule r);
+        MakeVanillaSwap& withPaymentConvention(BusinessDayConvention bdc);
 
         MakeVanillaSwap& withFixedLegTenor(const Period& t);
         MakeVanillaSwap& withFixedLegCalendar(const Calendar& cal);
@@ -160,87 +161,62 @@ class MakeVanillaSwap {
                         Rate fixedRate,
                         const Period& forwardStart);
         
-        %extend{
-            ext::shared_ptr<VanillaSwap> makeVanillaSwap(){
+        %extend {
+            ext::shared_ptr<VanillaSwap> makeVanillaSwap() {
                 return (ext::shared_ptr<VanillaSwap>)(* $self);
             }
         }
 };
 
 #if defined(SWIGPYTHON)
-%pythoncode{
-def MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart,
-    receiveFixed=None, swapType=None, Nominal=None, settlementDays=None,
-    effectiveDate=None, terminationDate=None, dateGenerationRule=None,
-    fixedLegTenor=None, fixedLegCalendar=None, fixedLegConvention=None,
-    fixedLegDayCount=None, floatingLegTenor=None, floatingLegCalendar=None,
-    floatingLegConvention=None, floatingLegDayCount=None, floatingLegSpread=None,
-    discountingTermStructure=None, pricingEngine=None,
-    fixedLegTerminationDateConvention=None,  fixedLegDateGenRule=None,
-    fixedLegEndOfMonth=None, fixedLegFirstDate=None, fixedLegNextToLastDate=None,
-    floatingLegTerminationDateConvention=None, floatingLegDateGenRule=None,
-    floatingLegEndOfMonth=None, floatingLegFirstDate=None, floatingLegNextToLastDate=None,
-    withIndexedCoupons=None):
+%pythoncode {
+_MAKEVANILLA_METHODS = {
+    "receiveFixed": "receiveFixed",
+    "swapType": "withType",
+    "Nominal": "withNominal",
+    "settlementDays": "withSettlementDays",
+    "effectiveDate": "withEffectiveDate",
+    "terminationDate": "withTerminationDate",
+    "dateGenerationRule": "withRule",
+    "paymentConvention": "withPaymentConvention",
+    "fixedLegTenor": "withFixedLegTenor",
+    "fixedLegCalendar": "withFixedLegCalendar",
+    "fixedLegConvention": "withFixedLegConvention",
+    "fixedLegTerminationDateConvention": "withFixedLegTerminationDateConvention",
+    "fixedLegDateGenRule": "withFixedLegRule",
+    "fixedLegEndOfMonth": "withFixedLegEndOfMonth",
+    "fixedLegFirstDate": "withFixedLegFirstDate",
+    "fixedLegNextToLastDate": "withFixedLegNextToLastDate",
+    "fixedLegDayCount": "withFixedLegDayCount",
+    "floatingLegTenor": "withFloatingLegTenor",
+    "floatingLegCalendar": "withFloatingLegCalendar",
+    "floatingLegConvention": "withFloatingLegConvention",
+    "floatingLegTerminationDateConvention": "withFloatingLegTerminationDateConvention",
+    "floatingLegDateGenRule": "withFloatingLegRule",
+    "floatingLegEndOfMonth": "withFloatingLegEndOfMonth",
+    "floatingLegFirstDate": "withFloatingLegFirstDate",
+    "floatingLegNextToLastDate": "withFloatingLegNextToLastDate",
+    "floatingLegDayCount": "withFloatingLegDayCount",
+    "floatingLegSpread": "withFloatingLegSpread",
+    "discountingTermStructure": "withDiscountingTermStructure",
+    "pricingEngine": "withPricingEngine",
+    "withIndexedCoupons": "withIndexedCoupons",
+    "atParCoupons": "withAtParCoupons",
+}
+
+def MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart, **kwargs):
     mv = _MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart)
-    if receiveFixed is not None:
-        mv.receiveFixed(receiveFixed)
-    if swapType is not None:
-        mv.withType(swapType)
-    if Nominal is not None:
-        mv.withNominal(Nominal)
-    if settlementDays is not None:
-        mv.withSettlementDays(settlementDays)
-    if effectiveDate is not None:
-        mv.withEffectiveDate(effectiveDate)
-    if terminationDate is not None:
-        mv.withTerminationDate(terminationDate)
-    if dateGenerationRule is not None:
-        mv.withRule(dateGenerationRule)
-    if fixedLegTenor is not None:
-        mv.withFixedLegTenor(fixedLegTenor)
-    if fixedLegCalendar is not None:
-        mv.withFixedLegCalendar(fixedLegCalendar)
-    if fixedLegConvention is not None:
-        mv.withFixedLegConvention(fixedLegConvention)
-    if fixedLegDayCount is not None:
-        mv.withFixedLegDayCount(fixedLegDayCount)
-    if floatingLegTenor is not None:
-        mv.withFloatingLegTenor(floatingLegTenor)
-    if floatingLegCalendar is not None:
-        mv.withFloatingLegCalendar(floatingLegCalendar)
-    if floatingLegConvention is not None:
-        mv.withFloatingLegConvention(floatingLegConvention)
-    if floatingLegDayCount is not None:
-        mv.withFloatingLegDayCount(floatingLegDayCount)
-    if floatingLegSpread is not None:
-        mv.withFloatingLegSpread(floatingLegSpread)
-    if discountingTermStructure is not None:
-        mv.withDiscountingTermStructure(discountingTermStructure)
-    if pricingEngine is not None:
-        mv.withPricingEngine(pricingEngine)
-    if fixedLegTerminationDateConvention is not None:
-        mv.withFixedLegTerminationDateConvention(fixedLegTerminationDateConvention)
-    if fixedLegDateGenRule is not None:
-        mv.withFixedLegRule(fixedLegDateGenRule)
-    if fixedLegEndOfMonth is not None:
-        mv.withFixedLegEndOfMonth(fixedLegEndOfMonth)
-    if fixedLegFirstDate is not None:
-        mv.withFixedLegFirstDate(fixedLegFirstDate)
-    if fixedLegNextToLastDate is not None:
-        mv.withFixedLegNextToLastDate(fixedLegNextToLastDate)
-    if floatingLegTerminationDateConvention is not None:
-        mv.withFloatingLegTerminationDateConvention(floatingLegTerminationDateConvention)
-    if floatingLegDateGenRule is not None:
-        mv.withFloatingLegRule(floatingLegDateGenRule)
-    if floatingLegEndOfMonth is not None:
-        mv.withFloatingLegEndOfMonth(floatingLegEndOfMonth)
-    if floatingLegFirstDate is not None:
-        mv.withFloatingLegFirstDate(floatingLegFirstDate)
-    if floatingLegNextToLastDate is not None:
-        mv.withFloatingLegNextToLastDate(floatingLegNextToLastDate)
-    if withIndexedCoupons is not None:
-        mv.withIndexedCoupons(withIndexedCoupons)
+    _SetSwapAttrs("MakeVanillaSwap", _MAKEVANILLA_METHODS, mv, kwargs)
     return mv.makeVanillaSwap()
+
+def _SetSwapAttrs(func_name, method_map, mv, attrs):
+    for name, value in attrs.items():
+        try:
+            method = method_map[name]
+        except KeyError:
+            raise TypeError(f"{func_name}() got an unexpected keyword argument {name!r}") from None
+        if value is not None:
+            getattr(mv, method)(value)
 }
 #endif
 
@@ -509,13 +485,7 @@ _MAKEOIS_METHODS = {
 
 def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days), **kwargs):
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
-    for name, value in kwargs.items():
-        try:
-            method = _MAKEOIS_METHODS[name]
-        except KeyError:
-            raise TypeError(f"MakeOIS() got an unexpected keyword argument {name!r}") from None
-        if value is not None:
-            getattr(mv, method)(value)
+    _SetSwapAttrs("MakeOIS", _MAKEOIS_METHODS, mv, kwargs)
     return mv.makeOIS()
 }
 #endif
