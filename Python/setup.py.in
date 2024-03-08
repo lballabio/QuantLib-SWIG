@@ -17,12 +17,15 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import os, sys, math
+import os, sys, math, platform
 from setuptools import setup, Extension
 from setuptools import Command
 from setuptools.command.build_ext import build_ext
 from setuptools.command.build import build
 from setuptools._distutils.ccompiler import get_default_compiler
+from wheel.bdist_wheel import bdist_wheel
+
+py_limited_api = (platform.python_implementation() == 'CPython')
 
 class test(Command):
     # Original version of this class posted
@@ -108,6 +111,8 @@ class my_build_ext(build_ext):
         self.include_dirs = self.include_dirs or []
         self.library_dirs = self.library_dirs or []
         self.define = self.define or []
+        if py_limited_api:
+            self.define += [('Py_LIMITED_API', '0x03080000')]
         self.libraries = self.libraries or []
 
         extra_compile_args = []
@@ -190,6 +195,17 @@ class my_build_ext(build_ext):
             ext.extra_link_args = ext.extra_link_args or []
             ext.extra_link_args += extra_link_args
 
+
+class my_bdist_wheel(bdist_wheel):
+    def get_tag(self):
+        python, abi, plat = super().get_tag()
+
+        if python.startswith("cp"):
+            return "cp38", "abi3", plat
+
+        return python, abi, plat
+
+
 classifiers = [
     'Development Status :: 5 - Production/Stable',
     'Environment :: Console',
@@ -223,13 +239,15 @@ a comprehensive software framework for quantitative finance.
       classifiers      = classifiers,
       py_modules       = ['QuantLib.__init__','QuantLib.QuantLib'],
       ext_modules      = [Extension("QuantLib._QuantLib",
-                                    ["QuantLib/quantlib_wrap.cpp"])
+                                    ["QuantLib/quantlib_wrap.cpp"],
+                                    py_limited_api=py_limited_api)
                          ],
       data_files       = [('share/doc/quantlib', ['../LICENSE.TXT'])],
       cmdclass         = {'test': test,
                           'wrap': my_wrap,
                           'build': my_build,
-                          'build_ext': my_build_ext
+                          'build_ext': my_build_ext,
+                          'bdist_wheel': my_bdist_wheel,
                           }
       )
 
