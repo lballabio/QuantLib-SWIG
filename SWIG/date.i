@@ -419,10 +419,38 @@ using QuantLib::DateParser;
 
 #if defined(SWIGPYTHON)
 %{
+#if defined(Py_LIMITED_API)
+
+static PyObject* pydate_type;
+static PyObject *pydate_yearstr, *pydate_monthstr, *pydate_daystr;
+
+static inline bool PyDate_Check(PyObject* obj) {
+    return PyObject_TypeCheck(obj, (PyTypeObject*)pydate_type);
+}
+
+static inline PyObject* PyDate_FromDate(int year, int month, int day) {
+    return PyObject_CallFunction(pydate_type, "iii", year, month, day);
+}
+
+#define PyDateTime_GET_YEAR(o)  PyLong_AsLong(PyObject_GetAttr(o, pydate_yearstr))
+#define PyDateTime_GET_MONTH(o) PyLong_AsLong(PyObject_GetAttr(o, pydate_monthstr))
+#define PyDateTime_GET_DAY(o)   PyLong_AsLong(PyObject_GetAttr(o, pydate_daystr))
+
+#else
 #include <datetime.h>
+#endif
 %}
 %init %{
+#if defined(Py_LIMITED_API)
+    PyObject* datetime_module = PyImport_ImportModule("datetime");
+    pydate_type = PyObject_GetAttrString(datetime_module, "date");
+    pydate_yearstr = PyUnicode_InternFromString("year");
+    pydate_monthstr = PyUnicode_InternFromString("month");
+    pydate_daystr = PyUnicode_InternFromString("day");
+    Py_DECREF(datetime_module);
+#else
     PyDateTime_IMPORT;
+#endif
 %}
 #endif
 
