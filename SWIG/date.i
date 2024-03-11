@@ -432,9 +432,17 @@ static inline PyObject* PyDate_FromDate(int year, int month, int day) {
     return PyObject_CallFunction(pydate_type, "iii", year, month, day);
 }
 
-#define PyDateTime_GET_YEAR(o)  PyLong_AsLong(PyObject_GetAttr(o, pydate_yearstr))
-#define PyDateTime_GET_MONTH(o) PyLong_AsLong(PyObject_GetAttr(o, pydate_monthstr))
-#define PyDateTime_GET_DAY(o)   PyLong_AsLong(PyObject_GetAttr(o, pydate_daystr))
+static inline long pyobject_getattr_long(PyObject* obj, PyObject* attr) {
+    PyObject* val = PyObject_GetAttr(obj, attr);
+    QL_REQUIRE(val != nullptr, "missing attribute");
+    long res = PyLong_AsLong(val);
+    Py_DECREF(val);
+    return res;
+}
+
+#define PyDateTime_GET_YEAR(o)  pyobject_getattr_long(o, pydate_yearstr)
+#define PyDateTime_GET_MONTH(o) pyobject_getattr_long(o, pydate_monthstr)
+#define PyDateTime_GET_DAY(o)   pyobject_getattr_long(o, pydate_daystr)
 
 #else
 #include <datetime.h>
