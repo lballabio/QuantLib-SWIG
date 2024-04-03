@@ -34,6 +34,7 @@
 
 %{
 using QuantLib::Swap;
+using QuantLib::FixedVsFloatingSwap;
 using QuantLib::VanillaSwap;
 using QuantLib::MakeVanillaSwap;
 using QuantLib::NonstandardSwap;
@@ -71,8 +72,42 @@ class Swap : public Instrument {
 void simplifyNotificationGraph(Swap& swap, bool unregisterCoupons = false);
 
 
+%shared_ptr(FixedVsFloatingSwap)
+class FixedVsFloatingSwap : public Swap {
+  private:
+    FixedVsFloatingSwap();
+  public:
+    Type type();
+    Real nominal();
+    std::vector<Real> nominals();
+
+    std::vector<Real> fixedNominals();
+    const Schedule& fixedSchedule();
+    Rate fixedRate();
+    const DayCounter& fixedDayCount();
+
+    std::vector<Real> floatingNominals();
+    const Schedule& floatingSchedule();
+    const ext::shared_ptr<IborIndex>& iborIndex();
+    Spread spread();
+    const DayCounter& floatingDayCount();
+
+    BusinessDayConvention paymentConvention() const;
+
+    const Leg& fixedLeg();
+    const Leg& floatingLeg();
+
+    Real fixedLegBPS();
+    Real fixedLegNPV();
+    Rate fairRate();
+
+    Real floatingLegBPS();
+    Real floatingLegNPV();
+    Spread fairSpread();
+};
+
 %shared_ptr(VanillaSwap)
-class VanillaSwap : public Swap {
+class VanillaSwap : public FixedVsFloatingSwap {
   public:
     %extend {
         VanillaSwap(Type type, Real nominal,
@@ -91,23 +126,6 @@ class VanillaSwap : public Swap {
                                    paymentConvention, withIndexedCoupons);
         }
     }
-    Type type() const;
-    Rate fairRate();
-    Spread fairSpread();
-    Real fixedLegBPS();
-    Real floatingLegBPS();
-    Real fixedLegNPV();
-    Real floatingLegNPV();
-    // Inspectors 
-    const Leg& fixedLeg();
-    const Leg& floatingLeg();
-    Real nominal();
-    const Schedule& fixedSchedule();
-    const Schedule& floatingSchedule();
-    Rate fixedRate();
-    Spread spread();
-    const DayCounter& floatingDayCount();
-    const DayCounter& fixedDayCount();
 };
 
 #if defined(SWIGPYTHON)
@@ -327,7 +345,7 @@ class FloatFloatSwap : public Swap {
 };
 
 %shared_ptr(OvernightIndexedSwap)
-class OvernightIndexedSwap : public Swap {
+class OvernightIndexedSwap : public FixedVsFloatingSwap {
   public:
     OvernightIndexedSwap(
             Type type,
@@ -372,22 +390,11 @@ class OvernightIndexedSwap : public Swap {
                          bool telescopicValueDates = false,
                          RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
-    Rate fixedLegBPS();
-    Real fixedLegNPV();
-    Real fairRate();
     Real overnightLegBPS();
     Real overnightLegNPV();
-    Spread fairSpread();
     // Inspectors
-    Type type();
-    Real nominal();
-    std::vector<Real> nominals();
     Frequency paymentFrequency();
-    Rate fixedRate();
-    const DayCounter& fixedDayCount();
     ext::shared_ptr<OvernightIndex> overnightIndex() const;
-    Spread spread();
-    const Leg& fixedLeg();
     const Leg& overnightLeg();
     RateAveraging::Type averagingMethod();
 };

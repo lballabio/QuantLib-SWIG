@@ -240,6 +240,7 @@ class OvernightIndexedCoupon : public FloatingRateCoupon {
     const std::vector<Time>& dt() const;
     const std::vector<Rate>& indexFixings() const;
     const std::vector<Date>& valueDates() const;
+    RateAveraging::Type averagingMethod() const;
 };
 
 %inline %{

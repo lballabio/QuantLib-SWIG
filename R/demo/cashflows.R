@@ -76,7 +76,7 @@ swap = MakeOIS_makeOIS(swapBuilder)
 # The fixed-rate coupons can be extracted from the swap using the `fixedLeg` method.  
 #
 
-fixed_leg = OvernightIndexedSwap_fixedLeg(swap)
+fixed_leg = swap$fixedLeg()
 CashFlows_maturityDate(fixed_leg)
 
 df = NULL
