@@ -58,7 +58,7 @@ class TermStructureTest(unittest.TestCase):
         settlement = self.calendar.advance(today, self.settlementDays, ql.Days)
         deposits = [
             ql.DepositRateHelper(
-                ql.QuoteHandle(ql.SimpleQuote(rate / 100)),
+                ql.makeQuoteHandle(rate / 100),
                 ql.Period(n, units),
                 self.settlementDays,
                 self.calendar,
@@ -76,7 +76,7 @@ class TermStructureTest(unittest.TestCase):
         ]
         swaps = [
             ql.SwapRateHelper(
-                ql.QuoteHandle(ql.SimpleQuote(rate / 100)),
+                ql.makeQuoteHandle(rate / 100),
                 ql.Period(years, ql.Years),
                 self.calendar,
                 ql.Annual,
@@ -150,7 +150,7 @@ class TermStructureTest(unittest.TestCase):
         freq = ql.Semiannual
         flatTs = ql.FlatForward(
             settlement,
-            ql.QuoteHandle(ql.SimpleQuote(0.0085)),
+            ql.makeQuoteHandle(0.0085),
             self.dayCounter)
         firstHandle = ql.YieldTermStructureHandle(flatTs)
         secondHandle = ql.YieldTermStructureHandle(self.termStructure)
@@ -178,8 +178,8 @@ class TermStructureTest(unittest.TestCase):
     def testUltimateForwardTermStructure(self):
         """Testing ultimate forward term structure"""
         settlement = self.termStructure.referenceDate()
-        ufr = ql.QuoteHandle(ql.SimpleQuote(0.06))
-        llfr = ql.QuoteHandle(ql.SimpleQuote(0.05))
+        ufr = ql.makeQuoteHandle(0.06)
+        llfr = ql.makeQuoteHandle(0.05)
         fsp = ql.Period(20, ql.Years)
         alpha = 0.05
         baseCrvHandle = ql.YieldTermStructureHandle(self.termStructure)
@@ -214,21 +214,21 @@ class TermStructureTest(unittest.TestCase):
         dividend_ts = ql.YieldTermStructureHandle(
             ql.FlatForward(
                 today,
-                ql.QuoteHandle(ql.SimpleQuote(0.055)),
+                ql.makeQuoteHandle(0.055),
                 self.dayCounter
             )
         )
         r_domestic_ts = ql.YieldTermStructureHandle(
             ql.FlatForward(
                 today,
-                ql.QuoteHandle(ql.SimpleQuote(-0.01)),
+                ql.makeQuoteHandle(-0.01),
                 self.dayCounter
             )
         )
         r_foreign_ts = ql.YieldTermStructureHandle(
             ql.FlatForward(
                 today,
-                ql.QuoteHandle(ql.SimpleQuote(0.02)),
+                ql.makeQuoteHandle(0.02),
                 self.dayCounter
             )
         )
@@ -236,7 +236,7 @@ class TermStructureTest(unittest.TestCase):
             ql.BlackConstantVol(
                 today,
                 self.calendar,
-                ql.QuoteHandle(ql.SimpleQuote(0.25)),
+                ql.makeQuoteHandle(0.25),
                 self.dayCounter
             )
         )
@@ -244,12 +244,12 @@ class TermStructureTest(unittest.TestCase):
             ql.BlackConstantVol(
                 today,
                 self.calendar,
-                ql.QuoteHandle(ql.SimpleQuote(0.05)),
+                ql.makeQuoteHandle(0.05),
                 self.dayCounter
             )
         )
-        rho = ql.QuoteHandle(ql.SimpleQuote(0.3))
-        s_0 = ql.QuoteHandle(ql.SimpleQuote(100.0))
+        rho = ql.makeQuoteHandle(0.3)
+        s_0 = ql.makeQuoteHandle(100.0)
 
         exercise = ql.EuropeanExercise(self.calendar.advance(today, 6, ql.Months))
         payoff = ql.PlainVanillaPayoff(ql.Option.Call, 95.0)

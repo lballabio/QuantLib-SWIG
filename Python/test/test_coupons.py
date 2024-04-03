@@ -31,7 +31,7 @@ RATE_AVERAGING_MAP = {ql.RateAveraging.Compound: 'Compounded',
 
 def flat_rate(rate):
     return ql.FlatForward(
-        2, CAL, ql.QuoteHandle(ql.SimpleQuote(rate)), ql.Actual365Fixed())
+        2, CAL, ql.makeQuoteHandle(rate), ql.Actual365Fixed())
 
 
 def create_ibor_leg(ibor_idx, start, end, payment_lag=0):

@@ -45,7 +45,7 @@ IR_FIXINGS = [(ql.Date(3, ql.January, 2023), 0.033),
 
 def flat_rate(rate):
     return ql.FlatForward(
-        2, CAL, ql.QuoteHandle(ql.SimpleQuote(rate)), ql.Actual365Fixed())
+        2, CAL, ql.makeQuoteHandle(rate), ql.Actual365Fixed())
 
 
 class ZeroCouponSwapTest(unittest.TestCase):
@@ -159,7 +159,7 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
 
         self.interest_handle = ql.YieldTermStructureHandle(flat_rate(0.03))
         self.dividend_handle = ql.YieldTermStructureHandle(flat_rate(0.0))
-        equity_spot = ql.QuoteHandle(ql.SimpleQuote(8690.0))
+        equity_spot = ql.makeQuoteHandle(8690.0)
 
         self.equity_idx = ql.EquityIndex(
             "eq_idx",

@@ -52,7 +52,7 @@ class AssetSwapTest(unittest.TestCase):
         self.swaptionVolatilityStructure = ql.SwaptionVolatilityStructureHandle(
             ql.ConstantSwaptionVolatility(self.today, ql.NullCalendar(), ql.Following, 0.2, ql.Actual365Fixed())
         )
-        self.meanReversionQuote = ql.QuoteHandle(ql.SimpleQuote(0.01))
+        self.meanReversionQuote = ql.makeQuoteHandle(0.01)
         self.cmspricer = ql.AnalyticHaganPricer(
             self.swaptionVolatilityStructure, ql.GFunctionFactory.Standard, self.meanReversionQuote
         )

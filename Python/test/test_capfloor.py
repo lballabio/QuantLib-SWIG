@@ -66,7 +66,7 @@ class CapFloorTest(unittest.TestCase):
         self.cap = ql.Cap(self.ibor_leg, [self.strike])
         self.cap_npv = 8.54
 
-        self.black_vol = ql.QuoteHandle(ql.SimpleQuote(0.6))
+        self.black_vol = ql.makeQuoteHandle(0.6)
 
     def tearDown(self):
         ql.Settings.instance().evaluationDate = ql.Date()
@@ -94,8 +94,7 @@ class CapFloorTest(unittest.TestCase):
 
         bpvol = self.black_vol.value() * self.flat_forward_rate
         bachelier_engine = ql.BachelierCapFloorEngine(self.term_structure_handle,
-                                                      ql.QuoteHandle(
-                                                         ql.SimpleQuote(bpvol)))
+                                                      ql.makeQuoteHandle(bpvol))
 
         self.cap.setPricingEngine(bachelier_engine)
 

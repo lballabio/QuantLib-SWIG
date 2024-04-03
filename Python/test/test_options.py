@@ -41,7 +41,7 @@ class OptionsTest(unittest.TestCase):
         a = 0.00883
         sig = 0.00631
 
-        underlying = ql.QuoteHandle(ql.SimpleQuote(s0))
+        underlying = ql.makeQuoteHandle(s0)
 
         option = ql.VanillaOption(
             ql.PlainVanillaPayoff(ql.Option.Call, s0),
@@ -86,7 +86,7 @@ class OptionsTest(unittest.TestCase):
         expected = 40.028973
 
         s0 = 100
-        underlying = ql.QuoteHandle(ql.SimpleQuote(s0))
+        underlying = ql.makeQuoteHandle(s0)
 
         hull_white_model = ql.HullWhite(r, a, sig)
         heston_model = ql.HestonModel(

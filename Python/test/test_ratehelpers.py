@@ -29,7 +29,7 @@ class FixedRateBondHelperTest(unittest.TestCase):
         self.settlement_days = 3
         self.face_amount = 100.0
         self.redemption = 100.0
-        self.quote_handle = ql.QuoteHandle(ql.SimpleQuote(100.0))
+        self.quote_handle = ql.makeQuoteHandle(100.0)
 
         self.issue_date = ql.Date(2, 1, 2008)
         self.maturity_date = ql.Date(2, 1, 2018)
@@ -339,7 +339,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
         fxSwapHelpers = [
             ql.FxSwapRateHelper(
-                ql.QuoteHandle(ql.SimpleQuote(fx_swaps[(n, unit)])),
+                ql.makeQuoteHandle(fx_swaps[(n, unit)]),
                 ql.QuoteHandle(spotFx),
                 ql.Period(n, unit),
                 spot_date_lag,
@@ -482,8 +482,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         # Settlement should be on a day where all three centers are operating
         #  and follow EndOfMonth rule
         on_rate_helper = ql.FxSwapRateHelper(
-            ql.QuoteHandle(ql.SimpleQuote(fwd_points)),
-            ql.QuoteHandle(ql.SimpleQuote(self.fx_spot_quote_EURPLN)),
+            ql.makeQuoteHandle(fwd_points),
+            ql.makeQuoteHandle(self.fx_spot_quote_EURPLN),
             on_period,
             fixing_days,
             joint_calendar,
@@ -546,8 +546,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         trading_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         on_rate_helper = ql.FxSwapRateHelper(
-            ql.QuoteHandle(ql.SimpleQuote(fwd_points)),
-            ql.QuoteHandle(ql.SimpleQuote(self.fx_spot_quote_EURUSD)),
+            ql.makeQuoteHandle(fwd_points),
+            ql.makeQuoteHandle(self.fx_spot_quote_EURUSD),
             on_period,
             fixing_days,
             calendar,
@@ -586,8 +586,8 @@ class FxSwapRateHelperTest(unittest.TestCase):
         trading_calendar = ql.UnitedStates(ql.UnitedStates.GovernmentBond)
 
         rate_helper = ql.FxSwapRateHelper(
-            ql.QuoteHandle(ql.SimpleQuote(fwd_points)),
-            ql.QuoteHandle(ql.SimpleQuote(self.fx_spot_quote_EURUSD)),
+            ql.makeQuoteHandle(fwd_points),
+            ql.makeQuoteHandle(self.fx_spot_quote_EURUSD),
             period,
             fixing_days,
             calendar,
@@ -606,7 +606,7 @@ class FxSwapRateHelperTest(unittest.TestCase):
 
 def flat_rate(rate):
     return ql.FlatForward(
-        0, ql.NullCalendar(), ql.QuoteHandle(ql.SimpleQuote(rate)), ql.Actual365Fixed())
+        0, ql.NullCalendar(), ql.makeQuoteHandle(rate), ql.Actual365Fixed())
 
 
 class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
@@ -649,7 +649,7 @@ class CrossCurrencyBasisSwapRateHelperTest(unittest.TestCase):
             is_fx_base_ccy_collateral_ccy,
             is_basis_on_fx_base_ccy_leg):
         tenor, rate = quote_tuple
-        quote_handle = ql.QuoteHandle(ql.SimpleQuote(rate * self.basis_point))
+        quote_handle = ql.makeQuoteHandle(rate * self.basis_point)
         return ql.ConstNotionalCrossCurrencyBasisSwapRateHelper(
             quote_handle,
             tenor,

@@ -104,9 +104,9 @@ ql.Settings.instance().evaluationDate = refDate
 # For the volatility we assume a flat swaption volatility at 20%.
 
 # %%
-forward6mQuote = ql.QuoteHandle(ql.SimpleQuote(0.025))
-oisQuote = ql.QuoteHandle(ql.SimpleQuote(0.02))
-volQuote = ql.QuoteHandle(ql.SimpleQuote(0.2))
+forward6mQuote = ql.makeQuoteHandle(0.025)
+oisQuote = ql.makeQuoteHandle(0.02)
+volQuote = ql.makeQuoteHandle(0.2)
 
 # %%
 dc = ql.Actual365Fixed()
@@ -172,8 +172,8 @@ swaption = ql.NonstandardSwaption(underlying,exercise,ql.Settlement.Physical)
 
 # %%
 stepDates = exerciseDates[:-1]
-sigmas = [ql.QuoteHandle(ql.SimpleQuote(0.01)) for x in range(1, 10)]
-reversion = [ql.QuoteHandle(ql.SimpleQuote(0.01))]
+sigmas = [ql.makeQuoteHandle(0.01) for x in range(1, 10)]
+reversion = [ql.makeQuoteHandle(0.01)]
 
 # %% [markdown]
 # The model's curve is set to the 6m forward curve. Note that the model adapts automatically to other curves where appropriate (e.g. if an index requires a different forwarding curve) or where explicitly specified (e.g. in a swaption pricing engine).
@@ -182,7 +182,7 @@ reversion = [ql.QuoteHandle(ql.SimpleQuote(0.01))]
 gsr = ql.Gsr(t0_curve, stepDates, sigmas, reversion)
 swaptionEngine = ql.Gaussian1dSwaptionEngine(gsr, 64, 7.0, True, False, t0_Ois)
 nonstandardSwaptionEngine = ql.Gaussian1dNonstandardSwaptionEngine(
-    gsr, 64, 7.0, True, False, ql.QuoteHandle(ql.SimpleQuote(0)), t0_Ois)
+    gsr, 64, 7.0, True, False, ql.makeQuoteHandle(0.0), t0_Ois)
 
 # %%
 swaption.setPricingEngine(nonstandardSwaptionEngine)
@@ -370,7 +370,7 @@ underlying4 = ql.FloatFloatSwap(ql.Swap.Payer,
 # %%
 swaption4 = ql.FloatFloatSwaption(underlying4, exercise)
 floatSwaptionEngine = ql.Gaussian1dFloatFloatSwaptionEngine(
-    gsr, 64, 7.0, True, False, ql.QuoteHandle(ql.SimpleQuote(0)), t0_Ois, True)
+    gsr, 64, 7.0, True, False, ql.makeQuoteHandle(0.0), t0_Ois, True)
 swaption4.setPricingEngine(floatSwaptionEngine)
 
 # %% [markdown]
@@ -379,7 +379,7 @@ swaption4.setPricingEngine(floatSwaptionEngine)
 # %%
 leg0 = underlying4.leg(0)
 leg1 = underlying4.leg(1)
-reversionQuote = ql.QuoteHandle(ql.SimpleQuote(0.01))
+reversionQuote = ql.makeQuoteHandle(0.01)
 swaptionVolHandle = ql.SwaptionVolatilityStructureHandle(swaptionVol)
 cmsPricer = ql.LinearTsrPricer(swaptionVolHandle, reversionQuote)
 iborPricer = ql.BlackIborCouponPricer()
@@ -445,7 +445,7 @@ swaptionEngineMarkov = ql.Gaussian1dSwaptionEngine(markov, 8, 5.0, True,
 
 # %%
 floatEngineMarkov = ql.Gaussian1dFloatFloatSwaptionEngine(
-    markov, 16, 7.0, True, False, ql.QuoteHandle(ql.SimpleQuote(0)), t0_Ois, True)
+    markov, 16, 7.0, True, False, ql.makeQuoteHandle(0.0), t0_Ois, True)
 
 # %% [markdown]
 # The option npv is the markov model is:

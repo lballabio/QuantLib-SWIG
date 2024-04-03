@@ -191,7 +191,7 @@ def build_linear_swaption_cube(
         swap_index_base,
         short_swap_index_base=None,
         vega_weighted_smile_fit=False):
-    vol_spreads = [[ql.QuoteHandle(ql.SimpleQuote(v)) for v in row]
+    vol_spreads = [[ql.makeQuoteHandle(v) for v in row]
                    for row in vol_spreads]
     cube = ql.InterpolatedSwaptionVolatilityCube(
         ql.SwaptionVolatilityStructureHandle(volatility_matrix),
@@ -210,10 +210,10 @@ def sabr_parameters_guess(number_of_options, number_of_swaps):
     n_elements = number_of_options * number_of_swaps
     guess = n_elements * [0]
     for n in range(n_elements):
-        guess[n] = (ql.QuoteHandle(ql.SimpleQuote(0.2)),
-                    ql.QuoteHandle(ql.SimpleQuote(0.5)),
-                    ql.QuoteHandle(ql.SimpleQuote(0.4)),
-                    ql.QuoteHandle(ql.SimpleQuote(0.0)))
+        guess[n] = (ql.makeQuoteHandle(0.2),
+                    ql.makeQuoteHandle(0.5),
+                    ql.makeQuoteHandle(0.4),
+                    ql.makeQuoteHandle(0.0))
     return guess
 
 
@@ -228,7 +228,7 @@ def build_sabr_swaption_cube(
         vega_weighted_smile_fit=False,
         is_parameter_fixed=(False, False, False, False),
         is_atm_calibrated=True):
-    v_spreads = [[ql.QuoteHandle(ql.SimpleQuote(v)) for v in row]
+    v_spreads = [[ql.makeQuoteHandle(v) for v in row]
                  for row in vol_spreads]
     guess = sabr_parameters_guess(
         len(spread_opt_tenors), len(spread_swap_tenors))
@@ -578,7 +578,7 @@ class AndreasenHugeVolatilityTest(unittest.TestCase):
 
         today = ql.Settings.instance().evaluationDate
 
-        spot = ql.QuoteHandle(ql.SimpleQuote(100))
+        spot = ql.makeQuoteHandle(100)
 
         dc = ql.Actual365Fixed()
         qTS = ql.YieldTermStructureHandle(ql.FlatForward(today, 0.025, dc))

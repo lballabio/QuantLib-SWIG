@@ -50,7 +50,7 @@ maturities = [calendar.adjust(todaysDate + x, ql.Following) for x in tenors]
 
 instruments = [
     ql.SpreadCdsHelper(
-        ql.QuoteHandle(ql.SimpleQuote(s)),
+        ql.makeQuoteHandle(s),
         tenor,
         0,
         calendar,

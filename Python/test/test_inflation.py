@@ -65,7 +65,7 @@ def create_inflation_swap_helper(
         business_day_convention=BDC,
         day_counter=DAY_COUNTER):
     maturity = CAL.advance(reference_date, inflation_data[0])
-    quote = ql.QuoteHandle(ql.SimpleQuote(inflation_data[1]))
+    quote = ql.makeQuoteHandle(inflation_data[1])
     return ql.ZeroCouponInflationSwapHelper(
         quote,
         observation_lag,

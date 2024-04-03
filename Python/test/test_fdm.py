@@ -373,7 +373,7 @@ class FdmTest(unittest.TestCase):
 
         exercise = ql.AmericanExercise(todaysDate, maturityDate)
 
-        spot = ql.QuoteHandle(ql.SimpleQuote(100.0))
+        spot = ql.makeQuoteHandle(100.0)
         volatility = ql.BlackConstantVol(todaysDate, ql.TARGET(), 0.20, dc)
 
         process = ql.BlackScholesMertonProcess(
@@ -522,7 +522,7 @@ class FdmTest(unittest.TestCase):
         s0  = 100
 
         process = ql.BlackScholesMertonProcess(
-            ql.QuoteHandle(ql.SimpleQuote(s0)),
+            ql.makeQuoteHandle(s0),
             ql.YieldTermStructureHandle(
                 ql.FlatForward(todaysDate, q, dc)),
             ql.YieldTermStructureHandle(

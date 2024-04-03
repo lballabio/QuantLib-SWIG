@@ -57,7 +57,7 @@ class AmericanQuantoOptionTest(unittest.TestCase):
         volTS = ql.BlackConstantVol(self.today, ql.TARGET(), 0.3, self.dc)
 
         bsmProcess = ql.BlackScholesMertonProcess(
-            ql.QuoteHandle(ql.SimpleQuote(100)),
+            ql.makeQuoteHandle(100),
             ql.YieldTermStructureHandle(self.divYieldTS),
             ql.YieldTermStructureHandle(self.domesticTS),
             ql.BlackVolTermStructureHandle(volTS))
@@ -81,7 +81,7 @@ class AmericanQuantoOptionTest(unittest.TestCase):
             ql.HestonProcess(
                 ql.YieldTermStructureHandle(self.domesticTS),
                 ql.YieldTermStructureHandle(self.divYieldTS),
-                ql.QuoteHandle(ql.SimpleQuote(100)),
+                ql.makeQuoteHandle(100),
                 0.09, 1.0, 0.09, 1e-4, 0.0))
 
         fdmHestonVanillaEngine = ql.FdHestonVanillaEngine(

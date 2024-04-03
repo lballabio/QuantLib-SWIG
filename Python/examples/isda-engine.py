@@ -142,7 +142,7 @@ for termDate in termDates:
 
             probabilityCurve.linkTo(
                 ql.FlatHazardRate(0,ql.WeekendsOnly(),
-                                  ql.QuoteHandle(ql.SimpleQuote(h)),
+                                  ql.makeQuoteHandle(h),
                                   ql.Actual365Fixed()))
 
             engine = ql.IsdaCdsEngine(probabilityCurve,recovery,discountCurve)
