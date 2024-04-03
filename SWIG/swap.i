@@ -173,7 +173,7 @@ class MakeVanillaSwap {
 _MAKEVANILLA_METHODS = {
     "receiveFixed": "receiveFixed",
     "swapType": "withType",
-    "Nominal": "withNominal",
+    "nominal": "withNominal",
     "settlementDays": "withSettlementDays",
     "effectiveDate": "withEffectiveDate",
     "terminationDate": "withTerminationDate",
