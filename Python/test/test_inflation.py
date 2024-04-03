@@ -129,11 +129,9 @@ def build_inflation_term_structure(
     base_zero_rate = zero_coupon_swaps_data[0][1]
     cpi_term_structure = ql.PiecewiseZeroInflation(
         reference_date,
-        CAL,
-        DAY_COUNTER,
-        observation_lag,
+        inflation_index.lastFixingDate(),
         inflation_index.frequency(),
-        base_zero_rate,
+        DAY_COUNTER,
         helpers)
     if include_seasonality:
         seasonality = construct_seasonality(reference_date)
