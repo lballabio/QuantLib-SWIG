@@ -52,6 +52,7 @@ class BondPrice {
     BondPrice(Real amount, Type type);
     Real amount() const;
     Type type() const;
+    bool isValid() const;
 };
 
 %shared_ptr(Bond)
@@ -103,6 +104,14 @@ class Bond : public Instrument {
                Frequency freq,
                Real accuracy = 1.0e-8,
                Size maxEvaluations = 100);
+    Real yield(BondPrice price,
+               const DayCounter& dc,
+               Compounding compounding,
+               Frequency freq,
+               const Date& settlement = Date(),
+               Real accuracy = 1.0e-8,
+               Size maxEvaluations = 100,
+               Real guess = 0.05);
     Real yield(Real cleanPrice,
                const DayCounter& dc,
                Compounding compounding,
