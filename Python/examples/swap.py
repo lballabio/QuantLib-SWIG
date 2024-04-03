@@ -129,7 +129,7 @@ futuresHelpers = [
         ql.ModifiedFollowing,
         True,
         dayCounter,
-        ql.QuoteHandle(ql.SimpleQuote(0.0)),
+        ql.makeQuoteHandle(0.0),
     )
     for d in futures.keys()
 ]

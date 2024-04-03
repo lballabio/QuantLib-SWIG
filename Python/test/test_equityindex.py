@@ -28,7 +28,7 @@ VALUATION_DATE = CAL.adjust(ql.Date(31, ql.January, 2023))
 
 def flat_rate(rate):
     return ql.FlatForward(
-        2, CAL, ql.QuoteHandle(ql.SimpleQuote(rate)), DCT)
+        2, CAL, ql.makeQuoteHandle(rate), DCT)
 
 
 class EquityIndexTest(unittest.TestCase):
@@ -37,7 +37,7 @@ class EquityIndexTest(unittest.TestCase):
 
         self.interest_handle = ql.YieldTermStructureHandle(flat_rate(0.03))
         self.dividend_handle = ql.YieldTermStructureHandle(flat_rate(0.01))
-        spot_handle = ql.QuoteHandle(ql.SimpleQuote(8690.0))
+        spot_handle = ql.makeQuoteHandle(8690.0)
 
         ql.IndexManager.instance().clearHistory("eq_idx")
         self.equity_idx = ql.EquityIndex(

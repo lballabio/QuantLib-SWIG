@@ -65,7 +65,7 @@ ibor_leg = ql.IborLeg([1000000], schedule, iborIndex)
 
 strike = 0.02
 cap = ql.Cap(ibor_leg, [strike])
-vols = ql.QuoteHandle(ql.SimpleQuote(0.547295))
+vols = ql.makeQuoteHandle(0.547295)
 engine = ql.BlackCapFloorEngine(ts_handle, vols)
 cap.setPricingEngine(engine)
 print("Value of Caps given constant volatility:", cap.NPV())

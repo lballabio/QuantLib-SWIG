@@ -27,7 +27,7 @@ class CmsTest(unittest.TestCase):
         ql.Settings.instance().evaluationDate = self.referenceDate
         self.termStructure = ql.RelinkableYieldTermStructureHandle()
         self.termStructure.linkTo(
-            ql.FlatForward(self.referenceDate, ql.QuoteHandle(ql.SimpleQuote(0.05)), ql.Actual365Fixed())
+            ql.FlatForward(self.referenceDate, ql.makeQuoteHandle(0.05), ql.Actual365Fixed())
         )
         self.yieldCurveModels = []
         self.numericalPricers = []
@@ -95,7 +95,7 @@ class CmsTest(unittest.TestCase):
         for i in range(self.nRows):
             self.volSpreadsRow = []
             for j in range(self.nCols):
-                self.volSpreadsRow.append(ql.QuoteHandle(ql.SimpleQuote(self.volSpreadsMatrix[i][j])))
+                self.volSpreadsRow.append(ql.makeQuoteHandle(self.volSpreadsMatrix[i][j]))
             self.volSpreads.append(self.volSpreadsRow)
 
         self.iborIndex = ql.Euribor6M(self.termStructure)
@@ -133,7 +133,7 @@ class CmsTest(unittest.TestCase):
         for i in range(self.nRows):
             self.guessRow = []
             for j in range(4):
-                self.guessRow.append(ql.QuoteHandle(ql.SimpleQuote(self.guessMatrix[i][j])))
+                self.guessRow.append(ql.makeQuoteHandle(self.guessMatrix[i][j]))
             self.guess.append(self.guessRow)
 
         self.isParameterFixed = [False, True, False, False]
@@ -164,7 +164,7 @@ class CmsTest(unittest.TestCase):
             ql.GFunctionFactory.NonParallelShifts,
         ]
 
-        self.zeroMeanRev = ql.QuoteHandle(ql.SimpleQuote(0.0))
+        self.zeroMeanRev = ql.makeQuoteHandle(0.0)
 
         self.numericalPricers = {}
         self.analyticPricers = {}

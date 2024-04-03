@@ -65,12 +65,12 @@ def swap_pv01(underlying):
 
 
 def make_const_black_vol_engine(discount_handle, volatility):
-    h = ql.QuoteHandle(ql.SimpleQuote(volatility))
+    h = ql.makeQuoteHandle(volatility)
     return ql.BlackSwaptionEngine(discount_handle, h)
 
 
 def make_const_bachelier_vol_engine(discount_handle, volatility):
-    h = ql.QuoteHandle(ql.SimpleQuote(volatility))
+    h = ql.makeQuoteHandle(volatility)
     return ql.BachelierSwaptionEngine(discount_handle, h)
 
 
@@ -88,7 +88,7 @@ class SwaptionTest(unittest.TestCase):
         projection_curve_handle.linkTo(projection_curve)
 
         self.discount_handle = ql.YieldTermStructureHandle(ql.FlatForward(
-            self.today, ql.QuoteHandle(ql.SimpleQuote(0.0085)), ql.Actual365Fixed()))
+            self.today, ql.makeQuoteHandle(0.0085), ql.Actual365Fixed()))
         self.swap_engine = ql.DiscountingSwapEngine(self.discount_handle)
 
         self.idx = ql.Euribor6M(projection_curve_handle)

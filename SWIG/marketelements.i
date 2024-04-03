@@ -29,6 +29,7 @@
 
 %{
 using QuantLib::Quote;
+using QuantLib::makeQuoteHandle;
 %}
 
 %shared_ptr(Quote)
@@ -43,6 +44,8 @@ class Quote : public Observable {
 
 %template(QuoteHandle) Handle<Quote>;
 %template(RelinkableQuoteHandle) RelinkableHandle<Quote>;
+
+RelinkableHandle<Quote> makeQuoteHandle(Real value);
 
 // actual quotes
 %{

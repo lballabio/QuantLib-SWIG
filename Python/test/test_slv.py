@@ -28,7 +28,7 @@ class SlvTest(unittest.TestCase):
         self.dc = ql.Actual365Fixed()
         self.riskFreeRate = ql.YieldTermStructureHandle(ql.FlatForward(self.settlementDate, 0.05, self.dc))
         self.dividendYield = ql.YieldTermStructureHandle(ql.FlatForward(self.settlementDate, 0.025, self.dc))
-        self.underlying = ql.QuoteHandle(ql.SimpleQuote(100.0))
+        self.underlying = ql.makeQuoteHandle(100.0)
 
     def tearDown(self):
         ql.Settings.instance().evaluationDate = ql.Date()
