@@ -76,8 +76,8 @@ class InflationTermStructure : public TermStructure {
     virtual Frequency frequency() const;
     virtual Rate baseRate() const;
     virtual Date baseDate() const;
-    void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality =
-                                            ext::shared_ptr<Seasonality>());
+    bool hasExplicitBaseDate() const;
+    void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality = {});
     ext::shared_ptr<Seasonality> seasonality() const;
     bool hasSeasonality() const;
 };
@@ -159,15 +159,16 @@ class InflationIndex : public Index {
 %shared_ptr(ZeroInflationIndex)
 class ZeroInflationIndex : public InflationIndex {
   public:
-      ZeroInflationIndex(const std::string& familyName,
-                         const Region& region,
-                         bool revised,
-                         Frequency frequency,
-                         const Period& availabilityLag,
-                         const Currency& currency,
-                         const Handle<ZeroInflationTermStructure>& h = {});
-      Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
-      ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
+    ZeroInflationIndex(const std::string& familyName,
+                       const Region& region,
+                       bool revised,
+                       Frequency frequency,
+                       const Period& availabilityLag,
+                       const Currency& currency,
+                       const Handle<ZeroInflationTermStructure>& h = {});
+    Date lastFixingDate() const;
+    Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
+    ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
 };
 
 %inline %{
@@ -628,6 +629,16 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
   public:
     PiecewiseZeroInflationCurve(
               const Date& referenceDate,
+              Date baseDate,
+              Frequency frequency,
+              const DayCounter& dayCounter,
+              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
+              const ext::shared_ptr<Seasonality>& seasonality = {},
+              Real accuracy = 1.0e-12,
+              const Interpolator& i = Interpolator());
+
+    PiecewiseZeroInflationCurve(
+              const Date& referenceDate,
               const Calendar& calendar,
               const DayCounter& dayCounter,
               const Period& lag,
@@ -651,9 +662,21 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
 template <class Interpolator>
 class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") PiecewiseYoYInflationCurve;
+    // %feature("kwargs") PiecewiseYoYInflationCurve;
     #endif
   public:
+    PiecewiseYoYInflationCurve(
+              const Date& referenceDate,
+              Date baseDate,
+              Rate baseYoYRate,
+              Frequency frequency,
+              bool indexIsInterpolated,
+              const DayCounter& dayCounter,
+              const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
+              const ext::shared_ptr<Seasonality>& seasonality = {},
+              Real accuracy = 1.0e-12,
+              const Interpolator& i = Interpolator());
+
     PiecewiseYoYInflationCurve(
               const Date& referenceDate,
               const Calendar& calendar,
@@ -1011,6 +1034,14 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
     //%feature("kwargs") InterpolatedZeroInflationCurve;
   public:
     InterpolatedZeroInflationCurve(const Date& referenceDate,
+                                   const std::vector<Date>& dates,
+                                   const std::vector<Rate>& rates,
+                                   Frequency frequency,
+                                   const DayCounter& dayCounter,
+                                   const ext::shared_ptr<Seasonality>& seasonality = {},
+                                   const Interpolator &interpolator = Interpolator());
+
+    InterpolatedZeroInflationCurve(const Date& referenceDate,
                                    const Calendar& calendar,
                                    const DayCounter& dayCounter,
                                    const Period& lag,
@@ -1029,8 +1060,17 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
 
 template <class Interpolator>
 class InterpolatedYoYInflationCurve : public YoYInflationTermStructure {
-    %feature("kwargs") InterpolatedYoYInflationCurve;
+    // %feature("kwargs") InterpolatedYoYInflationCurve;
   public:
+    InterpolatedYoYInflationCurve(const Date& referenceDate,
+                                  const std::vector<Date>& dates,
+                                  const std::vector<Rate>& rates,
+                                  Frequency frequency,
+                                  bool indexIsInterpolated,
+                                  const DayCounter& dayCounter,
+                                  const ext::shared_ptr<Seasonality>& seasonality = {},
+                                  const Interpolator& interpolator = Interpolator());
+
     InterpolatedYoYInflationCurve(const Date& referenceDate,
                                    const Calendar& calendar,
                                    const DayCounter& dayCounter,
