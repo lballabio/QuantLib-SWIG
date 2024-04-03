@@ -1406,7 +1406,7 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
         FdmAffineModelSwapInnerValue(
             const ext::shared_ptr<ModelType>& disModel,
             const ext::shared_ptr<ModelType>& fwdModel,
-            const ext::shared_ptr<VanillaSwap>& swap,
+            const ext::shared_ptr<FixedVsFloatingSwap>& swap,
             const std::vector<Time>& exerciseTimes,
             const std::vector<Date>& exerciseDates,
             const ext::shared_ptr<FdmMesher>& mesher,
@@ -1427,7 +1427,7 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
     FdmAffineModelSwapInnerValue(
         const ext::shared_ptr<ModelType>& disModel,
         const ext::shared_ptr<ModelType>& fwdModel,
-        const ext::shared_ptr<VanillaSwap>& swap,
+        const ext::shared_ptr<FixedVsFloatingSwap>& swap,
         const std::map<Time, Date>& exerciseDates,
         const ext::shared_ptr<FdmMesher>& mesher,
         Size direction);
