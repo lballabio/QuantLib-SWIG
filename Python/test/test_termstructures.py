@@ -206,6 +206,51 @@ class TermStructureTest(unittest.TestCase):
                 second=actualForward,
                 delta=1.0e-12,
                 msg=failMsg)
+            
+    def testInterpolatedPiecewiseZeroSpreadedTermStructure(self):
+        """Testing different interpolation schemes for zero spreaded term structure"""
+        h = ql.RelinkableYieldTermStructureHandle()
+        h.linkTo(self.termStructure)
+        spreads = [(1, 0.005), (2, 0.008), (3, 0.0103), (4, 0.0145), (5, 0.025)]
+        dates, quotes = zip(*[(h.referenceDate() + ql.Period(t, ql.Years), 
+                               ql.QuoteHandle(ql.SimpleQuote(s)))
+                              for t, s in spreads])
+        args = [h, quotes, dates]
+        constructors = [ql.SpreadedLinearZeroInterpolatedTermStructure,
+                        ql.SpreadedBackwardFlatZeroInterpolatedTermStructure,
+                        ql.SpreadedCubicZeroInterpolatedTermStructure,
+                        ql.SpreadedKrugerZeroInterpolatedTermStructure,
+                        ql.SpreadedSplineCubicZeroInterpolatedTermStructure,
+                        ql.SpreadedConvexMonotoneZeroInterpolatedTermStructure]
+        for constructor in constructors:
+            spreadedTs = constructor(*args)
+            for d, r in zip(dates, quotes):
+                print(d)
+                print(constructor)
+                expected = r.value()
+                
+                zeroFromSpreadTS = spreadedTs.zeroRate(
+                    d, self.dayCounter, ql.Continuous, ql.NoFrequency).rate()
+                zeroFromBaseTs = h.zeroRate(
+                    d, self.dayCounter, ql.Continuous, ql.NoFrequency).rate()
+                actual = zeroFromSpreadTS - zeroFromBaseTs
+
+                failMsg = """ Interpolated piecewise zero spreaded term structure 
+                              zero rate replication failed for:
+                            maturity: {maturity}
+                            expected zero rate: {expected}
+                            actual zero rate: {actual}
+                      """.format(maturity=d,
+                                 expected=0,
+                                 actual=actual,
+                                 totalSpreadedRate=zeroFromSpreadTS,
+                                 totalBaseRate=zeroFromBaseTs)
+                self.assertAlmostEqual(
+                    first=expected,
+                    second=actual,
+                    delta=1.0e-12,
+                    msg=failMsg)
+
 
     def testQuantoTermStructure(self):
         """Testing quanto term structure"""

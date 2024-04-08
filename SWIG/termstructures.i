@@ -149,7 +149,6 @@ export_ipzsts_instance(SpreadedBackwardFlatZeroInterpolatedTermStructure, Backwa
 export_ipzsts_instance(SpreadedCubicZeroInterpolatedTermStructure, Cubic)
 export_ipzsts_instance(SpreadedKrugerZeroInterpolatedTermStructure, Kruger)
 export_ipzsts_instance(SpreadedSplineCubicZeroInterpolatedTermStructure, SplineCubic)
-export_ipzsts_instance(SpreadedConvexMonotoneZeroInterpolatedTermStructure, ConvexMonotone)
 
 // flat forward curve
 
