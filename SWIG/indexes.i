@@ -483,6 +483,7 @@ export_overnight_instance(Nzocr);
 export_overnight_instance(Sofr);
 export_overnight_instance(Sonia);
 export_overnight_instance(Swestr);
+export_overnight_instance(Tona);
 
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);
