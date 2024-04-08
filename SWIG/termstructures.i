@@ -146,7 +146,10 @@ class Name : public YieldTermStructure {
 export_ipzsts_instance(PiecewiseZeroSpreadedTermStructure, Linear)
 export_ipzsts_instance(SpreadedLinearZeroInterpolatedTermStructure, Linear)
 export_ipzsts_instance(SpreadedBackwardFlatZeroInterpolatedTermStructure, BackwardFlat)
-
+export_ipzsts_instance(SpreadedCubicZeroInterpolatedTermStructure, Cubic)
+export_ipzsts_instance(SpreadedKrugerZeroInterpolatedTermStructure, Kruger)
+export_ipzsts_instance(SpreadedSplineCubicZeroInterpolatedTermStructure, SplineCubic)
+export_ipzsts_instance(SpreadedConvexMonotoneZeroInterpolatedTermStructure, ConvexMonotone)
 
 // flat forward curve
 
