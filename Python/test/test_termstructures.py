@@ -225,8 +225,6 @@ class TermStructureTest(unittest.TestCase):
         for constructor in constructors:
             spreadedTs = constructor(*args)
             for d, r in zip(dates, quotes):
-                print(d)
-                print(constructor)
                 expected = r.value()
                 
                 zeroFromSpreadTS = spreadedTs.zeroRate(
