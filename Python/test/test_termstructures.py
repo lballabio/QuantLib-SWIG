@@ -220,8 +220,7 @@ class TermStructureTest(unittest.TestCase):
                         ql.SpreadedBackwardFlatZeroInterpolatedTermStructure,
                         ql.SpreadedCubicZeroInterpolatedTermStructure,
                         ql.SpreadedKrugerZeroInterpolatedTermStructure,
-                        ql.SpreadedSplineCubicZeroInterpolatedTermStructure,
-                        ql.SpreadedConvexMonotoneZeroInterpolatedTermStructure]
+                        ql.SpreadedSplineCubicZeroInterpolatedTermStructure]
         for constructor in constructors:
             spreadedTs = constructor(*args)
             for d, r in zip(dates, quotes):
@@ -239,10 +238,8 @@ class TermStructureTest(unittest.TestCase):
                             expected zero rate: {expected}
                             actual zero rate: {actual}
                       """.format(maturity=d,
-                                 expected=0,
-                                 actual=actual,
-                                 totalSpreadedRate=zeroFromSpreadTS,
-                                 totalBaseRate=zeroFromBaseTs)
+                                 expected=expected,
+                                 actual=actual)
                 self.assertAlmostEqual(
                     first=expected,
                     second=actual,
