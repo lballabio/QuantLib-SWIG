@@ -34,7 +34,7 @@ import pandas as pd
 interactive = 'get_ipython' in globals()
 
 trade_date = ql.Date(21,5,2009)
-ql.Settings.instance().setEvaluationDate(trade_date)
+ql.Settings.instance().evaluationDate = trade_date
 
 ql.IborCoupon.createAtParCoupons()
 
@@ -69,7 +69,7 @@ isda_ibor = ql.IborIndex('IsdaIbor',3*ql.Period(ql.Monthly),2,
 isdaRateHelpers = isdaRateHelpers + [
     ql.SwapRateHelper(swap_quotes[i],swap_tenors[i]*ql.Period(ql.Annual),
                       ql.WeekendsOnly(),ql.Semiannual,ql.ModifiedFollowing,
-                      ql.Thirty360(),isda_ibor)
+                      ql.Thirty360(ql.Thirty360.BondBasis),isda_ibor)
     for i in range(len(swap_tenors))]
 
 spot_date = ql.WeekendsOnly().advance(trade_date, 2 * ql.Period(ql.Daily))
@@ -142,7 +142,7 @@ for termDate in termDates:
 
             probabilityCurve.linkTo(
                 ql.FlatHazardRate(0,ql.WeekendsOnly(),
-                                  ql.QuoteHandle(ql.SimpleQuote(h)),
+                                  ql.makeQuoteHandle(h),
                                   ql.Actual365Fixed()))
 
             engine = ql.IsdaCdsEngine(probabilityCurve,recovery,discountCurve)

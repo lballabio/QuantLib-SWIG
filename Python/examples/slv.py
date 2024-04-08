@@ -62,7 +62,7 @@ exerciseDate = todaysDate + ql.Period(4, ql.Years)
 dc = ql.Actual365Fixed()
 
 spot = 100
-underlying = ql.QuoteHandle(ql.SimpleQuote(spot))
+underlying = ql.makeQuoteHandle(spot)
 
 riskFreeRate = ql.YieldTermStructureHandle(ql.FlatForward(settlementDate, 0.05, dc))
 dividendYield = ql.YieldTermStructureHandle(ql.FlatForward(settlementDate, 0.025, dc))

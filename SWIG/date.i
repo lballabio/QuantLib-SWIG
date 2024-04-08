@@ -169,6 +169,29 @@ enum Frequency {
     OtherFrequency = 999
 };
 
+#if defined(SWIGPYTHON)
+%define QL_TYPECHECK_FREQUENCY       6210    %enddef
+%typemap(in) ext::optional<Frequency> %{
+    if ($input == Py_None)
+        $1 = ext::nullopt;
+    else if (PyLong_Check($input))
+        $1 = (Frequency)PyLong_AsLong($input);
+    else
+        SWIG_exception(SWIG_TypeError, "int expected");
+%}
+%typecheck (QL_TYPECHECK_FREQUENCY) ext::optional<Frequency> %{
+    $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
+%}
+#else
+#if defined(SWIGCSHARP)
+%typemap(cscode) ext::optional<Frequency> %{
+    public static implicit operator OptionalFrequency(Frequency f) => new OptionalFrequency(f);
+%}
+#endif
+%template(OptionalFrequency) ext::optional<Frequency>;
+#endif
+
+
 #if defined(SWIGJAVA)
 %javaconst(0);
 #endif
@@ -183,7 +206,7 @@ enum Frequency {
   }
 
   public override int GetHashCode() {
-    return ToString().GetHashCode();
+    return normalized().ToString().GetHashCode();
   }
 
   public int CompareTo(object obj) {
@@ -256,7 +279,9 @@ enum Frequency {
   }
 %}
 #endif
-
+#if defined(SWIGJAVA)
+%typemap(javainterfaces) Period QL_JAVA_INTERFACES "Comparable<Period>"
+#endif
 
 %{
 using QuantLib::Period;
@@ -264,10 +289,6 @@ using QuantLib::PeriodParser;
 %}
 
 class Period {
-    #if defined(SWIGJAVA)
-    %rename("repr")           __repr__;
-    %rename("compare")        __cmp__;
-    #endif
   public:
     Period();
     Period(Integer n, TimeUnit units);
@@ -275,6 +296,7 @@ class Period {
     Integer length() const;
     TimeUnit units() const;
     Frequency frequency() const;
+    Period normalized() const;
     %extend {
         Period(const std::string& str) {
             return new Period(PeriodParser::parse(str));
@@ -302,30 +324,43 @@ class Period {
         Period __mul__(Integer n) {
             return *self * n;
         }
+        #endif
+        #if defined(SWIGPYTHON) || defined(SWIGR) || defined(SWIGJAVA)
         #if defined(SWIGPYTHON)
         Period __rmul__(Integer n) {
             return *self * n;
         }
-        bool __lt__(const Period& other) {
+        bool operator<(const Period& other) {
             return *self < other;
         }
-        bool __gt__(const Period& other) {
+        bool operator>(const Period& other) {
             return other < *self;
         }
-        bool __le__(const Period& other) {
+        bool operator<=(const Period& other) {
             return !(other < *self);
         }
-        bool __ge__(const Period& other) {
+        bool operator>=(const Period& other) {
             return !(*self < other);
         }
-        #endif
-        bool __eq__(const Period& other) {
-            return *self == other;
-        }
+        #else
         int __cmp__(const Period& other) {
             return *self < other  ? -1 :
                    *self == other ?  0 :
                                      1;
+        }
+        #endif
+        bool operator==(const Period& other) {
+            return *self == other;
+        }
+        bool operator!=(const Period& other) {
+            return *self != other;
+        }
+        hash_t __hash__() {
+            size_t seed = 0;
+            Period p = self->normalized();
+            boost::hash_combine(seed, p.length());
+            boost::hash_combine(seed, p.units());
+            return seed;
         }
         #endif
 
@@ -337,36 +372,38 @@ class Period {
         }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def __hash__(self):
-        return hash(str(self))
-    %}
-    #endif
 };
 
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<Period> %{
-    if($input == Py_None)
-        $1 = boost::none;
-    else
-    {
-        Period *temp;
-        if (!SWIG_IsOK(SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0)))
-            SWIG_exception_fail(SWIG_TypeError, "in method '$symname', expecting type Period");
-        $1 = (boost::optional<Period>) *temp;
+%typemap(in) ext::optional<Period> %{
+    if($input == Py_None) {
+        $1 = ext::nullopt;
+    } else {
+        void *argp;
+        int res = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $descriptor(Period*), SWIG_POINTER_NO_NULL);
+        if (!SWIG_IsOK(res)) {
+            SWIG_exception_fail(SWIG_ArgError(res), "in method '$symname', argument $argnum of type '$type'");
+        }
+        if (!argp) {
+            SWIG_exception_fail(SWIG_ValueError, "invalid null reference in method '$symname', argument $argnum of type '$type'");
+        } else {
+            Period p = *reinterpret_cast<Period*>(argp);
+            $1 = (ext::optional<Period>) p;
+        }
     }
 %}
-%typecheck (QL_TYPECHECK_PERIOD) boost::optional<Period> {
-    if($input == Py_None)
+%typecheck (QL_TYPECHECK_PERIOD) ext::optional<Period> %{
+    if($input == Py_None) {
         $1 = 1;
-    else {
-        Period *temp;
-        int res = SWIG_ConvertPtr($input,(void **) &temp, $descriptor(Period*),0);
-        $1 = SWIG_IsOK(res) ? 1 : 0;
+    } else {
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $descriptor(Period*), SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
-
-}
+%}
 #endif
 
 namespace std {
@@ -381,8 +418,47 @@ using QuantLib::DateParser;
 %}
 
 #if defined(SWIGPYTHON)
-%pythoncode %{
-import datetime as _datetime
+%{
+#if defined(Py_LIMITED_API)
+
+static PyObject* pydate_type;
+static PyObject *pydate_yearstr, *pydate_monthstr, *pydate_daystr;
+
+static inline bool PyDate_Check(PyObject* obj) {
+    return PyObject_TypeCheck(obj, (PyTypeObject*)pydate_type);
+}
+
+static inline PyObject* PyDate_FromDate(int year, int month, int day) {
+    return PyObject_CallFunction(pydate_type, "iii", year, month, day);
+}
+
+static inline long pyobject_getattr_long(PyObject* obj, PyObject* attr) {
+    PyObject* val = PyObject_GetAttr(obj, attr);
+    QL_REQUIRE(val != nullptr, "missing attribute");
+    long res = PyLong_AsLong(val);
+    Py_DECREF(val);
+    return res;
+}
+
+#define PyDateTime_GET_YEAR(o)  pyobject_getattr_long(o, pydate_yearstr)
+#define PyDateTime_GET_MONTH(o) pyobject_getattr_long(o, pydate_monthstr)
+#define PyDateTime_GET_DAY(o)   pyobject_getattr_long(o, pydate_daystr)
+
+#else
+#include <datetime.h>
+#endif
+%}
+%init %{
+#if defined(Py_LIMITED_API)
+    PyObject* datetime_module = PyImport_ImportModule("datetime");
+    pydate_type = PyObject_GetAttrString(datetime_module, "date");
+    pydate_yearstr = PyUnicode_InternFromString("year");
+    pydate_monthstr = PyUnicode_InternFromString("month");
+    pydate_daystr = PyUnicode_InternFromString("day");
+    Py_DECREF(datetime_module);
+#else
+    PyDateTime_IMPORT;
+#endif
 %}
 #endif
 
@@ -426,6 +502,9 @@ function(from) {Period(from)})
     }
     public static Date operator-(Date d, Period p) {
         return d.Subtract(p);
+    }
+    public static int operator-(Date d1, Date d2) {
+        return d1.Subtract(d2);
     }
     public static bool operator==(Date d1, Date d2) {
         object o1 = (object)d1;
@@ -504,15 +583,20 @@ function(from) {Period(from)})
    }
 %}
 #endif
+#if defined(SWIGJAVA)
+%typemap(javainterfaces) Date QL_JAVA_INTERFACES "Comparable<Date>"
+#endif
 
 %{
-    // used in Date(string, string) defined below
-    void _replace_format(std::string& s, const std::string& old_format,
-                         const std::string& new_format) {
-        std::string::size_type i = s.find(old_format);
+    // used in DateParser_parse(string, string) defined below
+    void _replace_format(std::string& s, const char* old_format,
+                         const char* new_format) {
+        auto i = s.find(old_format);
         if (i != std::string::npos)
-            s.replace(i, old_format.length(), new_format);
+            s.replace(i, strlen(old_format), new_format);
     }
+
+    SWIGINTERN Date DateParser_parse(const std::string& str, std::string fmt);
 %}
 
 class Date {
@@ -627,24 +711,13 @@ class Date {
     static bool isEndOfMonth(const Date&);
     static Date nextWeekday(const Date&, Weekday);
     static Date nthWeekday(Size n, Weekday, Month m, Year y);
-    #if defined(SWIGPYTHON) || defined(SWIGJAVA) || defined(SWIGR) || defined(SWIGCSHARP)
     Date operator+(BigInteger days) const;
     Date operator-(BigInteger days) const;
     Date operator+(const Period&) const;
     Date operator-(const Period&) const;
-    #endif
     %extend {
         Date(const std::string& str, std::string fmt) {
-            // convert our old format into the corresponding Boost one
-            _replace_format(fmt, "YYYY", "%Y");
-            _replace_format(fmt, "yyyy", "%Y");
-            _replace_format(fmt, "YY", "%y");
-            _replace_format(fmt, "yy", "%y");
-            _replace_format(fmt, "MM", "%m");
-            _replace_format(fmt, "mm", "%m");
-            _replace_format(fmt, "DD", "%d");
-            _replace_format(fmt, "dd", "%d");
-            return new Date(DateParser::parseFormatted(str,fmt));
+            return new Date(DateParser_parse(str, fmt));
         }
         Integer weekdayNumber() {
             return int(self->weekday());
@@ -680,13 +753,45 @@ class Date {
             out << QuantLib::io::iso_date(*self);
             return out.str();
         }
-        #if defined(SWIGPYTHON) || defined(SWIGR)
         BigInteger operator-(const Date& other) {
             return *self - other;
         }
-        bool __eq__(const Date& other) {
+        #if defined(SWIGPYTHON) || defined(SWIGR) || defined(SWIGJAVA)
+        bool operator==(const Date& other) {
             return *self == other;
         }
+        bool operator!=(const Date& other) {
+            return *self != other;
+        }
+        hash_t __hash__() {
+            return std::hash<Date>()(*self);
+        }
+        #if defined(SWIGPYTHON)
+        bool __bool__() {
+            return (*self != Date());
+        }
+        bool operator<(const Date& other) {
+            return *self < other;
+        }
+        bool operator>(const Date& other) {
+            return other < *self;
+        }
+        bool operator<=(const Date& other) {
+            return !(other < *self);
+        }
+        bool operator>=(const Date& other) {
+            return !(*self < other);
+        }
+        PyObject* to_date() {
+            return PyDate_FromDate(self->year(), self->month(), self->dayOfMonth());
+        }
+        static Date from_date(PyObject* date) {
+            if (!PyDate_Check(date))
+                throw std::invalid_argument("from_date requires a date");
+            return Date(PyDateTime_GET_DAY(date), Month(PyDateTime_GET_MONTH(date)),
+                        PyDateTime_GET_YEAR(date));
+        }
+        #else
         int __cmp__(const Date& other) {
             if (*self < other)
                 return -1;
@@ -696,41 +801,20 @@ class Date {
                 return 1;
         }
         #endif
-        #if defined(SWIGPYTHON)
-        bool __nonzero__() {
-            return (*self != Date());
-        }
-        bool __bool__() {
-            return (*self != Date());
-        }
-        int __hash__() {
-            return self->serialNumber();
-        }
-        bool __lt__(const Date& other) {
-            return *self < other;
-        }
-        bool __gt__(const Date& other) {
-            return other < *self;
-        }
-        bool __le__(const Date& other) {
-            return !(other < *self);
-        }
-        bool __ge__(const Date& other) {
-            return !(*self < other);
-        }
-        bool __ne__(const Date& other) {
-            return *self != other;
-        }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def to_date(self):
-        return _datetime.date(self.year(), self.month(), self.dayOfMonth())
 
-    @staticmethod
-    def from_date(date):
-        return Date(date.day, date.month, date.year)
+    #if defined(SWIGJAVA)
+    %proxycode %{
+    // convenience method to use java.time API
+    public static Date of(java.time.LocalDate localDate) {
+      return new Date(localDate.getDayOfMonth(), Month.swigToEnum(localDate.getMonthValue()), localDate.getYear());
+    }
+
+    // convenience method to use java.time API
+    public java.time.LocalDate toLocalDate() {
+      return java.time.LocalDate.of(this.year(), this.month().swigValue(), this.dayOfMonth());
+    }
     %}
     #endif
 };
@@ -767,11 +851,15 @@ Date._old___add__ = Date.__add__
 Date._old___sub__ = Date.__sub__
 def Date_new___add__(self,x):
     if type(x) is tuple and len(x) == 2:
+        from warnings import warn
+        warn(f'adding a tuple to a Date is deprecated; use a Period instance', FutureWarning, stacklevel=2)
         return self._old___add__(Period(x[0],x[1]))
     else:
         return self._old___add__(x)
 def Date_new___sub__(self,x):
     if type(x) is tuple and len(x) == 2:
+        from warnings import warn
+        warn(f'subtracting a tuple from a Date is deprecated; use a Period instance', FutureWarning, stacklevel=2)
         return self._old___sub__(Period(x[0],x[1]))
     else:
         return self._old___sub__(x)

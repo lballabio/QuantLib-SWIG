@@ -44,20 +44,35 @@
 %}
 
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<bool> %{
-	if($input == Py_None)
-		$1 = boost::none;
-	else if ($input == Py_True)
-		$1 = true;
-	else
-		$1 = false;
+%typemap(in) ext::optional<bool> %{
+    if ($input == Py_None)
+        $1 = ext::nullopt;
+    else if (PyBool_Check($input))
+        $1 = $input == Py_True;
+    else
+        SWIG_exception(SWIG_TypeError, "bool expected");
 %}
-%typecheck (QL_TYPECHECK_BOOL) boost::optional<bool> {
-if (PyBool_Check($input) || Py_None == $input) 
-	$1 = 1;
-else
-	$1 = 0;
+%typecheck (QL_TYPECHECK_BOOL) ext::optional<bool> %{
+    $1 = (PyBool_Check($input) || $input == Py_None) ? 1 : 0;
+%}
+%typemap(out) ext::optional<bool> %{
+    $result = !$1 ? Py_None : *$1 ? Py_True : Py_False;
+    Py_INCREF($result);
+%}
+#else
+#if defined(SWIGCSHARP)
+%typemap(cscode) ext::optional<bool> %{
+    public static implicit operator OptionalBool(bool b) => new OptionalBool(b);
+%}
+#endif
+namespace ext {
+    template<class T>
+    class optional {
+      public:
+        optional(T t);
+    };
 }
+%template(OptionalBool) ext::optional<bool>;
 #endif
 
 %{
@@ -74,9 +89,6 @@ namespace ext {
             return (*self).operator->();
         }
         #if defined(SWIGPYTHON)
-        bool __nonzero__() {
-            return !!(*self);
-        }
         bool __bool__() {
             return !!(*self);
         }
@@ -97,9 +109,6 @@ class Handle {
     ext::shared_ptr<T> currentLink();
     #if defined(SWIGPYTHON)
     %extend {
-        bool __nonzero__() {
-            return !self->empty();
-        }
         bool __bool__() {
             return !self->empty();
         }
@@ -142,17 +151,33 @@ a
 #endif
 %enddef
 
+%inline %{
+#if defined(SWIGPYTHON)
+// This should be Py_hash_t, but SWIG does not know this type.
+typedef long hash_t;
+#else
+typedef int hash_t;
+#endif
+%}
 
 %define deprecate_feature(OldName, NewName)
 #if defined(SWIGPYTHON)
 %pythoncode %{
 def OldName(*args, **kwargs):
     from warnings import warn
-    warn('%s is deprecated; use %s' % (OldName.__name__, NewName.__name__))
+    warn(f'{OldName.__name__} is deprecated; use {NewName.__name__}', FutureWarning, stacklevel=2)
     return NewName(*args, **kwargs)
 %}
 #endif
 %enddef
 
+%{
+#if defined(SWIGPYTHON)
+#define cpp_deprecate_feature(OldName, NewName) \
+    PyErr_WarnEx(PyExc_FutureWarning, (#OldName " is deprecated; use " #NewName), 1)
+#else
+#define cpp_deprecate_feature(OldName, NewName)
+#endif
+%}
 
 #endif

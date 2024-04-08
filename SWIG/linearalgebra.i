@@ -36,7 +36,7 @@ using QuantLib::SampledCurve;
 
 #if defined(SWIGPYTHON)
 %{
-bool extractArray(PyObject* source, Array* target) {
+bool ArrayFromSequence(PyObject* source, Array* target) {
     if (PyTuple_Check(source) || PyList_Check(source)) {
         Size size = (PyTuple_Check(source) ?
                      PyTuple_Size(source) :
@@ -47,8 +47,8 @@ bool extractArray(PyObject* source, Array* target) {
             if (PyFloat_Check(o)) {
                 (*target)[i] = PyFloat_AsDouble(o);
                 Py_DECREF(o);
-            } else if (PyInt_Check(o)) {
-                (*target)[i] = Real(PyInt_AsLong(o));
+            } else if (PyLong_Check(o)) {
+                (*target)[i] = PyLong_AsDouble(o);
                 Py_DECREF(o);
             } else {
                 Py_DECREF(o);
@@ -62,26 +62,33 @@ bool extractArray(PyObject* source, Array* target) {
 }
 %}
 
-%typemap(in) Array (Array* v) {
-    if (extractArray($input,&$1)) {
+%typemap(in) Array (Array* v, void *argp, int res = 0) {
+    if (ArrayFromSequence($input,&$1)) {
         ;
     } else {
-        if (SWIG_ConvertPtr($input,(void **) &v, $&1_descriptor,1) != -1)
-            $1 = *v;
-        else {
-            PyErr_SetString(PyExc_TypeError, "Array expected");
-            return NULL;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $&descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
+        }
+        if (!argp) {
+            %argument_nullref("$type", $symname, $argnum);
+        } else {
+            $1 = *(%reinterpret_cast(argp, $&ltype));
         }
     }
 };
-%typemap(in) const Array& (Array temp) {
-    if (extractArray($input,&temp)) {
+%typemap(in) const Array& (Array temp, void *argp = 0, int res = 0) {
+    if (ArrayFromSequence($input,&temp)) {
         $1 = &temp;
     } else {
-        if (SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1) == -1) {
-            PyErr_SetString(PyExc_TypeError, "Array expected");
-            return NULL;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
         }
+        if (!argp) { %argument_nullref("$type", $symname, $argnum); }
+        $1 = %reinterpret_cast(argp, $ltype);
     }
 };
 %typecheck(QL_TYPECHECK_ARRAY) Array {
@@ -99,13 +106,10 @@ bool extractArray(PyObject* source, Array* target) {
             Py_DECREF(o);
         }
     } else {
-        /* wrapped Array? */
-        Array* v;
-        if (SWIG_ConvertPtr($input,(void **) &v,
-                            $&1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $&descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 %typecheck(QL_TYPECHECK_ARRAY) const Array & {
@@ -123,19 +127,16 @@ bool extractArray(PyObject* source, Array* target) {
             Py_DECREF(o);
         }
     } else {
-        /* wrapped Array? */
-        Array* v;
-        if (SWIG_ConvertPtr($input,(void **) &v,
-                            $1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 
 
 
-%typemap(in) Matrix (Matrix* m) {
+%typemap(in) Matrix (Matrix* m, void *argp, int res = 0) {
     if (PyTuple_Check($input) || PyList_Check($input)) {
         Size rows, cols;
         rows = (PyTuple_Check($input) ?
@@ -152,7 +153,7 @@ bool extractArray(PyObject* source, Array* target) {
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         } else {
             cols = 0;
@@ -162,42 +163,50 @@ bool extractArray(PyObject* source, Array* target) {
             PyObject* o = PySequence_GetItem($input,i);
             if (PyTuple_Check(o) || PyList_Check(o)) {
                 Size items = (PyTuple_Check(o) ?
-                                        PyTuple_Size(o) :
-                                        PyList_Size(o));
+                              PyTuple_Size(o) :
+                              PyList_Size(o));
                 if (items != cols) {
                     PyErr_SetString(PyExc_TypeError,
                         "Matrix must have equal-length rows");
                     Py_DECREF(o);
-                    return NULL;
+                    SWIG_fail;
                 }
                 for (Size j=0; j<cols; j++) {
                     PyObject* d = PySequence_GetItem(o,j);
                     if (PyFloat_Check(d)) {
                         $1[i][j] = PyFloat_AsDouble(d);
                         Py_DECREF(d);
-                    } else if (PyInt_Check(d)) {
-                        $1[i][j] = Real(PyInt_AsLong(d));
+                    } else if (PyLong_Check(d)) {
+                        $1[i][j] = PyLong_AsDouble(d);
                         Py_DECREF(d);
                     } else {
                         PyErr_SetString(PyExc_TypeError,"doubles expected");
                         Py_DECREF(d);
                         Py_DECREF(o);
-                        return NULL;
+                        SWIG_fail;
                     }
                 }
                 Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         }
     } else {
-        SWIG_ConvertPtr($input,(void **) &m,$&1_descriptor,1);
-        $1 = *m;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $&descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
+        }
+        if (!argp) {
+            %argument_nullref("$type", $symname, $argnum);
+        } else {
+            $1 = *(%reinterpret_cast(argp, $&ltype));
+        }
     }
 };
-%typemap(in) const Matrix & (Matrix temp) {
+%typemap(in) const Matrix & (Matrix temp, void *argp = 0, int res = 0) {
     if (PyTuple_Check($input) || PyList_Check($input)) {
         Size rows, cols;
         rows = (PyTuple_Check($input) ?
@@ -214,7 +223,7 @@ bool extractArray(PyObject* source, Array* target) {
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         } else {
             cols = 0;
@@ -231,33 +240,39 @@ bool extractArray(PyObject* source, Array* target) {
                     PyErr_SetString(PyExc_TypeError,
                         "Matrix must have equal-length rows");
                     Py_DECREF(o);
-                    return NULL;
+                    SWIG_fail;
                 }
                 for (Size j=0; j<cols; j++) {
                     PyObject* d = PySequence_GetItem(o,j);
                     if (PyFloat_Check(d)) {
                         temp[i][j] = PyFloat_AsDouble(d);
                         Py_DECREF(d);
-                    } else if (PyInt_Check(d)) {
-                        temp[i][j] = Real(PyInt_AsLong(d));
+                    } else if (PyLong_Check(d)) {
+                        temp[i][j] = PyLong_AsDouble(d);
                         Py_DECREF(d);
                     } else {
                         PyErr_SetString(PyExc_TypeError,"doubles expected");
                         Py_DECREF(d);
                         Py_DECREF(o);
-                        return NULL;
+                        SWIG_fail;
                     }
                 }
                 Py_DECREF(o);
             } else {
                 PyErr_SetString(PyExc_TypeError, "Matrix expected");
                 Py_DECREF(o);
-                return NULL;
+                SWIG_fail;
             }
         }
         $1 = &temp;
     } else {
-        SWIG_ConvertPtr($input,(void **) &$1,$1_descriptor,1);
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        res = SWIG_ConvertPtr($input, &argp, $descriptor, %convertptr_flags);
+        if (!SWIG_IsOK(res)) {
+            %argument_fail(res, "$type", $symname, $argnum);
+        }
+        if (!argp) { %argument_nullref("$type", $symname, $argnum); }
+        $1 = %reinterpret_cast(argp, $ltype);
     }
 };
 %typecheck(QL_TYPECHECK_MATRIX) Matrix {
@@ -266,12 +281,10 @@ bool extractArray(PyObject* source, Array* target) {
         $1 = 1;
     /* wrapped Matrix? */
     } else {
-        Matrix* m;
-        if (SWIG_ConvertPtr($input,(void **) &m,
-                            $&1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $&descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 %typecheck(QL_TYPECHECK_MATRIX) const Matrix & {
@@ -280,12 +293,10 @@ bool extractArray(PyObject* source, Array* target) {
         $1 = 1;
     /* wrapped Matrix? */
     } else {
-        Matrix* m;
-        if (SWIG_ConvertPtr($input,(void **) &m,
-                            $1_descriptor,0) != -1)
-            $1 = 1;
-        else
-            $1 = 0;
+        // copied from SWIGTYPE typemap -- might need updating for newer SWIG
+        void *vptr = 0;
+        int res = SWIG_ConvertPtr($input, &vptr, $descriptor, SWIG_POINTER_NO_NULL);
+        $1 = SWIG_CheckState(res);
     }
 }
 #endif
@@ -397,9 +408,6 @@ class Array {
                       "arrays are not resizable");
             std::copy(rhs.begin(),rhs.end(),self->begin()+i);
         }
-        bool __nonzero__() {
-            return (self->size() != 0);
-        }
         bool __bool__() {
             return (self->size() != 0);
         }
@@ -459,86 +467,45 @@ class Array {
     }
 };
 
-// 2-D view
-
-%{
-typedef QuantLib::LexicographicalView<Array::iterator>
-    DefaultLexicographicalView;
-typedef QuantLib::LexicographicalView<Array::iterator>::y_iterator
-    DefaultLexicographicalViewColumn;
-%}
-
-#if defined(SWIGPYTHON) || defined(SWIGR)
-class DefaultLexicographicalViewColumn {
-  private:
-    // access control - no constructor exported
-    DefaultLexicographicalViewColumn();
-  public:
-    %extend {
-        Real __getitem__(Size i) {
-            return (*self)[i];
-        }
-        void __setitem__(Size i, Real x) {
-            (*self)[i] = x;
-        }
-    }
-};
-#endif
-
-%rename(LexicographicalView) DefaultLexicographicalView;
-class DefaultLexicographicalView {
-  public:
-    Size xSize() const;
-    Size ySize() const;
-    %extend {
-        DefaultLexicographicalView(Array& a, Size xSize) {
-            return new DefaultLexicographicalView(a.begin(),a.end(),xSize);
-        }
-        std::string __str__() {
-            std::ostringstream s;
-            for (Size j=0; j<self->ySize(); j++) {
-                s << "\n";
-                for (Size i=0; i<self->xSize(); i++) {
-                    if (i != 0)
-                        s << ",";
-                    Array::value_type value = (*self)[i][j];
-                    s << value;
-                }
-            }
-            s << "\n";
-            return s.str();
-        }
-        #if defined(SWIGPYTHON) || defined(SWIGR)
-        DefaultLexicographicalViewColumn __getitem__(Size i) {
-            return (*self)[i];
-        }
-        #endif
-    }
-};
-
-
 
 // matrix class
 %{
-typedef QuantLib::Matrix::row_iterator MatrixRow;
 using QuantLib::outerProduct;
 using QuantLib::transpose;
 using QuantLib::SVD;
 %}
 
 #if defined(SWIGPYTHON)
+%{
 class MatrixRow {
-  private:
+    Matrix::row_iterator begin_;
+    Integer columns_;
+  public:
+    MatrixRow(Matrix::row_iterator begin, Size columns) : begin_(begin), columns_((Integer)columns) {}
+    Real __getitem__(Integer i) {
+        if (i >= 0 && i < columns_)
+            return begin_[i];
+        else if (i < 0 && -i <= columns_)
+            return begin_[columns_+i];
+        else
+            throw std::out_of_range("matrix indexes out of range");
+    }
+    void __setitem__(Integer i, Real x) {
+        if (i >= 0 && i < columns_)
+            begin_[i] = x;
+        else if (i < 0 && -i <= columns_)
+            begin_[columns_+i] = x;
+        else
+            throw std::out_of_range("matrix indexes out of range");
+    }
+};
+%}
+
+class MatrixRow {
     MatrixRow();
   public:
-    %extend {
-        Real __getitem__(Size i) {
-            return (*self)[i];
-        }
-        void __setitem__(Size i, Real x) {
-            (*self)[i] = x;
-        }
-    }
+    Real __getitem__(Integer i);
+    void __setitem__(Integer i, Real x);
 };
 #endif
 
@@ -576,22 +543,40 @@ class Matrix {
         }
         #endif
         #if defined(SWIGPYTHON)
-        MatrixRow __getitem__(Size i) {
-            return (*self)[i];
+        MatrixRow __getitem__(Integer i) {
+            Integer rows_ = static_cast<Integer>($self->rows());
+            if (i >= 0 && i < $self->rows())
+                return MatrixRow((*$self)[i], $self->columns());
+            else if (i < 0 && -i <= rows_)
+                return MatrixRow((*$self)[rows_+i], $self->columns());
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         #elif defined(SWIGR)
         Real ref(Size i, Size j) {
-            return (*self)[i][j];
+            if (i < $self->rows() && j < $self->columns())
+                return (*self)[i][j];
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         void setitem(Size i, Size j, Real x) {
-            (*self)[i][j] = x;
+            if (i < $self->rows() && j < $self->columns())
+                (*self)[i][j] = x;
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         #elif defined(SWIGCSHARP) || defined(SWIGJAVA)
         Real get(Size i, Size j) {
-            return (*self)[i][j];
+            if (i < $self->rows() && j < $self->columns())
+                return (*self)[i][j];
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         void set(Size i, Size j, Real x) {
-            (*self)[i][j] = x;
+            if (i < $self->rows() && j < $self->columns())
+                (*self)[i][j] = x;
+            else
+                throw std::out_of_range("matrix indexes out of range");
         }
         #endif
         #if defined(SWIGR)
@@ -651,16 +636,13 @@ class SVD {
 };
 
 %{
-using QuantLib::Disposable;
 using QuantLib::BiCGstab;
 using QuantLib::GMRES;
 %}
 
 #if defined(SWIGPYTHON)
 %{
-Disposable<Array> extractArray(
-    PyObject* source, const std::string& methodName) {
-      
+Array extractArray(PyObject* source, const std::string& methodName) {
     QL_ENSURE(source != NULL,
               "failed to call " + methodName + " on Python object");
 
@@ -707,7 +689,7 @@ class MatrixMultiplicationProxy {
         Py_XDECREF(matrixMult_);    
     }
     
-    Disposable<Array> operator()(const Array& x) const {
+    Array operator()(const Array& x) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&x), SWIGTYPE_p_Array, 0);
             
@@ -753,7 +735,7 @@ class MatrixMultiplicationProxy {
     MatrixMultiplicationProxy(MatrixMultiplicationDelegate* delegate)
     : delegate_(delegate) {}
     
-    Disposable<Array> operator()(const Array& x) const {
+    Array operator()(const Array& x) const {
         Array retVal = delegate_->apply(x);        
         return retVal;
     }

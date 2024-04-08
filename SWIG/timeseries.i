@@ -29,7 +29,7 @@ using QuantLib::TimeSeries;
 using QuantLib::IntervalPrice;
 %}
 
-#if defined (SWIGJAVA) && defined(JAVA_CLOSEABLE)
+#if defined (SWIGJAVA) && defined(JAVA_AUTOCLOSEABLE)
 // close() method naming conflict
 %rename(closePrice) IntervalPrice::close();
 #endif
@@ -49,7 +49,18 @@ class TimeSeries {
     }
     std::vector<Date> dates();
     std::vector<T> values();
+    Date firstDate();
+    Date lastDate();
     Size size();
+    #if defined(SWIGPYTHON)
+    %extend {
+        bool __bool__() {
+            return !self->empty();
+        }
+    }
+    #else
+    bool empty();
+    #endif
     %extend {
         #if defined(SWIGPYTHON) || defined(SWIGR)
         T __getitem__(const Date& d) {

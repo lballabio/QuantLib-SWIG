@@ -46,7 +46,7 @@ struct Settlement {
 %shared_ptr(Swaption)
 class Swaption : public Option {
   public:
-    Swaption(const ext::shared_ptr<VanillaSwap>& swap,
+    Swaption(const ext::shared_ptr<FixedVsFloatingSwap>& swap,
              const ext::shared_ptr<Exercise>& exercise,
              Settlement::Type type = Settlement::Physical,
              Settlement::Method settlementMethod = Settlement::PhysicalOTC);
@@ -54,6 +54,7 @@ class Swaption : public Option {
     Settlement::Type settlementType() const;       
     Settlement::Method settlementMethod() const;
     VanillaSwap::Type type() const;
+    const ext::shared_ptr<FixedVsFloatingSwap>& underlying() const;
     const ext::shared_ptr<VanillaSwap>& underlyingSwap() const;
     
     //! implied volatility

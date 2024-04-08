@@ -53,12 +53,24 @@ class ForwardRateAgreement : public Instrument {
                          const ext::shared_ptr<IborIndex>& index,
                          const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>());
 
+    ForwardRateAgreement(const ext::shared_ptr<IborIndex>& index,
+                         const Date& valueDate,
+                         Position::Type type,
+                         Rate strikeForwardRate,
+                         Real notionalAmount,
+                         Handle<YieldTermStructure> discountCurve = {});
+
+    ForwardRateAgreement(const ext::shared_ptr<IborIndex>& index,
+                         const Date& valueDate,
+                         const Date& maturityDate,
+                         Position::Type type,
+                         Rate strikeForwardRate,
+                         Real notionalAmount,
+                         Handle<YieldTermStructure> discountCurve = {});
+
     Real amount() const;
     Date fixingDate() const;
     InterestRate forwardRate() const;
-    // these two are deprecated
-    Real spotIncome(const Handle<YieldTermStructure>& discount) const;
-    Real spotValue() const;
 };
  
 

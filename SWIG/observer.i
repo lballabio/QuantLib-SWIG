@@ -40,7 +40,21 @@ class Observable {};
 
 #if defined(SWIGPYTHON)
 
+%typemap(in) const ObservableOrHandle& (PyObject* owned) %{
+    owned = NULL;
+    if (PyObject_HasAttrString($input, "asObservable")) {
+        $input = owned = PyObject_CallMethod($input, "asObservable", NULL);
+        if (!owned) SWIG_fail;
+    }
+    $typemap(in, const ext::shared_ptr<Observable>&)
+%}
+%typemap(freearg) const ObservableOrHandle& %{
+    Py_XDECREF(owned$argnum);
+%}
+
 %{
+typedef ext::shared_ptr<Observable> ObservableOrHandle;
+
 // C++ wrapper for Python observer
 class PyObserver : public Observer {
   public:
@@ -81,24 +95,10 @@ class PyObserver : public Observer {
 // Python wrapper
 %rename(Observer) PyObserver;
 class PyObserver {
-    %rename(_registerWith)   registerWith;
-    %rename(_unregisterWith) unregisterWith;
   public:
     PyObserver(PyObject* callback);
-    void registerWith(const ext::shared_ptr<Observable>&);
-    void unregisterWith(const ext::shared_ptr<Observable>&);
-    %pythoncode %{
-        def registerWith(self,x):
-            if hasattr(x, "asObservable"):
-                self._registerWith(x.asObservable())
-            else:
-                self._registerWith(x)
-        def unregisterWith(self,x):
-            if hasattr(x, "asObservable"):
-                self._unregisterWith(x.asObservable())
-            else:
-                self._unregisterWith(x)
-    %}
+    void registerWith(const ObservableOrHandle&);
+    void unregisterWith(const ObservableOrHandle&);
 };
 
 #endif

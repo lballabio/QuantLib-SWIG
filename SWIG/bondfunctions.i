@@ -69,13 +69,20 @@ class BondFunctions {
     static Real cleanPrice(const Bond& bond,
                            const YieldTermStructure& discountCurve,
                            Date settlementDate = Date());
+    static Real dirtyPrice(const Bond& bond,
+                           const YieldTermStructure& discountCurve,
+                           Date settlementDate = Date());
     static Real bps(const Bond& bond,
                     const YieldTermStructure& discountCurve,
                     Date settlementDate = Date());
     static Rate atmRate(const Bond& bond,
                         const YieldTermStructure& discountCurve,
                         Date settlementDate = Date(),
-                        Real cleanPrice = Null<Real>());
+                        BondPrice price = {});
+    static Rate atmRate(const Bond& bond,
+                        const YieldTermStructure& discountCurve,
+                        Date settlementDate,
+                        Real cleanPrice);
 
     static Real cleanPrice(const Bond& bond,
                            const InterestRate& yield,
@@ -95,6 +102,15 @@ class BondFunctions {
                     Compounding compounding,
                     Frequency frequency,
                     Date settlementDate = Date());
+    static Rate yield(const Bond& bond,
+                      BondPrice price,
+                      const DayCounter& dayCounter,
+                      Compounding compounding,
+                      Frequency frequency,
+                      Date settlementDate = Date(),
+                      Real accuracy = 1.0e-10,
+                      Size maxIterations = 100,
+                      Rate guess = 0.05);
     static Rate yield(const Bond& bond,
                       Real cleanPrice,
                       const DayCounter& dayCounter,
@@ -143,6 +159,31 @@ class BondFunctions {
                                      Compounding compounding,
                                      Frequency frequency,
                                      Date settlementDate = Date());
+
+    static Real cleanPrice(const Bond& bond,
+                           const ext::shared_ptr<YieldTermStructure>& discount,
+                           Spread zSpread,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date());
+    static Real dirtyPrice(const Bond& bond,
+                           const ext::shared_ptr<YieldTermStructure>& discount,
+                           Spread zSpread,
+                           const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date());
+    static Spread zSpread(const Bond& bond,
+                          BondPrice price,
+                          const ext::shared_ptr<YieldTermStructure>& discountCurve,
+                          const DayCounter& dayCounter,
+                          Compounding compounding,
+                          Frequency frequency,
+                          Date settlementDate = Date(),
+                          Real accuracy = 1.0e-10,
+                          Size maxIterations = 100,
+                          Rate guess = 0.0);
     static Spread zSpread(const Bond& bond,
                           Real cleanPrice,
                           const ext::shared_ptr<YieldTermStructure>& discountCurve,
@@ -157,6 +198,26 @@ class BondFunctions {
     %extend {
 
         %define DefineYieldFunctionSolver(SolverType)
+        static Rate yield ## SolverType(SolverType solver,
+                                        const Bond& bond,
+                                        BondPrice price,
+                                        const DayCounter& dayCounter,
+                                        Compounding compounding,
+                                        Frequency frequency,
+                                        Date settlementDate = Date(),
+                                        Real accuracy = 1.0e-10,
+                                        Rate guess = 0.05) {
+            return QuantLib::BondFunctions::yield<SolverType>(
+                        solver,
+                        bond,
+                        price,
+                        dayCounter,
+                        compounding,
+                        frequency,
+                        settlementDate,
+                        accuracy,
+                        guess);
+        }
         static Rate yield ## SolverType(SolverType solver,
                                          const Bond& bond,
                                          Real cleanPrice,

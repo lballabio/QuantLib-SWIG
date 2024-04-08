@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+
+make -C Python check
+
+. .venv/bin/activate
+for i in Python/examples/*.py
+do
+    echo "$i"
+    python "$i" || break -1
+done

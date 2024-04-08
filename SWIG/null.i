@@ -35,45 +35,47 @@ double nullDouble() { return Null<double>(); }
 
 #if defined(SWIGPYTHON)
 
-%typemap(in) intOrNull {
+%typemap(in) intOrNull %{
     if ($input == Py_None)
         $1 = Null<int>();
-    else if (PyInt_Check($input))
-        $1 = int(PyInt_AsLong($input));
+    else if (PyLong_Check($input))
+        $1 = int(PyLong_AsLong($input));
     else
-        SWIG_exception(SWIG_TypeError,"int expected");
-}
-%typecheck(SWIG_TYPECHECK_INTEGER) intOrNull {
-    $1 = ($input == Py_None || PyInt_Check($input)) ? 1 : 0;
-}
-%typemap(out) intOrNull {
+        SWIG_exception(SWIG_TypeError, "int expected");
+%}
+%typecheck(SWIG_TYPECHECK_INTEGER) intOrNull %{
+    $1 = ($input == Py_None || PyLong_Check($input)) ? 1 : 0;
+%}
+%typemap(out) intOrNull %{
     if ($1 == Null<int>()) {
         Py_INCREF(Py_None);
         $result = Py_None;
     } else {
-        $result = PyInt_FromLong(long($1));
+        $result = PyLong_FromLong($1);
     }
-}
+%}
 
-%typemap(in) doubleOrNull {
+%typemap(in) doubleOrNull %{
     if ($input == Py_None)
         $1 = Null<double>();
     else if (PyFloat_Check($input))
         $1 = PyFloat_AsDouble($input);
+    else if (PyLong_Check($input))
+        $1 = PyLong_AsDouble($input);
     else
-        SWIG_exception(SWIG_TypeError,"double expected");
-}
-%typecheck(SWIG_TYPECHECK_DOUBLE) doubleOrNull {
-    $1 = ($input == Py_None || PyFloat_Check($input)) ? 1 : 0;
-}
-%typemap(out) doubleOrNull {
+        SWIG_exception(SWIG_TypeError, "double expected");
+%}
+%typecheck(SWIG_TYPECHECK_DOUBLE) doubleOrNull %{
+    $1 = ($input == Py_None || PyFloat_Check($input) || PyLong_Check($input)) ? 1 : 0;
+%}
+%typemap(out) doubleOrNull %{
     if ($1 == Null<double>()) {
         Py_INCREF(Py_None);
         $result = Py_None;
     } else {
         $result = PyFloat_FromDouble($1);
     }
-}
+%}
 
 #elif defined(SWIGJAVA)
 
@@ -92,34 +94,45 @@ typedef double doubleOrNull;
    %{ $input = as($input, "integer"); %}
 %typemap(scoerceout) intOrNull %{ %}
 
-%typemap(in) intOrNull {
+%typemap(in) intOrNull %{
   $1 = ($1_ltype) INTEGER($input)[0];
   if ($1 == R_NaInt) $1 = Null<int>();
-}
+%}
 
-%typemap(out) intOrNull {
+%typemap(rtypecheck) intOrNull %{
+  ((length($arg) == 0) || (length($arg) == 1 && is.integer($arg)) || (length($arg) == 1 && is.numeric($arg)) || (length($arg) == 1 && is.na($arg)))
+%}
+
+
+%typemap(out) intOrNull %{
     if ($1 == Null<int>())
     $result = Rf_ScalarLogical(NA_LOGICAL)
     else
     $result = ScalarInteger($1);
-}
+%}
 
 %typemap(rtype) doubleOrNull "numeric";
+
 %typemap(scoercein) doubleOrNull
     %{ $input = as($input, "numeric"); %}
 %typemap(scoerceout) doubleOrNull %{ %}
 
-%typemap(in) doubleOrNull {
+%typemap(in) doubleOrNull %{
   $1 = ($1_ltype) REAL($input)[0];
   if (R_IsNA($1)) $1 = Null<double>();
-}
+%}
 
-%typemap(out) doubleOrNull {
+%typemap(rtypecheck) doubleOrNull %{
+  ((length($arg) == 0) || (length($arg) == 1 && is.numeric($arg)) || (length($arg) == 1 && is.na($arg)))
+%}
+
+
+%typemap(out) doubleOrNull %{
     if ($1 == Null<double>())
         $result = Rf_ScalarLogical(NA_LOGICAL);
     else
         $result = Rf_ScalarReal($1);
-}
+%}
 
 #endif
 

@@ -39,20 +39,17 @@ struct DateGeneration {
                 OldCDS, CDS, CDS2015 };
 };
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<DateGeneration::Rule> %{
-    if($input == Py_None)
-        $1 = boost::none;
-    else if (PyInt_Check($input))
-        $1 = (DateGeneration::Rule) PyInt_AsLong($input);
+%typemap(in) ext::optional<DateGeneration::Rule> %{
+    if ($input == Py_None)
+        $1 = ext::nullopt;
+    else if (PyLong_Check($input))
+        $1 = (DateGeneration::Rule)PyLong_AsLong($input);
     else
-        $1 = (DateGeneration::Rule) PyLong_AsLong($input);
+        SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_DATEGENERATION) boost::optional<DateGeneration::Rule> {
-if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
-    $1 = 1;
-else
-    $1 = 0;
-}
+%typecheck (QL_TYPECHECK_DATEGENERATION) ext::optional<DateGeneration::Rule> %{
+    $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
+%}
 #endif
 
 class Schedule {
@@ -65,11 +62,10 @@ class Schedule {
     Schedule(const std::vector<Date>&,
              const Calendar& calendar = NullCalendar(),
              const BusinessDayConvention convention = Unadjusted,
-             boost::optional<BusinessDayConvention>
-             terminationDateConvention = boost::none,
-             const boost::optional<Period> tenor = boost::none,
-             boost::optional<DateGeneration::Rule> rule = boost::none,
-             boost::optional<bool> endOfMonth = boost::none,
+             ext::optional<BusinessDayConvention> terminationDateConvention = ext::nullopt,
+             ext::optional<Period> tenor = ext::nullopt,
+             ext::optional<DateGeneration::Rule> rule = ext::nullopt,
+             ext::optional<bool> endOfMonth = ext::nullopt,
              const std::vector<bool>& isRegular = std::vector<bool>(0));
     #else
     Schedule(const std::vector<Date>&,

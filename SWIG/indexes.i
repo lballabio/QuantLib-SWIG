@@ -5,6 +5,7 @@
  Copyright (C) 2015, 2018 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2023 Marcin Rybacki
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -353,6 +354,29 @@ class SwapSpreadIndex : public InterestRateIndex {
     Real gearing2();
 };
 
+%{
+using QuantLib::EquityIndex;
+%}
+
+%shared_ptr(EquityIndex)
+
+class EquityIndex : public Index {
+  public:
+    EquityIndex(std::string name,
+                Calendar fixingCalendar,
+                Handle<YieldTermStructure> interest = {},
+                Handle<YieldTermStructure> dividend = {},
+                Handle<Quote> spot = {});
+
+    Handle<YieldTermStructure> equityInterestRateCurve() const;
+    Handle<YieldTermStructure> equityDividendCurve() const;
+    Handle<Quote> spot() const;
+
+    ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
+                                       const Handle<YieldTermStructure>& dividend,
+                                       const Handle<Quote>& spot) const;
+};
+
 export_xibor_instance(AUDLibor);
 
 export_xibor_instance(CADLibor);
@@ -450,13 +474,17 @@ export_xibor_instance(Wibor);
 export_xibor_instance(Zibor);
 
 export_overnight_instance(Aonia);
+export_overnight_instance(Corra);
+export_overnight_instance(Destr);
 export_overnight_instance(Eonia);
-export_overnight_instance(Sonia);
+export_overnight_instance(Estr);
 export_overnight_instance(FedFunds);
 export_overnight_instance(Nzocr);
 export_overnight_instance(Sofr);
 export_overnight_instance(Tona);
 export_overnight_instance(Estr);
+export_overnight_instance(Sonia);
+export_overnight_instance(Swestr);
 
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);

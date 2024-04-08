@@ -3,6 +3,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005 StatPro Italia srl
  Copyright (C) 2005 Johan Witters
+ Copyright (C) 2022 Ignacio Anguita
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -41,25 +42,23 @@ class DayCounter {
                       const Date& startRef = Date(),
                       const Date& endRef = Date()) const;
     std::string name() const;
+    bool empty();
     %extend {
         std::string __str__() {
             return self->name()+" day counter";
         }
         #if defined(SWIGPYTHON) || defined(SWIGJAVA)
-        bool __eq__(const DayCounter& other) {
+        bool operator==(const DayCounter& other) {
             return (*self) == other;
         }
-        bool __ne__(const DayCounter& other) {
+        bool operator!=(const DayCounter& other) {
             return (*self) != other;
+        }
+        hash_t __hash__() {
+            return self->empty() ? 0 : std::hash<std::string>()(self->name());
         }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def __hash__(self):
-        return hash(self.name())
-    %}
-    #endif
 };
 
 namespace QuantLib {
@@ -67,6 +66,14 @@ namespace QuantLib {
     class Actual360 : public DayCounter {
       public:
         Actual360(const bool includeLastDay = false);
+    };
+    class Actual366 : public DayCounter {
+      public:
+        Actual366(const bool includeLastDay = false);
+    };
+    class Actual36525 : public DayCounter {
+      public:
+        Actual36525(const bool includeLastDay = false);
     };
     class Actual364 : public DayCounter {};
     class Actual365Fixed : public DayCounter {
@@ -77,15 +84,13 @@ namespace QuantLib {
     class Thirty360 : public DayCounter {
       public:
         enum Convention { USA, BondBasis, European, EurobondBasis, Italian, German, ISMA, ISDA, NASD };
-        Thirty360();
         Thirty360(Convention c, const Date& terminationDate = Date());
-        Thirty360(Convention c, bool isLastPeriod);
     };
     class Thirty365 : public DayCounter {};
     class ActualActual : public DayCounter {
       public:
         enum Convention { ISMA, Bond, ISDA, Historical, Actual365, AFB, Euro };
-        ActualActual(Convention c = ISDA, const Schedule& schedule = Schedule());
+        ActualActual(Convention c, const Schedule& schedule = Schedule());
     };
     class OneDayCounter : public DayCounter {};
     class SimpleDayCounter : public DayCounter {};
@@ -96,5 +101,11 @@ namespace QuantLib {
 
 }
 
+%{
+using QuantLib::yearFractionToDate;
+%}
+
+Date yearFractionToDate(
+    const DayCounter& dayCounter, const Date& referenceDate, Time t);
 
 #endif

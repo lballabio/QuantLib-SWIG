@@ -28,7 +28,7 @@ using QuantLib::OvernightIndexFuture;
 %}
 
 struct Futures {
-    enum Type { IMM, ASX };
+    enum Type { IMM, ASX, Custom };
 };
 
 %shared_ptr(OvernightIndexFuture)

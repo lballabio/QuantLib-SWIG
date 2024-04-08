@@ -1,31 +1,25 @@
 
-Main changes for QuantLib-SWIG 1.25
+Main changes for QuantLib-SWIG 1.33
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/18?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/26?closed=1>.
 
-- **Breaking change:** exported updated interface for convertible bonds and their engine.
+- Exported Burley 2020 Sobol generator (@lballabio).
 
-- **Breaking change (except for Python):** renamed `WulinYongDoubleBarrierEngine`
-  to `SuoWangDoubleBarrierEngine`.
+- Allowed different calendars and frequencies for different legs in
+  `OISRateHelper`; thanks to Eugene Toder (@eltoder).
 
-- Added a few missing methods to `Schedule` (thanks to Ralf Konrad).
+- Exported convex-monotone forward-rate curve (@lballabio).
 
-- Exported `CPICoupon`, `CPICashFlow`, `CPILeg`.
+- Exported support for angled contour shift integrals in Heston model;
+  thanks to Klaus Spanderen (@klausspanderen).
 
-- Exported new argument to `SabrSmileSection` constructor to allow normal volatilities.
+- Allowed negative payment lag in swap legs; thanks to Fredrik Gerdin
+  Börjesson (@gbfredrik).
 
-- Exported new constructor and `amount` method for `ForwardRateAgreement`.
+- Exported `reset` method in calendars; thanks to Fredrik Gerdin
+  Börjesson (@gbfredrik).
 
-- Exported new constructors for `SofrFutureRateHelper`.
-
-- Exported new constructors for zero-inflation curves.
-
-- Exported a few more finite-difference classes (thanks to Klaus Spanderen).
-
-- Exported new basis-swap rate helpers.
-
-- Exported `ESTR` class (thanks to Kirill Egorov).
-
-- Exported `StrippedOptionlet` class.
+- Added Python tests for `BondFunctions`; thanks to Francois Botha
+  (@igitur).

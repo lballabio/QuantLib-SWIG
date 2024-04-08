@@ -412,8 +412,9 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
 
         QL_ENSURE(pyResult != NULL,
                   "failed to call size() on Python object");
+        QL_ENSURE(PyLong_Check(pyResult), "size() is not an int");
 
-        Size result = PyInt_AsLong(pyResult);
+        Size result = PyLong_AsLong(pyResult);
         Py_XDECREF(pyResult);
         
         return result;    
@@ -429,15 +430,15 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         Py_XDECREF(pyResult);
     }
 
-    Disposable<Array> apply(const Array& r) const {
+    Array apply(const Array& r) const {
         return apply(r, "apply");        
     }
 
-    Disposable<Array> apply_mixed(const Array& r) const {
+    Array apply_mixed(const Array& r) const {
         return apply(r, "apply_mixed");        
     }
 
-    Disposable<Array> apply_direction(Size direction, const Array& r) const {
+    Array apply_direction(Size direction, const Array& r) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
@@ -450,9 +451,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         return extractArray(pyResult, "apply_direction");        
     }
 
-    Disposable<Array> solve_splitting(
-        Size direction, const Array& r, Real s) const {
-
+    Array solve_splitting(Size direction, const Array& r, Real s) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
@@ -465,7 +464,7 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
         return extractArray(pyResult, "solve_splitting");        
     }
 
-    Disposable<Array> preconditioner(const Array& r, Real s) const {
+    Array preconditioner(const Array& r, Real s) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
             
@@ -478,23 +477,14 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
   private:
-    Disposable<Array> apply(
-        const Array& r, const std::string& methodName) const {
-
+    Array apply(const Array& r, const char* methodName) const {
         PyObject* pyArray = SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-            
-#if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
-        std::vector<char> cstr(
-            methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
+
         PyObject* pyResult 
-            = PyObject_CallMethod(callback_, &cstr[0], "O", pyArray);
-#else
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, methodName.c_str(), "O", pyArray);
-#endif            
-        Py_XDECREF(pyArray); 
-        
+            = PyObject_CallMethod(callback_, methodName, "O", pyArray);
+
+        Py_DECREF(pyArray);
         return extractArray(pyResult, methodName);        
     }
 
@@ -554,24 +544,23 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     Size size() const { return delegate_->size(); }
     void setTime(Time t1, Time t2) { delegate_->setTime(t1, t2); }
 
-    Disposable<Array> apply(const Array& r) const {
+    Array apply(const Array& r) const {
         Array retVal = delegate_->apply(r);
         return retVal;
     }
-    Disposable<Array> apply_mixed(const Array& r) const {
+    Array apply_mixed(const Array& r) const {
         Array retVal = delegate_->apply_mixed(r);
         return retVal;
     }        
-    Disposable<Array> apply_direction(Size direction, const Array& r) const {
+    Array apply_direction(Size direction, const Array& r) const {
         Array retVal = delegate_->apply_direction(direction, r);
         return retVal;
     }
-    Disposable<Array> solve_splitting(
-        Size direction, const Array& r, Real s) const {
+    Array solve_splitting(Size direction, const Array& r, Real s) const {
         Array retVal = delegate_->solve_splitting(direction, r, s);
         return retVal;
     }
-    Disposable<Array> preconditioner(const Array& r, Real s) const {
+    Array preconditioner(const Array& r, Real s) const {
         Array retVal = delegate_->preconditioner(r, s);
         return retVal;
     }
@@ -1256,21 +1245,14 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
     }
     
   private: 
-      Real getValue(const FdmLinearOpIterator& iter, Time t, const std::string& methodName) {
+      Real getValue(const FdmLinearOpIterator& iter, Time t, const char* methodName) {
         PyObject* pyIter = SWIG_NewPointerObj(
             SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, 0);
 
-#if !defined(PY_VERSION_HEX) || PY_VERSION_HEX < 0x03040000         
-        std::vector<char> cstr(
-            methodName.c_str(), methodName.c_str() + methodName.size() + 1);  
         PyObject* pyResult 
-            = PyObject_CallMethod(callback_, &cstr[0], "Od",pyIter, t);
-#else
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, methodName.c_str(), "Od", pyIter, t);
-#endif            
-            
-        Py_XDECREF(pyIter);
+            = PyObject_CallMethod(callback_, methodName, "Od", pyIter, t);
+
+        Py_DECREF(pyIter);
 
         QL_ENSURE(pyResult != NULL, "failed to call innerValue function on Python object");
 
@@ -1424,7 +1406,7 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
         FdmAffineModelSwapInnerValue(
             const ext::shared_ptr<ModelType>& disModel,
             const ext::shared_ptr<ModelType>& fwdModel,
-            const ext::shared_ptr<VanillaSwap>& swap,
+            const ext::shared_ptr<FixedVsFloatingSwap>& swap,
             const std::vector<Time>& exerciseTimes,
             const std::vector<Date>& exerciseDates,
             const ext::shared_ptr<FdmMesher>& mesher,
@@ -1445,7 +1427,7 @@ class FdmAffineModelSwapInnerValue : public FdmInnerValueCalculator {
     FdmAffineModelSwapInnerValue(
         const ext::shared_ptr<ModelType>& disModel,
         const ext::shared_ptr<ModelType>& fwdModel,
-        const ext::shared_ptr<VanillaSwap>& swap,
+        const ext::shared_ptr<FixedVsFloatingSwap>& swap,
         const std::map<Time, Date>& exerciseDates,
         const ext::shared_ptr<FdmMesher>& mesher,
         Size direction);

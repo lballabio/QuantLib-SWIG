@@ -5,6 +5,7 @@
  Copyright (C) 2015 Matthias Groncki
  Copyright (C) 2016 Peter Caspers
  Copyright (C) 2018, 2019, 2020 Matthias Lungwitz
+ Copyright (C) 2022 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -33,7 +34,6 @@
 %include interpolation.i
 %include indexes.i
 %include optimizers.i
-%include options.i
 %include termstructures.i
 %include vectors.i
 %include tuple.i
@@ -49,20 +49,17 @@ using QuantLib::Normal;
 enum VolatilityType { ShiftedLognormal, Normal };
 
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<VolatilityType> %{
-    if($input == Py_None)
-        $1 = boost::none;
-    else if (PyInt_Check($input))
-        $1 = (VolatilityType) PyInt_AsLong($input);
+%typemap(in) ext::optional<VolatilityType> %{
+    if ($input == Py_None)
+        $1 = ext::nullopt;
+    else if (PyLong_Check($input))
+        $1 = (VolatilityType)PyLong_AsLong($input);
     else
-        $1 = (VolatilityType) PyLong_AsLong($input);
+        SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_VOLATILITYTYPE) boost::optional<VolatilityType> {
-if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
-    $1 = 1;
-else
-    $1 = 0;
-}
+%typecheck (QL_TYPECHECK_VOLATILITYTYPE) ext::optional<VolatilityType> %{
+    $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
+%}
 #endif
 
 %{
@@ -174,7 +171,8 @@ class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
 };
 
 %template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
-%template(RelinkableYoYOptionletVolatilitySurface) RelinkableHandle<YoYOptionletVolatilitySurface>;
+%template(RelinkableYoYOptionletVolatilitySurfaceHandle) RelinkableHandle<YoYOptionletVolatilitySurface>;
+deprecate_feature(RelinkableYoYOptionletVolatilitySurface, RelinkableYoYOptionletVolatilitySurfaceHandle);
 
 
 %{
@@ -378,71 +376,6 @@ class BlackVarianceSurface : public BlackVolTermStructure {
 
 
 
-// constant local vol term structure
-%{
-using QuantLib::LocalConstantVol;
-%}
-
-%shared_ptr(LocalConstantVol);
-class LocalConstantVol : public LocalVolTermStructure {
-  public:
-    LocalConstantVol(const Date& referenceDate, Volatility volatility,
-                     const DayCounter& dayCounter);
-    LocalConstantVol(const Date& referenceDate,
-                     const Handle<Quote>& volatility,
-                     const DayCounter& dayCounter);
-    LocalConstantVol(Integer settlementDays, const Calendar& calendar,
-                     Volatility volatility,
-                     const DayCounter& dayCounter);
-    LocalConstantVol(Integer settlementDays, const Calendar& calendar,
-                     const Handle<Quote>& volatility,
-                     const DayCounter& dayCounter);
-};
-
-
-
-// local vol surface
-%{
-using QuantLib::LocalVolSurface;
-%}
-
-%shared_ptr(LocalVolSurface);
-class LocalVolSurface : public LocalVolTermStructure {
-  public:
-    LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                    const Handle<YieldTermStructure>& riskFreeTS,
-                    const Handle<YieldTermStructure>& dividendTS,
-                    const Handle<Quote>& underlying);
-    LocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                    const Handle<YieldTermStructure>& riskFreeTS,
-                    const Handle<YieldTermStructure>& dividendTS,
-                    Real underlying);
-};
-
-
-
-// no except local vol surface (override bad points - use with care)
-%{
-using QuantLib::NoExceptLocalVolSurface;
-%}
-
-%shared_ptr(NoExceptLocalVolSurface);
-class NoExceptLocalVolSurface : public LocalVolSurface {
-  public:
-    NoExceptLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                            const Handle<YieldTermStructure>& riskFreeTS,
-                            const Handle<YieldTermStructure>& dividendTS,
-                            const Handle<Quote>& underlying,
-                            Real illegalLocalVolOverwrite);
-    NoExceptLocalVolSurface(const Handle<BlackVolTermStructure>& blackTS,
-                            const Handle<YieldTermStructure>& riskFreeTS,
-                            const Handle<YieldTermStructure>& dividendTS,
-                            Real underlying,
-                            Real illegalLocalVolOverwrite);
-};
-
-
-
 // constant caplet constant term structure
 %{
 using QuantLib::ConstantOptionletVolatility;
@@ -579,16 +512,25 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
                                  const bool flatExtrapolation = false,
                                  const VolatilityType type = ShiftedLognormal,
                                  const Matrix& shifts = Matrix()) {
-            return new SwaptionVolatilityMatrix(referenceDate, NullCalendar(), Following,
+            return new SwaptionVolatilityMatrix(referenceDate, QuantLib::NullCalendar(), Following,
                                                 dates, lengths, vols, dayCounter,
                                                 flatExtrapolation, type, shifts);
         }
     }
     
-    std::pair<Size,Size> locate(const Date& optionDate,
-                                const Period& swapTenor) const;
-    std::pair<Size,Size> locate(Time optionTime,
-                                Time swapLength) const;
+    %extend {
+        std::pair<unsigned int, unsigned int> locate(const Date& optionDate,
+                                                     const Period& swapTenor) const {
+            auto sizes = self->locate(optionDate, swapTenor);
+            return { (unsigned int)sizes.first, (unsigned int)sizes.second };
+        }
+        std::pair<unsigned int, unsigned int> locate(Time optionTime,
+                                                     Time swapLength) const {
+            auto sizes = self->locate(optionTime, swapLength);
+            return { (unsigned int)sizes.first, (unsigned int)sizes.second };
+        }
+    }
+
     VolatilityType volatilityType() const;
 };
 
@@ -603,6 +545,7 @@ class SabrSmileSection : public SmileSection {
     SabrSmileSection(const Date& d,
                      Rate forward,
                      const std::vector<Real>& sabrParameters,
+                     const Date& referenceDate = Date(),
                      const DayCounter& dc = Actual365Fixed(),
                      Real shift = 0.0,
                      VolatilityType volatilityType = VolatilityType::ShiftedLognormal);
@@ -619,9 +562,83 @@ class SabrSmileSection : public SmileSection {
 
 
 %{
+using QuantLib::SviSmileSection;
+%}
+
+%shared_ptr(SviSmileSection)
+class SviSmileSection : public SmileSection {
+  public:
+    SviSmileSection(Time timeToExpiry, Rate forward, std::vector<Real> sviParameters);
+    SviSmileSection(const Date& d,
+                    Rate forward,
+                    std::vector<Real> sviParameters,
+                    const DayCounter& dc = Actual365Fixed());
+};
+
+%{
+using QuantLib::SviInterpolatedSmileSection;
+%}
+
+%shared_ptr(SviInterpolatedSmileSection)
+class SviInterpolatedSmileSection : public SmileSection {
+  public:
+    SviInterpolatedSmileSection(
+        const Date& optionDate,
+        Handle<Quote> forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        Handle<Quote> atmVolatility,
+        const std::vector<Handle<Quote> >& volHandles,
+        Real a,
+        Real b,
+        Real sigma,
+        Real rho,
+        Real m,
+        bool aIsFixed,
+        bool bIsFixed,
+        bool sigmaIsFixed,
+        bool rhoIsFixed,
+        bool mIsFixed,
+        bool vegaWeighted = true,
+        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        const DayCounter& dc = Actual365Fixed());
+    SviInterpolatedSmileSection(
+        const Date& optionDate,
+        const Rate& forward,
+        const std::vector<Rate>& strikes,
+        bool hasFloatingStrikes,
+        const Volatility& atmVolatility,
+        const std::vector<Volatility>& vols,
+        Real a,
+        Real b,
+        Real sigma,
+        Real rho,
+        Real m,
+        bool isAFixed,
+        bool isBFixed,
+        bool isSigmaFixed,
+        bool isRhoFixed,
+        bool isMFixed,
+        bool vegaWeighted = true,
+        ext::shared_ptr<EndCriteria> endCriteria = ext::shared_ptr<EndCriteria>(),
+        ext::shared_ptr<OptimizationMethod> method = ext::shared_ptr<OptimizationMethod>(),
+        const DayCounter& dc = Actual365Fixed());
+    Real a() const;
+    Real b() const;
+    Real sigma() const;
+    Real rho() const;
+    Real m() const;
+    Real rmsError() const;
+    Real maxError() const;
+    EndCriteria::Type endCriteria() const;
+};
+
+
+%{
 using QuantLib::SwaptionVolatilityCube;
-using QuantLib::SwaptionVolCube1;
-using QuantLib::SwaptionVolCube2;
+using QuantLib::SabrSwaptionVolatilityCube;
+using QuantLib::InterpolatedSwaptionVolatilityCube;
 %}
 
 %shared_ptr(SwaptionVolatilityCube);
@@ -633,10 +650,10 @@ class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
                        const Period& swapTenor) const;
 };
 
-%shared_ptr(SwaptionVolCube1);
-class SwaptionVolCube1 : public SwaptionVolatilityCube {
+%shared_ptr(SabrSwaptionVolatilityCube);
+class SabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
   public:
-    SwaptionVolCube1(
+    SabrSwaptionVolatilityCube(
              const Handle<SwaptionVolatilityStructure>& atmVolStructure,
              const std::vector<Period>& optionTenors,
              const std::vector<Period>& swapTenors,
@@ -674,18 +691,23 @@ class SwaptionVolCube1 : public SwaptionVolatilityCube {
     }
 };
 
-%shared_ptr(SwaptionVolCube2);
-class SwaptionVolCube2 : public SwaptionVolatilityCube {
+deprecate_feature(SwaptionVolCube1, SabrSwaptionVolatilityCube)
+
+%shared_ptr(InterpolatedSwaptionVolatilityCube);
+class InterpolatedSwaptionVolatilityCube : public SwaptionVolatilityCube {
   public:
-    SwaptionVolCube2(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
-                     const std::vector<Period>& optionTenors,
-                     const std::vector<Period>& swapTenors,
-                     const std::vector<Spread>& strikeSpreads,
-                     const std::vector<std::vector<Handle<Quote> > >& volSpreads,
-                     const ext::shared_ptr<SwapIndex>& swapIndex,
-                     const ext::shared_ptr<SwapIndex>& shortSwapIndex,
-                     bool vegaWeightedSmileFit);
+    InterpolatedSwaptionVolatilityCube(const Handle<SwaptionVolatilityStructure>& atmVolStructure,
+                                       const std::vector<Period>& optionTenors,
+                                       const std::vector<Period>& swapTenors,
+                                       const std::vector<Spread>& strikeSpreads,
+                                       const std::vector<std::vector<Handle<Quote> > >& volSpreads,
+                                       const ext::shared_ptr<SwapIndex>& swapIndex,
+                                       const ext::shared_ptr<SwapIndex>& shortSwapIndex,
+                                       bool vegaWeightedSmileFit);
 };
+
+deprecate_feature(SwaptionVolCube2, InterpolatedSwaptionVolatilityCube)
+
 
 %{
 using QuantLib::ConstantYoYOptionletVolatility;
@@ -705,6 +727,8 @@ class ConstantYoYOptionletVolatility : public YoYOptionletVolatilitySurface {
                                    Real minStrike = -1.0,
                                    Real maxStrike = 100.0);
 };
+
+
 %{
 using QuantLib::FlatSmileSection;
 %}
@@ -1102,9 +1126,9 @@ class CmsMarket{
         Real weightedSpreadError(const Matrix& weights);
         Real weightedSpotNpvError(const Matrix& weights);
         Real weightedFwdNpvError(const Matrix& weights);
-        Disposable<Array> weightedSpreadErrors(const Matrix& weights);
-        Disposable<Array> weightedSpotNpvErrors(const Matrix& weights);
-        Disposable<Array> weightedFwdNpvErrors(const Matrix& weights);
+        Array weightedSpreadErrors(const Matrix& weights);
+        Array weightedSpotNpvErrors(const Matrix& weights);
+        Array weightedFwdNpvErrors(const Matrix& weights);
 };
 
 %{

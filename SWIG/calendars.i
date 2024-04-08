@@ -4,6 +4,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007 StatPro Italia srl
  Copyright (C) 2005 Johan Witters
  Copyright (C) 2018 Matthias Groncki
+ Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -40,6 +41,7 @@ using QuantLib::Preceding;
 using QuantLib::ModifiedPreceding;
 using QuantLib::Unadjusted;
 using QuantLib::HalfMonthModifiedFollowing;
+using QuantLib::Nearest;
 %}
 
 enum BusinessDayConvention {
@@ -48,7 +50,8 @@ enum BusinessDayConvention {
     Preceding,
     ModifiedPreceding,
     Unadjusted,
-    HalfMonthModifiedFollowing
+    HalfMonthModifiedFollowing,
+    Nearest
 };
 
 %{
@@ -60,20 +63,17 @@ using QuantLib::JoinBusinessDays;
 enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
 
 #if defined(SWIGPYTHON)
-%typemap(in) boost::optional<BusinessDayConvention> %{
-	if($input == Py_None)
-		$1 = boost::none;
-    else if (PyInt_Check($input))
-        $1 = (BusinessDayConvention) PyInt_AsLong($input);
-	else
-		$1 = (BusinessDayConvention) PyLong_AsLong($input);
+%typemap(in) ext::optional<BusinessDayConvention> %{
+    if ($input == Py_None)
+        $1 = ext::nullopt;
+    else if (PyLong_Check($input))
+        $1 = (BusinessDayConvention)PyLong_AsLong($input);
+    else
+        SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) boost::optional<BusinessDayConvention> {
-if (PyInt_Check($input) || PyLong_Check($input) || Py_None == $input)
-	$1 = 1;
-else
-	$1 = 0;
-}
+%typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) ext::optional<BusinessDayConvention> %{
+    $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
+%}
 #endif
 
 class Calendar {
@@ -87,6 +87,8 @@ class Calendar {
     bool isEndOfMonth(const Date&);
     void addHoliday(const Date&);
     void removeHoliday(const Date&);
+    void resetAddedAndRemovedHolidays();
+
     Date adjust(const Date& d,
                 BusinessDayConvention convention = QuantLib::Following);
     Date advance(const Date& d, Integer n, TimeUnit unit,
@@ -105,26 +107,28 @@ class Calendar {
     std::vector<Date> businessDayList(const Date& from,
                                       const Date& to);
     std::string name();
+    bool empty();
     %extend {
         std::string __str__() {
             return self->name()+" calendar";
         }
         #if defined(SWIGPYTHON) || defined(SWIGJAVA)
-        bool __eq__(const Calendar& other) {
+        bool operator==(const Calendar& other) {
             return (*self) == other;
         }
-        bool __ne__(const Calendar& other) {
+        bool operator!=(const Calendar& other) {
             return (*self) != other;
+        }
+        hash_t __hash__() {
+            return self->empty() ? 0 : std::hash<std::string>()(self->name());
         }
         #endif
     }
-    #if defined(SWIGPYTHON)
-    %pythoncode %{
-    def __hash__(self):
-        return hash(self.name())
-    %}
-    #endif
 };
+
+namespace std {
+    %template(CalendarVector) vector<Calendar>;
+}
 
 namespace QuantLib {
 
@@ -134,7 +138,19 @@ namespace QuantLib {
         Argentina(Market m = Merval);
     };
 
-    class Australia : public Calendar {};
+    class Australia : public Calendar {
+      public:
+        enum Market { Settlement, ASX };
+        Australia(Market market = Settlement);
+    };
+
+    class Austria : public Calendar {
+      public:
+        enum Market { Settlement, Exchange };
+        Austria(Market m = Settlement);
+    };
+
+    class Botswana : public Calendar {};
 
     class Brazil : public Calendar {
       public:
@@ -231,13 +247,17 @@ namespace QuantLib {
     class Norway : public Calendar {};
     class Poland : public Calendar {};
 
+    class Romania : public Calendar {
+      public:
+        enum Market { Public, BVB };
+        Romania(Market m = BVB);
+    };
+
     class Russia : public Calendar {
       public:
         enum Market { Settlement, MOEX };
         Russia(Market m = Settlement);
     };
-
-    class Romania : public Calendar {};
 
     class SaudiArabia : public Calendar {
       public:
@@ -293,8 +313,8 @@ namespace QuantLib {
     class UnitedStates : public Calendar {
       public:
         enum Market { Settlement, NYSE, GovernmentBond,
-                      NERC, LiborImpact, FederalReserve };
-        UnitedStates(Market m = Settlement);
+                      NERC, LiborImpact, FederalReserve, SOFR };
+        UnitedStates(Market m);
     };
 
     // others
@@ -312,6 +332,8 @@ namespace QuantLib {
         JointCalendar(const Calendar&, const Calendar&,
                       const Calendar&, const Calendar&,
                       JointCalendarRule rule = QuantLib::JoinHolidays);
+        explicit JointCalendar(const std::vector<Calendar>&,
+                               JointCalendarRule = QuantLib::JoinHolidays);
     };
 
     class BespokeCalendar : public Calendar {

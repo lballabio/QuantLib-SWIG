@@ -3,7 +3,7 @@
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2008 Tito Ingargiola
- Copyright (C) 2010, 2012, 2018, 2019 Klaus Spanderen
+ Copyright (C) 2010, 2012, 2018, 2019, 2023 Klaus Spanderen
  Copyright (C) 2015 Thema Consulting SA
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2018, 2019 Matthias Lungwitz
@@ -27,15 +27,19 @@
 #define quantlib_options_i
 
 %include common.i
+%include dividends.i
 %include exercise.i
+%include grid.i
 %include stochasticprocess.i
 %include instruments.i
 %include stl.i
 %include linearalgebra.i
-%include calibrationhelpers.i
-%include grid.i
+%include calibratedmodel.i
 %include parameter.i
 %include vectors.i
+#if defined(SWIGCSHARP) || defined(SWIGPYTHON) 
+%include std_complex.i
+#endif
 
 // payoff
 
@@ -188,6 +192,15 @@ class VanillaOption : public OneAssetOption {
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
                          Volatility maxVol = 4.0);
+    Volatility impliedVolatility(
+                         Real targetValue,
+                         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                         const DividendSchedule& dividends,
+                         Real accuracy = 1.0e-4,
+                         Size maxEvaluations = 100,
+                         Volatility minVol = 1.0e-4,
+                         Volatility maxVol = 4.0);
+
     %extend{
         SampledCurve priceCurve() {
             return self->result<SampledCurve>("priceCurve");
@@ -335,35 +348,39 @@ class PiecewiseTimeDependentHestonModel : public CalibratedModel {
 };
 
 
-
 %{
 using QuantLib::AnalyticHestonEngine;
 %}
 %rename (AnalyticHestonEngine_Integration) AnalyticHestonEngine::Integration;
+%rename (AnalyticHestonEngine_OptimalAlpha) AnalyticHestonEngine::OptimalAlpha;
+
 %shared_ptr(AnalyticHestonEngine)
 #if !defined(SWIGCSHARP)
 %feature ("flatnested") AnalyticHestonEngine::Integration;
+%feature ("flatnested") AnalyticHestonEngine::OptimalAlpha;
 #endif
 
 class AnalyticHestonEngine : public PricingEngine {
   public:
-    class Integration
-    {
-    public:
-        // non adaptive integration algorithms based on Gaussian quadrature
+    enum ComplexLogFormula {
+        Gatheral, BranchCorrection, AndersenPiterbarg,
+        AndersenPiterbargOptCV, AsymptoticChF, AngledContour, AngledContourNoCV,
+        OptimalCV
+    };
+
+    class Integration {
+      private:
+        Integration();
+      public:
         static Integration gaussLaguerre    (Size integrationOrder = 128);
         static Integration gaussLegendre    (Size integrationOrder = 128);
         static Integration gaussChebyshev   (Size integrationOrder = 128);
         static Integration gaussChebyshev2nd(Size integrationOrder = 128);
 
-        // for an adaptive integration algorithm Gatheral's version has to
-        // be used.Be aware: using a too large number for maxEvaluations might
-        // result in a stack overflow as the these integrations are based on
-        // recursive algorithms.
         static Integration gaussLobatto(Real relTolerance, Real absTolerance,
-                                        Size maxEvaluations = 1000);
+                                        Size maxEvaluations = 1000,
+                                        bool useConvergenceEstimate = false);
 
-        // usually these routines have a poor convergence behavior.
         static Integration gaussKronrod(Real absTolerance,
                                         Size maxEvaluations = 1000);
         static Integration simpson(Real absTolerance,
@@ -372,50 +389,57 @@ class AnalyticHestonEngine : public PricingEngine {
                                      Size maxEvaluations = 1000);
         static Integration discreteSimpson(Size evaluation = 1000);
         static Integration discreteTrapezoid(Size evaluation = 1000);
+        static Integration expSinh(Real relTolerance = 1e-8);
 
         static Real andersenPiterbargIntegrationLimit(
             Real c_inf, Real epsilon, Real v0, Real t);
 
-        Real calculate(Real c_inf,
-                       const ext::function<Real(Real)>& f,
-                       doubleOrNull maxBound = Null<Real>()) const;
-
         Size numberOfEvaluations() const;
         bool isAdaptiveIntegration() const;
-
-    private:
-      enum Algorithm
-        { GaussLobatto, GaussKronrod, Simpson, Trapezoid,
-          DiscreteTrapezoid, DiscreteSimpson,
-          GaussLaguerre, GaussLegendre,
-          GaussChebyshev, GaussChebyshev2nd };
-
-      Integration(Algorithm intAlgo,
-                const ext::shared_ptr<GaussianQuadrature>& quadrature);
-
-      Integration(Algorithm intAlgo,
-                const ext::shared_ptr<Integrator>& integrator);
     };
-    enum ComplexLogFormula { 
-        Gatheral, BranchCorrection, AndersenPiterbarg, 
-        AndersenPiterbargOptCV, AsymptoticChF, OptimalCV
+
+    class OptimalAlpha {
+      public:
+        %extend {
+            OptimalAlpha(
+                const Time t,
+                const ext::shared_ptr<AnalyticHestonEngine>& engine) {
+                    return new AnalyticHestonEngine::OptimalAlpha(t, engine.get());
+            }
+        }
+        Real operator()(Real strike) const;
+        std::pair<Real, Real> alphaGreaterZero(Real strike) const;
+        std::pair<Real, Real> alphaSmallerMinusOne(Real strike) const;
+
+        Size numberOfEvaluations() const;
+        Real M(Real k) const;
+        Real k(Real x, Integer sgn) const;
+        Real alphaMin(Real strike) const;
+        Real alphaMax(Real strike) const;
     };
+
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                          Size integrationOrder = 144);
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                          Real relTolerance,
                          Size maxEvaluations);
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
-                     ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
-                     Real andersenPiterbargEpsilon = 1e-8);
+                         ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
+                         Real andersenPiterbargEpsilon = 1e-8);
 
-    %extend {                     
+    Size numberOfEvaluations() const;
+#if defined(SWIGCSHARP) || defined(SWIGPYTHON)
+    std::complex<Real> chF(const std::complex<Real>& z, Time t) const;
+    std::complex<Real> lnChF(const std::complex<Real>& z, Time t) const;
+#else
+    %extend {
         std::pair<Real, Real> chF(Real real, Real imag, Time t) const {
-            const std::complex<Real> tmp 
+            const std::complex<Real> tmp
                 = self->chF(std::complex<Real>(real, imag), t);
             return std::pair<Real, Real>(tmp.real(), tmp.imag());
         }
     }
+#endif
 };
 
 %{
@@ -436,13 +460,13 @@ using QuantLib::ExponentialFittingHestonEngine;
 %shared_ptr(ExponentialFittingHestonEngine)
 class ExponentialFittingHestonEngine : public PricingEngine {
   public:
-    enum ControlVariate { AndersenPiterbarg, AndersenPiterbargOptCV,
-                          AsymptoticChF, OptimalCV };
+    typedef AnalyticHestonEngine::ComplexLogFormula ControlVariate;
     
     ExponentialFittingHestonEngine(
         const ext::shared_ptr<HestonModel>& model,
-        ControlVariate cv = AndersenPiterbargOptCV,
-        doubleOrNull scaling = Null<Real>());
+        ControlVariate cv = ControlVariate::OptimalCV,
+        doubleOrNull scaling = Null<Real>(),
+        Real alpha = -0.5);
 };
 
 
@@ -588,8 +612,8 @@ using QuantLib::LsmBasisSystem;
 %}
 
 struct LsmBasisSystem {
-    enum PolynomType  {Monomial, Laguerre, Hermite, Hyperbolic,
-                           Legendre, Chebyshev, Chebyshev2nd };
+    enum PolynomialType { Monomial, Laguerre, Hermite, Hyperbolic,
+                          Legendre, Chebyshev, Chebyshev2nd };
 };
 
 %shared_ptr(MCEuropeanEngine<PseudoRandom>);
@@ -682,9 +706,9 @@ class MCAmericanEngine : public PricingEngine {
                          intOrNull maxSamples = Null<Size>(),
                          BigInteger seed = 0,
                          intOrNull polynomOrder = 2,
-                         LsmBasisSystem::PolynomType polynomType = LsmBasisSystem::Monomial,
+                         LsmBasisSystem::PolynomialType polynomType = LsmBasisSystem::Monomial,
                          int nCalibrationSamples = 2048,
-                         boost::optional<bool> antitheticVariateCalibration = boost::none,
+                         ext::optional<bool> antitheticVariateCalibration = ext::nullopt,
                          BigNatural seedCalibration = Null<Size>()) {
             return new MCAmericanEngine<RNG>(process,
                                              timeSteps,
@@ -889,24 +913,6 @@ class MCDigitalEngine : public PricingEngine {
 // American engines
 
 %{
-using QuantLib::FDShoutEngine;
-using QuantLib::CrankNicolson;
-%}
-
-%shared_ptr(FDShoutEngine<CrankNicolson>);
-
-template <class S>
-class FDShoutEngine : public PricingEngine {
-  public:
-    FDShoutEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                  Size timeSteps = 100, Size gridPoints = 100,
-                  bool timeDependent = false);
-};
-
-%template(FDShoutEngine) FDShoutEngine<CrankNicolson>;
-
-
-%{
 using QuantLib::BaroneAdesiWhaleyApproximationEngine;
 %}
 
@@ -1011,6 +1017,78 @@ class AnalyticDividendEuropeanEngine : public PricingEngine {
   public:
     AnalyticDividendEuropeanEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
+    AnalyticDividendEuropeanEngine(
+            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+            DividendSchedule dividends);
+};
+
+%{
+using QuantLib::QdPlusAmericanEngine;
+%}
+
+%shared_ptr(QdPlusAmericanEngine)
+class QdPlusAmericanEngine: public PricingEngine {
+  public:
+    enum SolverType {Brent, Newton, Ridder, Halley, SuperHalley};
+
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") QdPlusAmericanEngine;
+    #endif
+    explicit QdPlusAmericanEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Size interpolationPoints = 8,
+        SolverType solverType = Halley,
+        Real eps = 1e-6,
+        Size maxIter = Null<Size>());        
+};
+
+%{
+using QuantLib::QdFpLegendreScheme;
+using QuantLib::QdFpIterationScheme;
+using QuantLib::QdFpLegendreTanhSinhScheme;
+using QuantLib::QdFpTanhSinhIterationScheme;
+using QuantLib::QdFpAmericanEngine;
+%}
+
+%shared_ptr(QdFpIterationScheme)
+class QdFpIterationScheme {
+  private:
+    QdFpIterationSchem();
+};
+
+%shared_ptr(QdFpLegendreScheme)
+class QdFpLegendreScheme: public QdFpIterationScheme {
+  public:
+    QdFpLegendreScheme(Size l, Size m, Size n, Size p);
+};
+
+%shared_ptr(QdFpLegendreTanhSinhScheme)
+class QdFpLegendreTanhSinhScheme: public QdFpLegendreScheme {
+  public:
+    QdFpLegendreTanhSinhScheme(Size l, Size m, Size n, Real eps);
+};
+
+%shared_ptr(QdFpTanhSinhIterationScheme)
+class QdFpTanhSinhIterationScheme : public QdFpIterationScheme {
+  public:
+    QdFpTanhSinhIterationScheme(Size m, Size n, Real eps);
+};
+
+
+%shared_ptr(QdFpAmericanEngine)
+class QdFpAmericanEngine : public PricingEngine {
+  public:
+    enum FixedPointEquation { FP_A, FP_B, Auto };
+
+    explicit QdFpAmericanEngine(
+      ext::shared_ptr<GeneralizedBlackScholesProcess> bsProcess,
+      ext::shared_ptr<QdFpIterationScheme> iterationScheme =
+          accurateScheme(),
+      FixedPointEquation fpEquation = Auto);
+      
+    static ext::shared_ptr<QdFpIterationScheme> fastScheme();
+    static ext::shared_ptr<QdFpIterationScheme> accurateScheme();
+    static ext::shared_ptr<QdFpIterationScheme> highPrecisionScheme();      
 };
 
 
@@ -1090,23 +1168,50 @@ class FdBlackScholesVanillaEngine : public PricingEngine {
         Real illegalLocalVolOverwrite = -Null<Real>(),
         CashDividendModel cashDividendModel = Spot);
 
+    FdBlackScholesVanillaEngine(
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        DividendSchedule dividends,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+        bool localVol = false,
+        Real illegalLocalVolOverwrite = -Null<Real>(),
+        CashDividendModel cashDividendModel = Spot);
+
+    FdBlackScholesVanillaEngine(
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
+        DividendSchedule dividends,
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
+        bool localVol = false,
+        Real illegalLocalVolOverwrite = -Null<Real>(),
+        CashDividendModel cashDividendModel = Spot);
+
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") make;
     %extend {
         static ext::shared_ptr<FdBlackScholesVanillaEngine> make(
                     const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                    const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
-                        = ext::shared_ptr<FdmQuantoHelper>(),
+                    const DividendSchedule& dividends = {},
+                    const ext::shared_ptr<FdmQuantoHelper>& quantoHelper = {},
                     Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
                     const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas(),
                     bool localVol = false,
                     Real illegalLocalVolOverwrite = -Null<Real>(),
                     CashDividendModel cashDividendModel = Spot) {
-            return ext::shared_ptr<FdBlackScholesVanillaEngine>(
-                new FdBlackScholesVanillaEngine(process, quantoHelper, tGrid, xGrid,
+            if (dividends.empty()) {
+                return ext::make_shared<FdBlackScholesVanillaEngine>(
+                                                process, quantoHelper, tGrid, xGrid,
                                                 dampingSteps, schemeDesc,
                                                 localVol, illegalLocalVolOverwrite,
-                                                cashDividendModel));
+                                                cashDividendModel);
+            } else {
+                return ext::make_shared<FdBlackScholesVanillaEngine>(
+                                                process, dividends, quantoHelper, tGrid, xGrid,
+                                                dampingSteps, schemeDesc,
+                                                localVol, illegalLocalVolOverwrite,
+                                                cashDividendModel);
+            }
         }
     }
     #endif
@@ -1119,17 +1224,26 @@ class FdBlackScholesShoutEngine : public PricingEngine {
         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
         Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+    FdBlackScholesShoutEngine(
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        DividendSchedule dividends,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
 };
 
 %shared_ptr(FdOrnsteinUhlenbeckVanillaEngine)
 class FdOrnsteinUhlenbeckVanillaEngine : public PricingEngine {
   public:
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") FdOrnsteinUhlenbeckVanillaEngine;
-    #endif
     FdOrnsteinUhlenbeckVanillaEngine(
         const ext::shared_ptr<OrnsteinUhlenbeckProcess>&,
         const ext::shared_ptr<YieldTermStructure>& rTS,
+        Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
+        Real epsilon = 0.0001,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
+    FdOrnsteinUhlenbeckVanillaEngine(
+        const ext::shared_ptr<OrnsteinUhlenbeckProcess>&,
+        const ext::shared_ptr<YieldTermStructure>& rTS,
+        DividendSchedule dividends,
         Size tGrid = 100, Size xGrid = 100, Size dampingSteps = 0,
         Real epsilon = 0.0001,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Douglas());
@@ -1143,6 +1257,12 @@ class FdBatesVanillaEngine : public PricingEngine {
             Size tGrid = 100, Size xGrid = 100,
             Size vGrid=50, Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+    FdBatesVanillaEngine(
+            const ext::shared_ptr<BatesModel>& model,
+            DividendSchedule dividends,
+            Size tGrid = 100, Size xGrid = 100,
+            Size vGrid=50, Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 };
 
 %shared_ptr(FdHestonVanillaEngine)
@@ -1153,8 +1273,7 @@ class FdHestonVanillaEngine : public PricingEngine {
         Size tGrid = 100, Size xGrid = 100,
         Size vGrid = 50, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-            = ext::shared_ptr<LocalVolTermStructure>(),
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
         const Real mixingFactor = 1.0);
 
     FdHestonVanillaEngine(
@@ -1165,8 +1284,28 @@ class FdHestonVanillaEngine : public PricingEngine {
         Size vGrid = 50, 
         Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-        const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-            = ext::shared_ptr<LocalVolTermStructure>(),
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
+        const Real mixingFactor = 1.0);
+
+    FdHestonVanillaEngine(
+        const ext::shared_ptr<HestonModel>& model,
+        DividendSchedule dividends,
+        Size tGrid = 100, Size xGrid = 100,
+        Size vGrid = 50, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
+        const Real mixingFactor = 1.0);
+
+    FdHestonVanillaEngine(
+        const ext::shared_ptr<HestonModel>& model,
+        DividendSchedule dividends,
+        const ext::shared_ptr<FdmQuantoHelper>& quantoHelper,
+        Size tGrid = 100, 
+        Size xGrid = 100,
+        Size vGrid = 50, 
+        Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+        const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
         const Real mixingFactor = 1.0);
 
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -1174,17 +1313,22 @@ class FdHestonVanillaEngine : public PricingEngine {
     %extend {
         static ext::shared_ptr<FdHestonVanillaEngine> make(
                     const ext::shared_ptr<HestonModel>& model,
-                    const ext::shared_ptr<FdmQuantoHelper>& quantoHelper
-                        = ext::shared_ptr<FdmQuantoHelper>(),
+                    const DividendSchedule& dividends = {},
+                    const ext::shared_ptr<FdmQuantoHelper>& quantoHelper = {},
                     Size tGrid = 100, Size xGrid = 100, Size vGrid = 50,
                     Size dampingSteps = 0,
                     const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                    const ext::shared_ptr<LocalVolTermStructure>& leverageFct
-                        = ext::shared_ptr<LocalVolTermStructure>(),
+                    const ext::shared_ptr<LocalVolTermStructure>& leverageFct = {},
                     const Real mixingFactor = 1.0) {
-            return ext::shared_ptr<FdHestonVanillaEngine>(
-                new FdHestonVanillaEngine(model, quantoHelper, tGrid, xGrid, vGrid,
-                                          dampingSteps, schemeDesc, leverageFct, mixingFactor));
+            if (dividends.empty()) {
+                return ext::make_shared<FdHestonVanillaEngine>(
+                    model, quantoHelper, tGrid, xGrid, vGrid,
+                    dampingSteps, schemeDesc, leverageFct, mixingFactor);
+            } else {
+                return ext::make_shared<FdHestonVanillaEngine>(
+                    model, dividends, quantoHelper, tGrid, xGrid, vGrid,
+                    dampingSteps, schemeDesc, leverageFct, mixingFactor);
+            }
         }
     }
     #endif
@@ -1241,12 +1385,21 @@ using QuantLib::FdHestonHullWhiteVanillaEngine;
 %shared_ptr(FdHestonHullWhiteVanillaEngine);
 class FdHestonHullWhiteVanillaEngine : public PricingEngine {
   public:
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") FdHestonHullWhiteVanillaEngine;
-    #endif
     FdHestonHullWhiteVanillaEngine(
         const ext::shared_ptr<HestonModel>& model,
         ext::shared_ptr<HullWhiteProcess> hwProcess,
+        Real corrEquityShortRate,
+        Size tGrid = 50,
+        Size xGrid = 100,
+        Size vGrid = 40,
+        Size rGrid = 20,
+        Size dampingSteps = 0,
+        bool controlVariate = true,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());    
+    FdHestonHullWhiteVanillaEngine(
+        const ext::shared_ptr<HestonModel>& model,
+        ext::shared_ptr<HullWhiteProcess> hwProcess,
+        DividendSchedule dividends,
         Real corrEquityShortRate,
         Size tGrid = 50,
         Size xGrid = 100,
@@ -1503,6 +1656,7 @@ class BlackCalculator {
     Real itmCashProbability() const;
     Real itmAssetProbability() const;
     Real strikeSensitivity() const;
+    Real strikeGamma() const;
     Real alpha() const;
     Real beta() const;
 };
@@ -1628,6 +1782,104 @@ class MCEuropeanGJRGARCHEngine : public PricingEngine {
                    seed)
 %}
 #endif
+
+
+%{
+using QuantLib::MargrabeOption;
+using QuantLib::AnalyticEuropeanMargrabeEngine;
+using QuantLib::AnalyticAmericanMargrabeEngine;
+%}
+
+%shared_ptr(MargrabeOption)
+class MargrabeOption : public MultiAssetOption {
+  public:
+    MargrabeOption(Integer Q1,
+                   Integer Q2,
+                   const ext::shared_ptr<Exercise>&);
+    Real delta1() const;
+    Real delta2() const;
+    Real gamma1() const;
+    Real gamma2() const;
+};
+
+%shared_ptr(AnalyticEuropeanMargrabeEngine)
+class AnalyticEuropeanMargrabeEngine : public PricingEngine {
+  public:
+    AnalyticEuropeanMargrabeEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                                   ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+                                   Real correlation);
+};
+
+%shared_ptr(AnalyticAmericanMargrabeEngine)
+class AnalyticAmericanMargrabeEngine : public PricingEngine {
+  public:
+    AnalyticAmericanMargrabeEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                                   ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+                                   Real correlation);
+};
+
+
+%{
+using QuantLib::CompoundOption;
+using QuantLib::AnalyticCompoundOptionEngine;
+%}
+
+%shared_ptr(CompoundOption)
+class CompoundOption : public OneAssetOption {
+  public:
+    CompoundOption(const ext::shared_ptr<StrikedTypePayoff>& motherPayoff,
+                   const ext::shared_ptr<Exercise>& motherExercise,
+                   ext::shared_ptr<StrikedTypePayoff> daughterPayoff,
+                   ext::shared_ptr<Exercise> daughterExercise);
+};
+
+%shared_ptr(AnalyticCompoundOptionEngine)
+class AnalyticCompoundOptionEngine : public PricingEngine {
+  public:
+    AnalyticCompoundOptionEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
+%{
+using QuantLib::SimpleChooserOption;
+using QuantLib::AnalyticSimpleChooserEngine;
+%}
+
+%shared_ptr(SimpleChooserOption)
+class SimpleChooserOption : public OneAssetOption {
+  public:
+    SimpleChooserOption(Date choosingDate,
+                        Real strike,
+                        const ext::shared_ptr<Exercise>& exercise);
+};
+
+%shared_ptr(AnalyticSimpleChooserEngine)
+class AnalyticSimpleChooserEngine : public PricingEngine {
+  public:
+    AnalyticSimpleChooserEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
+%{
+using QuantLib::ComplexChooserOption;
+using QuantLib::AnalyticComplexChooserEngine;
+%}
+
+%shared_ptr(ComplexChooserOption)
+class ComplexChooserOption : public OneAssetOption {
+  public:
+    ComplexChooserOption(Date choosingDate,
+                         Real strikeCall,
+                         Real strikePut,
+                         const ext::shared_ptr<Exercise>& exerciseCall,
+                         const ext::shared_ptr<Exercise>& exercisePut);
+};
+
+%shared_ptr(AnalyticComplexChooserEngine)
+class AnalyticComplexChooserEngine : public PricingEngine {
+  public:
+    AnalyticComplexChooserEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
 
 
 #endif

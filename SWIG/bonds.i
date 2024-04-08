@@ -43,6 +43,7 @@ using QuantLib::AmortizingFixedRateBond;
 using QuantLib::FloatingRateBond;
 using QuantLib::AmortizingFloatingRateBond;
 using QuantLib::DiscountingBondEngine;
+using QuantLib::simplifyNotificationGraph;
 %}
 
 class BondPrice {
@@ -51,6 +52,7 @@ class BondPrice {
     BondPrice(Real amount, Type type);
     Real amount() const;
     Type type() const;
+    bool isValid() const;
 };
 
 %shared_ptr(Bond)
@@ -102,6 +104,14 @@ class Bond : public Instrument {
                Frequency freq,
                Real accuracy = 1.0e-8,
                Size maxEvaluations = 100);
+    Real yield(BondPrice price,
+               const DayCounter& dc,
+               Compounding compounding,
+               Frequency freq,
+               const Date& settlement = Date(),
+               Real accuracy = 1.0e-8,
+               Size maxEvaluations = 100,
+               Real guess = 0.05);
     Real yield(Real cleanPrice,
                const DayCounter& dc,
                Compounding compounding,
@@ -113,6 +123,8 @@ class Bond : public Instrument {
     Real settlementValue() const;
     Real settlementValue(Real cleanPrice) const;
 };
+
+void simplifyNotificationGraph(Bond& bond, bool unregisterCoupons = false);
 
 
 %inline %{
@@ -133,7 +145,19 @@ class Bond : public Instrument {
 
 %}
 
+namespace QuantLib {
 
+    Schedule sinkingSchedule(const Date& startDate,
+                             const Period& bondLength,
+                             const Frequency& frequency,
+                             const Calendar& paymentCalendar);
+
+    std::vector<Real> sinkingNotionals(const Period& bondLength,
+                                       const Frequency& frequency,
+                                       Rate couponRate,
+                                       Real initialNotional);
+
+}
 
 %shared_ptr(ZeroCouponBond)
 class ZeroCouponBond : public Bond {
@@ -154,9 +178,7 @@ class ZeroCouponBond : public Bond {
 %shared_ptr(FixedRateBond)
 class FixedRateBond : public Bond {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") from_rates;
-    %feature("kwargs") from_interest_rates;
-    %feature("kwargs") from_date_info;
+    %feature("kwargs") FixedRateBond;
     #endif
   public:
     FixedRateBond(
@@ -173,118 +195,6 @@ class FixedRateBond : public Bond {
             const Calendar& exCouponCalendar = Calendar(),
             BusinessDayConvention exCouponConvention = Unadjusted,
             bool exCouponEndOfMonth = false);
-    //! generic compounding and frequency InterestRate coupons
-    FixedRateBond(
-          Integer settlementDays,
-          Real faceAmount,
-          const Schedule& schedule,
-          const std::vector<InterestRate>& coupons,
-          BusinessDayConvention paymentConvention = Following,
-          Real redemption = 100.0,
-          const Date& issueDate = Date(),
-          const Calendar& paymentCalendar = Calendar(),
-          const Period& exCouponPeriod = Period(),
-          const Calendar& exCouponCalendar = Calendar(),
-          BusinessDayConvention exCouponConvention = Unadjusted,
-          bool exCouponEndOfMonth = false);
-    //! simple annual compounding coupon rates with internal schedule calculation
-    FixedRateBond(
-          Integer settlementDays,
-          const Calendar& couponCalendar,
-          Real faceAmount,
-          const Date& startDate,
-          const Date& maturityDate,
-          const Period& tenor,
-          const std::vector<Rate>& coupons,
-          const DayCounter& accrualDayCounter,
-          BusinessDayConvention accrualConvention = QuantLib::Following,
-          BusinessDayConvention paymentConvention = QuantLib::Following,
-          Real redemption = 100.0,
-          const Date& issueDate = Date(),
-          const Date& stubDate = Date(),
-          DateGeneration::Rule rule = QuantLib::DateGeneration::Backward,
-          bool endOfMonth = false,
-          const Calendar& paymentCalendar = Calendar(),
-          const Period& exCouponPeriod = Period(),
-          const Calendar& exCouponCalendar = Calendar(),
-          const BusinessDayConvention exCouponConvention = Unadjusted,
-          bool exCouponEndOfMonth = false);
-    %extend {
-        //! convenience wrapper around constructor taking rates
-        static ext::shared_ptr<FixedRateBond> from_rates(
-                              Integer settlementDays,
-                              Real faceAmount,
-                              const Schedule &schedule,
-                              const std::vector<Rate>& coupons,
-                              const DayCounter& paymentDayCounter,
-                              BusinessDayConvention paymentConvention = QuantLib::Following,
-                              Real redemption = 100.0,
-                              Date issueDate = Date(),
-                              const Calendar& paymentCalendar = Calendar(),
-                              const Period& exCouponPeriod = Period(),
-                              const Calendar& exCouponCalendar = Calendar(),
-                              BusinessDayConvention exCouponConvention = Unadjusted,
-                              bool exCouponEndOfMonth = false) {
-            return ext::shared_ptr<FixedRateBond>(
-                new FixedRateBond(settlementDays, faceAmount, schedule, coupons,
-                                  paymentDayCounter, paymentConvention,
-                                  redemption, issueDate, paymentCalendar,
-                                  exCouponPeriod, exCouponCalendar,
-                                  exCouponConvention, exCouponEndOfMonth));
-        }
-        //! convenience wrapper around constructor taking interest rates
-        static ext::shared_ptr<FixedRateBond> from_interest_rates(
-                              Integer settlementDays,
-                              Real faceAmount,
-                              const Schedule& schedule,
-                              const std::vector<InterestRate>& coupons,
-                              BusinessDayConvention paymentConvention = Following,
-                              Real redemption = 100.0,
-                              const Date& issueDate = Date(),
-                              const Calendar& paymentCalendar = Calendar(),
-                              const Period& exCouponPeriod = Period(),
-                              const Calendar& exCouponCalendar = Calendar(),
-                              BusinessDayConvention exCouponConvention = Unadjusted,
-                              bool exCouponEndOfMonth = false) {
-            return ext::shared_ptr<FixedRateBond>(
-                new FixedRateBond(settlementDays, faceAmount, schedule, coupons,
-                                  paymentConvention, redemption,
-                                  issueDate, paymentCalendar,
-                                  exCouponPeriod, exCouponCalendar,
-                                  exCouponConvention, exCouponEndOfMonth));
-        }
-        //! convenience wrapper around constructor doing internal schedule calculation
-        static ext::shared_ptr<FixedRateBond> from_date_info(
-                              Integer settlementDays,
-                              const Calendar& couponCalendar,
-                              Real faceAmount,
-                              const Date& startDate,
-                              const Date& maturityDate,
-                              const Period& tenor,
-                              const std::vector<Rate>& coupons,
-                              const DayCounter& accrualDayCounter,
-                              BusinessDayConvention accrualConvention = QuantLib::Following,
-                              BusinessDayConvention paymentConvention = QuantLib::Following,
-                              Real redemption = 100.0,
-                              const Date& issueDate = Date(),
-                              const Date& stubDate = Date(),
-                              DateGeneration::Rule rule = QuantLib::DateGeneration::Backward,
-                              bool endOfMonth = false,
-                              const Calendar& paymentCalendar = Calendar(),
-                              const Period& exCouponPeriod = Period(),
-                              const Calendar& exCouponCalendar = Calendar(),
-                              const BusinessDayConvention exCouponConvention = Unadjusted,
-                              bool exCouponEndOfMonth = false) {
-            return ext::shared_ptr<FixedRateBond>(
-                new FixedRateBond(settlementDays, couponCalendar, faceAmount,
-                                  startDate, maturityDate, tenor,
-                                  coupons, accrualDayCounter, accrualConvention,
-                                  paymentConvention, redemption, issueDate,
-                                  stubDate, rule, endOfMonth, paymentCalendar,
-                                  exCouponPeriod, exCouponCalendar,
-                                  exCouponConvention, exCouponEndOfMonth));
-        }
-    }
     Frequency frequency() const;
     DayCounter dayCounter() const;
 };
@@ -292,6 +202,9 @@ class FixedRateBond : public Bond {
 
 %shared_ptr(AmortizingFixedRateBond)
 class AmortizingFixedRateBond : public Bond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") AmortizingFixedRateBond;
+    #endif
   public:
     AmortizingFixedRateBond(
             Integer settlementDays,
@@ -304,30 +217,9 @@ class AmortizingFixedRateBond : public Bond {
             const Period& exCouponPeriod = Period(),
             const Calendar& exCouponCalendar = Calendar(),
             const BusinessDayConvention exCouponConvention = Unadjusted,
-            bool exCouponEndOfMonth = false);
-    AmortizingFixedRateBond(
-            Integer settlementDays,
-            const Calendar& paymentCalendar,
-            Real faceAmount,
-            Date startDate,
-            const Period& bondTenor,
-            const Frequency& sinkingFrequency,
-            Real coupon,
-            const DayCounter& accrualDayCounter,
-            BusinessDayConvention paymentConvention = QuantLib::Following,
-            Date issueDate = Date());
-    AmortizingFixedRateBond(
-            Integer settlementDays,
-            const std::vector<Real>& notionals,
-            const Schedule& schedule,
-            const std::vector<InterestRate>& coupons,
-            BusinessDayConvention paymentConvention = QuantLib::Following,
-            Date issueDate = Date(),
-            const Calendar& paymentCalendar = Calendar(),
-            const Period& exCouponPeriod = Period(),
-            const Calendar& exCouponCalendar = Calendar(),
-            const BusinessDayConvention exCouponConvention = Unadjusted,
-            bool exCouponEndOfMonth = false);
+            bool exCouponEndOfMonth = false,
+            const std::vector<Real>& redemptions = { 100.0 },
+            Integer paymentLag = 0);
     Frequency frequency() const;
     DayCounter dayCounter() const;
 };
@@ -356,7 +248,9 @@ class AmortizingFloatingRateBond : public Bond {
         const Period& exCouponPeriod = Period(),
         const Calendar& exCouponCalendar = Calendar(),
         const BusinessDayConvention exCouponConvention = Unadjusted,
-        bool exCouponEndOfMonth = false);
+        bool exCouponEndOfMonth = false,
+        const std::vector<Real>& redemptions = { 100.0 },
+        Integer paymentLag = 0);
 };
 
 
@@ -390,6 +284,7 @@ class FloatingRateBond : public Bond {
 
 %{
 using QuantLib::CmsRateBond;
+using QuantLib::AmortizingCmsRateBond;
 %}
 
 %shared_ptr(CmsRateBond)
@@ -412,6 +307,29 @@ class CmsRateBond : public Bond {
                    bool inArrears = false,
                    Real redemption = 100.0,
                    const Date& issueDate = Date());
+};
+
+
+%shared_ptr(AmortizingCmsRateBond)
+class AmortizingCmsRateBond : public Bond {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") AmortizingCmsRateBond;
+    #endif
+  public:
+    AmortizingCmsRateBond(
+                Natural settlementDays,
+                const std::vector<Real>& notionals,
+                const Schedule& schedule,
+                const ext::shared_ptr<SwapIndex>& index,
+                const DayCounter& paymentDayCounter,
+                BusinessDayConvention paymentConvention = Following,
+                Natural fixingDays = Null<Natural>(),
+                const std::vector<Real>& gearings = { 1.0 },
+                const std::vector<Spread>& spreads = { 0.0 },
+                const std::vector<Rate>& caps = {},
+                const std::vector<Rate>& floors = {},
+                bool inArrears = false,
+                const Date& issueDate = Date());
 };
 
 
@@ -469,7 +387,7 @@ class CallableBond : public Bond {
   public:
     const std::vector<ext::shared_ptr<Callability> >& callability() const;
 
-    Volatility impliedVolatility(Real targetValue,
+    Volatility impliedVolatility(const BondPrice& targetPrice,
                                  const Handle<YieldTermStructure>& discountCurve,
                                  Real accuracy,
                                  Size maxEvaluations,

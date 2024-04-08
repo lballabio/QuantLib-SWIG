@@ -24,9 +24,12 @@
 %include common.i
 %include observer.i
 %include functions.i
+%include indexes.i
+%include null.i
 
 %{
 using QuantLib::Quote;
+using QuantLib::makeQuoteHandle;
 %}
 
 %shared_ptr(Quote)
@@ -42,17 +45,29 @@ class Quote : public Observable {
 %template(QuoteHandle) Handle<Quote>;
 %template(RelinkableQuoteHandle) RelinkableHandle<Quote>;
 
+RelinkableHandle<Quote> makeQuoteHandle(Real value);
+
 // actual quotes
 %{
 using QuantLib::SimpleQuote;
+using QuantLib::LastFixingQuote;
 %}
 
 %shared_ptr(SimpleQuote)
 
 class SimpleQuote : public Quote {
   public:
-    SimpleQuote(Real value);
-    void setValue(Real value);
+    SimpleQuote(doubleOrNull value = Null<Real>());
+    void setValue(doubleOrNull value = Null<Real>());
+};
+
+%shared_ptr(LastFixingQuote)
+
+class LastFixingQuote : public Quote {
+  public:
+    LastFixingQuote(ext::shared_ptr<Index> index);
+    ext::shared_ptr<Index> index() const;
+    Date referenceDate() const;
 };
 
 

@@ -183,7 +183,7 @@ df = pd.DataFrame(results,
                   columns=["Method", "Option value", "Error estimate", "Actual error"])
 
 # %%
-df.style.hide_index()
+df.style.hide(axis="index")
 
 # %% [markdown]
 # The following displays the results when this is run as a Python script (in which case the cell above is not displayed).

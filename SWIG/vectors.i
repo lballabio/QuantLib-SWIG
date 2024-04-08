@@ -46,9 +46,13 @@ namespace std {
     %template(StrVector) vector<std::string>;
     %template(BoolVector) vector<bool>;
 
+    %template(DoubleVectorVector) vector<vector<double>>;
+
     %template(DoublePair) pair<double,double>;
-    %template(DoublePairVector) vector<pair<double,double> >;
-    %template(PairDoubleVector) pair<vector<double>,vector<double> >;
+    %template(DoublePairVector) vector<pair<double,double>>;
+    %template(PairDoubleVector) pair<vector<double>,vector<double>>;
+    %template(UnsignedIntPair) pair<unsigned int,unsigned int>;
+    %template(UnsignedIntPairVector) vector<pair<unsigned int,unsigned int>>;
 
 #if !defined(SWIGR)
     %template(NodePair) pair<Date,double>;

@@ -7,14 +7,14 @@ jobs:
   copyrights:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     - name: Check
       run: |
         ./tools/check_copyrights.sh
-    - uses: peter-evans/create-pull-request@v3
+    - uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: update-copyright-list-${{ github.ref }}
+        branch: update-copyright-list-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Update copyright list in license'
         title: 'Update copyright list in license'

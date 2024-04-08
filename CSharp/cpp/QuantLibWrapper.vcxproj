@@ -100,6 +100,9 @@
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)NQuantLibc.dll" "$(ProjectDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -126,6 +129,9 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)NQuantLibc.dll" "$(ProjectDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -154,6 +160,9 @@
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)NQuantLibc.dll" "$(ProjectDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -181,17 +190,18 @@
       </DataExecutionPrevention>
       <ImportLibrary>$(OutDir)NQuantLibc.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(OutDir)NQuantLibc.dll" "$(ProjectDir)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="quantlib_wrap.cpp" />
-    <ClCompile Include="QuantlibWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="quantlib_wrap.h" />
-    <ClInclude Include="QuantlibWrapper.h" />
-    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <Import Project=".\Build.props" Condition="Exists('.\Build.props')" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
 </Project>

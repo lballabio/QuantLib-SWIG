@@ -102,6 +102,25 @@ gridPoints = 800
 option.setPricingEngine(ql.FdBlackScholesVanillaEngine(process, timeSteps, gridPoints))
 results.append(("finite differences", option.NPV()))
 
+
+# %% [markdown]
+# #### Li, M. QD+ American engine
+
+# %%
+option.setPricingEngine(ql.QdPlusAmericanEngine(process))
+results.append(("QD+", option.NPV()))
+
+
+# %% [markdown]
+# #### Leif Andersen, Mark Lake and Dimitri Offengenden high performance American engine
+
+# %%
+option.setPricingEngine(
+    ql.QdFpAmericanEngine(process, ql.QdFpAmericanEngine.accurateScheme())
+)
+results.append(("QD+ fixed point", option.NPV()))
+
+
 # %% [markdown]
 # #### Binomial method
 
@@ -118,7 +137,7 @@ for tree in ["JR", "CRR", "EQP", "Trigeorgis", "Tian", "LR", "Joshi4"]:
 
 # %%
 df = pd.DataFrame(results, columns=["Method", "Option value"])
-df.style.hide_index()
+df.style.hide(axis="index")
 
 # %% [markdown]
 # The following displays the results when this is run as a Python script (in which case the cell above is not displayed).

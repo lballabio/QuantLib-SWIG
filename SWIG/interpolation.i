@@ -78,6 +78,8 @@ make_safe_interpolation(LogParabolic,LogParabolic);
 make_safe_interpolation(MonotonicParabolic,MonotonicParabolic);
 make_safe_interpolation(MonotonicLogParabolic,MonotonicLogParabolic);
 
+make_safe_interpolation(LagrangeInterpolation,LagrangeInterpolation); 
+
 %define extend_spline(T)
 %extend Safe##T {
     Real derivative(Real x, bool extrapolate = false) {
@@ -147,6 +149,8 @@ make_safe_interpolation2d(BicubicSpline,BicubicSpline);
 // interpolation traits
 
 %{
+using QuantLib::CubicInterpolation;
+using QuantLib::MixedInterpolation;
 using QuantLib::BackwardFlat;
 using QuantLib::ForwardFlat;
 using QuantLib::Linear;
@@ -154,51 +158,73 @@ using QuantLib::LogLinear;
 using QuantLib::Cubic;
 using QuantLib::Bicubic;
 using QuantLib::ConvexMonotone;
+using QuantLib::DefaultLogCubic;
+using QuantLib::MonotonicLogCubic;
+using QuantLib::KrugerLog;
 
 class MonotonicCubic : public Cubic {
   public:
     MonotonicCubic()
-    : Cubic(QuantLib::CubicInterpolation::Spline, true,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+    : Cubic(CubicInterpolation::Spline, true,
+            CubicInterpolation::SecondDerivative, 0.0,
+            CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
 class SplineCubic : public Cubic {
   public:
     SplineCubic()
-    : Cubic(QuantLib::CubicInterpolation::Spline, false,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-            QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+    : Cubic(CubicInterpolation::Spline, false,
+            CubicInterpolation::SecondDerivative, 0.0,
+            CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
 class Kruger : public Cubic {
   public:
     Kruger()
-    : Cubic(QuantLib::CubicInterpolation::Kruger) {}
+    : Cubic(CubicInterpolation::Kruger) {}
 };
 
-class DefaultLogCubic : public QuantLib::LogCubic {
+class SplineLogCubic : public QuantLib::LogCubic {
   public:
-    DefaultLogCubic()
-    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger) {}
+    SplineLogCubic()
+    : QuantLib::LogCubic(CubicInterpolation::Spline, false,
+                         CubicInterpolation::SecondDerivative, 0.0,
+                         CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
-class MonotonicLogCubic : public QuantLib::LogCubic {
+class LogMixedLinearCubic : public QuantLib::LogMixedLinearCubic {
   public:
-    MonotonicLogCubic()
-    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Spline, true,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
-};
-
-class KrugerLog : public QuantLib::LogCubic {
-  public:
-    KrugerLog()
-    : QuantLib::LogCubic(QuantLib::CubicInterpolation::Kruger, false,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0,
-                         QuantLib::CubicInterpolation::SecondDerivative, 0.0) {}
+    // We add defaults for all constructor arguments because wrappers for
+    // InterpolatedDiscountCurve and PiecewiseYieldCurve assume that all
+    // interpolators have default constructors.
+    LogMixedLinearCubic(
+        Size n = 0,
+        MixedInterpolation::Behavior behavior = MixedInterpolation::ShareRanges,
+        CubicInterpolation::DerivativeApprox da = CubicInterpolation::Spline,
+        bool monotonic = true)
+    : QuantLib::LogMixedLinearCubic(n, behavior, da, monotonic) {}
 };
 %}
+
+%nodefaultctor CubicInterpolation;
+struct CubicInterpolation {
+    enum DerivativeApprox {
+        Spline,
+        SplineOM1,
+        SplineOM2,
+        FourthOrder,
+        Parabolic,
+        FritschButland,
+        Akima,
+        Kruger,
+        Harmonic,
+    };
+};
+
+%nodefaultctor MixedInterpolation;
+struct MixedInterpolation {
+    enum Behavior { ShareRanges, SplitRanges };
+};
 
 struct BackwardFlat {};
 struct ForwardFlat {};
@@ -210,6 +236,7 @@ struct MonotonicCubic {};
 struct DefaultLogCubic {};
 struct MonotonicLogCubic {};
 struct SplineCubic {};
+struct SplineLogCubic {};
 struct Kruger {};
 struct KrugerLog {};
 struct ConvexMonotone {
@@ -218,7 +245,16 @@ struct ConvexMonotone {
                    bool forcePositive = true);
 };
 
-
+struct LogMixedLinearCubic {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") LogMixedLinearCubic;
+    #endif
+    LogMixedLinearCubic(
+        Size n = 0,
+        MixedInterpolation::Behavior behavior = MixedInterpolation::ShareRanges,
+        CubicInterpolation::DerivativeApprox da = CubicInterpolation::Spline,
+        bool monotonic = true);
+};
 
 %{
 // safe version which copies its arguments
@@ -231,10 +267,10 @@ class SafeSABRInterpolation {
                           Real beta,
                           Real nu,
                           Real rho,
-                          bool alphaIsFixed,
-                          bool betaIsFixed,
-                          bool nuIsFixed,
-                          bool rhoIsFixed,
+                          bool alphaIsFixed = false,
+                          bool betaIsFixed = false,
+                          bool nuIsFixed = false,
+                          bool rhoIsFixed = false,
                           bool vegaWeighted = true,
                           const ext::shared_ptr<EndCriteria>& endCriteria
                                   = ext::shared_ptr<EndCriteria>(),
@@ -243,7 +279,7 @@ class SafeSABRInterpolation {
                           const Real errorAccept=0.0020,
                           const bool useMaxError=false,
                           const Size maxGuesses=50,
-			  const Real shift = 0.0)
+                          const Real shift = 0.0)
     : x_(x), y_(y), forward_(forward),
       f_(x_.begin(),x_.end(),y_.begin(),
          t, forward_, alpha, beta, nu, rho,
@@ -271,6 +307,9 @@ class SafeSABRInterpolation {
     #if defined(SWIGCSHARP)
     %rename(call) operator();
     #endif
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") SafeSABRInterpolation;
+    #endif
   public:
     SafeSABRInterpolation(const Array& x, const Array& y,
                           Time t,
@@ -279,10 +318,10 @@ class SafeSABRInterpolation {
                           Real beta,
                           Real nu,
                           Real rho,
-                          bool alphaIsFixed,
-                          bool betaIsFixed,
-                          bool nuIsFixed,
-                          bool rhoIsFixed,
+                          bool alphaIsFixed = false,
+                          bool betaIsFixed = false,
+                          bool nuIsFixed = false,
+                          bool rhoIsFixed = false,
                           bool vegaWeighted = true,
                           const ext::shared_ptr<EndCriteria>& endCriteria
                                   = ext::shared_ptr<EndCriteria>(),
@@ -291,7 +330,7 @@ class SafeSABRInterpolation {
                           const Real errorAccept=0.0020,
                           const bool useMaxError=false,
                           const Size maxGuesses=50,
-			  const Real shift = 0.0);
+                          const Real shift = 0.0);
     Real operator()(Real x, bool allowExtrapolation=false) const;
     Real alpha() const;
     Real beta() const;
@@ -350,6 +389,44 @@ class SafeConvexMonotoneInterpolation {
     QuantLib::ConvexMonotoneInterpolation<Array::const_iterator, Array::const_iterator> f_;
 };
 %}
+
+
+%{
+using QuantLib::ChebyshevInterpolation;
+%}
+
+class ChebyshevInterpolation {
+    #if defined(SWIGCSHARP)
+    %rename(call) operator();
+    #endif
+
+  public:
+    enum PointsType {FirstKind, SecondKind};
+    ChebyshevInterpolation(const Array& f, PointsType pointsType = SecondKind);
+#if defined(SWIGPYTHON)
+    %extend {
+        ChebyshevInterpolation(
+            Size n, PyObject* fct, PointsType pointsType = SecondKind) {
+        
+            UnaryFunction f(fct);
+            return new ChebyshevInterpolation(n, f, pointsType); 
+        }
+    }
+#elif defined(SWIGJAVA) || defined(SWIGCSHARP)
+    %extend {
+        ChebyshevInterpolation(
+            Size n, UnaryFunctionDelegate* fct, PointsType pointsType = SecondKind) {
+        
+            UnaryFunction f(fct);
+            return new ChebyshevInterpolation(n, f, pointsType); 
+        }
+    }
+#endif
+    
+    Real operator()(Real z, bool allowExtrapolation=false) const;
+    static Array nodes(Size n, PointsType pointsType);
+};
+
 
 %rename(ConvexMonotoneInterpolation) SafeConvexMonotoneInterpolation;
 class SafeConvexMonotoneInterpolation {

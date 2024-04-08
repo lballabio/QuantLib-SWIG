@@ -30,19 +30,8 @@
 %{
 #include <ql/quantlib.hpp>
 
-#if QL_HEX_VERSION < 0x01250000
+#if QL_HEX_VERSION < 0x01290000
     #error using an old version of QuantLib, please update
-#endif
-
-#ifdef BOOST_MSVC
-#ifdef QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN
-#define BOOST_LIB_NAME boost_thread
-#include <boost/config/auto_link.hpp>
-#undef BOOST_LIB_NAME
-#define BOOST_LIB_NAME boost_system
-#include <boost/config/auto_link.hpp>
-#undef BOOST_LIB_NAME
-#endif
 #endif
 
 #if defined (SWIGJAVA) || defined (SWIGCSHARP) 
@@ -51,18 +40,18 @@
       #pragma message(\
           "Quantlib has not been compiled with the thread-safe "           \
           "observer pattern being enabled. This can lead to spurious "     \
-          "crashes or pure virtual function call within the JVM or .NET "  \
+          "crashes or pure virtual function calls within the JVM or .NET "  \
           "ecosystem due to the async garbage collector. Please consider " \
           "enabling QL_ENABLE_THREAD_SAFE_OBSERVER_PATTERN "               \
           "in ql/userconfig.hpp.")
     #else
       #warning \
-          Quantlib has not been compiled with the thread-safe           \
-          observer pattern being enabled. This can lead to spurious     \
-          crashes or pure virtual function call within the JVM or .NET  \
-          ecosystem due to the async garbage collector. Please consider \
-          passing --enable-thread-safe-observer-pattern when using the  \
-          GNU autoconf configure script.
+Quantlib has not been compiled with the thread-safe \
+observer pattern being enabled. This can lead to spurious \
+crashes or pure virtual function calls within the JVM or .NET \
+ecosystem due to the async garbage collector. Please consider \
+passing --enable-thread-safe-observer-pattern when using the \
+GNU autoconf configure script.
     #endif
   #endif
 #endif
@@ -100,9 +89,13 @@
 %rename(divide)        operator/;
 %rename(divide)        __div__;
 %rename(getValue)      operator();
-%rename(equals)        __eq__;
-%rename(unEquals)      __ne__;
+%rename(equals)        operator==;
+%rename(unEquals)      operator!=;
+%rename(compareTo)     __cmp__;
+%javamethodmodifiers   __cmp__ "@Override public"
+%rename(hashCode)      __hash__;
 %rename(toString)      __str__;
+%rename(repr)          __repr__;
 #elif defined(SWIGCSHARP)
 %rename(Add)           operator+;
 %rename(Add)           __add__;
@@ -129,6 +122,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include bonds.i
 %include bondfunctions.i
 %include calendars.i
+%include calibratedmodel.i
 %include calibrationhelpers.i
 %include capfloor.i
 %include cashflows.i
@@ -160,7 +154,10 @@ QL_DEPRECATED_DISABLE_WARNING
 %include integrals.i
 %include interestrate.i
 %include interpolation.i
+%include lazyobject.i
 %include linearalgebra.i
+%include localvolatilities.i
+%include lmm.i
 %include lookbackoptions.i
 %include marketelements.i
 %include money.i
