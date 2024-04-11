@@ -670,7 +670,7 @@ class EquityQuantoCashFlowPricer : public EquityCashFlowPricer {
 Leg _FixedRateLeg(const Schedule& schedule,
                   const DayCounter& dayCount,
                   const std::vector<Real>& nominals,
-                  const std::vector<Rate>& couponRates,
+                  const std::vector<Rate>& couponRates = {},
                   BusinessDayConvention paymentAdjustment = Following,
                   const DayCounter& firstPeriodDayCount = DayCounter(),
                   const Period& exCouponPeriod = Period(),
@@ -680,10 +680,10 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   const Calendar& paymentCalendar = Calendar(),
                   const Integer paymentLag = 0,
                   Compounding comp = Simple,
-                  Frequency freq = Annual) {
-    return QuantLib::FixedRateLeg(schedule)
+                  Frequency freq = Annual,
+                  const std::vector<InterestRate>& interestRates = {}) {
+    auto maker = QuantLib::FixedRateLeg(schedule)
         .withNotionals(nominals)
-        .withCouponRates(couponRates, dayCount, comp, freq)
         .withPaymentAdjustment(paymentAdjustment)
         .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar)
         .withPaymentLag(paymentLag)
@@ -692,6 +692,15 @@ Leg _FixedRateLeg(const Schedule& schedule,
                             exCouponCalendar,
                             exCouponConvention,
                             exCouponEndOfMonth);
+    if (!couponRates.empty() && !interestRates.empty()) {
+        QL_FAIL("both couponRates and interestRates provided");
+    } else if (!couponRates.empty()) {
+        return maker.withCouponRates(couponRates, dayCount, comp, freq);
+    } else if (!interestRates.empty()) {
+        return maker.withCouponRates(interestRates);
+    } else {
+        QL_FAIL("no coupon rates provided");
+    }
 }
 %}
 #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -701,7 +710,7 @@ Leg _FixedRateLeg(const Schedule& schedule,
 Leg _FixedRateLeg(const Schedule& schedule,
                   const DayCounter& dayCount,
                   const std::vector<Real>& nominals,
-                  const std::vector<Rate>& couponRates,
+                  const std::vector<Rate>& couponRates = {},
                   BusinessDayConvention paymentAdjustment = Following,
                   const DayCounter& firstPeriodDayCount = DayCounter(),
                   const Period& exCouponPeriod = Period(),
@@ -711,7 +720,8 @@ Leg _FixedRateLeg(const Schedule& schedule,
                   const Calendar& paymentCalendar = Calendar(),
                   Integer paymentLag = 0,
                   Compounding compounding = Simple,
-                  Frequency compoundingFrequency = Annual);
+                  Frequency compoundingFrequency = Annual,
+                  const std::vector<InterestRate>& interestRates = {});
 
 %{
 Leg _IborLeg(const std::vector<Real>& nominals,
