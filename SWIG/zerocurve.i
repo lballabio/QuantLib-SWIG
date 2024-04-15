@@ -34,6 +34,8 @@ using QuantLib::InterpolatedZeroCurve;
 %shared_ptr(InterpolatedZeroCurve<DefaultLogCubic>);
 %shared_ptr(InterpolatedZeroCurve<MonotonicCubic>);
 %shared_ptr(InterpolatedZeroCurve<Kruger>);
+%shared_ptr(InterpolatedZeroCurve<ParabolicCubic>);
+%shared_ptr(InterpolatedZeroCurve<MonotonicParabolicCubic>);
 
 template <class Interpolator>
 class InterpolatedZeroCurve : public YieldTermStructure {
@@ -61,6 +63,8 @@ class InterpolatedZeroCurve : public YieldTermStructure {
 %template(LogCubicZeroCurve) InterpolatedZeroCurve<DefaultLogCubic>;
 %template(MonotonicCubicZeroCurve) InterpolatedZeroCurve<MonotonicCubic>;
 %template(KrugerZeroCurve) InterpolatedZeroCurve<Kruger>;
+%template(ParabolicCubicZeroCurve) InterpolatedZeroCurve<ParabolicCubic>;
+%template(MonotonicParabolicCubicZeroCurve) InterpolatedZeroCurve<MonotonicParabolicCubic>;
 
 
 #endif
