@@ -55,8 +55,7 @@ class TermStructureTest(unittest.TestCase):
         ql.Settings.instance().evaluationDate = today
         self.settlementDays = 2
         self.dayCounter = ql.Actual360()
-        self.settlement = self.calendar.advance(
-            today, self.settlementDays, ql.Days)
+        self.settlement = self.calendar.advance(today, self.settlementDays, ql.Days)
         deposits = [
             ql.DepositRateHelper(
                 ql.makeQuoteHandle(rate / 100),
