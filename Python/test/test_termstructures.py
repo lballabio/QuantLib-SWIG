@@ -251,8 +251,7 @@ class TermStructureTest(unittest.TestCase):
         """Testing different interpolation schemes for zero spreaded term structure"""
         h = ql.RelinkableYieldTermStructureHandle()
         h.linkTo(self.termStructure)
-        spreads = [(1, 0.005), (2, 0.008), (3, 0.0103),
-                   (4, 0.0145), (5, 0.025)]
+        spreads = [(1, 0.005), (2, 0.008), (3, 0.0103), (4, 0.0145), (5, 0.025)]
         dates, quotes = zip(*[(h.referenceDate() + ql.Period(t, ql.Years),
                                ql.QuoteHandle(ql.SimpleQuote(s)))
                               for t, s in spreads])
@@ -331,8 +330,7 @@ class TermStructureTest(unittest.TestCase):
         rho = ql.makeQuoteHandle(0.3)
         s_0 = ql.makeQuoteHandle(100.0)
 
-        exercise = ql.EuropeanExercise(
-            self.calendar.advance(today, 6, ql.Months))
+        exercise = ql.EuropeanExercise(self.calendar.advance(today, 6, ql.Months))
         payoff = ql.PlainVanillaPayoff(ql.Option.Call, 95.0)
 
         vanilla_option = ql.VanillaOption(payoff, exercise)
@@ -348,16 +346,13 @@ class TermStructureTest(unittest.TestCase):
                 rho.value()
             )
         )
-        gbm_quanto = ql.BlackScholesMertonProcess(
-            s_0, quanto_ts, r_domestic_ts, sigma_s)
+        gbm_quanto = ql.BlackScholesMertonProcess(s_0, quanto_ts, r_domestic_ts, sigma_s)
         vanilla_engine = ql.AnalyticEuropeanEngine(gbm_quanto)
         vanilla_option.setPricingEngine(vanilla_engine)
 
         quanto_option = ql.QuantoVanillaOption(payoff, exercise)
-        gbm_vanilla = ql.BlackScholesMertonProcess(
-            s_0, dividend_ts, r_domestic_ts, sigma_s)
-        quanto_engine = ql.QuantoEuropeanEngine(
-            gbm_vanilla, r_foreign_ts, sigma_fx, rho)
+        gbm_vanilla = ql.BlackScholesMertonProcess(s_0, dividend_ts, r_domestic_ts, sigma_s)
+        quanto_engine = ql.QuantoEuropeanEngine(gbm_vanilla, r_foreign_ts, sigma_fx, rho)
         quanto_option.setPricingEngine(quanto_engine)
 
         quanto_option_pv = quanto_option.NPV()
@@ -385,8 +380,7 @@ class TermStructureTest(unittest.TestCase):
         nodes = self.termStructure.nodes()
         self.termStructure.freeze()
 
-        ql.Settings.instance().evaluationDate = self.calendar.advance(
-            evaluationDate, 100, ql.Days)
+        ql.Settings.instance().evaluationDate = self.calendar.advance(evaluationDate, 100, ql.Days)
 
         # Check that dates and rates are unchanged
         for i in range(len(self.termStructure.nodes())):
