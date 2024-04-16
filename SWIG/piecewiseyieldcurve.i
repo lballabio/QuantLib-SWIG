@@ -170,6 +170,10 @@ export_piecewise_curve(PiecewiseConvexMonotoneZero,ZeroYield,ConvexMonotone);
 export_piecewise_curve(PiecewiseNaturalCubicZero,ZeroYield,SplineCubic);
 export_piecewise_curve(PiecewiseNaturalLogCubicDiscount,Discount,SplineLogCubic);
 export_piecewise_curve(PiecewiseLogMixedLinearCubicDiscount,Discount,LogMixedLinearCubic);
+export_piecewise_curve(PiecewiseParabolicCubicZero,ZeroYield,ParabolicCubic);
+export_piecewise_curve(PiecewiseMonotonicParabolicCubicZero,ZeroYield,MonotonicParabolicCubic);
+export_piecewise_curve(PiecewiseLogParabolicCubicDiscount,Discount,LogParabolicCubic);
+export_piecewise_curve(PiecewiseMonotonicLogParabolicCubicDiscount,Discount,MonotonicLogParabolicCubic);
 
 
 // global boostrapper
