@@ -55,7 +55,8 @@ class TermStructureTest(unittest.TestCase):
         ql.Settings.instance().evaluationDate = today
         self.settlementDays = 2
         self.dayCounter = ql.Actual360()
-        settlement = self.calendar.advance(today, self.settlementDays, ql.Days)
+        self.settlement = self.calendar.advance(
+            today, self.settlementDays, ql.Days)
         deposits = [
             ql.DepositRateHelper(
                 ql.makeQuoteHandle(rate / 100),
@@ -86,9 +87,10 @@ class TermStructureTest(unittest.TestCase):
             )
             for (years, rate) in [(1, 4.54), (5, 4.99), (10, 5.47), (20, 5.89), (30, 5.96)]
         ]
+        self.instruments = deposits + swaps
 
         self.termStructure = ql.PiecewiseFlatForward(
-            settlement, deposits + swaps, self.dayCounter)
+            self.settlement, self.instruments, self.dayCounter)
 
     def tearDown(self):
         ql.Settings.instance().evaluationDate = ql.Date()
@@ -206,13 +208,52 @@ class TermStructureTest(unittest.TestCase):
                 second=actualForward,
                 delta=1.0e-12,
                 msg=failMsg)
-            
+
+    def testTermStructureInterpolationSchemes(self):
+        """Testing different interpolation schemes and their consistency"""
+        args = [self.settlement, self.instruments, self.dayCounter]
+        mapping = [
+            [ql.PiecewiseParabolicCubicZero, 
+             ql.ParabolicCubicZeroCurve, 'Parabolic Zero'],
+            [ql.PiecewiseMonotonicParabolicCubicZero, 
+             ql.MonotonicParabolicCubicZeroCurve, 'Monotone Parabolic Zero'],
+            [ql.PiecewiseLogParabolicCubicDiscount, 
+             ql.LogParabolicCubicDiscountCurve, 'Log Parabolic Discount'],
+            [ql.PiecewiseMonotonicLogParabolicCubicDiscount, 
+             ql.MonotonicLogParabolicCubicDiscountCurve, 'Monotone Log Parabolic Discount'],
+        ]
+
+        for bootstrap, interp, name in mapping:
+            bootstrap_crv = bootstrap(*args)
+            dates, nodes = zip(*bootstrap_crv.nodes())
+            equivalent_crv = interp(dates, nodes, self.dayCounter)
+
+            for d in dates:
+                expected = equivalent_crv.zeroRate(
+                    d, self.dayCounter, ql.Continuous, ql.NoFrequency).rate()
+                actual = bootstrap_crv.zeroRate(
+                    d, self.dayCounter, ql.Continuous, ql.NoFrequency).rate()
+                
+                failMsg = """ Interpolation check failed for:
+                            interpolation: {interpolation}
+                            expected zero rate: {expected}
+                            actual zero rate: {actual}
+                      """.format(interpolation=name,
+                                 expected=expected,
+                                 actual=actual)
+                self.assertAlmostEqual(
+                    first=expected,
+                    second=actual,
+                    delta=1.0e-12,
+                    msg=failMsg)
+
     def testInterpolatedPiecewiseZeroSpreadedTermStructure(self):
         """Testing different interpolation schemes for zero spreaded term structure"""
         h = ql.RelinkableYieldTermStructureHandle()
         h.linkTo(self.termStructure)
-        spreads = [(1, 0.005), (2, 0.008), (3, 0.0103), (4, 0.0145), (5, 0.025)]
-        dates, quotes = zip(*[(h.referenceDate() + ql.Period(t, ql.Years), 
+        spreads = [(1, 0.005), (2, 0.008), (3, 0.0103),
+                   (4, 0.0145), (5, 0.025)]
+        dates, quotes = zip(*[(h.referenceDate() + ql.Period(t, ql.Years),
                                ql.QuoteHandle(ql.SimpleQuote(s)))
                               for t, s in spreads])
         args = [h, quotes, dates]
@@ -225,7 +266,7 @@ class TermStructureTest(unittest.TestCase):
             spreadedTs = constructor(*args)
             for d, r in zip(dates, quotes):
                 expected = r.value()
-                
+
                 zeroFromSpreadTS = spreadedTs.zeroRate(
                     d, self.dayCounter, ql.Continuous, ql.NoFrequency).rate()
                 zeroFromBaseTs = h.zeroRate(
@@ -245,7 +286,6 @@ class TermStructureTest(unittest.TestCase):
                     second=actual,
                     delta=1.0e-12,
                     msg=failMsg)
-
 
     def testQuantoTermStructure(self):
         """Testing quanto term structure"""
@@ -291,7 +331,8 @@ class TermStructureTest(unittest.TestCase):
         rho = ql.makeQuoteHandle(0.3)
         s_0 = ql.makeQuoteHandle(100.0)
 
-        exercise = ql.EuropeanExercise(self.calendar.advance(today, 6, ql.Months))
+        exercise = ql.EuropeanExercise(
+            self.calendar.advance(today, 6, ql.Months))
         payoff = ql.PlainVanillaPayoff(ql.Option.Call, 95.0)
 
         vanilla_option = ql.VanillaOption(payoff, exercise)
@@ -307,13 +348,16 @@ class TermStructureTest(unittest.TestCase):
                 rho.value()
             )
         )
-        gbm_quanto = ql.BlackScholesMertonProcess(s_0, quanto_ts, r_domestic_ts, sigma_s)
+        gbm_quanto = ql.BlackScholesMertonProcess(
+            s_0, quanto_ts, r_domestic_ts, sigma_s)
         vanilla_engine = ql.AnalyticEuropeanEngine(gbm_quanto)
         vanilla_option.setPricingEngine(vanilla_engine)
 
         quanto_option = ql.QuantoVanillaOption(payoff, exercise)
-        gbm_vanilla = ql.BlackScholesMertonProcess(s_0, dividend_ts, r_domestic_ts, sigma_s)
-        quanto_engine = ql.QuantoEuropeanEngine(gbm_vanilla, r_foreign_ts, sigma_fx, rho)
+        gbm_vanilla = ql.BlackScholesMertonProcess(
+            s_0, dividend_ts, r_domestic_ts, sigma_s)
+        quanto_engine = ql.QuantoEuropeanEngine(
+            gbm_vanilla, r_foreign_ts, sigma_fx, rho)
         quanto_option.setPricingEngine(quanto_engine)
 
         quanto_option_pv = quanto_option.NPV()
@@ -341,7 +385,8 @@ class TermStructureTest(unittest.TestCase):
         nodes = self.termStructure.nodes()
         self.termStructure.freeze()
 
-        ql.Settings.instance().evaluationDate = self.calendar.advance(evaluationDate, 100, ql.Days)
+        ql.Settings.instance().evaluationDate = self.calendar.advance(
+            evaluationDate, 100, ql.Days)
 
         # Check that dates and rates are unchanged
         for i in range(len(self.termStructure.nodes())):
@@ -357,6 +402,7 @@ class TermStructureTest(unittest.TestCase):
         ql.Settings.instance().evaluationDate = evaluationDate
 
         self.termStructure.unfreeze()
+
 
 if __name__ == "__main__":
     print("testing QuantLib", ql.__version__)
