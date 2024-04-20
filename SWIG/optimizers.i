@@ -203,14 +203,6 @@ class EndCriteria {
                 Real rootEpsilon,
                 Real functionEpsilon,
                 Real gradientNormEpsilon);
-    bool operator()(Size iteration,
-                    Size &statState,
-                    const bool positiveOptimization,
-                    const Real fold,
-                    const Real normgold,
-                    const Real fnew,
-                    const Real normgnewx,
-                    EndCriteria::Type & ecType) const;
 };
 
 
