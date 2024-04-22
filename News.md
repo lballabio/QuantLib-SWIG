@@ -39,3 +39,6 @@ More details on the changes are available in ChangeLog.txt and at
 
 - Define a few additional operators in C++ instead of Python; thanks
   to Eugene Toder (@eltoder).
+
+- Removed uncallable internal `EndCriteria::operator()` method
+  (@lballabio).

@@ -1,11 +1,48 @@
-commit 116d1f03ffa518b0e55e4bb2fc7c7109227f1241
+commit 59b9cef2cd3232d69398f223228161137b3fb288
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Oct 2023 11:41:57 +0200
+
+    Set version to 1.34 final
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit f9937d963442e4f92db4e93d2e59b03eba9256f8
+Merge: 2b9b3053 883b1a77
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 21 Apr 2024 14:26:22 +0200
+
+    Don't export internal `EndCriteria` method (#644)
+
+commit 883b1a77251a6dce43e17ae114beb1ca773e102e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 20 Apr 2024 20:18:45 +0200
+
+    Don't export internal method
+
+ SWIG/optimizers.i | 8 --------
+ 1 file changed, 8 deletions(-)
+
+commit 2b9b3053af4c8328c6badd9eb49d72c8196c3694
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 14:18:47 +0200
+
+    Set version to 1.34 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 5a3d89c47862717b8fe9b8513a1b018c634e1e53
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Mon, 15 Apr 2024 16:19:08 +0200
 
-    Update news
+    Update news and changelog
 
- News.md | 43 ++++++++++++++++++++++++++++---------------
- 1 file changed, 28 insertions(+), 15 deletions(-)
+ ChangeLog.txt | 945 +++++++++++++++++++++++++++++++++++++++++++++++-----------
+ News.md       |  46 ++-
+ 2 files changed, 808 insertions(+), 183 deletions(-)
 
 commit d433a7988592d88b40a9083d0c65afff607e5c67
 Merge: c3f54bd2 1b502947
