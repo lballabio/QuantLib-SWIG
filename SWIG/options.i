@@ -969,43 +969,7 @@ class AnalyticDigitalAmericanKOEngine : public PricingEngine {
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
-// Dividend option
-
-%{
-using QuantLib::DividendVanillaOption;
-%}
-
-
-#if defined(SWIGR)
-%Rruntime %{
-setMethod("summary", "_p_DividendVanillaOption",
-function(object) {object$freeze()
-ans <- c(value=object$NPV(), delta=object$delta(),
-gamma=object$gamma(), vega=object$vega(),
-theta=object$theta(), rho=object$rho(),
-divRho=object$dividendRho())
-object$unfreeze()
-ans
-})
-%}
-#endif
-
-%shared_ptr(DividendVanillaOption)
-class DividendVanillaOption : public OneAssetOption {
-  public:
-    DividendVanillaOption(
-            const ext::shared_ptr<StrikedTypePayoff>& payoff,
-            const ext::shared_ptr<Exercise>& exercise,
-            const std::vector<Date>& dividendDates,
-            const std::vector<Real>& dividends);
-    Volatility impliedVolatility(
-                         Real targetValue,
-                         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
-                         Real accuracy = 1.0e-4,
-                         Size maxEvaluations = 100,
-                         Volatility minVol = 1.0e-4,
-                         Volatility maxVol = 4.0);
-};
+// Dividend option engine
 
 
 %{
@@ -1015,8 +979,6 @@ using QuantLib::AnalyticDividendEuropeanEngine;
 %shared_ptr(AnalyticDividendEuropeanEngine)
 class AnalyticDividendEuropeanEngine : public PricingEngine {
   public:
-    AnalyticDividendEuropeanEngine(
-            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
     AnalyticDividendEuropeanEngine(
             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
             DividendSchedule dividends);
