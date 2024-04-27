@@ -34,7 +34,6 @@ struct Barrier {
 
 %{
 using QuantLib::BarrierOption;
-using QuantLib::DividendBarrierOption;
 using QuantLib::QuantoBarrierOption;
 %}
 
@@ -112,19 +111,6 @@ class AnalyticPartialTimeBarrierOptionEngine : public PricingEngine {
     AnalyticPartialTimeBarrierOptionEngine (
                            const ext::shared_ptr<GeneralizedBlackScholesProcess>& process
                  );
-};
-
-
-%shared_ptr(DividendBarrierOption)
-class DividendBarrierOption : public BarrierOption {
-  public:
-    DividendBarrierOption(Barrier::Type barrierType,
-                          Real barrier,
-                          Real rebate,
-                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
-                          const ext::shared_ptr<Exercise>& exercise,
-                          const std::vector<Date>& dividendDates,
-                          const std::vector<Real>& dividends);
 };
 
 

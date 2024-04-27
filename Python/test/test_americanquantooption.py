@@ -33,19 +33,13 @@ class AmericanQuantoOptionTest(unittest.TestCase):
 
         self.divYieldTS = ql.FlatForward(self.today, 0.03, self.dc)
 
-        divDate = ql.DateVector()
-        divDate.push_back(self.today + ql.Period(6, ql.Months))
-
-        divAmount = ql.DoubleVector()
-        divAmount.push_back(8.0)
+        self.dividends = [ql.FixedDividend(8.0, self.today + ql.Period(6, ql.Months))]
 
         maturityDate = self.today + ql.Period(9, ql.Months)
 
-        self.option = ql.DividendVanillaOption(
+        self.option = ql.VanillaOption(
             ql.PlainVanillaPayoff(ql.Option.Call, 105),
-            ql.AmericanExercise(self.today, maturityDate),
-            divDate,
-            divAmount)
+            ql.AmericanExercise(self.today, maturityDate))
 
 
     def tearDown(self):
@@ -63,7 +57,7 @@ class AmericanQuantoOptionTest(unittest.TestCase):
             ql.BlackVolTermStructureHandle(volTS))
 
         fdmBlackScholesEngine = ql.FdBlackScholesVanillaEngine(
-            bsmProcess, self.quantoHelper, 100, 400, 1)
+            bsmProcess, self.dividends, self.quantoHelper, 100, 400, 1)
 
         self.option.setPricingEngine(fdmBlackScholesEngine)
 
@@ -85,7 +79,7 @@ class AmericanQuantoOptionTest(unittest.TestCase):
                 0.09, 1.0, 0.09, 1e-4, 0.0))
 
         fdmHestonVanillaEngine = ql.FdHestonVanillaEngine(
-            hestonModel, self.quantoHelper, 100, 400, 3, 1)
+            hestonModel, self.dividends, self.quantoHelper, 100, 400, 3, 1)
 
         self.option.setPricingEngine(fdmHestonVanillaEngine)
 
