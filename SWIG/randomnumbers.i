@@ -345,6 +345,19 @@ class InverseCumulativeRsg {
 %template(InvCumulativeBurley2020SobolGaussianRsg)
     InverseCumulativeRsg<Burley2020SobolRsg,InverseCumulativeNormal>;
 
+%{
+typedef RandomSequenceGenerator<ZigguratGaussianRng<Xoshiro256StarStarUniformRng>> ZigguratXoshiro256StarStarGaussianRsg;
+%}
+
+class ZigguratXoshiro256StarStarGaussianRsg {
+  public:
+    ZigguratXoshiro256StarStarGaussianRsg(Size dimensionality,
+                                          const ZigguratGaussianRng<Xoshiro256StarStarUniformRng>& rng);
+    const Sample<std::vector<Real> >& nextSequence() const;
+    Size dimension() const;
+};
+
+
 class GaussianRandomSequenceGenerator {
   public:
     GaussianRandomSequenceGenerator(
