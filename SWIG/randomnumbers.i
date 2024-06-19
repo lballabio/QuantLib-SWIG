@@ -4,6 +4,7 @@
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2016 Gouthaman Balaraman
  Copyright (C) 2019 Matthias Lungwitz
+ Copyright (C) 2024 Ralf Konrad Eckel
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -37,6 +38,7 @@ typedef QuantLib::PseudoRandom::urng_type UniformRandomGenerator;
 using QuantLib::CLGaussianRng;
 using QuantLib::BoxMullerGaussianRng;
 using QuantLib::InverseCumulativeRng;
+using QuantLib::ZigguratGaussianRng;
 
 typedef QuantLib::PseudoRandom::rng_type GaussianRandomGenerator;
 
@@ -167,6 +169,15 @@ template<class RNG, class F> class InverseCumulativeRng {
     InverseCumulativeRng<MersenneTwisterUniformRng,InverseCumulativeNormal>;
 %template(InvCumulativeXoshiro256StarStarGaussianRng)
     InverseCumulativeRng<Xoshiro256StarStarUniformRng,InverseCumulativeNormal>;
+
+template<class RNG> class ZigguratGaussianRng {
+public:
+  ZigguratGaussianRng(const RNG& rng);
+  Sample<Real> next() const;
+};
+
+%template(ZigguratXoshiro256StarStarGaussianRng)
+        ZigguratGaussianRng<Xoshiro256StarStarUniformRng>;
 
 class GaussianRandomGenerator {
   public:
@@ -333,6 +344,19 @@ class InverseCumulativeRsg {
     InverseCumulativeRsg<SobolRsg,InverseCumulativeNormal>;
 %template(InvCumulativeBurley2020SobolGaussianRsg)
     InverseCumulativeRsg<Burley2020SobolRsg,InverseCumulativeNormal>;
+
+%{
+typedef RandomSequenceGenerator<ZigguratGaussianRng<Xoshiro256StarStarUniformRng>> ZigguratXoshiro256StarStarGaussianRsg;
+%}
+
+class ZigguratXoshiro256StarStarGaussianRsg {
+  public:
+    ZigguratXoshiro256StarStarGaussianRsg(Size dimensionality,
+                                          const ZigguratGaussianRng<Xoshiro256StarStarUniformRng>& rng);
+    const Sample<std::vector<Real> >& nextSequence() const;
+    Size dimension() const;
+};
+
 
 class GaussianRandomSequenceGenerator {
   public:
