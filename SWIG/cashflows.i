@@ -1055,6 +1055,22 @@ class CashFlows {
                            bool includeSettlementDateFlows,
                            Date settlementDate = Date());
 
+    static Time accrualPeriod(const Leg& leg,
+                              bool includeSettlementDateFlows,
+                              Date settlementDate = Date());
+    static Integer accrualDays(const Leg& leg,
+                               bool includeSettlementDateFlows,
+                               Date settlementDate = Date());
+    static Time accruedPeriod(const Leg& leg,
+                              bool includeSettlementDateFlows,
+                              Date settlementDate = Date());
+    static Integer accruedDays(const Leg& leg,
+                               bool includeSettlementDateFlows,
+                               Date settlementDate = Date());
+    static Real accruedAmount(const Leg& leg,
+                              bool includeSettlementDateFlows,
+                              Date settlementDate = Date());
+
     %extend {
 
         static ext::shared_ptr<CashFlow>
