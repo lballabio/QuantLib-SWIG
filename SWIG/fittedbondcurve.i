@@ -71,6 +71,7 @@ class FittedBondDiscountCurve : public YieldTermStructure {
                    const Array &guess = Array(),
                    Real simplexLambda = 1.0);
     const FittingMethod& fitResults() const;
+    void resetGuess(const Array& guess);
 };
 
 

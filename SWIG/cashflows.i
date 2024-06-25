@@ -297,6 +297,7 @@ class IborCoupon : public FloatingRateCoupon {
                const DayCounter& dayCounter = DayCounter(),
                bool isInArrears = false,
                const Date& exCouponDate = Date());
+    bool hasFixed() const;
     %extend {
         static void createAtParCoupons() {
             IborCoupon::Settings::instance().createAtParCoupons();
