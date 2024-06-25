@@ -404,6 +404,7 @@ export_quoted_xibor_instance(Bkbm6M,Bkbm);
 
 export_xibor_instance(Euribor);
 export_quoted_xibor_instance(EuriborSW,Euribor);
+export_quoted_xibor_instance(Euribor1W,Euribor);
 export_quoted_xibor_instance(Euribor2W,Euribor);
 export_quoted_xibor_instance(Euribor3W,Euribor);
 export_quoted_xibor_instance(Euribor1M,Euribor);
