@@ -235,12 +235,19 @@ class OvernightIndexedCoupon : public FloatingRateCoupon {
                 const Date& refPeriodEnd = Date(),
                 const DayCounter& dayCounter = DayCounter(),
                 bool telescopicValueDates = false,
-                RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                Natural lookbackDays = Null<Natural>(),
+                Natural lockoutDays = 0,
+                bool applyObservationShift = false);
     const std::vector<Date>& fixingDates() const;
+    const std::vector<Date>& interestDates() const;
     const std::vector<Time>& dt() const;
     const std::vector<Rate>& indexFixings() const;
     const std::vector<Date>& valueDates() const;
     RateAveraging::Type averagingMethod() const;
+    Natural lockoutDays() const;
+    bool applyObservationShift() const;
+    bool canApplyTelescopicFormula() const;
 };
 
 %inline %{
@@ -795,7 +802,10 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   bool telescopicValueDates = false,
                   RateAveraging::Type averagingMethod = RateAveraging::Compound,
                   const Calendar& paymentCalendar = Calendar(),
-                  const Integer paymentLag = 0) {
+                  const Integer paymentLag = 0,
+                  Natural lookbackDays = Null<Natural>(),
+                  Natural lockoutDays = 0,
+                  bool applyObservationShift = false) {
     return QuantLib::OvernightLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
@@ -805,7 +815,10 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
         .withGearings(gearings)
         .withSpreads(spreads)
         .withTelescopicValueDates(telescopicValueDates)
-        .withAveragingMethod(averagingMethod);
+        .withAveragingMethod(averagingMethod)
+        .withLookbackDays(lookbackDays)
+        .withLockoutDays(lockoutDays)
+        .withObservationShift(applyObservationShift);
 }
 %}
 #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -822,7 +835,10 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   bool telescopicValueDates = false,
                   RateAveraging::Type averagingMethod = RateAveraging::Compound,
                   const Calendar& paymentCalendar = Calendar(),
-                  Integer paymentLag = 0);
+                  Integer paymentLag = 0,
+                  Natural lookbackDays = Null<Natural>(),
+                  Natural lockoutDays = 0,
+                  bool applyObservationShift = false);
 
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,
