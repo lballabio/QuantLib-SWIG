@@ -59,6 +59,7 @@ class SimpleQuote : public Quote {
   public:
     SimpleQuote(doubleOrNull value = Null<Real>());
     void setValue(doubleOrNull value = Null<Real>());
+    void reset();
 };
 
 %shared_ptr(LastFixingQuote)
