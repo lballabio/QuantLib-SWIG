@@ -359,7 +359,10 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
-            RateAveraging::Type averagingMethod = RateAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound,
+            Natural lookbackDays = Null<Natural>(),
+            Natural lockoutDays = 0,
+            bool applyObservationShift = false);
     
     OvernightIndexedSwap(
             Type type,
@@ -373,7 +376,10 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
             BusinessDayConvention paymentAdjustment = Following,
             Calendar paymentCalendar = Calendar(),
             bool telescopicValueDates = false,
-            RateAveraging::Type averagingMethod = RateAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound,
+            Natural lookbackDays = Null<Natural>(),
+            Natural lockoutDays = 0,
+            bool applyObservationShift = false);
 
     OvernightIndexedSwap(Type type,
                          const std::vector<Real>& fixedNominals,
@@ -388,7 +394,10 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
                          BusinessDayConvention paymentAdjustment = Following,
                          const Calendar& paymentCalendar = Calendar(),
                          bool telescopicValueDates = false,
-                         RateAveraging::Type averagingMethod = RateAveraging::Compound);
+                         RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                         Natural lookbackDays = Null<Natural>(),
+                         Natural lockoutDays = 0,
+                         bool applyObservationShift = false);
 
     Real overnightLegBPS();
     Real overnightLegNPV();
@@ -397,6 +406,9 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
     ext::shared_ptr<OvernightIndex> overnightIndex() const;
     const Leg& overnightLeg();
     RateAveraging::Type averagingMethod();
+    Natural lookbackDays() const;
+    Natural lockoutDays() const;
+    bool applyObservationShift() const;
 };
 
 #if defined(SWIGPYTHON)
@@ -448,6 +460,9 @@ class MakeOIS {
                   const Handle<YieldTermStructure>& discountingTermStructure);
         MakeOIS& withTelescopicValueDates(bool telescopicValueDates);
         MakeOIS& withAveragingMethod(RateAveraging::Type averagingMethod);
+        MakeOIS& withLookbackDays(Natural lookbackDays);
+        MakeOIS& withLockoutDays(Natural lockoutDays);
+        MakeOIS& withObservationShift(bool applyObservationShift = true);
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
 };
@@ -487,6 +502,9 @@ _MAKEOIS_METHODS = {
     "discountingTermStructure": "withDiscountingTermStructure",
     "telescopicValueDates": "withTelescopicValueDates",
     "averagingMethod": "withAveragingMethod",
+    "lookbackDays": "withLookbackDays",
+    "lockoutDays": "withLockoutDays",
+    "applyObservationShift": "withObservationShift",
     "pricingEngine": "withPricingEngine",
 }
 
