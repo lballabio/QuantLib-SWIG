@@ -332,7 +332,10 @@ class OISRateHelper : public RateHelper {
             RateAveraging::Type averagingMethod = RateAveraging::Compound,
             ext::optional<bool> endOfMonth = ext::nullopt,
             ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-            const Calendar& fixedCalendar = Calendar());
+            const Calendar& fixedCalendar = Calendar(),
+            Natural lookbackDays = Null<Natural>(),
+            Natural lockoutDays = 0,
+            bool applyObservationShift = false);
     ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 
@@ -354,11 +357,13 @@ class DatedOISRateHelper : public RateHelper {
             BusinessDayConvention paymentConvention = Following,
             Frequency paymentFrequency = Annual,
             const Calendar& paymentCalendar = Calendar(),
-            const Period& forwardStart = 0 * Days,
             Spread overnightSpread = 0.0,
             ext::optional<bool> endOfMonth = ext::nullopt,
             ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-            const Calendar& fixedCalendar = Calendar());
+            const Calendar& fixedCalendar = Calendar(),
+            Natural lookbackDays = Null<Natural>(),
+            Natural lockoutDays = 0,
+            bool applyObservationShift = false);
 };
 
 %shared_ptr(FxSwapRateHelper)
