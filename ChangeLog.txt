@@ -1,933 +1,161 @@
-commit 59b9cef2cd3232d69398f223228161137b3fb288
+commit f02abac21a78a983be6fe79bd33b0cb67af55fd3
+Merge: 2faa526e f001b28c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 19 Oct 2023 11:41:57 +0200
+Date:   Thu, 27 Jun 2024 12:49:45 +0200
 
-    Set version to 1.34 final
+    Export additional parameters in OIS rate helper constructor (#657)
 
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit f9937d963442e4f92db4e93d2e59b03eba9256f8
-Merge: 2b9b3053 883b1a77
+commit f001b28ca9ff4674e092bf88dc135b8295af8774
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 21 Apr 2024 14:26:22 +0200
+Date:   Thu, 27 Jun 2024 11:59:20 +0200
 
-    Don't export internal `EndCriteria` method (#644)
+    Export additional parameters in OIS rate helper constructor
 
-commit 883b1a77251a6dce43e17ae114beb1ca773e102e
+ SWIG/ratehelpers.i | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+commit 2faa526eda57b14528da3861794a158b46e4a043
+Merge: 3850951c b03169db
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sat, 20 Apr 2024 20:18:45 +0200
+Date:   Tue, 25 Jun 2024 22:06:42 +0200
 
-    Don't export internal method
+    Expose SimpleQuote::reset (#656)
 
- SWIG/optimizers.i | 8 --------
- 1 file changed, 8 deletions(-)
+commit b03169db807d8e37a6aa5de0f7aee3c38f719556
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 25 Jun 2024 15:16:33 -0400
 
-commit 2b9b3053af4c8328c6badd9eb49d72c8196c3694
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 4 Oct 2023 14:18:47 +0200
+    Expose SimpleQuote::reset
 
-    Set version to 1.34 rc
-
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit 5a3d89c47862717b8fe9b8513a1b018c634e1e53
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 15 Apr 2024 16:19:08 +0200
-
-    Update news and changelog
-
- ChangeLog.txt | 945 +++++++++++++++++++++++++++++++++++++++++++++++-----------
- News.md       |  46 ++-
- 2 files changed, 808 insertions(+), 183 deletions(-)
-
-commit d433a7988592d88b40a9083d0c65afff607e5c67
-Merge: c3f54bd2 1b502947
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 16 Apr 2024 12:54:48 +0200
-
-    Exposed parabolic (Hermite) cubic spline interpolation schemes (#643)
-
-commit 1b50294758d1d1a8fea0c18aec555cffcbc78692
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Tue, 16 Apr 2024 10:10:22 +0200
-
-    Fixed indentation.
-
- Python/test/test_termstructures.py | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-commit 9bd5e89a75b14e9c647bf0cc9fd4ad354031a816
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Tue, 16 Apr 2024 10:09:07 +0200
-
-    Fixed indentation.
-
- Python/test/test_termstructures.py | 18 ++++++------------
- 1 file changed, 6 insertions(+), 12 deletions(-)
-
-commit 237616d91e8747fd32f6d8113b3e77bdc68b9eca
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Tue, 16 Apr 2024 10:05:09 +0200
-
-    Added a unit test for exposed interpolation schemes.
-
- Python/test/test_termstructures.py | 70 +++++++++++++++++++++++++++++++-------
- 1 file changed, 58 insertions(+), 12 deletions(-)
-
-commit 65bcdde4fe6c1ea91dc0adcb516938521830e894
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 15 Apr 2024 17:20:46 +0200
-
-    Leave out changes for bootstrappers
-
- SWIG/piecewiseyieldcurve.i | 214 ++++++++++++++++++++++-----------------------
- 1 file changed, 106 insertions(+), 108 deletions(-)
-
-commit cf455ab3cdbe9e627cf67aa9983fbfce6942d1e7
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 15 Apr 2024 16:43:34 +0200
-
-    Exposed Parabolic and Monotone Parabolic interpolation schemes
-
- SWIG/discountcurve.i       |  4 ++++
- SWIG/interpolation.i       | 36 ++++++++++++++++++++++++++++++++++++
- SWIG/piecewiseyieldcurve.i |  8 ++++++++
- SWIG/termstructures.i      |  2 ++
- SWIG/zerocurve.i           |  4 ++++
- 5 files changed, 54 insertions(+)
-
-commit 3d19d09048733a007ad4c07c52df044d3a2b2196
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Fri, 12 Apr 2024 18:50:02 +0200
-
-    Generalized global bootstrapping schemes
-
- SWIG/piecewiseyieldcurve.i | 200 ++++++++++++++++++++++-----------------------
- 1 file changed, 99 insertions(+), 101 deletions(-)
-
-commit c3f54bd2e6a95162e5257e58b27fb13bf38526ce
-Merge: b71cc37f eb4ba9ec
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Apr 2024 13:39:28 +0200
-
-    Allow passing a vector of `InterestRate` objects to `FixedRateLeg` (#642)
-
-commit eb4ba9ecb18a43633ec6e101e1c213a64360e1d7
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 11 Apr 2024 11:23:05 +0200
-
-    Allow passing a vector of InterestRate objects to FixedRateLeg
-
- SWIG/cashflows.i | 22 ++++++++++++++++------
- 1 file changed, 16 insertions(+), 6 deletions(-)
-
-commit b71cc37f8a3260a24434fcd69675c2a60d60c1cb
-Merge: 9b08fed8 f8f6be47
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 10 Apr 2024 12:11:06 +0200
-
-    Spreaded zero interpolated curve interpolation methods (#641)
-
-commit f8f6be47a9f29cf3688c23841e1bf61d3bfdb02f
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 8 Apr 2024 16:35:11 +0200
-
-    Clean up.
-
- Python/test/test_termstructures.py | 9 +++------
- 1 file changed, 3 insertions(+), 6 deletions(-)
-
-commit 31da9e29f62547ff59780eb5e5b7300bbd52f980
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 8 Apr 2024 16:06:34 +0200
-
-    Removed print statements
-
- Python/test/test_termstructures.py | 2 --
- 1 file changed, 2 deletions(-)
-
-commit 1aab7f983e6b78eb7c537ffc4a9488436fa22202
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 8 Apr 2024 16:06:17 +0200
-
-    Added unit test in Python
-
- Python/test/test_termstructures.py | 45 ++++++++++++++++++++++++++++++++++++++
- SWIG/termstructures.i              |  1 -
- 2 files changed, 45 insertions(+), 1 deletion(-)
-
-commit 76766c40af09f504192a522508dd471d89244a90
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Mon, 8 Apr 2024 14:44:56 +0200
-
-    Exposed additional interpolation methods for interpolated zero spreaded term structure
-
- SWIG/termstructures.i | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-commit 9b08fed82f07d74439c18cd68fb806dab1e4cfde
-Merge: 7468a2f0 95d04206
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 8 Apr 2024 09:43:31 +0200
-
-    add Tona to indexes.i (#640)
-
-commit 95d0420628ce1794f9b143a8f22100e0f4a3e3b4
-Author: jonghee <jonghee.lee@miraeasset.com>
-Date:   Mon, 8 Apr 2024 10:03:39 +0900
-
-    add Tona to indexes.i
-
- SWIG/indexes.i | 1 +
+ SWIG/marketelements.i | 1 +
  1 file changed, 1 insertion(+)
 
-commit 7468a2f052cf30c2cab36adbab483c3b453b442c
-Merge: 03b3cff7 5ec38879
+commit 3850951cb62e1bb2499ce443ee6ed7570a1f76f4
+Merge: a581f558 583835b6
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 16:25:43 +0200
+Date:   Tue, 25 Jun 2024 11:46:07 +0200
 
-    Allow swaptions to use OIS as underlying (#638)
+    Export lookback and lockout days for OIS (#655)
 
-commit 03b3cff721e6e0fe7926924223dadf497a3e218c
-Merge: cbf2c9e1 9a14596a
+commit a581f55810eb0cf60bbf9a38539e36ca29bf6f2b
+Merge: a394fd6d deeda490
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 15:58:46 +0200
+Date:   Tue, 25 Jun 2024 10:39:27 +0200
 
-    Export `FixedVsFloatingSwap` (#637)
+    Export a few new methods and typedefs (#654)
 
-commit 5ec38879bfb71cff5015dd6b3ab6d036c35114b4
+commit 583835b651cc2faad88f88b0f8e1c669b9ff6ad1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 14:50:06 +0200
+Date:   Tue, 25 Jun 2024 10:17:35 +0200
 
-    Allow swaptions to use OIS as underlying
+    Export lookback and lockout days for OIS
 
- SWIG/calibrationhelpers.i | 22 +++++++++++++---------
- SWIG/fdm.i                |  4 ++--
- SWIG/swaption.i           |  3 ++-
- 3 files changed, 17 insertions(+), 12 deletions(-)
+ SWIG/cashflows.i | 24 ++++++++++++++++++++----
+ SWIG/swap.i      | 24 +++++++++++++++++++++---
+ 2 files changed, 41 insertions(+), 7 deletions(-)
 
-commit 9a14596a0402af8a1005552b4b06786e72bea216
+commit deeda4906a1f591ed1e1c6279e8fd6599a11dfee
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 14:50:54 +0200
+Date:   Tue, 25 Jun 2024 09:37:08 +0200
 
-    Fix R demo
+    Export a few new methods and typedefs
 
- R/demo/cashflows.R | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ SWIG/cashflows.i       | 1 +
+ SWIG/fittedbondcurve.i | 1 +
+ SWIG/indexes.i         | 1 +
+ 3 files changed, 3 insertions(+)
 
-commit cbf2c9e1d8e7abbe98f05514f3671873115485e6
-Merge: 4cdc2c6f 6c35a242
+commit a394fd6d6c25262cbefe15572988da2b7d91cee9
+Merge: 435eae15 87ce20ac
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 14:06:39 +0200
+Date:   Thu, 20 Jun 2024 11:33:41 +0200
 
-    Export more overloads for bond functions (#636)
+    Add a few missing CashFlows methods (#653)
 
-commit 4cdc2c6f451082cd0516d5f8eaad46a83a28bab4
-Merge: 843f281f 39f426cc
+commit 87ce20ac04b0f7432d69d9b0edfe802f9da65b0d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 13:58:40 +0200
+Date:   Thu, 20 Jun 2024 10:46:34 +0200
 
-    Pass explicit base date to inflation curves instead of observation lag (#635)
+    Add a few missing CashFlows methods
 
-commit 843f281f76acd5611d210c5f02baa3b4de70dbfd
-Merge: 6c64b656 75440468
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 13:39:25 +0200
+ SWIG/cashflows.i | 16 ++++++++++++++++
+ 1 file changed, 16 insertions(+)
 
-    Export `makeQuoteHandle` convenience function (#634)
-
-commit 6c64b65601cda793b8e4ce54c6b3bddfbc4adb7a
-Merge: d56825f6 7bb1dded
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 13:38:51 +0200
-
-    Use consistent keyword case in `MakeVanillaSwap` (#633)
-
-commit 1b25ce30b901b287ae95eb07e7e33b7ab1148298
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 13:38:00 +0200
-
-    Export FixedVsFloatingSwap
-
- SWIG/cashflows.i |  1 +
- SWIG/swap.i      | 67 +++++++++++++++++++++++++++++++-------------------------
- 2 files changed, 38 insertions(+), 30 deletions(-)
-
-commit 6c35a2426f97945ebf68126b445524cfe2e63b0a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 13:24:16 +0200
-
-    Export more overloads for bond functions
-
- SWIG/bondfunctions.i | 63 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- SWIG/bonds.i         |  9 ++++++++
- 2 files changed, 71 insertions(+), 1 deletion(-)
-
-commit 39f426ccfd26b1952742c56c35fabcd38a5dc407
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 13:08:20 +0200
-
-    Update test
-
- Python/test/test_inflation.py | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
-
-commit 75440468708544d8b8aa0a4e087c95778ba5a244
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 12:58:49 +0200
-
-    Export makeQuoteHandle convenience function
-
- Python/examples/bermudan-swaption.py     |  4 ++--
- Python/examples/bonds.py                 |  8 ++++----
- Python/examples/capsfloors.py            |  2 +-
- Python/examples/cds.py                   |  2 +-
- Python/examples/gaussian1d-models.py     | 18 +++++++++---------
- Python/examples/isda-engine.py           |  2 +-
- Python/examples/slv.py                   |  2 +-
- Python/examples/swap.py                  |  2 +-
- Python/test/test_americanquantooption.py |  4 ++--
- Python/test/test_assetswap.py            |  2 +-
- Python/test/test_capfloor.py             |  5 ++---
- Python/test/test_cms.py                  |  8 ++++----
- Python/test/test_coupons.py              |  2 +-
- Python/test/test_equityindex.py          |  4 ++--
- Python/test/test_fdm.py                  |  4 ++--
- Python/test/test_inflation.py            |  2 +-
- Python/test/test_options.py              |  4 ++--
- Python/test/test_ratehelpers.py          | 20 ++++++++++----------
- Python/test/test_slv.py                  |  2 +-
- Python/test/test_swap.py                 |  4 ++--
- Python/test/test_swaption.py             |  6 +++---
- Python/test/test_termstructures.py       | 24 ++++++++++++------------
- Python/test/test_volatilities.py         | 14 +++++++-------
- SWIG/marketelements.i                    |  3 +++
- 24 files changed, 75 insertions(+), 73 deletions(-)
-
-commit 7bb1ddedceeb42de628df0bdbf3144faae48e712
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 12:34:11 +0200
-
-    Use consistent case in keyword args
-
- SWIG/swap.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit badc83c8e235a5c360b312745196ba7264be7ff4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 3 Apr 2024 12:17:04 +0200
-
-    Pass base date to inflation curves instead of lag
-
- SWIG/inflation.i | 66 +++++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 53 insertions(+), 13 deletions(-)
-
-commit d56825f6eca117e37d73d5e2664a728793dbb643
-Merge: db743854 b4e5d6e3
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 11 Mar 2024 08:52:44 +0100
-
-    Fix refcounting in `Date.from_date` (#630)
-
-commit b4e5d6e3c850eb48ab884a3f8f47277fda08c696
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Sun, 10 Mar 2024 18:22:34 -0400
-
-    Fix refcounting in `Date.from_date`
-
- SWIG/date.i | 14 +++++++++++---
- 1 file changed, 11 insertions(+), 3 deletions(-)
-
-commit db74385409bf141a83096803a70dceecb731f700
-Merge: 49a59ee0 dc063af2
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 10 Mar 2024 22:05:18 +0100
-
-    Enable Python limited API (#629)
-
-commit dc063af25477079fcd41381b6a8c1466dda355fb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 8 Mar 2024 16:19:26 +0100
-
-    Enable Python limited API
-
- Python/setup.py    | 24 +++++++++++++++++++++---
- Python/setup.py.in | 24 +++++++++++++++++++++---
- 2 files changed, 42 insertions(+), 6 deletions(-)
-
-commit 49a59ee0eccd0e74c6f2d518ea5800a905c15052
-Merge: 1f8e0478 ce8fe263
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sun, 10 Mar 2024 20:54:02 +0100
-
-    Support compilation with Py_LIMITED_API (#628)
-
-commit ce8fe263c3a171ce7afefaa24a4b969c225eb8d3
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Sat, 9 Mar 2024 21:21:40 -0500
-
-    Support compilation with Py_LIMITED_API
-    
-    PyDate* APIs are not part of the Limited API, so reimplement what we
-    need using generic PyObject* APIs.
-
- SWIG/date.i | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
-
-commit 1f8e04786b53630ad909d941671cc45313cb43c5
-Merge: 1f53777f 58311331
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 22 Feb 2024 15:50:09 +0100
-
-    Expose Futures::Custom (#627)
-
-commit 58311331dc5131ceceef4091148c641076a4408d
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Wed, 21 Feb 2024 10:43:45 -0500
-
-    Expose Futures::Custom
-
- SWIG/futures.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 1f53777f1925aea4fd53a9e173ad33c7e28c6023
-Merge: 406bd3d9 248a14a3
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 15 Feb 2024 09:49:11 +0100
-
-    Expose MakeVanillaSwap.withPaymentConvention (#626)
-
-commit 248a14a390ce67aef76fd853a6c2064db530c950
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Tue, 13 Feb 2024 21:23:56 -0500
-
-    Expose MakeVanillaSwap.withPaymentConvention
-    
-    Also, refactor python MakeVanillaSwap() function similar to MakeOIS().
-
- SWIG/swap.i | 130 +++++++++++++++++++++++-------------------------------------
- 1 file changed, 50 insertions(+), 80 deletions(-)
-
-commit 406bd3d99ded5537c6a7b682a52126d3526242e3
-Merge: a1dfb2d9 319124f1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 12 Feb 2024 17:21:38 +0100
-
-    Expose new methods for MakeOIS (#624)
-
-commit 319124f1c277eae8ba8f31aac90f1564c71381cb
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 9 Feb 2024 20:23:47 -0500
-
-    Expose new methods for MakeOIS
-
- SWIG/swap.i | 123 ++++++++++++++++++++++++++++++------------------------------
- 1 file changed, 61 insertions(+), 62 deletions(-)
-
-commit a1dfb2d91853b7172a104c51ab5f4bd58d21b415
-Merge: 14748ea4 287f4e8d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 12 Feb 2024 15:58:37 +0100
-
-    Use C++ operators instead of Python magics for comparison (#625)
-
-commit 287f4e8d0eeb9347230963417b2afae1ee5afaf1
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 9 Feb 2024 21:41:07 -0500
-
-    Use C++ operators instead of Python magics for comparison
-    
-    This works in -builtin mode for Python and can work in other languages
-    (e.g. R) if we extend ifdefs.
-
- Python/test/test_date.py | 16 ++++++++++++++++
- SWIG/calendars.i         |  4 ++--
- SWIG/currencies.i        |  4 ++--
- SWIG/date.i              | 24 ++++++++++++------------
- SWIG/daycounters.i       |  4 ++--
- SWIG/money.i             | 12 ++++++------
- SWIG/ql.i                |  4 ++--
- 7 files changed, 42 insertions(+), 26 deletions(-)
-
-commit 14748ea432e0cb9261e9b182f61a89cc28238bf0
-Merge: 38476e98 1c8e5ef4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 7 Feb 2024 14:18:31 +0100
-
-    Enable different definition of macro QL_JAVA_INTERFACES by testing if it is already defined (#623)
-
-commit 1c8e5ef4192c50d45727fbc304e86511fbba8eb3
-Author: ralfeckel <ralf.eckel@smarttra.de>
-Date:   Wed, 7 Feb 2024 11:48:10 +0100
-
-    Enable different definition of macro QL_JAVA_INTERFACES by testing if it is already defined
-
- SWIG/quantlib.i | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-commit 38476e983a7d92ebacc17b86d90124902504fb12
-Merge: 29a4a9af 7cae1b25
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 7 Feb 2024 08:35:26 +0100
-
-    Add defaults for SimpleQuote (#622)
-
-commit 7cae1b256cc4685568c01292f0f1734d9539ec29
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Tue, 6 Feb 2024 22:46:19 -0500
-
-    Use PyLong_AsDouble to avoid overflow on very large longs
-
- Python/test/test_marketelements.py | 4 ++++
- SWIG/linearalgebra.i               | 6 +++---
- SWIG/null.i                        | 4 ++--
- 3 files changed, 9 insertions(+), 5 deletions(-)
-
-commit ff085ebd71f52dbd1a92329bd0a799056b1bfc84
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 6 Feb 2024 22:21:47 +0100
-
-    Cast to the correct target type
-    
-    Co-authored-by: Eugene Toder <eltoder@users.noreply.github.com>
-
- SWIG/null.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 89e78e966c7f03ea5a2ccb045c1bff6affac454e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 6 Feb 2024 22:02:04 +0100
-
-    Allow implicit conversion of int in doubleOrNull
-
- SWIG/null.i | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
-commit ec553561cfb3697cf84e4366f894c7527088baed
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 6 Feb 2024 21:15:17 +0100
-
-    Allow passing None for Null<Real>()
-
- SWIG/marketelements.i | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
-
-commit 741592ad216a1a994e277c45eaffa3ff627c1979
-Author: Eugene Toder <eltoder@users.noreply.github.com>
-Date:   Tue, 6 Feb 2024 14:50:48 -0500
-
-    Add defaults for SimpleQuote
-    
-    These exist in C++.
-
- SWIG/marketelements.i | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit 29a4a9af8296c4696d3241a4ced8cbce5fc77c81
-Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 5 Feb 2024 18:49:18 +0000
-
-    Bump peter-evans/create-pull-request from 5 to 6
-    
-    Bumps [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) from 5 to 6.
-    - [Release notes](https://github.com/peter-evans/create-pull-request/releases)
-    - [Commits](https://github.com/peter-evans/create-pull-request/compare/v5...v6)
-    
-    ---
-    updated-dependencies:
-    - dependency-name: peter-evans/create-pull-request
-      dependency-type: direct:production
-      update-type: version-update:semver-major
-    ...
-    
-    Signed-off-by: dependabot[bot] <support@github.com>
-
- .github/workflows/copyrights.yml | 2 +-
- .github/workflows/misspell.yml   | 2 +-
- .github/workflows/namespaces.yml | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-commit 9906207a810e8779f22538aca9a1dd3240b67ce7
-Merge: 8261fcdd c22a669c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 5 Feb 2024 11:24:51 +0100
-
-    Export `cdsMaturity` function (#620)
-
-commit 8261fcdd0b85fbbd17477cef0a5a9cec070e4da0
-Merge: e00a87e3 48c3f2d2
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 5 Feb 2024 10:00:18 +0100
-
-    Use typemap in PyObserver.[un]registerWith (#619)
-
-commit c22a669c6f6fc0eaf18348fe7b200890776352a5
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Sat, 3 Feb 2024 22:46:29 +0100
-
-    Export cdsMaturity function
-
- SWIG/creditdefaultswap.i | 3 +++
- 1 file changed, 3 insertions(+)
-
-commit e00a87e3a24a84f92e1fce7e97359e60e0abd511
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 2 Feb 2024 11:43:34 +0100
-
-    Rebuild CI images each Saturday, run build each Sunday
-
- .github/workflows/devenv-images.yml | 5 ++++-
- .github/workflows/linux.yml         | 7 ++++++-
- 2 files changed, 10 insertions(+), 2 deletions(-)
-
-commit 2318d77c59ea6da29b7b65972b7c73019b9fa602
+commit 435eae151effd89e9258cb72f5ff16ac950b3a2f
 Author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-Date:   Fri, 2 Feb 2024 10:18:16 +0000
+Date:   Wed, 19 Jun 2024 13:38:41 +0000
 
     Update copyright list in license
 
  LICENSE.TXT | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 931f4fdc1b81f9d549b0af9cb5d3e3aeb60c38f5
-Merge: 9ddb1750 f1406320
+commit 8849cae62c242b44cdce7b48c48d53bcbd06baef
+Merge: 8caabbee fb74d550
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 2 Feb 2024 11:18:03 +0100
+Date:   Wed, 19 Jun 2024 15:38:29 +0200
 
-    Fix build errors due to inheritance of YoYCapFloorTermPriceSurface  (#617)
+    Added `ZigguratGaussianRng` (#651)
 
-commit f14063207052114fcfc4dbde607573803101e13e
-Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
-Date:   Fri, 2 Feb 2024 10:33:48 +0100
-
-    Remove pure virtual flag from `baseDate`
-
- SWIG/inflation.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 23a512cb7c11f1b649bcce46f2441b6fc2b87425
-Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
-Date:   Fri, 2 Feb 2024 10:26:42 +0100
-
-    Fix typos in comments
-
- Python/test/test_date.py        | 2 +-
- Python/test/test_ratehelpers.py | 4 ++--
- Scala/README.txt                | 2 +-
- 3 files changed, 4 insertions(+), 4 deletions(-)
-
-commit 259eb325a43b84193e820a916b7b9372f8de14aa
-Author: Fredrik Gerdin Börjesson <fredrik.gerdin.borjesson@hotmail.com>
-Date:   Fri, 2 Feb 2024 10:25:49 +0100
-
-    Fix build error due to changed inheritance
-    
-    Follows from: https://github.com/lballabio/QuantLib/commit/1ebd2428aff7b8900f311518ab28d72b39136805
-
- SWIG/inflation.i | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-commit 9ddb175040f76348443df15fbc51a6b09b66d3a4
-Merge: ba5484ae 71059ea5
+commit fb74d5509f3c0c09c813f2f00c6f30fea341c190
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 2 Feb 2024 09:01:02 +0100
+Date:   Wed, 19 Jun 2024 12:53:06 +0200
 
-    Use %extend for properties of Settings (#616)
+    Add Ziggurat sequence generator
 
-commit 48c3f2d2e7c2a4bb76910d33074cf468cac1fb83
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Thu, 1 Feb 2024 05:05:22 -0500
+ SWIG/randomnumbers.i | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
 
-    Use typemap in PyObserver.[un]registerWith
-    
-    Use a typemap to handle conversion from Handles to Observable. This is
-    compatible with -builtin and avoids code duplication.
-    
-    Also, remove unneeded {} in typemaps.
+commit 8ee55997fb02b031084e84ae99ff40ea822bcd0e
+Author: Ralf Konrad <42419984+ralfkonrad@users.noreply.github.com>
+Date:   Mon, 17 Jun 2024 13:58:42 +0200
 
- Python/test/test_marketelements.py | 25 ++++++++++++++++++++++++
- SWIG/calendars.i                   |  4 ++--
- SWIG/common.i                      | 12 +++++++-----
- SWIG/date.i                        |  8 ++++----
- SWIG/null.i                        | 40 +++++++++++++++++++-------------------
- SWIG/observer.i                    | 32 +++++++++++++++---------------
- SWIG/scheduler.i                   |  4 ++--
- SWIG/volatilities.i                |  4 ++--
- 8 files changed, 78 insertions(+), 51 deletions(-)
+    Added ZigguratGaussianRng
 
-commit ba5484ae5628e1ad5993fbbc0f5c548720ba002c
-Merge: 1add6462 2952ec54
+ SWIG/randomnumbers.i | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+commit 8caabbee008659a14bfdbe71b1bab63a4d637694
+Merge: 62e2e904 20231991
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 1 Feb 2024 10:15:34 +0100
+Date:   Wed, 29 May 2024 09:17:17 +0200
 
-    Remove duplication in Date(string, string) (#615)
+    Add missing parameter to Black and Bachelier swaption engines (#650)
 
-commit 71059ea58d2ff4b41523ce532e4526a2e946fa46
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Wed, 31 Jan 2024 23:10:02 -0500
-
-    Use %extend for properties of Settings
-    
-    Use SWIG native way to add properties to Settings[1]. This works with
-    all target languages using the most natural feature available (e.g.
-    properties in Python and C# and get/set methods in Java).
-    
-    For now only enable this for Python. Other languages are easy as well,
-    except for backward compatibility concerns.
-    
-    Also, deprecate get/set methods in Python.
-    
-    [1] https://www.swig.org/Doc4.2/SWIG.html#SWIG_adding_member_functions
-    near the end of the section.
-
- Python/examples/gaussian1d-models.py |  2 +-
- Python/examples/isda-engine.py       |  2 +-
- Python/test/test_settings.py         | 52 +++++++++++++++--------
- SWIG/common.i                        | 27 +++++++-----
- SWIG/settings.i                      | 82 +++++++++++++++++++++++++-----------
- 5 files changed, 111 insertions(+), 54 deletions(-)
-
-commit 2952ec54d1686d881e98e1b952eb640f6a4c4dd3
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Wed, 31 Jan 2024 23:38:14 -0500
-
-    Remove duplication in Date(string, string)
-    
-    Call DateParser_parse() extension method instead of duplicating it. This
-    is explicitly allowed by SWIG docs[1].
-    
-    Also, use const char* in _replace_format() to avoid constructing
-    std::strings.
-    
-    [1] https://www.swig.org/Doc4.2/SWIG.html#SWIG_adding_member_functions
-
- SWIG/date.i | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
-
-commit 1add646221914e3f7318e922ea803c3675736d3b
-Merge: a7720b29 f3afc401
+commit 202319919b9e304568910f2e1dc862a2acf1f730
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 31 Jan 2024 09:33:59 +0100
+Date:   Tue, 28 May 2024 23:08:59 +0200
 
-    Cleanup comparisons (#613)
+    Add missing parameter to Black and Bachelier swaption engines
 
-commit a7720b29bd3fe4f9ff39da2ebe4a23d80c013665
-Merge: f030c545 98d015e9
+ SWIG/swaption.i | 14 ++++++++++----
+ 1 file changed, 10 insertions(+), 4 deletions(-)
+
+commit 62e2e9044e9470894829fc12beff46f0ae0e05c7
+Merge: cb284189 f0e9b043
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 30 Jan 2024 09:50:18 +0100
+Date:   Sat, 27 Apr 2024 12:31:42 +0200
 
-    Replace PyInt functions with PyLong (#614)
+    Remove features no longer available in underlying C++ library (#646)
 
-commit f030c5455ba3e10d7cf42e05e1174eac47153fae
-Merge: 5435d0e3 a6ee1d30
+commit f0e9b04304505c93eb86796d690a382a26631c16
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Jan 2024 15:24:28 +0100
+Date:   Sat, 27 Apr 2024 11:49:18 +0200
 
-    Deprecate Date arithmetic with tuples (#612)
+    Remove features no longer available in underlying C++ library
 
-commit a6ee1d30ff0893002f7ded37b1604fc7fa56100f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Jan 2024 13:08:40 +0100
+ Python/test/test_americanquantooption.py | 16 ++++---------
+ SWIG/barrieroptions.i                    | 14 -----------
+ SWIG/options.i                           | 40 +-------------------------------
+ 3 files changed, 6 insertions(+), 64 deletions(-)
 
-    Deprecate Date arithmetic with tuples
-
- SWIG/date.i | 4 ++++
- 1 file changed, 4 insertions(+)
-
-commit 5435d0e34e426ff67c4ae78c6ac49d66d2f3f68e
-Merge: 71ed9ee3 4a37feeb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Jan 2024 12:19:48 +0100
-
-    Better reporting of deprecation warning (#611)
-
-commit 71ed9ee37610069cc8e03851a44303903805869a
-Merge: 91c3d723 0f5c6629
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Jan 2024 11:54:29 +0100
-
-    Implement hash methods in C++ (#610)
-
-commit 4a37feeb3753c664c5d7cfce55dad76118b3dd05
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Jan 2024 10:51:28 +0100
-
-    Better reporting of deprecation warning
-
- SWIG/common.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 91c3d723f2a1fc8f118691fa59510e432c800720
-Merge: 4049cae0 7145ad4f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Jan 2024 09:43:32 +0100
-
-    Implement `Date.to_date` and `from_date` in C++ (#608)
-
-commit f3afc40152d0210c0798d0a301d578106a0f5377
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 26 Jan 2024 09:27:53 -0500
-
-    Cleanup comparisons
-    
-    * Fix comparing Money in Python: `__eq__` and `__ne__` were missing.
-    
-    * Expose `__cmp__` as compareTo() in Java. This is the correct name for
-      this method. "compare" is for Comparators[1][2]. Note that this is
-      only a change for Money. Period and Date did not have `__cmp__`
-      exposed in Java until #610. Also, implement Comparable<T> interface.
-    
-    * Remove `__cmp__` and `__nonzero__` methods from Python. These were
-      Python 2 magic methods that are not used in Python 3[3].
-    
-    [1] https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html#compareTo-T-
-    [2] https://docs.oracle.com/javase/8/docs/api/java/util/Comparator.html#compare-T-T-
-    [3] https://docs.python.org/3/reference/datamodel.html
-
- Python/test/test_money.py | 18 +++++++++++++++++
- SWIG/common.i             |  6 ------
- SWIG/currencies.i         |  3 ---
- SWIG/date.i               | 50 ++++++++++++++++++++++-------------------------
- SWIG/linearalgebra.i      |  3 ---
- SWIG/money.i              | 16 +++++++++++----
- SWIG/ql.i                 |  3 +++
- SWIG/quantlib.i           |  9 ++++++---
- SWIG/timeseries.i         |  3 ---
- 9 files changed, 62 insertions(+), 49 deletions(-)
-
-commit 98d015e9de1c266b1cc53220b0f3ab41e5b5c810
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 26 Jan 2024 10:57:11 -0500
-
-    Replace PyInt functions with PyLong
-    
-    PyInt_* functions were removed from Python 3 (the short int type no
-    longer exists in Python). The code only compiles because SWIG adds
-    compatibility macros in generated wrappers.
-
- SWIG/calendars.i     | 17 +++++++----------
- SWIG/date.i          | 17 +++++++----------
- SWIG/fdm.i           | 35 +++++++++++------------------------
- SWIG/linearalgebra.i | 12 ++++++------
- SWIG/null.i          | 10 +++++-----
- SWIG/scheduler.i     | 13 +++++--------
- SWIG/timebasket.i    |  7 +------
- SWIG/types.i         |  2 +-
- SWIG/volatilities.i  | 13 +++++--------
- 9 files changed, 48 insertions(+), 78 deletions(-)
-
-commit 1c60280358a6c2d43d52c9d0b7fe1f471a04d383
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 26 Jan 2024 05:07:02 -0500
-
-    Implement hash methods in C++
-    
-    Also, expose them into Java as hashCode().
-
- Python/test/test_calendars.py   | 12 +++++++++
- Python/test/test_currencies.py  | 11 ++++++++
- Python/test/test_date.py        | 18 +++++++++++++
- Python/test/test_daycounters.py | 58 +++++++++++++++++++++++------------------
- SWIG/calendars.i                | 10 +++----
- SWIG/common.i                   |  8 ++++++
- SWIG/currencies.i               |  9 +++----
- SWIG/date.i                     | 36 ++++++++++++++++---------
- SWIG/daycounters.i              | 10 +++----
- SWIG/ql.i                       |  1 +
- 10 files changed, 117 insertions(+), 56 deletions(-)
-
-commit 4049cae017508f31f70c345c6d2e41dfd99d12da
-Merge: ae56a4f9 f700e664
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Jan 2024 09:36:08 +0100
-
-    Export a few missing methods from `TimeSeries` (#607)
-
-commit ae56a4f98bc70824476fd5e9bc79636cd1b36117
-Merge: 4ba2b3d3 3d06893d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 26 Jan 2024 09:12:35 +0100
-
-    Expose SavedSettings as a context manager in Python (#605)
-
-commit 7145ad4f9e59781b487880ecfb45f781db59154c
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Thu, 25 Jan 2024 15:16:16 -0500
-
-    Implement Date.to_date and from_date in C++
-    
-    This makes them about 3x faster.
-
- Python/test/test_date.py | 18 +++++++++++++-----
- SWIG/date.i              | 26 ++++++++++++++------------
- 2 files changed, 27 insertions(+), 17 deletions(-)
-
-commit f700e664a6da02e474e09f6d8472200bcc367f2d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 25 Jan 2024 18:48:03 +0100
-
-    Export a few missing methods from TimeSeries
-
- SWIG/timeseries.i | 14 ++++++++++++++
- 1 file changed, 14 insertions(+)
-
-commit 4ba2b3d3c917724c52522459593a519780e4961a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Jan 2024 13:22:44 +0100
-
-    Upgrade CI images to SWIG 4.2
-
- dockerfiles/ci.base.Dockerfile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 562d1dfaa8822d98662246319783550e96ccae2e
-Merge: d8ef636f e32d725d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Jan 2024 14:11:13 +0100
-
-    Avoid features deprecated in 1.29 and removed in 1.34 (#606)
-
-commit e32d725dba7dba6fc3b28a84c306ab33512190c9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Jan 2024 12:55:59 +0100
-
-    Fix Scala example
-
- Scala/examples/CPIBond.scala | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 57c0d106d34a9b78528c688c0da125fb4ad7fb0d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Jan 2024 12:36:34 +0100
-
-    Avoid features deprecated in 1.29 and removed in 1.34
-
- Python/test/test_inflation.py | 90 +------------------------------------------
- SWIG/inflation.i              | 16 +-------
- 2 files changed, 3 insertions(+), 103 deletions(-)
-
-commit d8ef636fc6726804f2468326edeee5fc8b059bd2
+commit cb284189a2257ab6b5299f5a0dbd2180fee7b833
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Fri, 20 Oct 2023 11:34:41 +0200
 
-    Set version to 1.34-dev
+    Set version to 1.35-dev
 
  Python/setup.py | 2 +-
  R/DESCRIPTION   | 2 +-
  configure.ac    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
-
-commit 3d06893d4dd56406656e1a9bab021a07bd043a1f
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Tue, 16 Jan 2024 18:07:32 -0500
-
-    Expose SavedSettings as a context manager in Python
-
- Python/test/test_calendars.py | 13 ++++++-------
- Python/test/test_settings.py  | 18 ++++++++++++++++++
- SWIG/settings.i               | 21 +++++++++++++++++++++
- 3 files changed, 45 insertions(+), 7 deletions(-)

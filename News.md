@@ -1,44 +1,34 @@
-Main changes for QuantLib-SWIG 1.34
+Main changes for QuantLib-SWIG 1.35
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/27?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/28?closed=1>.
 
-- Upgrade to SWIG 4.2.x.  This allows to use Python's limited API and
-  thus reduce the number of official wheels to cover the same Python
-  versions.
+- Removed deprecated classes `DividendVanillaOption` and
+  `DividendBarrierOption`.
+  
+- Removed deprecated constructor of `AnalyticDividendEuropeanEngine`
+  taking only a process and no dividends.
 
-- Allow swaptions to use OIS as underlying (@lballabio).
+- Exported missing `CashAnnuityModel` parameter for Black and
+  Bachelier swaption engines (@lballabio).
 
-- Pass explicit base date to inflation curves instead of observation
-  lag (@lballabio).
+- Exported Ziggurat Gaussian RNG; thanks to Ralf Konrad Eckel
+  (@ralfkonrad).
 
-- Exported `SavedSettings` as a context manager in Python; thanks
-  to Eugene Toder (@eltoder).
+- Exported a few missing `CashFlows` methods (@lballabio); thanks to
+  GitHub user @heiieh for the heads-up.
 
-- Exported parabolic (Hermite) cubic spline interpolation schemes;
-  thanks to Marcin Rybacki (@marcin-rybacki).
+- Exported new `IborCoupon::hasFixed` method (@lballabio).
 
-- Exported additional interpolation schemes for
-  `InterpolatedPiecewiseZeroSpreadedTermStructure`; thanks to Marcin
-  Rybacki (@marcin-rybacki).
+- Exported new `FittedBondDiscountCurve::resetGuess` method (@lballabio).
 
-- Exported Tona index; thanks to Jonghee Lee (@nistick21).
+- `EuriborSW` renamed to `Euribor1W`, old name still available for a
+  while (@lballabio).
 
-- Removed inflation index constructors with `interpolated` parameters
-  as well as the `interpolated` method in `InflationIndex`.  They're
-  no longer available in C++ (@lballabio).
+- Exported lookback days, lockout days and observation shift for
+  overnight-indexed coupons, swaps and helpers (@lballabio).
 
-- Export a few new methods for MakeOIS and MakeVanillaSwap; thanks to
-  Eugene Toder (@eltoder).
+- Exported `SimpleQuote::reset` method; thanks to Eugene Toder
+  (@eltoder).
 
-- Exported `cdsMaturity` function (@lballabio).
-
-- Enable different definition of macro `QL_JAVA_INTERFACES`; thanks to
-  Ralf Konrad (@ralfkonrad).
-
-- Define a few additional operators in C++ instead of Python; thanks
-  to Eugene Toder (@eltoder).
-
-- Removed uncallable internal `EndCriteria::operator()` method
-  (@lballabio).
