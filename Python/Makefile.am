@@ -37,5 +37,5 @@ dist-hook:
 	mkdir -p $(distdir)/test
 	cp ./test/*.py $(distdir)/test
 
-EXTRA_DIST = README.txt setup.py QuantLib/__init__.py $(BUILT_SOURCES)
+EXTRA_DIST = README.txt setup.py setup.cfg QuantLib/__init__.py $(BUILT_SOURCES)
 
