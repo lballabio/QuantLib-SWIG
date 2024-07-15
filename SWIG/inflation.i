@@ -120,14 +120,13 @@ class ZeroInflationTermStructure : public InflationTermStructure {
 
 // inflation indexes
 
-%fragment("zeroinflationindex", "header") {
+%{
 using QuantLib::Region;
 using QuantLib::CustomRegion;
 using QuantLib::InflationIndex;
 using QuantLib::ZeroInflationIndex;
 using QuantLib::YoYInflationIndex;
-}
-%fragment("zeroinflationindex");
+%}
 
 class Region {
   public:
@@ -226,10 +225,9 @@ class Name : public ZeroInflationIndex {
 %enddef
 
 %define export_yii_instance(Name)
-%fragment("Name","header") {
+%{
 using QuantLib::Name;
-}
-%fragment("Name");
+%}
 %shared_ptr(Name)
 class Name : public YoYInflationIndex {
   public:
