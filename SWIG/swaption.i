@@ -46,6 +46,8 @@ struct Settlement {
 %shared_ptr(Swaption)
 class Swaption : public Option {
   public:
+    enum PriceType { Spot, Forward };
+
     Swaption(const ext::shared_ptr<FixedVsFloatingSwap>& swap,
              const ext::shared_ptr<Exercise>& exercise,
              Settlement::Type type = Settlement::Physical,
@@ -67,7 +69,8 @@ class Swaption : public Option {
                           Volatility minVol = 1.0e-7,
                           Volatility maxVol = 4.0,
                           VolatilityType type = ShiftedLognormal,
-                          Real displacement = 0.0) const;
+                          Real displacement = 0.0,
+                          PriceType priceType = Spot) const;
     %extend {
         Real vega() {
             return self->result<Real>("vega");
@@ -79,6 +82,10 @@ class Swaption : public Option {
 
         Real annuity() {
             return self->result<Real>("annuity");
+        }
+
+        Real forwardPrice() {
+            return self->result<Real>("forwardPrice");
         }
     }
 };
