@@ -59,7 +59,9 @@ class Swaption : public Option {
     const ext::shared_ptr<FixedVsFloatingSwap>& underlying() const;
     const ext::shared_ptr<VanillaSwap>& underlyingSwap() const;
     
-    //! implied volatility
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") impliedVolatility;
+    #endif
     Volatility impliedVolatility(
                           Real price,
                           const Handle<YieldTermStructure>& discountCurve,
