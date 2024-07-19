@@ -222,6 +222,9 @@ struct RateAveraging {
 
 %shared_ptr(OvernightIndexedCoupon)
 class OvernightIndexedCoupon : public FloatingRateCoupon {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") OvernightIndexedCoupon;
+    #endif
   public:
     OvernightIndexedCoupon(
                 const Date& paymentDate,
