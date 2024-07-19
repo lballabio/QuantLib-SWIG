@@ -1,3 +1,95 @@
+commit 33434be0a3a30925fc7755e74c14964edb7054cb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Oct 2023 11:41:57 +0200
+
+    Set version to 1.35 final
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 30bb0e7127c01a78819167b4f574702aca60983b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jul 2024 09:12:35 +0200
+
+    Add kwargs to constructor
+
+ SWIG/cashflows.i | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit f2d5efc60709614f16c9b3dbad28dc20e7074255
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 18 Jul 2024 19:04:09 +0200
+
+    Restore keyword args for swaption implied vol
+
+ SWIG/swaption.i | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+commit 44b496ea5572052b7e1c68ef6582113c36092afe
+Merge: a1fbc800 e2de5929
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jul 2024 16:26:44 +0200
+
+    Allow use of forward price for swaptions implied volatility (#659)
+
+commit e2de59294011248018f1ad957b8b91f9dd37093b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 17 Jul 2024 15:07:04 +0200
+
+    Allow use of forward price for swaptions implied volatility
+
+ SWIG/swaption.i | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+commit a1fbc8008c2ede6987d0fbe015a469d1993527b1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jul 2024 17:54:35 +0200
+
+    Remove unneeded syntax
+
+ SWIG/inflation.i | 10 ++++------
+ 1 file changed, 4 insertions(+), 6 deletions(-)
+
+commit 0de61f7dfb48d66c025706882f97adcb86adf05e
+Merge: e12bb560 ae974df9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Jul 2024 09:13:17 +0200
+
+    Use setup.cfg to specify limited API (#658)
+
+commit ae974df9ab959f919204b5e1bc34e8228b9e9efe
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 10 Jul 2024 21:54:23 +0200
+
+    Use setup.cfg to specify limited API
+
+ Python/Makefile.am |  2 +-
+ Python/setup.cfg   |  2 ++
+ Python/setup.py    | 12 ------------
+ Python/setup.py.in | 12 ------------
+ 4 files changed, 3 insertions(+), 25 deletions(-)
+
+commit e12bb56018ee89a10b6ffed54392d267de88b4ac
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 4 Oct 2023 14:18:47 +0200
+
+    Set version to 1.35 rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 0bc95c002a241fa31d8d6a3c2747f898190ee3ff
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jul 2024 15:41:05 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt | 946 ++++++----------------------------------------------------
+ News.md       |  52 ++--
+ 2 files changed, 108 insertions(+), 890 deletions(-)
+
 commit f02abac21a78a983be6fe79bd33b0cb67af55fd3
 Merge: 2faa526e f001b28c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
