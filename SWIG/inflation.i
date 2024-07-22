@@ -196,16 +196,6 @@ class YoYInflationIndex : public InflationIndex {
             const Currency& currency,
             Handle<YoYInflationTermStructure> ts = {});
 
-    // Deprecated constructor.
-    YoYInflationIndex(const std::string& familyName,
-                      const Region& region,
-                      bool revised,
-                      bool interpolated,
-                      bool ratio,
-                      Frequency frequency,
-                      const Period& availabilityLag,
-                      const Currency& currency,
-                      const Handle<YoYInflationTermStructure>& ts = {});
     bool ratio() const;
     bool interpolated() const;
     ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
@@ -255,15 +245,10 @@ class UKHICP : public ZeroInflationIndex {
 
 export_yii_instance(YYEUHICP);
 export_yii_instance(YYEUHICPXT);
-export_yii_instance(YYEUHICPr);
 export_yii_instance(YYFRHICP);
-export_yii_instance(YYFRHICPr);
 export_yii_instance(YYUKRPI);
-export_yii_instance(YYUKRPIr);
 export_yii_instance(YYUSCPI);
-export_yii_instance(YYUSCPIr);
 export_yii_instance(YYZACPI);
-export_yii_instance(YYZACPIr);
 
 %{
 using QuantLib::AUCPI;
@@ -370,51 +355,7 @@ class CPICoupon : public InflationCoupon {
               const Date& refPeriodStart = Date(),
               const Date& refPeriodEnd = Date(),
               const Date& exCouponDate = Date());
-    CPICoupon(Real baseCPI,
-              const Date& paymentDate,
-              Real nominal,
-              const Date& startDate,
-              const Date& endDate,
-              const ext::shared_ptr<ZeroInflationIndex>& index,
-              const Period& observationLag,
-              CPI::InterpolationType observationInterpolation,
-              const DayCounter& dayCounter,
-              Real fixedRate,
-              Spread spread,
-              const Date& refPeriodStart = Date(),
-              const Date& refPeriodEnd = Date(),
-              const Date& exCouponDate = Date());
-    CPICoupon(const Date& baseDate,
-              const Date& paymentDate,
-              Real nominal,
-              const Date& startDate,
-              const Date& endDate,
-              const ext::shared_ptr<ZeroInflationIndex>& index,
-              const Period& observationLag,
-              CPI::InterpolationType observationInterpolation,
-              const DayCounter& dayCounter,
-              Real fixedRate,
-              Spread spread,
-              const Date& refPeriodStart = Date(),
-              const Date& refPeriodEnd = Date(),
-              const Date& exCouponDate = Date());
-    CPICoupon(Real baseCPI,
-              const Date& baseDate,
-              const Date& paymentDate,
-              Real nominal,
-              const Date& startDate,
-              const Date& endDate,
-              const ext::shared_ptr<ZeroInflationIndex>& index,
-              const Period& observationLag,
-              CPI::InterpolationType observationInterpolation,
-              const DayCounter& dayCounter,
-              Real fixedRate,
-              Spread spread,
-              const Date& refPeriodStart = Date(),
-              const Date& refPeriodEnd = Date(),
-              const Date& exCouponDate = Date());
     Rate fixedRate() const;
-    Spread spread() const;
     Rate adjustedIndexGrowth() const;
     Rate indexFixing() const;
     Real indexRatio(Date d) const;
@@ -464,7 +405,6 @@ Leg _CPILeg(const std::vector<Real>& nominals,
             const DayCounter& paymentDayCounter = DayCounter(),
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Real>& fixedRates = std::vector<Real>(),
-            const std::vector<Spread>& spreads = std::vector<Spread>(),
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
             const Period& exCouponPeriod = Period(),
@@ -480,7 +420,6 @@ Leg _CPILeg(const std::vector<Real>& nominals,
         .withPaymentAdjustment(paymentConvention)
         .withPaymentCalendar(paymentCalendar.empty() ? schedule.calendar() : paymentCalendar)
         .withFixedRates(fixedRates)
-        .withSpreads(spreads)
         .withCaps(caps)
         .withFloors(floors)
         .withExCouponPeriod(exCouponPeriod,
@@ -503,7 +442,6 @@ Leg _CPILeg(const std::vector<Real>& nominals,
             const DayCounter& paymentDayCounter = DayCounter(),
             const BusinessDayConvention paymentConvention = Following,
             const std::vector<Real>& fixedRates = std::vector<Real>(),
-            const std::vector<Spread>& spreads = std::vector<Spread>(),
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
             const Period& exCouponPeriod = Period(),
