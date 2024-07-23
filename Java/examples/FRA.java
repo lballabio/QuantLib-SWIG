@@ -33,7 +33,7 @@ public class FRA {
         IborIndex euribor3m = new Euribor3M(flatTermStructure);
 
         ForwardRateAgreement myFra =
-            new ForwardRateAgreement(startDate, type, strike, notional, euribor3m, flatTermStructure);
+            new ForwardRateAgreement(euribor3m, startDate, type, strike, notional, flatTermStructure);
         System.out.println(myFra.amount());
         System.out.println(myFra.NPV());
     }

@@ -37,22 +37,6 @@ struct Position {
 %shared_ptr(ForwardRateAgreement)
 class ForwardRateAgreement : public Instrument {
   public:
-    ForwardRateAgreement(const Date& valueDate,
-                         const Date& maturityDate,
-                         Position::Type type,
-                         Rate strikeForwardRate,
-                         Real notionalAmount,
-                         const ext::shared_ptr<IborIndex>& index,
-                         const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>(),
-                         bool useIndexedCoupon = true);
-
-    ForwardRateAgreement(const Date& valueDate,
-                         Position::Type type,
-                         Rate strikeForwardRate,
-                         Real notionalAmount,
-                         const ext::shared_ptr<IborIndex>& index,
-                         const Handle<YieldTermStructure>& discountCurve = Handle<YieldTermStructure>());
-
     ForwardRateAgreement(const ext::shared_ptr<IborIndex>& index,
                          const Date& valueDate,
                          Position::Type type,
