@@ -1024,7 +1024,7 @@ using QuantLib::AndreasenHugeLocalVolAdapter;
 using QuantLib::HestonBlackVolSurface;
 %}
 
-%template(CalibrationErrorTuple) ext::tuple<Real, Real, Real>;
+%template(CalibrationErrorTuple) std::tuple<Real, Real, Real>;
 
 %shared_ptr(AndreasenHugeVolatilityInterpl)
 class AndreasenHugeVolatilityInterpl : public Observable {
@@ -1064,7 +1064,7 @@ class AndreasenHugeVolatilityInterpl : public Observable {
         const Handle<YieldTermStructure>& riskFreeRate() const;
 
         // returns min, max and average error in volatility units
-        ext::tuple<Real, Real, Real> calibrationError() const;
+        std::tuple<Real, Real, Real> calibrationError() const;
 
         // returns the option price of the calibration type. In case
         // of CallPut it return the call option price
