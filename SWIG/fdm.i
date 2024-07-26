@@ -98,8 +98,8 @@ class FdmBlackScholesMesher : public Fdm1dMesher {
          Volatility vol);
 };
 
-%template(Concentrating1dMesherPoint) ext::tuple<Real, Real, bool>;
-%template(Concentrating1dMesherPointVector) std::vector<ext::tuple<Real, Real, bool> >;
+%template(Concentrating1dMesherPoint) std::tuple<Real, Real, bool>;
+%template(Concentrating1dMesherPointVector) std::vector<std::tuple<Real, Real, bool> >;
 
 
 %shared_ptr(Concentrating1dMesher)
@@ -113,7 +113,7 @@ class Concentrating1dMesher : public Fdm1dMesher {
 
     Concentrating1dMesher(
         Real start, Real end, Size size,
-        const std::vector<ext::tuple<Real, Real, bool> >& cPoints,
+        const std::vector<std::tuple<Real, Real, bool> >& cPoints,
         Real tol = 1e-8);
 };
 
@@ -686,7 +686,7 @@ class FdmTimeDepDirichletBoundary : public FdmBoundaryCondition {
             PyObject* function,
             Size direction, Side side) {
 
-            const ext::function<Real(Real)> f = UnaryFunction(function);
+            const std::function<Real(Real)> f = UnaryFunction(function);
             return new FdmTimeDepDirichletBoundary(
                 mesher, f, direction, side);
         }
@@ -696,7 +696,7 @@ class FdmTimeDepDirichletBoundary : public FdmBoundaryCondition {
             UnaryFunctionDelegate* function,
             Size direction, Side side) {
 
-            const ext::function<Real(Real)> f = UnaryFunction(function);
+            const std::function<Real(Real)> f = UnaryFunction(function);
             return new FdmTimeDepDirichletBoundary(
                 mesher, f, direction, side);        
          }

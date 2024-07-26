@@ -357,14 +357,8 @@ using QuantLib::ExtOUWithJumpsProcess;
 
 %shared_ptr(ExtendedOrnsteinUhlenbeckProcess)
 class ExtendedOrnsteinUhlenbeckProcess : public StochasticProcess1D {
-    public:
-        enum Discretization { MidPoint, Trapezodial, GaussLobatto };
-
-        ExtendedOrnsteinUhlenbeckProcess(
-                                Real speed, Volatility sigma, Real x0,
-                                const ext::function<Real (Real)>& b,
-                                Discretization discretization = MidPoint,
-                                Real intEps = 1e-4);
+  public:
+    enum Discretization { MidPoint, Trapezodial, GaussLobatto };
     %extend{                            
         #if defined(SWIGPYTHON)    
         ExtendedOrnsteinUhlenbeckProcess(

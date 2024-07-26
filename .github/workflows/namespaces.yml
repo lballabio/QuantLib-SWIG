@@ -1,4 +1,4 @@
-name: Fix uses of boost namespace
+name: Fix uses of boost and/or ext namespace
 on:
   push:
     branches:
@@ -10,19 +10,25 @@ jobs:
     - uses: actions/checkout@v4
     - name: Check
       run: |
-        sed -i -e 's/boost::shared_ptr/ext::shared_ptr/g' SWIG/*
-        sed -i -e 's/boost::make_shared/ext::make_shared/g' SWIG/*
-        sed -i -e 's/boost::dynamic_pointer_cast/ext::dynamic_pointer_cast/g' SWIG/*
-        sed -i -e 's/boost::tuple/ext::tuple/g' SWIG/*
-        sed -i -e 's/boost::get/ext::get/g' SWIG/*
-        sed -i -e 's/boost::function/ext::function/g' SWIG/*
-        sed -i -e 's/boost::optional/ext::optional/g' SWIG/*
-        sed -i -e 's/boost::none/ext::nullopt/g' SWIG/*
+        sed -i -e 's/boost::shared_ptr\b/ext::shared_ptr/g' SWIG/*
+        sed -i -e 's/boost::make_shared\b/ext::make_shared/g' SWIG/*
+        sed -i -e 's/boost::dynamic_pointer_cast\b/ext::dynamic_pointer_cast/g' SWIG/*
+        sed -i -e 's/ext::tuple\b/std::tuple/g' SWIG/*
+        sed -i -e 's/ext::make_tuple\b/std::make_tuple/g' SWIG/*
+        sed -i -e 's/ext::get\b/std::get/g' SWIG/*
+        sed -i -e 's/ext::tie\b/std::tie/g' SWIG/*
+        sed -i -e 's/ext::function\b/std::function/g' SWIG/*
+        sed -i -e 's/ext::bind\b/std::bind/g' SWIG/*
+        sed -i -e 's/ext::ref\b/std::ref/g' SWIG/*
+        sed -i -e 's/ext::cref\b/std::cref/g' SWIG/*
+        sed -i -e 's/ext::placeholders\b/std::placeholders/g' SWIG/*
+        sed -i -e 's/boost::optional\b/ext::optional/g' SWIG/*
+        sed -i -e 's/boost::none\b/ext::nullopt/g' SWIG/*
     - uses: peter-evans/create-pull-request@v6
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         branch: fix-boost-namespace-${{ github.ref_name }}
         delete-branch: true
-        commit-message: 'Fix uses of boost namespace'
-        title: 'Fix uses of boost namespace'
+        commit-message: 'Fix uses of boost and/or ext namespace'
+        title: 'Fix uses of boost and/or ext namespace'
         author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
