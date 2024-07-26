@@ -23,7 +23,8 @@
 
 %include common.i
 
-namespace ext {
+namespace std {
+
   template <typename T1=void, typename T2=void, typename T3=void>
   struct tuple;
 
@@ -69,6 +70,7 @@ namespace ext {
       }
     }
   };
+
 }
 
 #endif
