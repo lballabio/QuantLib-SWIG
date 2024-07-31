@@ -710,6 +710,19 @@ deprecate_feature(SwaptionVolCube2, InterpolatedSwaptionVolatilityCube)
 
 
 %{
+using QuantLib::SpreadedSwaptionVolatility;
+%}
+
+%shared_ptr(SpreadedSwaptionVolatility)
+class SpreadedSwaptionVolatility : public SwaptionVolatilityStructure {
+  public:
+    SpreadedSwaptionVolatility(const Handle<SwaptionVolatilityStructure>&,
+                               Handle<Quote> spread);
+};
+
+
+
+%{
 using QuantLib::ConstantYoYOptionletVolatility;
 %}
 
