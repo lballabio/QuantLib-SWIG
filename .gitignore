@@ -22,10 +22,9 @@ Perl/pm_to_blib
 Perl/quantlib_wrap.cpp
 Perl/MYMETA.yml
 Perl/MYMETA.json
-Python/QuantLib/quantlib_wrap.cpp
+Python/src/QuantLib/quantlib_wrap.cpp
 Python/.cache/
-Python/QuantLib.egg-info
-Python/QuantLib_Python.egg-info
+Python/src/QuantLib.egg-info
 Python/dist
 Python/examples/*.ipynb
 Python/examples/.ipynb_checkpoints
@@ -89,7 +88,7 @@ Java/QuantLib.jar
 Java/*.jnilib
 Java/org/
 Perl/QuantLib.pm
-Python/QuantLib/QuantLib.py
+Python/src/QuantLib/QuantLib.py
 Python/build
 R/R/QuantLib.R
 R/QuantLib.RData

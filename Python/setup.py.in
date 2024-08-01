@@ -244,11 +244,12 @@ a comprehensive software framework for quantitative finance.
     url="https://www.quantlib.org",
     license="BSD 3-Clause",
     classifiers=classifiers,
+    package_dir={"": "src"},
     py_modules=["QuantLib.__init__", "QuantLib.QuantLib"],
     ext_modules=[
         Extension(
             name="QuantLib._QuantLib",
-            sources=["QuantLib/quantlib_wrap.cpp"],
+            sources=["src/QuantLib/quantlib_wrap.cpp"],
             py_limited_api=py_limited_api,
             define_macros=define_macros(py_limited_api),
             include_dirs=include_dirs(),
