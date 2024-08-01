@@ -122,7 +122,7 @@ def extra_compile_args():
     compiler = get_default_compiler()
 
     if compiler == "msvc":
-        extra_compile_args = ["/GR", "/FD", "/Zm250", "/EHsc", "/bigobj"]
+        extra_compile_args = ["/GR", "/FD", "/Zm250", "/EHsc", "/bigobj", "/std:c++17"]
 
         if "QL_STATIC_RUNTIME" in os.environ:
             extra_compile_args.append("/MT")
