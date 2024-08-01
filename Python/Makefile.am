@@ -33,5 +33,5 @@ dist-hook:
 	mkdir -p $(distdir)/test
 	cp ./test/*.py $(distdir)/test
 
-EXTRA_DIST = README.txt setup.py setup.cfg swig.cmd src/QuantLib/__init__.py $(BUILT_SOURCES)
+EXTRA_DIST = README.txt pytest.ini setup.cfg setup.py swig.cmd tox.ini src/QuantLib/__init__.py $(BUILT_SOURCES)
 
