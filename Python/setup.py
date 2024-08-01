@@ -20,11 +20,8 @@
 import os, sys, math, platform
 from setuptools import setup, Extension
 from setuptools import Command
-from setuptools.command.build_ext import build_ext
-from setuptools.command.build import build
 from setuptools._distutils.ccompiler import get_default_compiler
 
-py_limited_api = (platform.python_implementation() == 'CPython')
 
 class test(Command):
     # Original version of this class posted
@@ -32,22 +29,21 @@ class test(Command):
     description = "test the distribution prior to install"
 
     user_options = [
-        ('test-dir=', None,
-         "directory that contains the test definitions"),
-        ]
+        ("test-dir=", None, "directory that contains the test definitions"),
+    ]
 
     def initialize_options(self):
-        self.build_base = 'build'
-        self.test_dir = 'test'
+        self.build_base = "build"
+        self.test_dir = "test"
 
     def finalize_options(self):
-        build = self.get_finalized_command('build')
+        build = self.get_finalized_command("build")
         self.build_purelib = build.build_purelib
         self.build_platlib = build.build_platlib
 
     def run(self):
         # Testing depends on the module having been built
-        self.run_command('build')
+        self.run_command("build")
 
         # extend sys.path
         old_path = sys.path[:]
@@ -56,186 +52,246 @@ class test(Command):
         sys.path.insert(0, self.test_dir)
 
         # import and run test-suite
-        module = __import__('QuantLibTestSuite', globals(), locals(), [''])
+        module = __import__("QuantLibTestSuite", globals(), locals(), [""])
         module.test()
 
         # restore sys.path
         sys.path = old_path[:]
 
+
 class my_wrap(Command):
     description = "generate Python wrappers"
     user_options = []
-    def initialize_options(self): pass
-    def finalize_options(self): pass
+
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
     def run(self):
-        print('Generating Python bindings for QuantLib...')
+        print("Generating Python bindings for QuantLib...")
         swig_version = os.popen("swig -version").read().split()[2]
         major_swig_version = swig_version[0]
-        if major_swig_version < '4':
-           print('Warning: You have SWIG {} installed, but at least SWIG 4.0.1'
-                 ' is recommended. \nSome features may not work.'
-                 .format(swig_version))
-        swig_dir = os.path.join("..","SWIG")
-        os.system('swig -python -c++ ' +
-                  '-I%s ' % swig_dir +
-                  '-outdir QuantLib -o QuantLib/quantlib_wrap.cpp ' +
-                  '%s/quantlib.i' % swig_dir)
-
-class my_build(build):
-    user_options = build.user_options + [
-        ('static', None,
-         "link against static CRT libraries on Windows")
-    ]
-    boolean_options = build.boolean_options + ['static']
-    def initialize_options(self):
-        build.initialize_options(self)
-        self.static = None
-    def finalize_options(self):
-        build.finalize_options(self)
+        if major_swig_version < "4":
+            print(
+                "Warning: You have SWIG {} installed, but at least SWIG 4.0.1"
+                " is recommended. \nSome features may not work.".format(swig_version)
+            )
+        swig_dir = os.path.join("..", "SWIG")
+        os.system(
+            "swig -python -c++ "
+            + "-I%s " % swig_dir
+            + "-outdir QuantLib -o QuantLib/quantlib_wrap.cpp "
+            + "%s/quantlib.i" % swig_dir
+        )
 
 
-class my_build_ext(build_ext):
-    user_options = build_ext.user_options + [
-        ('static', None,
-         "link against static CRT libraries on Windows")
-    ]
-    boolean_options = build.boolean_options + ['static']
-    def initialize_options(self):
-        build_ext.initialize_options(self)
-        self.static = None
-    def finalize_options(self):
-        build_ext.finalize_options(self)
-        self.set_undefined_options('build', ('static','static'))
+def define_macros(py_limited_api):
 
-        self.include_dirs = self.include_dirs or []
-        self.library_dirs = self.library_dirs or []
-        self.define = self.define or []
-        if py_limited_api:
-            self.define += [('Py_LIMITED_API', '0x03080000')]
-        self.libraries = self.libraries or []
+    define_macros = []
+    if py_limited_api:
+        define_macros += [("Py_LIMITED_API", "0x03080000")]
 
-        extra_compile_args = []
-        extra_link_args = []
+    compiler = get_default_compiler()
 
-        compiler = self.compiler or get_default_compiler()
+    if compiler == "msvc":
+        define_macros += [
+            ("__WIN32__", None),
+            ("WIN32", None),
+            ("NDEBUG", None),
+            ("_WINDOWS", None),
+            ("NOMINMAX", None),
+        ]
 
-        if compiler == 'msvc':
-            try:
-                QL_INSTALL_DIR = os.environ['QL_DIR']
-                self.include_dirs += [QL_INSTALL_DIR]
-                self.library_dirs += [os.path.join(QL_INSTALL_DIR, 'lib')]
-            except KeyError:
-                print('warning: unable to detect QuantLib installation')
+    elif compiler == "unix":
+        ql_compile_args = os.popen("quantlib-config --cflags").read()[:-1].split()
 
-            if 'INCLUDE' in os.environ:
-                dirs = [dir for dir in os.environ['INCLUDE'].split(';')]
-                self.include_dirs += [ d for d in dirs if d.strip() ]
-            if 'LIB' in os.environ:
-                dirs = [dir for dir in os.environ['LIB'].split(';')]
-                self.library_dirs += [ d for d in dirs if d.strip() ]
-            dbit = round(math.log(sys.maxsize, 2) + 1)
-            if dbit == 64:
-                machinetype = '/machine:x64'
-            else:
-                machinetype = '/machine:x86'
-            self.define += [('__WIN32__', None), ('WIN32', None),
-                            ('NDEBUG', None), ('_WINDOWS', None),
-                            ('NOMINMAX', None)]
-            extra_compile_args = ['/GR', '/FD', '/Zm250', '/EHsc', '/bigobj' ]
-            extra_link_args = ['/subsystem:windows', machinetype]
+        define_macros += [
+            (arg[2:], None) for arg in ql_compile_args if arg.startswith("-D")
+        ]
+        define_macros += [("NDEBUG", None)]
 
-            if self.debug:
-                if self.static or 'QL_STATIC_RUNTIME' in os.environ:
-                    extra_compile_args.append('/MTd')
-                else:
-                    extra_compile_args.append('/MDd')
-            else:
-                if self.static or 'QL_STATIC_RUNTIME' in os.environ:
-                    extra_compile_args.append('/MT')
-                else:
-                    extra_compile_args.append('/MD')
+    return define_macros
 
-        elif compiler == 'unix':
-            ql_compile_args = \
-                os.popen('quantlib-config --cflags').read()[:-1].split()
-            ql_link_args = \
-                os.popen('quantlib-config --libs').read()[:-1].split()
 
-            self.define += [ (arg[2:],None) for arg in ql_compile_args
-                             if arg.startswith('-D') ]
-            self.define += [('NDEBUG', None)]
-            self.include_dirs += [ arg[2:] for arg in ql_compile_args
-                                   if arg.startswith('-I') ]
-            self.library_dirs += [ arg[2:] for arg in ql_link_args
-                                   if arg.startswith('-L') ]
-            self.libraries += [ arg[2:] for arg in ql_link_args
-                                if arg.startswith('-l') ]
+def include_dirs():
 
-            extra_compile_args = [ arg for arg in ql_compile_args
-                                   if not arg.startswith('-D')
-                                   if not arg.startswith('-I') ] \
-                                   + [ '-Wno-unused' ]
-            if 'CXXFLAGS' in os.environ:
-                extra_compile_args += os.environ['CXXFLAGS'].split()
+    include_dirs = []
 
-            extra_link_args = [ arg for arg in ql_link_args
-                                if not arg.startswith('-L')
-                                if not arg.startswith('-l') ]
-            if 'LDFLAGS' in os.environ:
-                extra_link_args += os.environ['LDFLAGS'].split()
+    compiler = get_default_compiler()
 
+    if compiler == "msvc":
+        try:
+            QL_INSTALL_DIR = os.environ["QL_DIR"]
+            include_dirs += [QL_INSTALL_DIR]
+        except KeyError:
+            print("warning: unable to detect QuantLib installation")
+
+        if "INCLUDE" in os.environ:
+            include_dirs += [
+                d.strip() for d in os.environ["INCLUDE"].split(";") if d.strip()
+            ]
+
+    elif compiler == "unix":
+        ql_compile_args = os.popen("quantlib-config --cflags").read()[:-1].split()
+
+        include_dirs += [arg[2:] for arg in ql_compile_args if arg.startswith("-I")]
+
+    return include_dirs
+
+
+def library_dirs():
+
+    library_dirs = []
+
+    compiler = get_default_compiler()
+
+    if compiler == "msvc":
+        try:
+            QL_INSTALL_DIR = os.environ["QL_DIR"]
+            library_dirs += [os.path.join(QL_INSTALL_DIR, "lib")]
+        except KeyError:
+            print("warning: unable to detect QuantLib installation")
+
+        if "LIB" in os.environ:
+            dirs = [dir for dir in os.environ["LIB"].split(";")]
+            library_dirs += [d for d in dirs if d.strip()]
+
+    elif compiler == "unix":
+        ql_link_args = os.popen("quantlib-config --libs").read()[:-1].split()
+
+        library_dirs += [arg[2:] for arg in ql_link_args if arg.startswith("-L")]
+
+    return library_dirs
+
+
+def libraries():
+
+    libraries = []
+
+    compiler = get_default_compiler()
+
+    if compiler == "unix":
+        ql_link_args = os.popen("quantlib-config --libs").read()[:-1].split()
+
+        libraries += [arg[2:] for arg in ql_link_args if arg.startswith("-l")]
+
+    return libraries
+
+
+def extra_compile_args():
+
+    extra_compile_args = []
+
+    compiler = get_default_compiler()
+
+    if compiler == "msvc":
+        extra_compile_args = ["/GR", "/FD", "/Zm250", "/EHsc", "/bigobj"]
+
+        if "QL_STATIC_RUNTIME" in os.environ:
+            extra_compile_args.append("/MT")
         else:
-            pass
+            extra_compile_args.append("/MD")
 
-        for ext in self.extensions:
-            ext.extra_compile_args = ext.extra_compile_args or []
-            ext.extra_compile_args += extra_compile_args
+    elif compiler == "unix":
+        ql_compile_args = os.popen("quantlib-config --cflags").read()[:-1].split()
 
-            ext.extra_link_args = ext.extra_link_args or []
-            ext.extra_link_args += extra_link_args
+        extra_compile_args = [
+            arg
+            for arg in ql_compile_args
+            if not arg.startswith("-D")
+            if not arg.startswith("-I")
+        ] + ["-Wno-unused"]
+        if "CXXFLAGS" in os.environ:
+            extra_compile_args += os.environ["CXXFLAGS"].split()
+
+    return extra_compile_args
+
+
+def extra_link_args():
+
+    extra_link_args = []
+
+    compiler = get_default_compiler()
+
+    if compiler == "msvc":
+
+        dbit = round(math.log(sys.maxsize, 2) + 1)
+        if dbit == 64:
+            machinetype = "/machine:x64"
+        else:
+            machinetype = "/machine:x86"
+        extra_link_args = ["/subsystem:windows", machinetype]
+
+    elif compiler == "unix":
+        ql_link_args = os.popen("quantlib-config --libs").read()[:-1].split()
+
+        extra_link_args = [
+            arg
+            for arg in ql_link_args
+            if not arg.startswith("-L")
+            if not arg.startswith("-l")
+        ]
+        if "LDFLAGS" in os.environ:
+            extra_link_args += os.environ["LDFLAGS"].split()
+
+    return extra_link_args
 
 
 classifiers = [
-    'Development Status :: 5 - Production/Stable',
-    'Environment :: Console',
-    'Intended Audience :: Developers',
-    'Intended Audience :: Science/Research',
-    'Intended Audience :: End Users/Desktop',
-    'License :: OSI Approved :: BSD License',
-    'Natural Language :: English',
-    'Programming Language :: C++',
-    'Programming Language :: Python',
-    'Topic :: Scientific/Engineering',
-    'Operating System :: Microsoft :: Windows',
-    'Operating System :: POSIX',
-    'Operating System :: Unix',
-    'Operating System :: MacOS',
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: End Users/Desktop",
+    "License :: OSI Approved :: BSD License",
+    "Natural Language :: English",
+    "Programming Language :: C++",
+    "Programming Language :: Python",
+    "Topic :: Scientific/Engineering",
+    "Operating System :: Microsoft :: Windows",
+    "Operating System :: POSIX",
+    "Operating System :: Unix",
+    "Operating System :: MacOS",
 ]
 
-setup(name             = "QuantLib",
-      version          = "1.36-dev",
-      description      = "Python bindings for the QuantLib library",
-      long_description = """
+
+py_limited_api = platform.python_implementation() == "CPython"
+
+
+setup(
+    name="QuantLib",
+    version="1.36-dev",
+    description="Python bindings for the QuantLib library",
+    long_description="""
 QuantLib (https://www.quantlib.org/) is a free/open-source C++ library
 for financial quantitative analysts and developers, aimed at providing
 a comprehensive software framework for quantitative finance.
       """,
-      long_description_content_type = "text/x-rst",
-      author           = "QuantLib Team",
-      author_email     = "quantlib-users@lists.sourceforge.net",
-      url              = "https://www.quantlib.org",
-      license          = "BSD 3-Clause",
-      classifiers      = classifiers,
-      py_modules       = ['QuantLib.__init__','QuantLib.QuantLib'],
-      ext_modules      = [Extension("QuantLib._QuantLib",
-                                    ["QuantLib/quantlib_wrap.cpp"],
-                                    py_limited_api=py_limited_api)
-                         ],
-      data_files       = [('share/doc/quantlib', ['../LICENSE.TXT'])],
-      cmdclass         = {'test': test,
-                          'wrap': my_wrap,
-                          'build': my_build,
-                          'build_ext': my_build_ext,
-                          }
-      )
-
+    long_description_content_type="text/x-rst",
+    author="QuantLib Team",
+    author_email="quantlib-users@lists.sourceforge.net",
+    url="https://www.quantlib.org",
+    license="BSD 3-Clause",
+    classifiers=classifiers,
+    py_modules=["QuantLib.__init__", "QuantLib.QuantLib"],
+    ext_modules=[
+        Extension(
+            name="QuantLib._QuantLib",
+            sources=["QuantLib/quantlib_wrap.cpp"],
+            py_limited_api=py_limited_api,
+            define_macros=define_macros(py_limited_api),
+            include_dirs=include_dirs(),
+            library_dirs=library_dirs(),
+            libraries=libraries(),
+            extra_compile_args=extra_compile_args(),
+            extra_link_args=extra_link_args(),
+        )
+    ],
+    data_files=[("share/doc/quantlib", ["../LICENSE.TXT"])],
+    cmdclass={
+        "test": test,
+        "wrap": my_wrap,
+    },
+)
