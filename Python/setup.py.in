@@ -59,34 +59,6 @@ class test(Command):
         sys.path = old_path[:]
 
 
-class my_wrap(Command):
-    description = "generate Python wrappers"
-    user_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        print("Generating Python bindings for QuantLib...")
-        swig_version = os.popen("swig -version").read().split()[2]
-        major_swig_version = swig_version[0]
-        if major_swig_version < "4":
-            print(
-                "Warning: You have SWIG {} installed, but at least SWIG 4.0.1"
-                " is recommended. \nSome features may not work.".format(swig_version)
-            )
-        swig_dir = os.path.join("..", "SWIG")
-        os.system(
-            "swig -python -c++ "
-            + "-I%s " % swig_dir
-            + "-outdir QuantLib -o QuantLib/quantlib_wrap.cpp "
-            + "%s/quantlib.i" % swig_dir
-        )
-
-
 def define_macros(py_limited_api):
 
     define_macros = []
@@ -292,6 +264,5 @@ a comprehensive software framework for quantitative finance.
     data_files=[("share/doc/quantlib", ["../LICENSE.TXT"])],
     cmdclass={
         "test": test,
-        "wrap": my_wrap,
     },
 )
