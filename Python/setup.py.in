@@ -42,9 +42,6 @@ class test(Command):
         self.build_platlib = build.build_platlib
 
     def run(self):
-        # Testing depends on the module having been built
-        self.run_command("build")
-
         # extend sys.path
         old_path = sys.path[:]
         sys.path.insert(0, self.build_purelib)

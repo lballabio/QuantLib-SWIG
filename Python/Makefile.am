@@ -9,20 +9,17 @@ if BUILD_PYTHON
 all-local: .build-stamp
 
 .build-stamp: QuantLib/quantlib_wrap.cpp QuantLib/QuantLib.py setup.py
-	CXXFLAGS="$(CXXFLAGS) $(CXXWARNINGFLAGS)" CC="$(CC)" CXX="$(CXX)" $(PYTHON) setup.py build
+	CXXFLAGS="$(CXXFLAGS) $(CXXWARNINGFLAGS)" CC="$(CC)" CXX="$(CXX)" $(PYTHON) -m build --wheel
+	rm -f LICENSE.TXT
 	touch .build-stamp
 
 check-local: .build-stamp
 	$(PYTHON) setup.py test
 
-install-exec-local: .build-stamp
-	$(PYTHON) setup.py install
-
 wheel: .build-stamp
-	$(PYTHON) setup.py bdist_wheel
 
 clean-local:
-	rm -rf build
+	rm -rf build dist
 
 endif
 endif
