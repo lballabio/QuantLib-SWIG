@@ -14,7 +14,7 @@ all-local: .build-stamp
 	touch .build-stamp
 
 check-local: .build-stamp
-	$(PYTHON) setup.py test
+	tox run
 
 wheel: .build-stamp
 

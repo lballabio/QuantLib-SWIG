@@ -19,41 +19,7 @@
 
 import os, sys, math, platform
 from setuptools import setup, Extension
-from setuptools import Command
 from setuptools._distutils.ccompiler import get_default_compiler
-
-
-class test(Command):
-    # Original version of this class posted
-    # by Berthold Höllmann to distutils-sig@python.org
-    description = "test the distribution prior to install"
-
-    user_options = [
-        ("test-dir=", None, "directory that contains the test definitions"),
-    ]
-
-    def initialize_options(self):
-        self.build_base = "build"
-        self.test_dir = "test"
-
-    def finalize_options(self):
-        build = self.get_finalized_command("build")
-        self.build_purelib = build.build_purelib
-        self.build_platlib = build.build_platlib
-
-    def run(self):
-        # extend sys.path
-        old_path = sys.path[:]
-        sys.path.insert(0, self.build_purelib)
-        sys.path.insert(0, self.build_platlib)
-        sys.path.insert(0, self.test_dir)
-
-        # import and run test-suite
-        module = __import__("QuantLibTestSuite", globals(), locals(), [""])
-        module.test()
-
-        # restore sys.path
-        sys.path = old_path[:]
 
 
 def define_macros(py_limited_api):
@@ -260,7 +226,4 @@ a comprehensive software framework for quantitative finance.
         )
     ],
     data_files=[("share/doc/quantlib", ["../LICENSE.TXT"])],
-    cmdclass={
-        "test": test,
-    },
 )
