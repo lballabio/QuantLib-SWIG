@@ -175,21 +175,26 @@ def extra_link_args():
 
 
 classifiers = [
-    "Development Status :: 5 - Production/Stable",
+    "Development Status :: 6 - Mature",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
     "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Financial and Insurance Industry",
+    "Intended Audience :: Science/Research",
     "License :: OSI Approved :: BSD License",
-    "Natural Language :: English",
+    "Operating System :: OS Independent",
     "Programming Language :: C++",
     "Programming Language :: Python",
+    "Topic :: Office/Business :: Financial",
     "Topic :: Scientific/Engineering",
-    "Operating System :: Microsoft :: Windows",
-    "Operating System :: POSIX",
-    "Operating System :: Unix",
-    "Operating System :: MacOS",
 ]
+
+long_description = """
+QuantLib (https://www.quantlib.org/) is a free/open-source C++ library
+for financial quantitative analysts and developers, aimed at providing
+a comprehensive software framework for quantitative finance.
+"""
 
 
 py_limited_api = platform.python_implementation() == "CPython"
@@ -199,11 +204,7 @@ setup(
     name="QuantLib",
     version="1.36-dev",
     description="Python bindings for the QuantLib library",
-    long_description="""
-QuantLib (https://www.quantlib.org/) is a free/open-source C++ library
-for financial quantitative analysts and developers, aimed at providing
-a comprehensive software framework for quantitative finance.
-      """,
+    long_description=long_description,
     long_description_content_type="text/x-rst",
     author="QuantLib Team",
     author_email="quantlib-users@lists.sourceforge.net",
