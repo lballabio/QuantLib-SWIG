@@ -1,0 +1,10 @@
+src/QuantLib/quantlib_wrap.cpp
+src/QuantLib/QuantLib.py
+src/QuantLib.egg-info
+build
+dist
+examples/*.ipynb
+examples/.ipynb_checkpoints
+*.pyc
+.cache/
+**/.venv

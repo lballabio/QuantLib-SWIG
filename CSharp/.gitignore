@@ -1,0 +1,9 @@
+cpp/quantlib_wrap.cpp
+cpp/quantlib_wrap.h
+csharp/*.cs
+NQuantLib.dll
+cpp/build
+csharp/obj
+examples/*/bin
+examples/*/obj
+.vs/
