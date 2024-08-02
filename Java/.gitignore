@@ -1,0 +1,6 @@
+bin/
+quantlib_wrap.cpp
+quantlib_wrap.h
+QuantLib.jar
+*.jnilib
+org/

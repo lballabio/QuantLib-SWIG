@@ -5,36 +5,6 @@ autom4te.cache
 config.log
 config.status
 config/
-CSharp/cpp/quantlib_wrap.cpp
-CSharp/cpp/quantlib_wrap.h
-CSharp/cpp/build
-CSharp/csharp/obj
-CSharp/examples/*/bin
-CSharp/examples/*/obj
-CSharp/.vs/
-Java/bin/
-Java/quantlib_wrap.cpp
-Java/quantlib_wrap.h
-Perl/Makefile.quantlib
-Perl/QuantLib.bs
-Perl/blib/
-Perl/pm_to_blib
-Perl/quantlib_wrap.cpp
-Perl/MYMETA.yml
-Perl/MYMETA.json
-Python/QuantLib/quantlib_wrap.cpp
-Python/.cache/
-Python/QuantLib.egg-info
-Python/QuantLib_Python.egg-info
-Python/dist
-Python/examples/*.ipynb
-Python/examples/.ipynb_checkpoints
-R/src/QuantLib.cpp
-R/makeRData.Rout
-R/src/symbols.rds
-R.Rcheck
-Ruby/extension.mak
-Ruby/quantlib_wrap.cpp
 
 # Build outputs
 **/x64/Debug
@@ -44,13 +14,15 @@ Ruby/quantlib_wrap.cpp
 **/bin/*.xml
 **/bin/*.manifest
 
-# CLion
+# IDEs
 .idea
+.vscode
 cmake-build-debug
 
 # Artifacts created in multiple directories
 Makefile
 Makefile.in
+.build-stamp
 testCaseCollection.xml
 .deps
 .libs
@@ -59,8 +31,6 @@ testCaseCollection.xml
 *.o
 *.so
 *.dylib
-.build-stamp
-*.pyc
 *.exe
 *.dll
 *.exp
@@ -81,18 +51,3 @@ testCaseCollection.xml
 *.pch
 *.idb
 *.ipch
-
-# Outputs
-CSharp/csharp/*.cs
-CSharp/NQuantLib.dll
-Java/QuantLib.jar
-Java/*.jnilib
-Java/org/
-Perl/QuantLib.pm
-Python/QuantLib/QuantLib.py
-Python/build
-R/R/QuantLib.R
-R/QuantLib.RData
-
-.vscode
-**/venv

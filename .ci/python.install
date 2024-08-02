@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-python3 -m venv .venv
 . .venv/bin/activate
+
 pip install Python/dist/QuantLib-*.whl
 grep -v QuantLib binder/requirements.txt > Python/examples/requirements.txt
 pip install -r Python/examples/requirements.txt

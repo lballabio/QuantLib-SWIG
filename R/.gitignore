@@ -1,0 +1,6 @@
+src/QuantLib.cpp
+makeRData.Rout
+src/symbols.rds
+Rcheck
+R/QuantLib.R
+QuantLib.RData

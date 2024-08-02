@@ -1,35 +1,31 @@
 
-CLEANFILES = QuantLib/quantlib_wrap.cpp QuantLib/QuantLib.py .build-stamp
+CLEANFILES = src/QuantLib/quantlib_wrap.cpp src/QuantLib/QuantLib.py .build-stamp
 
-BUILT_SOURCES = QuantLib/quantlib_wrap.cpp QuantLib/QuantLib.py
+BUILT_SOURCES = src/QuantLib/quantlib_wrap.cpp src/QuantLib/QuantLib.py
 
 if HAVE_PYTHON
 if BUILD_PYTHON
 
 all-local: .build-stamp
 
-.build-stamp: QuantLib/quantlib_wrap.cpp QuantLib/QuantLib.py setup.py
-	CXXFLAGS="$(CXXFLAGS) $(CXXWARNINGFLAGS)" CC="$(CC)" CXX="$(CXX)" $(PYTHON) setup.py build
+.build-stamp: src/QuantLib/quantlib_wrap.cpp src/QuantLib/QuantLib.py setup.py
+	CXXFLAGS="$(CXXFLAGS) $(CXXWARNINGFLAGS)" CC="$(CC)" CXX="$(CXX)" $(PYTHON) -m build --wheel
+	rm -f LICENSE.TXT
 	touch .build-stamp
 
 check-local: .build-stamp
-	$(PYTHON) setup.py test
-
-install-exec-local: .build-stamp
-	$(PYTHON) setup.py install
+	tox run
 
 wheel: .build-stamp
-	$(PYTHON) setup.py bdist_wheel
 
 clean-local:
-	rm -rf build
+	rm -rf build dist
 
 endif
 endif
 
-QuantLib/quantlib_wrap.cpp QuantLib/QuantLib.py: ../SWIG/*.i
-	$(SWIG) -python -c++ -outdir QuantLib \
-            -o QuantLib/quantlib_wrap.cpp ../SWIG/quantlib.i
+src/QuantLib/quantlib_wrap.cpp src/QuantLib/QuantLib.py: ../SWIG/*.i
+	$(SWIG) -python -c++ -outdir src/QuantLib -o src/QuantLib/quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook:
 	mkdir -p $(distdir)/examples
@@ -37,5 +33,5 @@ dist-hook:
 	mkdir -p $(distdir)/test
 	cp ./test/*.py $(distdir)/test
 
-EXTRA_DIST = README.txt setup.py setup.cfg QuantLib/__init__.py $(BUILT_SOURCES)
+EXTRA_DIST = README.txt pytest.ini setup.cfg setup.py swig.cmd tox.ini src/QuantLib/__init__.py $(BUILT_SOURCES)
 

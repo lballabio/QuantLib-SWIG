@@ -1,7 +1,11 @@
 #!/bin/bash
 set -e
 
+python3 -m venv .venv
+. .venv/bin/activate
+
+pip install setuptools build tox
+
 ./autogen.sh
-./configure PYTHON=/usr/bin/python3 CC=clang CXX=clang++ CXXFLAGS='-O1'
+./configure CC=clang CXX=clang++ CXXFLAGS='-O1'
 make -C Python
-make -C Python wheel
