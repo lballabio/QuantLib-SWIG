@@ -21,6 +21,7 @@
 %include termstructures.i
 %include interpolation.i
 %include ratehelpers.i
+%include optimizers.i
 
 %{
 using QuantLib::FittedBondDiscountCurve;
@@ -86,6 +87,9 @@ using QuantLib::SpreadFittingMethod;
 
 %shared_ptr(ExponentialSplinesFitting)
 class ExponentialSplinesFitting : public FittingMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ExponentialSplinesFitting;
+    #endif
   public:
     ExponentialSplinesFitting(bool constrainAtZero = true,
                               const Array& weights = Array(),
@@ -93,44 +97,78 @@ class ExponentialSplinesFitting : public FittingMethod {
                               Real minCutoffTime = 0.0,
                               Real maxCutoffTime = QL_MAX_REAL,
                               Size numCoeffs = 9,
-                              Real fixedKappa = Null<Real>());
+                              Real fixedKappa = Null<Real>(),
+                              Constraint constraint = NoConstraint());
 };
 
 %shared_ptr(NelsonSiegelFitting)
 class NelsonSiegelFitting : public FittingMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") NelsonSiegelFitting;
+    #endif
   public:
-    NelsonSiegelFitting(const Array& weights = Array());
+    NelsonSiegelFitting(const Array& weights = Array(),
+                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                        const Array& l2 = Array(),
+                        Real minCutoffTime = 0.0,
+                        Real maxCutoffTime = QL_MAX_REAL,
+                        Constraint constraint = NoConstraint());
 };
 
 %shared_ptr(SvenssonFitting)
 class SvenssonFitting : public FittingMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") SvenssonFitting;
+    #endif
   public:
-    SvenssonFitting(const Array& weights = Array());
+    SvenssonFitting(const Array& weights = Array(),
+                    const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                    const Array& l2 = Array(),
+                    Real minCutoffTime = 0.0,
+                    Real maxCutoffTime = QL_MAX_REAL,
+                    Constraint constraint = NoConstraint());
 };
 
 %shared_ptr(CubicBSplinesFitting)
 class CubicBSplinesFitting : public FittingMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") CubicBSplinesFitting;
+    #endif
   public:
     CubicBSplinesFitting(const std::vector<Time>& knotVector,
                          bool constrainAtZero = true,
-                         const Array& weights = Array());
+                         const Array& weights = Array(),
+                         const Array& l2 = Array(),
+                         Real minCutoffTime = 0.0,
+                         Real maxCutoffTime = QL_MAX_REAL,
+                         Constraint constraint = NoConstraint());
     Real basisFunction(Integer i, Time t);
 };
 
 %shared_ptr(SimplePolynomialFitting)
 class SimplePolynomialFitting : public FittingMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") SimplePolynomialFitting;
+    #endif
   public:
     #if defined(SWIGJAVA)
     SimplePolynomialFitting(Natural degree);
     #else
     SimplePolynomialFitting(Natural degree,
                             bool constrainAtZero = true,
-                            const Array& weights = Array());
+                            const Array& weights = Array(),
+                            const Array& l2 = Array(),
+                            Real minCutoffTime = 0.0,
+                            Real maxCutoffTime = QL_MAX_REAL,
+                            Constraint constraint = NoConstraint());
     #endif
 };
 
 %shared_ptr(SpreadFittingMethod)
 class SpreadFittingMethod : public FittingMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") SpreadFittingMethod;
+    #endif
   public:
     SpreadFittingMethod(const ext::shared_ptr<FittingMethod>& method,
                         Handle<YieldTermStructure> discountCurve,

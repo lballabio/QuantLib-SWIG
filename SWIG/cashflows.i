@@ -377,6 +377,8 @@ class SubPeriodsCoupon: public FloatingRateCoupon {
 using QuantLib::IborCouponPricer;
 using QuantLib::BlackIborCouponPricer;
 using QuantLib::SubPeriodsPricer;
+using QuantLib::CompoundingOvernightIndexedCouponPricer;
+using QuantLib::ArithmeticAveragedOvernightIndexedCouponPricer;
 using QuantLib::CompoundingRatePricer;
 using QuantLib::AveragingRatePricer;
 %}
@@ -410,6 +412,24 @@ class BlackIborCouponPricer : public IborCouponPricer {
 class SubPeriodsPricer: public FloatingRateCouponPricer {
   private:
     SubPeriodsPricer();
+};
+
+%shared_ptr(CompoundingOvernightIndexedCouponPricer)
+class CompoundingOvernightIndexedCouponPricer: public FloatingRateCouponPricer {
+  public:
+    CompoundingOvernightIndexedCouponPricer();
+};
+
+%shared_ptr(ArithmeticAveragedOvernightIndexedCouponPricer)
+class ArithmeticAveragedOvernightIndexedCouponPricer: public FloatingRateCouponPricer {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ArithmeticAveragedOvernightIndexedCouponPricer;
+    #endif
+  public:
+    ArithmeticAveragedOvernightIndexedCouponPricer(
+            Real meanReversion = 0.03,
+            Real volatility = 0.00,  // NO convexity adjustment by default
+            bool byApprox = false);  // TRUE to use Katsumi Takada approximation
 };
 
 %shared_ptr(CompoundingRatePricer)

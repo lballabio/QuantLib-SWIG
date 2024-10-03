@@ -168,6 +168,7 @@ class ZeroInflationIndex : public InflationIndex {
     Date lastFixingDate() const;
     Handle<ZeroInflationTermStructure> zeroInflationTermStructure() const;
     ext::shared_ptr<ZeroInflationIndex> clone(const Handle<ZeroInflationTermStructure>& h) const;
+    bool needsForecast(const Date& fixingDate) const;
 };
 
 %inline %{
@@ -196,11 +197,13 @@ class YoYInflationIndex : public InflationIndex {
             const Currency& currency,
             Handle<YoYInflationTermStructure> ts = {});
 
+    Date lastFixingDate() const;
     bool ratio() const;
     bool interpolated() const;
     ext::shared_ptr<ZeroInflationIndex> underlyingIndex() const;
     Handle<YoYInflationTermStructure> yoyInflationTermStructure() const;
     ext::shared_ptr<YoYInflationIndex> clone(const Handle<YoYInflationTermStructure>& h) const;
+    bool needsForecast(const Date& fixingDate) const;
 };
 
 %define export_zii_instance(Name)

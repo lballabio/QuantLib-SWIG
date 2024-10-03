@@ -29,6 +29,7 @@ using QuantLib::blackFormulaImpliedStdDevLiRS;
 using QuantLib::blackFormulaCashItmProbability;
 using QuantLib::blackFormulaAssetItmProbability;
 using QuantLib::bachelierBlackFormula;
+using QuantLib::bachelierBlackFormulaImpliedVolChoi;
 using QuantLib::bachelierBlackFormulaImpliedVol;
 using QuantLib::bachelierBlackFormulaAssetItmProbability;
 %}
@@ -111,6 +112,13 @@ Real bachelierBlackFormulaImpliedVol(Option::Type optionType,
                                 Real tte,
                                 Real bachelierPrice,
                                 Real discount = 1.0);
+
+Real bachelierBlackFormulaImpliedVolChoi(Option::Type optionType,
+                                         Real strike,
+                                         Real forward,
+                                         Real tte,
+                                         Real bachelierPrice,
+                                         Real discount = 1.0);
 
 Real bachelierBlackFormulaAssetItmProbability(
                         Option::Type optionType,
