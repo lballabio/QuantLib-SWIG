@@ -707,7 +707,9 @@ class Date {
         %#endif
          }
     }
+    static Date startOfMonth(const Date&);
     static Date endOfMonth(const Date&);
+    static bool isStartOfMonth(const Date&);
     static bool isEndOfMonth(const Date&);
     static Date nextWeekday(const Date&, Weekday);
     static Date nthWeekday(Size n, Weekday, Month m, Year y);
