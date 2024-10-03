@@ -196,6 +196,7 @@ class EndCriteria {
         StationaryFunctionValue,
         StationaryFunctionAccuracy,
         ZeroGradientNorm,
+        FunctionEpsilonTooSmall,
         Unknown
     };
     EndCriteria(Size maxIteration,
@@ -203,6 +204,8 @@ class EndCriteria {
                 Real rootEpsilon,
                 Real functionEpsilon,
                 Real gradientNormEpsilon);
+
+    static bool succeeded(EndCriteria::Type ecType);
 };
 
 
