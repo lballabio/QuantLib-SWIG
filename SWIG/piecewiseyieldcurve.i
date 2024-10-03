@@ -23,6 +23,7 @@
 %include termstructures.i
 %include ratehelpers.i
 %include interpolation.i
+%include optimizers.i
 %include null.i
 
 // bootstrap traits
@@ -211,21 +212,32 @@ struct _GlobalBootstrap {
     std::vector<ext::shared_ptr<RateHelper> > additionalHelpers;
     std::vector<Date> additionalDates;
     double accuracy;
-    _GlobalBootstrap(double accuracy = Null<double>())
-    : accuracy(accuracy) {}
+    ext::shared_ptr<OptimizationMethod> optimizer;
+    ext::shared_ptr<EndCriteria> endCriteria;
+    _GlobalBootstrap(double accuracy = Null<double>(),
+                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                     ext::shared_ptr<EndCriteria> endCriteria = nullptr)
+    : accuracy(accuracy), optimizer(optimizer), endCriteria(endCriteria) {}
    _GlobalBootstrap(const std::vector<ext::shared_ptr<RateHelper> >& additionalHelpers,
-                     const std::vector<Date>& additionalDates,
-                     double accuracy = Null<double>())
-    : additionalHelpers(additionalHelpers), additionalDates(additionalDates), accuracy(accuracy) {}
+                    const std::vector<Date>& additionalDates,
+                    double accuracy = Null<double>(),
+                    ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                    ext::shared_ptr<EndCriteria> endCriteria = nullptr)
+   : additionalHelpers(additionalHelpers), additionalDates(additionalDates), accuracy(accuracy),
+     optimizer(optimizer), endCriteria(endCriteria) {}
 };
 %}
 
 %rename(GlobalBootstrap) _GlobalBootstrap;
 struct _GlobalBootstrap {
-    _GlobalBootstrap(doubleOrNull accuracy = Null<double>());
+    _GlobalBootstrap(doubleOrNull accuracy = Null<double>(),
+                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                     ext::shared_ptr<EndCriteria> endCriteria = nullptr);
     _GlobalBootstrap(const std::vector<ext::shared_ptr<RateHelper> >& additionalHelpers,
                      const std::vector<Date>& additionalDates,
-                     doubleOrNull accuracy = Null<double>());
+                     doubleOrNull accuracy = Null<double>(),
+                     ext::shared_ptr<OptimizationMethod> optimizer = nullptr,
+                     ext::shared_ptr<EndCriteria> endCriteria = nullptr);
 };
 
 
@@ -247,14 +259,14 @@ class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
             if (b.additionalHelpers.empty()) {
                 return new GlobalLinearSimpleZeroCurve(
                     referenceDate, instruments, dayCounter, Linear(),
-                    GlobalLinearSimpleZeroCurve::bootstrap_type(b.accuracy));
+                    GlobalLinearSimpleZeroCurve::bootstrap_type(b.accuracy, b.optimizer, b.endCriteria));
             } else {
                 return new GlobalLinearSimpleZeroCurve(
                     referenceDate, instruments, dayCounter, Linear(),
                     GlobalLinearSimpleZeroCurve::bootstrap_type(b.additionalHelpers,
                                                                 AdditionalDates(b.additionalDates),
                                                                 AdditionalErrors(b.additionalHelpers),
-                                                                b.accuracy));
+                                                                b.accuracy, b.optimizer, b.endCriteria));
             }
         }
     }
