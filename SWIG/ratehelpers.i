@@ -336,7 +336,7 @@ class OISRateHelper : public RateHelper {
             Natural lookbackDays = Null<Natural>(),
             Natural lockoutDays = 0,
             bool applyObservationShift = false,
-            ext::shared_ptr<FloatingRateCouponPricer> pricer = {});
+            const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
     ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 
@@ -365,7 +365,7 @@ class DatedOISRateHelper : public RateHelper {
             Natural lookbackDays = Null<Natural>(),
             Natural lockoutDays = 0,
             bool applyObservationShift = false,
-            ext::shared_ptr<FloatingRateCouponPricer> pricer = {});
+            const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
 };
 
 %shared_ptr(FxSwapRateHelper)
