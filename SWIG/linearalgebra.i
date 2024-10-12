@@ -28,7 +28,6 @@
 %{
 using QuantLib::Array;
 using QuantLib::Matrix;
-using QuantLib::SampledCurve;
 %}
 
 %define QL_TYPECHECK_ARRAY       4210    %enddef
@@ -310,19 +309,6 @@ function(x) print(as.matrix(x)))
 setMethod("as.matrix", "_p_Matrix",
 function(x) matrix(data=as.numeric(x$dataVector),
         nrow=x$rows(), ncol=x$columns()))
-
-setMethod("print", "_p_SampledCurve",
-function(x) print(as.data.frame(x))
-)
-
-setMethod("as.data.frame", "_p_SampledCurve",
-function(x,row.names,optional)
-data.frame("grid"=as(x$grid(), "numeric"),
-"values"=as(x$values(), "numeric")))
-
-setMethod("plot", "_p_SampledCurve",
-function(x,y) plot(as.data.frame(x)))
-
 %}
 #endif
 

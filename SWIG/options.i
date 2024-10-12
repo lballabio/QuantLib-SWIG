@@ -200,12 +200,6 @@ class VanillaOption : public OneAssetOption {
                          Size maxEvaluations = 100,
                          Volatility minVol = 1.0e-4,
                          Volatility maxVol = 4.0);
-
-    %extend{
-        SampledCurve priceCurve() {
-            return self->result<SampledCurve>("priceCurve");
-        }
-    }
 };
 
 %template(CalibrationPair) std::pair< ext::shared_ptr<VanillaOption>, ext::shared_ptr<Quote> >;
