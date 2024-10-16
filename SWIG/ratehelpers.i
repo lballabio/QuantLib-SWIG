@@ -366,6 +366,7 @@ class DatedOISRateHelper : public RateHelper {
             Natural lockoutDays = 0,
             bool applyObservationShift = false,
             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
+    ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 
 %shared_ptr(FxSwapRateHelper)
@@ -382,6 +383,16 @@ class FxSwapRateHelper : public RateHelper {
             bool isFxBaseCurrencyCollateralCurrency,
             const Handle<YieldTermStructure>& collateralCurve,
             const Calendar& tradingCalendar = Calendar());
+
+    Real spot() const;
+    Period tenor() const;
+    Natural fixingDays() const;
+    Calendar calendar() const;
+    BusinessDayConvention businessDayConvention() const;
+    bool endOfMonth() const;
+    bool isFxBaseCurrencyCollateralCurrency() const;
+    Calendar tradingCalendar() const;
+    Calendar adjustmentCalendar() const;
 };
 
 %shared_ptr(OvernightIndexFutureRateHelper)
@@ -458,6 +469,7 @@ class IborIborBasisSwapRateHelper : public RateHelper {
                                 const ext::shared_ptr<IborIndex>& otherIndex,
                                 Handle<YieldTermStructure> discountHandle,
                                 bool bootstrapBaseCurve);
+    ext::shared_ptr<Swap> swap();
 };
 
 %shared_ptr(OvernightIborBasisSwapRateHelper)
@@ -472,6 +484,7 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      const ext::shared_ptr<OvernightIndex>& baseIndex,
                                      const ext::shared_ptr<IborIndex>& otherIndex,
                                      Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
+    ext::shared_ptr<Swap> swap();
 };
 
 %shared_ptr(ArithmeticOISRateHelper)
