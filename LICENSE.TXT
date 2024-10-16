@@ -4,11 +4,11 @@ QuantLib-SWIG is
     Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2014, 2020, 2022, 2023 StatPro Italia srl
     Copyright (C) 2005 Dominic Thuillier
     Copyright (C) 2005 Johan Witters
-    Copyright (C) 2006, 2007, 2010 Joseph Wang
     Copyright (C) 2007 Eric H. Jensen
     Copyright (C) 2007 Luis Cota
     Copyright (C) 2007 Richard Gomes
     Copyright (C) 2007, 2008 Tito Ingargiola
+    Copyright (C) 2007, 2010 Joseph Wang
     Copyright (C) 2008 Allen Kuo
     Copyright (C) 2008 Florent Grenier
     Copyright (C) 2009 Joseph Malicki

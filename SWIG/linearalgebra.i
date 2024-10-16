@@ -309,7 +309,6 @@ function(x) print(as.matrix(x)))
 setMethod("as.matrix", "_p_Matrix",
 function(x) matrix(data=as.numeric(x$dataVector),
         nrow=x$rows(), ncol=x$columns()))
-
 %}
 #endif
 
