@@ -17,7 +17,7 @@ jobs:
       working-directory: dockerfiles
       run: |
         rm -rf QuantLib/.git
-        docker build -f ci.base.Dockerfile --build-arg tag=rolling -t ghcr.io/lballabio/quantlib-swig-devenv:base .
+        docker build -f ci.base.Dockerfile --build-arg tag=noble -t ghcr.io/lballabio/quantlib-swig-devenv:base .
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
