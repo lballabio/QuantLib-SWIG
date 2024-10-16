@@ -174,7 +174,6 @@ QL_DEPRECATED_DISABLE_WARNING
 %include randomnumbers.i
 %include ratehelpers.i
 %include rounding.i
-%include sampledcurve.i
 %include scheduler.i
 %include settings.i
 %include shortratemodels.i
