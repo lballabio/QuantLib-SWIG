@@ -284,14 +284,14 @@ class SwapRateHelper : public RateHelper {
                 DayCounter fixedDayCount,
                 const ext::shared_ptr<IborIndex>& index,
                 const Handle<Quote>& spread = Handle<Quote>(),
-                Handle<YieldTermStructure> discountingCurve = {},
+                const Handle<YieldTermStructure>& discountingCurve = {},
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date(),
                 bool endOfMonth = false,
                 const ext::optional<bool>& withIndexedCoupons = ext::nullopt) {
             return SwapRateHelper(
                 rate, startDate, endDate, std::move(calendar), fixedFrequency,
-                fixedConvention, fixedDayCount, index, spread, std::move(discountingCurve),
+                fixedConvention, fixedDayCount, index, spread, discountingCurve,
                 pillar, customPillarDate, endOfMonth, withIndexedCoupons);
         }
     }
@@ -369,7 +369,7 @@ class OISRateHelper : public RateHelper {
                 const Date& endDate,
                 const Handle<Quote>& rate,
                 const ext::shared_ptr<OvernightIndex>& index,
-                Handle<YieldTermStructure> discountingCurve = {},
+                const Handle<YieldTermStructure>& discountingCurve = {},
                 bool telescopicValueDates = false,
                 Integer paymentLag = 0,
                 BusinessDayConvention paymentConvention = Following,
@@ -387,7 +387,7 @@ class OISRateHelper : public RateHelper {
                 bool applyObservationShift = false,
                 ext::shared_ptr<FloatingRateCouponPricer> pricer = {}) {
             return OISRateHelper(
-                startDate, endDate, rate, index, std::move(discountingCurve),
+                startDate, endDate, rate, index, discountingCurve,
                 telescopicValueDates, paymentLag, paymentConvention, paymentFrequency,
                 paymentCalendar, overnightSpread, pillar, customPillarDate, averagingMethod,
                 endOfMonth, fixedPaymentFrequency, fixedCalendar, lookbackDays, lockoutDays,
