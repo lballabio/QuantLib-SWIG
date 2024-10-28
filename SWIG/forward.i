@@ -56,7 +56,6 @@ class Forward : public Instrument{
 };
 
 
-// BondForward
 %{
 using QuantLib::BondForward;
 using QuantLib::FixedRateBond;
@@ -76,10 +75,8 @@ class BondForward : public Forward {
                 const Calendar& calendar,
                 BusinessDayConvention businessDayConvention,
                 const ext::shared_ptr<Bond>& bond,
-                const Handle<YieldTermStructure>& discountCurve =
-                                            Handle<YieldTermStructure>(),
-                const Handle<YieldTermStructure>& incomeDiscountCurve =
-                                            Handle<YieldTermStructure>());
+                const Handle<YieldTermStructure>& discountCurve = {},
+                const Handle<YieldTermStructure>& incomeDiscountCurve = {});
 
     Real forwardPrice();
     Real cleanForwardPrice();
