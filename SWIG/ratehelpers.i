@@ -274,7 +274,7 @@ class SwapRateHelper : public RateHelper {
             bool endOfMonth = false,
             ext::optional<bool> withIndexedCoupons = ext::nullopt);
     %extend {
-        static SwapRateHelper forDates(
+        static ext::shared_ptr<SwapRateHelper> forDates(
                 const Handle<Quote>& rate,
                 const Date& startDate,
                 const Date& endDate,
@@ -289,7 +289,7 @@ class SwapRateHelper : public RateHelper {
                 Date customPillarDate = Date(),
                 bool endOfMonth = false,
                 const ext::optional<bool>& withIndexedCoupons = ext::nullopt) {
-            return SwapRateHelper(
+            return ext::make_shared<SwapRateHelper>(
                 rate, startDate, endDate, std::move(calendar), fixedFrequency,
                 fixedConvention, fixedDayCount, index, spread, discountingCurve,
                 pillar, customPillarDate, endOfMonth, withIndexedCoupons);
@@ -364,7 +364,7 @@ class OISRateHelper : public RateHelper {
             bool applyObservationShift = false,
             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
     %extend {
-        static OISRateHelper forDates(
+        static ext::shared_ptr<OISRateHelper> forDates(
                 const Date& startDate,
                 const Date& endDate,
                 const Handle<Quote>& rate,
@@ -386,7 +386,7 @@ class OISRateHelper : public RateHelper {
                 Natural lockoutDays = 0,
                 bool applyObservationShift = false,
                 ext::shared_ptr<FloatingRateCouponPricer> pricer = {}) {
-            return OISRateHelper(
+            return ext::make_shared<OISRateHelper>(
                 startDate, endDate, rate, index, discountingCurve,
                 telescopicValueDates, paymentLag, paymentConvention, paymentFrequency,
                 paymentCalendar, overnightSpread, pillar, customPillarDate, averagingMethod,
