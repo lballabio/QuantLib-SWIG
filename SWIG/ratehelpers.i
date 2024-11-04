@@ -288,7 +288,7 @@ class SwapRateHelper : public RateHelper {
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date(),
                 bool endOfMonth = false,
-                const ext::optional<bool>& withIndexedCoupons = ext::nullopt) {
+                ext::optional<bool> withIndexedCoupons = ext::nullopt) {
             return ext::make_shared<SwapRateHelper>(
                 rate, startDate, endDate, std::move(calendar), fixedFrequency,
                 fixedConvention, fixedDayCount, index, spread, discountingCurve,
