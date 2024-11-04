@@ -386,13 +386,14 @@ class OISRateHelper : public RateHelper {
                 Natural lookbackDays = Null<Natural>(),
                 Natural lockoutDays = 0,
                 bool applyObservationShift = false,
-                ext::shared_ptr<FloatingRateCouponPricer> pricer = {}) {
+                ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
+                DateGeneration::Rule rule = DateGeneration::Backward) {
             return ext::make_shared<OISRateHelper>(
                 startDate, endDate, rate, index, discountingCurve,
                 telescopicValueDates, paymentLag, paymentConvention, paymentFrequency,
                 paymentCalendar, overnightSpread, pillar, customPillarDate, averagingMethod,
                 endOfMonth, fixedPaymentFrequency, fixedCalendar, lookbackDays, lockoutDays,
-                applyObservationShift, pricer);
+                applyObservationShift, pricer, rule);
         }
     }
     ext::shared_ptr<OvernightIndexedSwap> swap();
