@@ -5,6 +5,7 @@
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Joseph Wang
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2024 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
