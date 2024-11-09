@@ -617,6 +617,7 @@ using QuantLib::FdmDupire1dOp;
 using QuantLib::FdmBlackScholesFwdOp;
 using QuantLib::FdmHestonFwdOp;
 using QuantLib::FdmSquareRootFwdOp;
+using QuantLib::FdmWienerOp;
 
 typedef BoundaryCondition<FdmLinearOp> FdmBoundaryCondition;
 typedef std::vector<ext::shared_ptr<FdmBoundaryCondition> > FdmBoundaryConditionSet;
@@ -883,6 +884,15 @@ class FdmHestonFwdOp : public FdmLinearOpComposite {
             = FdmSquareRootFwdOp::Plain,
         const ext::shared_ptr<LocalVolTermStructure> & leverageFct
             = ext::shared_ptr<LocalVolTermStructure>());
+};
+
+%shared_ptr(FdmWienerOp)
+class FdmWienerOp : public FdmLinearOpComposite {
+  public:
+    FdmWienerOp(
+        ext::shared_ptr<FdmMesher> mesher,
+        ext::shared_ptr<YieldTermStructure> rTS,
+        Array lambdas);
 };
 
 %{
