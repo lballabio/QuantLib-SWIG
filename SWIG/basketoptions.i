@@ -330,9 +330,6 @@ class DengLiZhouBasketEngine : public PricingEngine {
 
 %shared_ptr(FdndimBlackScholesVanillaEngine)
 class FdndimBlackScholesVanillaEngine : public PricingEngine {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") FdndimBlackScholesVanillaEngine;
-    #endif
   public:
       FdndimBlackScholesVanillaEngine( 
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,

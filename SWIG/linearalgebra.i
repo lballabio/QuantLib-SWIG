@@ -636,7 +636,7 @@ Array CholeskySolveFor(const Matrix& L, const Array& b);
 class SymmetricSchurDecomposition {
   public:
     SymmetricSchurDecomposition(const Matrix &s);
-    const Array& eigenvalues() const:
+    const Array& eigenvalues() const;
     const Matrix& eigenvectors() const;
 };
 
