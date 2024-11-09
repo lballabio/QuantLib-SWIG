@@ -610,7 +610,7 @@ struct SalvagingAlgorithm {
     #if defined(SWIGPYTHON)
     %rename(NoAlgorithm) None;
     #endif
-    enum Type { None, Spectral };
+    enum Type {None, Spectral, Hypersphere, LowerDiagonal, Higham, Principal};
 };
 
 Matrix inverse(const Matrix& m);
