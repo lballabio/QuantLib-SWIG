@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
@@ -173,7 +172,7 @@ class MCAmericanBasketEngine : public PricingEngine {
                                BigInteger seed = 0,
                                Size nCalibrationSamples = Null<Size>(),
                                Size polynomOrder = 2,
-                               LsmBasisSystem::PolynomialType polynomType 
+                               LsmBasisSystem::PolynomialType polynomType
                                       = LsmBasisSystem::Monomial) {
             return new MCAmericanBasketEngine<RNG>(process,
                                                    timeSteps,
@@ -258,7 +257,6 @@ class KirkEngine : public PricingEngine {
 %shared_ptr(BjerksundStenslandSpreadEngine)
 class BjerksundStenslandSpreadEngine : public PricingEngine {
   public:
-  
     BjerksundStenslandSpreadEngine(
         const ext::shared_ptr<BlackProcess>& process1,
         const ext::shared_ptr<BlackProcess>& process2,
@@ -278,12 +276,15 @@ class OperatorSplittingSpreadEngine : public PricingEngine {
 
 %shared_ptr(Fd2dBlackScholesVanillaEngine)
 class Fd2dBlackScholesVanillaEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") Fd2dBlackScholesVanillaEngine;
+    #endif
   public:
     Fd2dBlackScholesVanillaEngine(
         const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
         const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
         Real correlation,
-        Size xGrid = 100, Size yGrid = 100, 
+        Size xGrid = 100, Size yGrid = 100,
         Size tGrid = 50, Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
         bool localVol = false,
@@ -293,7 +294,7 @@ class Fd2dBlackScholesVanillaEngine : public PricingEngine {
 %{
 using QuantLib::ChoiBasketEngine;
 using QuantLib::DengLiZhouBasketEngine;
-using QuantLib::FdndimBlackScholesVanillaEngine;    
+using QuantLib::FdndimBlackScholesVanillaEngine;
 %}
 
 #if defined(SWIGCSHARP)
@@ -332,22 +333,22 @@ class DengLiZhouBasketEngine : public PricingEngine {
 %shared_ptr(FdndimBlackScholesVanillaEngine)
 class FdndimBlackScholesVanillaEngine : public PricingEngine {
   public:
-      FdndimBlackScholesVanillaEngine( 
+      FdndimBlackScholesVanillaEngine(
         std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
-        Matrix rho, Size xGrid, Size tGrid = 50, 
+        Matrix rho, Size xGrid, Size tGrid = 50,
         Size dampingSteps = 0,
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
 
-    %extend {  
+    %extend {
         FdndimBlackScholesVanillaEngine(
             std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
             Matrix rho,
             const std::vector<unsigned int>& dim,
-            Size tGrid = 50, 
+            Size tGrid = 50,
             Size dampingSteps = 0,
             const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
                 return new FdndimBlackScholesVanillaEngine(
-                    processes, rho, to_vector<Size>(dim), tGrid, dampingSteps, schemeDesc                    
+                    processes, rho, to_vector<Size>(dim), tGrid, dampingSteps, schemeDesc
                 );
             }
      }
