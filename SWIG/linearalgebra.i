@@ -604,13 +604,16 @@ class Matrix {
 using QuantLib::inverse;
 using QuantLib::pseudoSqrt;
 using QuantLib::SalvagingAlgorithm;
+using QuantLib::CholeskyDecomposition;
+using QuantLib::CholeskySolveFor;
+using QuantLib::SymmetricSchurDecomposition;
 %}
 
 struct SalvagingAlgorithm {
     #if defined(SWIGPYTHON)
     %rename(NoAlgorithm) None;
     #endif
-    enum Type { None, Spectral };
+    enum Type {None, Spectral, Hypersphere, LowerDiagonal, Higham, Principal};
 };
 
 Matrix inverse(const Matrix& m);
@@ -625,6 +628,16 @@ class SVD {
     const Matrix& V() const;
     Matrix S() const;
     const Array& singularValues() const;
+};
+
+Matrix CholeskyDecomposition(const Matrix& m, bool flexible = false);
+Array CholeskySolveFor(const Matrix& L, const Array& b);
+
+class SymmetricSchurDecomposition {
+  public:
+    SymmetricSchurDecomposition(const Matrix &s);
+    const Array& eigenvalues() const;
+    const Matrix& eigenvectors() const;
 };
 
 %{

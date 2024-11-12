@@ -1,10 +1,10 @@
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2005 Dominic Thuillier
  Copyright (C) 2007 Joseph Wang
  Copyright (C) 2018, 2019 Matthias Lungwitz
+ Copyright (C) 2024 Klaus Spanderen
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -172,8 +172,8 @@ class MCAmericanBasketEngine : public PricingEngine {
                                BigInteger seed = 0,
                                Size nCalibrationSamples = Null<Size>(),
                                Size polynomOrder = 2,
-                               LsmBasisSystem::PolynomialType polynomType 
-                                  	= LsmBasisSystem::Monomial) {
+                               LsmBasisSystem::PolynomialType polynomType
+                                      = LsmBasisSystem::Monomial) {
             return new MCAmericanBasketEngine<RNG>(process,
                                                    timeSteps,
                                                    timeStepsPerYear,
@@ -233,6 +233,8 @@ class MCAmericanBasketEngine : public PricingEngine {
 %{
 using QuantLib::StulzEngine;
 using QuantLib::KirkEngine;
+using QuantLib::BjerksundStenslandSpreadEngine;
+using QuantLib::OperatorSplittingSpreadEngine;
 using QuantLib::Fd2dBlackScholesVanillaEngine;
 %}
 
@@ -252,17 +254,104 @@ class KirkEngine : public PricingEngine {
                Real correlation);
 };
 
+%shared_ptr(BjerksundStenslandSpreadEngine)
+class BjerksundStenslandSpreadEngine : public PricingEngine {
+  public:
+    BjerksundStenslandSpreadEngine(
+        const ext::shared_ptr<BlackProcess>& process1,
+        const ext::shared_ptr<BlackProcess>& process2,
+        Real correlation);
+};
+
+%shared_ptr(OperatorSplittingSpreadEngine)
+class OperatorSplittingSpreadEngine : public PricingEngine {
+  public:
+    enum Order {First, Second};
+    OperatorSplittingSpreadEngine(
+        const ext::shared_ptr<BlackProcess>& process1,
+        const ext::shared_ptr<BlackProcess>& process2,
+        Real correlation,
+        Order order = Second);
+};
+
 %shared_ptr(Fd2dBlackScholesVanillaEngine)
 class Fd2dBlackScholesVanillaEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") Fd2dBlackScholesVanillaEngine;
+    #endif
   public:
-    Fd2dBlackScholesVanillaEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
-                const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
-                Real correlation,
-                Size xGrid = 100, Size yGrid = 100, 
-                Size tGrid = 50, Size dampingSteps = 0,
-                const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
-                bool localVol = false,
-                Real illegalLocalVolOverwrite = -Null<Real>());
+    Fd2dBlackScholesVanillaEngine(
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& p1,
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& p2,
+        Real correlation,
+        Size xGrid = 100, Size yGrid = 100,
+        Size tGrid = 50, Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
+        bool localVol = false,
+        Real illegalLocalVolOverwrite = -Null<Real>());
+};
+
+%{
+using QuantLib::ChoiBasketEngine;
+using QuantLib::DengLiZhouBasketEngine;
+using QuantLib::FdndimBlackScholesVanillaEngine;
+%}
+
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<GeneralizedBlackScholesProcess> )
+#endif
+%template(GeneralizedBlackScholesProcessVector)
+std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> >;
+
+
+%shared_ptr(ChoiBasketEngine)
+class ChoiBasketEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ChoiBasketEngine;
+    #endif
+  public:
+    ChoiBasketEngine(
+        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
+        Matrix rho,
+        Real lambda = 10.0,
+        Size maxNrIntegrationSteps = std::numeric_limits<Size>::max(),
+        bool calcfwdDelta = false,
+        bool controlVariate = false);
+};
+
+%shared_ptr(DengLiZhouBasketEngine)
+class DengLiZhouBasketEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") DengLiZhouBasketEngine;
+    #endif
+  public:
+    DengLiZhouBasketEngine(
+        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
+        Matrix rho);
+};
+
+%shared_ptr(FdndimBlackScholesVanillaEngine)
+class FdndimBlackScholesVanillaEngine : public PricingEngine {
+  public:
+      FdndimBlackScholesVanillaEngine(
+        std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
+        Matrix rho, Size xGrid, Size tGrid = 50,
+        Size dampingSteps = 0,
+        const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer());
+
+    %extend {
+        FdndimBlackScholesVanillaEngine(
+            std::vector<ext::shared_ptr<GeneralizedBlackScholesProcess> > processes,
+            Matrix rho,
+            const std::vector<unsigned int>& dim,
+            Size tGrid = 50,
+            Size dampingSteps = 0,
+            const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer()) {
+                return new FdndimBlackScholesVanillaEngine(
+                    processes, rho, to_vector<Size>(dim), tGrid, dampingSteps, schemeDesc
+                );
+            }
+     }
 };
 
 %{
