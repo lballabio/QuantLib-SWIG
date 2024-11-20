@@ -249,8 +249,8 @@ class StulzEngine : public PricingEngine {
 %shared_ptr(KirkEngine)
 class KirkEngine : public PricingEngine {
   public:
-    KirkEngine(const ext::shared_ptr<BlackProcess>& process1,
-               const ext::shared_ptr<BlackProcess>& process2,
+    KirkEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+               ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
                Real correlation);
 };
 
@@ -258,8 +258,8 @@ class KirkEngine : public PricingEngine {
 class BjerksundStenslandSpreadEngine : public PricingEngine {
   public:
     BjerksundStenslandSpreadEngine(
-        const ext::shared_ptr<BlackProcess>& process1,
-        const ext::shared_ptr<BlackProcess>& process2,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation);
 };
 
@@ -268,8 +268,8 @@ class OperatorSplittingSpreadEngine : public PricingEngine {
   public:
     enum Order {First, Second};
     OperatorSplittingSpreadEngine(
-        const ext::shared_ptr<BlackProcess>& process1,
-        const ext::shared_ptr<BlackProcess>& process2,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
         Real correlation,
         Order order = Second);
 };
