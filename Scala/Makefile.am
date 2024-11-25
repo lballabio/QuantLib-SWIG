@@ -1,7 +1,7 @@
 
 EXAMPLES = CPIBond EquityOptions HestonModelCalibration HestonMonteCarlo ObserverPattern Optimizer RandomNumbers Swing
 
-SWIGFLAGS =
+SWIGFLAGS = $(SWIGFLAGS)
 
 if JAVA_AUTOLOAD
 SWIGFLAGS += -DJAVA_AUTOLOAD

@@ -36,7 +36,7 @@ endif
 
 $(BUILT_SOURCES): ../SWIG/*.i
 	rm -f csharp/*.cs
-	$(SWIG) -csharp -c++ -outdir csharp \
+	$(SWIG) $(SWIGFLAGS) -csharp -c++ -outdir csharp \
             -namespace QuantLib -o cpp/quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook: $(BUILT_SOURCES)

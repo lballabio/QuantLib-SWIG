@@ -25,7 +25,7 @@ endif
 endif
 
 $(BUILT_SOURCES): ../SWIG/*.i
-	$(SWIG) -r -c++ -o src/$(QUANTLIB_R_ROOT).cpp ../SWIG/quantlib.i
+	$(SWIG) $(SWIGFLAGS) -r -c++ -o src/$(QUANTLIB_R_ROOT).cpp ../SWIG/quantlib.i
 	mv src/$(QUANTLIB_R_ROOT).R R/
 
 dist-hook:

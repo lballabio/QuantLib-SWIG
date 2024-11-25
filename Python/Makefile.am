@@ -25,7 +25,7 @@ endif
 endif
 
 src/QuantLib/quantlib_wrap.cpp src/QuantLib/QuantLib.py: ../SWIG/*.i
-	$(SWIG) -python -c++ -outdir src/QuantLib -o src/QuantLib/quantlib_wrap.cpp ../SWIG/quantlib.i
+	$(SWIG) $(SWIGFLAGS) -python -c++ -outdir src/QuantLib -o src/QuantLib/quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook:
 	mkdir -p $(distdir)/examples

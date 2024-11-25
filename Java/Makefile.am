@@ -5,18 +5,18 @@ BUILT_SOURCES = quantlib_wrap.cpp quantlib_wrap.h
 
 EXAMPLES = Bonds CallableBonds CallableBondsOAS DiscreteHedging EquityOptions FRA FunctionDelegates Time
 
-SWIGFLAGS =
+SWIGJAVAFLAGS =
 
 if JAVA_AUTOLOAD
-SWIGFLAGS += -DJAVA_AUTOLOAD
+SWIGJAVAFLAGS += -DJAVA_AUTOLOAD
 endif
 
 if JAVA_FINALIZER
-SWIGFLAGS += -DJAVA_FINALIZER
+SWIGJAVAFLAGS += -DJAVA_FINALIZER
 endif
 
 if JAVA_AUTOCLOSEABLE
-SWIGFLAGS += -DJAVA_AUTOCLOSEABLE
+SWIGJAVAFLAGS += -DJAVA_AUTOCLOSEABLE
 endif
 
 if HAVE_JAVA
@@ -57,7 +57,7 @@ endif
 quantlib_wrap.cpp: ../SWIG/*.i
 	mkdir -p org/quantlib
 	rm -f org/quantlib/*.java
-	$(SWIG) $(SWIGFLAGS) -java -c++ -outdir org/quantlib \
+	$(SWIG) $(SWIGFLAGS) $(SWIGJAVAFLAGS) -java -c++ -outdir org/quantlib \
             -package org.quantlib -o quantlib_wrap.cpp ../SWIG/quantlib.i
 
 dist-hook:

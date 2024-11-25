@@ -8,4 +8,4 @@ pip install setuptools build tox
 
 ./autogen.sh
 ./configure CC=clang CXX=clang++ CXXFLAGS='-O1'
-make -C Python
+make -C Python SWIGFLAGS='-Werror'
