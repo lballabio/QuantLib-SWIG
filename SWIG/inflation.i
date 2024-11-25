@@ -820,28 +820,6 @@ Leg _yoyInflationLeg(const Schedule& schedule,
             .withCaps(caps)
             .withFloors(floors);
 }
-Leg _yoyInflationLeg(const Schedule& schedule,
-                     const Calendar& calendar,
-                     const ext::shared_ptr<YoYInflationIndex>& index,
-                     const Period& observationLag,
-                     const std::vector<Real>& notionals,
-                     const DayCounter& paymentDayCounter,
-                     BusinessDayConvention paymentAdjustment = Following,
-                     Natural fixingDays = 0,
-                     const std::vector<Real>& gearings = std::vector<Real>(),
-                     const std::vector<Spread>& spreads = std::vector<Spread>(),
-                     const std::vector<Rate>& caps = std::vector<Rate>(),
-                     const std::vector<Rate>& floors = std::vector<Rate>()) {
-        return QuantLib::yoyInflationLeg(schedule, calendar, index, observationLag)
-            .withNotionals(notionals)
-            .withPaymentDayCounter(paymentDayCounter)
-            .withPaymentAdjustment(paymentAdjustment)
-            .withFixingDays(fixingDays)
-            .withGearings(gearings)
-            .withSpreads(spreads)
-            .withCaps(caps)
-            .withFloors(floors);
-}
 %}
 %feature("kwargs") _yoyInflationLeg;
 %rename(yoyInflationLeg) _yoyInflationLeg;
@@ -850,18 +828,6 @@ Leg _yoyInflationLeg(const Schedule& schedule,
                      const ext::shared_ptr<YoYInflationIndex>& index,
                      const Period& observationLag,
                      CPI::InterpolationType interpolation,
-                     const std::vector<Real>& notionals,
-                     const DayCounter& paymentDayCounter,
-                     BusinessDayConvention paymentAdjustment = Following,
-                     Natural fixingDays = 0,
-                     const std::vector<Real>& gearings = std::vector<Real>(),
-                     const std::vector<Spread>& spreads = std::vector<Spread>(),
-                     const std::vector<Rate>& caps = std::vector<Rate>(),
-                     const std::vector<Rate>& floors = std::vector<Rate>());
-Leg _yoyInflationLeg(const Schedule& schedule,
-                     const Calendar& calendar,
-                     const ext::shared_ptr<YoYInflationIndex>& index,
-                     const Period& observationLag,
                      const std::vector<Real>& notionals,
                      const DayCounter& paymentDayCounter,
                      BusinessDayConvention paymentAdjustment = Following,
