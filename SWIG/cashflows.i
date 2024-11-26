@@ -695,6 +695,45 @@ class EquityQuantoCashFlowPricer : public EquityCashFlowPricer {
 };
 
 
+%{
+using QuantLib::RangeAccrualFloatersCoupon;
+using QuantLib::RangeAccrualPricer;
+using QuantLib::RangeAccrualPricerByBgm;
+%}
+
+%shared_ptr(RangeAccrualFloatersCoupon)
+class RangeAccrualFloatersCoupon: public FloatingRateCoupon {
+  public:
+    RangeAccrualFloatersCoupon(const Date& paymentDate,
+                               Real nominal,
+                               const ext::shared_ptr<IborIndex>& index,
+                               const Date& startDate,
+                               const Date& endDate,
+                               Natural fixingDays,
+                               const DayCounter& dayCounter,
+                               Real gearing,
+                               Rate spread,
+                               const Date& refPeriodStart,
+                               const Date& refPeriodEnd,
+                               ext::shared_ptr<Schedule> observationsSchedule,
+                               Real lowerTrigger,
+                               Real upperTrigger);
+};
+
+%shared_ptr(RangeAccrualPricer)
+class RangeAccrualPricer: public FloatingRateCouponPricer {};
+
+%shared_ptr(RangeAccrualPricerByBgm)
+class RangeAccrualPricerByBgm : public RangeAccrualPricer {
+  public:
+    RangeAccrualPricerByBgm(Real correlation,
+                            ext::shared_ptr<SmileSection> smilesOnExpiry,
+                            ext::shared_ptr<SmileSection> smilesOnPayment,
+                            bool withSmile,
+                            bool byCallSpread);
+};
+
+
 // cash flow vector builders
 
 %{
@@ -1056,6 +1095,51 @@ Leg _SubPeriodsLeg(const std::vector<Real>& nominals,
                    BusinessDayConvention exCouponConvention = Unadjusted,
                    bool exCouponEndOfMonth = false,
                    RateAveraging::Type averagingMethod = RateAveraging::Compound);
+
+
+%{
+Leg _RangeAccrualLeg(const std::vector<Real>& nominals,
+                     const Schedule& schedule,
+                     const ext::shared_ptr<IborIndex>& index,
+                     const DayCounter& paymentDayCounter = DayCounter(),
+                     const BusinessDayConvention paymentConvention = Following,
+                     const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+                     const std::vector<Real>& gearings = std::vector<Real>(),
+                     const std::vector<Spread>& spreads = std::vector<Spread>(),
+                     const std::vector<Rate>& lowerTriggers = std::vector<Rate>(),
+                     const std::vector<Rate>& upperTriggers = std::vector<Rate>(),
+                     const Period& observationTenor = Period(),
+                     BusinessDayConvention observationConvention = ModifiedFollowing) {
+    return QuantLib::RangeAccrualLeg(schedule, index)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(paymentDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withFixingDays(fixingDays)
+        .withGearings(gearings)
+        .withSpreads(spreads)
+        .withLowerTriggers(lowerTriggers)
+        .withUpperTriggers(upperTriggers)
+        .withObservationTenor(observationTenor)
+        .withObservationConvention(observationConvention);
+}
+%}
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+%feature("kwargs") _RangeAccrualLeg;
+#endif
+%rename(RangeAccrualLeg) _RangeAccrualLeg;
+Leg _RangeAccrualLeg(const std::vector<Real>& nominals,
+                     const Schedule& schedule,
+                     const ext::shared_ptr<IborIndex>& index,
+                     const DayCounter& paymentDayCounter = DayCounter(),
+                     const BusinessDayConvention paymentConvention = Following,
+                     const std::vector<Natural>& fixingDays = std::vector<Natural>(),
+                     const std::vector<Real>& gearings = std::vector<Real>(),
+                     const std::vector<Spread>& spreads = std::vector<Spread>(),
+                     const std::vector<Rate>& lowerTriggers = std::vector<Rate>(),
+                     const std::vector<Rate>& upperTriggers = std::vector<Rate>(),
+                     const Period& observationTenor = Period(),
+                     BusinessDayConvention observationConvention = ModifiedFollowing);
+
 
 // cash-flow analysis
 
