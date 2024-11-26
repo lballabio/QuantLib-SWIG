@@ -386,7 +386,7 @@ class OISRateHelper : public RateHelper {
                 Natural lookbackDays = Null<Natural>(),
                 Natural lockoutDays = 0,
                 bool applyObservationShift = false,
-                ext::shared_ptr<FloatingRateCouponPricer> pricer = {},
+                const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {},
                 DateGeneration::Rule rule = DateGeneration::Backward) {
             return ext::make_shared<OISRateHelper>(
                 startDate, endDate, rate, index, discountingCurve,
