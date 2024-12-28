@@ -71,6 +71,17 @@ class FittedBondDiscountCurve : public YieldTermStructure {
                    Size maxEvaluations = 10000,
                    const Array &guess = Array(),
                    Real simplexLambda = 1.0);
+    FittedBondDiscountCurve(Natural settlementDays,
+                            const Calendar& calendar,
+                            const FittingMethod& fittingMethod,
+                            const Array& parameters,
+                            Date maxDate,
+                            const DayCounter& dayCounter);
+    FittedBondDiscountCurve(const Date& referenceDate,
+                            const FittingMethod& fittingMethod,
+                            const Array& parameters,
+                            Date maxDate,
+                            const DayCounter& dayCounter);
     const FittingMethod& fitResults() const;
     void resetGuess(const Array& guess);
 };
