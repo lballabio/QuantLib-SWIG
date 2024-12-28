@@ -288,6 +288,7 @@ class CappedFlooredCoupon : public FloatingRateCoupon {
 %{
 using QuantLib::IborCoupon;
 using QuantLib::CappedFlooredIborCoupon;
+using QuantLib::MultipleResetsCoupon;
 using QuantLib::SubPeriodsCoupon;
 %}
 
@@ -341,6 +342,30 @@ class CappedFlooredIborCoupon : public CappedFlooredCoupon {
                             const Date& exCouponDate = Date());
 };
 
+%shared_ptr(MultipleResetsCoupon)
+class MultipleResetsCoupon : public FloatingRateCoupon {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MultipleResetsCoupon;
+    #endif
+  public:
+    MultipleResetsCoupon(const Date& paymentDate,
+                         Real nominal,
+                         const Schedule& resetSchedule,
+                         Natural fixingDays,
+                         const ext::shared_ptr<IborIndex>& index,
+                         Real gearing = 1.0,
+                         Rate couponSpread = 0.0,
+                         Rate rateSpread = 0.0,
+                         const Date& refPeriodStart = Date(),
+                         const Date& refPeriodEnd = Date(),
+                         const DayCounter& dayCounter = DayCounter(),
+                         const Date& exCouponDate = Date());
+    const std::vector<Date>& fixingDates() const;
+    const std::vector<Time>& dt() const;
+    const std::vector<Date>& valueDates() const;
+    Spread rateSpread() const;
+};
+
 %shared_ptr(SubPeriodsCoupon)
 class SubPeriodsCoupon: public FloatingRateCoupon {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -367,6 +392,11 @@ class SubPeriodsCoupon: public FloatingRateCoupon {
 };
 
 %inline %{
+    ext::shared_ptr<SubPeriodsCoupon> as_multiple_resets_coupon(
+      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<MultipleResetsCoupon>(cf);
+    }
+
     ext::shared_ptr<SubPeriodsCoupon> as_sub_periods_coupon(
       const ext::shared_ptr<CashFlow>& cf) {
         return ext::dynamic_pointer_cast<SubPeriodsCoupon>(cf);
@@ -379,6 +409,8 @@ using QuantLib::BlackIborCouponPricer;
 using QuantLib::SubPeriodsPricer;
 using QuantLib::CompoundingOvernightIndexedCouponPricer;
 using QuantLib::ArithmeticAveragedOvernightIndexedCouponPricer;
+using QuantLib::CompoundingMultipleResetsPricer;
+using QuantLib::AveragingMultipleResetsPricer;
 using QuantLib::CompoundingRatePricer;
 using QuantLib::AveragingRatePricer;
 %}
@@ -431,6 +463,12 @@ class ArithmeticAveragedOvernightIndexedCouponPricer: public FloatingRateCouponP
             Real volatility = 0.00,  // NO convexity adjustment by default
             bool byApprox = false);  // TRUE to use Katsumi Takada approximation
 };
+
+%shared_ptr(CompoundingMultipleResetsPricer)
+class CompoundingMultipleResetsPricer : public FloatingRateCouponPricer {};
+
+%shared_ptr(AveragingMultipleResetsPricer)
+class AveragingMultipleResetsPricer : public FloatingRateCouponPricer {};
 
 %shared_ptr(CompoundingRatePricer)
 class CompoundingRatePricer: public SubPeriodsPricer {
@@ -1040,6 +1078,63 @@ Leg _CmsSpreadLeg(const std::vector<Real>& nominals,
             const std::vector<Rate>& caps = std::vector<Rate>(),
             const std::vector<Rate>& floors = std::vector<Rate>(),
             bool isInArrears = false);
+
+%{
+Leg _MultipleResetsLeg(const Schedule& fullResetSchedule,
+                       const ext::shared_ptr<IborIndex>& index,
+                       Size resetsPerCoupon,
+                       const std::vector<Real>& nominals,
+                       const DayCounter& paymentDayCounter = DayCounter(),
+                       const BusinessDayConvention paymentConvention = Following,
+                       const Calendar& paymentCalendar = Calendar(),
+                       Integer paymentLag = 0,
+                       const std::vector<Natural>& fixingDays = {},
+                       const std::vector<Real>& gearings = {},
+                       const std::vector<Spread>& couponSpreads = {},
+                       const std::vector<Spread>& rateSpreads = {},
+                       const Period& exCouponPeriod = Period(),
+                       const Calendar& exCouponCalendar = Calendar(),
+                       BusinessDayConvention exCouponConvention = Unadjusted,
+                       bool exCouponEndOfMonth = false,
+                       RateAveraging::Type averagingMethod = RateAveraging::Compound) {
+    return QuantLib::MultipleResetsLeg(fullResetSchedule, index, resetsPerCoupon)
+        .withNotionals(nominals)
+        .withPaymentDayCounter(paymentDayCounter)
+        .withPaymentAdjustment(paymentConvention)
+        .withPaymentCalendar(paymentCalendar.empty() ? fullResetSchedule.calendar() : paymentCalendar)
+        .withPaymentLag(paymentLag)
+        .withFixingDays(fixingDays)
+        .withGearings(gearings)
+        .withCouponSpreads(couponSpreads)
+        .withRateSpreads(rateSpreads)
+        .withExCouponPeriod(exCouponPeriod,
+                            exCouponCalendar,
+                            exCouponConvention,
+                            exCouponEndOfMonth)
+        .withAveragingMethod(averagingMethod);
+}
+%}
+#if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+%feature("kwargs") _MultipleResetsLeg;
+#endif
+%rename(MultipleResetsLeg) _MultipleResetsLeg;
+Leg _MultipleResetsLeg(const Schedule& fullResetSchedule,
+                       const ext::shared_ptr<IborIndex>& index,
+                       Size resetsPerCoupon,
+                       const std::vector<Real>& nominals,
+                       const DayCounter& paymentDayCounter = DayCounter(),
+                       const BusinessDayConvention paymentConvention = Following,
+                       const Calendar& paymentCalendar = Calendar(),
+                       Integer paymentLag = 0,
+                       const std::vector<Natural>& fixingDays = {},
+                       const std::vector<Real>& gearings = {},
+                       const std::vector<Spread>& couponSpreads = {},
+                       const std::vector<Spread>& rateSpreads = {},
+                       const Period& exCouponPeriod = Period(),
+                       const Calendar& exCouponCalendar = Calendar(),
+                       BusinessDayConvention exCouponConvention = Unadjusted,
+                       bool exCouponEndOfMonth = false,
+                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
 %{
 Leg _SubPeriodsLeg(const std::vector<Real>& nominals,
