@@ -245,7 +245,12 @@ namespace QuantLib {
         Mexico(Market m = BMV);
     };
 
-    class NewZealand : public Calendar {};
+    class NewZealand : public Calendar {
+      public:
+        enum Market { Wellington, Auckland };
+        NewZealand(Market m = Wellington);
+    };
+
     class Norway : public Calendar {};
 
     class Poland : public Calendar {
