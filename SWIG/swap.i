@@ -310,13 +310,16 @@ class AssetSwap : public Swap {
     #endif
   public:
     AssetSwap(bool payFixedRate,
-                 const ext::shared_ptr<Bond>& bond,
-                 Real bondCleanPrice,
-                 const ext::shared_ptr<IborIndex>& index,
-                 Spread spread,
-                 const Schedule& floatSchedule = Schedule(),
-                 const DayCounter& floatingDayCount = DayCounter(),
-                 bool parAssetSwap = true);
+              const ext::shared_ptr<Bond>& bond,
+              Real bondCleanPrice,
+              const ext::shared_ptr<IborIndex>& index,
+              Spread spread,
+              const Schedule& floatSchedule = Schedule(),
+              const DayCounter& floatingDayCount = DayCounter(),
+              bool parAssetSwap = true,
+              Real gearing = 1.0,
+              Real nonParRepayment = Null<Real>(),
+              Date dealMaturity = Date());
     Real fairCleanPrice();
     Spread fairSpread();
 };
