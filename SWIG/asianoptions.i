@@ -455,6 +455,20 @@ class FdBlackScholesAsianEngine : public PricingEngine {
                               Size tGrid, Size xGrid, Size aGrid);
 };
 
+
+%{
+using QuantLib::ChoiAsianEngine;
+%}
+
+%shared_ptr(ChoiAsianEngine)
+class ChoiAsianEngine : public PricingEngine {
+  public:
+    ChoiAsianEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        Real lambda = 15,
+        Size maxNrIntegrationSteps = 2 << 21);
+};
+
 %{
 using QuantLib::TurnbullWakemanAsianEngine;
 %}
