@@ -464,7 +464,7 @@ using QuantLib::ChoiAsianEngine;
 class ChoiAsianEngine : public PricingEngine {
   public:
     ChoiAsianEngine(
-		ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process,
         Real lambda = 15,
         Size maxNrIntegrationSteps = 2 << 21);
 };
