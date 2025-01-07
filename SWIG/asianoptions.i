@@ -465,5 +465,21 @@ class TurnbullWakemanAsianEngine : public PricingEngine {
     TurnbullWakemanAsianEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
+%{
+using QuantLib::ChoiAsianEngine;
+%}
+
+%shared_ptr(ChoiAsianEngine)
+class ChoiAsianEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ChoiAsianEngine;
+    #endif
+  public:
+    ChoiAsianEngine(
+            ext::shared_ptr<GeneralizedBlackScholesProcess> process,
+            Real lambda = 15,
+            Size maxNrIntegrationSteps = 2 << 21);
+};
+
 
 #endif
