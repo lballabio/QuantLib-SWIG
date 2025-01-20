@@ -1,3 +1,34 @@
+commit 8614d8d3f74194a595405afc95cd9bd58a93ca92
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 20 Jan 2025 09:53:26 +0100
+
+    Set version to 1.37 final
+
+ Python/setup.py | 2 +-
+ SWIG/ql.i       | 4 ++--
+ configure.ac    | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+commit c55aceb1c71067786727df61313f9a475db6897c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 7 Oct 2024 14:29:46 +0200
+
+    Set version to 1.37-rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit b939b2f7d5d1676046a50a388d5a1d92182ecd27
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 7 Jan 2025 20:35:20 +0100
+
+    Update changelog and news
+
+ ChangeLog.txt | 640 ++++++++++++++++++++++++++++------------------------------
+ News.md       |  61 ++----
+ 2 files changed, 329 insertions(+), 372 deletions(-)
+
 commit 0bced53a2f3aa2d585e3b8b1e2fcf5a73cfa8311
 Merge: a397e539 23d42609
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
