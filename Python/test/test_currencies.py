@@ -37,7 +37,7 @@ class CurrencyTest(unittest.TestCase):
         """Testing bespoke currency constructor"""
         fail_msg = "Failed to create bespoke currency."
         custom_ccy = ql.Currency(
-            "CCY", "CCY", 100, "#", "", 100, ql.Rounding(), "")
+            "CCY", "CCY", 100, "#", "", 100, ql.Rounding())
         self.assertFalse(custom_ccy.empty(), fail_msg)
 
     def test_hash(self):
