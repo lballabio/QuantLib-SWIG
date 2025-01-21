@@ -43,7 +43,6 @@ class Currency {
              const std::string& fractionSymbol,
              Integer fractionsPerUnit,
              const Rounding& rounding,
-             const std::string& formatString,
              const Currency& triangulationCurrency = Currency());
     
     const std::string& name() const;
@@ -53,7 +52,6 @@ class Currency {
     const std::string& fractionSymbol() const;
     Integer fractionsPerUnit() const;
     const Rounding& rounding() const;
-    std::string format() const;
     bool empty() const;
     const Currency& triangulationCurrency() const;
     %extend {
