@@ -51,6 +51,7 @@ RelinkableHandle<Quote> makeQuoteHandle(Real value);
 %{
 using QuantLib::SimpleQuote;
 using QuantLib::LastFixingQuote;
+using QuantLib::FuturesConvAdjustmentQuote;
 %}
 
 %shared_ptr(SimpleQuote)
@@ -66,11 +67,30 @@ class SimpleQuote : public Quote {
 
 class LastFixingQuote : public Quote {
   public:
-    LastFixingQuote(ext::shared_ptr<Index> index);
+    LastFixingQuote(const ext::shared_ptr<Index>& index);
     ext::shared_ptr<Index> index() const;
     Date referenceDate() const;
 };
 
+%shared_ptr(FuturesConvAdjustmentQuote)
+
+class FuturesConvAdjustmentQuote : public Quote {
+  public:
+    FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+                               const Date& futuresDate,
+                               const Handle<Quote>& futuresQuote,
+                               const Handle<Quote>& volatility,
+                               const Handle<Quote>& meanReversion);
+    FuturesConvAdjustmentQuote(const ext::shared_ptr<IborIndex>& index,
+                               const std::string& immCode,
+                               const Handle<Quote>& futuresQuote,
+                               const Handle<Quote>& volatility,
+                               const Handle<Quote>& meanReversion);
+    Real futuresValue() const;
+    Real volatility() const;
+    Real meanReversion() const;
+    Date immDate() const;
+};
 
 #if defined(SWIGPYTHON)
 %{
