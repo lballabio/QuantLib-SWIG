@@ -78,8 +78,8 @@ class QuantoBarrierOption : public BarrierOption {
 using QuantLib::PartialBarrier;
 %}
 
-struct PartialBarrier : public Barrier {
-    enum Range { Start, End, EndB1, EndB2 };
+struct PartialBarrier {
+    enum Range { Start = 0, EndB1 = 2, EndB2 = 3 };
 };
 
 %{
@@ -89,7 +89,8 @@ using QuantLib::PartialTimeBarrierOption;
 %shared_ptr(PartialTimeBarrierOption)
 class PartialTimeBarrierOption : public OneAssetOption {
       public:
-        PartialTimeBarrierOption(PartialBarrier::Type barrierType,
+        PartialTimeBarrierOption(
+            Barrier::Type barrierType,
             PartialBarrier::Range barrierRange,
             Real barrier,
             Real rebate,
