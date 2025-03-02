@@ -51,6 +51,14 @@ const int __hexversion__;
 %immutable;
 const char* __version__;
 %mutable;
+
+%init %{
+	#ifdef Py_GIL_DISABLED
+	PyUnstable_Module_SetGIL(m, Py_MOD_GIL_NOT_USED);
+	#endif
+	
+%}
+
 #endif
 
 #if defined(JAVA_AUTOLOAD)

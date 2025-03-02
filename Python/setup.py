@@ -17,7 +17,7 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
-import os, sys, math, platform
+import os, sys, math, platform, sysconfig
 from setuptools import setup, Extension
 from setuptools._distutils.ccompiler import get_default_compiler
 
@@ -197,7 +197,7 @@ a comprehensive software framework for quantitative finance.
 """
 
 
-py_limited_api = platform.python_implementation() == "CPython"
+py_limited_api = platform.python_implementation() == "CPython" and not sysconfig.get_config_var("Py_GIL_DISABLED")
 
 
 setup(

@@ -97,7 +97,7 @@ class OdeFct {
        
            std::vector<Real> retVal(y.size());
            for (Size i=0; i < y.size(); ++i)
-               retVal[i] = PyFloat_AsDouble(PyList_GET_ITEM(pyResult, i));
+               retVal[i] = PyFloat_AsDouble(PyList_GetItem(pyResult, i));
                           
         Py_XDECREF(pyResult);
         
