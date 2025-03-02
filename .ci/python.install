@@ -3,6 +3,6 @@ set -e
 
 . .venv/bin/activate
 
-pip install Python/dist/QuantLib-*.whl
+pip install Python/dist/*.whl
 grep -v QuantLib binder/requirements.txt > Python/examples/requirements.txt
 pip install -r Python/examples/requirements.txt
