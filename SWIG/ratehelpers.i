@@ -495,7 +495,8 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   ext::shared_ptr<IborIndex> quoteCurrencyIndex,
                                                   Handle<YieldTermStructure> collateralCurve,
                                                   bool isFxBaseCurrencyCollateralCurrency,
-                                                  bool isBasisOnFxBaseCurrencyLeg);
+                                                  bool isBasisOnFxBaseCurrencyLeg,
+												  Frequency paymentFrequency = NoFrequency);
 };
 
 %shared_ptr(MtMCrossCurrencyBasisSwapRateHelper)
@@ -512,7 +513,8 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         Handle<YieldTermStructure> collateralCurve,
                                         bool isFxBaseCurrencyCollateralCurrency,
                                         bool isBasisOnFxBaseCurrencyLeg,
-                                        bool isFxBaseCurrencyLegResettable);
+                                        bool isFxBaseCurrencyLegResettable,
+										Frequency paymentFrequency = NoFrequency);
 };
 
 %shared_ptr(IborIborBasisSwapRateHelper)
