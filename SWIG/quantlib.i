@@ -18,7 +18,6 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 */
 
-
 #if defined(SWIGCSHARP)
 %module(directors="1") NQuantLibc
 #elif defined(SWIGJAVA)
@@ -96,8 +95,5 @@ const char* __version__;
 %feature("autodoc");
 #endif
 
-%begin %{
-#define SWIG_PYTHON_INTERPRETER_NO_DEBUG
-%}
 
 %include ql.i
