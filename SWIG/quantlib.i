@@ -95,5 +95,4 @@ const char* __version__;
 %feature("autodoc");
 #endif
 
-
 %include ql.i
