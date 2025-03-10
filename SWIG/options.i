@@ -301,12 +301,13 @@ using QuantLib::HestonModel;
 %shared_ptr(HestonModel)
 class HestonModel : public CalibratedModel {
   public:
-    HestonModel(const ext::shared_ptr<HestonProcess>&  process);
+    HestonModel(const ext::shared_ptr<HestonProcess>& process);
     Real theta() const;
     Real kappa() const;
     Real sigma() const;
     Real rho() const;
     Real v0() const;
+    ext::shared_ptr<HestonProcess> process() const;
 };
 
 %template(HestonModelHandle) Handle<HestonModel>;
@@ -503,10 +504,15 @@ using QuantLib::BatesModel;
 %shared_ptr(BatesModel)
 class BatesModel : public HestonModel {
   public:
-    BatesModel(const ext::shared_ptr<BatesProcess>&  process);
+    BatesModel(const ext::shared_ptr<BatesProcess>& process);
     Real nu() const;
     Real delta() const;
     Real lambda() const;
+    %extend {
+        ext::shared_ptr<BatesProcess> process() {
+            return ext::dynamic_pointer_cast<BatesProcess>(self->process());
+        }
+    }
 };
 
 
@@ -1649,14 +1655,15 @@ using QuantLib::GJRGARCHModel;
 
 %shared_ptr(GJRGARCHModel)
 class GJRGARCHModel : public CalibratedModel {
-      public:
-        GJRGARCHModel(const ext::shared_ptr<GJRGARCHProcess>& process);
-        Real omega() const;
-        Real alpha() const;
-        Real beta() const;
-        Real gamma() const;
-        Real lambda() const;
-        Real v0() const;
+  public:
+    GJRGARCHModel(const ext::shared_ptr<GJRGARCHProcess>& process);
+    Real omega() const;
+    Real alpha() const;
+    Real beta() const;
+    Real gamma() const;
+    Real lambda() const;
+    Real v0() const;
+    ext::shared_ptr<GJRGARCHProcess> process() const;
 };
 
 
