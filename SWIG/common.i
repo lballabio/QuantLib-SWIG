@@ -104,7 +104,8 @@ namespace ext {
 template <class T>
 class Handle {
   public:
-  Handle(const ext::shared_ptr<T>& = ext::shared_ptr<T>());
+    Handle();
+    explicit Handle(const ext::shared_ptr<T>& p, bool registerAsObserver = true);
     ext::shared_ptr<T> operator->();
     ext::shared_ptr<T> currentLink();
     #if defined(SWIGPYTHON)
