@@ -122,14 +122,10 @@ class Handle {
 template <class T>
 class RelinkableHandle : public Handle<T> {
   public:
-    RelinkableHandle(const ext::shared_ptr<T>& = ext::shared_ptr<T>());
-    void linkTo(const ext::shared_ptr<T>&);
-    %extend {
-        // could be defined in C++ class, added here in the meantime
-        void reset() {
-            self->linkTo(ext::shared_ptr<T>());
-        }
-    }
+    RelinkableHandle();
+    explicit RelinkableHandle(const ext::shared_ptr<T>& p, bool registerAsObserver = true);
+    void linkTo(const ext::shared_ptr<T>& h, bool registerAsObserver = true);
+    void reset();
 };
 
 %define swigr_list_converter(ContainerRType,
