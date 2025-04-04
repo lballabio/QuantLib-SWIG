@@ -183,10 +183,21 @@ class YoYInflationIndex : public InflationIndex {
     // Constructor for year-on-year indices defined as a ratio.
     YoYInflationIndex(
             const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
+            Handle<YoYInflationTermStructure> ts = {});
+    YoYInflationIndex(
+            const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
             bool interpolated,
             Handle<YoYInflationTermStructure> ts = {});
 
     // Constructor for quoted year-on-year indices.
+    YoYInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<YoYInflationTermStructure> ts = {});
     YoYInflationIndex(
             const std::string& familyName,
             const Region& region,
@@ -217,41 +228,13 @@ class Name : public ZeroInflationIndex {
 };
 %enddef
 
-%define export_yii_instance(Name)
-%{
-using QuantLib::Name;
-%}
-%shared_ptr(Name)
-class Name : public YoYInflationIndex {
-  public:
-    Name(bool interpolated,
-         const Handle<YoYInflationTermStructure>& h = {});
-};
-%enddef
-
 export_zii_instance(EUHICP);
 export_zii_instance(EUHICPXT);
 export_zii_instance(FRHICP);
 export_zii_instance(UKRPI);
+export_zii_instance(UKHICP);
 export_zii_instance(USCPI);
 export_zii_instance(ZACPI);
-
-%{
-using QuantLib::UKHICP;
-%}
-%shared_ptr(UKHICP)
-class UKHICP : public ZeroInflationIndex {
-  public:
-    UKHICP(const Handle<ZeroInflationTermStructure>& h = {});
-};
-
-
-export_yii_instance(YYEUHICP);
-export_yii_instance(YYEUHICPXT);
-export_yii_instance(YYFRHICP);
-export_yii_instance(YYUKRPI);
-export_yii_instance(YYUSCPI);
-export_yii_instance(YYZACPI);
 
 %{
 using QuantLib::AUCPI;
@@ -263,6 +246,27 @@ class AUCPI : public ZeroInflationIndex {
           bool revised,
           const Handle<ZeroInflationTermStructure>& h = {});
 };
+
+
+%define export_yii_instance(Name)
+%{
+using QuantLib::Name;
+%}
+%shared_ptr(Name)
+class Name : public YoYInflationIndex {
+  public:
+    Name(const Handle<YoYInflationTermStructure>& h = {});
+    Name(bool interpolated,
+         const Handle<YoYInflationTermStructure>& h = {});
+};
+%enddef
+
+export_yii_instance(YYEUHICP);
+export_yii_instance(YYEUHICPXT);
+export_yii_instance(YYFRHICP);
+export_yii_instance(YYUKRPI);
+export_yii_instance(YYUSCPI);
+export_yii_instance(YYZACPI);
 
 
 // utilities
