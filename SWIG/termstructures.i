@@ -132,9 +132,12 @@ using Name = QuantLib::InterpolatedPiecewiseZeroSpreadedTermStructure<Interpolat
 
 %shared_ptr(Name)
 class Name : public YieldTermStructure {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") Name;
+    #endif
   public:
-    Name(const Handle<YieldTermStructure>& curveHandle,
-         const std::vector< Handle<Quote> >& spreadHandles,
+    Name(const Handle<YieldTermStructure>& baseCurve,
+         const std::vector< Handle<Quote> >& spreads,
          const std::vector<Date>& dates,
          Compounding comp = QuantLib::Continuous,
          Frequency freq = QuantLib::NoFrequency,
@@ -151,6 +154,30 @@ export_ipzsts_instance(SpreadedKrugerZeroInterpolatedTermStructure, Kruger)
 export_ipzsts_instance(SpreadedSplineCubicZeroInterpolatedTermStructure, SplineCubic)
 export_ipzsts_instance(SpreadedParabolicCubicZeroInterpolatedTermStructure, ParabolicCubic)
 export_ipzsts_instance(SpreadedMonotonicParabolicCubicZeroInterpolatedTermStructure, MonotonicParabolicCubic)
+
+
+%define export_ipfwsts_instance(Name,Interpolator)
+%{
+using Name = QuantLib::InterpolatedPiecewiseForwardSpreadedTermStructure<Interpolator>;
+%}
+
+%shared_ptr(Name)
+class Name : public YieldTermStructure {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") Name;
+    #endif
+  public:
+    Name(const Handle<YieldTermStructure>& baseCurve,
+         const std::vector< Handle<Quote> >& spreads,
+         const std::vector<Date>& dates,
+         const DayCounter& dc = DayCounter(),
+         const Interpolator& factory = Interpolator());
+};
+%enddef
+
+export_ipfwsts_instance(PiecewiseForwardSpreadedTermStructure, BackwardFlat)
+export_ipfwsts_instance(PiecewiseLinearForwardSpreadedTermStructure, Linear)
+
 
 // flat forward curve
 
