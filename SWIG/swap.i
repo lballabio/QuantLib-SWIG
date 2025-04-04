@@ -132,6 +132,9 @@ class VanillaSwap : public FixedVsFloatingSwap {
 %rename (_MakeVanillaSwap) MakeVanillaSwap;
 #endif
 class MakeVanillaSwap {
+        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+        %feature("kwargs") MakeVanillaSwap;
+        #endif
       public:
         MakeVanillaSwap& receiveFixed(bool flag = true);
         MakeVanillaSwap& withType(Swap::Type type);
@@ -418,6 +421,9 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
 %rename (_MakeOIS) MakeOIS;
 #endif
 class MakeOIS {
+        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+        %feature("kwargs") MakeOIS;
+        #endif
       public:
         MakeOIS(const Period& swapTenor,
                 const ext::shared_ptr<OvernightIndex>& overnightIndex,
