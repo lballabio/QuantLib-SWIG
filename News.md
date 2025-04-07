@@ -1,35 +1,38 @@
-Main changes for QuantLib-SWIG 1.37
+Main changes for QuantLib-SWIG 1.38
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/30?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/31?closed=1>.
 
-- **Removed** the deprecated `SampledCurve` and `FixedRateBondForward`
-  classes no longer available in the underlying C++ library;
+- **Removed** the deprecated `Currency` constructor no longer
+  available in the underlying C++ library;
 
-- **Removed** the deprecated overload for `yoyInflationLeg`;
+- Exported forward curve with a number of additional interpolations;
+  thanks to Sotirios Papathanasopoulos (@sophistis42) and to
+  @paolodelia99.
 
-- Exported a number of new engines for basket and spread options;
-  thanks to Klaus Spanderen (@klausspanderen).
+- Exported `FuturesConvAdjustmentQuote`; thanks to Eugene Toder
+  (@eltoder).
 
-- Exported Choi engine for Asian options; thanks to Klaus Spanderen
-  (@klausspanderen).
+- Exported missing default parameters for `MakeVanillaSwap` and
+  `MakeOIS`; thanks to Eugene Toder (@eltoder).
 
-- Exported new parameters and methods for `SwapRateHelper` and
-  `OISRateHelper`; thanks to Eugene Toder (@eltoder) and Sotirios
-  Papathanasopoulos (@sophistis42).
+- Exported new constructors for `DepositRateHelper` and
+  `FraRateHelper`; thanks to Eugene Toder (@eltoder).
 
-- Exported `MultipleResetsCoupon` and `MultipleResetsLeg` classes (@lballabio).
+- Exported new constructor arguments for cross-currency basis-swap
+  helpers; thanks to @kp9991-git.
 
-- Exported new constructors for `FittedBondDiscountCurve` (@lballabio).
+- Exported methods to return the underlying process from a few models
+  (@lballabio).
 
-- Exported additional arguments for `AssetSwap` constructor (@lballabio).
+- Exported new constructors for YoY inflation indexes (@lballabio).
 
-- Exported Wellington and Auckland variants for New Zealand calendar (@lballabio).
+- Exported a few more exotic options and engines (@lballabio):
+  - `TwoAssetBarrierOption` with `AnalyticTwoAssetBarrierEngine`;
+  - `HolderExtensibleOption` with `AnalyticHolderExtensibleOptionEngine`;
+  - `WriterExtensibleOption` with `AnalyticWriterExtensibleOptionEngine`;
+  - `TwoAssetCorrelationOption` with `AnalyticTwoAssetCorrelationEngine`;
+  - `AnalyticPDFHestonEngine`.
 
-- Exported new constructors for YoY inflation curves (@lballabio).
-
-- Exported KOFR index (@lballabio).
-
-- Exported range-accrual coupon (@lballabio).
-
+- Exported piecewise forward-spreaded term structure (@lballabio).
