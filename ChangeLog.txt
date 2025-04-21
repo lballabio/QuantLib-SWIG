@@ -1,3 +1,43 @@
+commit 03b19d5b35a9e2374d677bf7dab75361c1133f30
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 20 Jan 2025 09:53:26 +0100
+
+    Set version to 1.38 final
+
+ Python/setup.py | 2 +-
+ SWIG/ql.i       | 4 ++--
+ configure.ac    | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+commit c8ab7926c078f031ccc7023ebe69ba8aeda11553
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 21 Apr 2025 19:51:52 +0200
+
+    Avoid deprecated runner in CI build
+
+ .github/workflows/devenv-images.yml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 68b24e7b03b0ca1f8747abd95efb22bf75026c00
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 7 Oct 2024 14:29:46 +0200
+
+    Set version to 1.38-rc
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 03eb8136d9e19d13d2146d3f4d3de5c8e78556ea
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 7 Apr 2025 12:08:10 +0200
+
+    Update news and changelog
+
+ ChangeLog.txt | 568 ++++++++++++++++++++--------------------------------------
+ News.md       |  47 ++---
+ 2 files changed, 216 insertions(+), 399 deletions(-)
+
 commit 7b7e954c2f5965f6fa5fe6a3ae2e84c22abbead5
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Fri, 4 Apr 2025 17:24:11 +0200
