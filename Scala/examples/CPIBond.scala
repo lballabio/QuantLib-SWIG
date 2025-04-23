@@ -101,8 +101,8 @@ object CPIBond {
             CPI.InterpolationType.AsIndex, yTS) }
 
         cpiTS linkTo new PiecewiseZeroInflation(          
-          evaluationDate, calendar, dayCounter, observationLag, 
-          inflationIndex.frequency, zciisData(0).rate/100d, zeroSwapHelpers)
+          evaluationDate, inflationIndex.lastFixingDate,
+          inflationIndex.frequency, dayCounter, zeroSwapHelpers)
           
         val notional = 1000000d;
         

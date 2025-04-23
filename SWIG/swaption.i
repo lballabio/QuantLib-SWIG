@@ -57,7 +57,6 @@ class Swaption : public Option {
     Settlement::Method settlementMethod() const;
     VanillaSwap::Type type() const;
     const ext::shared_ptr<FixedVsFloatingSwap>& underlying() const;
-    const ext::shared_ptr<VanillaSwap>& underlyingSwap() const;
     
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") impliedVolatility;

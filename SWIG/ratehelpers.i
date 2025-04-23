@@ -347,8 +347,6 @@ class FixedRateBondHelper : public BondHelper {
                   BusinessDayConvention exCouponConvention = Unadjusted,
                   bool exCouponEndOfMonth = false,
                   BondPrice::Type priceType = BondPrice::Clean);
-
-    ext::shared_ptr<FixedRateBond> fixedRateBond();
 };
 
 
