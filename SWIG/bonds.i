@@ -112,13 +112,6 @@ class Bond : public Instrument {
                Real accuracy = 1.0e-8,
                Size maxEvaluations = 100,
                Real guess = 0.05);
-    Real yield(Real cleanPrice,
-               const DayCounter& dc,
-               Compounding compounding,
-               Frequency freq,
-               const Date& settlement = Date(),
-               Real accuracy = 1.0e-8,
-               Size maxEvaluations = 100);
     Real accruedAmount(const Date& settlement = Date());
     Real settlementValue() const;
     Real settlementValue(Real cleanPrice) const;
