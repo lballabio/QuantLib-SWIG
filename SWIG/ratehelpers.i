@@ -232,6 +232,8 @@ class FuturesRateHelper : public RateHelper {
             const ext::shared_ptr<IborIndex>& index,
             Real convexityAdjustment = 0.0,
             Futures::Type type = Futures::IMM);
+
+    Real convexityAdjustment() const;
 };
 
 %shared_ptr(SwapRateHelper)
@@ -481,6 +483,8 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const ext::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(), 
             RateAveraging::Type averagingMethod = RateAveraging::Compound);
+
+    Real convexityAdjustment() const;
 };
 
 %shared_ptr(SofrFutureRateHelper)
