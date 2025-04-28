@@ -22,8 +22,10 @@ endif
 if HAVE_JAVA
 if BUILD_JAVA
 
+JAVAC_FLAGS ?= -O -g -source 8 -target 8
+
 examples/%.class: examples/%.java QuantLib.jar
-	$(JAVAC)  -cp QuantLib.jar examples/$*.java
+	$(JAVAC)  -cp QuantLib.jar ${JAVAC_FLAGS} examples/$*.java
 
 .PHONY: $(EXAMPLES)
 
@@ -37,7 +39,7 @@ libQuantLibJNI.@JNILIB_EXTENSION@: quantlib_wrap.o
 
 QuantLib.jar: quantlib_wrap.cpp org/quantlib/*.java
 	mkdir -p bin
-	find org/quantlib -name '*.java' | xargs $(JAVAC) -g -d bin
+	find org/quantlib -name '*.java' | xargs $(JAVAC) ${JAVAC_FLAGS} -d bin
 	$(JAR) cf QuantLib.jar -C bin org
 
 install-exec-local:
