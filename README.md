@@ -11,9 +11,6 @@ QuantLib-SWIG: language bindings for QuantLib
 
 ---
 
-QuantLib-SWIG provides the means to use QuantLib from a number of
-languages; currently their list includes Python, C#, Java and R.
-
 The QuantLib project (<https://www.quantlib.org>) is aimed at providing a
 comprehensive software framework for quantitative finance. QuantLib is
 a free/open-source library for modeling, trading, and risk management
@@ -22,28 +19,8 @@ in real-life.
 QuantLib is Non-Copylefted Free Software and OSI Certified Open Source
 Software.
 
-
-Download and usage
-------------------
-
-QuantLib-SWIG can be downloaded from <https://www.quantlib.org/download.shtml>.
-
-On Linux/Unix, you can run:
-
-    ./configure
-    make
-    make check
-    sudo make install
-
-to build, test and install al modules. If you're only interested in a
-specific language, you can tell make to only work in its subdirectory,
-as in:
-
-    make -C Python
-
-Alternatively, you can cd to a specific subdirectory and follow the
-instructions in its README file. This is also the procedure for
-Windows users.
+QuantLib-SWIG provides the means to use QuantLib from a number of
+languages; currently their list includes Python, C#, Java, Scala and R.
 
 
 Questions and feedback
