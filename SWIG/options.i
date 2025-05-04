@@ -301,12 +301,13 @@ using QuantLib::HestonModel;
 %shared_ptr(HestonModel)
 class HestonModel : public CalibratedModel {
   public:
-    HestonModel(const ext::shared_ptr<HestonProcess>&  process);
+    HestonModel(const ext::shared_ptr<HestonProcess>& process);
     Real theta() const;
     Real kappa() const;
     Real sigma() const;
     Real rho() const;
     Real v0() const;
+    ext::shared_ptr<HestonProcess> process() const;
 };
 
 %template(HestonModelHandle) Handle<HestonModel>;
@@ -491,6 +492,19 @@ class AnalyticPTDHestonEngine : public PricingEngine {
         Real andersenPiterbargEpsilon = 1e-8);            
 };
 
+%{
+using QuantLib::AnalyticPDFHestonEngine;
+%}
+
+%shared_ptr(AnalyticPDFHestonEngine)
+class AnalyticPDFHestonEngine : public PricingEngine {
+  public:
+    AnalyticPDFHestonEngine(ext::shared_ptr<HestonModel> model,
+                            Real gaussLobattoEps = 1e-6,
+                            Size gaussLobattoIntegrationOrder = 10000UL);
+};
+
+
 
 #if defined(SWIGPYTHON)
 %rename(lambda_parameter) lambda;
@@ -503,10 +517,15 @@ using QuantLib::BatesModel;
 %shared_ptr(BatesModel)
 class BatesModel : public HestonModel {
   public:
-    BatesModel(const ext::shared_ptr<BatesProcess>&  process);
+    BatesModel(const ext::shared_ptr<BatesProcess>& process);
     Real nu() const;
     Real delta() const;
     Real lambda() const;
+    %extend {
+        ext::shared_ptr<BatesProcess> process() {
+            return ext::dynamic_pointer_cast<BatesProcess>(self->process());
+        }
+    }
 };
 
 
@@ -1649,14 +1668,15 @@ using QuantLib::GJRGARCHModel;
 
 %shared_ptr(GJRGARCHModel)
 class GJRGARCHModel : public CalibratedModel {
-      public:
-        GJRGARCHModel(const ext::shared_ptr<GJRGARCHProcess>& process);
-        Real omega() const;
-        Real alpha() const;
-        Real beta() const;
-        Real gamma() const;
-        Real lambda() const;
-        Real v0() const;
+  public:
+    GJRGARCHModel(const ext::shared_ptr<GJRGARCHProcess>& process);
+    Real omega() const;
+    Real alpha() const;
+    Real beta() const;
+    Real gamma() const;
+    Real lambda() const;
+    Real v0() const;
+    ext::shared_ptr<GJRGARCHProcess> process() const;
 };
 
 
@@ -1837,5 +1857,75 @@ class AnalyticComplexChooserEngine : public PricingEngine {
     AnalyticComplexChooserEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
 };
 
+
+%{
+using QuantLib::HolderExtensibleOption;
+using QuantLib::AnalyticHolderExtensibleOptionEngine;
+%}
+
+%shared_ptr(HolderExtensibleOption)
+class HolderExtensibleOption : public OneAssetOption {
+  public:
+    HolderExtensibleOption(Option::Type type,
+                           Real premium,
+                           Date secondExpiryDate,
+                           Real secondStrike,
+                           const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                           const ext::shared_ptr<Exercise>& exercise);
+};
+
+%shared_ptr(AnalyticHolderExtensibleOptionEngine)
+class AnalyticHolderExtensibleOptionEngine : public PricingEngine {
+  public:
+    AnalyticHolderExtensibleOptionEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
+%{
+using QuantLib::WriterExtensibleOption;
+using QuantLib::AnalyticWriterExtensibleOptionEngine;
+%}
+
+%shared_ptr(WriterExtensibleOption)
+class WriterExtensibleOption : public OneAssetOption {
+  public:
+    WriterExtensibleOption(const ext::shared_ptr<PlainVanillaPayoff>& payoff1,
+                           const ext::shared_ptr<Exercise>& exercise1,
+                           const ext::shared_ptr<PlainVanillaPayoff>& payoff2,
+                           ext::shared_ptr<Exercise> exercise2);
+    ext::shared_ptr<Payoff> payoff2() { return payoff2_; }
+    ext::shared_ptr<Exercise> exercise2() { return exercise2_; };
+};
+
+%shared_ptr(AnalyticWriterExtensibleOptionEngine)
+class AnalyticWriterExtensibleOptionEngine : public PricingEngine {
+  public:
+    AnalyticWriterExtensibleOptionEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
+%{
+using QuantLib::TwoAssetCorrelationOption;
+using QuantLib::AnalyticTwoAssetCorrelationEngine;
+%}
+
+%shared_ptr(TwoAssetCorrelationOption)
+class TwoAssetCorrelationOption : public MultiAssetOption {
+  public:
+    TwoAssetCorrelationOption(Option::Type type,
+                              Real strike1,
+                              Real strike2,
+                              const ext::shared_ptr<Exercise>&);
+};
+
+%shared_ptr(AnalyticTwoAssetCorrelationEngine)
+class AnalyticTwoAssetCorrelationEngine : public PricingEngine {
+  public:
+    AnalyticTwoAssetCorrelationEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> p1,
+                                      ext::shared_ptr<GeneralizedBlackScholesProcess> p2,
+                                      Handle<Quote> correlation);
+};
 
 #endif

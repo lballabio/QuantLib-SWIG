@@ -27,7 +27,12 @@ using QuantLib::InterpolatedForwardCurve;
 %}
 
 %shared_ptr(InterpolatedForwardCurve<BackwardFlat>);
+%shared_ptr(InterpolatedForwardCurve<ForwardFlat>);
+%shared_ptr(InterpolatedForwardCurve<Linear>);
 %shared_ptr(InterpolatedForwardCurve<Cubic>);
+%shared_ptr(InterpolatedForwardCurve<SplineCubic>);
+%shared_ptr(InterpolatedForwardCurve<ParabolicCubic>);
+%shared_ptr(InterpolatedForwardCurve<MonotonicParabolicCubic>);
 
 
 template <class Interpolator>
@@ -46,6 +51,11 @@ class InterpolatedForwardCurve : public YieldTermStructure {
 };
 
 %template(ForwardCurve) InterpolatedForwardCurve<BackwardFlat>;
+%template(ForwardFlatForwardCurve) InterpolatedForwardCurve<ForwardFlat>;
+%template(LinearForwardCurve) InterpolatedForwardCurve<Linear>;
 %template(CubicForwardCurve) InterpolatedForwardCurve<Cubic>;
+%template(NaturalCubicForwardCurve) InterpolatedForwardCurve<SplineCubic>;
+%template(ParabolicCubicForwardCurve) InterpolatedForwardCurve<ParabolicCubic>;
+%template(MonotonicParabolicCubicForwardCurve) InterpolatedForwardCurve<MonotonicParabolicCubic>;
 
 #endif

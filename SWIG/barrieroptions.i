@@ -110,8 +110,7 @@ using QuantLib::AnalyticPartialTimeBarrierOptionEngine;
 class AnalyticPartialTimeBarrierOptionEngine : public PricingEngine {
   public:
     AnalyticPartialTimeBarrierOptionEngine (
-                           const ext::shared_ptr<GeneralizedBlackScholesProcess>& process
-                 );
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process);
 };
 
 
@@ -585,5 +584,29 @@ class BinomialDoubleBarrierEngine : public PricingEngine {
 #endif
 
 #endif
+
+
+%{
+using QuantLib::TwoAssetBarrierOption;
+using QuantLib::AnalyticTwoAssetBarrierEngine;
+%}
+
+%shared_ptr(TwoAssetBarrierOption)
+class TwoAssetBarrierOption : public Option {
+  public:
+    TwoAssetBarrierOption(Barrier::Type barrierType,
+                          Real barrier,
+                          const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                          const ext::shared_ptr<Exercise>& exercise);
+};
+
+%shared_ptr(AnalyticTwoAssetBarrierEngine)
+class AnalyticTwoAssetBarrierEngine : public PricingEngine {
+  public:
+    AnalyticTwoAssetBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+                                  ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+                                  Handle<Quote> rho);
+};
+
 
 #endif

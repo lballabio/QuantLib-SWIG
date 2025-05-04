@@ -122,7 +122,6 @@ class SwaptionHelper : public BlackCalibrationHelper {
                       RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
     ext::shared_ptr<FixedVsFloatingSwap> underlying() const;
-    ext::shared_ptr<VanillaSwap> underlyingSwap() const;
     ext::shared_ptr<Swaption> swaption() const;
 
     %extend {
@@ -137,13 +136,13 @@ class SwaptionHelper : public BlackCalibrationHelper {
             return self->swaption()->exercise()->date(0);
         }
         Real swaptionStrike() {
-            return self->swaption()->underlyingSwap()->fixedRate();
+            return self->swaption()->underlying()->fixedRate();
         }
         Real swaptionNominal() {
-            return self->swaption()->underlyingSwap()->nominal();
+            return self->swaption()->underlying()->nominal();
         }
         Date swaptionMaturityDate() {
-            return self->swaption()->underlyingSwap()->fixedSchedule().dates().back();
+            return self->swaption()->underlying()->fixedSchedule().dates().back();
         }
     }
 };

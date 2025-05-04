@@ -145,6 +145,7 @@ class Name : public YieldTermStructure {
     }
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
     #if !defined(SWIGR)
     std::vector<std::pair<Date,Real> > nodes() const;
     #endif

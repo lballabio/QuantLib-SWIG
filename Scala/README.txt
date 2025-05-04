@@ -1,14 +1,3 @@
-QuantLib-Scala interface uses (or more precise is) the QuantLib-Java module.
- 
-Instructions for building the QuantLib-Java module under Eclipse are
-available at
-<http://users.telenet.be/johan.witters/website/skwash.com/get/get3.html>.
+QuantLib-Scala interface uses (or more precisely, is) the QuantLib-Java module.
 
-On Linux systems, the module can be built by supplying the location of
-the JDK to configure, as in (for example)
-
-./configure --with-jdk-include=/usr/lib/jvm/java-1.5.0-sun-1.5.0.08/include \
-  --with-jdk-system-include=usr/lib/jvm/java-1.5.0-sun-1.5.0.08/include/linux
-
-and by running 'make' afterwards.
-
+See the README.txt file in the Java folder for information on building it.

@@ -35,10 +35,13 @@ for owner in copyrights:
 copyrights = [(years, owner) for owner, years in copyrights.items()]
 copyrights.sort()
 
-lines = ["    Copyright (C) %s %s" % (", ".join([str(y) for y in years]), owner) for years, owner in copyrights]
+lines = [
+    "Copyright (C) %s %s" % (", ".join([str(y) for y in years]), owner)
+    for years, owner in copyrights
+]
 
 print(
-    """QuantLib-SWIG is
+    """
 %s
 
 Redistribution and use in source and binary forms, with or without

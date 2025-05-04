@@ -132,6 +132,9 @@ class VanillaSwap : public FixedVsFloatingSwap {
 %rename (_MakeVanillaSwap) MakeVanillaSwap;
 #endif
 class MakeVanillaSwap {
+        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+        %feature("kwargs") MakeVanillaSwap;
+        #endif
       public:
         MakeVanillaSwap& receiveFixed(bool flag = true);
         MakeVanillaSwap& withType(Swap::Type type);
@@ -176,8 +179,8 @@ class MakeVanillaSwap {
 
         MakeVanillaSwap(const Period& swapTenor,
                         const ext::shared_ptr<IborIndex>& index,
-                        Rate fixedRate,
-                        const Period& forwardStart);
+                        doubleOrNull fixedRate = Null<Rate>(),
+                        const Period& forwardStart = 0*Days);
         
         %extend {
             ext::shared_ptr<VanillaSwap> makeVanillaSwap() {
@@ -222,7 +225,7 @@ _MAKEVANILLA_METHODS = {
     "atParCoupons": "withAtParCoupons",
 }
 
-def MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart, **kwargs):
+def MakeVanillaSwap(swapTenor, iborIndex, fixedRate=None, forwardStart=Period(0, Days), **kwargs):
     mv = _MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart)
     _SetSwapAttrs("MakeVanillaSwap", _MAKEVANILLA_METHODS, mv, kwargs)
     return mv.makeVanillaSwap()
@@ -418,10 +421,13 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
 %rename (_MakeOIS) MakeOIS;
 #endif
 class MakeOIS {
+        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+        %feature("kwargs") MakeOIS;
+        #endif
       public:
         MakeOIS(const Period& swapTenor,
                 const ext::shared_ptr<OvernightIndex>& overnightIndex,
-                Rate fixedRate = Null<Rate>(),
+                doubleOrNull fixedRate = Null<Rate>(),
                 const Period& fwdStart = 0*Days);
 
         %extend {
@@ -511,7 +517,7 @@ _MAKEOIS_METHODS = {
     "pricingEngine": "withPricingEngine",
 }
 
-def MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart=Period(0, Days), **kwargs):
+def MakeOIS(swapTenor, overnightIndex, fixedRate=None, fwdStart=Period(0, Days), **kwargs):
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
     _SetSwapAttrs("MakeOIS", _MAKEOIS_METHODS, mv, kwargs)
     return mv.makeOIS()

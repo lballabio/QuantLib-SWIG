@@ -77,7 +77,7 @@ class InflationTermStructure : public TermStructure {
     virtual Rate baseRate() const;
     virtual Date baseDate() const;
     bool hasExplicitBaseDate() const;
-    void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality = {});
+    void setSeasonality(const ext::shared_ptr<Seasonality>& seasonality);
     ext::shared_ptr<Seasonality> seasonality() const;
     bool hasSeasonality() const;
 };
@@ -183,10 +183,21 @@ class YoYInflationIndex : public InflationIndex {
     // Constructor for year-on-year indices defined as a ratio.
     YoYInflationIndex(
             const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
+            Handle<YoYInflationTermStructure> ts = {});
+    YoYInflationIndex(
+            const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
             bool interpolated,
             Handle<YoYInflationTermStructure> ts = {});
 
     // Constructor for quoted year-on-year indices.
+    YoYInflationIndex(
+            const std::string& familyName,
+            const Region& region,
+            bool revised,
+            Frequency frequency,
+            const Period& availabilityLag,
+            const Currency& currency,
+            Handle<YoYInflationTermStructure> ts = {});
     YoYInflationIndex(
             const std::string& familyName,
             const Region& region,
@@ -217,41 +228,13 @@ class Name : public ZeroInflationIndex {
 };
 %enddef
 
-%define export_yii_instance(Name)
-%{
-using QuantLib::Name;
-%}
-%shared_ptr(Name)
-class Name : public YoYInflationIndex {
-  public:
-    Name(bool interpolated,
-         const Handle<YoYInflationTermStructure>& h = {});
-};
-%enddef
-
 export_zii_instance(EUHICP);
 export_zii_instance(EUHICPXT);
 export_zii_instance(FRHICP);
 export_zii_instance(UKRPI);
+export_zii_instance(UKHICP);
 export_zii_instance(USCPI);
 export_zii_instance(ZACPI);
-
-%{
-using QuantLib::UKHICP;
-%}
-%shared_ptr(UKHICP)
-class UKHICP : public ZeroInflationIndex {
-  public:
-    UKHICP(const Handle<ZeroInflationTermStructure>& h = {});
-};
-
-
-export_yii_instance(YYEUHICP);
-export_yii_instance(YYEUHICPXT);
-export_yii_instance(YYFRHICP);
-export_yii_instance(YYUKRPI);
-export_yii_instance(YYUSCPI);
-export_yii_instance(YYZACPI);
 
 %{
 using QuantLib::AUCPI;
@@ -263,6 +246,27 @@ class AUCPI : public ZeroInflationIndex {
           bool revised,
           const Handle<ZeroInflationTermStructure>& h = {});
 };
+
+
+%define export_yii_instance(Name)
+%{
+using QuantLib::Name;
+%}
+%shared_ptr(Name)
+class Name : public YoYInflationIndex {
+  public:
+    Name(const Handle<YoYInflationTermStructure>& h = {});
+    Name(bool interpolated,
+         const Handle<YoYInflationTermStructure>& h = {});
+};
+%enddef
+
+export_yii_instance(YYEUHICP);
+export_yii_instance(YYEUHICPXT);
+export_yii_instance(YYFRHICP);
+export_yii_instance(YYUKRPI);
+export_yii_instance(YYUSCPI);
+export_yii_instance(YYZACPI);
 
 
 // utilities
@@ -577,7 +581,7 @@ using QuantLib::PiecewiseYoYInflationCurve;
 template <class Interpolator>
 class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    //%feature("kwargs") PiecewiseZeroInflationCurve;
+    %feature("kwargs") PiecewiseZeroInflationCurve;
     #endif
   public:
     PiecewiseZeroInflationCurve(
@@ -590,16 +594,6 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
 
-    PiecewiseZeroInflationCurve(
-              const Date& referenceDate,
-              const Calendar& calendar,
-              const DayCounter& dayCounter,
-              const Period& lag,
-              Frequency frequency,
-              Rate baseRate,
-              const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     #if !defined(SWIGR)
@@ -641,17 +635,6 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
 
-    PiecewiseYoYInflationCurve(
-              const Date& referenceDate,
-              const Calendar& calendar,
-              const DayCounter& dayCounter,
-              const Period& lag,
-              Frequency frequency,
-              bool indexIsInterpolated,
-              Rate baseRate,
-              const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     #if !defined(SWIGR)
@@ -1040,7 +1023,7 @@ using QuantLib::InterpolatedYoYInflationCurve;
 
 template <class Interpolator>
 class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
-    //%feature("kwargs") InterpolatedZeroInflationCurve;
+    %feature("kwargs") InterpolatedZeroInflationCurve;
   public:
     InterpolatedZeroInflationCurve(const Date& referenceDate,
                                    const std::vector<Date>& dates,
@@ -1050,14 +1033,6 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
                                    const ext::shared_ptr<Seasonality>& seasonality = {},
                                    const Interpolator &interpolator = Interpolator());
 
-    InterpolatedZeroInflationCurve(const Date& referenceDate,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   const std::vector<Date>& dates,
-                                   const std::vector<Rate>& rates,
-                                   const Interpolator &interpolator = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;
@@ -1088,16 +1063,6 @@ class InterpolatedYoYInflationCurve : public YoYInflationTermStructure {
                                   const ext::shared_ptr<Seasonality>& seasonality = {},
                                   const Interpolator& interpolator = Interpolator());
 
-    InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                   const Calendar& calendar,
-                                   const DayCounter& dayCounter,
-                                   const Period& lag,
-                                   Frequency frequency,
-                                   bool indexIsInterpolated,
-                                   const std::vector<Date>& dates,
-                                   const std::vector<Rate>& rates,
-                                   const Interpolator &interpolator
-                                                        = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;

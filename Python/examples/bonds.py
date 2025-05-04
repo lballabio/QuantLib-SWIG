@@ -311,9 +311,12 @@ floatingRateBond.cleanPrice(
 # Clean price to yield:
 
 floatingRateBond.bondYield(
-    floatingRateBond.cleanPrice(),
+    ql.BondPrice(
+        floatingRateBond.cleanPrice(),
+        ql.BondPrice.Clean,
+    ),
     ql.Actual360(),
     ql.Compounded,
     ql.Annual,
-    settlementDate
+    settlementDate,
 )
