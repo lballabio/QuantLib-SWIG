@@ -199,9 +199,10 @@ a comprehensive software framework for quantitative finance.
 
 py_limited_api = platform.python_implementation() == "CPython" and not sysconfig.get_config_var("Py_GIL_DISABLED")
 
+
 with open("./setup.cfg", "w") as f:
-	if py_limited_api:
-		f.write('[bdist_wheel]' + os.linesep + 'py_limited_api=cp38' + os.linesep)
+    if py_limited_api:	
+        f.write('[bdist_wheel]' + os.linesep + 'py_limited_api=cp38' + os.linesep)
 
 
 setup(

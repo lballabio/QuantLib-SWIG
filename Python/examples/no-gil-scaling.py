@@ -27,7 +27,7 @@ if __name__ == "__main__":
         option.setPricingEngine(engine)
         return option.NPV()
 
-    print(bool(sysconfig.get_config_var("Py_GIL_DISABLED")))
+    print("GIL is disabled: ", bool(sysconfig.get_config_var("Py_GIL_DISABLED")))
 
     for w in [1, 2, 4, 8, 16, 32, 64]:
         start = time.time()
@@ -38,4 +38,4 @@ if __name__ == "__main__":
             for val in retVals:
                 val.result()
 
-        print(w, 400/(time.time()-start))
+        print(f"{w:2} threads, {400/(time.time()-start):5.1f} NPVs per sec")
