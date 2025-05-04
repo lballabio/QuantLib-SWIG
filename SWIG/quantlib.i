@@ -51,10 +51,6 @@ const int __hexversion__;
 %immutable;
 const char* __version__;
 %mutable;
-
-%init %{
-%}
-
 #endif
 
 #if defined(JAVA_AUTOLOAD)
