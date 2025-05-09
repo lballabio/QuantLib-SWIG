@@ -109,6 +109,20 @@ class FixedVsFloatingSwap : public Swap {
 %shared_ptr(VanillaSwap)
 class VanillaSwap : public FixedVsFloatingSwap {
   public:
+    #if defined(SWIGPYTHON)
+    %feature("kwargs") VanillaSwap;
+    VanillaSwap(Type type,
+                Real nominal,
+                const Schedule& fixedSchedule,
+                Rate fixedRate,
+                const DayCounter& fixedDayCount,
+                const Schedule& floatSchedule,
+                const ext::shared_ptr<IborIndex>& index,
+                Spread spread,
+                const DayCounter& floatingDayCount,
+                ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
+                ext::optional<bool> withIndexedCoupons = ext::nullopt);
+    #else
     %extend {
         VanillaSwap(Type type, Real nominal,
                     const Schedule& fixedSchedule, Rate fixedRate,
@@ -126,6 +140,7 @@ class VanillaSwap : public FixedVsFloatingSwap {
                                    paymentConvention, withIndexedCoupons);
         }
     }
+    #endif
 };
 
 #if defined(SWIGPYTHON)
