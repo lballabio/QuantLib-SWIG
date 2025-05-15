@@ -20,8 +20,7 @@ import unittest
 import math
 import QuantLib as ql
 
-
-TOLERANCE = 1.e-10
+TOLERANCE = 1e-10 if ql.IborCoupon.usingAtParCoupons() else 1e-6
 SABR_ATM_TOLERANCE = 3.0e-4
 SABR_SPREAD_TOLERANCE = 12.0e-4
 
