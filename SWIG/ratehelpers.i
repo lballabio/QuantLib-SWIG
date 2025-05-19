@@ -382,7 +382,8 @@ class OISRateHelper : public RateHelper {
             Natural lockoutDays = 0,
             bool applyObservationShift = false,
             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {},
-            DateGeneration::Rule rule = DateGeneration::Backward);
+            DateGeneration::Rule rule = DateGeneration::Backward,
+            const Calendar& overnightCalendar = Calendar());
     %extend {
         static ext::shared_ptr<OISRateHelper> forDates(
                 const Date& startDate,
@@ -394,25 +395,26 @@ class OISRateHelper : public RateHelper {
                 Integer paymentLag = 0,
                 BusinessDayConvention paymentConvention = Following,
                 Frequency paymentFrequency = Annual,
-                Calendar paymentCalendar = Calendar(),
+                const Calendar& paymentCalendar = Calendar(),
                 Spread overnightSpread = 0.0,
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date(),
                 RateAveraging::Type averagingMethod = RateAveraging::Compound,
                 ext::optional<bool> endOfMonth = ext::nullopt,
                 ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-                Calendar fixedCalendar = Calendar(),
+                const Calendar& fixedCalendar = Calendar(),
                 Natural lookbackDays = Null<Natural>(),
                 Natural lockoutDays = 0,
                 bool applyObservationShift = false,
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {},
-                DateGeneration::Rule rule = DateGeneration::Backward) {
+                DateGeneration::Rule rule = DateGeneration::Backward,
+                const Calendar& overnightCalendar = Calendar()) {
             return ext::make_shared<OISRateHelper>(
                 startDate, endDate, rate, index, discountingCurve,
                 telescopicValueDates, paymentLag, paymentConvention, paymentFrequency,
                 paymentCalendar, overnightSpread, pillar, customPillarDate, averagingMethod,
                 endOfMonth, fixedPaymentFrequency, fixedCalendar, lookbackDays, lockoutDays,
-                applyObservationShift, pricer, rule);
+                applyObservationShift, pricer, rule, overnightCalendar);
         }
     }
     ext::shared_ptr<OvernightIndexedSwap> swap();
