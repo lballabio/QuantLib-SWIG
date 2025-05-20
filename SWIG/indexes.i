@@ -181,6 +181,7 @@ class Libor : public IborIndex {
           const DayCounter& dayCounter,
           const Handle<YieldTermStructure>& h =
                                      Handle<YieldTermStructure>());
+    Calendar jointCalendar() const;
 };
 
 %shared_ptr(DailyTenorLibor)
@@ -194,6 +195,29 @@ class DailyTenorLibor : public IborIndex {
                     const DayCounter& dayCounter,
                     const Handle<YieldTermStructure>& h =
                                      Handle<YieldTermStructure>());
+};
+
+%{
+using QuantLib::CustomIborIndex;
+%}
+
+%shared_ptr(CustomIborIndex)
+
+class CustomIborIndex : public IborIndex {
+  public:
+    CustomIborIndex(const std::string& familyName,
+                    const Period& tenor,
+                    Natural settlementDays,
+                    const Currency& currency,
+                    const Calendar& fixingCalendar,
+                    const Calendar& valueCalendar,
+                    const Calendar& maturityCalendar,
+                    BusinessDayConvention convention,
+                    bool endOfMonth,
+                    const DayCounter& dayCounter,
+                    const Handle<YieldTermStructure>& h = {});
+    Calendar valueCalendar() const;
+    Calendar maturityCalendar() const;
 };
 
 
