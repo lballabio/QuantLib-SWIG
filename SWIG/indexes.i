@@ -513,6 +513,7 @@ export_overnight_instance(Estr);
 export_overnight_instance(FedFunds);
 export_overnight_instance(Kofr);
 export_overnight_instance(Nzocr);
+export_overnight_instance(Saron);
 export_overnight_instance(Sofr);
 export_overnight_instance(Sonia);
 export_overnight_instance(Swestr);
