@@ -310,6 +310,22 @@ Real sabrFlochKennedyVolatility(Rate strike,
                                 Real nu,
                                 Real rho);
 
+%rename(sabrGuess) _sabrGuess;
+%inline %{
+    std::vector<Real> _sabrGuess(Real k_m, Volatility vol_m,
+                                 Real k_0, Volatility vol_0,
+                                 Real k_p, Volatility vol_p,
+                                 Rate forward,
+                                 Time expiryTime,
+                                 Real beta,
+                                 Real shift,
+                                 VolatilityType volatilityType) {
+        auto [alpha, beta_1, nu, rho] =
+            QuantLib::sabrGuess(k_m, vol_m, k_0, vol_0, k_p, vol_p,
+                                forward, expiryTime, beta, shift, volatilityType);
+        return { alpha, beta_1, nu, rho };
+    }
+%}
 
 
 %{
