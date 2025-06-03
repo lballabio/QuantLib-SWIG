@@ -535,6 +535,9 @@ namespace std {
 
 %shared_ptr(ZeroCouponInflationSwapHelper)
 class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermStructure> {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ZeroCouponInflationSwapHelper;
+    #endif
   public:
     ZeroCouponInflationSwapHelper(
             const Handle<Quote>& quote,
@@ -545,7 +548,7 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
             const DayCounter& dayCounter,
             const ext::shared_ptr<ZeroInflationIndex>& index,
             CPI::InterpolationType observationInterpolation,
-            const Handle<YieldTermStructure>& nominalTS);
+            const Handle<YieldTermStructure>& nominalTS = {});
 };
 
 %shared_ptr(YearOnYearInflationSwapHelper)
