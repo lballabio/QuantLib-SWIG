@@ -196,6 +196,26 @@ namespace std {
 %shared_ptr(SpreadCdsHelper)
 class SpreadCdsHelper : public DefaultProbabilityHelper {
   public:
+    #if defined(SWIGPYTHON)
+    %feature("kwargs") SpreadCdsHelper;
+    SpreadCdsHelper(
+            const std::variant<Real, Handle<Quote>>& spread,
+            const Period& tenor,
+            Integer settlementDays,
+            const Calendar& calendar,
+            Frequency frequency,
+            BusinessDayConvention convention,
+            DateGeneration::Rule rule,
+            const DayCounter& dayCounter,
+            Real recoveryRate,
+            const Handle<YieldTermStructure>& discountCurve,
+            bool settlesAccrual = true,
+            bool paysAtDefaultTime = true,
+            const Date& startDate = Date(),
+            const DayCounter& lastPeriodDayCounter = DayCounter(),
+            bool rebatesAccrual = true,
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+    #else
     SpreadCdsHelper(
             const Handle<Quote>& spread,
             const Period& tenor,
@@ -230,12 +250,35 @@ class SpreadCdsHelper : public DefaultProbabilityHelper {
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
             CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+    #endif
 };
 
 
 %shared_ptr(UpfrontCdsHelper)
 class UpfrontCdsHelper : public DefaultProbabilityHelper {
   public:
+    #if defined(SWIGPYTHON)
+    %feature("kwargs") UpfrontCdsHelper;
+    UpfrontCdsHelper(
+            const std::variant<Real, Handle<Quote>>& upfront,
+            Rate spread,
+            const Period& tenor,
+            Integer settlementDays,
+            const Calendar& calendar,
+            Frequency frequency,
+            BusinessDayConvention convention,
+            DateGeneration::Rule rule,
+            const DayCounter& dayCounter,
+            Real recoveryRate,
+            const Handle<YieldTermStructure>& discountCurve,
+            Natural upfrontSettlementDays=0,
+            bool settlesAccrual = true,
+            bool paysAtDefaultTime = true,
+            const Date& startDate = Date(),
+            const DayCounter& lastPeriodDayCounter = DayCounter(),
+            bool rebatesAccrual = true,
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+    #else
     UpfrontCdsHelper(
             const Handle<Quote>& upfront,
             Rate spread,
@@ -274,6 +317,7 @@ class UpfrontCdsHelper : public DefaultProbabilityHelper {
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
             CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+    #endif
 };
 
 
