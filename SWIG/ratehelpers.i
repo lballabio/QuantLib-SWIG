@@ -512,6 +512,9 @@ class DatedOISRateHelper : public RateHelper {
 
 %shared_ptr(FxSwapRateHelper)
 class FxSwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") forDates;
+    #endif
   public:
     FxSwapRateHelper(
             const Handle<Quote>& fwdPoint,
@@ -524,7 +527,19 @@ class FxSwapRateHelper : public RateHelper {
             bool isFxBaseCurrencyCollateralCurrency,
             const Handle<YieldTermStructure>& collateralCurve,
             const Calendar& tradingCalendar = Calendar());
-
+    %extend {
+        static ext::shared_ptr<FxSwapRateHelper> forDates(
+                const Handle<Quote>& fwdPoint,
+                const Handle<Quote>& spotFx,
+                const Date& startDate,
+                const Date& endDate,
+                bool isFxBaseCurrencyCollateralCurrency,
+                const Handle<YieldTermStructure>& collateralCurve) {
+            return ext::make_shared<FxSwapRateHelper>(
+                fwdPoint, spotFx, startDate, endDate, isFxBaseCurrencyCollateralCurrency,
+                collateralCurve);
+        }
+    }
     Real spot() const;
     Period tenor() const;
     Natural fixingDays() const;
