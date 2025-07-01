@@ -180,15 +180,23 @@ class OptionletStripper1 : public StrippedOptionletBase {
     %feature("kwargs") OptionletStripper1;
     #endif
   public:
-    OptionletStripper1(const ext::shared_ptr<CapFloorTermVolSurface>& parVolSurface,
-                       const ext::shared_ptr<IborIndex> &index,
-                       Rate switchStrikes = Null<Rate>(),
-                       Real accuracy = 1.0e-6, Natural maxIter = 100,
-                       const Handle<YieldTermStructure> &discount =
-                              Handle<YieldTermStructure>(),
-                       VolatilityType type = ShiftedLognormal,
-                       Real displacement = 0.0,
-                       bool dontThrow = false);
+    %extend {
+        OptionletStripper1(const ext::shared_ptr<CapFloorTermVolSurface>& parVolSurface,
+                           const ext::shared_ptr<IborIndex> &index,
+                           Rate switchStrikes = Null<Rate>(),
+                           Real accuracy = 1.0e-6, Natural maxIter = 100,
+                           const Handle<YieldTermStructure> &discount = {},
+                           VolatilityType type = ShiftedLognormal,
+                           Real displacement = 0.0,
+                           bool dontThrow = false,
+                           Period optionletFrequency = Period()) {
+            ext::optional<Period> frequency = ext::nullopt;
+            if (optionletFrequency != Period())
+                frequency = optionletFrequency;
+            return new OptionletStripper1(parVolSurface, index, switchStrikes, accuracy, maxIter,
+                                          discount, type, displacement, dontThrow, frequency);
+        }
+    }
     const Matrix& capFloorPrices() const;
     const Matrix& capFloorVolatilities() const;
     const Matrix& optionletPrices() const;
