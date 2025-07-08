@@ -1,38 +1,50 @@
-Main changes for QuantLib-SWIG 1.38
+Main changes for QuantLib-SWIG 1.39
 ===================================
 
 More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/31?closed=1>.
+<https://github.com/lballabio/QuantLib-SWIG/milestone/32?closed=1>.
 
-- **Removed** the deprecated `Currency` constructor no longer
-  available in the underlying C++ library;
+- **Removed** features deprecated in version 1.34 and no longer available
+  in the underlying C++ library:
+  - the overloads of `Bond::yield`, `BondFunctions::atmRate`,
+    `BondFunctions::yield` and `BondFunctions::zSpread` taking a price
+    as a `Real` instead of a `Bond::Price` instance;
+  - the `Swaption::underlyingSwap` and
+    `SwaptionHelper::underlyingSwap` methods;
+  - the constructors of `InterpolatedZeroInflationCurve`,
+    `InterpolatedYoYInflationCurve`, `PiecewiseZeroInflationCurve` and
+    `PiecewiseYoYInflationCurve` taking an observation lag;
+  - the overload of `InflationTermStructure::setSeasonality` taking no arguments;
+  - the `fixedRateBond` method of the `FixedRateBondHelper` class.
 
-- Exported forward curve with a number of additional interpolations;
-  thanks to Sotirios Papathanasopoulos (@sophistis42) and to
-  @paolodelia99.
+- Added preliminary support for the new free-threading Python
+  interpreter; thanks to Klaus Spanderen (@Klausspanderen).  No wheels
+  are provided for it at this time.
 
-- Exported `FuturesConvAdjustmentQuote`; thanks to Eugene Toder
+- Java compilation flags can now be passed by setting the
+  `JAVAC_FLAGS` environment variable; thanks to @UnitedMarsupials.
+
+- Exported `convexityAdjustment` method for `FuturesRateHelper` and
+  `OvernightIndexFutureRateHelper` classes; thanks to Eugene Toder
   (@eltoder).
 
-- Exported missing default parameters for `MakeVanillaSwap` and
-  `MakeOIS`; thanks to Eugene Toder (@eltoder).
+- Passing a nominal curve to the `ZeroCouponInflationSwapHelper`
+  constructor is now optional (@lballabio).
 
-- Exported new constructors for `DepositRateHelper` and
-  `FraRateHelper`; thanks to Eugene Toder (@eltoder).
+- The `OISRateHelper` constructor can now take a calendar for the
+  overnight leg; thanks to Eugene Toder (@eltoder).
 
-- Exported new constructor arguments for cross-currency basis-swap
-  helpers; thanks to @kp9991-git.
+- Exported the `CustomIborIndex` class; thanks to Eugene Toder
+  (@eltoder).
 
-- Exported methods to return the underlying process from a few models
-  (@lballabio).
+- Exported the `sabrGuess` function (@lballabio).
 
-- Exported new constructors for YoY inflation indexes (@lballabio).
+- Exported the `SARON` index (@lballabio).
 
-- Exported a few more exotic options and engines (@lballabio):
-  - `TwoAssetBarrierOption` with `AnalyticTwoAssetBarrierEngine`;
-  - `HolderExtensibleOption` with `AnalyticHolderExtensibleOptionEngine`;
-  - `WriterExtensibleOption` with `AnalyticWriterExtensibleOptionEngine`;
-  - `TwoAssetCorrelationOption` with `AnalyticTwoAssetCorrelationEngine`;
-  - `AnalyticPDFHestonEngine`.
+- Exported the static `FxSwapRateHelper.forDates` method; thanks to
+  Eugene Toder (@eltoder).
 
-- Exported piecewise forward-spreaded term structure (@lballabio).
+- The `OptionletStripper1` constructor can be passed a frequency so
+  that it can be used with overnight indexes (@lballabio).
+
+- Exported the SHIR calendar (@lballabio).
