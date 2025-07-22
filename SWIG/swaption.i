@@ -216,9 +216,6 @@ class BachelierSwaptionEngine : public PricingEngine {
 %rename (_MakeSwaption) MakeSwaption;
 #endif
 class MakeSwaption {
-        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-        %feature("kwargs") MakeSwaption;
-        #endif
       public:
         MakeSwaption& withNominal(Real n);
         MakeSwaption& withSettlementType(Settlement::Type delivery);
