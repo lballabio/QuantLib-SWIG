@@ -225,7 +225,7 @@ class MakeSwaption {
         MakeSwaption& withSettlementMethod(Settlement::Method settlementMethod);
         MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
         MakeSwaption& withExerciseDate(const Date&);
-        MakeSwaption& withUndelyingType(Swap::Type type);
+        MakeSwaption& withUnderlyingType(Swap::Type type);
 
         MakeSwaption& withIndexedCoupons(bool flag = true);
         MakeSwaption& withAtParCoupons(bool flag = true);
