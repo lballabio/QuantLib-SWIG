@@ -24,6 +24,7 @@
 %include marketelements.i
 %include termstructures.i
 %include cashflows.i
+%include swap.i
 %include volatilities.i
 
 %{
@@ -31,6 +32,7 @@ using QuantLib::CapFloor;
 using QuantLib::Cap;
 using QuantLib::Floor;
 using QuantLib::Collar;
+using QuantLib::MakeCapFloor;
 %}
 
 %shared_ptr(CapFloor)
@@ -132,5 +134,78 @@ class BachelierCapFloorEngine : public PricingEngine {
     BachelierCapFloorEngine(const Handle<YieldTermStructure>& termStructure,
                             const Handle<OptionletVolatilityStructure>& vol);
 };
+
+#if defined(SWIGPYTHON)
+%rename (_MakeCapFloor) MakeCapFloor;
+#endif
+class MakeCapFloor {
+        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+        %feature("kwargs") MakeCapFloor;
+        #endif
+      public:
+        MakeCapFloor& withNominal(Real n);
+
+        MakeCapFloor& withEffectiveDate(const Date&, bool firstCapletExcluded);
+        MakeCapFloor& withTenor(const Period&);
+        MakeCapFloor& withCalendar(const Calendar&);
+        MakeCapFloor& withConvention(BusinessDayConvention bdc);
+        MakeCapFloor& withTerminationDateConvention(BusinessDayConvention bdc);
+        MakeCapFloor& withRule(DateGeneration::Rule r);
+        MakeCapFloor& withEndOfMonth(bool flag = true);
+        MakeCapFloor& withFirstDate(const bool Date&);
+        MakeCapFloor& withNextToLastDate(const bool Date&);
+        MakeCapFloor& withDayCount(const DayCounter&);
+
+        MakeCapFloor& asOptionlet(bool b = true);
+
+        MakeCapFloor& withPricingEngine(
+                              const ext::shared_ptr<PricingEngine>& engine);
+
+        MakeCapFloor(CapFloor::Type capFloorType,
+                     const Period& capFloorTenor,
+                     const ext::shared_ptr<IborIndex>& iborIndex,
+                     Rate strike = Null<Rate>(),
+                     const Period& forwardStart = 0*Days);
+        
+        %extend {
+            ext::shared_ptr<CapFloor> makeCapFloor() {
+                return (ext::shared_ptr<CapFloor>)(* $self);
+            }
+        }
+};
+
+#if defined(SWIGPYTHON)
+%pythoncode {
+_MAKECAPFLOOR_METHODS = {
+    "nominal": "withNominal",
+    "effectiveDate": "withEffectiveDate",
+    "tenor": "withTenor",
+    "calendar": "withCalendar",
+    "convention": "withConvention",
+    "terminationDateConvention": "withTerminationDateConvention",
+    "rule": "withRule",
+    "endOfMonth": "withEndOfMonth",
+    "firstDate": "withFirstDate",
+    "nextToLastDate": "withNextToLastDate",
+    "dayCount": "withDayCount",
+    "asOptionLet": "asOptionlet",
+    "pricingEngine": "withPricingEngine",
+}
+
+def MakeCapFloor(capFloorType, capFloorTenor, iborIndex, strike=None, forwardStart=Period(0, Days), **kwargs):
+    mv = _MakeCapFloor(capFloorType, capFloorTenor, iborIndex, strike, forwardStart)
+    _SetSwapAttrs("MakeCapFloor", _MAKECAPFLOOR_METHODS, mv, kwargs)
+    return mv.makeCapFloor()
+
+def _SetSwapAttrs(func_name, method_map, mv, attrs):
+    for name, value in attrs.items():
+        try:
+            method = method_map[name]
+        except KeyError:
+            raise TypeError(f"{func_name}() got an unexpected keyword argument {name!r}") from None
+        if value is not None:
+            getattr(mv, method)(value)
+}
+#endif
 
 #endif
