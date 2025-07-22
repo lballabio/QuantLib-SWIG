@@ -262,9 +262,9 @@ _MAKESWAPTION_METHODS = {
 }
 
 def MakeSwaption(swapIndex, fixingDate, strike=None, **kwargs):
-    mv = _MakeVanillaSwap(swapIndex, fixingDate, strike)
+    mv = _MakeSwaption(swapIndex, fixingDate, strike)
     _SetSwapAttrs("MakeSwaption", _MAKESWAPTION_METHODS, mv, kwargs)
-    return mv.makeVanillaSwap()
+    return mv.makeSwaption()
 
 def _SetSwapAttrs(func_name, method_map, mv, attrs):
     for name, value in attrs.items():
