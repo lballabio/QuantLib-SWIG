@@ -211,5 +211,71 @@ class BachelierSwaptionEngine : public PricingEngine {
                             CashAnnuityModel model = DiscountCurve);
 };
 
+#if defined(SWIGPYTHON)
+%rename (_MakeSwaption) MakeSwaption;
+#endif
+class MakeSwaption {
+        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+        %feature("kwargs") MakeSwaption;
+        #endif
+      public:
+        MakeSwaption& withNominal(Real n);
+        MakeSwaption& withSettlementType(Settlement::Type delivery);
+        MakeSwaption& withSettlementMethod(Settlement::Method settlementMethod);
+        MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
+        MakeSwaption& withExerciseDate(const Date&);
+        MakeSwaption& withUndelyingType(Swap::Type type);
+
+        MakeSwaption& withIndexedCoupons(bool flag = true);
+        MakeSwaption& withAtParCoupons(bool flag = true);
+
+        MakeSwaption& withPricingEngine(
+                              const ext::shared_ptr<PricingEngine>& engine);
+
+        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+                     const Period& optionTenor,
+                     Rate strike = Null<Rate>());
+
+        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+                     const Date& fixingDate,
+                     Rate strike = Null<Rate>());
+        
+        %extend {
+            ext::shared_ptr<Swaption> makeSwaption() {
+                return (ext::shared_ptr<Swaption>)(* $self);
+            }
+        }
+};
+
+#if defined(SWIGPYTHON)
+%pythoncode {
+_MAKESWAPTION_METHODS = {
+    "nominal": "withNominal",
+    "settlementType": "withSettlementType",
+    "settlementMethod": "withSettlementMethod",
+    "optionConvention": "withOptionConvention",
+    "exerciseDate": "withExerciseDate",
+    "undelyingType": "withUndelyingType",
+    "pricingEngine": "withPricingEngine",
+    "withIndexedCoupons": "withIndexedCoupons",
+    "atParCoupons": "withAtParCoupons",
+}
+
+def MakeSwaption(swapIndex, fixingDate, strike=None, **kwargs):
+    mv = _MakeVanillaSwap(swapIndex, fixingDate, strike)
+    _SetSwapAttrs("MakeSwaption", _MAKESWAPTION_METHODS, mv, kwargs)
+    return mv.makeVanillaSwap()
+
+def _SetSwapAttrs(func_name, method_map, mv, attrs):
+    for name, value in attrs.items():
+        try:
+            method = method_map[name]
+        except KeyError:
+            raise TypeError(f"{func_name}() got an unexpected keyword argument {name!r}") from None
+        if value is not None:
+            getattr(mv, method)(value)
+}
+#endif
+
 #endif
 
