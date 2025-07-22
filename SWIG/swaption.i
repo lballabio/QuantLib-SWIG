@@ -36,6 +36,7 @@ using QuantLib::Swaption;
 using QuantLib::NonstandardSwaption;
 using QuantLib::Settlement;
 using QuantLib::FloatFloatSwaption;
+using QuantLib::MakeSwaption;
 %}
 
 struct Settlement {
