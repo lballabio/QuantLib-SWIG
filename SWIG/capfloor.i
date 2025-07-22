@@ -152,8 +152,8 @@ class MakeCapFloor {
         MakeCapFloor& withTerminationDateConvention(BusinessDayConvention bdc);
         MakeCapFloor& withRule(DateGeneration::Rule r);
         MakeCapFloor& withEndOfMonth(bool flag = true);
-        MakeCapFloor& withFirstDate(const bool Date&);
-        MakeCapFloor& withNextToLastDate(const bool Date&);
+        MakeCapFloor& withFirstDate(const Date&);
+        MakeCapFloor& withNextToLastDate(const Date&);
         MakeCapFloor& withDayCount(const DayCounter&);
 
         MakeCapFloor& asOptionlet(bool b = true);
