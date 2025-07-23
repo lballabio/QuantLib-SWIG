@@ -26,21 +26,10 @@
 %include optimizers.i
 %include null.i
 
-// bootstrap traits
-
 %{
 using QuantLib::Discount;
 using QuantLib::ZeroYield;
 using QuantLib::ForwardRate;
-%}
-
-struct Discount {};
-struct ZeroYield {};
-struct ForwardRate {};
-
-// curve
-
-%{
 using QuantLib::PiecewiseYieldCurve;
 %}
 
