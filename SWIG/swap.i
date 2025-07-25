@@ -242,10 +242,10 @@ _MAKEVANILLA_METHODS = {
 
 def MakeVanillaSwap(swapTenor, iborIndex, fixedRate=None, forwardStart=Period(0, Days), **kwargs):
     mv = _MakeVanillaSwap(swapTenor, iborIndex, fixedRate, forwardStart)
-    _SetSwapAttrs("MakeVanillaSwap", _MAKEVANILLA_METHODS, mv, kwargs)
+    _apply_kwargs("MakeVanillaSwap", _MAKEVANILLA_METHODS, mv, kwargs)
     return mv.makeVanillaSwap()
 
-def _SetSwapAttrs(func_name, method_map, mv, attrs):
+def _apply_kwargs(func_name, method_map, mv, attrs):
     for name, value in attrs.items():
         try:
             method = method_map[name]
@@ -534,7 +534,7 @@ _MAKEOIS_METHODS = {
 
 def MakeOIS(swapTenor, overnightIndex, fixedRate=None, fwdStart=Period(0, Days), **kwargs):
     mv = _MakeOIS(swapTenor, overnightIndex, fixedRate, fwdStart)
-    _SetSwapAttrs("MakeOIS", _MAKEOIS_METHODS, mv, kwargs)
+    _apply_kwargs("MakeOIS", _MAKEOIS_METHODS, mv, kwargs)
     return mv.makeOIS()
 }
 #endif

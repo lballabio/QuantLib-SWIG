@@ -36,6 +36,7 @@ using QuantLib::Swaption;
 using QuantLib::NonstandardSwaption;
 using QuantLib::Settlement;
 using QuantLib::FloatFloatSwaption;
+using QuantLib::MakeSwaption;
 %}
 
 struct Settlement {
@@ -210,6 +211,60 @@ class BachelierSwaptionEngine : public PricingEngine {
                             const Handle<SwaptionVolatilityStructure>& v,
                             CashAnnuityModel model = DiscountCurve);
 };
+
+#if defined(SWIGPYTHON)
+%rename (_MakeSwaption) MakeSwaption;
+#endif
+class MakeSwaption {
+    public:
+    MakeSwaption& withNominal(Real n);
+    MakeSwaption& withSettlementType(Settlement::Type delivery);
+    MakeSwaption& withSettlementMethod(Settlement::Method settlementMethod);
+    MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
+    MakeSwaption& withExerciseDate(const Date&);
+    MakeSwaption& withUnderlyingType(Swap::Type type);
+
+    MakeSwaption& withIndexedCoupons(bool flag = true);
+    MakeSwaption& withAtParCoupons(bool flag = true);
+
+    MakeSwaption& withPricingEngine(
+                            const ext::shared_ptr<PricingEngine>& engine);
+
+    MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+                const Period& optionTenor,
+                doubleOrNull strike = Null<Rate>());
+
+    MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+                const Date& fixingDate,
+                doubleOrNull strike = Null<Rate>());
+        
+    %extend {
+        ext::shared_ptr<Swaption> makeSwaption() {
+            return (ext::shared_ptr<Swaption>)(* $self);
+        }
+    }
+};
+
+#if defined(SWIGPYTHON)
+%pythoncode {
+_MAKESWAPTION_METHODS = {
+    "nominal": "withNominal",
+    "settlementType": "withSettlementType",
+    "settlementMethod": "withSettlementMethod",
+    "optionConvention": "withOptionConvention",
+    "exerciseDate": "withExerciseDate",
+    "underlyingType": "withUndelyingType",
+    "pricingEngine": "withPricingEngine",
+    "indexedCoupons": "withIndexedCoupons",
+    "atParCoupons": "withAtParCoupons",
+}
+
+def MakeSwaption(swapIndex, fixingDate, strike=None, **kwargs):
+    mv = _MakeSwaption(swapIndex, fixingDate, strike)
+    _apply_kwargs("MakeSwaption", _MAKESWAPTION_METHODS, mv, kwargs)
+    return mv.makeSwaption()
+}
+#endif
 
 #endif
 
