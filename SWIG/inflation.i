@@ -549,6 +549,8 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
             const ext::shared_ptr<ZeroInflationIndex>& index,
             CPI::InterpolationType observationInterpolation,
             const Handle<YieldTermStructure>& nominalTS = {});
+
+    ext::shared_ptr<ZeroCouponInflationSwap> swap() const;
 };
 
 %shared_ptr(YearOnYearInflationSwapHelper)
@@ -571,6 +573,8 @@ class YearOnYearInflationSwapHelper : public BootstrapHelper<YoYInflationTermStr
                                   const DayCounter& dayCounter,
                                   const ext::shared_ptr<YoYInflationIndex>& index,
                                   const Handle<YieldTermStructure>& nominalTS);
+
+    ext::shared_ptr<YearOnYearInflationSwap> swap() const;
 };
 
 
