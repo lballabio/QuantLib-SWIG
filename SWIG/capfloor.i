@@ -139,7 +139,7 @@ class BachelierCapFloorEngine : public PricingEngine {
 %rename (_MakeCapFloor) MakeCapFloor;
 #endif
 class MakeCapFloor {
-    if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") MakeCapFloor;
     #endif
     public:
