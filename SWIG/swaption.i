@@ -255,7 +255,7 @@ _MAKESWAPTION_METHODS = {
     "exerciseDate": "withExerciseDate",
     "underlyingType": "withUndelyingType",
     "pricingEngine": "withPricingEngine",
-    "withIndexedCoupons": "withIndexedCoupons",
+    "indexedCoupons": "withIndexedCoupons",
     "atParCoupons": "withAtParCoupons",
 }
 

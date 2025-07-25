@@ -188,7 +188,7 @@ _MAKECAPFLOOR_METHODS = {
     "firstDate": "withFirstDate",
     "nextToLastDate": "withNextToLastDate",
     "dayCount": "withDayCount",
-    "asOptionLet": "asOptionlet",
+    "asOptionlet": "asOptionlet",
     "pricingEngine": "withPricingEngine",
 }
 
