@@ -216,33 +216,33 @@ class BachelierSwaptionEngine : public PricingEngine {
 %rename (_MakeSwaption) MakeSwaption;
 #endif
 class MakeSwaption {
-      public:
-        MakeSwaption& withNominal(Real n);
-        MakeSwaption& withSettlementType(Settlement::Type delivery);
-        MakeSwaption& withSettlementMethod(Settlement::Method settlementMethod);
-        MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
-        MakeSwaption& withExerciseDate(const Date&);
-        MakeSwaption& withUnderlyingType(Swap::Type type);
+    public:
+    MakeSwaption& withNominal(Real n);
+    MakeSwaption& withSettlementType(Settlement::Type delivery);
+    MakeSwaption& withSettlementMethod(Settlement::Method settlementMethod);
+    MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
+    MakeSwaption& withExerciseDate(const Date&);
+    MakeSwaption& withUnderlyingType(Swap::Type type);
 
-        MakeSwaption& withIndexedCoupons(bool flag = true);
-        MakeSwaption& withAtParCoupons(bool flag = true);
+    MakeSwaption& withIndexedCoupons(bool flag = true);
+    MakeSwaption& withAtParCoupons(bool flag = true);
 
-        MakeSwaption& withPricingEngine(
-                              const ext::shared_ptr<PricingEngine>& engine);
+    MakeSwaption& withPricingEngine(
+                            const ext::shared_ptr<PricingEngine>& engine);
 
-        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
-                     const Period& optionTenor,
-                     Rate strike = Null<Rate>());
+    MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+                const Period& optionTenor,
+                doubleOrNull strike = Null<Rate>());
 
-        MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
-                     const Date& fixingDate,
-                     Rate strike = Null<Rate>());
+    MakeSwaption(ext::shared_ptr<SwapIndex> swapIndex,
+                const Date& fixingDate,
+                doubleOrNull strike = Null<Rate>());
         
-        %extend {
-            ext::shared_ptr<Swaption> makeSwaption() {
-                return (ext::shared_ptr<Swaption>)(* $self);
-            }
+    %extend {
+        ext::shared_ptr<Swaption> makeSwaption() {
+            return (ext::shared_ptr<Swaption>)(* $self);
         }
+    }
 };
 
 #if defined(SWIGPYTHON)
@@ -253,7 +253,7 @@ _MAKESWAPTION_METHODS = {
     "settlementMethod": "withSettlementMethod",
     "optionConvention": "withOptionConvention",
     "exerciseDate": "withExerciseDate",
-    "undelyingType": "withUndelyingType",
+    "underlyingType": "withUndelyingType",
     "pricingEngine": "withPricingEngine",
     "withIndexedCoupons": "withIndexedCoupons",
     "atParCoupons": "withAtParCoupons",
@@ -261,17 +261,8 @@ _MAKESWAPTION_METHODS = {
 
 def MakeSwaption(swapIndex, fixingDate, strike=None, **kwargs):
     mv = _MakeSwaption(swapIndex, fixingDate, strike)
-    _SetSwapAttrs("MakeSwaption", _MAKESWAPTION_METHODS, mv, kwargs)
+    _apply_kwargs("MakeSwaption", _MAKESWAPTION_METHODS, mv, kwargs)
     return mv.makeSwaption()
-
-def _SetSwapAttrs(func_name, method_map, mv, attrs):
-    for name, value in attrs.items():
-        try:
-            method = method_map[name]
-        except KeyError:
-            raise TypeError(f"{func_name}() got an unexpected keyword argument {name!r}") from None
-        if value is not None:
-            getattr(mv, method)(value)
 }
 #endif
 

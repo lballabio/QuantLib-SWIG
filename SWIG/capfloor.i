@@ -139,10 +139,10 @@ class BachelierCapFloorEngine : public PricingEngine {
 %rename (_MakeCapFloor) MakeCapFloor;
 #endif
 class MakeCapFloor {
-        #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-        %feature("kwargs") MakeCapFloor;
-        #endif
-      public:
+    if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MakeCapFloor;
+    #endif
+    public:
         MakeCapFloor& withNominal(Real n);
 
         MakeCapFloor& withEffectiveDate(const Date&, bool firstCapletExcluded);
@@ -164,7 +164,7 @@ class MakeCapFloor {
         MakeCapFloor(CapFloor::Type capFloorType,
                      const Period& capFloorTenor,
                      const ext::shared_ptr<IborIndex>& iborIndex,
-                     Rate strike = Null<Rate>(),
+                     doubleOrNull strike = Null<Rate>(),
                      const Period& forwardStart = 0*Days);
         
         %extend {
@@ -194,17 +194,8 @@ _MAKECAPFLOOR_METHODS = {
 
 def MakeCapFloor(capFloorType, capFloorTenor, iborIndex, strike=None, forwardStart=Period(0, Days), **kwargs):
     mv = _MakeCapFloor(capFloorType, capFloorTenor, iborIndex, strike, forwardStart)
-    _SetSwapAttrs("MakeCapFloor", _MAKECAPFLOOR_METHODS, mv, kwargs)
+    _apply_kwargs("MakeCapFloor", _MAKECAPFLOOR_METHODS, mv, kwargs)
     return mv.makeCapFloor()
-
-def _SetSwapAttrs(func_name, method_map, mv, attrs):
-    for name, value in attrs.items():
-        try:
-            method = method_map[name]
-        except KeyError:
-            raise TypeError(f"{func_name}() got an unexpected keyword argument {name!r}") from None
-        if value is not None:
-            getattr(mv, method)(value)
 }
 #endif
 
