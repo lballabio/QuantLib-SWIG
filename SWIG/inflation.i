@@ -600,6 +600,36 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
               const ext::shared_ptr<Seasonality>& seasonality = {},
               Real accuracy = 1.0e-12,
               const Interpolator& i = Interpolator());
+    #if defined(SWIGPYTHON)
+    %feature("kwargs") withBaseDateFunc;
+    %extend {
+        static ext::shared_ptr<PiecewiseZeroInflationCurve<Interpolator>> withBaseDateFunc(
+                const Date& referenceDate,
+                PyObject* baseDateFunc,
+                Frequency frequency,
+                const DayCounter& dayCounter,
+                const std::vector<ext::shared_ptr<BootstrapHelper<ZeroInflationTermStructure> > >& instruments,
+                const ext::shared_ptr<Seasonality>& seasonality = {},
+                Real accuracy = 1.0e-12,
+                const Interpolator& i = Interpolator()) {
+            auto func = [pyFunc = PyPtr::fromBorrowed(baseDateFunc)]() {
+                auto pyResult = PyPtr::fromResult(
+                    PyObject_CallObject(pyFunc.get(), NULL),
+                    "failed to call Python baseDateFunc");
+
+                Date* res;
+                int err = SWIG_ConvertPtr(
+                    pyResult.get(), (void**)&res, SWIGTYPE_p_Date, SWIG_POINTER_NO_NULL);
+                QL_ENSURE(SWIG_IsOK(err), "baseDateFunc must return a QuantLib Date");
+                return *res;
+            };
+            return ext::make_shared<PiecewiseZeroInflationCurve<Interpolator>>(
+                referenceDate, std::move(func), frequency, dayCounter, instruments,
+                seasonality, accuracy, i
+            );
+        }
+    }
+    #endif
 
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
