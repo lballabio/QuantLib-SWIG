@@ -61,30 +61,6 @@ class Settings {
     void anchorEvaluationDate();
     void resetEvaluationDate();
     %extend {
-        Date getEvaluationDate() {
-            #if defined(SWIGPYTHON)
-            cpp_deprecate_feature(getEvaluationDate, evaluationDate);
-            #endif
-            return self->evaluationDate();
-        }
-        void setEvaluationDate(const Date& d) {
-            #if defined(SWIGPYTHON)
-            cpp_deprecate_feature(setEvaluationDate, evaluationDate);
-            #endif
-            self->evaluationDate() = d;
-        }
-        bool getEnforcesTodaysHistoricFixings() {
-            #if defined(SWIGPYTHON)
-            cpp_deprecate_feature(getEnforcesTodaysHistoricFixings, enforcesTodaysHistoricFixings);
-            #endif
-            return self->enforcesTodaysHistoricFixings();
-        }
-        void setEnforcesTodaysHistoricFixings(bool b) {
-            #if defined(SWIGPYTHON)
-            cpp_deprecate_feature(setEnforcesTodaysHistoricFixings, enforcesTodaysHistoricFixings);
-            #endif
-            self->enforcesTodaysHistoricFixings() = b;
-        }
         #if defined(SWIGPYTHON)
         %newobject evaluationDate;
         Date evaluationDate;
@@ -92,6 +68,18 @@ class Settings {
         bool includeReferenceDateEvents;
         ext::optional<bool> includeTodaysCashFlows;
         #else
+        Date getEvaluationDate() {
+            return self->evaluationDate();
+        }
+        void setEvaluationDate(const Date& d) {
+            self->evaluationDate() = d;
+        }
+        bool getEnforcesTodaysHistoricFixings() {
+            return self->enforcesTodaysHistoricFixings();
+        }
+        void setEnforcesTodaysHistoricFixings(bool b) {
+            self->enforcesTodaysHistoricFixings() = b;
+        }
         void includeReferenceDateEvents(bool b) {
             self->includeReferenceDateEvents() = b;
         }
