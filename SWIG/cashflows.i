@@ -753,7 +753,7 @@ class RangeAccrualFloatersCoupon: public FloatingRateCoupon {
                                Rate spread,
                                const Date& refPeriodStart,
                                const Date& refPeriodEnd,
-                               ext::shared_ptr<Schedule> observationsSchedule,
+                               const Schedule& observationsSchedule,
                                Real lowerTrigger,
                                Real upperTrigger);
 };
