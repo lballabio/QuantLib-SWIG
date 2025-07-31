@@ -32,8 +32,6 @@
 %include volatilities.i
 
 
-// eventually the classes exported here will be redesigned or deprecated
-
 // cap/floor volatilities
 
 %{

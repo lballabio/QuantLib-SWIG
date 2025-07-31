@@ -172,7 +172,6 @@ class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
 
 %template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
 %template(RelinkableYoYOptionletVolatilitySurfaceHandle) RelinkableHandle<YoYOptionletVolatilitySurface>;
-deprecate_feature(RelinkableYoYOptionletVolatilitySurface, RelinkableYoYOptionletVolatilitySurfaceHandle);
 
 
 %{
@@ -826,7 +825,6 @@ class SabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
     }
 };
 
-deprecate_feature(SwaptionVolCube1, SabrSwaptionVolatilityCube)
 
 %shared_ptr(InterpolatedSwaptionVolatilityCube);
 class InterpolatedSwaptionVolatilityCube : public SwaptionVolatilityCube {
@@ -840,8 +838,6 @@ class InterpolatedSwaptionVolatilityCube : public SwaptionVolatilityCube {
                                        const ext::shared_ptr<SwapIndex>& shortSwapIndex,
                                        bool vegaWeightedSmileFit);
 };
-
-deprecate_feature(SwaptionVolCube2, InterpolatedSwaptionVolatilityCube)
 
 
 %{
