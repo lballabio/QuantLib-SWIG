@@ -170,6 +170,74 @@ def OldName(*args, **kwargs):
 
 %{
 #if defined(SWIGPYTHON)
+#include <stdexcept>
+#include <string_view>
+
+class PyPtr {
+  public:
+    static PyPtr fromResult(PyObject* ptr, std::string_view errorMsg) {
+        if (!ptr)
+            throw std::runtime_error(errorMsg.data());
+        return PyPtr(ptr);
+    }
+
+    static PyPtr fromBorrowed(PyObject* ptr) {
+        Py_INCREF(ptr);
+        return PyPtr(ptr);
+    }
+
+    static PyPtr fromNew(PyObject* ptr) { return PyPtr(ptr); }
+
+    constexpr PyPtr() noexcept : ptr_(nullptr) {}
+    constexpr PyPtr(std::nullptr_t) noexcept : ptr_(nullptr) {}
+
+    PyPtr(const PyPtr& other) noexcept : ptr_(other.ptr_) {
+        Py_XINCREF(ptr_);
+    }
+
+    PyPtr(PyPtr&& other) noexcept : ptr_(other.release()) {}
+
+    ~PyPtr() {
+        Py_XDECREF(ptr_);
+    }
+
+    PyPtr& operator=(const PyPtr& other) {
+        Py_XINCREF(other.ptr_);
+        auto prevPtr = std::exchange(ptr_, other.ptr_);
+        Py_XDECREF(prevPtr);
+        return *this;
+    }
+
+    PyPtr& operator=(PyPtr&& other) {
+        auto newPtr = other.release();
+        auto prevPtr = std::exchange(ptr_, newPtr);
+        Py_XDECREF(prevPtr);
+        return *this;
+    }
+
+    PyObject* get() const noexcept {
+        return ptr_;
+    }
+
+    explicit operator bool() const noexcept {
+        return ptr_ != nullptr;
+    }
+
+    [[nodiscard]] PyObject* release() noexcept {
+        return std::exchange(ptr_, nullptr);
+    }
+
+    void reset() {
+        Py_CLEAR(ptr_);
+    }
+
+  private:
+    // NOTE: takes ownership of the passed pointer.
+    explicit PyPtr(PyObject* ptr) noexcept : ptr_(ptr) {}
+
+    PyObject* ptr_;
+};
+
 #define cpp_deprecate_feature(OldName, NewName) \
     PyErr_WarnEx(PyExc_FutureWarning, (#OldName " is deprecated; use " #NewName), 1)
 #else

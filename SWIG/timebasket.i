@@ -45,7 +45,8 @@ class TimeBasket {
             (*self)[d] = value;
         }
         PyObject* items() {
-            PyObject* itemList = PyList_New(self->size());
+            auto itemList = PyPtr::fromResult(PyList_New(self->size()),
+                                              "failed to convert arguments");
             TimeBasket::iterator i;
             Size j;
             for (i=self->begin(), j=0; i!=self->end(); ++i, ++j) {
@@ -55,27 +56,26 @@ class TimeBasket {
                                 SWIG_NewPointerObj((void *) d,
                                                    $descriptor(Date *),1));
                 PyTuple_SetItem(item,1,PyFloat_FromDouble(i->second));
-                PyList_SetItem(itemList,j,item);
+                PyList_SetItem(itemList.get(),j,item);
             }
-            return itemList;
+            return itemList.release();
         }
         // Python 2.2 methods
         bool __contains__(const Date& d) {
             return self->hasDate(d);
         }
         PyObject* __iter__() {
-            PyObject* keyList = PyList_New(self->size());
+            auto keyList = PyPtr::fromResult(PyList_New(self->size()),
+                                             "failed to convert arguments");
             TimeBasket::iterator i;
             Size j;
             for (i=self->begin(), j=0; i!=self->end(); ++i, ++j) {
                 Date* d = new Date(i->first);
-                PyList_SetItem(keyList,j,
+                PyList_SetItem(keyList.get(), j,
                                SWIG_NewPointerObj((void *) d,
                                                   $descriptor(Date *),1));
             }
-            PyObject* iter = PyObject_GetIter(keyList);
-            Py_DECREF(keyList);
-            return iter;
+            return PyObject_GetIter(keyList.get());
         }
         #endif
     }
