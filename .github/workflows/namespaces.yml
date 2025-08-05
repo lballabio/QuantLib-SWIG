@@ -26,9 +26,10 @@ jobs:
         sed -i -e 's/boost::none\b/ext::nullopt/g' SWIG/*
     - uses: peter-evans/create-pull-request@v7
       with:
-        token: ${{ secrets.GITHUB_TOKEN }}
+        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
+        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib-SWIG
         branch: fix-boost-namespace-${{ github.ref_name }}
         delete-branch: true
         commit-message: 'Fix uses of boost and/or ext namespace'
         title: 'Fix uses of boost and/or ext namespace'
-        author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
