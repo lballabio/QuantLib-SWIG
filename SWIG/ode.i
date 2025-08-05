@@ -64,47 +64,30 @@ class OdeFctDelegate {
 %{
 class OdeFct {
   public:
-    OdeFct(PyObject* function) : function_(function) {
-        Py_XINCREF(function_);
-    }
-    OdeFct(const OdeFct& f)
-    : function_(f.function_) {
-        Py_XINCREF(function_);
-    }
-    OdeFct& operator=(const OdeFct& f) {
-        if ((this != &f) && (function_ != f.function_)) {
-            Py_XDECREF(function_);
-            function_ = f.function_;
-            Py_XINCREF(function_);
-        }
-        return *this;
-    }
-    ~OdeFct() {
-        Py_XDECREF(function_);
-    }
-    
-    const std::vector<Real> operator()(Real x, const std::vector<Real>& y) const {
-        PyObject* pyY = PyList_New(y.size());
-        for (Size i=0; i < y.size(); ++i)
-            PyList_SetItem(pyY, i, PyFloat_FromDouble(y[i]));
-        
-        PyObject* pyResult = PyObject_CallFunction(function_,"dO",x, pyY);
-        
-        Py_XDECREF(pyY);
+    OdeFct(PyObject* function)
+    : function_(PyPtr::fromBorrowed(function)) {}
 
-        QL_ENSURE(pyResult != NULL && PyList_Check(pyResult), 
+    const std::vector<Real> operator()(Real x, const std::vector<Real>& y) const {
+        auto pyY = PyPtr::fromResult(PyList_New(y.size()), "failed to convert arguments");
+        for (Size i=0; i < y.size(); ++i)
+            PyList_SetItem(pyY.get(), i, PyFloat_FromDouble(y[i]));
+
+        auto pyResult = PyPtr::fromResult(
+            PyObject_CallFunction(function_.get(), "dO", x, pyY.get()),
             "failed to call Python function");
-       
-           std::vector<Real> retVal(y.size());
-           for (Size i=0; i < y.size(); ++i)
-               retVal[i] = PyFloat_AsDouble(PyList_GetItem(pyResult, i));
-                          
-        Py_XDECREF(pyResult);
-        
+
+        QL_ENSURE(
+            PyList_Check(pyResult.get()) && PyList_Size(pyResult.get()) == y.size(),
+            "Python function did not return a list of correct size");
+
+        std::vector<Real> retVal(y.size());
+        for (Size i=0; i < y.size(); ++i)
+            retVal[i] = PyFloat_AsDouble(PyList_GetItem(pyResult.get(), i));
+
         return retVal;
     }
   private:
-    PyObject* function_;
+    PyPtr function_;
 };
 %}
 

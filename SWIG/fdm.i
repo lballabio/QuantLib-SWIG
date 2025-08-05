@@ -385,49 +385,21 @@ class FdmLinearOpComposite : public FdmLinearOp {
 %{
 class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
   public:
-      FdmLinearOpCompositeProxy(PyObject* callback) : callback_(callback) {
-        Py_XINCREF(callback_);
-    }
-
-    FdmLinearOpCompositeProxy& operator=(const FdmLinearOpCompositeProxy& f) {
-        if ((this != &f) && (callback_ != f.callback_)) {
-            Py_XDECREF(callback_);
-            callback_ = f.callback_;
-            Py_XINCREF(callback_);
-        }
-        return *this;
-    }
-    
-    FdmLinearOpCompositeProxy(const FdmLinearOpCompositeProxy& p) 
-    : callback_(p.callback_) {
-        Py_XINCREF(callback_);
-    }
-
-    ~FdmLinearOpCompositeProxy() {
-        Py_XDECREF(callback_);
-    }
+    FdmLinearOpCompositeProxy(PyObject* callback)
+    : callback_(PyPtr::fromBorrowed(callback)) {}
 
     Size size() const {
-        PyObject* pyResult = PyObject_CallMethod(callback_,"size", NULL);
-
-        QL_ENSURE(pyResult != NULL,
-                  "failed to call size() on Python object");
-        QL_ENSURE(PyLong_Check(pyResult), "size() is not an int");
-
-        Size result = PyLong_AsLong(pyResult);
-        Py_XDECREF(pyResult);
-        
-        return result;    
+        auto pyResult = PyPtr::fromResult(
+            PyObject_CallMethod(callback_.get(), "size", NULL),
+            "failed to call size() on Python object");
+        QL_ENSURE(PyLong_Check(pyResult.get()), "size() is not an int");
+        return PyLong_AsLong(pyResult.get());
     }
 
     void setTime(Time t1, Time t2) {
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_,"setTime","dd", t1, t2);
-
-        QL_ENSURE(pyResult != NULL,
-                  "failed to call setTime() on Python object");
-
-        Py_XDECREF(pyResult);
+        PyPtr::fromResult(
+            PyObject_CallMethod(callback_.get(), "setTime", "dd", t1, t2),
+            "failed to call setTime() on Python object");
     }
 
     Array apply(const Array& r) const {
@@ -439,57 +411,51 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
     Array apply_direction(Size direction, const Array& r) const {
-        PyObject* pyArray = SWIG_NewPointerObj(
-            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-            
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, "apply_direction", "kO", 
-                (unsigned long)(direction), pyArray);
-            
-        Py_XDECREF(pyArray); 
-            
-        return extractArray(pyResult, "apply_direction");        
+        auto pyArray = PyPtr::fromNew(SWIG_NewPointerObj(
+            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0));
+
+        auto pyResult = PyPtr::fromNew(
+            PyObject_CallMethod(callback_.get(), "apply_direction", "kO",
+                                (unsigned long)direction, pyArray.get()));
+
+        return extractArray(pyResult.get(), "apply_direction");
     }
 
     Array solve_splitting(Size direction, const Array& r, Real s) const {
-        PyObject* pyArray = SWIG_NewPointerObj(
-            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-            
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, "solve_splitting", "kOd", 
-                (unsigned long)(direction), pyArray, s);
-            
-        Py_XDECREF(pyArray); 
-            
-        return extractArray(pyResult, "solve_splitting");        
+        auto pyArray = PyPtr::fromNew(SWIG_NewPointerObj(
+            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0));
+
+        auto pyResult = PyPtr::fromNew(
+            PyObject_CallMethod(callback_.get(), "solve_splitting", "kOd",
+                                (unsigned long)direction, pyArray.get(), s));
+
+        return extractArray(pyResult.get(), "solve_splitting");
     }
 
     Array preconditioner(const Array& r, Real s) const {
-        PyObject* pyArray = SWIG_NewPointerObj(
-            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
-            
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, "preconditioner", "Od",pyArray, s);
-            
-        Py_XDECREF(pyArray); 
-            
-        return extractArray(pyResult, "preconditioner");        
+        auto pyArray = PyPtr::fromNew(SWIG_NewPointerObj(
+            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0));
+
+        auto pyResult = PyPtr::fromNew(
+            PyObject_CallMethod(callback_.get(), "preconditioner", "Od",
+                                pyArray.get(), s));
+
+        return extractArray(pyResult.get(), "preconditioner");
     }
 
   private:
     Array apply(const Array& r, const char* methodName) const {
-        PyObject* pyArray = SWIG_NewPointerObj(
-            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0);
+        auto pyArray = PyPtr::fromNew(SWIG_NewPointerObj(
+            SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0));
 
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, methodName, "O", pyArray);
+        auto pyResult = PyPtr::fromNew(
+            PyObject_CallMethod(callback_.get(), methodName, "O", pyArray.get()));
 
-        Py_DECREF(pyArray);
-        return extractArray(pyResult, methodName);        
+        return extractArray(pyResult.get(), methodName);
     }
 
   private:        
-    PyObject* callback_;    
+    PyPtr callback_;
 };
 %}
 
@@ -1123,40 +1089,20 @@ class StepCondition {
 %{
 class FdmStepConditionProxy : public StepCondition<Array> {
   public:
-    FdmStepConditionProxy(PyObject* callback) : callback_(callback) {
-        Py_XINCREF(callback_);
-    }
-    
-    FdmStepConditionProxy(const FdmStepConditionProxy& p) 
-    : callback_(p.callback_) {
-        Py_XINCREF(callback_);
-    }
-
-    FdmStepConditionProxy& operator=(const FdmStepConditionProxy& f) {
-        if ((this != &f) && (callback_ != f.callback_)) {
-            Py_XDECREF(callback_);
-            callback_ = f.callback_;
-            Py_XINCREF(callback_);
-        }
-        return *this;
-    }
-
-    ~FdmStepConditionProxy() {
-        Py_XDECREF(callback_);
-    }
+    FdmStepConditionProxy(PyObject* callback)
+    : callback_(PyPtr::fromBorrowed(callback)) {}
 
     void applyTo(Array& a, Time t) const {
-        PyObject* pyArray = SWIG_NewPointerObj(
-            SWIG_as_voidptr(&a), SWIGTYPE_p_Array, 0);
-            
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, "applyTo", "Od",pyArray, t);
+        auto pyArray = PyPtr::fromNew(SWIG_NewPointerObj(
+            SWIG_as_voidptr(&a), SWIGTYPE_p_Array, 0));
 
-        Py_XDECREF(pyArray);
+        PyPtr::fromResult(
+            PyObject_CallMethod(callback_.get(), "applyTo", "Od", pyArray.get(), t),
+            "failed to call applyTo() on Python object");
     }
     
   private:       
-    PyObject* callback_;    
+    PyPtr callback_;
 };
 %}
 
@@ -1224,27 +1170,8 @@ class FdmInnerValueCalculator {
 %{
 class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
   public:
-    FdmInnerValueCalculatorProxy(PyObject* callback) : callback_(callback) {
-        Py_XINCREF(callback_);
-    }
-    
-    FdmInnerValueCalculatorProxy(const FdmInnerValueCalculatorProxy& p) 
-    : callback_(p.callback_) {
-        Py_XINCREF(callback_);
-    }
-
-    FdmInnerValueCalculatorProxy& operator=(const FdmInnerValueCalculatorProxy& f) {
-        if ((this != &f) && (callback_ != f.callback_)) {
-            Py_XDECREF(callback_);
-            callback_ = f.callback_;
-            Py_XINCREF(callback_);
-        }
-        return *this;
-    }
-
-    ~FdmInnerValueCalculatorProxy() {
-        Py_XDECREF(callback_);
-    }
+    FdmInnerValueCalculatorProxy(PyObject* callback)
+    : callback_(PyPtr::fromBorrowed(callback)) {}
 
     Real innerValue(const FdmLinearOpIterator& iter, Time t) {
         return getValue(iter, t, "innerValue");
@@ -1256,24 +1183,17 @@ class FdmInnerValueCalculatorProxy : public FdmInnerValueCalculator {
     
   private: 
       Real getValue(const FdmLinearOpIterator& iter, Time t, const char* methodName) {
-        PyObject* pyIter = SWIG_NewPointerObj(
-            SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, 0);
+        auto pyIter = PyPtr::fromNew(SWIG_NewPointerObj(
+            SWIG_as_voidptr(&iter), SWIGTYPE_p_FdmLinearOpIterator, 0));
 
-        PyObject* pyResult 
-            = PyObject_CallMethod(callback_, methodName, "Od", pyIter, t);
+        auto pyResult = PyPtr::fromResult(
+            PyObject_CallMethod(callback_.get(), methodName, "Od", pyIter.get(), t),
+            "failed to call " + std::string(methodName) + "() on Python object");
 
-        Py_DECREF(pyIter);
-
-        QL_ENSURE(pyResult != NULL, "failed to call innerValue function on Python object");
-
-        const Real result = PyFloat_AsDouble(pyResult);
-
-        Py_XDECREF(pyResult);
-
-        return result;
+        return PyFloat_AsDouble(pyResult.get());
       }
             
-    PyObject* callback_;    
+    PyPtr callback_;
 };
 %}
 

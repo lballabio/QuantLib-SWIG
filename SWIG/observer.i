@@ -59,36 +59,14 @@ typedef ext::shared_ptr<Observable> ObservableOrHandle;
 class PyObserver : public Observer {
   public:
     PyObserver(PyObject* callback)
-    : callback_(callback) {
-        /* make sure the Python object stays alive
-           as long as we need it */
-        Py_XINCREF(callback_);
-    }
-    PyObserver(const PyObserver& o)
-    : callback_(o.callback_) {
-        /* make sure the Python object stays alive
-           as long as we need it */
-        Py_XINCREF(callback_);
-    }
-    PyObserver& operator=(const PyObserver& o) {
-        if ((this != &o) && (callback_ != o.callback_)) {
-            Py_XDECREF(callback_);
-            callback_ = o.callback_;
-            Py_XINCREF(callback_);
-        }
-        return *this;
-    }
-    ~PyObserver() {
-        // now it can go as far as we are concerned
-        Py_XDECREF(callback_);
-    }
+    : callback_(PyPtr::fromBorrowed(callback)) {}
+
     void update() {
-        PyObject* pyResult = PyObject_CallFunction(callback_,NULL);
-        QL_ENSURE(pyResult != NULL, "failed to notify Python observer");
-        Py_XDECREF(pyResult);
+        PyPtr::fromResult(PyObject_CallObject(callback_.get(), NULL),
+                          "failed to notify Python observer");
     }
   private:
-    PyObject* callback_;
+    PyPtr callback_;
 };
 %}
 

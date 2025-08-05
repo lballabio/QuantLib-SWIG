@@ -433,11 +433,8 @@ static inline PyObject* PyDate_FromDate(int year, int month, int day) {
 }
 
 static inline long pyobject_getattr_long(PyObject* obj, PyObject* attr) {
-    PyObject* val = PyObject_GetAttr(obj, attr);
-    QL_REQUIRE(val != nullptr, "missing attribute");
-    long res = PyLong_AsLong(val);
-    Py_DECREF(val);
-    return res;
+    auto val = PyPtr::fromResult(PyObject_GetAttr(obj, attr), "missing attribute");
+    return PyLong_AsLong(val.get());
 }
 
 #define PyDateTime_GET_YEAR(o)  pyobject_getattr_long(o, pydate_yearstr)
@@ -450,12 +447,12 @@ static inline long pyobject_getattr_long(PyObject* obj, PyObject* attr) {
 %}
 %init %{
 #if defined(Py_LIMITED_API)
-    PyObject* datetime_module = PyImport_ImportModule("datetime");
-    pydate_type = PyObject_GetAttrString(datetime_module, "date");
+    auto datetime_module = PyPtr::fromResult(PyImport_ImportModule("datetime"),
+                                             "failed to import datetime");
+    pydate_type = PyObject_GetAttrString(datetime_module.get(), "date");
     pydate_yearstr = PyUnicode_InternFromString("year");
     pydate_monthstr = PyUnicode_InternFromString("month");
     pydate_daystr = PyUnicode_InternFromString("day");
-    Py_DECREF(datetime_module);
 #else
     PyDateTime_IMPORT;
 #endif
