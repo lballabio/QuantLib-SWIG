@@ -651,14 +651,11 @@ Array extractArray(PyObject* source, const char* methodName) {
     QL_ENSURE(source != NULL,
               "failed to call " << methodName << " on Python object");
 
-    QL_ENSURE(source != Py_None, methodName << " returned None");
-
-    Array* ptr;            
-    const int err = SWIG_ConvertPtr(
-        source, (void **) &ptr, SWIGTYPE_p_Array, SWIG_POINTER_EXCEPTION);
-
-    QL_ENSURE(err == 0, "return type must be QuantLib Array in " << methodName);
-    return Array(*ptr);
+    Array* ptr;
+    int err = SWIG_ConvertPtr(
+        source, (void**)&ptr, SWIGTYPE_p_Array, SWIG_POINTER_NO_NULL);
+    QL_ENSURE(SWIG_IsOK(err), methodName << " must return a QuantLib Array");
+    return *ptr;
 }
 
 class MatrixMultiplicationProxy {
