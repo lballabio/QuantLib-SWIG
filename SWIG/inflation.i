@@ -538,6 +538,21 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     //%feature("kwargs") ZeroCouponInflationSwapHelper;
     #endif
+    // remove the kludge below when we go back to just one constructor
+    // and we re-enable kwargs above
+#if defined(SWIGPYTHON)
+%feature("shadow") ZeroCouponInflationSwapHelper %{
+def __init__(self, quote, lag, maturity, calendar, bcd, dayCounter, index, observationInterpolation, nominalTS=None):
+    r"""
+    __init__(ZeroCouponInflationSwapHelper self, QuoteHandle quote, Period lag, Date maturity, Calendar calendar, BusinessDayConvention bcd, DayCounter dayCounter, ext::shared_ptr< ZeroInflationIndex > const & index, CPI::InterpolationType observationInterpolation) -> ZeroCouponInflationSwapHelper
+    __init__(ZeroCouponInflationSwapHelper self, QuoteHandle quote, Period lag, Date maturity, Calendar calendar, BusinessDayConvention bcd, DayCounter dayCounter, ext::shared_ptr< ZeroInflationIndex > const & index, CPI::InterpolationType observationInterpolation, YieldTermStructureHandle nominalTS) -> ZeroCouponInflationSwapHelper
+    """
+    if nominalTS is None:
+        _QuantLib.ZeroCouponInflationSwapHelper_swiginit(self, _QuantLib.new_ZeroCouponInflationSwapHelper(quote, lag, maturity, calendar, bcd, dayCounter, index, observationInterpolation))
+    else:
+        _QuantLib.ZeroCouponInflationSwapHelper_swiginit(self, _QuantLib.new_ZeroCouponInflationSwapHelper(quote, lag, maturity, calendar, bcd, dayCounter, index, observationInterpolation, nominalTS))
+%}
+#endif
   public:
     ZeroCouponInflationSwapHelper(
             const Handle<Quote>& quote,
