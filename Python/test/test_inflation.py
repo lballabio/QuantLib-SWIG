@@ -59,7 +59,6 @@ def create_inflation_swap_helper(
         inflation_data,
         inflation_index,
         interpolation,
-        discount_curve_handle,
         observation_lag=OBSERVATION_LAG,
         calendar=CAL,
         business_day_convention=BDC,
@@ -75,7 +74,7 @@ def create_inflation_swap_helper(
         day_counter,
         inflation_index,
         interpolation,
-        discount_curve_handle)
+    )
 
 
 def build_nominal_term_structure(
@@ -117,16 +116,13 @@ def build_inflation_term_structure(
         zero_coupon_swaps_data,
         inflation_index,
         interpolation,
-        nominal_term_structure_handle,
         observation_lag=OBSERVATION_LAG,
         include_seasonality=False):
     helpers = [create_inflation_swap_helper(reference_date,
                                             x,
                                             inflation_index,
-                                            interpolation,
-                                            nominal_term_structure_handle)
+                                            interpolation)
                for x in zero_coupon_swaps_data]
-    base_zero_rate = zero_coupon_swaps_data[0][1]
     cpi_term_structure = ql.PiecewiseZeroInflation(
         reference_date,
         inflation_index.lastFixingDate(),
@@ -192,8 +188,7 @@ class InflationTest(unittest.TestCase):
             VALUATION_DATE,
             EUR_BEI_SWAP_RATES,
             inflation_idx,
-            ql.CPI.Flat,
-            self.nominal_ts_handle)
+            ql.CPI.Flat)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
         zciis = create_inflation_swap(
@@ -231,8 +226,7 @@ class InflationTest(unittest.TestCase):
             VALUATION_DATE,
             EUR_BEI_SWAP_RATES,
             inflation_idx,
-            ql.CPI.Flat,
-            self.nominal_ts_handle)
+            ql.CPI.Flat)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
         zciis = create_inflation_swap(
@@ -295,8 +289,7 @@ class InflationTest(unittest.TestCase):
             VALUATION_DATE,
             EUR_BEI_SWAP_RATES,
             inflation_idx,
-            ql.CPI.Flat,
-            self.nominal_ts_handle)
+            ql.CPI.Flat)
         self.inflation_ts_handle.linkTo(inflation_ts)
 
         maturity_date = ql.Date(25, ql.October, 2027)

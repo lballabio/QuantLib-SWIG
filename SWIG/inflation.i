@@ -536,8 +536,23 @@ namespace std {
 %shared_ptr(ZeroCouponInflationSwapHelper)
 class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermStructure> {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") ZeroCouponInflationSwapHelper;
+    //%feature("kwargs") ZeroCouponInflationSwapHelper;
     #endif
+    // remove the kludge below when we go back to just one constructor
+    // and we re-enable kwargs above
+#if defined(SWIGPYTHON)
+%feature("shadow") ZeroCouponInflationSwapHelper %{
+def __init__(self, quote, lag, maturity, calendar, bcd, dayCounter, index, observationInterpolation, nominalTS=None):
+    r"""
+    __init__(ZeroCouponInflationSwapHelper self, QuoteHandle quote, Period lag, Date maturity, Calendar calendar, BusinessDayConvention bcd, DayCounter dayCounter, ext::shared_ptr< ZeroInflationIndex > const & index, CPI::InterpolationType observationInterpolation) -> ZeroCouponInflationSwapHelper
+    __init__(ZeroCouponInflationSwapHelper self, QuoteHandle quote, Period lag, Date maturity, Calendar calendar, BusinessDayConvention bcd, DayCounter dayCounter, ext::shared_ptr< ZeroInflationIndex > const & index, CPI::InterpolationType observationInterpolation, YieldTermStructureHandle nominalTS) -> ZeroCouponInflationSwapHelper
+    """
+    if nominalTS is None:
+        _QuantLib.ZeroCouponInflationSwapHelper_swiginit(self, _QuantLib.new_ZeroCouponInflationSwapHelper(quote, lag, maturity, calendar, bcd, dayCounter, index, observationInterpolation))
+    else:
+        _QuantLib.ZeroCouponInflationSwapHelper_swiginit(self, _QuantLib.new_ZeroCouponInflationSwapHelper(quote, lag, maturity, calendar, bcd, dayCounter, index, observationInterpolation, nominalTS))
+%}
+#endif
   public:
     ZeroCouponInflationSwapHelper(
             const Handle<Quote>& quote,
@@ -547,8 +562,18 @@ class ZeroCouponInflationSwapHelper : public BootstrapHelper<ZeroInflationTermSt
             BusinessDayConvention bcd,
             const DayCounter& dayCounter,
             const ext::shared_ptr<ZeroInflationIndex>& index,
+            CPI::InterpolationType observationInterpolation);
+
+    ZeroCouponInflationSwapHelper(
+            const Handle<Quote>& quote,
+            const Period& lag,   // lag on swap observation of index
+            const Date& maturity,
+            const Calendar& calendar,
+            BusinessDayConvention bcd,
+            const DayCounter& dayCounter,
+            const ext::shared_ptr<ZeroInflationIndex>& index,
             CPI::InterpolationType observationInterpolation,
-            const Handle<YieldTermStructure>& nominalTS = {});
+            const Handle<YieldTermStructure>& nominalTS);
 
     ext::shared_ptr<ZeroCouponInflationSwap> swap() const;
 };
