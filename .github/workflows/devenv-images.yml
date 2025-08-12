@@ -7,9 +7,9 @@ jobs:
   docker-images-base:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Checkout latest QuantLib master
-      uses: actions/checkout@v4
+      uses: actions/checkout@v5
       with:
         repository: lballabio/QuantLib
         path: dockerfiles/QuantLib
@@ -34,7 +34,7 @@ jobs:
       matrix:
         tag: [default, threadsafe]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Build Docker images
       working-directory: dockerfiles
       run: |
@@ -55,7 +55,7 @@ jobs:
       matrix:
         lang: [python, csharp, java, r]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Build Docker images
       working-directory: dockerfiles
       run: |
@@ -76,7 +76,7 @@ jobs:
       matrix:
         lang: [scala]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
     - name: Build Docker images
       working-directory: dockerfiles
       run: |
