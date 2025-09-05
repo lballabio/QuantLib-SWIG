@@ -34,7 +34,7 @@ def define_macros(py_limited_api):
         define_macros += [
             ("__WIN32__", None),
             ("WIN32", None),
-            ("NDEBUG", None),
+            #("NDEBUG", None),
             ("_WINDOWS", None),
             ("NOMINMAX", None),
         ]
@@ -122,12 +122,12 @@ def extra_compile_args():
     compiler = get_default_compiler()
 
     if compiler == "msvc":
-        extra_compile_args = ["/GR", "/FD", "/Zm250", "/EHsc", "/bigobj", "/std:c++17"]
+        extra_compile_args = ["/GR", "/FD", "/Zm250", "/EHsc", "/bigobj", "/std:c++17", "/Zi"]
 
         if "QL_STATIC_RUNTIME" in os.environ:
             extra_compile_args.append("/MT")
         else:
-            extra_compile_args.append("/MD")
+            extra_compile_args.append("/MDd")
 
     elif compiler == "unix":
         ql_compile_args = os.popen("quantlib-config --cflags").read()[:-1].split()
@@ -157,7 +157,7 @@ def extra_link_args():
             machinetype = "/machine:x64"
         else:
             machinetype = "/machine:x86"
-        extra_link_args = ["/subsystem:windows", machinetype]
+        extra_link_args = ["/subsystem:windows", machinetype, "/DEBUG"]
 
     elif compiler == "unix":
         ql_link_args = os.popen("quantlib-config --libs").read()[:-1].split()
