@@ -1,8 +1,8 @@
 name: Update copyright list
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'dependabot/**'
 jobs:
   copyrights:
     runs-on: ubuntu-latest
