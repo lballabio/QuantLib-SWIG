@@ -1,8 +1,8 @@
 name: Fix uses of boost and/or ext namespace
 on:
   push:
-    branches:
-      - '**'
+    branches-ignore:
+      - 'dependabot/**'
 jobs:
   namespaces:
     runs-on: ubuntu-latest

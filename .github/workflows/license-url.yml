@@ -1,22 +1,23 @@
-name: Update copyright list
+name: Update old license links
 on:
   push:
     branches-ignore:
       - 'dependabot/**'
 jobs:
-  copyrights:
+  license-urls:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v5
     - name: Check
       run: |
-        ./tools/check_copyrights.sh
+        shopt -s globstar
+        sed -i -e 's|http://quantlib\.org/license\.shtml|https://www.quantlib.org/license.shtml|g' **/*.i **/*.ac **/*.cs **/*.java **/*.py **/*.scala **/*.in
     - uses: peter-evans/create-pull-request@v7
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib-SWIG
-        branch: update-copyright-list-${{ github.ref_name }}
+        branch: update-license-links-${{ github.ref_name }}
         delete-branch: true
-        commit-message: 'Update copyright list in license'
-        title: 'Update copyright list in license'
+        commit-message: 'Update old license links'
+        title: 'Update old license links'
         author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
