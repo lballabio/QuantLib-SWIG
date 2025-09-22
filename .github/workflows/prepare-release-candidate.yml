@@ -1,0 +1,42 @@
+name: Prepare release candidate
+on:
+  workflow_dispatch:
+
+jobs:
+  update-for-rc:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        fetch-tags: true
+    - name: Setup git
+      run: |
+        git config user.name 'lballabio[bot]'
+        git config user.email '224797326+lballabio-bot@users.noreply.github.com'
+    - name: Calculate versions
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "LATEST_MINOR=" $2 }' | tee -a $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee -a $GITHUB_ENV
+    - name: Update version numbers
+      run: |
+        sed -i -e "s/^AC_INIT(\[QuantLib-SWIG\].*$/AC_INIT([QuantLib-SWIG], [1.${NEXT_MINOR}-rc],/g" configure.ac
+        sed -i -e "s/^    version=.*$/    version=\"1.${NEXT_MINOR}-rc\",/g" Python/setup.py
+        sed -i -e "s/^#if QL_HEX_VERSION < .*$/#if QL_HEX_VERSION < 0x01${NEXT_MINOR}0000/g" SWIG/ql.i
+        sed -i -e "s/^    #error at least QuantLib.*$/    #error at least QuantLib 1.${NEXT_MINOR} required, please update/g" SWIG/ql.i
+        git commit -a -m "Set version to 1.${NEXT_MINOR}-rc"
+    - name: Update ChangeLog
+      run: |
+        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep v1.${LATEST_MINOR}... > ChangeLog.txt
+        git commit -a -m "Update changelog"
+    - uses: peter-evans/create-pull-request@v7
+      with:
+        token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
+        push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib-SWIG
+        branch: set-to-rc-${{ github.ref_name }}
+        delete-branch: true
+        title: 'Set version to 1.${{ env.NEXT_MINOR }}-rc'
+        author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
