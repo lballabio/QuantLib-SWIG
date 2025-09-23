@@ -51,10 +51,21 @@ class MultiplicativePriceSeasonality : public Seasonality {
     MultiplicativePriceSeasonality(const Date& seasonalityBaseDate,
                                    Frequency frequency,
                                    const std::vector<Rate>& seasonalityFactors);
+    virtual Date seasonalityBaseDate() const;
+    virtual Frequency frequency() const;
+    virtual std::vector<Rate> seasonalityFactors() const;
+    virtual Rate seasonalityFactor(const Date &d) const;
 };
 
+%inline %{
+    ext::shared_ptr<MultiplicativePriceSeasonality> as_multiplicative_price_seasonality(
+                                      const ext::shared_ptr<Seasonality>& seasonality) {
+        return ext::dynamic_pointer_cast<MultiplicativePriceSeasonality>(seasonality);
+    }
+%}
+
 %shared_ptr(KerkhofSeasonality)
-class KerkhofSeasonality : public Seasonality {
+class KerkhofSeasonality : public MultiplicativePriceSeasonality {
   public:
     KerkhofSeasonality(const Date& seasonalityBaseDate,
                        const std::vector<Rate>& seasonalityFactors);
