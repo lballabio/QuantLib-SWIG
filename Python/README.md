@@ -17,12 +17,7 @@ The build step requires that the QuantLib headers and library can be
 found by the compiler. On Unix-like platforms, this requires that
 `quantlib-config` is in your path. On the Windows platform, instead,
 it requires you to define a `QL_DIR` environment variable pointing to
-your QuantLib directory (e.g., `C:\Lib\QuantLib`.) Another environment
-variable `QL_DEBUG` on Windows should be set to `TRUE` if you are building
-against a debug version of QuantLib with the objective to
-debug the library called from Python. On Unit-like platforms, appropriate flags
-can be setup in `CXXFLAGS` and `LDFLAGS`.
-
+your QuantLib directory (e.g., `C:\Lib\QuantLib`.)
 
 Once built, the resulting wheel can be installed with `pip`.
 

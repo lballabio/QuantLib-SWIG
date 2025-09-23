@@ -115,9 +115,6 @@ def libraries():
     return libraries
 
 
-def is_debug_quantlib():
-    return os.getenv("QL_DEBUG", 'False').lower() in ('true', '1', 't')
-
 def extra_compile_args():
 
     extra_compile_args = []
@@ -129,8 +126,6 @@ def extra_compile_args():
 
         if "QL_STATIC_RUNTIME" in os.environ:
             extra_compile_args.append("/MT")
-        elif is_debug_quantlib():
-            extra_compile_args.append("/MDd")
         else:
             extra_compile_args.append("/MD")
 
@@ -163,9 +158,7 @@ def extra_link_args():
         else:
             machinetype = "/machine:x86"
         extra_link_args = ["/subsystem:windows", machinetype]
-        if is_debug_quantlib():
-            extra_link_args += ["/DEBUG"]
-        
+
     elif compiler == "unix":
         ql_link_args = os.popen("quantlib-config --libs").read()[:-1].split()
 
