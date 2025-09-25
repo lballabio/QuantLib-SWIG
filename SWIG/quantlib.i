@@ -95,4 +95,8 @@ const char* __version__;
 %feature("autodoc");
 #endif
 
+%begin %{
+#define SWIG_PYTHON_INTERPRETER_NO_DEBUG
+%}
+
 %include ql.i
