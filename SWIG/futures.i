@@ -70,9 +70,9 @@ class DiscountingPerpetualFuturesEngine : public PricingEngine {
         const Handle<YieldTermStructure>& domesticDiscountCurve,
         const Handle<YieldTermStructure>& foreignDiscountCurve,
         const Handle<Quote>& assetSpot,
-        const Array fundingTimes,
-        const Array fundingRates,
-        const Array interestRateDiffs,
+        const std::vector<Time>& fundingTimes,
+        const std::vector<Rate>& fundingRates,
+        const std::vector<Spread>& interestRateDiffs,
         const InterpolationType fundingInterpType = PiecewiseConstant,
         const Real maxT = 60.);
 };
