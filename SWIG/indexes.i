@@ -470,6 +470,7 @@ export_xibor_instance(Wibor);
 export_xibor_instance(Zibor);
 
 export_overnight_instance(Aonia);
+export_overnight_instance(Cdi);
 export_overnight_instance(Corra);
 export_overnight_instance(Destr);
 export_overnight_instance(Eonia);
