@@ -21,6 +21,9 @@ import os, sys, math, platform, sysconfig
 from setuptools import setup, Extension
 from setuptools._distutils.ccompiler import get_default_compiler
 
+def is_debug_quantlib():
+    return os.getenv("QL_DEBUG", 'False').lower() in ('true', '1', 't')
+
 
 def define_macros(py_limited_api):
 
@@ -124,10 +127,19 @@ def extra_compile_args():
     if compiler == "msvc":
         extra_compile_args = ["/GR", "/FD", "/Zm250", "/EHsc", "/bigobj", "/std:c++17"]
 
-        if "QL_STATIC_RUNTIME" in os.environ:
-            extra_compile_args.append("/MT")
+        if is_debug_quantlib():
+            if "QL_STATIC_RUNTIME" in os.environ:
+                extra_compile_args.append("/MTd")
+            else:
+                extra_compile_args.append("/MDd")
+            extra_compile_args.append("/Od")
+            extra_compile_args.append("/Ob0")
+            extra_compile_args.append("/Zi")
         else:
-            extra_compile_args.append("/MD")
+            if "QL_STATIC_RUNTIME" in os.environ:
+                extra_compile_args.append("/MT")
+            else:
+                extra_compile_args.append("/MD")
 
     elif compiler == "unix":
         ql_compile_args = os.popen("quantlib-config --cflags").read()[:-1].split()
@@ -158,6 +170,8 @@ def extra_link_args():
         else:
             machinetype = "/machine:x86"
         extra_link_args = ["/subsystem:windows", machinetype]
+        if is_debug_quantlib():
+            extra_link_args += ["/DEBUG"]
 
     elif compiler == "unix":
         ql_link_args = os.popen("quantlib-config --libs").read()[:-1].split()
