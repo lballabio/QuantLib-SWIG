@@ -268,4 +268,38 @@ class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
 };
 
 
+%{
+using QuantLib::PiecewiseSpreadYieldCurve;
+%}
+
+%define export_piecewise_spread_curve(Name,Traits,Interpolator)
+
+%{
+typedef PiecewiseSpreadYieldCurve<Traits, Interpolator> Name;
+%}
+
+%shared_ptr(Name);
+class Name : public YieldTermStructure {
+  public:
+    %extend {
+        Name(Handle<YieldTermStructure> baseCurve,
+             const std::vector<ext::shared_ptr<RateHelper> >& instruments,
+             const Interpolator& i = Interpolator(),
+             const _IterativeBootstrap& b = _IterativeBootstrap()) {
+            return new Name(baseCurve, instruments, i, make_bootstrap<Name>(b));
+        }
+    }
+
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
+};
+
+%enddef
+
+export_piecewise_spread_curve(PiecewiseLogLinearDiscountSpread,Discount,LogLinear);
+
 #endif
