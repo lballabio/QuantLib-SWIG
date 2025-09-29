@@ -609,4 +609,34 @@ class AnalyticTwoAssetBarrierEngine : public PricingEngine {
 };
 
 
+%{
+using QuantLib::SoftBarrierOption;
+using QuantLib::AnalyticSoftBarrierEngine;
+%}
+
+%shared_ptr(SoftBarrierOption)
+class SoftBarrierOption : public OneAssetOption {
+  public:
+    SoftBarrierOption(Barrier::Type barrierType,
+                      Real barrier_lo,
+                      Real barrier_hi,
+                      const ext::shared_ptr<StrikedTypePayoff>& payoff,
+                      const ext::shared_ptr<Exercise>& exercise);
+
+    Volatility impliedVolatility(
+             Real price,
+             const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+             Real accuracy = 1.0e-4,
+             Size maxEvaluations = 100,
+             Volatility minVol = 1e-6,
+             Volatility maxVol = 4.0) const;
+};
+
+%shared_ptr(AnalyticSoftBarrierEngine)
+class AnalyticSoftBarrierEngine : public PricingEngine {
+  public:
+    AnalyticSoftBarrierEngine(ext::shared_ptr<GeneralizedBlackScholesProcess> process);
+};
+
+
 #endif
