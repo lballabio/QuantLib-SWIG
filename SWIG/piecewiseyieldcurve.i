@@ -280,13 +280,16 @@ typedef PiecewiseSpreadYieldCurve<Traits, Interpolator> Name;
 
 %shared_ptr(Name);
 class Name : public YieldTermStructure {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") Name;
+    #endif
   public:
     %extend {
         Name(Handle<YieldTermStructure> baseCurve,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
-             const Interpolator& i = Interpolator(),
-             const _IterativeBootstrap& b = _IterativeBootstrap()) {
-            return new Name(baseCurve, instruments, i, make_bootstrap<Name>(b));
+             const Interpolator& interpolator = Interpolator(),
+             const _IterativeBootstrap& bootstrap = _IterativeBootstrap()) {
+            return new Name(baseCurve, instruments, interpolator, make_bootstrap<Name>(bootstrap));
         }
     }
 
