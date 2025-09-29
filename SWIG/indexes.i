@@ -470,6 +470,7 @@ export_xibor_instance(Wibor);
 export_xibor_instance(Zibor);
 
 export_overnight_instance(Aonia);
+export_overnight_instance(Cdi);
 export_overnight_instance(Corra);
 export_overnight_instance(Destr);
 export_overnight_instance(Eonia);
@@ -481,7 +482,13 @@ export_overnight_instance(Saron);
 export_overnight_instance(Sofr);
 export_overnight_instance(Sonia);
 export_overnight_instance(Swestr);
+export_overnight_instance(Tonar);
+
+#if defined(SWIGPYTHON)
+deprecate_feature(Tona, Tonar);
+#else
 export_overnight_instance(Tona);
+#endif
 
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);
