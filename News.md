@@ -1,50 +1,25 @@
-Main changes for QuantLib-SWIG 1.39
-===================================
+Changes for QuantLib-SWIG 1.40
+==============================
 
-More details on the changes are available in ChangeLog.txt and at
-<https://github.com/lballabio/QuantLib-SWIG/milestone/32?closed=1>.
+Removed features
+----------------
 
-- **Removed** features deprecated in version 1.34 and no longer available
-  in the underlying C++ library:
-  - the overloads of `Bond::yield`, `BondFunctions::atmRate`,
-    `BondFunctions::yield` and `BondFunctions::zSpread` taking a price
-    as a `Real` instead of a `Bond::Price` instance;
-  - the `Swaption::underlyingSwap` and
-    `SwaptionHelper::underlyingSwap` methods;
-  - the constructors of `InterpolatedZeroInflationCurve`,
-    `InterpolatedYoYInflationCurve`, `PiecewiseZeroInflationCurve` and
-    `PiecewiseYoYInflationCurve` taking an observation lag;
-  - the overload of `InflationTermStructure::setSeasonality` taking no arguments;
-  - the `fixedRateBond` method of the `FixedRateBondHelper` class.
+Features removed from the C++ library in this release were also
+removed from these werappers; see
+<https://github.com/lballabio/QuantLib-SWIG/pull/754> for a full list.
 
-- Added preliminary support for the new free-threading Python
-  interpreter; thanks to Klaus Spanderen (@Klausspanderen).  No wheels
-  are provided for it at this time.
+Other features were removed from the wrappers after being deprecated
+for a long while; see
+<https://github.com/lballabio/QuantLib-SWIG/pull/756>.
 
-- Java compilation flags can now be passed by setting the
-  `JAVAC_FLAGS` environment variable; thanks to @UnitedMarsupials.
+Finally, a few unused classes were also removed; see
+<https://github.com/lballabio/QuantLib-SWIG/pull/749>.
 
-- Exported `convexityAdjustment` method for `FuturesRateHelper` and
-  `OvernightIndexFutureRateHelper` classes; thanks to Eugene Toder
-  (@eltoder).
 
-- Passing a nominal curve to the `ZeroCouponInflationSwapHelper`
-  constructor is now optional (@lballabio).
+Full list of pull requests
+--------------------------
 
-- The `OISRateHelper` constructor can now take a calendar for the
-  overnight leg; thanks to Eugene Toder (@eltoder).
+All the pull requests merged in this release are listed on its release
+page at <https://github.com/lballabio/QuantLib-SWIG/releases/tag/v1.40>.
 
-- Exported the `CustomIborIndex` class; thanks to Eugene Toder
-  (@eltoder).
-
-- Exported the `sabrGuess` function (@lballabio).
-
-- Exported the `SARON` index (@lballabio).
-
-- Exported the static `FxSwapRateHelper.forDates` method; thanks to
-  Eugene Toder (@eltoder).
-
-- The `OptionletStripper1` constructor can be passed a frequency so
-  that it can be used with overnight indexes (@lballabio).
-
-- Exported the SHIR calendar (@lballabio).
+The list of commits since the previous release is available in `ChangeLog.txt`.
