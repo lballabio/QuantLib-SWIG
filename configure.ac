@@ -4,7 +4,7 @@ AC_INIT([QuantLib-SWIG], [1.40-rc],
         [QuantLib-SWIG])
 AC_PREREQ(2.50)
 AC_CONFIG_AUX_DIR([config])
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign tar-ustar])
 
 AC_COPYRIGHT([Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
 
