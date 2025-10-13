@@ -1,4 +1,60 @@
-commit 181cd007ba81e859ce8904a64980e855f540da28
+commit 35b3f98b93dd84370a064ba2368b79b37f55705f
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 13 Oct 2025 07:53:33 +0000
+
+    Set version to 1.40
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit c1ed7fede92702ae9185fb85547fd2e1868f655b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 3 Oct 2025 16:36:11 +0200
+
+    Add initial workflows for release
+
+ .github/workflows/prepare-release.yml | 40 ++++++++++++++++++++++
+ .github/workflows/publish-release.yml | 63 +++++++++++++++++++++++++++++++++++
+ 2 files changed, 103 insertions(+)
+
+commit c94cd113d1ec3374b3e16d86892268c9810b678a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 3 Oct 2025 16:19:51 +0200
+
+    Add bespoke tool for creating zip from tarball
+
+ tools/tgz2zip | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
+
+commit 2083659311550865bbadbe6d6b7e38701247657a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 3 Oct 2025 16:12:39 +0200
+
+    Avoid problems with long filenames in tarball
+
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 288d73128850774ea103397359acf8394bafba49
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 3 Oct 2025 15:46:37 +0200
+
+    Don't require file not needed for distribution
+
+ Python/Makefile.am | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 5bc4caf4eb0bfc347a73b6258f215b0ab6b21a6d
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Thu, 2 Oct 2025 14:04:31 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 843 ++++++++++++++++++++++++++++++++++++++++------------------
+ 1 file changed, 588 insertions(+), 255 deletions(-)
+
+commit 8d46b73f5bc3baced1eb156004402d8b51b63461
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Thu, 2 Oct 2025 14:04:31 +0000
 
