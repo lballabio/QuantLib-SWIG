@@ -50,7 +50,6 @@ using QuantLib::ConstNotionalCrossCurrencyBasisSwapRateHelper;
 using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
-using QuantLib::ArithmeticOISRateHelper;
 %}
 
 struct Pillar {
@@ -667,26 +666,6 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      const ext::shared_ptr<IborIndex>& otherIndex,
                                      Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
     ext::shared_ptr<Swap> swap();
-};
-
-%shared_ptr(ArithmeticOISRateHelper)
-class ArithmeticOISRateHelper : public RateHelper {
-  public:
-    ArithmeticOISRateHelper(
-        Natural settlementDays,
-        const Period& tenor, // swap maturity
-        Frequency fixedLegPaymentFrequency,
-        const Handle<Quote>& fixedRate,
-        ext::shared_ptr<OvernightIndex> overnightIndex,
-        Frequency overnightLegPaymentFrequency,
-        Handle<Quote> spread,
-        Real meanReversionSpeed = 0.03,
-        Real volatility = 0.00, // NO convexity adjustment by default
-        bool byApprox = false,  // TRUE to use Katsumi Takada approximation
-        // exogenous discounting curve
-        Handle<YieldTermStructure> discountingCurve = Handle<YieldTermStructure>());
-
-    ext::shared_ptr<ArithmeticAverageOIS> swap() const;
 };
 
 // allow use of RateHelper vectors
