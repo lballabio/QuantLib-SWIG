@@ -388,11 +388,6 @@ class EquityIndex : public Index {
   public:
     EquityIndex(std::string name,
                 Calendar fixingCalendar,
-                Handle<YieldTermStructure> interest = {},
-                Handle<YieldTermStructure> dividend = {},
-                Handle<Quote> spot = {});
-    EquityIndex(std::string name,
-                Calendar fixingCalendar,
                 Currency currency,
                 Handle<YieldTermStructure> interest = {},
                 Handle<YieldTermStructure> dividend = {},
