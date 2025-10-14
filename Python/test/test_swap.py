@@ -164,6 +164,7 @@ class EquityTotalReturnSwapTest(unittest.TestCase):
         self.equity_idx = ql.EquityIndex(
             "eq_idx",
             CAL,
+            ql.Currency(),
             self.interest_handle,
             self.dividend_handle,
             equity_spot)

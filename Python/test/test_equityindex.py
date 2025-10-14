@@ -41,7 +41,7 @@ class EquityIndexTest(unittest.TestCase):
 
         ql.IndexManager.instance().clearHistory("eq_idx")
         self.equity_idx = ql.EquityIndex(
-            "eq_idx", CAL, self.interest_handle, self.dividend_handle, spot_handle)
+            "eq_idx", CAL, ql.Currency(), self.interest_handle, self.dividend_handle, spot_handle)
 
     def test_equity_index_inspectors(self):
         """Testing equity index inspectors"""
