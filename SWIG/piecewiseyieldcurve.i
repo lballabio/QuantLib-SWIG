@@ -285,24 +285,31 @@ class Name : public YieldTermStructure {
     #endif
   public:
     %extend {
-        Name(Handle<YieldTermStructure> baseCurve,
+        Name(const Handle<YieldTermStructure>& baseCurve,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const Interpolator& interpolator = Interpolator(),
              const _IterativeBootstrap& bootstrap = _IterativeBootstrap()) {
             return new Name(baseCurve, instruments, interpolator, make_bootstrap<Name>(bootstrap));
         }
     }
-
+    const Handle<YieldTermStructure>& baseCurve() const;
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;
     #if !defined(SWIGR)
     std::vector<std::pair<Date,Real> > nodes() const;
     #endif
+
+    void recalculate();
+    void freeze();
+    void unfreeze();
 };
 
 %enddef
 
 export_piecewise_spread_curve(PiecewiseLogLinearDiscountSpread,Discount,LogLinear);
+export_piecewise_spread_curve(PiecewiseLogCubicDiscountSpread,Discount,MonotonicLogCubic);
+export_piecewise_spread_curve(PiecewiseNaturalLogCubicDiscountSpread,Discount,SplineLogCubic);
+export_piecewise_spread_curve(PiecewiseLogMixedLinearCubicDiscountSpread,Discount,LogMixedLinearCubic);
 
 #endif
