@@ -307,9 +307,14 @@ class Name : public YieldTermStructure {
 
 %enddef
 
+export_piecewise_spread_curve(PiecewiseLogLinearSpreadDiscount,Discount,LogLinear);
+#if defined(SWIGPYTHON)
+deprecate_feature(PiecewiseLogLinearDiscountSpread, PiecewiseLogLinearSpreadDiscount);
+#else
 export_piecewise_spread_curve(PiecewiseLogLinearDiscountSpread,Discount,LogLinear);
-export_piecewise_spread_curve(PiecewiseLogCubicDiscountSpread,Discount,MonotonicLogCubic);
-export_piecewise_spread_curve(PiecewiseNaturalLogCubicDiscountSpread,Discount,SplineLogCubic);
-export_piecewise_spread_curve(PiecewiseLogMixedLinearCubicDiscountSpread,Discount,LogMixedLinearCubic);
+#endif
+export_piecewise_spread_curve(PiecewiseLogCubicSpreadDiscount,Discount,MonotonicLogCubic);
+export_piecewise_spread_curve(PiecewiseNaturalLogCubicSpreadDiscount,Discount,SplineLogCubic);
+export_piecewise_spread_curve(PiecewiseLogMixedLinearCubicSpreadDiscount,Discount,LogMixedLinearCubic);
 
 #endif

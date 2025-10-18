@@ -147,7 +147,11 @@ class Name : public YieldTermStructure {
 %enddef
 
 export_ipzsts_instance(PiecewiseZeroSpreadedTermStructure, Linear)
+#if defined(SWIGPYTHON)
+deprecate_feature(SpreadedLinearZeroInterpolatedTermStructure, PiecewiseZeroSpreadedTermStructure);
+#else
 export_ipzsts_instance(SpreadedLinearZeroInterpolatedTermStructure, Linear)
+#endif
 export_ipzsts_instance(SpreadedBackwardFlatZeroInterpolatedTermStructure, BackwardFlat)
 export_ipzsts_instance(SpreadedCubicZeroInterpolatedTermStructure, Cubic)
 export_ipzsts_instance(SpreadedKrugerZeroInterpolatedTermStructure, Kruger)
