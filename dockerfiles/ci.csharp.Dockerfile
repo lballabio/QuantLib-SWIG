@@ -4,4 +4,4 @@ LABEL Description="A development environment for building QuantLib-SWIG on Travi
 
 RUN cd /tmp \
  && wget https://dot.net/v1/dotnet-install.sh \
- && bash dotnet-install.sh --install-dir /usr/local/bin/ -c 6.0
+ && bash dotnet-install.sh --install-dir /usr/local/bin/ -c 9.0
