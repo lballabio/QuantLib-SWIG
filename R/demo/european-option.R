@@ -72,23 +72,23 @@ report('binomial (LR)', option$NPV())
 ## method: Monte Carlo
 invisible(option$setPricingEngine(MCLDEuropeanEngine(process,
                                   timeSteps = 1,
-                                  timeStepsPerYear=NA,
-                                  brownianBridge=FALSE,
-                                  antitheticVariate=FALSE,
-                                  requiredSamples=NULL,
+                                  timeStepsPerYear = NA,
+                                  brownianBridge = FALSE,
+                                  antitheticVariate = FALSE,
+                                  requiredSamples = NA,
                                   requiredTolerance = 0.02,
-                                  maxSamples=NULL,
+                                  maxSamples = NA,
                                   seed = 42)))
 report('MC (crude)', option$NPV()) #, option$errorEstimate())
 
 invisible(option$setPricingEngine(MCLDEuropeanEngine(process,
                                   timeSteps = 1,
-                                  timeStepsPerYear=NA,
-                                  brownianBridge=FALSE,
-                                  antitheticVariate=FALSE,
+                                  timeStepsPerYear = NA,
+                                  brownianBridge = FALSE,
+                                  antitheticVariate = FALSE,
                                   requiredSamples = 32768,
-                                  requiredTolerance = 0.02,
-                                  maxSamples=NULL,
-                                  seed=42)))
+                                  requiredTolerance = NA,
+                                  maxSamples = NA,
+                                  seed = 42)))
 report('MC (Sobol)', option$NPV())
 
