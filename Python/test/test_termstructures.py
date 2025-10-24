@@ -185,7 +185,7 @@ class TermStructureTest(unittest.TestCase):
         alpha = 0.05
         baseCrvHandle = ql.YieldTermStructureHandle(self.termStructure)
         ufrCrv = ql.UltimateForwardTermStructure(
-            baseCrvHandle, llfr, ufr, fsp, alpha)
+            baseCrvHandle, llfr, ufr, fsp, alpha, None)
         cutOff = ufrCrv.timeFromReference(settlement + fsp)
         forwardCalculator = extrapolatedForwardRate(
             cutOff, llfr.value(), ufr.value(), alpha)
