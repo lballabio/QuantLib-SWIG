@@ -1632,6 +1632,8 @@ class BlackCalculator {
     Real itmAssetProbability() const;
     Real strikeSensitivity() const;
     Real strikeGamma() const;
+	Real vanna(Real spot, Time maturity) const;
+    Real volga(Time maturity) const;
     Real alpha() const;
     Real beta() const;
 };
@@ -1663,6 +1665,8 @@ class BachelierCalculator {
     Real itmAssetProbability() const;
     Real strikeSensitivity() const;
     Real strikeGamma() const;
+	Real vanna(Time maturity) const;
+    Real volga(Time maturity) const;
     Real alpha() const;
     Real beta() const;
 };
