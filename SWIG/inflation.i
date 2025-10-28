@@ -971,6 +971,7 @@ class ZeroCouponInflationSwap : public Swap {
                    BusinessDayConvention infConvention = BusinessDayConvention());
     Rate fairRate();
     Real fixedLegNPV();
+    Real fixedLegBPS() const;
     Real inflationLegNPV();
     std::vector<ext::shared_ptr<CashFlow> > fixedLeg();
     std::vector<ext::shared_ptr<CashFlow> > inflationLeg();
