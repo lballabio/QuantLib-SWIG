@@ -30,6 +30,7 @@
 %include boost_shared_ptr.i
 
 %define QL_TYPECHECK_BOOL       7210    %enddef
+%define QL_TYPECHECK_INTEGER       7220    %enddef
 
 %{
 // This is necessary to avoid compile failures on 
@@ -59,10 +60,29 @@
     $result = !$1 ? Py_None : *$1 ? Py_True : Py_False;
     Py_INCREF($result);
 %}
+
+%typemap(in) ext::optional<Integer> %{
+    if ($input == Py_None)
+        $1 = ext::nullopt;
+    else if (PyLong_Check($input))
+        $1 = PyLong_AsLong($input);
+    else
+        SWIG_exception(SWIG_TypeError, "int expected");
+%}
+%typecheck (QL_TYPECHECK_INTEGER) ext::optional<Integer> %{
+    $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
+%}
+%typemap(out) ext::optional<Integer> %{
+    $result = !$1 ? Py_None : PyLong_FromLong(*$1);
+    Py_INCREF($result);
+%}
 #else
 #if defined(SWIGCSHARP)
 %typemap(cscode) ext::optional<bool> %{
     public static implicit operator OptionalBool(bool b) => new OptionalBool(b);
+%}
+%typemap(cscode) ext::optional<Integer> %{
+    public static implicit operator OptionalInteger(int i) => new OptionalInteger(i);
 %}
 #endif
 namespace ext {
@@ -73,6 +93,7 @@ namespace ext {
     };
 }
 %template(OptionalBool) ext::optional<bool>;
+%template(OptionalInteger) ext::optional<Integer>;
 #endif
 
 %{
