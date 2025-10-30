@@ -34,22 +34,6 @@
 %include interpolation.i
 %include functions.i
 
-%define QL_TYPECHECK_INTEGER       7220    %enddef
-
-#if defined(SWIGPYTHON)
-%typemap(in) ext::optional<Integer> %{
-    if ($input == Py_None)
-        $1 = ext::nullopt;
-    else if (PyLong_Check($input))
-        $1 = PyLong_AsLong($input);
-    else
-        SWIG_exception(SWIG_TypeError, "int expected");
-%}
-%typecheck (QL_TYPECHECK_INTEGER) ext::optional<Integer> %{
-    $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
-%}
-#endif
-
 %{
 using QuantLib::TermStructure;
 %}
