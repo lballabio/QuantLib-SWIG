@@ -74,9 +74,12 @@ class Bond : public Instrument {
     // public functions
     Rate nextCouponRate(const Date& d = Date());
     Rate previousCouponRate(const Date& d = Date());
+    Date nextCashFlowDate(Date d = Date()) const;
+    Date previousCashFlowDate(Date d = Date()) const;
     // inspectors
     Natural settlementDays() const;
     Date settlementDate(Date d = Date());
+    bool isTradable(Date d = Date()) const;
     Date startDate() const;
     Date maturityDate() const;
     Date issueDate() const;
