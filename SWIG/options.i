@@ -998,6 +998,23 @@ class AnalyticDividendEuropeanEngine : public PricingEngine {
 };
 
 %{
+using QuantLib::CashDividendEuropeanEngine;
+%}
+
+%shared_ptr(CashDividendEuropeanEngine)
+class CashDividendEuropeanEngine : public PricingEngine {
+  public:
+    enum CashDividendModel { Spot, Escrowed };
+
+    CashDividendEuropeanEngine(
+        const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+        DividendSchedule dividends,
+        CashDividendModel cashDividendModel = Spot);
+};
+
+
+
+%{
 using QuantLib::QdPlusAmericanEngine;
 %}
 
