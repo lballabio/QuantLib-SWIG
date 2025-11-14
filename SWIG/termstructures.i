@@ -1,4 +1,3 @@
-
 /*
  Copyright (C) 2000, 2001, 2002, 2003 RiskMap srl
  Copyright (C) 2003, 2004, 2014 StatPro Italia srl
@@ -51,8 +50,8 @@ class TermStructure : public Observable {
     Time maxTime() const;
     // from Extrapolator, since we can't use multiple inheritance
     // and we're already inheriting from Observable
-    void enableExtrapolation();
-    void disableExtrapolation();
+    void enableExtrapolation(bool b = true);
+    void disableExtrapolation(bool b = true);
     bool allowsExtrapolation();
 };
 
