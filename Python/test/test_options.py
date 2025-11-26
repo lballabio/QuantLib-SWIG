@@ -25,7 +25,7 @@ class OptionsTest(unittest.TestCase):
         """ Testing FDM Heston Hull-White pricing """
 
         dc = ql.Actual365Fixed()
-        todays_date = ql.Date(19, ql.May, 2021)
+        todays_date = ql.Date.todaysDate()
 
         r = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.075, dc))
         d = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.01, dc))
@@ -45,7 +45,7 @@ class OptionsTest(unittest.TestCase):
 
         option = ql.VanillaOption(
             ql.PlainVanillaPayoff(ql.Option.Call, s0),
-            ql.EuropeanExercise(todays_date + ql.Period(1, ql.Years))
+            ql.EuropeanExercise(todays_date + ql.Period(365, ql.Days))
         )
 
         hull_white_process = ql.HullWhiteProcess(r, a, sig)
@@ -102,6 +102,48 @@ class OptionsTest(unittest.TestCase):
             ql.AnalyticH1HWEngine(heston_model, hull_white_model, 0.0)
         )
         self.assertAlmostEqual(expected, option.NPV(), 5)
+
+    def testCashDividendEuropeanEngine(self):
+        """Testing cash dividend European engine"""
+        
+        today = ql.Date.todaysDate()
+        dc = ql.Actual365Fixed()
+    
+        maturityDate = today + ql.Period(1, ql.Years) + ql.Period(1, ql.Days)
+    
+        option = ql.VanillaOption(
+            ql.PlainVanillaPayoff(ql.Option.Call, 100.0),
+            ql.EuropeanExercise(maturityDate)
+        )
+    
+        div_schedule = ql.DividendSchedule()
+        div_schedule.append(ql.FixedDividend(5.0, today + ql.Period(3, ql.Months)))
+    
+        process = ql.BlackScholesMertonProcess(
+            ql.makeQuoteHandle(100.0),
+            ql.YieldTermStructureHandle(ql.FlatForward(today, 0.075, dc)),
+            ql.YieldTermStructureHandle(ql.FlatForward(today, 0.05, dc)),
+            ql.BlackVolTermStructureHandle(ql.BlackConstantVol(today, ql.TARGET(), 0.3,  dc))
+        )
+    
+        option.setPricingEngine(
+            ql.CashDividendEuropeanEngine(
+                process, div_schedule, ql.CashDividendEuropeanEngine.Escrowed
+            )
+        )
+        calculated = option.NPV()
+    
+        option.setPricingEngine(ql.AnalyticDividendEuropeanEngine(process, div_schedule))
+        expected = option.NPV()
+        self.assertAlmostEqual(expected, calculated, 8)
+    
+        option.setPricingEngine(
+            ql.CashDividendEuropeanEngine(
+                process, div_schedule, ql.CashDividendEuropeanEngine.Spot
+            )
+        )
+    
+        self.assertAlmostEqual(7.9193, option.NPV(), 3)
 
 
 if __name__ == '__main__':
