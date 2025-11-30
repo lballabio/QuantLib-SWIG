@@ -25,8 +25,8 @@ class OptionsTest(unittest.TestCase):
         """ Testing FDM Heston Hull-White pricing """
 
         dc = ql.Actual365Fixed()
-        todays_date = ql.Date.todaysDate()
-
+        todays_date = ql.Settings.instance().evaluationDate
+        
         r = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.075, dc))
         d = ql.YieldTermStructureHandle(ql.FlatForward(todays_date, 0.01, dc))
 
@@ -62,7 +62,8 @@ class OptionsTest(unittest.TestCase):
 
     def testAnalyticHestonHullWhite(self):
         """ Testing Analytic Heston Hull-White pricing """
-        today = ql.Date.todaysDate()
+
+        today = ql.Settings.instance().evaluationDate
         dc = ql.Actual365Fixed()
 
         maturityDate = today + ql.Period(10 * 365, ql.Days)
@@ -106,10 +107,10 @@ class OptionsTest(unittest.TestCase):
     def testCashDividendEuropeanEngine(self):
         """Testing cash dividend European engine"""
         
-        today = ql.Date.todaysDate()
+        today = today = ql.Settings.instance().evaluationDate
         dc = ql.Actual365Fixed()
     
-        maturityDate = today + ql.Period(1, ql.Years) + ql.Period(1, ql.Days)
+        maturityDate = today + ql.Period(366, ql.Days)
     
         option = ql.VanillaOption(
             ql.PlainVanillaPayoff(ql.Option.Call, 100.0),
@@ -117,7 +118,7 @@ class OptionsTest(unittest.TestCase):
         )
     
         div_schedule = ql.DividendSchedule()
-        div_schedule.append(ql.FixedDividend(5.0, today + ql.Period(3, ql.Months)))
+        div_schedule.append(ql.FixedDividend(5.0, today + ql.Period(92, ql.Days)))
     
         process = ql.BlackScholesMertonProcess(
             ql.makeQuoteHandle(100.0),
@@ -142,7 +143,6 @@ class OptionsTest(unittest.TestCase):
                 process, div_schedule, ql.CashDividendEuropeanEngine.Spot
             )
         )
-    
         self.assertAlmostEqual(7.9193, option.NPV(), 3)
 
 
