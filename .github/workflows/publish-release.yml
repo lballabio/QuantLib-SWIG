@@ -18,7 +18,7 @@ jobs:
         fetch-tags: true
     - name: Setup
       env:
-        SWIG_VERSION: 4.4.0
+        SWIG_VERSION: 4.4.1
       run: |
         sudo apt update
         sudo apt install -y libpcre2-dev libboost-dev tofrodos

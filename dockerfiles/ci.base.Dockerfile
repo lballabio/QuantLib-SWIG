@@ -8,7 +8,7 @@ RUN apt-get update \
  && apt-get clean \
  && rm -rf /var/lib/apt/lists/*
 
-ENV swig_version=4.4.0
+ENV swig_version=4.4.1
 
 RUN wget http://downloads.sourceforge.net/project/swig/swig/swig-${swig_version}/swig-${swig_version}.tar.gz \
  && tar xfz swig-${swig_version}.tar.gz \
