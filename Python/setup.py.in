@@ -30,7 +30,7 @@ def define_macros(py_limited_api):
 
     define_macros = []
     if py_limited_api:
-        define_macros += [("Py_LIMITED_API", "0x03100000")]
+        define_macros += [("Py_LIMITED_API", "0x03080000")]
 
     compiler = get_default_compiler()
 
@@ -220,7 +220,7 @@ py_limited_api = (
 
 with open("./setup.cfg", "w") as f:
     if py_limited_api:
-        f.write("[bdist_wheel]" + os.linesep + "py_limited_api=cp310" + os.linesep)
+        f.write("[bdist_wheel]" + os.linesep + "py_limited_api=cp38" + os.linesep)
 
 
 setup(
