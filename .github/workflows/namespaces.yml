@@ -24,7 +24,7 @@ jobs:
         sed -i -e 's/ext::placeholders\b/std::placeholders/g' SWIG/*
         sed -i -e 's/boost::optional\b/ext::optional/g' SWIG/*
         sed -i -e 's/boost::none\b/ext::nullopt/g' SWIG/*
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib-SWIG
