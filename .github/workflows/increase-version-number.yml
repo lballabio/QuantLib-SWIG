@@ -27,7 +27,7 @@ jobs:
         sed -i -e "s/^    version=.*$/    version=\"1.${NEXT_MINOR}-dev\",/g" Python/setup.py
         sed -i -e "s/^Version: .*$/Version: 1.${NEXT_MINOR}/g" R/DESCRIPTION
         git commit -a -m "Set version to 1.${NEXT_MINOR}-dev"
-    - uses: peter-evans/create-pull-request@v7
+    - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib-SWIG
