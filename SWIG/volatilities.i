@@ -458,10 +458,6 @@ class BlackVarianceCurve : public BlackVolTermStructure {
               self->setInterpolation<QuantLib::Linear>();
           } else if (s == "cubic") {
               self->setInterpolation<QuantLib::Cubic>();
-          } else if (s == "monotonic cubic") {
-              self->setInterpolation<QuantLib::MonotonicCubic>();
-          } else if (s == "spline cubic") {
-              self->setInterpolation<QuantLib::SplineCubic>();
           } else {
               QL_FAIL("Unknown interpolator: " << interpolator);
           }
