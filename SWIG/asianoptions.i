@@ -41,6 +41,11 @@ class ContinuousAveragingAsianOption : public OneAssetOption {
             Average::Type averageType,
             const ext::shared_ptr<StrikedTypePayoff>& payoff,
             const ext::shared_ptr<Exercise>& exercise);
+    ContinuousAveragingAsianOption(
+            Average::Type averageType,
+            Date startDate,
+            const ext::shared_ptr<StrikedTypePayoff>& payoff,
+            const ext::shared_ptr<Exercise>& exercise);
 };
 
 %shared_ptr(DiscreteAveragingAsianOption)
@@ -439,6 +444,8 @@ using QuantLib::ContinuousArithmeticAsianLevyEngine;
 %shared_ptr(ContinuousArithmeticAsianLevyEngine)
 class ContinuousArithmeticAsianLevyEngine : public PricingEngine {
   public:
+    ContinuousArithmeticAsianLevyEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                                        const Handle<Quote>& runningAverage);
     ContinuousArithmeticAsianLevyEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
                                         const Handle<Quote>& runningAverage,
                                         const Date& startDate);
