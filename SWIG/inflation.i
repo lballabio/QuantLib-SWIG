@@ -98,7 +98,9 @@ class YoYInflationTermStructure : public InflationTermStructure {
   private:
     YoYInflationTermStructure();
   public:
-    Rate yoyRate(const Date &d, const Period& instObsLag = Period(-1,Days),
+    Rate yoyRate(const Date &d,
+                 bool extrapolate = false) const;
+    Rate yoyRate(const Date &d, const Period& instObsLag,
                  bool forceLinearInterpolation = false,
                  bool extrapolate = false) const;
     Rate yoyRate(Time t,
@@ -116,7 +118,9 @@ class ZeroInflationTermStructure : public InflationTermStructure {
   private:
     ZeroInflationTermStructure();
   public:
-    Rate zeroRate(const Date &d, const Period& instObsLag = Period(-1,Days),
+    Rate zeroRate(const Date &d,
+                  bool extrapolate = false) const;
+    Rate zeroRate(const Date &d, const Period& instObsLag,
                   bool forceLinearInterpolation = false,
                   bool extrapolate = false) const;
     Rate zeroRate(Time t,
