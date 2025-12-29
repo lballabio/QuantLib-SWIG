@@ -215,6 +215,9 @@ using QuantLib::UltimateForwardTermStructure;
 
 %shared_ptr(UltimateForwardTermStructure);
 class UltimateForwardTermStructure : public YieldTermStructure {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") UltimateForwardTermStructure;
+    #endif
   public:
     UltimateForwardTermStructure(const Handle<YieldTermStructure>& curveHandle,
                                  const Handle<Quote>& lastLiquidForwardRate,
