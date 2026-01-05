@@ -1,797 +1,603 @@
-commit 35b3f98b93dd84370a064ba2368b79b37f55705f
+commit 4feeaae0276422feb9cc926f1b85841da764c89c
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Mon, 13 Oct 2025 07:53:33 +0000
+Date:   Mon, 5 Jan 2026 19:41:32 +0000
 
-    Set version to 1.40
-
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit c1ed7fede92702ae9185fb85547fd2e1868f655b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Oct 2025 16:36:11 +0200
-
-    Add initial workflows for release
-
- .github/workflows/prepare-release.yml | 40 ++++++++++++++++++++++
- .github/workflows/publish-release.yml | 63 +++++++++++++++++++++++++++++++++++
- 2 files changed, 103 insertions(+)
-
-commit c94cd113d1ec3374b3e16d86892268c9810b678a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Oct 2025 16:19:51 +0200
-
-    Add bespoke tool for creating zip from tarball
-
- tools/tgz2zip | 27 +++++++++++++++++++++++++++
- 1 file changed, 27 insertions(+)
-
-commit 2083659311550865bbadbe6d6b7e38701247657a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Oct 2025 16:12:39 +0200
-
-    Avoid problems with long filenames in tarball
-
- configure.ac | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 288d73128850774ea103397359acf8394bafba49
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 3 Oct 2025 15:46:37 +0200
-
-    Don't require file not needed for distribution
-
- Python/Makefile.am | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 5bc4caf4eb0bfc347a73b6258f215b0ab6b21a6d
-Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Thu, 2 Oct 2025 14:04:31 +0000
-
-    Update changelog
-
- ChangeLog.txt | 843 ++++++++++++++++++++++++++++++++++++++++------------------
- 1 file changed, 588 insertions(+), 255 deletions(-)
-
-commit 8d46b73f5bc3baced1eb156004402d8b51b63461
-Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Thu, 2 Oct 2025 14:04:31 +0000
-
-    Set version to 1.40-rc
+    Set version to 1.41-rc
 
  Python/setup.py | 2 +-
  SWIG/ql.i       | 4 ++--
  configure.ac    | 2 +-
  3 files changed, 4 insertions(+), 4 deletions(-)
 
-commit cc4d28b3813769f58549b6423d01d6ff9f6ecef6
+commit 99086d5271d307aa2b58ad677d3aa31d337a0c5b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 2 Oct 2025 12:00:23 +0200
+Date:   Mon, 5 Jan 2026 12:37:53 +0100
 
-    Update news
+    Update news for 1.41
 
- News.md | 59 +++++++++++++++++------------------------------------------
- 1 file changed, 17 insertions(+), 42 deletions(-)
+ News.md | 23 ++++++++++++++---------
+ 1 file changed, 14 insertions(+), 9 deletions(-)
 
-commit e9cd8caf9c2cf3430ec96e3f6e22869c4758f5f0
+commit 9adba846e2d00c15239508cbb30197af3fee9f72
+Merge: 0e5f50cd eef65314
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 18:25:56 +0200
+Date:   Mon, 5 Jan 2026 10:10:51 +0100
 
-    Apply changes in #772 to template
+    Fix typo in method mapping for `MakeSwaption` (#808)
 
- Python/setup.py.in | 20 +++++++++++++++++---
- 1 file changed, 17 insertions(+), 3 deletions(-)
-
-commit 3c3686a81028e14a3fb172942483fb2da9f0aa56
-Merge: 26e40f75 2209aa1d
+commit eef65314846d8068173a6d920dd8753a5324081a
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 17:49:23 +0200
+Date:   Mon, 5 Jan 2026 09:19:16 +0100
 
-    Export PiecewiseSpreadYieldCurve (#776)
+    Fix typo in method mapping
 
-commit 2209aa1d3d8ba3abb8b916eb3a8a2810c844c062
+ SWIG/swaption.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0e5f50cdff3bb0bceeb421a36daa483cafe4766e
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 16:11:07 +0200
+Date:   Mon, 29 Dec 2025 16:44:51 +0100
 
-    Enable kwargs
+    Restore kwargs for ultimate term-structure constructor
 
- SWIG/piecewiseyieldcurve.i | 9 ++++++---
- 1 file changed, 6 insertions(+), 3 deletions(-)
+ SWIG/termstructures.i | 3 +++
+ 1 file changed, 3 insertions(+)
 
-commit bde9277c0bd5805cbe183e4c6a1f8e10d08f7706
+commit 85b621bc9296f62df7982ae33df2281c573c5be0
+Merge: b66e8eca 13f727a4
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 15:53:40 +0200
+Date:   Wed, 24 Dec 2025 12:19:04 +0100
 
-    Export PiecewiseSpreadYieldCurve
+    Export new features of overnight-indexed coupons (#806)
 
- SWIG/piecewiseyieldcurve.i | 34 ++++++++++++++++++++++++++++++++++
- 1 file changed, 34 insertions(+)
-
-commit 26e40f75becc56d2af90f9939196f6bc445f135c
-Merge: 6e269c52 13da229b
+commit 13f727a477996308938bc77f4db7f0c0cd7df11d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 15:07:08 +0200
+Date:   Wed, 24 Dec 2025 11:35:15 +0100
 
-    Export soft-barrier option and analytic engine (#775)
+    Export new features of overnight-indexed coupons
 
-commit 13da229ba86114e99b83b9af9b46f54de7b7108c
+ SWIG/cashflows.i | 133 ++++++++++++++++++++++++++++++++++++++++++++-----------
+ 1 file changed, 107 insertions(+), 26 deletions(-)
+
+commit b66e8ecaeca075ebb96c03f33f0b52593ba0bd56
+Merge: 2afb7e19 f335ac11
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 13:36:03 +0200
+Date:   Tue, 23 Dec 2025 20:08:05 +0100
 
-    Export soft-barrier option and analytic engine
+    Export new constructor for Asian option and engine (#805)
 
- SWIG/barrieroptions.i | 30 ++++++++++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
-
-commit 6e269c524b8906edd6febccc2643d55a83d6cde5
-Merge: 2a0c1442 59109238
+commit f335ac11662a86f9cda939b7163f88ae995a5edb
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 13:31:07 +0200
+Date:   Tue, 23 Dec 2025 18:37:40 +0100
 
-    Export CDI and Tonar indexes (#774)
+    Export new constructor for Asian option and engine
 
-commit 59109238cddb8f08181e9e22ceece7e00120268d
+ SWIG/asianoptions.i | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+commit 2afb7e19bfc453f81f63ed1f271d09becccf459e
+Merge: 7b6a8dbb ae9dba82
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 11:12:10 +0200
+Date:   Tue, 23 Dec 2025 18:10:55 +0100
 
-    Export CDI index
+    Export const-notional cross-currency swap helper (#804)
 
- SWIG/indexes.i | 1 +
- 1 file changed, 1 insertion(+)
-
-commit cb2b618a31cb9bfc77468b392c197279410e29a3
+commit ae9dba82b1e007032bbd937c90d7409d766a2ae2
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Sep 2025 10:53:21 +0200
+Date:   Tue, 23 Dec 2025 16:53:37 +0100
 
-    Export new name for Tonar
+    Export const-notional cross-currency swap helper
 
- SWIG/indexes.i | 6 ++++++
- 1 file changed, 6 insertions(+)
+ SWIG/ratehelpers.i | 26 ++++++++++++++++++++++----
+ 1 file changed, 22 insertions(+), 4 deletions(-)
 
-commit 2a0c144201fc1f3b3b018ce818c7fd1feaef04f1
-Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Thu, 25 Sep 2025 15:35:36 +0000
-
-    Update copyright list in license
-
- LICENSE.TXT | 1 +
- 1 file changed, 1 insertion(+)
-
-commit e9ebdf34289607d124c5e0603c9bfa272f6858b6
-Merge: b68ec3b6 2ea61e24
+commit 7b6a8dbb71ed1d42e32a8ba3ba0bfd201694f1ac
+Merge: 965f8b46 35925cd7
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 25 Sep 2025 17:35:26 +0200
+Date:   Tue, 23 Dec 2025 15:08:02 +0100
 
-    Expose perpetual future instrument object and pricing engine (#770)
+    Export `zeroRate` and `yoyRate` methods without lag (#803)
 
-commit 2ea61e24a0b50a8b965620246aea59b6d310c05f
+commit 965f8b460a025fb7952122d2bf3a8eb8653d9de3
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 25 Sep 2025 16:29:52 +0200
+Date:   Tue, 23 Dec 2025 12:37:28 +0100
 
-    Change of interface in C++ constructor
+    No need for %extend
 
- SWIG/futures.i | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ SWIG/cashflows.i | 83 ++++++++++++++++++++++++--------------------------------
+ 1 file changed, 36 insertions(+), 47 deletions(-)
 
-commit b68ec3b6109179dea34ae1f23db5ae49a29f45e6
-Merge: a7b57caa b1394a77
+commit 35925cd7bc1e050ca8ba45a87e2a380f94062c9c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 25 Sep 2025 16:13:07 +0200
+Date:   Tue, 23 Dec 2025 12:56:41 +0100
 
-    Flags for building a QuantLib package against a debug QuantLib (#772)
+    Export zeroRate and yoyRate methods without lag
 
-commit b1394a7792822e58c96dfc03208b1471f245bfb2
-Author: kp9991 <kp9991@gmail.com>
-Date:   Thu, 25 Sep 2025 06:09:26 +1000
+ SWIG/inflation.i | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-    Flags for building a QuantLib package against a debug QuantLib
-
- Python/README.md |  8 +++++++-
- Python/setup.py  | 20 +++++++++++++++++---
- SWIG/quantlib.i  |  4 ++++
- 3 files changed, 28 insertions(+), 4 deletions(-)
-
-commit a7b57caa8e63125b2ba316c5a91b26ab2cd238dd
-Merge: e661f4ba 01bf7b0c
+commit 73402fff013652d83efd7eb30b04678964f54cbe
+Merge: d795a2b0 e12869eb
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Sep 2025 14:51:45 +0200
+Date:   Tue, 23 Dec 2025 11:40:11 +0100
 
-    BachelierCalculator (#767)
+    Add `setInterpolation` method in `BlackVarianceCurve` (#802)
 
-commit 1fa50796486e87fbfe41b77903b552314b7d009e
-Author: kp9991 <kp9991@gmail.com>
-Date:   Wed, 24 Sep 2025 05:50:49 +1000
+commit e12869eb5c21c0263ca92153d7b188ffbb241716
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Tue, 23 Dec 2025 10:29:06 +0100
 
-    Reverting debug files
+    Fix error for missing interpolators
 
- Python/README.md | 7 +------
- Python/setup.py  | 9 +--------
- SWIG/quantlib.i  | 5 -----
- 3 files changed, 2 insertions(+), 19 deletions(-)
+ SWIG/volatilities.i | 4 ----
+ 1 file changed, 4 deletions(-)
 
-commit e661f4ba876c6fab4042973f5955e3e88ecc6fa1
-Merge: ce6c3aef a098f525
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Sep 2025 18:06:53 +0200
+commit ed53ea0206131eb59e4b93478176a730fa025f4b
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Tue, 23 Dec 2025 10:21:18 +0100
 
-    Expose inspectors on MultiplicativePriceSeasonality (#771)
+    wrap new overidden methon in extend
 
-commit a098f525063da00b47ffbc2a40ffd4382fa6a2ef
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Tue, 23 Sep 2025 11:44:55 -0400
+ SWIG/volatilities.i | 29 +++++++++++++++--------------
+ 1 file changed, 15 insertions(+), 14 deletions(-)
 
-    Expose inspectors on MultiplicativePriceSeasonality
+commit e00cbf4860a9750df7ac0f999195e4a62f5756f8
+Author: paolodelia99 <paolo.delia99@gmail.com>
+Date:   Tue, 23 Dec 2025 10:16:33 +0100
 
- SWIG/inflation.i | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+    Add set interpolation method in BlackVarianceCurve class
 
-commit 07bd176e9a84ee2148723682b3aa4c20a37ae607
-Author: drxyzw <hirotoo20@gmail.com>
-Date:   Sat, 20 Sep 2025 19:05:12 +0800
+ SWIG/volatilities.i | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
-    adding a support for perpetual futures
-
- Python/test/test_futures.py | 135 ++++++++++++++++++++++++++++++++++++++++++++
- SWIG/futures.i              |  34 +++++++++++
- 2 files changed, 169 insertions(+)
-
-commit ce6c3aef30a69d577004c4895f0300cd35c3508d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 18 Sep 2025 14:59:19 +0200
-
-    Don't run on push
-
- .github/workflows/prepare-release-candidate.yml | 1 -
- 1 file changed, 1 deletion(-)
-
-commit b846a471c4ab13928d6e8660d0b9ed5fff96c2ee
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 18 Sep 2025 10:31:22 +0200
-
-    Add workflow to prepare RC for next release
-
- .github/workflows/prepare-release-candidate.yml | 43 +++++++++++++++++++++++++
- 1 file changed, 43 insertions(+)
-
-commit e5d10ee546a6db94a199fce968b486521a659eab
-Author: kp9991 <kp9991@gmail.com>
-Date:   Thu, 18 Sep 2025 06:13:25 +1000
-
-    retrigger checks
-
-commit 560aac10b089abfe561c67823e7cf2ea76fa4fd9
+commit d795a2b011fe6cdd5cdc729d358c449c0159f889
 Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 8 Sep 2025 21:21:31 +0000
+Date:   Mon, 15 Dec 2025 18:02:20 +0000
 
-    Bump actions/stale from 9 to 10
+    Bump peter-evans/create-pull-request from 7 to 8
     
-    Bumps [actions/stale](https://github.com/actions/stale) from 9 to 10.
-    - [Release notes](https://github.com/actions/stale/releases)
-    - [Changelog](https://github.com/actions/stale/blob/main/CHANGELOG.md)
-    - [Commits](https://github.com/actions/stale/compare/v9...v10)
+    Bumps [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) from 7 to 8.
+    - [Release notes](https://github.com/peter-evans/create-pull-request/releases)
+    - [Commits](https://github.com/peter-evans/create-pull-request/compare/v7...v8)
     
     ---
     updated-dependencies:
-    - dependency-name: actions/stale
-      dependency-version: '10'
+    - dependency-name: peter-evans/create-pull-request
+      dependency-version: '8'
       dependency-type: direct:production
       update-type: version-update:semver-major
     ...
     
     Signed-off-by: dependabot[bot] <support@github.com>
 
- .github/workflows/stale.yml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .github/workflows/copyrights.yml                | 2 +-
+ .github/workflows/increase-version-number.yml   | 2 +-
+ .github/workflows/license-url.yml               | 2 +-
+ .github/workflows/misspell.yml                  | 2 +-
+ .github/workflows/namespaces.yml                | 2 +-
+ .github/workflows/prepare-release-candidate.yml | 2 +-
+ .github/workflows/prepare-release.yml           | 2 +-
+ 7 files changed, 7 insertions(+), 7 deletions(-)
 
-commit c6c1f581a657d468c28b1a38cb6089a85c999008
+commit d41d093301825d1ab17c2b71fc75b654473e0b98
+Merge: 9b8a5500 784b3b11
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 8 Sep 2025 21:43:23 +0200
+Date:   Tue, 9 Dec 2025 16:08:13 +0100
 
-    Avoid failing jobs when dependabot pushes
+    Re-enable Python 3.8 and 3.9 (#800)
 
- .github/workflows/copyrights.yml  | 4 ++--
- .github/workflows/license-url.yml | 6 +++---
- .github/workflows/misspell.yml    | 4 ++--
- .github/workflows/namespaces.yml  | 4 ++--
- 4 files changed, 9 insertions(+), 9 deletions(-)
-
-commit e5c6d9e48a6c779980407aa28ba626198a04012e
-Author: kp9991 <kp9991@gmail.com>
-Date:   Sat, 6 Sep 2025 17:34:06 +1000
-
-    Optional debug flags on Windows
-
- Python/README.md |  7 ++++++-
- Python/setup.py  | 17 ++++++++++++-----
- 2 files changed, 18 insertions(+), 6 deletions(-)
-
-commit 4cb6883de609df510e0b4697b41f33d65ca6534c
-Author: kp9991 <kp9991@gmail.com>
-Date:   Sat, 6 Sep 2025 04:46:42 +1000
-
-    Initial commit
-
- Python/setup.py |  8 ++++----
- SWIG/options.i  | 30 ++++++++++++++++++++++++++++++
- SWIG/quantlib.i |  5 +++++
- 3 files changed, 39 insertions(+), 4 deletions(-)
-
-commit dc094dacdeabed4f0fbde1c90c4de74d144ee0ea
-Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Fri, 29 Aug 2025 13:11:54 +0000
-
-    Update old license links
-
- CSharp/examples/BermudanSwaption/BermudanSwaption.cs               | 2 +-
- CSharp/examples/EquityOption/EquityOption.cs                       | 2 +-
- CSharp/examples/FiniteDifferenceMethods/FiniteDifferenceMethods.cs | 2 +-
- CSharp/examples/Times/Times.cs                                     | 2 +-
- Java/examples/Bonds.java                                           | 2 +-
- Java/examples/CallableBonds.java                                   | 2 +-
- Java/examples/CallableBondsOAS.java                                | 2 +-
- Java/examples/DiscreteHedging.java                                 | 2 +-
- Java/examples/EquityOptions.java                                   | 2 +-
- Python/setup.py                                                    | 2 +-
- Python/setup.py.in                                                 | 2 +-
- Python/src/QuantLib/__init__.py                                    | 2 +-
- Python/test/test_americanquantooption.py                           | 2 +-
- Python/test/test_basket_option.py                                  | 2 +-
- Python/test/test_blackformula.py                                   | 2 +-
- Python/test/test_bondfunctions.py                                  | 2 +-
- Python/test/test_bonds.py                                          | 2 +-
- Python/test/test_calendars.py                                      | 2 +-
- Python/test/test_capfloor.py                                       | 2 +-
- Python/test/test_cms.py                                            | 2 +-
- Python/test/test_coupons.py                                        | 2 +-
- Python/test/test_currencies.py                                     | 2 +-
- Python/test/test_date.py                                           | 2 +-
- Python/test/test_equityindex.py                                    | 2 +-
- Python/test/test_extrapolation.py                                  | 2 +-
- Python/test/test_fdm.py                                            | 2 +-
- Python/test/test_iborindex.py                                      | 2 +-
- Python/test/test_inflation.py                                      | 2 +-
- Python/test/test_instruments.py                                    | 2 +-
- Python/test/test_integrals.py                                      | 2 +-
- Python/test/test_marketelements.py                                 | 2 +-
- Python/test/test_ode.py                                            | 2 +-
- Python/test/test_options.py                                        | 2 +-
- Python/test/test_ratehelpers.py                                    | 2 +-
- Python/test/test_sabr.py                                           | 2 +-
- Python/test/test_slv.py                                            | 2 +-
- Python/test/test_solvers1d.py                                      | 2 +-
- Python/test/test_swap.py                                           | 2 +-
- Python/test/test_swaption.py                                       | 2 +-
- Python/test/test_termstructures.py                                 | 2 +-
- Python/test/test_volatilities.py                                   | 2 +-
- SWIG/asianoptions.i                                                | 2 +-
- SWIG/barrieroptions.i                                              | 2 +-
- SWIG/basketoptions.i                                               | 2 +-
- SWIG/blackformula.i                                                | 2 +-
- SWIG/bondfunctions.i                                               | 2 +-
- SWIG/bonds.i                                                       | 2 +-
- SWIG/calendars.i                                                   | 2 +-
- SWIG/calibratedmodel.i                                             | 2 +-
- SWIG/calibrationhelpers.i                                          | 2 +-
- SWIG/capfloor.i                                                    | 2 +-
- SWIG/cashflows.i                                                   | 2 +-
- SWIG/cliquetoptions.i                                              | 2 +-
- SWIG/common.i                                                      | 2 +-
- SWIG/convertiblebonds.i                                            | 2 +-
- SWIG/credit.i                                                      | 2 +-
- SWIG/creditdefaultswap.i                                           | 2 +-
- SWIG/currencies.i                                                  | 2 +-
- SWIG/date.i                                                        | 2 +-
- SWIG/daycounters.i                                                 | 2 +-
- SWIG/defaultprobability.i                                          | 2 +-
- SWIG/discountcurve.i                                               | 2 +-
- SWIG/distributions.i                                               | 2 +-
- SWIG/dividends.i                                                   | 2 +-
- SWIG/exchangerates.i                                               | 2 +-
- SWIG/exercise.i                                                    | 2 +-
- SWIG/fdm.i                                                         | 2 +-
- SWIG/fittedbondcurve.i                                             | 2 +-
- SWIG/forward.i                                                     | 2 +-
- SWIG/forwardcurve.i                                                | 2 +-
- SWIG/fra.i                                                         | 2 +-
- SWIG/functions.i                                                   | 2 +-
- SWIG/futures.i                                                     | 2 +-
- SWIG/gaussian1dmodel.i                                             | 2 +-
- SWIG/grid.i                                                        | 2 +-
- SWIG/indexes.i                                                     | 2 +-
- SWIG/inflation.i                                                   | 2 +-
- SWIG/instruments.i                                                 | 2 +-
- SWIG/integrals.i                                                   | 2 +-
- SWIG/interestrate.i                                                | 2 +-
- SWIG/interpolation.i                                               | 2 +-
- SWIG/lazyobject.i                                                  | 2 +-
- SWIG/linearalgebra.i                                               | 2 +-
- SWIG/lmm.i                                                         | 2 +-
- SWIG/localvolatilities.i                                           | 2 +-
- SWIG/lookbackoptions.i                                             | 2 +-
- SWIG/marketelements.i                                              | 2 +-
- SWIG/money.i                                                       | 2 +-
- SWIG/montecarlo.i                                                  | 2 +-
- SWIG/null.i                                                        | 2 +-
- SWIG/observer.i                                                    | 2 +-
- SWIG/ode.i                                                         | 2 +-
- SWIG/old_volatility.i                                              | 2 +-
- SWIG/operators.i                                                   | 2 +-
- SWIG/optimizers.i                                                  | 2 +-
- SWIG/options.i                                                     | 2 +-
- SWIG/parameter.i                                                   | 2 +-
- SWIG/payoffs.i                                                     | 2 +-
- SWIG/piecewiseyieldcurve.i                                         | 2 +-
- SWIG/ql.i                                                          | 2 +-
- SWIG/quantlib.i                                                    | 2 +-
- SWIG/randomnumbers.i                                               | 2 +-
- SWIG/ratehelpers.i                                                 | 2 +-
- SWIG/rounding.i                                                    | 2 +-
- SWIG/scheduler.i                                                   | 2 +-
- SWIG/settings.i                                                    | 2 +-
- SWIG/shortratemodels.i                                             | 2 +-
- SWIG/slv.i                                                         | 2 +-
- SWIG/spreadoption.i                                                | 2 +-
- SWIG/statistics.i                                                  | 2 +-
- SWIG/stochasticprocess.i                                           | 2 +-
- SWIG/swap.i                                                        | 2 +-
- SWIG/swaption.i                                                    | 2 +-
- SWIG/swingoption.i                                                 | 2 +-
- SWIG/termstructures.i                                              | 2 +-
- SWIG/timebasket.i                                                  | 2 +-
- SWIG/timeseries.i                                                  | 2 +-
- SWIG/tracing.i                                                     | 2 +-
- SWIG/tuple.i                                                       | 2 +-
- SWIG/types.i                                                       | 2 +-
- SWIG/vectors.i                                                     | 2 +-
- SWIG/volatilities.i                                                | 2 +-
- SWIG/volatilitymodels.i                                            | 2 +-
- SWIG/zerocurve.i                                                   | 2 +-
- Scala/examples/CPIBond.scala                                       | 2 +-
- Scala/examples/EquityOptions.scala                                 | 2 +-
- Scala/examples/HestonModelCalibration.scala                        | 2 +-
- Scala/examples/HestonMonteCarlo.scala                              | 2 +-
- Scala/examples/ObserverPattern.scala                               | 2 +-
- Scala/examples/Optimizer.scala                                     | 2 +-
- Scala/examples/RandomNumbers.scala                                 | 2 +-
- Scala/examples/Swing.scala                                         | 2 +-
- configure.ac                                                       | 2 +-
- 133 files changed, 133 insertions(+), 133 deletions(-)
-
-commit fe856c73fd3e29006f639e428b65ac261bc95c45
+commit 784b3b11d79c567585950d68a91ff1ecb7339dd9
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 29 Aug 2025 14:16:04 +0200
+Date:   Tue, 9 Dec 2025 13:17:27 +0100
 
-    Add workflow to update old http license links
-
- .github/workflows/license-url.yml | 23 +++++++++++++++++++++++
- 1 file changed, 23 insertions(+)
-
-commit 4c771dfc0a3c482bcb6ac43518352baf0098091f
-Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Tue, 12 Aug 2025 00:15:32 +0000
-
-    Bump actions/checkout from 4 to 5
+    Re-enable Python 3.8 and 3.9.
     
-    Bumps [actions/checkout](https://github.com/actions/checkout) from 4 to 5.
+    SWIG 4.4.1 restored support for them.
+
+ Python/setup.py    | 4 ++--
+ Python/setup.py.in | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 4cc52a73c6bc9743c13293d67cd1e70fd1179218
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Dec 2025 13:58:34 +0100
+
+    Upgrade to SWIG 4.4.1
+
+ .github/workflows/publish-release.yml | 2 +-
+ dockerfiles/ci.base.Dockerfile        | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 9b8a5500bbd62d75fc83946d48fa5bb0f641945b
+Merge: 1eef94d6 17908e4d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 1 Dec 2025 10:33:17 +0100
+
+    added semi-analytic European engine for a single asset with cash (#799)
+
+commit 17908e4df0143b4432111c70bef185bd56d81c72
+Author: klaus spanderen <klaus@spanderen.de>
+Date:   Sun, 30 Nov 2025 22:00:44 +0100
+
+    fixed potential leap year issue.
+
+ Python/test/test_options.py | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
+
+commit 1eef94d6a83f54cd4f53f04282b5530328086ca3
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 24 Nov 2025 18:36:44 +0000
+
+    Bump actions/checkout from 5 to 6
+    
+    Bumps [actions/checkout](https://github.com/actions/checkout) from 5 to 6.
     - [Release notes](https://github.com/actions/checkout/releases)
     - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
-    - [Commits](https://github.com/actions/checkout/compare/v4...v5)
+    - [Commits](https://github.com/actions/checkout/compare/v5...v6)
     
     ---
     updated-dependencies:
     - dependency-name: actions/checkout
-      dependency-version: '5'
+      dependency-version: '6'
       dependency-type: direct:production
       update-type: version-update:semver-major
     ...
     
     Signed-off-by: dependabot[bot] <support@github.com>
 
- .github/workflows/copyrights.yml    |  2 +-
- .github/workflows/devenv-images.yml | 10 +++++-----
- .github/workflows/linux.yml         |  2 +-
- .github/workflows/misspell.yml      |  2 +-
- .github/workflows/namespaces.yml    |  2 +-
- 5 files changed, 9 insertions(+), 9 deletions(-)
+ .github/workflows/copyrights.yml                |  2 +-
+ .github/workflows/devenv-images.yml             | 10 +++++-----
+ .github/workflows/increase-version-number.yml   |  2 +-
+ .github/workflows/license-url.yml               |  2 +-
+ .github/workflows/linux.yml                     |  2 +-
+ .github/workflows/misspell.yml                  |  2 +-
+ .github/workflows/namespaces.yml                |  2 +-
+ .github/workflows/prepare-release-candidate.yml |  2 +-
+ .github/workflows/prepare-release.yml           |  2 +-
+ .github/workflows/publish-release.yml           |  2 +-
+ 10 files changed, 14 insertions(+), 14 deletions(-)
 
-commit b91106a4114472c49d2cd3fdbfc9406fe34f8149
-Merge: 8c86f9fd 1e929a03
+commit 2021282adf61d5a5f05d9d57c1ede2d9ad290704
+Merge: 847c5783 2481867d
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 8 Aug 2025 09:12:14 +0200
+Date:   Fri, 21 Nov 2025 10:33:54 +0100
 
-    Call the correct overload when not passing nominalTS (#760)
+    Expose data on piecewise inflation curves (#797)
 
-commit 1e929a0394c3821a9a30d3986646943e39700c7b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 7 Aug 2025 17:57:03 +0200
-
-    Use shadow init to re-enable kwargs
-
- Python/test/test_inflation.py | 17 +++++------------
- SWIG/inflation.i              | 15 +++++++++++++++
- 2 files changed, 20 insertions(+), 12 deletions(-)
-
-commit d419cc1be957e22f0d4bd15fcbd00d844266cafe
+commit 2481867d84bbd6e7dd5e151496a35513acce5bb4
 Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Wed, 6 Aug 2025 16:59:09 -0400
+Date:   Thu, 20 Nov 2025 13:41:54 -0500
 
-    Call the correct overload when not passing nominalTS
-    
-    With the current code when nominalTS is not passed explicitly, instead
-    of calling the new C++ constructor, the wrapper calls the old C++
-    constructor and passes a null YieldTermStructureHandle, which makes
-    bootstrapping fail. This is how default arguments in SWIG work when
-    %kwargs feature is enabled. When it's not enabled, default arguments are
-    translated into overloads, so the correct code would have been
-    generated, but this seems quite subtle, so adding an explicit overload
-    seems better.
+    Expose data on piecewise inflation curves
 
- SWIG/inflation.i | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
+ SWIG/inflation.i | 2 ++
+ 1 file changed, 2 insertions(+)
 
-commit 8c86f9fd6a8753dd8a48660437db4ce69e55622d
-Merge: 06303e5e 5323a1c3
+commit 847c578397a275e994ce0a5149d35e1fbd067f4c
+Merge: 0bf01839 69f63c7b
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 6 Aug 2025 11:16:01 +0200
+Date:   Mon, 17 Nov 2025 09:22:12 +0100
 
-    Expose PiecewiseZeroInflationCurve constructor with BaseDateFunc (#759)
+    Expose argument for enableExtrapolation (#795)
 
-commit 5323a1c3a2cbf79211bca6d874e3ee98e6b7be8a
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Wed, 30 Jul 2025 18:57:13 -0400
+commit 69f63c7bcb8072fe9ae541930988e3af519a9016
+Author: Eugene Toder <eltoder@users.noreply.github.com>
+Date:   Fri, 14 Nov 2025 14:38:14 -0500
 
-    Expose PiecewiseZeroInflationCurve constructor with BaseDateFunc
+    Expose argument for enableExtrapolation
 
- SWIG/inflation.i     | 30 ++++++++++++++++++++++++++++++
- SWIG/linearalgebra.i | 13 +++++--------
- 2 files changed, 35 insertions(+), 8 deletions(-)
+ SWIG/termstructures.i | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-commit 06303e5e2cec60b51de942db74c5e6c1942baac0
+commit 0bf01839659042659273cd9b95ffc358bc7f8f93
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Aug 2025 17:05:52 +0200
+Date:   Thu, 13 Nov 2025 10:12:08 +0100
 
-    Use machine account to create automated PRs
+    Fix a few typos
 
- .github/workflows/copyrights.yml | 5 +++--
- .github/workflows/misspell.yml   | 5 +++--
- .github/workflows/namespaces.yml | 5 +++--
- 3 files changed, 9 insertions(+), 6 deletions(-)
+ Java/examples/Bonds.java | 4 ++--
+ Python/README.md         | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
 
-commit 74ee508ec8ca7179b7d347fb31a37e6a42e21f85
-Merge: 8853c97b 4d5e44c5
+commit 37cf3e4ee5c88010d527e5b78dced94ba6027ced
+Author: klaus spanderen <klaus@spanderen.de>
+Date:   Wed, 12 Nov 2025 20:35:35 +0100
+
+    added semi-analytic European engine for a single asset with cash
+    dividends
+
+ Python/test/test_options.py | 46 +++++++++++++++++++++++++++++++++++++++++++--
+ SWIG/options.i              | 17 +++++++++++++++++
+ 2 files changed, 61 insertions(+), 2 deletions(-)
+
+commit 04d62c5aeb214e2e58c6b6835244bec4359ac9a5
+Merge: a48b4208 23f732c1
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 5 Aug 2025 13:14:55 +0200
+Date:   Tue, 11 Nov 2025 17:22:05 +0100
 
-    Use a light Python smart-pointer to simplify refcounting (#758)
+    Enable building wheels for free-threading Python; increase minimum supported Python version to 3.10 (#794)
 
-commit 4d5e44c5318d23a0060475e6b1627286ac514cf2
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Mon, 4 Aug 2025 13:46:19 -0400
-
-    Use a light Python smart-pointer to simplify refcounting
-
- SWIG/common.i        |  68 ++++++++++++++++++
- SWIG/date.i          |  13 ++--
- SWIG/fdm.i           | 194 +++++++++++++++------------------------------------
- SWIG/functions.i     | 112 ++++++++---------------------
- SWIG/linearalgebra.i |  60 ++++------------
- SWIG/observer.i      |  32 ++-------
- SWIG/ode.i           |  51 +++++---------
- SWIG/timebasket.i    |  16 ++---
- 8 files changed, 206 insertions(+), 340 deletions(-)
-
-commit 8853c97b0144f9dd1291a734d8271ab8670dcbc9
-Merge: 7b365b13 6ab7e7a2
+commit 23f732c17939aa37f78421feec1d6b7a71978125
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 31 Jul 2025 17:46:40 +0200
+Date:   Tue, 11 Nov 2025 14:58:21 +0100
 
-    Don't use `shared_ptr<Schedule>` (#757)
+    Upgrade to SWIG 4.4.0 in workflows
 
-commit 6ab7e7a2f23d13a912ebb49eea02bc1088176e38
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 31 Jul 2025 15:41:35 +0200
-
-    Don't use shared_ptr<Schedule>
-
- SWIG/cashflows.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 7b365b131e15fdb7e4d597dcdb697854a48c350e
-Merge: 28a535f9 9edc950f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 31 Jul 2025 10:34:17 +0200
-
-    Removed a few features deprecated long ago. (#756)
-
-commit 9edc950fc11cda30db5f932ec48252c1fcbafdf9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 31 Jul 2025 09:35:22 +0200
-
-    Removed a few features deprecated long ago.
-    
-    Being defined in the wrappers, they escaped the usual deprecation
-    and removal process.
-
- SWIG/date.i           | 23 -----------------------
- SWIG/old_volatility.i |  2 --
- SWIG/settings.i       | 26 +++++++-------------------
- SWIG/volatilities.i   |  4 ----
- 4 files changed, 7 insertions(+), 48 deletions(-)
-
-commit 28a535f9ca6d5f81c9b7d21d5d120b109ba1b604
-Merge: c33d7057 5c7c4644
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 28 Jul 2025 13:03:44 +0200
-
-    Expose swap on inflation swap bootstrap helpers (#755)
-
-commit c33d7057a2552eb65ca435a74fc5ae28d1cdac7d
-Merge: 42bc20d2 f80c473f
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 28 Jul 2025 12:18:49 +0200
-
-    Expose BusinessDayConvention in SwapRateHelper and OISRateHelper (#753)
-
-commit 42bc20d261cb3487d471d6947c795a827f54217b
-Merge: e50204c5 e43755e2
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 28 Jul 2025 11:12:49 +0200
-
-    Don't expose features deleted in QuantLib 1.40 (#754)
-
-commit 5de67aef92de17c8ad4db3fb9146b7a33fecd6f7
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 25 Jul 2025 17:02:17 -0400
-
-    Expose swap on inflation swap bootstrap helpers
-
- SWIG/inflation.i | 4 ++++
- 1 file changed, 4 insertions(+)
-
-commit e43755e23ff91eafd1831473a78debc1eb650a3b
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 25 Jul 2025 17:18:21 -0400
-
-    Don't expose features deleted in QuantLib 1.40
-
- SWIG/indexes.i | 37 -------------------------------------
- 1 file changed, 37 deletions(-)
-
-commit e77f30662b266aedc3fa479ced5aea86059e7b3e
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Fri, 25 Jul 2025 10:00:07 -0400
-
-    Expose BusinessDayConvention in SwapRateHelper and OISRateHelper
-
- SWIG/ratehelpers.i | 40 ++++++++++++++++++++++++++++++----------
- 1 file changed, 30 insertions(+), 10 deletions(-)
-
-commit e50204c5d52f95133137003aa4a6207b30c5fb26
-Merge: 68637eb7 ff923566
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 25 Jul 2025 15:13:23 +0200
-
-    Expose `MakeCapFloor` and `MakeSwaption` (#751)
-
-commit ff923566edfb5321afdec26470fec6fef6ee1250
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 25 Jul 2025 14:28:56 +0200
-
-    Uniform capitalization and names
-
- SWIG/capfloor.i | 2 +-
- SWIG/swaption.i | 2 +-
+ .github/workflows/publish-release.yml | 2 +-
+ dockerfiles/ci.base.Dockerfile        | 2 +-
  2 files changed, 2 insertions(+), 2 deletions(-)
 
-commit 93a33145e8a14b639f50ecdc2f9c96838e49dcf2
-Author: paolodelia99 <paolo.delia99@gmail.com>
-Date:   Fri, 25 Jul 2025 10:44:49 +0200
-
-    fix small mistake
-
- SWIG/capfloor.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 5b425f0926687b1f7d592e7527fafc8e7b3eb607
-Author: paolodelia99 <paolo.delia99@gmail.com>
-Date:   Fri, 25 Jul 2025 10:38:59 +0200
-
-    Fix code following the suggestions given
-
- SWIG/capfloor.i | 21 ++++++-------------
- SWIG/swap.i     |  6 +++---
- SWIG/swaption.i | 63 +++++++++++++++++++++++++--------------------------------
- 3 files changed, 36 insertions(+), 54 deletions(-)
-
-commit 68637eb7464f871ce1b2e1fc4fa059b3fbfe1c56
-Merge: f538e0e8 4511eeb3
+commit a48b4208777c931f3a13bea2efbf0f8a373fa82f
+Merge: 70048a0f 39611e80
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 23 Jul 2025 14:35:21 +0200
+Date:   Tue, 11 Nov 2025 13:52:57 +0100
 
-    Don't export bootstrap traits (#749)
+    Export a few missing Bond inspectors (#793)
 
-commit f538e0e8a6ffd8e1819ed9d4f1121d6a74db7b59
+commit 39611e80abf8d58338fee8b682abdeb317248ba6
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 20 Oct 2023 11:34:41 +0200
+Date:   Tue, 11 Nov 2025 12:51:22 +0100
 
-    Set version to 1.40-dev
+    Export a few missing Bond inspectors
+
+ SWIG/bonds.i | 3 +++
+ 1 file changed, 3 insertions(+)
+
+commit 70048a0f8300f21c77c76bf38fb73b48eb8138ed
+Merge: 5bc9d5ca c3d9ad29
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 5 Nov 2025 15:26:12 +0100
+
+    Expose ZeroCouponInflationSwap::fixedLegBPS() (#791)
+
+commit 5bc9d5ca4197a76d52d0d3b354aca87896628565
+Merge: 0c92ed99 cdbcbe83
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 3 Nov 2025 09:45:36 +0100
+
+    Enable rounding in UFR interpolation (#788)
+
+commit cdbcbe833b41691b739d61be59263b36474ae70b
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Thu, 30 Oct 2025 16:48:47 +0100
+
+    Implemented PR feedback.
+
+ SWIG/common.i         | 21 +++++++++++++++++++++
+ SWIG/termstructures.i | 16 ----------------
+ 2 files changed, 21 insertions(+), 16 deletions(-)
+
+commit c3d9ad291cbc8704d5ace90f904003337b756466
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 28 Oct 2025 13:45:30 -0400
+
+    Expose ZeroCouponInflationSwap::fixedLegBPS()
+
+ SWIG/inflation.i | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 0c92ed9941075cce0e3eb357d1cf409fb4b40a5c
+Merge: d219d0c7 068d66dc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Oct 2025 10:02:45 +0100
+
+    Adding vanna and volga functions (#790)
+
+commit 068d66dce19173c447c9acc0ba3f26ca6b16d5ac
+Author: kp9991 <kp9991@gmail.com>
+Date:   Sat, 25 Oct 2025 16:05:31 +1100
+
+    Adding vanna and volga functions
+
+ SWIG/options.i | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+commit 6f1d8684238c812933e05baf1f53529295cd0ee6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Oct 2025 16:06:50 +0200
+
+    Upgrade minimum Python version to 3.10
+    
+    This is requested for compatibility with SWIG 4.4, that
+    we'll use going forward in order to enable building wheels
+    for free-threading Python.
+
+ Python/setup.py    | 46 +++++++++++++++++++++++++---------------------
+ Python/setup.py.in | 46 +++++++++++++++++++++++++---------------------
+ 2 files changed, 50 insertions(+), 42 deletions(-)
+
+commit d219d0c72cab206d9ddddf2156a87e40609563b8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Oct 2025 16:10:21 +0200
+
+    Unpin base for devenv image
+
+ .github/workflows/devenv-images.yml | 2 +-
+ dockerfiles/ci.csharp.Dockerfile    | 5 +++++
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+commit 4fef4aba7e7d34266160ddd78d5705e277ee2af8
+Merge: 85ed8efc 6a39261c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 24 Oct 2025 09:17:38 +0200
+
+    Replace passed NULL with NA in R examples for compatibility with R 3.5 (#789)
+
+commit 6a39261c1b610e7cd453f9b1a19b7a179daeef16
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 23 Oct 2025 08:09:18 +0200
+
+    Replace passed NULL with NA in R examples
+    
+    NULL doesn't work with R 3.5 and the current typemaps
+
+ R/demo/european-option.R | 22 +++++++++++-----------
+ 1 file changed, 11 insertions(+), 11 deletions(-)
+
+commit 85ed8efc12645d0b361341941c88487cee871013
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 22 Oct 2025 15:14:38 +0200
+
+    Move CI build to .Net 9
+
+ CSharp/Makefile.am                                   | 20 ++++++++++----------
+ CSharp/csharp/NQuantLib.csproj                       |  2 +-
+ .../BermudanSwaption/BermudanSwaption.csproj         |  2 +-
+ CSharp/examples/EquityOption/EquityOption.csproj     |  2 +-
+ .../FiniteDifferenceMethods.csproj                   |  2 +-
+ CSharp/examples/Times/Times.csproj                   |  2 +-
+ dockerfiles/ci.csharp.Dockerfile                     |  2 +-
+ 7 files changed, 16 insertions(+), 16 deletions(-)
+
+commit 486668c3e029144209728a31ada4c2c0ac7c5623
+Merge: 2e2fce59 4d9ddd92
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Oct 2025 13:02:08 +0200
+
+    Expose forDates on inflation swap helpers (#787)
+
+commit 2e2fce59eef9476bfd2524ea77a2ef03dd36df0d
+Merge: d636f144 77357411
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 21 Oct 2025 11:18:34 +0200
+
+    Rename piecewise spread curves classes to *SpreadDiscount (#786)
+
+commit 4d9ddd92f1cb49b43c864330f6353f7da394b36f
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Mon, 20 Oct 2025 13:20:32 -0400
+
+    Expose forDates on inflation swap helpers
+
+ SWIG/inflation.i | 55 ++++++++++++++++++++++++++++++++++++++++++++++---------
+ 1 file changed, 46 insertions(+), 9 deletions(-)
+
+commit 77357411385efd3d83c918279bd4fc469f26d234
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Sat, 18 Oct 2025 17:28:27 -0400
+
+    Rename piecewise spread curves classes to *SpreadDiscount
+    
+    For consistency with InterpolatedSpreadDiscountCurve classes.
+
+ SWIG/piecewiseyieldcurve.i | 11 ++++++++---
+ 1 file changed, 8 insertions(+), 3 deletions(-)
+
+commit d636f14414e020078de9cbaa0761467106046043
+Merge: b9d03fca 9b904d87
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 16 Oct 2025 08:42:39 +0200
+
+    Expose InterpolatedSpreadDiscountCurve (#785)
+
+commit 9b904d879dd1d1118eb814fc848e8983a349243d
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Wed, 15 Oct 2025 12:06:43 -0400
+
+    Expose InterpolatedSpreadDiscountCurve
+
+ SWIG/ql.i                  |  1 +
+ SWIG/spreaddiscountcurve.i | 37 +++++++++++++++++++++++++++++++++++++
+ 2 files changed, 38 insertions(+)
+
+commit b9d03fca2f8e6b251e62bbcf00cca9208aa33af9
+Merge: 7ad4fc40 b319a172
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 15 Oct 2025 16:17:22 +0200
+
+    Expose more spread curve types (#784)
+
+commit b319a172a896e1b73c15822ac8507e3109f7e187
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 14 Oct 2025 14:09:31 -0400
+
+    Expose more spread curve types
+
+ SWIG/piecewiseyieldcurve.i | 11 +++++++++--
+ 1 file changed, 9 insertions(+), 2 deletions(-)
+
+commit 7ad4fc406fc93b45ee9a559f795de424bb2d3965
+Merge: 864b090f be0789ef
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Oct 2025 15:10:04 +0200
+
+    Avoid features removed from underlying C++ library (#783)
+
+commit 864b090f0a0f78922288f8ff9c96828578a512da
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 14 Oct 2025 09:34:11 +0000
+
+    Set version to 1.41-dev
 
  Python/setup.py | 2 +-
  R/DESCRIPTION   | 2 +-
  configure.ac    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-commit a60b20381d1eccb5f8787dc2776d4d2abf82e582
-Author: Paolo D'Elia <paolo.delia99@gmail.com>
-Date:   Tue, 22 Jul 2025 15:00:04 +0200
+commit be0789efdc4868d8c0df405ca9a54c1cb818aa22
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Oct 2025 11:21:04 +0200
 
-    Remove feature("kwargs") in MakeSwaption
+    Update tests
 
- SWIG/swaption.i | 3 ---
- 1 file changed, 3 deletions(-)
+ Python/test/test_equityindex.py | 2 +-
+ Python/test/test_swap.py        | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
-commit f288afca54558d2f344ae2e6a88c0456040d5961
-Author: Paolo D'Elia <paolo.delia99@gmail.com>
-Date:   Tue, 22 Jul 2025 14:39:22 +0200
+commit d89406cc88b7e126980cabe9cc72381c2a95c68c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Oct 2025 10:10:51 +0200
 
-    Fix typo in swaption.i
+    Add workflow to increase version number after release
 
- SWIG/swaption.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .github/workflows/increase-version-number.yml | 37 +++++++++++++++++++++++++++
+ 1 file changed, 37 insertions(+)
 
-commit 7292e0102674b3a579e81aff526d914586ffe1cb
-Author: Paolo D'Elia <paolo.delia99@gmail.com>
-Date:   Tue, 22 Jul 2025 14:35:54 +0200
+commit f54285262cdd40acc00e36e97928e1f979675b7c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Oct 2025 10:40:24 +0200
 
-    Add missing using QuantLib::MakeSwaption in swaption.i
+    Avoid features removed from underlying library in version 1.41
 
- SWIG/swaption.i | 1 +
- 1 file changed, 1 insertion(+)
+ SWIG/indexes.i     |   5 --
+ SWIG/inflation.i   | 137 +++++++++++++----------------------------------------
+ SWIG/ratehelpers.i |  21 --------
+ SWIG/swap.i        |  51 --------------------
+ 4 files changed, 34 insertions(+), 180 deletions(-)
 
-commit 7469052300dfe8d5755e5cc66bee5efdc90b8350
-Author: Paolo D'Elia <paolo.delia99@gmail.com>
-Date:   Tue, 22 Jul 2025 12:55:15 +0200
+commit 1923c81a2809618c9e85f5408201060af4bafd68
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Oct 2025 09:52:20 +0200
 
-    Fix typo in swaption.i
+    Fix links in draft release notes
 
- SWIG/swaption.i | 4 ++--
+ .github/workflows/publish-release.yml | 4 ++--
  1 file changed, 2 insertions(+), 2 deletions(-)
 
-commit e870d20802af96dd115ba6f8636c92c66fdf3981
-Author: Paolo D'Elia <paolo.delia99@gmail.com>
-Date:   Tue, 22 Jul 2025 12:33:03 +0200
+commit 2c903776a294111a39aa74a2b35be676b086a1a9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Oct 2025 09:50:56 +0200
 
-    Fix typo in capfloor.i
+    Don't run CI builds when pushing a tag
 
- SWIG/capfloor.i | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ .github/workflows/linux.yml | 2 ++
+ 1 file changed, 2 insertions(+)
 
-commit 5ac32b79bfd40e327c8b97455843bfc7a6296ddb
-Author: Paolo D'Elia <paolo.delia99@gmail.com>
-Date:   Tue, 22 Jul 2025 11:53:06 +0200
+commit 2e34601a490a6096d0a79d864f8701cfb2d7c905
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Thu, 9 Oct 2025 16:07:59 +0200
 
-    Expose MakeSwaption
+    Exposed changes related to UFR rounding.
 
- SWIG/swaption.i | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 66 insertions(+)
+ Python/test/test_termstructures.py |  2 +-
+ SWIG/termstructures.i              | 17 ++++++++++++++++-
+ 2 files changed, 17 insertions(+), 2 deletions(-)
 
-commit 672c3f0253148b76acd30cb59725014db9cbfb56
-Author: Paolo D'Elia <paolo.delia99@gmail.com>
-Date:   Tue, 22 Jul 2025 11:10:12 +0200
+commit ad3db45c4b1f668f11258c7f0a786a97cc394086
+Author: Marcin Rybacki <m.rybacki@basispoint.io>
+Date:   Thu, 9 Oct 2025 09:55:10 +0200
 
-    Exposed MakeCapFloor capfloor.i
+    Updated `UltimateForwardTermStructure` signature
 
- SWIG/capfloor.i | 75 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 75 insertions(+)
-
-commit 4511eeb35e18d7406daa8506a8abb85b51cf4513
-Author: Eugene Toder <eltoder@users.noreply.github.com>
-Date:   Tue, 8 Jul 2025 19:38:16 -0400
-
-    Don't export bootstrap traits
-    
-    Bootstrap traits are only used as template type parameters and never as values, so it does not make sense to export them.
-
- SWIG/piecewiseyieldcurve.i | 11 -----------
- 1 file changed, 11 deletions(-)
+ SWIG/termstructures.i | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
