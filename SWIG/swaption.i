@@ -253,7 +253,7 @@ _MAKESWAPTION_METHODS = {
     "settlementMethod": "withSettlementMethod",
     "optionConvention": "withOptionConvention",
     "exerciseDate": "withExerciseDate",
-    "underlyingType": "withUndelyingType",
+    "underlyingType": "withUnderlyingType",
     "pricingEngine": "withPricingEngine",
     "indexedCoupons": "withIndexedCoupons",
     "atParCoupons": "withAtParCoupons",
