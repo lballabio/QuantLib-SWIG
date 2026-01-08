@@ -525,10 +525,16 @@ class BlackAveragingOvernightIndexedCouponPricer: public ArithmeticAveragedOvern
 };
 
 %shared_ptr(CompoundingMultipleResetsPricer)
-class CompoundingMultipleResetsPricer : public FloatingRateCouponPricer {};
+class CompoundingMultipleResetsPricer : public FloatingRateCouponPricer {
+  public:
+    CompoundingMultipleResetsPricer();
+};
 
 %shared_ptr(AveragingMultipleResetsPricer)
-class AveragingMultipleResetsPricer : public FloatingRateCouponPricer {};
+class AveragingMultipleResetsPricer : public FloatingRateCouponPricer {
+  public:
+    AveragingMultipleResetsPricer();
+};
 
 %shared_ptr(CompoundingRatePricer)
 class CompoundingRatePricer: public SubPeriodsPricer {
