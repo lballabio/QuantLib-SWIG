@@ -179,7 +179,6 @@ QL_DEPRECATED_DISABLE_WARNING
 %include shortratemodels.i
 %include slv.i
 %include spreaddiscountcurve.i
-%include spreadoption.i
 %include statistics.i
 %include stochasticprocess.i
 %include swap.i

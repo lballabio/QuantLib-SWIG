@@ -43,13 +43,8 @@ class IndexManager {
     IndexManager();
   public:
     static IndexManager& instance();
-    void setHistory(const std::string& name, const TimeSeries<Real>& fixings);
-    const TimeSeries<Real>& getHistory(const std::string& name) const;
-    bool hasHistory(const std::string& name) const;
     std::vector<std::string> histories() const;
-    void clearHistory(const std::string& name);
     void clearHistories();
-    bool hasHistoricalFixing(const std::string& name, const Date& fixingDate) const;
 };
 
 
