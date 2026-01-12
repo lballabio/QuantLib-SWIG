@@ -1,6 +1,9 @@
 Changes for QuantLib-SWIG 1.41
 ==============================
 
+Starting from this release, the Python wrappers provide support
+for the new free-threading interpreter in Python 3.14.
+
 Removed features
 ----------------
 
