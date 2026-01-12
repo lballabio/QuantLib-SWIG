@@ -1,4 +1,41 @@
-commit 4feeaae0276422feb9cc926f1b85841da764c89c
+commit 47bc2a352c8dd74ba7cd2813fbf1086de7de5eea
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 12 Jan 2026 13:34:28 +0000
+
+    Set version to 1.41
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 951d93657dbb5d0032bc5de0e773bfa1c377c90b
+Merge: 1e9b8754 255681df
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 8 Jan 2026 10:57:04 +0100
+
+    Add missing constructor to a couple of pricers (#810)
+
+commit 255681df2fe1f3812a9560ad7ec7113538aa1320
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 8 Jan 2026 10:05:11 +0100
+
+    Add missing constructor to a couple of pricers
+    
+    SWIG won't generate a default constructor if the base class doesn't have one.
+
+ SWIG/cashflows.i | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+commit 1e9b8754fd040f1691a0f3738dbf986b81c26e07
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 5 Jan 2026 19:41:32 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 978 +++++++++++++++++++++++-----------------------------------
+ 1 file changed, 392 insertions(+), 586 deletions(-)
+
+commit f820895a2c7d4e962df77c232116bd09e1cee5d0
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Mon, 5 Jan 2026 19:41:32 +0000
 
