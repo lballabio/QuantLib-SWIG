@@ -105,7 +105,6 @@ class YoYInflationTermStructure : public InflationTermStructure {
                  bool extrapolate = false) const;
     Rate yoyRate(Time t,
                  bool extrapolate = false) const;
-    bool indexIsInterpolated() const;
 };
 
 %template(YoYInflationTermStructureHandle) Handle<YoYInflationTermStructure>;
@@ -716,7 +715,7 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
 template <class Interpolator>
 class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    // %feature("kwargs") PiecewiseYoYInflationCurve;
+    %feature("kwargs") PiecewiseYoYInflationCurve;
     #endif
   public:
     PiecewiseYoYInflationCurve(
@@ -724,18 +723,6 @@ class PiecewiseYoYInflationCurve : public YoYInflationTermStructure {
               Date baseDate,
               Rate baseYoYRate,
               Frequency frequency,
-              const DayCounter& dayCounter,
-              const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
-              const ext::shared_ptr<Seasonality>& seasonality = {},
-              Real accuracy = 1.0e-12,
-              const Interpolator& i = Interpolator());
-
-    PiecewiseYoYInflationCurve(
-              const Date& referenceDate,
-              Date baseDate,
-              Rate baseYoYRate,
-              Frequency frequency,
-              bool indexIsInterpolated,
               const DayCounter& dayCounter,
               const std::vector<ext::shared_ptr<BootstrapHelper<YoYInflationTermStructure> > >& instruments,
               const ext::shared_ptr<Seasonality>& seasonality = {},
@@ -1131,17 +1118,8 @@ class InterpolatedZeroInflationCurve : public ZeroInflationTermStructure {
 
 template <class Interpolator>
 class InterpolatedYoYInflationCurve : public YoYInflationTermStructure {
-    // %feature("kwargs") InterpolatedYoYInflationCurve;
+    %feature("kwargs") InterpolatedYoYInflationCurve;
   public:
-    InterpolatedYoYInflationCurve(const Date& referenceDate,
-                                  const std::vector<Date>& dates,
-                                  const std::vector<Rate>& rates,
-                                  Frequency frequency,
-                                  bool indexIsInterpolated,
-                                  const DayCounter& dayCounter,
-                                  const ext::shared_ptr<Seasonality>& seasonality = {},
-                                  const Interpolator& interpolator = Interpolator());
-
     InterpolatedYoYInflationCurve(const Date& referenceDate,
                                   const std::vector<Date>& dates,
                                   const std::vector<Rate>& rates,

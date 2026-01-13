@@ -1,25 +1,24 @@
-"""
- Copyright (C) 2023 Marcin Rybacki
+# Copyright (C) 2023 Marcin Rybacki
 
- This file is part of QuantLib, a free-software/open-source library
- for financial quantitative analysts and developers - http://quantlib.org/
+# This file is part of QuantLib, a free-software/open-source library
+# for financial quantitative analysts and developers - http://quantlib.org/
 
- QuantLib is free software: you can redistribute it and/or modify it
- under the terms of the QuantLib license.  You should have received a
- copy of the license along with this program; if not, please email
- <quantlib-dev@lists.sf.net>. The license is also available online at
- <https://www.quantlib.org/license.shtml>.
+# QuantLib is free software: you can redistribute it and/or modify it
+# under the terms of the QuantLib license.  You should have received a
+# copy of the license along with this program; if not, please email
+# <quantlib-dev@lists.sf.net>. The license is also available online at
+# <https://www.quantlib.org/license.shtml>.
 
- This program is distributed in the hope that it will be useful, but WITHOUT
- ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- FOR A PARTICULAR PURPOSE.  See the license for more details.
-"""
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE.  See the license for more details.
+
 
 import QuantLib as ql
 import unittest
 
 
-EPSILON = 1.e-2
+EPSILON = 1.0e-2
 
 CAL = ql.TARGET()
 DCT = ql.Actual365Fixed()
@@ -27,8 +26,7 @@ VALUATION_DATE = CAL.adjust(ql.Date(31, ql.January, 2023))
 
 
 def flat_rate(rate):
-    return ql.FlatForward(
-        2, CAL, ql.makeQuoteHandle(rate), DCT)
+    return ql.FlatForward(2, CAL, ql.makeQuoteHandle(rate), DCT)
 
 
 class EquityIndexTest(unittest.TestCase):
@@ -39,9 +37,15 @@ class EquityIndexTest(unittest.TestCase):
         self.dividend_handle = ql.YieldTermStructureHandle(flat_rate(0.01))
         spot_handle = ql.makeQuoteHandle(8690.0)
 
-        ql.IndexManager.instance().clearHistory("eq_idx")
+        ql.IndexManager.instance().clearHistories()
         self.equity_idx = ql.EquityIndex(
-            "eq_idx", CAL, ql.Currency(), self.interest_handle, self.dividend_handle, spot_handle)
+            "eq_idx",
+            CAL,
+            ql.Currency(),
+            self.interest_handle,
+            self.dividend_handle,
+            spot_handle,
+        )
 
     def test_equity_index_inspectors(self):
         """Testing equity index inspectors"""
@@ -55,13 +59,15 @@ class EquityIndexTest(unittest.TestCase):
         fail_msg = "Failed to calculate the expected index projection."
 
         self.assertAlmostEqual(
-            self.equity_idx.fixing(VALUATION_DATE), 8690.0, delta=EPSILON, msg=fail_msg)
+            self.equity_idx.fixing(VALUATION_DATE), 8690.0, delta=EPSILON, msg=fail_msg
+        )
 
         future_dt = ql.Date(20, ql.May, 2030)
         self.assertAlmostEqual(
-            self.equity_idx.fixing(future_dt),  10055.76, delta=EPSILON, msg=fail_msg)
+            self.equity_idx.fixing(future_dt), 10055.76, delta=EPSILON, msg=fail_msg
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print("testing QuantLib", ql.__version__)
     unittest.main(verbosity=2)

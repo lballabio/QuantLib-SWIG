@@ -42,7 +42,6 @@ using QuantLib::SwapRateHelper;
 using QuantLib::BondHelper;
 using QuantLib::FixedRateBondHelper;
 using QuantLib::OISRateHelper;
-using QuantLib::DatedOISRateHelper;
 using QuantLib::FxSwapRateHelper;
 using QuantLib::OvernightIndexFutureRateHelper;
 using QuantLib::SofrFutureRateHelper;
@@ -498,35 +497,6 @@ class OISRateHelper : public RateHelper {
         }
     }
     #endif
-    ext::shared_ptr<OvernightIndexedSwap> swap();
-};
-
-%shared_ptr(DatedOISRateHelper)
-class DatedOISRateHelper : public RateHelper {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") DatedOISRateHelper;
-    #endif
-  public:
-    DatedOISRateHelper(
-            const Date& startDate,
-            const Date& endDate,
-            const Handle<Quote>& rate,
-            const ext::shared_ptr<OvernightIndex>& index,
-            const Handle<YieldTermStructure>& discountingCurve = {},
-            bool telescopicValueDates = false, 
-            RateAveraging::Type averagingMethod = RateAveraging::Compound,
-            Integer paymentLag = 0,
-            BusinessDayConvention paymentConvention = Following,
-            Frequency paymentFrequency = Annual,
-            const Calendar& paymentCalendar = Calendar(),
-            Spread overnightSpread = 0.0,
-            ext::optional<bool> endOfMonth = ext::nullopt,
-            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
-            const Calendar& fixedCalendar = Calendar(),
-            Natural lookbackDays = Null<Natural>(),
-            Natural lockoutDays = 0,
-            bool applyObservationShift = false,
-            const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {});
     ext::shared_ptr<OvernightIndexedSwap> swap();
 };
 
