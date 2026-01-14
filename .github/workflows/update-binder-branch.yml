@@ -1,0 +1,22 @@
+name: Update the branch published on mybinder.org
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  update-binder-branch:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.release.prerelease == false }}
+    steps:
+    - uses: actions/checkout@v6
+      with:
+        ref: binder
+        token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Update branch
+      run: |
+        git merge --ff-only ${{ github.ref_name }}
+        git push origin binder
+
