@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;net6.0;net7.0;net8.0;net9.0;net10.0</TargetFrameworks>
+    <PackageDescription>QuantLib: the free/open-source library for quantitative finance</PackageDescription>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://www.quantlib.org</PackageProjectUrl>
+    <Authors>The QuantLib contributors</Authors>
+    <Copyright>See license file</Copyright>
+  </PropertyGroup>
+  <ItemGroup>
+    <Content Include="../cpp/win-x64/NQuantLibc.dll" Link="runtimes/win-x64/native/NQuantLibc.dll">
+      <PackagePath>runtimes/win-x64/native</PackagePath>
+    </Content>
+    <Content Include="../cpp/osx-arm64/libNQuantLibc.dylib" Link="runtimes/osx-arm64/native/libNQuantLibc.dylib">
+      <PackagePath>runtimes/osx-arm64/native</PackagePath>
+    </Content>
+    <Content Include="../cpp/osx-x64/libNQuantLibc.dylib" Link="runtimes/osx-x64/native/libNQuantLibc.dylib">
+      <PackagePath>runtimes/osx-x64/native</PackagePath>
+    </Content>
+    <Content Include="../cpp/linux-x64/libNQuantLibc.so" Link="runtimes/linux-x64/native/libNQuantLibc.so">
+      <PackagePath>runtimes/linux-x64/native</PackagePath>
+    </Content>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="LICENSE.txt" Pack="true" PackagePath=""/>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,285 @@
+name: Build Python wheels
+on:
+  push:
+    # build wheels for releases and prereleases
+    # this workflow assumes that the same branch already exists in the QuantLib repo
+    tags:
+      - 'v1.[0-9]+'
+      - 'v1.[0-9]+.[0-9]+'
+      - 'v1.[0-9]+-rc'
+      - 'v1.[0-9]+.[0-9]+-rc'
+      
+  workflow_dispatch:
+    # manual runs to try out changes in the workflow
+    inputs:
+      ref:
+        description: 'Tag or branch to use'
+        required: true
+
+jobs:
+  # making tarballs sidesteps the problem of installing the desired SWIG version on all systems
+  make-tarballs:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Determine tag or branch to build
+      run: |
+        if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            echo "REF=${{ github.event.inputs.ref }}" | tee -a $GITHUB_ENV
+        else
+            echo "REF=${{ github.ref_name }}" | tee -a $GITHUB_ENV
+        fi
+    - name: Setup
+      env:
+        SWIG_VERSION: 4.4.1
+      run: |
+        sudo apt update
+        sudo apt install -y libpcre2-dev libboost-dev tofrodos
+        wget http://downloads.sourceforge.net/project/swig/swig/swig-${SWIG_VERSION}/swig-${SWIG_VERSION}.tar.gz \
+            && tar xfz swig-${SWIG_VERSION}.tar.gz \
+            && rm swig-${SWIG_VERSION}.tar.gz \
+            && cd swig-${SWIG_VERSION} \
+            && ./configure --prefix=/usr CXXFLAGS=-O3 \
+            && make -j 4 && sudo make install \
+            && cd .. && rm -rf swig-${SWIG_VERSION}
+    - uses: actions/checkout@v4
+      with:
+        repository: lballabio/QuantLib
+        ref: ${{ env.REF }}
+        path: quantlib
+        fetch-depth: 0
+        fetch-tags: true
+    - name: Make tarballs for QuantLib
+      run: |
+        cd quantlib
+        ./autogen.sh
+        ./configure
+        make dist
+        mkdir ../tarballs
+        mv QuantLib-*.tar.gz ../tarballs
+        cd ../tarballs && ../quantlib/tools/tgz2zip QuantLib-*.tar.gz && ls -lh
+    - uses: actions/checkout@v4
+      with:
+        repository: lballabio/QuantLib-SWIG
+        ref: ${{ env.REF }}
+        path: quantlib-swig
+        fetch-depth: 0
+        fetch-tags: true
+    - name: Make tarballs for QuantLib-SWIG
+      run: |
+        cd quantlib-swig
+        ./autogen.sh
+        ./configure
+        make dist
+        mv QuantLib-SWIG-*.tar.gz ../tarballs
+        cd ../tarballs && ../quantlib-swig/tools/tgz2zip QuantLib-SWIG-*.tar.gz && ls -lh
+    - uses: actions/upload-artifact@v4
+      with:
+        name: tarballs
+        path: ./tarballs/*
+
+  detect-version:
+    runs-on: ubuntu-latest
+    needs: make-tarballs
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: tarballs
+        path: .
+    - id: version
+      run: |
+        echo "version=`ls QuantLib-1*.tar.gz | sed 's/QuantLib-//' | sed 's/\.tar\.gz//'`" | tee -a "$GITHUB_OUTPUT"
+
+  wheels-macos:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-15-intel, macos-14]
+    runs-on: ${{ matrix.os }}
+    needs: detect-version
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup
+      run: |
+        brew install boost
+    - uses: actions/download-artifact@v4
+      with:
+        name: tarballs
+        path: .
+    - name: Build QuantLib
+      run: |
+        tar xfz QuantLib-${{ needs.detect-version.outputs.version }}.tar.gz
+        cd QuantLib-${{ needs.detect-version.outputs.version }}/
+        ./configure --disable-shared --with-boost-include=`brew --prefix`/include --enable-unity-build --disable-test-suite --enable-skip-examples
+        make -j3 CXXFLAGS="-std=c++17 -g0 -O3 -fno-common -dynamic -DNDEBUG -fwrapv" LDFLAGS="-fno-common -dynamic -DNDEBUG -fwrapv"
+        sudo make install
+    - name: Unpack QuantLib-SWIG
+      run: |
+        tar xfz QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.tar.gz
+    - name: Build QuantLib wheels
+      uses: pypa/cibuildwheel@v3.3
+      env:
+        CIBW_ENABLE: pypy
+        CXXFLAGS: -std=c++17 -g0 -O3
+        MACOSX_DEPLOYMENT_TARGET: 10.13
+        CIBW_BUILD_VERBOSITY: 2
+        CIBW_TEST_REQUIRES: pytest
+        CIBW_TEST_COMMAND: pytest {package}/test
+      with:
+        package-dir: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/Python
+    - name: Save wheels as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels-${{ matrix.os }}
+        path: ./wheelhouse/*.whl
+
+  wheels-windows:
+    runs-on: windows-2022
+    needs: detect-version
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: AMD64
+            platform: x64
+          - arch: x86
+            platform: Win32
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+    - name: Setup Boost
+      run: |
+        $Url = "https://archives.boost.io/release/1.90.0/source/boost_1_90_0.zip"
+        (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
+        Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
+        Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
+    - uses: actions/download-artifact@v4
+      with:
+        name: tarballs
+        path: .
+    - name: Build QuantLib
+      run: |
+        Expand-Archive -Path QuantLib-${{ needs.detect-version.outputs.version }}.zip -DestinationPath C:\local
+        Copy-Item .ci\Build.props C:\local\QuantLib-${{ needs.detect-version.outputs.version }}\
+        Copy-Item .ci\Directory.Build.props C:\local\QuantLib-${{ needs.detect-version.outputs.version }}\
+        cd C:\local\QuantLib-${{ needs.detect-version.outputs.version }}\
+        msbuild QuantLib.vcxproj -p:Configuration="Release (static runtime)" -p:Platform=${{ matrix.platform }}
+        dir lib
+    - name: Unpack QuantLib-SWIG
+      run: |
+        Expand-Archive -Path QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.zip -DestinationPath .
+    - name: Build QuantLib wheels
+      uses: pypa/cibuildwheel@v3.3
+      env:
+        QL_DIR: C:\local\QuantLib-${{ needs.detect-version.outputs.version }}
+        INCLUDE: C:\local\boost
+        QL_STATIC_RUNTIME: 1
+        CIBW_ENABLE: pypy
+        CIBW_ARCHS_WINDOWS: ${{ matrix.arch }}
+        CIBW_BUILD_VERBOSITY: 2
+        CIBW_TEST_REQUIRES: pytest
+        CIBW_TEST_COMMAND: pytest {package}/test
+      with:
+        package-dir: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/Python
+    - name: Save wheels as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels-windows-${{ matrix.arch }}
+        path: ./wheelhouse/*.whl
+
+  wheels-linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            image: manylinux
+            os: ubuntu-24.04
+          - arch: x86_64
+            image: musllinux
+            os: ubuntu-24.04
+          - arch: i686
+            image: manylinux
+            os: ubuntu-24.04
+          - arch: i686
+            image: musllinux
+            os: ubuntu-24.04
+          - arch: aarch64
+            image: manylinux
+            os: ubuntu-24.04-arm
+          - arch: aarch64
+            image: musllinux
+            os: ubuntu-24.04-arm
+    runs-on: ${{ matrix.os }}
+    needs: detect-version
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/download-artifact@v4
+      with:
+        name: tarballs
+        path: .
+    - name: Unpack QuantLib and QuantLib-SWIG
+      run: |
+        tar xfz QuantLib-${{ needs.detect-version.outputs.version }}.tar.gz
+        tar xfz QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.tar.gz
+    - name: Build QuantLib wheels
+      uses: pypa/cibuildwheel@v3.3
+      env:
+        CIBW_BUILD: "*-${{ matrix.image }}*"
+        CIBW_ENABLE: pypy
+        CIBW_ARCHS_LINUX: ${{ matrix.arch }}
+        CIBW_BUILD_VERBOSITY: 2
+        CIBW_BEFORE_ALL_LINUX: .ci/wheels/before_all_linux.sh
+        CIBW_ENVIRONMENT_LINUX: CXXFLAGS=${{ matrix.arch == 'i686' && '"-O0 -g0"' || '"-O3 -g0"' }} CXXQLFLAGS="-O3 -g0"
+        CIBW_ENVIRONMENT_PASS_LINUX: CXXFLAGS CXXQLFLAGS
+        CIBW_TEST_REQUIRES: pytest
+        CIBW_TEST_COMMAND: pytest {package}/test
+      with:
+        package-dir: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/Python
+    - name: Save wheels as artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: wheels-linux-${{ matrix.image }}-${{ matrix.arch }}
+        path: ./wheelhouse/*.whl
+
+  test-publish:
+    runs-on: ubuntu-latest
+    needs: [ wheels-macos, wheels-windows, wheels-linux ]
+    environment: testpypi
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/download-artifact@v4
+    - name: Collect wheels
+      run: |
+        mkdir ./wheelhouse
+        cp ./wheels-*/*.whl ./wheelhouse
+        ls -l ./wheelhouse
+    - name: Publish package to TestPyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        repository-url: https://test.pypi.org/legacy/
+        packages-dir: ./wheelhouse
+        skip-existing: true
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: test-publish
+    environment: pypi
+    permissions:
+      id-token: write
+    steps:
+    - uses: actions/download-artifact@v4
+    - name: Collect wheels
+      run: |
+        mkdir ./wheelhouse
+        cp ./wheels-*/*.whl ./wheelhouse
+        ls -l ./wheelhouse
+    - name: Publish package to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages-dir: ./wheelhouse
+        skip-existing: true
