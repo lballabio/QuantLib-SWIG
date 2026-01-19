@@ -72,7 +72,7 @@ jobs:
         make dist
         mv QuantLib-SWIG-*.tar.gz ../tarballs
         cd ../tarballs && ../quantlib-swig/tools/tgz2zip QuantLib-SWIG-*.tar.gz && ls -lh
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: tarballs
         path: ./tarballs/*
@@ -127,7 +127,7 @@ jobs:
         cd C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\cpp
         msbuild QuantLibWrapper.vcxproj -p:Configuration="Release" -p:Platform=x64 -p:PlatformToolset=v142
     - name: Save DLL as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: dll-win-x64
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\cpp\NQuantLibc.dll
@@ -162,7 +162,7 @@ jobs:
         clang++ -c -fpic -std=c++17 -g0 -O3 -arch ${{ matrix.arch }} cpp/quantlib_wrap.cpp -o cpp/quantlib_wrap.o `quantlib-config --cflags`
         clang++ -shared -arch ${{ matrix.arch }} cpp/quantlib_wrap.o -o cpp/libNQuantLibc.dylib `quantlib-config --libs`
     - name: Save DLL as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: dll-osx-${{ matrix.arch }}
         path: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/CSharp/cpp/libNQuantLibc.dylib
@@ -196,7 +196,7 @@ jobs:
         g++ -c -g0 -O3 -fPIC cpp/quantlib_wrap.cpp -o cpp/quantlib_wrap.o `quantlib-config --cflags`
         g++ -shared cpp/quantlib_wrap.o -o cpp/libNQuantLibc.so `quantlib-config --libs`
     - name: Save DLL as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: dll-linux-x64
         path: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/CSharp/cpp/libNQuantLibc.so
@@ -243,7 +243,7 @@ jobs:
         dotnet build -c Release
         dotnet pack --no-build -c Release -p:PackageVersion=${{ needs.detect-version.outputs.version }} -o ..\nupkg
     - name: Save nupkg as artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: nupkg-all
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\nupkg\*.nupkg

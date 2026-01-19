@@ -72,7 +72,7 @@ jobs:
         make dist
         mv QuantLib-SWIG-*.tar.gz ../tarballs
         cd ../tarballs && ../quantlib-swig/tools/tgz2zip QuantLib-SWIG-*.tar.gz && ls -lh
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       with:
         name: tarballs
         path: ./tarballs/*
@@ -130,7 +130,7 @@ jobs:
       with:
         package-dir: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/Python
     - name: Save wheels as artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: wheels-${{ matrix.os }}
         path: ./wheelhouse/*.whl
@@ -185,7 +185,7 @@ jobs:
       with:
         package-dir: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/Python
     - name: Save wheels as artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: wheels-windows-${{ matrix.arch }}
         path: ./wheelhouse/*.whl
@@ -240,7 +240,7 @@ jobs:
       with:
         package-dir: ./QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/Python
     - name: Save wheels as artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: wheels-linux-${{ matrix.image }}-${{ matrix.arch }}
         path: ./wheelhouse/*.whl
