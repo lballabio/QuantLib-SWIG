@@ -84,7 +84,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: tarballs
         path: .
@@ -105,7 +105,7 @@ jobs:
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
         Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
         Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: tarballs
         path: .
@@ -144,7 +144,7 @@ jobs:
     - name: Setup Boost
       run: |
         brew install boost
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: tarballs
         path: .
@@ -178,7 +178,7 @@ jobs:
         tar xfz boost_*.tar.gz
         cd boost_*/
         sudo mv boost /usr/local/include/
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: tarballs
         path: .
@@ -210,26 +210,26 @@ jobs:
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '10.0.x'
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: tarballs
         path: .
     - name: Extract QuantLib-SWIG
       run: |
         Expand-Archive -Path QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.zip -DestinationPath C:\local
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: dll-win-x64
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\cpp\win-x64
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: dll-osx-x86_64
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\cpp\osx-x64
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: dll-osx-arm64
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\cpp\osx-arm64
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: dll-linux-x64
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\cpp\linux-x64
@@ -257,7 +257,7 @@ jobs:
     needs: [dotnet-nupkg, detect-version]
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: tarballs
         path: .
@@ -268,7 +268,7 @@ jobs:
         Copy-Item .ci\nupkg\Example.csproj C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\examples\EquityOption\EquityOption.csproj
         Copy-Item .ci\nupkg\Example.csproj C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\examples\FiniteDifferenceMethods\FiniteDifferenceMethods.csproj
         Copy-Item .ci\nupkg\Example.csproj C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\examples\Times\Times.csproj
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: nupkg-all
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\nupkg
@@ -303,7 +303,7 @@ jobs:
     needs: [dotnet-nupkg, detect-version]
     steps:
     - uses: actions/checkout@v4
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: tarballs
         path: .
@@ -314,7 +314,7 @@ jobs:
         cp .ci/nupkg/Example.csproj QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/CSharp/examples/EquityOption/EquityOption.csproj
         cp .ci/nupkg/Example.csproj QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/CSharp/examples/FiniteDifferenceMethods/FiniteDifferenceMethods.csproj
         cp .ci/nupkg/Example.csproj QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/CSharp/examples/Times/Times.csproj
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: nupkg-all
         path: QuantLib-SWIG-${{ needs.detect-version.outputs.version }}/CSharp/nupkg
@@ -353,7 +353,7 @@ jobs:
         user: lballabio
         token-service-url: https://int.nugettest.org/api/v2/token
         audience: https://int.nugettest.org
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: nupkg-all
         path: C:\local\nupkg
@@ -377,7 +377,7 @@ jobs:
       id: login
       with:
         user: lballabio
-    - uses: actions/download-artifact@v4
+    - uses: actions/download-artifact@v7
       with:
         name: nupkg-all
         path: C:\local\nupkg
