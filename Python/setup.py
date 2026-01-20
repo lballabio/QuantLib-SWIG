@@ -205,6 +205,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: C++",
     "Programming Language :: Python",
+    "Programming Language :: Python :: Free Threading :: 1 - Unstable",
     "Topic :: Office/Business :: Financial",
     "Topic :: Scientific/Engineering",
 ]
