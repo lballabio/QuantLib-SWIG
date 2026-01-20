@@ -41,7 +41,7 @@ jobs:
             && ./configure --prefix=/usr CXXFLAGS=-O3 \
             && make -j 4 && sudo make install \
             && cd .. && rm -rf swig-${SWIG_VERSION}
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: lballabio/QuantLib
         ref: ${{ env.REF }}
@@ -57,7 +57,7 @@ jobs:
         mkdir ../tarballs
         mv QuantLib-*.tar.gz ../tarballs
         cd ../tarballs && ../quantlib/tools/tgz2zip QuantLib-*.tar.gz && ls -lh
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: lballabio/QuantLib-SWIG
         ref: ${{ env.REF }}
@@ -83,7 +83,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: actions/download-artifact@v7
       with:
         name: tarballs
@@ -96,7 +96,7 @@ jobs:
     runs-on: windows-2022
     needs: detect-version
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
     - name: Setup Boost
@@ -140,7 +140,7 @@ jobs:
       matrix:
         arch: [x86_64, arm64]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup Boost
       run: |
         brew install boost
@@ -171,7 +171,7 @@ jobs:
     runs-on: ubuntu-22.04
     needs: detect-version
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup Boost
       run: |
         curl -O -L https://archives.boost.io/release/1.90.0/source/boost_1_90_0.tar.gz
@@ -205,7 +205,7 @@ jobs:
     runs-on: windows-2022
     needs: [dotnet-win-wrap, dotnet-osx-wrap, dotnet-linux-wrap, detect-version]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
       with:
@@ -256,7 +256,7 @@ jobs:
         dotnet: ['net6.0', 'net8.0', 'net9.0', 'net10.0']
     needs: [dotnet-nupkg, detect-version]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: actions/download-artifact@v7
       with:
         name: tarballs
@@ -302,7 +302,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: [dotnet-nupkg, detect-version]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: actions/download-artifact@v7
       with:
         name: tarballs
