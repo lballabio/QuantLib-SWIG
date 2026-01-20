@@ -41,7 +41,7 @@ jobs:
             && ./configure --prefix=/usr CXXFLAGS=-O3 \
             && make -j 4 && sudo make install \
             && cd .. && rm -rf swig-${SWIG_VERSION}
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: lballabio/QuantLib
         ref: ${{ env.REF }}
@@ -57,7 +57,7 @@ jobs:
         mkdir ../tarballs
         mv QuantLib-*.tar.gz ../tarballs
         cd ../tarballs && ../quantlib/tools/tgz2zip QuantLib-*.tar.gz && ls -lh
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: lballabio/QuantLib-SWIG
         ref: ${{ env.REF }}
@@ -83,7 +83,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: actions/download-artifact@v7
       with:
         name: tarballs
@@ -100,7 +100,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-version
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         brew install boost
@@ -147,7 +147,7 @@ jobs:
           - arch: x86
             platform: Win32
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v2
     - name: Setup Boost
@@ -216,7 +216,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-version
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - uses: actions/download-artifact@v7
       with:
         name: tarballs
