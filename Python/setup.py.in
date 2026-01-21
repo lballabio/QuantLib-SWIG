@@ -26,11 +26,15 @@ def is_debug_quantlib():
     return os.getenv("QL_DEBUG", "False").lower() in ("true", "1", "t")
 
 
-def define_macros(py_limited_api):
+def define_macros():
 
     define_macros = []
-    if py_limited_api:
+
+    if py_limited_api():
         define_macros += [("Py_LIMITED_API", "0x03080000")]
+
+    if free_threading():
+        define_macros += [("SWIGPYTHON_NOGIL", None), ("Py_GIL_DISABLED", None)]
 
     compiler = get_default_compiler()
 
@@ -201,6 +205,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Programming Language :: C++",
     "Programming Language :: Python",
+    "Programming Language :: Python :: Free Threading :: 1 - Unstable",
     "Topic :: Office/Business :: Financial",
     "Topic :: Scientific/Engineering",
 ]
@@ -212,14 +217,16 @@ a comprehensive software framework for quantitative finance.
 """
 
 
-py_limited_api = (
-    platform.python_implementation() == "CPython"
-    and not sysconfig.get_config_var("Py_GIL_DISABLED")
-)
+def py_limited_api():
+    return platform.python_implementation() == "CPython" and not free_threading()
+
+
+def free_threading():
+    return bool(sysconfig.get_config_var("Py_GIL_DISABLED"))
 
 
 with open("./setup.cfg", "w") as f:
-    if py_limited_api:
+    if py_limited_api():
         f.write("[bdist_wheel]" + os.linesep + "py_limited_api=cp38" + os.linesep)
 
 
@@ -240,8 +247,8 @@ setup(
         Extension(
             name="QuantLib._QuantLib",
             sources=["src/QuantLib/quantlib_wrap.cpp"],
-            py_limited_api=py_limited_api,
-            define_macros=define_macros(py_limited_api),
+            py_limited_api=py_limited_api(),
+            define_macros=define_macros(),
             include_dirs=include_dirs(),
             library_dirs=library_dirs(),
             libraries=libraries(),
