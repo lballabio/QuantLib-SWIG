@@ -144,7 +144,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-version
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup
       run: |
         brew install boost
