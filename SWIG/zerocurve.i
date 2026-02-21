@@ -33,7 +33,9 @@ using QuantLib::InterpolatedZeroCurve;
 %shared_ptr(InterpolatedZeroCurve<SplineCubic>);
 %shared_ptr(InterpolatedZeroCurve<DefaultLogCubic>);
 %shared_ptr(InterpolatedZeroCurve<MonotonicCubic>);
+#if !defined(SWIGPYTHON)
 %shared_ptr(InterpolatedZeroCurve<Kruger>);
+#endif
 %shared_ptr(InterpolatedZeroCurve<ParabolicCubic>);
 %shared_ptr(InterpolatedZeroCurve<MonotonicParabolicCubic>);
 
@@ -75,7 +77,11 @@ deprecate_feature_with_message(
 %template(CubicZeroCurve) InterpolatedZeroCurve<Cubic>;
 %template(NaturalCubicZeroCurve) InterpolatedZeroCurve<SplineCubic>;
 %template(MonotonicCubicZeroCurve) InterpolatedZeroCurve<MonotonicCubic>;
+#if defined(SWIGPYTHON)
+deprecate_feature(KrugerZeroCurve, CubicZeroCurve);
+#else
 %template(KrugerZeroCurve) InterpolatedZeroCurve<Kruger>;
+#endif
 %template(ParabolicCubicZeroCurve) InterpolatedZeroCurve<ParabolicCubic>;
 %template(MonotonicParabolicCubicZeroCurve) InterpolatedZeroCurve<MonotonicParabolicCubic>;
 
