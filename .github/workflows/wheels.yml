@@ -84,7 +84,7 @@ jobs:
       version: ${{ steps.version.outputs.version }}
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: tarballs
         path: .
@@ -104,7 +104,7 @@ jobs:
     - name: Setup
       run: |
         brew install boost
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: tarballs
         path: .
@@ -148,7 +148,7 @@ jobs:
     - name: Setup
       run: |
         brew install boost
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: tarballs
         path: .
@@ -200,7 +200,7 @@ jobs:
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
         Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
         Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: tarballs
         path: .
@@ -256,7 +256,7 @@ jobs:
         (New-Object System.Net.WebClient).DownloadFile($Url, "$RUNNER_TEMP\boost.zip")
         Expand-Archive -Path "$RUNNER_TEMP\boost.zip" -DestinationPath C:\local
         Rename-Item -Path "C:\local\boost_1_90_0" -NewName "boost"
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: tarballs
         path: .
@@ -318,7 +318,7 @@ jobs:
     needs: detect-version
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: tarballs
         path: .
@@ -374,7 +374,7 @@ jobs:
     needs: detect-version
     steps:
     - uses: actions/checkout@v6
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
       with:
         name: tarballs
         path: .
@@ -408,7 +408,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
     - name: Collect wheels
       run: |
         mkdir ./wheelhouse
@@ -428,7 +428,7 @@ jobs:
     permissions:
       id-token: write
     steps:
-    - uses: actions/download-artifact@v7
+    - uses: actions/download-artifact@v8
     - name: Collect wheels
       run: |
         mkdir ./wheelhouse
