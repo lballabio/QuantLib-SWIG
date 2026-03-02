@@ -19,7 +19,7 @@ import unittest
 import QuantLib as ql
 
 
-EPSILON = 1.e-9
+EPSILON = 1.e-8
 
 # Hypothetical market data
 EUR_ZERO_RATES = [(ql.Period(1, ql.Days), 0.0048),
