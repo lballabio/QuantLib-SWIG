@@ -28,10 +28,8 @@ using QuantLib::InterpolatedZeroCurve;
 %}
 
 %shared_ptr(InterpolatedZeroCurve<Linear>);
-%shared_ptr(InterpolatedZeroCurve<LogLinear>);
 %shared_ptr(InterpolatedZeroCurve<Cubic>);
 %shared_ptr(InterpolatedZeroCurve<SplineCubic>);
-%shared_ptr(InterpolatedZeroCurve<DefaultLogCubic>);
 %shared_ptr(InterpolatedZeroCurve<MonotonicCubic>);
 %shared_ptr(InterpolatedZeroCurve<Kruger>);
 %shared_ptr(InterpolatedZeroCurve<ParabolicCubic>);
@@ -57,10 +55,8 @@ class InterpolatedZeroCurve : public YieldTermStructure {
 };
 
 %template(ZeroCurve) InterpolatedZeroCurve<Linear>;
-%template(LogLinearZeroCurve) InterpolatedZeroCurve<LogLinear>;
 %template(CubicZeroCurve) InterpolatedZeroCurve<Cubic>;
 %template(NaturalCubicZeroCurve) InterpolatedZeroCurve<SplineCubic>;
-%template(LogCubicZeroCurve) InterpolatedZeroCurve<DefaultLogCubic>;
 %template(MonotonicCubicZeroCurve) InterpolatedZeroCurve<MonotonicCubic>;
 %template(KrugerZeroCurve) InterpolatedZeroCurve<Kruger>;
 %template(ParabolicCubicZeroCurve) InterpolatedZeroCurve<ParabolicCubic>;
