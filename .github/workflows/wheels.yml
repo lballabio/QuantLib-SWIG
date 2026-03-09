@@ -119,7 +119,7 @@ jobs:
       run: |
         tar xfz QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.tar.gz
     - name: Build QuantLib wheels
-      uses: pypa/cibuildwheel@v3.3
+      uses: pypa/cibuildwheel@v3.4
       env:
         CIBW_SKIP: cp3??t-*
         CIBW_ENABLE: pypy
@@ -163,7 +163,7 @@ jobs:
       run: |
         tar xfz QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.tar.gz
     - name: Build QuantLib wheels
-      uses: pypa/cibuildwheel@v3.3
+      uses: pypa/cibuildwheel@v3.4
       env:
         CIBW_BUILD: cp3??t-*
         CXXFLAGS: -std=c++17 -g0 -O3
@@ -216,7 +216,7 @@ jobs:
       run: |
         Expand-Archive -Path QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.zip -DestinationPath .
     - name: Build QuantLib wheels
-      uses: pypa/cibuildwheel@v3.3
+      uses: pypa/cibuildwheel@v3.4
       env:
         QL_DIR: C:\local\QuantLib-${{ needs.detect-version.outputs.version }}
         INCLUDE: C:\local\boost
@@ -273,7 +273,7 @@ jobs:
       run: |
         Expand-Archive -Path QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.zip -DestinationPath .
     - name: Build QuantLib wheels
-      uses: pypa/cibuildwheel@v3.3
+      uses: pypa/cibuildwheel@v3.4
       env:
         QL_DIR: C:\local\QuantLib-${{ needs.detect-version.outputs.version }}
         INCLUDE: C:\local\boost
@@ -327,7 +327,7 @@ jobs:
         tar xfz QuantLib-${{ needs.detect-version.outputs.version }}.tar.gz
         tar xfz QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.tar.gz
     - name: Build QuantLib wheels
-      uses: pypa/cibuildwheel@v3.3
+      uses: pypa/cibuildwheel@v3.4
       env:
         CIBW_BUILD: "*-${{ matrix.image }}*"
         CIBW_SKIP: cp3??t-*
@@ -383,7 +383,7 @@ jobs:
         tar xfz QuantLib-${{ needs.detect-version.outputs.version }}.tar.gz
         tar xfz QuantLib-SWIG-${{ needs.detect-version.outputs.version }}.tar.gz
     - name: Build QuantLib wheels
-      uses: pypa/cibuildwheel@v3.3
+      uses: pypa/cibuildwheel@v3.4
       env:
         CIBW_BUILD: "cp3??t-${{ matrix.image }}*"
         CIBW_ARCHS_LINUX: ${{ matrix.arch }}
