@@ -152,8 +152,7 @@ export_piecewise_curve(PiecewiseLogLinearDiscount,Discount,LogLinear);
 export_piecewise_curve(PiecewiseLinearForward,ForwardRate,Linear);
 export_piecewise_curve(PiecewiseLinearZero,ZeroYield,Linear);
 export_piecewise_curve(PiecewiseCubicZero,ZeroYield,Cubic);
-export_piecewise_curve(PiecewiseLogCubicDiscount,Discount,MonotonicLogCubic);
-export_piecewise_curve(PiecewiseSplineCubicDiscount,Discount,SplineCubic);
+export_piecewise_curve(PiecewiseLogCubicDiscount,Discount,LogCubic);
 export_piecewise_curve(PiecewiseKrugerZero,ZeroYield,Kruger);
 export_piecewise_curve(PiecewiseKrugerLogDiscount,Discount,KrugerLog);
 export_piecewise_curve(PiecewiseConvexMonotoneForward,ForwardRate,ConvexMonotone);
@@ -313,7 +312,7 @@ deprecate_feature(PiecewiseLogLinearDiscountSpread, PiecewiseLogLinearSpreadDisc
 #else
 export_piecewise_spread_curve(PiecewiseLogLinearDiscountSpread,Discount,LogLinear);
 #endif
-export_piecewise_spread_curve(PiecewiseLogCubicSpreadDiscount,Discount,MonotonicLogCubic);
+export_piecewise_spread_curve(PiecewiseLogCubicSpreadDiscount,Discount,LogCubic);
 export_piecewise_spread_curve(PiecewiseNaturalLogCubicSpreadDiscount,Discount,SplineLogCubic);
 export_piecewise_spread_curve(PiecewiseLogMixedLinearCubicSpreadDiscount,Discount,LogMixedLinearCubic);
 
