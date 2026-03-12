@@ -29,6 +29,7 @@
 
 %{
 using QuantLib::CreditDefaultSwap;
+using QuantLib::MakeCreditDefaultSwap;
 using QuantLib::MidPointCdsEngine;
 using QuantLib::IntegralCdsEngine;
 using QuantLib::IsdaCdsEngine;
@@ -142,6 +143,56 @@ class CreditDefaultSwap : public Instrument {
                             const DayCounter& dayCounter,
                             CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint) const;
 };
+
+
+#if defined(SWIGPYTHON)
+%rename (_MakeCreditDefaultSwap) MakeCreditDefaultSwap;
+#endif
+class MakeCreditDefaultSwap {
+  public:
+    MakeCreditDefaultSwap(const Period& tenor, Real runningSpread);
+    MakeCreditDefaultSwap(const Date& termDate, Real runningSpread);
+
+    %extend {
+        ext::shared_ptr<CreditDefaultSwap> makeCDS() {
+            return (ext::shared_ptr<CreditDefaultSwap>)(* $self);
+        }
+    }
+
+    MakeCreditDefaultSwap& withUpfrontRate(Real);
+    MakeCreditDefaultSwap& withSide(Protection::Side);
+    MakeCreditDefaultSwap& withNominal(Real);
+    MakeCreditDefaultSwap& withCouponTenor(Period);
+    MakeCreditDefaultSwap& withDayCounter(const DayCounter&);
+    MakeCreditDefaultSwap& withLastPeriodDayCounter(const DayCounter&);
+    MakeCreditDefaultSwap& withDateGenerationRule(DateGeneration::Rule rule);
+    MakeCreditDefaultSwap& withCashSettlementDays(Natural cashSettlementDays);
+    MakeCreditDefaultSwap& withPricingEngine(const ext::shared_ptr<PricingEngine>&);
+    MakeCreditDefaultSwap& withTradeDate(const Date& tradeDate);
+};
+
+
+#if defined(SWIGPYTHON)
+%pythoncode {
+_MAKECDS_METHODS = {
+    "upfrontRate": "withUpfrontRate",
+    "side": "withSide",
+    "nominal": "withNominal",
+    "couponTenor": "withCouponTenor",
+    "dayCounter": "withDayCounter",
+    "lastPeriodDayCounter": "withLastPeriodDayCounter",
+    "dateGenerationRule": "withRule",
+    "cashSettlementDays": "withCashSettlementDays",
+    "tradeDate": "withTradeDate",
+    "pricingEngine": "withPricingEngine",
+}
+
+def MakeCreditDefaultSwap(maturity, runningSpread, **kwargs):
+    mv = _MakeCreditDefaultSwap(maturity, runningSpread)
+    _apply_kwargs("MakeCreditDefaultSwap", _MAKECDS_METHODS, mv, kwargs)
+    return mv.makeCDS()
+}
+#endif
 
 
 Date cdsMaturity(const Date& tradeDate, const Period& tenor, DateGeneration::Rule rule);
