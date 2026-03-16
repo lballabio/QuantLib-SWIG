@@ -22,7 +22,6 @@
 #define quantlib_inflation_i
 
 %include termstructures.i
-%include ratehelpers.i
 %include cashflows.i
 %include swap.i
 %include interpolation.i

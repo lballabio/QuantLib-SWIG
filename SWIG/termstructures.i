@@ -57,6 +57,15 @@ class TermStructure : public Observable {
 
 
 %{
+using QuantLib::Pillar;
+%}
+
+struct Pillar {
+    enum Choice { MaturityDate, LastRelevantDate, CustomDate };
+};
+
+
+%{
 using QuantLib::YieldTermStructure;
 %}
 

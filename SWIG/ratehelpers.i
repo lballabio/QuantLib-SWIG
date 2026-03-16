@@ -33,7 +33,6 @@
 %include swap.i
 
 %{
-using QuantLib::Pillar;
 using QuantLib::RateHelper;
 using QuantLib::DepositRateHelper;
 using QuantLib::FraRateHelper;
@@ -51,10 +50,6 @@ using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
 %}
-
-struct Pillar {
-    enum Choice { MaturityDate, LastRelevantDate, CustomDate};
-};
 
 %shared_ptr(RateHelper)
 class RateHelper : public Observable {
