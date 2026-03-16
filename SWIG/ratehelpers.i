@@ -50,6 +50,7 @@ using QuantLib::ConstNotionalCrossCurrencyBasisSwapRateHelper;
 using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
+using QuantLib::MultipleResetsSwapRateHelper;
 %}
 
 struct Pillar {
@@ -655,6 +656,24 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
     ext::shared_ptr<Swap> swap();
 };
+
+%shared_ptr(MultipleResetsSwapRateHelper)
+class MultipleResetsSwapRateHelper : public RateHelper {
+  public:
+    MultipleResetsSwapRateHelper(
+        Natural settlementDays,
+        const Period& tenor,
+        const std::variant<Rate, Handle<Quote>>& fixedRate,
+        const ext::shared_ptr<IborIndex>& iborIndex,
+        Size resetsPerCoupon,
+        Handle<YieldTermStructure> discountingCurve = {},
+        RateAveraging::Type averagingMethod = RateAveraging::Compound,
+        Spread spread = 0.0,
+        Frequency fixedFrequency = NoFrequency,
+        DayCounter fixedDayCount = DayCounter(),
+        BusinessDayConvention fixedConvention = ModifiedFollowing);
+};
+
 
 // allow use of RateHelper vectors
 #if defined(SWIGCSHARP)
