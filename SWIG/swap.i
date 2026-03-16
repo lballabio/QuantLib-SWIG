@@ -183,6 +183,8 @@ class MakeVanillaSwap {
         MakeVanillaSwap& withFloatingLegDayCount(const DayCounter& dc);
         MakeVanillaSwap& withFloatingLegSpread(Spread sp);
 
+        MakeVanillaSwap& withMaturityEndOfMonth(bool flag = true);
+
         MakeVanillaSwap& withDiscountingTermStructure(
                               const Handle<YieldTermStructure>& discountCurve);
         MakeVanillaSwap& withPricingEngine(
@@ -237,6 +239,7 @@ _MAKEVANILLA_METHODS = {
     "pricingEngine": "withPricingEngine",
     "withIndexedCoupons": "withIndexedCoupons",
     "atParCoupons": "withAtParCoupons",
+    "maturityEndOfMonth": "withMaturityEndOfMonth", 
 }
 
 def MakeVanillaSwap(swapTenor, iborIndex, fixedRate=None, forwardStart=Period(0, Days), **kwargs):
@@ -475,6 +478,7 @@ class MakeOIS {
         MakeOIS& withFixedLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeOIS& withOvernightLegTerminationDateConvention(BusinessDayConvention bdc);
         MakeOIS& withEndOfMonth(bool flag = true);
+        MakeOIS& withMaturityEndOfMonth(bool flag = true);
         MakeOIS& withFixedLegEndOfMonth(bool flag = true);
         MakeOIS& withOvernightLegEndOfMonth(bool flag = true);
         MakeOIS& withFixedLegDayCount(const DayCounter& dc);
@@ -518,6 +522,7 @@ _MAKEOIS_METHODS = {
     "fixedLegTerminationDateConvention": "withFixedLegTerminationDateConvention",
     "overnightLegTerminationDateConvention": "withOvernightLegTerminationDateConvention",
     "endOfMonth": "withEndOfMonth",
+    "maturityEndOfMonth": "withMaturityEndOfMonth", 
     "fixedLegEndOfMonth": "withFixedLegEndOfMonth",
     "overnightLegEndOfMonth": "withOvernightLegEndOfMonth",
     "fixedLegDayCount": "withFixedLegDayCount",
