@@ -1339,6 +1339,15 @@ class CashFlows {
     static Real npv(const Leg& leg,
                     const ext::shared_ptr<YieldTermStructure>& discountCurve,
                     Spread zSpread,
+                    Compounding compounding,
+                    Frequency frequency,
+                    ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+                    const Date& settlementDate = Date(),
+                    const Date& npvDate = Date());
+
+    static Real npv(const Leg& leg,
+                    const ext::shared_ptr<YieldTermStructure>& discountCurve,
+                    Spread zSpread,
                     const DayCounter &dayCounter,
                     Compounding compounding,
                     Frequency frequency,
@@ -1465,6 +1474,18 @@ class CashFlows {
              bool includeSettlementDateFlows,
              Date settlementDate = Date(),
              Date npvDate = Date());
+
+    static Spread zSpread(const Leg& leg,
+             Real npv,
+             const ext::shared_ptr<YieldTermStructure>&,
+             Compounding compounding,
+             Frequency frequency,
+             ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+             Date settlementDate = Date(),
+             Date npvDate = Date(),
+             Real accuracy = 1.0e-10,
+             Size maxIterations = 100,
+             Rate guess = 0.0);
 
     static Spread zSpread(const Leg& leg,
              Real npv,

@@ -150,7 +150,19 @@ class BondFunctions {
     static Real cleanPrice(const Bond& bond,
                            const ext::shared_ptr<YieldTermStructure>& discount,
                            Spread zSpread,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date());
+    static Real cleanPrice(const Bond& bond,
+                           const ext::shared_ptr<YieldTermStructure>& discount,
+                           Spread zSpread,
                            const DayCounter& dayCounter,
+                           Compounding compounding,
+                           Frequency frequency,
+                           Date settlementDate = Date());
+    static Real dirtyPrice(const Bond& bond,
+                           const ext::shared_ptr<YieldTermStructure>& discount,
+                           Spread zSpread,
                            Compounding compounding,
                            Frequency frequency,
                            Date settlementDate = Date());
@@ -161,6 +173,15 @@ class BondFunctions {
                            Compounding compounding,
                            Frequency frequency,
                            Date settlementDate = Date());
+    static Spread zSpread(const Bond& bond,
+                          BondPrice price,
+                          const ext::shared_ptr<YieldTermStructure>& discountCurve,
+                          Compounding compounding,
+                          Frequency frequency,
+                          Date settlementDate = Date(),
+                          Real accuracy = 1.0e-10,
+                          Size maxIterations = 100,
+                          Rate guess = 0.0);
     static Spread zSpread(const Bond& bond,
                           BondPrice price,
                           const ext::shared_ptr<YieldTermStructure>& discountCurve,
