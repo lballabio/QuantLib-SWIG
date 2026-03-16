@@ -521,6 +521,29 @@ class BlackVarianceSurface : public BlackVolTermStructure {
 };
 
 
+// generic surface interpolating in time between smiles
+%{
+using QuantLib::PiecewiseBlackVarianceSurface;
+%}
+
+%shared_ptr(PiecewiseBlackVarianceSurface);
+class PiecewiseBlackVarianceSurface : public BlackVolTermStructure {
+  public:
+    PiecewiseBlackVarianceSurface(
+        const Date& referenceDate,
+        const std::vector<Date>& dates,
+        std::vector<ext::shared_ptr<SmileSection>> smileSections,
+        DayCounter dayCounter = DayCounter());
+
+    static ext::shared_ptr<PiecewiseBlackVarianceSurface>
+    makeFromGrid(const Date& referenceDate,
+                 const std::vector<Date>& dates,
+                 const std::vector<Real>& strikes,
+                 const Matrix& blackVols,
+                 const DayCounter& dc = DayCounter());
+};
+
+
 
 // constant caplet constant term structure
 %{
