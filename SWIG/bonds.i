@@ -274,7 +274,8 @@ class FloatingRateBond : public Bond {
         const Period& exCouponPeriod = Period(),
         const Calendar& exCouponCalendar = Calendar(),
         BusinessDayConvention exCouponConvention = Unadjusted,
-        bool exCouponEndOfMonth = false);
+        bool exCouponEndOfMonth = false,
+        BusinessDayConvention fixingConvention = Preceding);
 };
 
 
