@@ -65,6 +65,7 @@ enum VolatilityType { ShiftedLognormal, Normal };
 %{
 using QuantLib::VolatilityTermStructure;
 using QuantLib::BlackVolTermStructure;
+using QuantLib::BlackVolTimeExtrapolation;
 using QuantLib::LocalVolTermStructure;
 using QuantLib::OptionletVolatilityStructure;
 using QuantLib::SwaptionVolatilityStructure;
@@ -106,6 +107,12 @@ class BlackVolTermStructure : public VolatilityTermStructure {
 
 %template(BlackVolTermStructureHandle) Handle<BlackVolTermStructure>;
 %template(RelinkableBlackVolTermStructureHandle) RelinkableHandle<BlackVolTermStructure>;
+
+
+class BlackVolTimeExtrapolation {
+  public:
+    enum Type { FlatVolatility, UseInterpolator, LinearVariance };
+};
 
 
 %shared_ptr(LocalVolTermStructure);
@@ -450,7 +457,9 @@ class BlackVarianceCurve : public BlackVolTermStructure {
                        const std::vector<Date>& dates,
                        const std::vector<Real>& volatilities,
                        const DayCounter& dayCounter,
-                       bool forceMonotoneVariance = true);
+                       bool forceMonotoneVariance = true,
+                       BlackVolTimeExtrapolation::Type timeExtrapolationType =
+                           BlackVolTimeExtrapolation::FlatVolatility);
     %extend {
       void setInterpolation(const std::string& interpolator = "") {
           std::string s = boost::to_lower_copy(interpolator);
@@ -468,6 +477,7 @@ class BlackVarianceCurve : public BlackVolTermStructure {
 
 
 // Black smiled surface
+
 %{
 using QuantLib::BlackVarianceSurface;
 %}
@@ -520,6 +530,63 @@ class BlackVarianceSurface : public BlackVolTermStructure {
     }
 };
 
+
+// generic surface interpolating in time between smiles
+
+%{
+using QuantLib::PiecewiseBlackVarianceSurface;
+%}
+
+%shared_ptr(PiecewiseBlackVarianceSurface);
+class PiecewiseBlackVarianceSurface : public BlackVolTermStructure {
+  public:
+    PiecewiseBlackVarianceSurface(
+        const Date& referenceDate,
+        const std::vector<Date>& dates,
+        std::vector<ext::shared_ptr<SmileSection>> smileSections,
+        DayCounter dayCounter = DayCounter());
+
+    static ext::shared_ptr<PiecewiseBlackVarianceSurface>
+    makeFromGrid(const Date& referenceDate,
+                 const std::vector<Date>& dates,
+                 const std::vector<Real>& strikes,
+                 const Matrix& blackVols,
+                 const DayCounter& dc = DayCounter());
+};
+
+// vol surface based on a grid of quotes at fixed deltas
+
+
+%{
+using QuantLib::BlackVolatilitySurfaceDelta;
+%}
+
+%shared_ptr(BlackVolatilitySurfaceDelta);
+class BlackVolatilitySurfaceDelta : public BlackVolTermStructure {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") BlackVolatilitySurfaceDelta;
+    #endif
+  public:
+    enum class SmileInterpolationMethod { Linear, NaturalCubic, FinancialCubic, CubicSpline };
+
+    BlackVolatilitySurfaceDelta(Date referenceDate, const std::vector<Date>& dates, const std::vector<Real>& putDeltas,
+                                const std::vector<Real>& callDeltas, bool hasAtm, const Matrix& blackVolMatrix,
+                                const DayCounter& dayCounter, const Calendar& cal, const Handle<Quote>& spot,
+                                const Handle<YieldTermStructure>& domesticTS,
+                                const Handle<YieldTermStructure>& foreignTS,
+                                DeltaVolQuote::DeltaType dt = DeltaVolQuote::DeltaType::Spot,
+                                DeltaVolQuote::AtmType at = DeltaVolQuote::AtmType::AtmDeltaNeutral,
+                                ext::optional<DeltaVolQuote::DeltaType> atmDeltaType = ext::nullopt,
+                                SmileInterpolationMethod interpolationMethod =
+                                        SmileInterpolationMethod::Linear,
+                                bool flatStrikeExtrapolation = false,
+                                BlackVolTimeExtrapolation::Type timeExtrapolationType =
+                                        BlackVolTimeExtrapolation::FlatVolatility,
+                                const Period& switchTenor = 0 * Days,
+                                DeltaVolQuote::DeltaType ltdt = DeltaVolQuote::DeltaType::Fwd,
+                                DeltaVolQuote::AtmType ltat = DeltaVolQuote::AtmType::AtmDeltaNeutral,
+                                ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = ext::nullopt);
+};
 
 
 // constant caplet constant term structure
