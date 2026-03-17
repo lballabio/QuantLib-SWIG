@@ -1059,6 +1059,7 @@ using QuantLib::ZabrLocalVolatility;
 using QuantLib::ZabrFullFd;
 using QuantLib::ZabrSmileSection;
 using QuantLib::ZabrInterpolatedSmileSection;
+using QuantLib::ZabrSwaptionVolatilityCube;
 using QuantLib::NoArbSabrSmileSection;
 using QuantLib::NoArbSabrInterpolatedSmileSection;
 using QuantLib::Option;
@@ -1146,6 +1147,49 @@ export_zabrinterpolatedsmilesection_curve(ZabrShortMaturityLognormalInterpolated
 export_zabrinterpolatedsmilesection_curve(ZabrShortMaturityNormalInterpolatedSmileSection, ZabrShortMaturityNormal);
 export_zabrinterpolatedsmilesection_curve(ZabrLocalVolatilityInterpolatedSmileSection, ZabrLocalVolatility);
 export_zabrinterpolatedsmilesection_curve(ZabrFullFdInterpolatedSmileSection, ZabrFullFd);
+
+
+%shared_ptr(ZabrSwaptionVolatilityCube);
+class ZabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
+  public:
+    ZabrSwaptionVolatilityCube(
+             const Handle<SwaptionVolatilityStructure>& atmVolStructure,
+             const std::vector<Period>& optionTenors,
+             const std::vector<Period>& swapTenors,
+             const std::vector<Spread>& strikeSpreads,
+             const std::vector<std::vector<Handle<Quote> > >& volSpreads,
+             const ext::shared_ptr<SwapIndex>& swapIndex,
+             const ext::shared_ptr<SwapIndex>& shortSwapIndex,
+             bool vegaWeightedSmileFit,
+             const std::vector<std::vector<Handle<Quote> > >& parametersGuess,
+             const std::vector<bool>& isParameterFixed,
+             bool isAtmCalibrated,
+             const ext::shared_ptr<EndCriteria>& endCriteria
+                                           = ext::shared_ptr<EndCriteria>(),
+             Real maxErrorTolerance = Null<Real>(),
+             const ext::shared_ptr<OptimizationMethod>& optMethod
+                                  = ext::shared_ptr<OptimizationMethod>(),
+             const Real errorAccept = Null<Real>(),
+             const bool useMaxError = false,
+             const Size maxGuesses = 50,
+             const bool backwardFlat = false,
+             const Real cutoffStrike = 0.0001);
+    Matrix sparseSabrParameters() const;
+    Matrix denseSabrParameters() const;
+    Matrix marketVolCube() const;
+    Matrix volCubeAtmCalibrated() const;
+    %extend {
+        ext::shared_ptr<ZabrSmileSection<ZabrShortMaturityLognormal>> smileSection(Time optionTime, Time swapLength, bool extr = false) const {
+            auto base = dynamic_cast<const SwaptionVolatilityStructure*>($self);
+            return ext::dynamic_pointer_cast<ZabrSmileSection<ZabrShortMaturityLognormal>>(base->smileSection(optionTime, swapLength, extr));
+        }
+        ext::shared_ptr<ZabrSmileSection<ZabrShortMaturityLognormal>> smileSection(const Period& optionTenor, const Period& swapTenor, bool extr = false) const {
+            auto base = dynamic_cast<const SwaptionVolatilityStructure*>($self);
+            return ext::dynamic_pointer_cast<ZabrSmileSection<ZabrShortMaturityLognormal>>(base->smileSection(optionTenor, swapTenor, extr));
+        }
+    }
+};
+
 
 
 %shared_ptr(NoArbSabrSmileSection)
