@@ -223,6 +223,7 @@ class MakeSwaption {
     MakeSwaption& withOptionConvention(BusinessDayConvention bdc);
     MakeSwaption& withExerciseDate(const Date&);
     MakeSwaption& withUnderlyingType(Swap::Type type);
+    MakeSwaption& withExerciseCalendar(const Calendar&);
 
     MakeSwaption& withIndexedCoupons(bool flag = true);
     MakeSwaption& withAtParCoupons(bool flag = true);
@@ -254,6 +255,7 @@ _MAKESWAPTION_METHODS = {
     "optionConvention": "withOptionConvention",
     "exerciseDate": "withExerciseDate",
     "underlyingType": "withUnderlyingType",
+    "exerciseCalendar": "withExerciseCalendar",
     "pricingEngine": "withPricingEngine",
     "indexedCoupons": "withIndexedCoupons",
     "atParCoupons": "withAtParCoupons",
