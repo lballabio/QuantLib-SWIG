@@ -146,6 +146,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include fra.i
 %include functions.i
 %include futures.i
+%include fxforward.i
 %include gaussian1dmodel.i
 %include grid.i
 %include indexes.i
