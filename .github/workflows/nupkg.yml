@@ -98,7 +98,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
     - name: Setup MSBuild
-      uses: microsoft/setup-msbuild@v2
+      uses: microsoft/setup-msbuild@v3
     - name: Setup Boost
       run: |
         $Url = "https://archives.boost.io/release/1.90.0/source/boost_1_90_0.zip"
