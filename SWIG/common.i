@@ -178,15 +178,19 @@ typedef int hash_t;
 #endif
 %}
 
-%define deprecate_feature(OldName, NewName)
+%define deprecate_feature_with_message(OldName, NewName, Message)
 #if defined(SWIGPYTHON)
 %pythoncode %{
 def OldName(*args, **kwargs):
     from warnings import warn
-    warn(f'{OldName.__name__} is deprecated; use {NewName.__name__}', FutureWarning, stacklevel=2)
+    warn(#OldName " is deprecated; " Message, FutureWarning, stacklevel=2)
     return NewName(*args, **kwargs)
 %}
 #endif
+%enddef
+
+%define deprecate_feature(OldName, NewName)
+deprecate_feature_with_message(OldName, NewName, "use " #NewName)
 %enddef
 
 %{

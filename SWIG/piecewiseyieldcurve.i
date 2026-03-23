@@ -153,7 +153,15 @@ export_piecewise_curve(PiecewiseLinearForward,ForwardRate,Linear);
 export_piecewise_curve(PiecewiseLinearZero,ZeroYield,Linear);
 export_piecewise_curve(PiecewiseCubicZero,ZeroYield,Cubic);
 export_piecewise_curve(PiecewiseLogCubicDiscount,Discount,MonotonicLogCubic);
+#if defined(SWIGPYTHON)
+export_piecewise_curve(_PiecewiseSplineCubicDiscount,Discount,SplineCubic);
+deprecate_feature_with_message(
+    PiecewiseSplineCubicDiscount,
+    _PiecewiseSplineCubicDiscount,
+    "use PiecewiseNaturalLogCubicDiscount because discount curves should use log interpolations");
+#else
 export_piecewise_curve(PiecewiseSplineCubicDiscount,Discount,SplineCubic);
+#endif
 export_piecewise_curve(PiecewiseKrugerZero,ZeroYield,Kruger);
 export_piecewise_curve(PiecewiseKrugerLogDiscount,Discount,KrugerLog);
 export_piecewise_curve(PiecewiseConvexMonotoneForward,ForwardRate,ConvexMonotone);

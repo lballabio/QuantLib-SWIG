@@ -56,7 +56,15 @@ class InterpolatedDiscountCurve : public YieldTermStructure {
 
 %template(DiscountCurve) InterpolatedDiscountCurve<LogLinear>;
 %template(MonotonicLogCubicDiscountCurve) InterpolatedDiscountCurve<MonotonicLogCubic>;
+#if defined(SWIGPYTHON)
+%template(_NaturalCubicDiscountCurve) InterpolatedDiscountCurve<SplineCubic>;
+deprecate_feature_with_message(
+    NaturalCubicDiscountCurve,
+    _NaturalCubicDiscountCurve,
+    "use NaturalLogCubicDiscountCurve because discount curves should use log interpolations");
+#else
 %template(NaturalCubicDiscountCurve) InterpolatedDiscountCurve<SplineCubic>;
+#endif
 %template(KrugerLogDiscountCurve) InterpolatedDiscountCurve<KrugerLog>;
 %template(NaturalLogCubicDiscountCurve) InterpolatedDiscountCurve<SplineLogCubic>;
 %template(LogMixedLinearCubicDiscountCurve) InterpolatedDiscountCurve<LogMixedLinearCubic>;
