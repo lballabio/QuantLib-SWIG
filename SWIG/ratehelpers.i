@@ -539,6 +539,9 @@ class FxSwapRateHelper : public RateHelper {
 
 %shared_ptr(OvernightIndexFutureRateHelper)
 class OvernightIndexFutureRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") OvernightIndexFutureRateHelper;
+    #endif
   public:
     OvernightIndexFutureRateHelper(
             const Handle<Quote>& price,
@@ -546,25 +549,44 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& maturityDate,
             const ext::shared_ptr<OvernightIndex>& index,
             const Handle<Quote>& convexityAdjustment = Handle<Quote>(), 
-            RateAveraging::Type averagingMethod = RateAveraging::Compound);
+            RateAveraging::Type averagingMethod = RateAveraging::Compound,
+            Pillar::Choice pillar = Pillar::LastRelevantDate,
+            const Date& customPillarDate = Date());
 
     Real convexityAdjustment() const;
 };
 
 %shared_ptr(SofrFutureRateHelper)
 class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
+    #if defined(SWIGPYTHON)
+    %feature("kwargs") SofrFutureRateHelper;
+    #endif
   public:
+    #if defined(SWIGPYTHON)
+    SofrFutureRateHelper(const std::variant<Real, Handle<Quote>>& price,
+                         Month referenceMonth,
+                         Year referenceYear,
+                         Frequency referenceFreq,
+                         const std::variant<Real, Handle<Quote>>& convexityAdjustment = 0.0,
+                         Pillar::Choice pillar = Pillar::LastRelevantDate,
+                         const Date& customPillarDate = Date());
+    #else
     SofrFutureRateHelper(const Handle<Quote>& price,
                          Month referenceMonth,
                          Year referenceYear,
                          Frequency referenceFreq,
-                         const Handle<Quote>& convexityAdjustment = Handle<Quote>());
+                         const Handle<Quote>& convexityAdjustment = {},
+                         Pillar::Choice pillar = Pillar::LastRelevantDate,
+                         const Date& customPillarDate = Date());
 
     SofrFutureRateHelper(Real price,
                          Month referenceMonth,
                          Year referenceYear,
                          Frequency referenceFreq,
-                         Real convexityAdjustment = 0.0);
+                         Real convexityAdjustment = 0.0,
+                         Pillar::Choice pillar = Pillar::LastRelevantDate,
+                         const Date& customPillarDate = Date());
+    #endif
 };
 
 %shared_ptr(ConstNotionalCrossCurrencySwapRateHelper)
