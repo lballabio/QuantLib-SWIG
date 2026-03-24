@@ -15,6 +15,8 @@
  FOR A PARTICULAR PURPOSE.  See the license for more details.
 """
 
+import math
+import operator
 import QuantLib as ql
 import unittest
 
@@ -83,6 +85,42 @@ class MarketElementTest(unittest.TestCase):
     def test_SimpleQuote(self):
         for value in (100, 2.71, 10**100):
             self.assertAlmostEqual(ql.SimpleQuote(value).value(), value)
+
+    def test_DerivedQuote(self):
+        sq = ql.SimpleQuote()
+        for fn in (math.sqrt, math.exp, math.sin):
+            dq = ql.DerivedQuote(ql.QuoteHandle(sq), fn)
+            for value in (12, 23, 34):
+                sq.setValue(value)
+                self.assertAlmostEqual(dq.value(), fn(value))
+
+    def test_CompositeQuote(self):
+        sq1 = ql.SimpleQuote()
+        sq2 = ql.SimpleQuote()
+        for fn in (operator.add, operator.mul, math.hypot):
+            cq = ql.CompositeQuote(ql.QuoteHandle(sq1), ql.QuoteHandle(sq2), fn)
+            for value in (12, 23, 34):
+                sq1.setValue(value)
+                sq2.setValue(value + 1)
+                self.assertAlmostEqual(cq.value(), fn(value, value + 1))
+                self.assertEqual(cq.value1(), value)
+                self.assertEqual(cq.value2(), value + 1)
+
+    def test_MultiCompositeQuote(self):
+        for fn in (math.fsum, math.prod, lambda xs: sum(x*x for x in xs)**0.5):
+            quotes = []
+            handles = []
+            for i in range(3):
+                quotes.append(ql.SimpleQuote(i + 1))
+                handles.append(ql.QuoteHandle(quotes[-1]))
+                cq = ql.MultiCompositeQuote(ql.QuoteHandleVector(handles), fn)
+                for j in range(i + 1):
+                    quotes[j].setValue(j * 10 + 1)
+                    self.assertAlmostEqual(cq.value(), fn([q.value() for q in quotes]))
+                    self.assertEqual(
+                        list(map(cq.inputValue, range(len(quotes)))),
+                        [q.value() for q in quotes],
+                    )
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ using QuantLib::CostFunction;
 %{
 class UnaryFunction {
   public:
-    UnaryFunction(PyObject* function)
+    explicit UnaryFunction(PyObject* function)
     : function_(PyPtr::fromBorrowed(function)) {}
 
     Real operator()(Real x) const {
@@ -53,7 +53,7 @@ class UnaryFunction {
 
 class BinaryFunction {
   public:
-    BinaryFunction(PyObject* function)
+    explicit BinaryFunction(PyObject* function)
     : function_(PyPtr::fromBorrowed(function)) {}
 
     Real operator()(Real x, Real y) const {
@@ -66,28 +66,40 @@ class BinaryFunction {
     PyPtr function_;
 };
 
-class PyCostFunction : public CostFunction {
+class ArrayFunction {
   public:
-    PyCostFunction(PyObject* function)
+    explicit ArrayFunction(PyObject* function)
     : function_(PyPtr::fromBorrowed(function)) {}
 
-    Real value(const Array& x) const {
+    Real operator()(const Array& x) const {
         auto tuple = PyPtr::fromResult(PyTuple_New(x.size()), "failed to convert arguments");
         for (Size i=0; i<x.size(); i++)
             PyTuple_SetItem(tuple.get(), i, PyFloat_FromDouble(x[i]));
 
         auto pyResult = PyPtr::fromResult(
-            PyObject_CallFunction(function_.get(), "O", tuple.get()),
+            PyObject_CallFunctionObjArgs(function_.get(), tuple.get(), NULL),
             "failed to call Python function");
         return PyFloat_AsDouble(pyResult.get());
     }
-    Array values(const Array& x) const {
+  private:
+    PyPtr function_;
+};
+
+class PyCostFunction : public CostFunction {
+  public:
+    explicit PyCostFunction(PyObject* function)
+    : function_(function) {}
+
+    Real value(const Array& x) const override {
+        return function_(x);
+    }
+    Array values(const Array& x) const override {
         QL_FAIL("Not implemented");
         // Should be straight forward to copy from a python list
         // to an array
     }
   private:
-    PyPtr function_;
+    ArrayFunction function_;
 };
 %}
 
