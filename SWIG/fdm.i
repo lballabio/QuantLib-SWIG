@@ -403,11 +403,13 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
     Array apply(const Array& r) const {
-        return apply(r, "apply");        
+        static PyObject* s_methodName = PyUnicode_InternFromString("apply");
+        return apply(r, s_methodName, "apply");
     }
 
     Array apply_mixed(const Array& r) const {
-        return apply(r, "apply_mixed");        
+        static PyObject* s_methodName = PyUnicode_InternFromString("apply_mixed");
+        return apply(r, s_methodName, "apply_mixed");
     }
 
     Array apply_direction(Size direction, const Array& r) const {
@@ -444,12 +446,12 @@ class FdmLinearOpCompositeProxy : public FdmLinearOpComposite {
     }
 
   private:
-    Array apply(const Array& r, const char* methodName) const {
+    Array apply(const Array& r, PyObject* pyMethodName, const char* methodName) const {
         auto pyArray = PyPtr::fromNew(SWIG_NewPointerObj(
             SWIG_as_voidptr(&r), SWIGTYPE_p_Array, 0));
 
         auto pyResult = PyPtr::fromNew(
-            PyObject_CallMethod(callback_.get(), methodName, "O", pyArray.get()));
+            PyObject_CallMethodObjArgs(callback_.get(), pyMethodName, pyArray.get(), NULL));
 
         return extractArray(pyResult.get(), methodName);
     }

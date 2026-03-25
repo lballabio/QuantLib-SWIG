@@ -668,7 +668,7 @@ class MatrixMultiplicationProxy {
             SWIG_as_voidptr(&x), SWIGTYPE_p_Array, 0));
 
         auto pyResult = PyPtr::fromNew(
-            PyObject_CallFunction(matrixMult_.get(), "O", pyArray.get()));
+            PyObject_CallFunctionObjArgs(matrixMult_.get(), pyArray.get(), NULL));
 
         return extractArray(pyResult.get(), "matrix multiplication");
     }
