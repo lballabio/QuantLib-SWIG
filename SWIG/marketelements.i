@@ -152,6 +152,7 @@ class FuturesConvAdjustmentQuote : public Quote {
 %{
 using QuantLib::DerivedQuote;
 using QuantLib::CompositeQuote;
+using QuantLib::MultiCompositeQuote;
 %}
 
 %shared_ptr(DerivedQuote<UnaryFunction>)
@@ -181,9 +182,27 @@ class CompositeQuote : public Quote {
             return new CompositeQuote<F>(h1,h2,F(function));
         }
     }
+    Real value1() const;
+    Real value2() const;
 };
 
 %template(CompositeQuote) CompositeQuote<BinaryFunction>;
+
+%shared_ptr(MultiCompositeQuote<ArrayFunction>)
+
+template <class F>
+class MultiCompositeQuote : public Quote {
+  public:
+    %extend {
+        MultiCompositeQuote(const std::vector<Handle<Quote> >& handles,
+                            PyObject* function) {
+            return new MultiCompositeQuote<F>(handles, F(function));
+        }
+    }
+    Real inputValue(Size i) const;
+};
+
+%template(MultiCompositeQuote) MultiCompositeQuote<ArrayFunction>;
 
 #endif
 
