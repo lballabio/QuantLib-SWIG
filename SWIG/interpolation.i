@@ -140,8 +140,6 @@ using QuantLib::Cubic;
 using QuantLib::Bicubic;
 using QuantLib::ConvexMonotone;
 using QuantLib::DefaultLogCubic;
-using QuantLib::MonotonicLogCubic;
-using QuantLib::KrugerLog;
 
 class MonotonicCubic : public Cubic {
   public:
@@ -182,12 +180,28 @@ class LogCubic : public QuantLib::LogCubic {
                          rightCondition, rightConditionValue) {}
 };
 
-class SplineLogCubic : public QuantLib::LogCubic {
+class MonotonicLogCubic : public LogCubic {
+  public:
+    MonotonicLogCubic()
+    : LogCubic(CubicInterpolation::Spline, true,
+               CubicInterpolation::SecondDerivative, 0.0,
+               CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
+class KrugerLog : public LogCubic {
+  public:
+    KrugerLog()
+    : LogCubic(CubicInterpolation::Kruger, false,
+               CubicInterpolation::SecondDerivative, 0.0,
+               CubicInterpolation::SecondDerivative, 0.0) {}
+};
+
+class SplineLogCubic : public LogCubic {
   public:
     SplineLogCubic()
-    : QuantLib::LogCubic(CubicInterpolation::Spline, false,
-                         CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0) {}
+    : LogCubic(CubicInterpolation::Spline, false,
+               CubicInterpolation::SecondDerivative, 0.0,
+               CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
 class ParabolicCubic : public QuantLib::Cubic {
@@ -206,20 +220,20 @@ class MonotonicParabolicCubic : public QuantLib::Cubic {
                       CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
-class LogParabolicCubic : public QuantLib::LogCubic {
+class LogParabolicCubic : public LogCubic {
   public:
     LogParabolicCubic()
-    : QuantLib::LogCubic(CubicInterpolation::Parabolic, false,
-                         CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0) {}
+    : LogCubic(CubicInterpolation::Parabolic, false,
+               CubicInterpolation::SecondDerivative, 0.0,
+               CubicInterpolation::SecondDerivative, 0.0) {}
 };
 
-class MonotonicLogParabolicCubic : public QuantLib::LogCubic {
+class MonotonicLogParabolicCubic : public LogCubic {
   public:
     MonotonicLogParabolicCubic()
-    : QuantLib::LogCubic(CubicInterpolation::Parabolic, true,
-                         CubicInterpolation::SecondDerivative, 0.0,
-                         CubicInterpolation::SecondDerivative, 0.0) {}
+    : LogCubic(CubicInterpolation::Parabolic, true,
+               CubicInterpolation::SecondDerivative, 0.0,
+               CubicInterpolation::SecondDerivative, 0.0) {}
 };
 %}
 
@@ -281,22 +295,22 @@ struct LogCubic {
              doubleOrNull rightConditionValue = 0.0);
 };
 struct Bicubic {};
-struct MonotonicCubic {};
+struct MonotonicCubic : Cubic {};
 struct DefaultLogCubic {};
-struct MonotonicLogCubic {};
-struct SplineCubic {};
-struct SplineLogCubic {};
-struct Kruger {};
-struct KrugerLog {};
+struct MonotonicLogCubic : LogCubic {};
+struct SplineCubic : Cubic {};
+struct SplineLogCubic : LogCubic {};
+struct Kruger : Cubic {};
+struct KrugerLog : LogCubic {};
 struct ConvexMonotone {
     ConvexMonotone(Real quadraticity = 0.3,
                    Real monotonicity = 0.7,
                    bool forcePositive = true);
 };
-struct ParabolicCubic {};
-struct MonotonicParabolicCubic {};
-struct LogParabolicCubic {};
-struct MonotonicLogParabolicCubic {};
+struct ParabolicCubic : Cubic {};
+struct MonotonicParabolicCubic : Cubic {};
+struct LogParabolicCubic : LogCubic {};
+struct MonotonicLogParabolicCubic : LogCubic {};
 
 %define make_mixed_linear_cubic(T)
 %{
