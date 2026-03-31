@@ -452,6 +452,9 @@ using QuantLib::BlackVarianceCurve;
 
 %shared_ptr(BlackVarianceCurve);
 class BlackVarianceCurve : public BlackVolTermStructure {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") BlackVarianceCurve;
+    #endif
   public:
     BlackVarianceCurve(const Date& referenceDate,
                        const std::vector<Date>& dates,

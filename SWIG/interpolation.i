@@ -62,9 +62,9 @@ class Safe##T {
   public:
     Safe##T(const Array& x, const Array& y);
     Real operator()(Real x, bool allowExtrapolation = false) const;
-    Real primitive(Real x, bool allowExtrapolation = false) const;
-    Real derivative(Real x, bool allowExtrapolation = false) const;
-    Real secondDerivative(Real x, bool allowExtrapolation = false) const;
+    Real derivative(Real x, bool extrapolate = false) const;
+    Real secondDerivative(Real x, bool extrapolate = false) const;
+    Real primitive(Real x, bool extrapolate = false) const;
 };
 %enddef
 
