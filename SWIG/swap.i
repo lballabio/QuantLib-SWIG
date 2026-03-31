@@ -367,6 +367,8 @@ class FloatFloatSwap : public Swap {
         const std::vector<Real> &flooredRate2 = std::vector<Real>(),
         BusinessDayConvention paymentConvention1 = Following,
         BusinessDayConvention paymentConvention2 = Following);
+    Spread fairSpread1();
+    Spread fairSpread2();
 };
 
 %shared_ptr(OvernightIndexedSwap)
