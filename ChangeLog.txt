@@ -1,205 +1,462 @@
-commit 47bc2a352c8dd74ba7cd2813fbf1086de7de5eea
+commit d5e7ea15b79510f70eed0e5f4326c43fcd171a40
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Mon, 12 Jan 2026 13:34:28 +0000
+Date:   Wed, 1 Apr 2026 10:10:52 +0000
 
-    Set version to 1.41
-
- Python/setup.py | 2 +-
- configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit 951d93657dbb5d0032bc5de0e773bfa1c377c90b
-Merge: 1e9b8754 255681df
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 8 Jan 2026 10:57:04 +0100
-
-    Add missing constructor to a couple of pricers (#810)
-
-commit 255681df2fe1f3812a9560ad7ec7113538aa1320
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 8 Jan 2026 10:05:11 +0100
-
-    Add missing constructor to a couple of pricers
-    
-    SWIG won't generate a default constructor if the base class doesn't have one.
-
- SWIG/cashflows.i | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-commit 1e9b8754fd040f1691a0f3738dbf986b81c26e07
-Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Mon, 5 Jan 2026 19:41:32 +0000
-
-    Update changelog
-
- ChangeLog.txt | 978 +++++++++++++++++++++++-----------------------------------
- 1 file changed, 392 insertions(+), 586 deletions(-)
-
-commit f820895a2c7d4e962df77c232116bd09e1cee5d0
-Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Mon, 5 Jan 2026 19:41:32 +0000
-
-    Set version to 1.41-rc
+    Set version to 1.42-rc
 
  Python/setup.py | 2 +-
  SWIG/ql.i       | 4 ++--
  configure.ac    | 2 +-
  3 files changed, 4 insertions(+), 4 deletions(-)
 
-commit 99086d5271d307aa2b58ad677d3aa31d337a0c5b
+commit ece42be3bf45d0ce33c04f2c1133dacc5eb85e08
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 5 Jan 2026 12:37:53 +0100
+Date:   Wed, 1 Apr 2026 10:21:23 +0200
 
-    Update news for 1.41
+    Update news
 
- News.md | 23 ++++++++++++++---------
- 1 file changed, 14 insertions(+), 9 deletions(-)
+ News.md | 24 ++++--------------------
+ 1 file changed, 4 insertions(+), 20 deletions(-)
 
-commit 9adba846e2d00c15239508cbb30197af3fee9f72
-Merge: 0e5f50cd eef65314
+commit 51a9b62c9094e5fb0e7695872b02ae7d994ec503
+Merge: 1d21fa5c 86e5b5d3
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 5 Jan 2026 10:10:51 +0100
+Date:   Tue, 31 Mar 2026 19:32:28 +0200
 
-    Fix typo in method mapping for `MakeSwaption` (#808)
+    Inherit specialized Cubic interpolations from base class (#845)
 
-commit eef65314846d8068173a6d920dd8753a5324081a
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 5 Jan 2026 09:19:16 +0100
+commit 86e5b5d358a78b5449588c4d6e4b1e4f4c4b453e
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 31 Mar 2026 09:42:53 -0400
 
-    Fix typo in method mapping
-
- SWIG/swaption.i | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-commit 0e5f50cdff3bb0bceeb421a36daa483cafe4766e
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 29 Dec 2025 16:44:51 +0100
-
-    Restore kwargs for ultimate term-structure constructor
-
- SWIG/termstructures.i | 3 +++
- 1 file changed, 3 insertions(+)
-
-commit 85b621bc9296f62df7982ae33df2281c573c5be0
-Merge: b66e8eca 13f727a4
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Dec 2025 12:19:04 +0100
-
-    Export new features of overnight-indexed coupons (#806)
-
-commit 13f727a477996308938bc77f4db7f0c0cd7df11d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 24 Dec 2025 11:35:15 +0100
-
-    Export new features of overnight-indexed coupons
-
- SWIG/cashflows.i | 133 ++++++++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 107 insertions(+), 26 deletions(-)
-
-commit b66e8ecaeca075ebb96c03f33f0b52593ba0bd56
-Merge: 2afb7e19 f335ac11
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 20:08:05 +0100
-
-    Export new constructor for Asian option and engine (#805)
-
-commit f335ac11662a86f9cda939b7163f88ae995a5edb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 18:37:40 +0100
-
-    Export new constructor for Asian option and engine
-
- SWIG/asianoptions.i | 7 +++++++
- 1 file changed, 7 insertions(+)
-
-commit 2afb7e19bfc453f81f63ed1f271d09becccf459e
-Merge: 7b6a8dbb ae9dba82
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 18:10:55 +0100
-
-    Export const-notional cross-currency swap helper (#804)
-
-commit ae9dba82b1e007032bbd937c90d7409d766a2ae2
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 16:53:37 +0100
-
-    Export const-notional cross-currency swap helper
-
- SWIG/ratehelpers.i | 26 ++++++++++++++++++++++----
- 1 file changed, 22 insertions(+), 4 deletions(-)
-
-commit 7b6a8dbb71ed1d42e32a8ba3ba0bfd201694f1ac
-Merge: 965f8b46 35925cd7
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 15:08:02 +0100
-
-    Export `zeroRate` and `yoyRate` methods without lag (#803)
-
-commit 965f8b460a025fb7952122d2bf3a8eb8653d9de3
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 12:37:28 +0100
-
-    No need for %extend
-
- SWIG/cashflows.i | 83 ++++++++++++++++++++++++--------------------------------
- 1 file changed, 36 insertions(+), 47 deletions(-)
-
-commit 35925cd7bc1e050ca8ba45a87e2a380f94062c9c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 12:56:41 +0100
-
-    Export zeroRate and yoyRate methods without lag
-
- SWIG/inflation.i | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-commit 73402fff013652d83efd7eb30b04678964f54cbe
-Merge: d795a2b0 e12869eb
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 23 Dec 2025 11:40:11 +0100
-
-    Add `setInterpolation` method in `BlackVarianceCurve` (#802)
-
-commit e12869eb5c21c0263ca92153d7b188ffbb241716
-Author: paolodelia99 <paolo.delia99@gmail.com>
-Date:   Tue, 23 Dec 2025 10:29:06 +0100
-
-    Fix error for missing interpolators
-
- SWIG/volatilities.i | 4 ----
- 1 file changed, 4 deletions(-)
-
-commit ed53ea0206131eb59e4b93478176a730fa025f4b
-Author: paolodelia99 <paolo.delia99@gmail.com>
-Date:   Tue, 23 Dec 2025 10:21:18 +0100
-
-    wrap new overidden methon in extend
-
- SWIG/volatilities.i | 29 +++++++++++++++--------------
- 1 file changed, 15 insertions(+), 14 deletions(-)
-
-commit e00cbf4860a9750df7ac0f999195e4a62f5756f8
-Author: paolodelia99 <paolo.delia99@gmail.com>
-Date:   Tue, 23 Dec 2025 10:16:33 +0100
-
-    Add set interpolation method in BlackVarianceCurve class
-
- SWIG/volatilities.i | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
-
-commit d795a2b011fe6cdd5cdc729d358c449c0159f889
-Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 15 Dec 2025 18:02:20 +0000
-
-    Bump peter-evans/create-pull-request from 7 to 8
+    Inherit specialized Cubic interpolations from base class
     
-    Bumps [peter-evans/create-pull-request](https://github.com/peter-evans/create-pull-request) from 7 to 8.
-    - [Release notes](https://github.com/peter-evans/create-pull-request/releases)
-    - [Commits](https://github.com/peter-evans/create-pull-request/compare/v7...v8)
+    This allows passing instances of these interpolations into constructors
+    of template instantiations with base classes. This is needed since some
+    instances were generalized from MonotonicLogCubic to just LogCubic. This
+    will also allow deprecating specialized template instances in favor of
+    passing specific interpolations into constructors of template instances
+    with base classes, thus significantly reducing the number of template
+    instances.
+
+ Python/test/test_termstructures.py | 18 +++++++++++
+ SWIG/interpolation.i               | 62 +++++++++++++++++++++++---------------
+ 2 files changed, 56 insertions(+), 24 deletions(-)
+
+commit 1d21fa5c34a3e201a35feec6d3a1ea05e44f0164
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 31 Mar 2026 11:12:47 +0200
+
+    Restore kwargs compatibility with previous version
+
+ SWIG/interpolation.i | 6 +++---
+ SWIG/volatilities.i  | 3 +++
+ 2 files changed, 6 insertions(+), 3 deletions(-)
+
+commit ee02ab7a8fb1a51f2fd07869201cd92a1e669fd7
+Merge: fcd6e637 c2d79a46
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 31 Mar 2026 10:14:37 +0200
+
+    Export new fair-spread methods from `FloatFloatSwap` (#844)
+
+commit c2d79a46e0cf1e4e6625dac35e9fab0bd6c6847e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 30 Mar 2026 17:46:03 +0200
+
+    Export new methods from FloatFloatSwap
+
+ SWIG/swap.i | 2 ++
+ 1 file changed, 2 insertions(+)
+
+commit fcd6e637e944537a2daca146182001b9ee78fafc
+Merge: a042b65e cfef7259
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 25 Mar 2026 14:21:38 +0100
+
+    Expose MultiCompositeQuote (#842)
+
+commit a042b65e42cd3715e4e87b14573ba5e1ebdd81ca
+Merge: d3f67a32 cc49a590
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 25 Mar 2026 12:37:34 +0100
+
+    Use `PyObject_Call*ObjArgs` in bespoke wrapper code (#843)
+
+commit cc49a590fb92f9e159d46b66fe68ec94b099c3bb
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 24 Mar 2026 19:34:53 -0400
+
+    Use PyObject_Call*ObjArgs
+    
+    These are faster than format string based functions when all arguments
+    are PyObjects.
+
+ SWIG/fdm.i           | 10 ++++++----
+ SWIG/linearalgebra.i |  2 +-
+ 2 files changed, 7 insertions(+), 5 deletions(-)
+
+commit cfef7259f05b0274d69a0f0ee8b900601f85ce1f
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Tue, 24 Mar 2026 16:11:53 -0400
+
+    Expose MultiCompositeQuote
+    
+    Also, add tests for DerivedQuote and CompositeQuote.
+
+ Python/test/test_marketelements.py | 38 ++++++++++++++++++++++++++++++++++++++
+ SWIG/functions.i                   | 28 ++++++++++++++++++++--------
+ SWIG/marketelements.i              | 19 +++++++++++++++++++
+ 3 files changed, 77 insertions(+), 8 deletions(-)
+
+commit d3f67a32dc1516a3c3603eca8916eb9a1a4572f2
+Merge: 01d4c3c4 b2fede5d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 24 Mar 2026 15:06:45 +0100
+
+    Export new custom-pillar arguments for overnight-rate futures constructors (#841)
+
+commit b2fede5dd55651876adaf6048eedada2348aa43b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 24 Mar 2026 12:50:33 +0100
+
+    Export new custom-pillar arguments for overnight-rate futures constructors
+
+ SWIG/ratehelpers.i | 28 +++++++++++++++++++++++++---
+ 1 file changed, 25 insertions(+), 3 deletions(-)
+
+commit 01d4c3c4fcedf697838e463d125bb8da5d6b4c7c
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 23 Mar 2026 18:45:38 +0000
+
+    Bump microsoft/setup-msbuild from 2 to 3
+    
+    Bumps [microsoft/setup-msbuild](https://github.com/microsoft/setup-msbuild) from 2 to 3.
+    - [Release notes](https://github.com/microsoft/setup-msbuild/releases)
+    - [Commits](https://github.com/microsoft/setup-msbuild/compare/v2...v3)
     
     ---
     updated-dependencies:
-    - dependency-name: peter-evans/create-pull-request
+    - dependency-name: microsoft/setup-msbuild
+      dependency-version: '3'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/nupkg.yml  | 2 +-
+ .github/workflows/wheels.yml | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit cd3b459f3e92a98176e3b3e521c7fa13e94af8d3
+Merge: a6e044c2 b81f5a8e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 23 Mar 2026 14:51:49 +0100
+
+    Expose boundary conditions for Cubic interpolations (#824)
+
+commit b81f5a8e63c463c54c6d752d8208cd6fab92b239
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Fri, 20 Feb 2026 21:58:21 -0500
+
+    Expose boundary conditions for Cubic interpolations
+
+ SWIG/discountcurve.i       |   8 ++++
+ SWIG/interpolation.i       | 108 ++++++++++++++++++++++++++++++++++++---------
+ SWIG/piecewiseyieldcurve.i |   8 +++-
+ SWIG/zerocurve.i           |   6 +++
+ 4 files changed, 107 insertions(+), 23 deletions(-)
+
+commit a6e044c2f6f1bbbe8fa869567a57d47d08e86275
+Merge: 12cf4f04 223244e8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 23 Mar 2026 13:29:48 +0100
+
+    Deprecate interpolated curves with wrong interpolations (#838)
+
+commit 223244e833d5e23c35dafd8218c29a9a4b49c36a
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Fri, 20 Feb 2026 21:58:21 -0500
+
+    Deprecate interpolated curves with wrong interpolations
+    
+    DiscountFactor based curves should use Log interpolations and Rates
+    based curves should not use Log interpolations. This is because you
+    really want to interpolate in the rates space. For DiscountFactor
+    based curves, rate is the first derivative of the logs of discount
+    factors, so Log interpolation makes sense. For Rates based curves, the
+    values themselves are rates, so no need to log them. Also, rates can go
+    to zero or negative values, so logs of them are not always defined.
+
+ SWIG/common.i              |  8 ++++++--
+ SWIG/discountcurve.i       |  8 ++++++++
+ SWIG/piecewiseyieldcurve.i |  8 ++++++++
+ SWIG/zerocurve.i           | 15 ++++++++++++++-
+ 4 files changed, 36 insertions(+), 3 deletions(-)
+
+commit 12cf4f04e9f405544c903e17a29057fb92311ded
+Merge: aa204acb f3023ff2
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 19 Mar 2026 09:38:11 +0100
+
+    Export new FX-forward instrument and engine (#837)
+
+commit f3023ff20db79e98d67b1e3ca5f647b075ea0779
+Author: Chirag Desai <chirag.desai@jcu.edu.au>
+Date:   Wed, 18 Mar 2026 16:26:54 +0800
+
+    Add fxforward.i include to ql.i for the FXForward class
+
+ SWIG/ql.i | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 03ffdfd63073fff6584ac1dfb1e1d15d8f0cb315
+Author: Chirag Desai <chirag.desai@jcu.edu.au>
+Date:   Wed, 18 Mar 2026 16:25:34 +0800
+
+    Added SWIG interface file for FXForward
+
+ SWIG/fxforward.i | 62 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
+
+commit d98f64949ce5123502114be3b714839056e192e2
+Author: Chirag Desai <chirag.desai@jcu.edu.au>
+Date:   Wed, 18 Mar 2026 16:24:23 +0800
+
+    Tests for FXForward class
+
+commit 8758de7374a12123a80f5170fd7d3c8cdf32d001
+Author: Chirag Desai <chirag.desai@jcu.edu.au>
+Date:   Wed, 18 Mar 2026 16:23:41 +0800
+
+    Python tests for FXForward class - tested all passed
+
+ Python/test/test_fxforward.py | 315 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 315 insertions(+)
+
+commit aa204acb617c4f1360094038c912dd69c7828af0
+Merge: 6060b17c 11f2d7bb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 17 Mar 2026 14:28:09 +0100
+
+    Export `ZabrSwaptionVolatilityCube` class (#836)
+
+commit 11f2d7bb3b46be4e9382ad554eabe5f587e96881
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 17 Mar 2026 11:54:04 +0100
+
+    Export ZabrSwaptionVolatilityCube class
+
+ SWIG/volatilities.i | 44 ++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 44 insertions(+)
+
+commit 6060b17cadb3ae28f1cb3d9fa2a337cd1ddd96b5
+Merge: e3651d57 0a5940eb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 17 Mar 2026 08:27:06 +0100
+
+    Export new optional methods for a few factory classes (#835)
+
+commit e3651d57374318652d24ef4f828334de138787bc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 16:25:42 +0100
+
+    Replace deprecated classifier with SPDX license expression
+
+ Python/setup.py    | 3 +--
+ Python/setup.py.in | 3 +--
+ 2 files changed, 2 insertions(+), 4 deletions(-)
+
+commit cfcda9a7a09e88988ea5c5e2e874313f81dd37b7
+Merge: c2d851d4 154c7e37
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 16:50:06 +0100
+
+    Export fixing-convention parameter for floating-rate coupon constructors (#833)
+
+commit c2d851d494ccd5f3edb28971f6543807a7ccc4bc
+Merge: 23113a48 1daee273
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 16:49:32 +0100
+
+    Export new Black volatility classes (#834)
+
+commit 23113a48386ab95c1e6f2fcf7313600365431177
+Merge: 923c8b77 87de019e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 16:28:48 +0100
+
+    Export new custom-pillar arguments for inflation helper constructors (#832)
+
+commit 1daee2738ce04237228c75b6bc72219c4aae510e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 15:27:51 +0100
+
+    Export BlackVolatilitySurfaceDelta class
+
+ SWIG/volatilities.i | 46 +++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 45 insertions(+), 1 deletion(-)
+
+commit 154c7e3790e95d6f87ab45ab1b94e8602066d6a7
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 15:50:14 +0100
+
+    Export fixing-convention parameter for floating-rate coupon constructors
+
+ SWIG/bonds.i     |  3 ++-
+ SWIG/cashflows.i | 30 +++++++++++++++++++++---------
+ 2 files changed, 23 insertions(+), 10 deletions(-)
+
+commit 923c8b77a5e6aae05b807da17b65a0b07ce02bf4
+Merge: bca7eec3 3cadd437
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 15:21:19 +0100
+
+    Export new overloads of zspread-related functions (#831)
+
+commit 87de019e859ac62cec08605f1b80a53f4ce549f8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 15:14:02 +0100
+
+    Avoid circular inclusion
+
+ SWIG/inflation.i      | 1 -
+ SWIG/ratehelpers.i    | 5 -----
+ SWIG/termstructures.i | 9 +++++++++
+ 3 files changed, 9 insertions(+), 6 deletions(-)
+
+commit 572befa15fc673f2f3c3165fd8efc04483c10e01
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 15:09:43 +0100
+
+    Export PiecewiseBlackVarianceSurface class
+
+ SWIG/volatilities.i | 23 +++++++++++++++++++++++
+ 1 file changed, 23 insertions(+)
+
+commit bca7eec329a727e5bf9e940d70c0203b78a76623
+Merge: 342c6356 1dd62ff8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 14:50:01 +0100
+
+    Exported new multiple-resets swap instrument and helper (#830)
+
+commit 6dfc8554c6a9b3626175eb42aeb503bd395db8b8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 14:46:55 +0100
+
+    Export new custom-pillar arguments for inflation helper constructors
+
+ SWIG/inflation.i | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
+
+commit 0a5940ebbc4cefbea33a19780b53ba92cf4d759b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 13:38:46 +0100
+
+    Export new optional methods for a few factory classes
+
+ SWIG/swap.i     | 5 +++++
+ SWIG/swaption.i | 2 ++
+ 2 files changed, 7 insertions(+)
+
+commit 3cadd437864581b0edc65dac21b125fea1dd4c53
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 13:19:04 +0100
+
+    Export new overloads of zspread-related functions
+
+ SWIG/bondfunctions.i | 21 +++++++++++++++++++++
+ SWIG/cashflows.i     | 21 +++++++++++++++++++++
+ 2 files changed, 42 insertions(+)
+
+commit 1dd62ff891b1726c7dee530543e169e6d233c16c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 12:49:27 +0100
+
+    Exported multiple-resets swap and helper
+
+ SWIG/ratehelpers.i | 19 ++++++++++++
+ SWIG/swap.i        | 88 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 107 insertions(+)
+
+commit 342c6356bf8f688a9cf10b31f57c6eec03fae501
+Merge: 67fc3c4a 0c0bd09f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 16 Mar 2026 11:51:55 +0100
+
+    Export `MakeCreditDefaultSwap` (#829)
+
+commit 0c0bd09fd295027a52347e536aac11c44411b5df
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 12 Mar 2026 16:56:41 +0100
+
+    Export MakeCreditDefaultSwap
+
+ SWIG/creditdefaultswap.i | 51 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 51 insertions(+)
+
+commit 67fc3c4a58c21aad80bec179e241b2030c663b35
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 9 Mar 2026 19:57:33 +0000
+
+    Bump pypa/cibuildwheel from 3.3 to 3.4
+    
+    Bumps [pypa/cibuildwheel](https://github.com/pypa/cibuildwheel) from 3.3 to 3.4.
+    - [Release notes](https://github.com/pypa/cibuildwheel/releases)
+    - [Changelog](https://github.com/pypa/cibuildwheel/blob/main/docs/changelog.md)
+    - [Commits](https://github.com/pypa/cibuildwheel/compare/v3.3...v3.4)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: pypa/cibuildwheel
+      dependency-version: '3.4'
+      dependency-type: direct:production
+      update-type: version-update:semver-minor
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/wheels.yml | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit a7d275d503f7d3bd8962230637d8a3ece296b6c0
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 9 Mar 2026 19:57:36 +0000
+
+    Bump docker/login-action from 3 to 4
+    
+    Bumps [docker/login-action](https://github.com/docker/login-action) from 3 to 4.
+    - [Release notes](https://github.com/docker/login-action/releases)
+    - [Commits](https://github.com/docker/login-action/compare/v3...v4)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: docker/login-action
+      dependency-version: '4'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/devenv-images.yml | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+commit 40068c5141d3ae9a272eea6ad7cd86b97999dbb8
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 2 Mar 2026 20:22:34 +0000
+
+    Bump actions/download-artifact from 7 to 8
+    
+    Bumps [actions/download-artifact](https://github.com/actions/download-artifact) from 7 to 8.
+    - [Release notes](https://github.com/actions/download-artifact/releases)
+    - [Commits](https://github.com/actions/download-artifact/compare/v7...v8)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/download-artifact
       dependency-version: '8'
       dependency-type: direct:production
       update-type: version-update:semver-major
@@ -207,70 +464,69 @@ Date:   Mon, 15 Dec 2025 18:02:20 +0000
     
     Signed-off-by: dependabot[bot] <support@github.com>
 
- .github/workflows/copyrights.yml                | 2 +-
- .github/workflows/increase-version-number.yml   | 2 +-
- .github/workflows/license-url.yml               | 2 +-
- .github/workflows/misspell.yml                  | 2 +-
- .github/workflows/namespaces.yml                | 2 +-
- .github/workflows/prepare-release-candidate.yml | 2 +-
- .github/workflows/prepare-release.yml           | 2 +-
- 7 files changed, 7 insertions(+), 7 deletions(-)
+ .github/workflows/nupkg.yml  | 30 +++++++++++++++---------------
+ .github/workflows/wheels.yml | 18 +++++++++---------
+ 2 files changed, 24 insertions(+), 24 deletions(-)
 
-commit d41d093301825d1ab17c2b71fc75b654473e0b98
-Merge: 9b8a5500 784b3b11
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 9 Dec 2025 16:08:13 +0100
-
-    Re-enable Python 3.8 and 3.9 (#800)
-
-commit 784b3b11d79c567585950d68a91ff1ecb7339dd9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 9 Dec 2025 13:17:27 +0100
-
-    Re-enable Python 3.8 and 3.9.
-    
-    SWIG 4.4.1 restored support for them.
-
- Python/setup.py    | 4 ++--
- Python/setup.py.in | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-commit 4cc52a73c6bc9743c13293d67cd1e70fd1179218
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 9 Dec 2025 13:58:34 +0100
-
-    Upgrade to SWIG 4.4.1
-
- .github/workflows/publish-release.yml | 2 +-
- dockerfiles/ci.base.Dockerfile        | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit 9b8a5500bbd62d75fc83946d48fa5bb0f641945b
-Merge: 1eef94d6 17908e4d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 1 Dec 2025 10:33:17 +0100
-
-    added semi-analytic European engine for a single asset with cash (#799)
-
-commit 17908e4df0143b4432111c70bef185bd56d81c72
-Author: klaus spanderen <klaus@spanderen.de>
-Date:   Sun, 30 Nov 2025 22:00:44 +0100
-
-    fixed potential leap year issue.
-
- Python/test/test_options.py | 14 +++++++-------
- 1 file changed, 7 insertions(+), 7 deletions(-)
-
-commit 1eef94d6a83f54cd4f53f04282b5530328086ca3
+commit d5c4061299de6e1f453d0290b23739ebcc4d3f3c
 Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-Date:   Mon, 24 Nov 2025 18:36:44 +0000
+Date:   Mon, 2 Mar 2026 20:22:42 +0000
 
-    Bump actions/checkout from 5 to 6
+    Bump actions/upload-artifact from 6 to 7
     
-    Bumps [actions/checkout](https://github.com/actions/checkout) from 5 to 6.
+    Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from 6 to 7.
+    - [Release notes](https://github.com/actions/upload-artifact/releases)
+    - [Commits](https://github.com/actions/upload-artifact/compare/v6...v7)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/upload-artifact
+      dependency-version: '7'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/nupkg.yml  | 10 +++++-----
+ .github/workflows/wheels.yml | 14 +++++++-------
+ 2 files changed, 12 insertions(+), 12 deletions(-)
+
+commit 90183642f01f289790f42c4d8471a616566cbbd4
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 2 Mar 2026 15:47:52 +0100
+
+    Increase tolerance in inflation test
+
+ Python/test/test_inflation.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit ad410caae7aeb8867dfd6c93837ec6d9d2c2ca4f
+Merge: 4821a3e7 6bf02b89
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 26 Feb 2026 16:46:32 +0100
+
+    Clean up interpolations bindings (#823)
+
+commit 6bf02b890e4a263350aefa4b381b59e4fae64be9
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Fri, 20 Feb 2026 10:39:20 -0500
+
+    Cleanup interpolations bindings
+
+ SWIG/interpolation.i | 101 +++++++++++++++++++++------------------------------
+ 1 file changed, 41 insertions(+), 60 deletions(-)
+
+commit 4821a3e7db98c6bb2bfafc350a45b2baa4c6ef5f
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 26 Jan 2026 20:15:31 +0000
+
+    Bump actions/checkout from 4 to 6
+    
+    Bumps [actions/checkout](https://github.com/actions/checkout) from 4 to 6.
     - [Release notes](https://github.com/actions/checkout/releases)
     - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
-    - [Commits](https://github.com/actions/checkout/compare/v5...v6)
+    - [Commits](https://github.com/actions/checkout/compare/v4...v6)
     
     ---
     updated-dependencies:
@@ -282,359 +538,282 @@ Date:   Mon, 24 Nov 2025 18:36:44 +0000
     
     Signed-off-by: dependabot[bot] <support@github.com>
 
- .github/workflows/copyrights.yml                |  2 +-
- .github/workflows/devenv-images.yml             | 10 +++++-----
- .github/workflows/increase-version-number.yml   |  2 +-
- .github/workflows/license-url.yml               |  2 +-
- .github/workflows/linux.yml                     |  2 +-
- .github/workflows/misspell.yml                  |  2 +-
- .github/workflows/namespaces.yml                |  2 +-
- .github/workflows/prepare-release-candidate.yml |  2 +-
- .github/workflows/prepare-release.yml           |  2 +-
- .github/workflows/publish-release.yml           |  2 +-
- 10 files changed, 14 insertions(+), 14 deletions(-)
+ .github/workflows/wheels.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit 2021282adf61d5a5f05d9d57c1ede2d9ad290704
-Merge: 847c5783 2481867d
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 21 Nov 2025 10:33:54 +0100
+commit f3c0afcb367c13f57565b3edfcb3493ede0bd210
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 26 Jan 2026 20:15:13 +0000
 
-    Expose data on piecewise inflation curves (#797)
-
-commit 2481867d84bbd6e7dd5e151496a35513acce5bb4
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Thu, 20 Nov 2025 13:41:54 -0500
-
-    Expose data on piecewise inflation curves
-
- SWIG/inflation.i | 2 ++
- 1 file changed, 2 insertions(+)
-
-commit 847c578397a275e994ce0a5149d35e1fbd067f4c
-Merge: 0bf01839 69f63c7b
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 17 Nov 2025 09:22:12 +0100
-
-    Expose argument for enableExtrapolation (#795)
-
-commit 69f63c7bcb8072fe9ae541930988e3af519a9016
-Author: Eugene Toder <eltoder@users.noreply.github.com>
-Date:   Fri, 14 Nov 2025 14:38:14 -0500
-
-    Expose argument for enableExtrapolation
-
- SWIG/termstructures.i | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-commit 0bf01839659042659273cd9b95ffc358bc7f8f93
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 13 Nov 2025 10:12:08 +0100
-
-    Fix a few typos
-
- Java/examples/Bonds.java | 4 ++--
- Python/README.md         | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-commit 37cf3e4ee5c88010d527e5b78dced94ba6027ced
-Author: klaus spanderen <klaus@spanderen.de>
-Date:   Wed, 12 Nov 2025 20:35:35 +0100
-
-    added semi-analytic European engine for a single asset with cash
-    dividends
-
- Python/test/test_options.py | 46 +++++++++++++++++++++++++++++++++++++++++++--
- SWIG/options.i              | 17 +++++++++++++++++
- 2 files changed, 61 insertions(+), 2 deletions(-)
-
-commit 04d62c5aeb214e2e58c6b6835244bec4359ac9a5
-Merge: a48b4208 23f732c1
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 11 Nov 2025 17:22:05 +0100
-
-    Enable building wheels for free-threading Python; increase minimum supported Python version to 3.10 (#794)
-
-commit 23f732c17939aa37f78421feec1d6b7a71978125
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 11 Nov 2025 14:58:21 +0100
-
-    Upgrade to SWIG 4.4.0 in workflows
-
- .github/workflows/publish-release.yml | 2 +-
- dockerfiles/ci.base.Dockerfile        | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-commit a48b4208777c931f3a13bea2efbf0f8a373fa82f
-Merge: 70048a0f 39611e80
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 11 Nov 2025 13:52:57 +0100
-
-    Export a few missing Bond inspectors (#793)
-
-commit 39611e80abf8d58338fee8b682abdeb317248ba6
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 11 Nov 2025 12:51:22 +0100
-
-    Export a few missing Bond inspectors
-
- SWIG/bonds.i | 3 +++
- 1 file changed, 3 insertions(+)
-
-commit 70048a0f8300f21c77c76bf38fb73b48eb8138ed
-Merge: 5bc9d5ca c3d9ad29
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 5 Nov 2025 15:26:12 +0100
-
-    Expose ZeroCouponInflationSwap::fixedLegBPS() (#791)
-
-commit 5bc9d5ca4197a76d52d0d3b354aca87896628565
-Merge: 0c92ed99 cdbcbe83
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 3 Nov 2025 09:45:36 +0100
-
-    Enable rounding in UFR interpolation (#788)
-
-commit cdbcbe833b41691b739d61be59263b36474ae70b
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Thu, 30 Oct 2025 16:48:47 +0100
-
-    Implemented PR feedback.
-
- SWIG/common.i         | 21 +++++++++++++++++++++
- SWIG/termstructures.i | 16 ----------------
- 2 files changed, 21 insertions(+), 16 deletions(-)
-
-commit c3d9ad291cbc8704d5ace90f904003337b756466
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Tue, 28 Oct 2025 13:45:30 -0400
-
-    Expose ZeroCouponInflationSwap::fixedLegBPS()
-
- SWIG/inflation.i | 1 +
- 1 file changed, 1 insertion(+)
-
-commit 0c92ed9941075cce0e3eb357d1cf409fb4b40a5c
-Merge: d219d0c7 068d66dc
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Mon, 27 Oct 2025 10:02:45 +0100
-
-    Adding vanna and volga functions (#790)
-
-commit 068d66dce19173c447c9acc0ba3f26ca6b16d5ac
-Author: kp9991 <kp9991@gmail.com>
-Date:   Sat, 25 Oct 2025 16:05:31 +1100
-
-    Adding vanna and volga functions
-
- SWIG/options.i | 4 ++++
- 1 file changed, 4 insertions(+)
-
-commit 6f1d8684238c812933e05baf1f53529295cd0ee6
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 21 Oct 2025 16:06:50 +0200
-
-    Upgrade minimum Python version to 3.10
+    Bump actions/upload-artifact from 4 to 6
     
-    This is requested for compatibility with SWIG 4.4, that
-    we'll use going forward in order to enable building wheels
-    for free-threading Python.
-
- Python/setup.py    | 46 +++++++++++++++++++++++++---------------------
- Python/setup.py.in | 46 +++++++++++++++++++++++++---------------------
- 2 files changed, 50 insertions(+), 42 deletions(-)
-
-commit d219d0c72cab206d9ddddf2156a87e40609563b8
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 21 Oct 2025 16:10:21 +0200
-
-    Unpin base for devenv image
-
- .github/workflows/devenv-images.yml | 2 +-
- dockerfiles/ci.csharp.Dockerfile    | 5 +++++
- 2 files changed, 6 insertions(+), 1 deletion(-)
-
-commit 4fef4aba7e7d34266160ddd78d5705e277ee2af8
-Merge: 85ed8efc 6a39261c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Fri, 24 Oct 2025 09:17:38 +0200
-
-    Replace passed NULL with NA in R examples for compatibility with R 3.5 (#789)
-
-commit 6a39261c1b610e7cd453f9b1a19b7a179daeef16
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 23 Oct 2025 08:09:18 +0200
-
-    Replace passed NULL with NA in R examples
+    Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from 4 to 6.
+    - [Release notes](https://github.com/actions/upload-artifact/releases)
+    - [Commits](https://github.com/actions/upload-artifact/compare/v4...v6)
     
-    NULL doesn't work with R 3.5 and the current typemaps
-
- R/demo/european-option.R | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
-
-commit 85ed8efc12645d0b361341941c88487cee871013
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 22 Oct 2025 15:14:38 +0200
-
-    Move CI build to .Net 9
-
- CSharp/Makefile.am                                   | 20 ++++++++++----------
- CSharp/csharp/NQuantLib.csproj                       |  2 +-
- .../BermudanSwaption/BermudanSwaption.csproj         |  2 +-
- CSharp/examples/EquityOption/EquityOption.csproj     |  2 +-
- .../FiniteDifferenceMethods.csproj                   |  2 +-
- CSharp/examples/Times/Times.csproj                   |  2 +-
- dockerfiles/ci.csharp.Dockerfile                     |  2 +-
- 7 files changed, 16 insertions(+), 16 deletions(-)
-
-commit 486668c3e029144209728a31ada4c2c0ac7c5623
-Merge: 2e2fce59 4d9ddd92
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 21 Oct 2025 13:02:08 +0200
-
-    Expose forDates on inflation swap helpers (#787)
-
-commit 2e2fce59eef9476bfd2524ea77a2ef03dd36df0d
-Merge: d636f144 77357411
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 21 Oct 2025 11:18:34 +0200
-
-    Rename piecewise spread curves classes to *SpreadDiscount (#786)
-
-commit 4d9ddd92f1cb49b43c864330f6353f7da394b36f
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Mon, 20 Oct 2025 13:20:32 -0400
-
-    Expose forDates on inflation swap helpers
-
- SWIG/inflation.i | 55 ++++++++++++++++++++++++++++++++++++++++++++++---------
- 1 file changed, 46 insertions(+), 9 deletions(-)
-
-commit 77357411385efd3d83c918279bd4fc469f26d234
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Sat, 18 Oct 2025 17:28:27 -0400
-
-    Rename piecewise spread curves classes to *SpreadDiscount
+    ---
+    updated-dependencies:
+    - dependency-name: actions/upload-artifact
+      dependency-version: '6'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
     
-    For consistency with InterpolatedSpreadDiscountCurve classes.
+    Signed-off-by: dependabot[bot] <support@github.com>
 
- SWIG/piecewiseyieldcurve.i | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+ .github/workflows/wheels.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-commit d636f14414e020078de9cbaa0761467106046043
-Merge: b9d03fca 9b904d87
+commit a6382d5b462a488fbec6b1debb2c839471203811
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 26 Jan 2026 20:15:08 +0000
+
+    Bump actions/download-artifact from 4 to 7
+    
+    Bumps [actions/download-artifact](https://github.com/actions/download-artifact) from 4 to 7.
+    - [Release notes](https://github.com/actions/download-artifact/releases)
+    - [Commits](https://github.com/actions/download-artifact/compare/v4...v7)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/download-artifact
+      dependency-version: '7'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/wheels.yml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 55da78a85eb37e049dc79535a6f8e484246969fc
+Merge: 0047e9cb b129fb26
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Oct 2025 08:42:39 +0200
+Date:   Wed, 21 Jan 2026 10:19:57 +0100
 
-    Expose InterpolatedSpreadDiscountCurve (#785)
+    Allow wheels for free-threading Python to actually disable the GIL (#819)
 
-commit 9b904d879dd1d1118eb814fc848e8983a349243d
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Wed, 15 Oct 2025 12:06:43 -0400
-
-    Expose InterpolatedSpreadDiscountCurve
-
- SWIG/ql.i                  |  1 +
- SWIG/spreaddiscountcurve.i | 37 +++++++++++++++++++++++++++++++++++++
- 2 files changed, 38 insertions(+)
-
-commit b9d03fca2f8e6b251e62bbcf00cca9208aa33af9
-Merge: 7ad4fc40 b319a172
+commit b129fb268b059a609749af4cc68cf2ca5209d82c
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Wed, 15 Oct 2025 16:17:22 +0200
+Date:   Tue, 20 Jan 2026 12:50:45 +0100
 
-    Expose more spread curve types (#784)
+    Document unstable support for free-threading Python
 
-commit b319a172a896e1b73c15822ac8507e3109f7e187
-Author: Eugene Toder <eltoder@twosigma.com>
-Date:   Tue, 14 Oct 2025 14:09:31 -0400
+ Python/setup.py    | 1 +
+ Python/setup.py.in | 1 +
+ 2 files changed, 2 insertions(+)
 
-    Expose more spread curve types
-
- SWIG/piecewiseyieldcurve.i | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-commit 7ad4fc406fc93b45ee9a559f795de424bb2d3965
-Merge: 864b090f be0789ef
+commit 0ec48c492873b4d0c59ab062686acd6145ad6961
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 14 Oct 2025 15:10:04 +0200
+Date:   Tue, 20 Jan 2026 12:44:00 +0100
 
-    Avoid features removed from underlying C++ library (#783)
+    Use thread-safe observers when building no-GIL wheels
 
-commit 864b090f0a0f78922288f8ff9c96828578a512da
+ .ci/wheels/before_all_linux_nogil.sh |  15 ++++
+ .ci/wheels/userconfig_nogil.hpp      | 164 +++++++++++++++++++++++++++++++++++
+ .github/workflows/wheels.yml         | 158 ++++++++++++++++++++++++++++++++-
+ 3 files changed, 336 insertions(+), 1 deletion(-)
+
+commit 6fc40b8cbfc89fb92252010d37153bc62335c0ee
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 15 Jan 2026 22:36:23 +0100
+
+    Possibly define compilation macros to enable no-gil build
+
+ Python/setup.py    | 24 +++++++++++++++---------
+ Python/setup.py.in | 24 +++++++++++++++---------
+ 2 files changed, 30 insertions(+), 18 deletions(-)
+
+commit 0047e9cbef8c66ff3f5190b77d948b51bd00e1ba
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Tue, 20 Jan 2026 11:11:29 +0000
+
+    Bump actions/checkout from 4 to 6
+    
+    Bumps [actions/checkout](https://github.com/actions/checkout) from 4 to 6.
+    - [Release notes](https://github.com/actions/checkout/releases)
+    - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
+    - [Commits](https://github.com/actions/checkout/compare/v4...v6)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/checkout
+      dependency-version: '6'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/nupkg.yml  | 18 +++++++++---------
+ .github/workflows/wheels.yml | 12 ++++++------
+ 2 files changed, 15 insertions(+), 15 deletions(-)
+
+commit ed4141ed0b010308f1a7d444cabb58ab87d40c8a
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Tue, 20 Jan 2026 11:11:18 +0000
+
+    Bump actions/setup-dotnet from 4 to 5
+    
+    Bumps [actions/setup-dotnet](https://github.com/actions/setup-dotnet) from 4 to 5.
+    - [Release notes](https://github.com/actions/setup-dotnet/releases)
+    - [Commits](https://github.com/actions/setup-dotnet/compare/v4...v5)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/setup-dotnet
+      dependency-version: '5'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/nupkg.yml | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
+
+commit 7934758ad23886da4bfc1da5ece965d1b917dbf3
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 19 Jan 2026 20:06:18 +0000
+
+    Bump actions/upload-artifact from 4 to 6
+    
+    Bumps [actions/upload-artifact](https://github.com/actions/upload-artifact) from 4 to 6.
+    - [Release notes](https://github.com/actions/upload-artifact/releases)
+    - [Commits](https://github.com/actions/upload-artifact/compare/v4...v6)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/upload-artifact
+      dependency-version: '6'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/nupkg.yml  | 10 +++++-----
+ .github/workflows/wheels.yml |  8 ++++----
+ 2 files changed, 9 insertions(+), 9 deletions(-)
+
+commit a5686cb87275c8799eef2fd4c72a7426e206299f
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 19 Jan 2026 20:06:13 +0000
+
+    Bump actions/download-artifact from 4 to 7
+    
+    Bumps [actions/download-artifact](https://github.com/actions/download-artifact) from 4 to 7.
+    - [Release notes](https://github.com/actions/download-artifact/releases)
+    - [Commits](https://github.com/actions/download-artifact/compare/v4...v7)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/download-artifact
+      dependency-version: '7'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/nupkg.yml  | 30 +++++++++++++++---------------
+ .github/workflows/wheels.yml | 12 ++++++------
+ 2 files changed, 21 insertions(+), 21 deletions(-)
+
+commit 36ed709fb0c953acacf95350a4f3579b04112ace
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 15 Jan 2026 10:40:47 +0100
+
+    Add workflows for building wheels and nupkg from tags
+
+ .ci/Build.props                |  12 ++
+ .ci/Directory.Build.props      |   5 +
+ .ci/nupkg/Example.csproj       |  17 ++
+ .ci/nupkg/QuantLib.csproj      |  27 +++
+ .ci/nupkg/README.md            |  16 ++
+ .ci/nupkg/userconfig.hpp       | 164 +++++++++++++++++
+ .ci/wheels/before_all_linux.sh |  15 ++
+ .github/workflows/nupkg.yml    | 390 +++++++++++++++++++++++++++++++++++++++++
+ .github/workflows/wheels.yml   | 285 ++++++++++++++++++++++++++++++
+ 9 files changed, 931 insertions(+)
+
+commit 40647a93a8e0beff6fcb4515bffc4f9bf18bcf32
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 14 Jan 2026 14:54:22 +0100
+
+    Add workflow to update binder branch
+
+ .github/workflows/update-binder-branch.yml | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+commit 31c3def63fe3ed4086cedd09a1e84d72a1eb9ee9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 14 Jan 2026 14:44:02 +0100
+
+    Sync when a release is published
+
+ .github/workflows/sync-org-repo.yml | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
+
+commit 120894c0ed22fbb7a7f1916c11a7c4f2b3d71601
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 14 Jan 2026 14:30:43 +0100
+
+    Add workflow to sync with org repo
+
+ .github/workflows/sync-org-repo.yml | 34 ++++++++++++++++++++++++++++++++++
+ 1 file changed, 34 insertions(+)
+
+commit d787692e0c2fbf603a223d352b80d256e2b18f96
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 14 Jan 2026 14:29:28 +0100
+
+    Trigger publishing workflow with minor versions too
+
+ .github/workflows/publish-release.yml | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit dab4796bfb440c31d87a300e93abb115266a4af5
+Merge: 0472c43e c1c847eb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 13 Jan 2026 16:17:31 +0100
+
+    Avoid features deprecated in version 1.37 and removed from the C++ library (#813)
+
+commit 0472c43effa3e46f5fc9b34f1f9d2539bbdee9e9
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Tue, 14 Oct 2025 09:34:11 +0000
+Date:   Tue, 13 Jan 2026 10:20:44 +0000
 
-    Set version to 1.41-dev
+    Set version to 1.42-dev
 
  Python/setup.py | 2 +-
  R/DESCRIPTION   | 2 +-
  configure.ac    | 2 +-
  3 files changed, 3 insertions(+), 3 deletions(-)
 
-commit be0789efdc4868d8c0df405ca9a54c1cb818aa22
+commit c1c847eba976baeb26aeac9a654e037b66e1cb12
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 14 Oct 2025 11:21:04 +0200
+Date:   Thu, 8 Jan 2026 11:13:23 +0100
 
-    Update tests
+    Avoid removed features in tests
 
- Python/test/test_equityindex.py | 2 +-
- Python/test/test_swap.py        | 1 +
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ Python/test/test_coupons.py     | 382 ++++++++++++++++++++++------------------
+ Python/test/test_equityindex.py |  48 ++---
+ Python/test/test_swap.py        | 210 +++++++++++-----------
+ 3 files changed, 342 insertions(+), 298 deletions(-)
 
-commit d89406cc88b7e126980cabe9cc72381c2a95c68c
+commit c8fffb881328e748fe556ff92156b5baacc1939e
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 14 Oct 2025 10:10:51 +0200
+Date:   Thu, 8 Jan 2026 08:26:42 +0100
 
-    Add workflow to increase version number after release
+    Avoid features removed in version 1.42
 
- .github/workflows/increase-version-number.yml | 37 +++++++++++++++++++++++++++
- 1 file changed, 37 insertions(+)
-
-commit f54285262cdd40acc00e36e97928e1f979675b7c
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 14 Oct 2025 10:40:24 +0200
-
-    Avoid features removed from underlying library in version 1.41
-
- SWIG/indexes.i     |   5 --
- SWIG/inflation.i   | 137 +++++++++++++----------------------------------------
- SWIG/ratehelpers.i |  21 --------
- SWIG/swap.i        |  51 --------------------
- 4 files changed, 34 insertions(+), 180 deletions(-)
-
-commit 1923c81a2809618c9e85f5408201060af4bafd68
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 14 Oct 2025 09:52:20 +0200
-
-    Fix links in draft release notes
-
- .github/workflows/publish-release.yml | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-commit 2c903776a294111a39aa74a2b35be676b086a1a9
-Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Tue, 14 Oct 2025 09:50:56 +0200
-
-    Don't run CI builds when pushing a tag
-
- .github/workflows/linux.yml | 2 ++
- 1 file changed, 2 insertions(+)
-
-commit 2e34601a490a6096d0a79d864f8701cfb2d7c905
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Thu, 9 Oct 2025 16:07:59 +0200
-
-    Exposed changes related to UFR rounding.
-
- Python/test/test_termstructures.py |  2 +-
- SWIG/termstructures.i              | 17 ++++++++++++++++-
- 2 files changed, 17 insertions(+), 2 deletions(-)
-
-commit ad3db45c4b1f668f11258c7f0a786a97cc394086
-Author: Marcin Rybacki <m.rybacki@basispoint.io>
-Date:   Thu, 9 Oct 2025 09:55:10 +0200
-
-    Updated `UltimateForwardTermStructure` signature
-
- SWIG/termstructures.i | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+ SWIG/basketoptions.i |   1 +
+ SWIG/cashflows.i     | 109 +--------------------------------------------------
+ SWIG/indexes.i       |   5 ---
+ SWIG/inflation.i     |  26 +-----------
+ SWIG/ql.i            |   1 -
+ SWIG/ratehelpers.i   |  30 --------------
+ SWIG/spreadoption.i  |  43 --------------------
+ 7 files changed, 4 insertions(+), 211 deletions(-)
