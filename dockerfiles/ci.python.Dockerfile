@@ -1,6 +1,7 @@
 FROM ghcr.io/lballabio/quantlib-swig-devenv:default
-MAINTAINER Luigi Ballabio <luigi.ballabio@gmail.com>
-LABEL Description="A development environment for building QuantLib-SWIG on Travis CI"
+
+LABEL org.opencontainers.image.authors="Luigi Ballabio <luigi.ballabio@gmail.com>"
+LABEL description="An environment for QuantLib-SWIG CI builds on Linux"
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y python3-dev python3-pip python3-venv \
