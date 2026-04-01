@@ -1,7 +1,8 @@
 ARG tag=rolling
 FROM ghcr.io/lballabio/quantlib-devenv:${tag}
-MAINTAINER Luigi Ballabio <luigi.ballabio@gmail.com>
-LABEL Description="A development environment for building QuantLib-SWIG on Travis CI"
+
+LABEL org.opencontainers.image.authors="Luigi Ballabio <luigi.ballabio@gmail.com>"
+LABEL description="An environment for QuantLib-SWIG CI builds on Linux"
 
 RUN apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y libpcre2-dev \
