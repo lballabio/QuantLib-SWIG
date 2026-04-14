@@ -17,6 +17,7 @@ jobs:
         token: ${{ secrets.GITHUB_TOKEN }}
     - name: Update branch
       run: |
+        git fetch
         git merge --ff-only ${{ github.ref_name }}
         git push origin binder
 
