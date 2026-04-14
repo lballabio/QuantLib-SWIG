@@ -198,25 +198,12 @@ class YoYInflationIndex : public InflationIndex {
     YoYInflationIndex(
             const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
             Handle<YoYInflationTermStructure> ts = {});
-    YoYInflationIndex(
-            const ext::shared_ptr<ZeroInflationIndex>& underlyingIndex,
-            bool interpolated,
-            Handle<YoYInflationTermStructure> ts = {});
 
     // Constructor for quoted year-on-year indices.
     YoYInflationIndex(
             const std::string& familyName,
             const Region& region,
             bool revised,
-            Frequency frequency,
-            const Period& availabilityLag,
-            const Currency& currency,
-            Handle<YoYInflationTermStructure> ts = {});
-    YoYInflationIndex(
-            const std::string& familyName,
-            const Region& region,
-            bool revised,
-            bool interpolated,
             Frequency frequency,
             const Period& availabilityLag,
             const Currency& currency,
@@ -270,8 +257,6 @@ using QuantLib::Name;
 class Name : public YoYInflationIndex {
   public:
     Name(const Handle<YoYInflationTermStructure>& h = {});
-    Name(bool interpolated,
-         const Handle<YoYInflationTermStructure>& h = {});
 };
 %enddef
 
