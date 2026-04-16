@@ -1,4 +1,4 @@
-name: Prepare release
+name: Prepare patch release
 on:
   workflow_dispatch:
 
@@ -20,15 +20,16 @@ jobs:
       run: |
         export LATEST_RELEASE=`gh release list --json name,isLatest --jq '.[] | select(.isLatest)|.name'`
         echo LATEST_TAG=v${LATEST_RELEASE} | tee -a $GITHUB_ENV
-        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_MINOR=" $2 + 1 }' | tee -a $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "LAST_MINOR=" $2 }' | tee -a $GITHUB_ENV
+        echo ${LATEST_RELEASE} | awk -F '.' '{ print "NEXT_PATCH=" $3 + 1 }' | tee -a $GITHUB_ENV
     - name: Update version numbers
       run: |
-        sed -i -e "s/^AC_INIT(\[QuantLib-SWIG\].*$/AC_INIT([QuantLib-SWIG], [1.${NEXT_MINOR}],/g" configure.ac
-        sed -i -e "s/^    version=.*$/    version=\"1.${NEXT_MINOR}\",/g" Python/setup.py
-        git commit -a -m "Set version to 1.${NEXT_MINOR}"
+        sed -i -e "s/^AC_INIT(\[QuantLib-SWIG\].*$/AC_INIT([QuantLib-SWIG], [1.${LAST_MINOR}.${NEXT_PATCH}],/g" configure.ac
+        sed -i -e "s/^    version=.*$/    version=\"1.${LAST_MINOR}.${NEXT_PATCH}\",/g" Python/setup.py
+        git commit -a -m "Set version to 1.${LAST_MINOR}.${NEXT_PATCH}"
     - name: Update ChangeLog
       run: |
-        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep ${LATEST_TAG}.. > ChangeLog.txt
+        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep ${LATEST_TAG}... > ChangeLog.txt
         git commit -a -m "Update changelog"
     - uses: peter-evans/create-pull-request@v8
       with:
@@ -36,5 +37,5 @@ jobs:
         push-to-fork: ${{ vars.MACHINE_ACCOUNT }}/QuantLib-SWIG
         branch: update-version-for-release-${{ github.ref_name }}
         delete-branch: true
-        title: 'Set version to 1.${{ env.NEXT_MINOR }} final'
+        title: 'Set version to 1.${{ env.LAST_MINOR }}.${{ env.NEXT_PATCH }} final'
         author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
