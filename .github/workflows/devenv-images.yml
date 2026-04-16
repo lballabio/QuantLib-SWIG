@@ -3,16 +3,22 @@ on:
   schedule:
     - cron: '0 0 * * 6'
   workflow_dispatch:
+    inputs:
+      quantlib_version:
+        description: 'QuantLib version'
+        required: true
+        default: 'master'
 jobs:
   docker-images-base:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v6
-    - name: Checkout latest QuantLib master
+    - name: Checkout QuantLib
       uses: actions/checkout@v6
       with:
         repository: lballabio/QuantLib
         path: dockerfiles/QuantLib
+        ref: ${{ github.event.inputs.quantlib_version }}
     - name: Build Docker images
       working-directory: dockerfiles
       run: |
