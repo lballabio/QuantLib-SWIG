@@ -9,7 +9,10 @@ using QuantLib::InterpolatedSpreadDiscountCurve;
 %}
 
 %shared_ptr(InterpolatedSpreadDiscountCurve<LogLinear>);
+%shared_ptr(InterpolatedSpreadDiscountCurve<LogCubic>);
+#if !defined(SWIGPYTHON)
 %shared_ptr(InterpolatedSpreadDiscountCurve<MonotonicLogCubic>);
+#endif
 %shared_ptr(InterpolatedSpreadDiscountCurve<SplineLogCubic>);
 %shared_ptr(InterpolatedSpreadDiscountCurve<LogMixedLinearCubic>);
 
@@ -30,7 +33,12 @@ class InterpolatedSpreadDiscountCurve : public YieldTermStructure {
 };
 
 %template(SpreadDiscountCurve) InterpolatedSpreadDiscountCurve<LogLinear>;
+%template(LogCubicSpreadDiscountCurve) InterpolatedSpreadDiscountCurve<LogCubic>;
+#if defined(SWIGPYTHON)
+deprecate_feature(MonotonicLogCubicSpreadDiscountCurve, LogCubicSpreadDiscountCurve);
+#else
 %template(MonotonicLogCubicSpreadDiscountCurve) InterpolatedSpreadDiscountCurve<MonotonicLogCubic>;
+#endif
 %template(NaturalLogCubicSpreadDiscountCurve) InterpolatedSpreadDiscountCurve<SplineLogCubic>;
 %template(LogMixedLinearCubicSpreadDiscountCurve) InterpolatedSpreadDiscountCurve<LogMixedLinearCubic>;
 
