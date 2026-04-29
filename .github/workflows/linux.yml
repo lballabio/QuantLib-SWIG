@@ -22,7 +22,7 @@ jobs:
           - language: csharp
           - language: r
           - language: scala
-    container: ghcr.io/lballabio/quantlib-swig-devenv:${{ matrix.language }}
+    container: ghcr.io/${{ vars.QL_CI_IMAGE_OWNER || 'lballabio' }}/quantlib-swig-devenv:${{ matrix.language }}
     steps:
     - uses: actions/checkout@v6
     - name: Build

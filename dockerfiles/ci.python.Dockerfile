@@ -1,4 +1,5 @@
-FROM ghcr.io/lballabio/quantlib-swig-devenv:default
+ARG repo_owner=lballabio
+FROM ghcr.io/${repo_owner}/quantlib-swig-devenv:default
 
 LABEL org.opencontainers.image.authors="Luigi Ballabio <luigi.ballabio@gmail.com>"
 LABEL description="An environment for QuantLib-SWIG CI builds on Linux"
