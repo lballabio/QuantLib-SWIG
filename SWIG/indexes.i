@@ -447,7 +447,7 @@ export_xibor_instance(Mosprime);
 export_xibor_instance(NZDLibor);
 export_xibor_instance(Pribor);
 export_xibor_instance(Robor);
-export_xibor_instance(NOKNibor);
+export_xibor_instance(Nibor);
 export_xibor_instance(SEKLibor);
 export_xibor_instance(Shibor);
 export_xibor_instance(Tibor);
