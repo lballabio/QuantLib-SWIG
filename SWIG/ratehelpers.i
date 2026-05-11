@@ -38,6 +38,7 @@ using QuantLib::DepositRateHelper;
 using QuantLib::FraRateHelper;
 using QuantLib::FuturesRateHelper;
 using QuantLib::SwapRateHelper;
+using QuantLib::GenericRateHelper;
 using QuantLib::BondHelper;
 using QuantLib::FixedRateBondHelper;
 using QuantLib::OISRateHelper;
@@ -50,6 +51,7 @@ using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
 using QuantLib::MultipleResetsSwapRateHelper;
+using QuantLib::Compounding;
 %}
 
 %shared_ptr(RateHelper)
@@ -339,6 +341,20 @@ class BondHelper : public RateHelper {
                BondPrice::Type priceType = BondPrice::Clean);
 
     ext::shared_ptr<Bond> bond();
+};
+
+%shared_ptr(GenericRateHelper)
+class GenericRateHelper : public RateHelper {
+  public:
+    GenericRateHelper(const Handle<Quote>& rate,
+                      const Date& settlementDate,
+                      const Date& refDate,
+                      const DayCounter& dayCounter,
+                      const Compounding& comp,
+                      const Frequency& frequency,
+                      const bool &extrapolate);
+
+    Real impliedQuote() const;
 };
 
 %shared_ptr(FixedRateBondHelper)
