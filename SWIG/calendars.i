@@ -172,6 +172,12 @@ namespace QuantLib {
         Chile(Market m = SSE);
     };
 
+    class Croatia : public Calendar {
+      public:
+        enum Market { ZSE };
+        Croatia(Market m = ZSE);
+    };
+
     class China : public Calendar {
       public:
         enum Market { SSE, IB };
@@ -239,16 +245,34 @@ namespace QuantLib {
 
     class Japan : public Calendar {};
 
+    class Malta : public Calendar {
+      public:
+        enum Market { MSE };
+        Malta(Market m = MSE);
+    };
+
     class Mexico : public Calendar {
       public:
         enum Market { BMV };
         Mexico(Market m = BMV);
     };
 
+    class Montenegro : public Calendar {
+      public:
+        enum Market { MNSE };
+        Montenegro(Market m = MNSE);
+    };
+
     class NewZealand : public Calendar {
       public:
         enum Market { Wellington, Auckland };
         NewZealand(Market m = Wellington);
+    };
+
+    class NorthMacedonia : public Calendar {
+      public:
+        enum Market { MSE };
+        NorthMacedonia(Market m = MSE);
     };
 
     class Norway : public Calendar {};
@@ -277,6 +301,12 @@ namespace QuantLib {
         SaudiArabia(Market m = Tadawul);
     };
 
+    class Serbia : public Calendar {
+      public:
+        enum Market { BSE };
+        Serbia(Market m = BSE);
+    };
+
     class Singapore : public Calendar {
       public:
         enum Market { SGX };
@@ -287,6 +317,12 @@ namespace QuantLib {
       public:
         enum Market { BSSE };
         Slovakia(Market m = BSSE);
+    };
+
+    class Slovenia : public Calendar {
+      public:
+        enum Market { LSE };
+        Slovenia(Market m = LSE);
     };
 
     class SouthAfrica : public Calendar {};
@@ -327,6 +363,12 @@ namespace QuantLib {
         enum Market { Settlement, NYSE, GovernmentBond,
                       NERC, LiborImpact, FederalReserve, SOFR };
         UnitedStates(Market m);
+    };
+
+    class Uzbekistan : public Calendar {
+      public:
+        enum Market { UZSE };
+        Uzbekistan(Market m = UZSE);
     };
 
     // others
