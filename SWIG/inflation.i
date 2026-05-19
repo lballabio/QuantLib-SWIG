@@ -641,8 +641,12 @@ class YearOnYearInflationSwapHelper : public BootstrapHelper<YoYInflationTermStr
 
 
 %{
-using QuantLib::PiecewiseZeroInflationCurve;
-using QuantLib::PiecewiseYoYInflationCurve;
+template <class Interpolator>
+using PiecewiseZeroInflationCurve = ExpensiveLazyObject<
+                                        QuantLib::PiecewiseZeroInflationCurve<Interpolator>>;
+template <class Interpolator>
+using PiecewiseYoYInflationCurve = ExpensiveLazyObject<
+                                        QuantLib::PiecewiseYoYInflationCurve<Interpolator>>;
 %}
 
 %shared_ptr(PiecewiseZeroInflationCurve<Linear>);
@@ -675,6 +679,7 @@ class PiecewiseZeroInflationCurve : public ZeroInflationTermStructure {
                 Real accuracy = 1.0e-12,
                 const Interpolator& i = Interpolator()) {
             auto func = [pyFunc = PyPtr::fromBorrowed(baseDateFunc)]() {
+                PyBlockThreads block_threads;
                 auto pyResult = PyPtr::fromResult(
                     PyObject_CallObject(pyFunc.get(), NULL),
                     "failed to call Python baseDateFunc");
