@@ -37,6 +37,7 @@
 %include termstructures.i
 %include vectors.i
 %include tuple.i
+%include null.i
 
 %define QL_TYPECHECK_VOLATILITYTYPE       8210    %enddef
 
@@ -61,6 +62,48 @@ enum VolatilityType { ShiftedLognormal, Normal };
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
 %}
 #endif
+
+
+%{
+using QuantLib::SmileSection;
+%}
+
+%shared_ptr(SmileSection);
+class SmileSection : public Observable {
+  private:
+    SmileSection();
+  public:
+    Real minStrike() const;
+    Real maxStrike() const;
+    Real atmLevel() const;
+    Real variance(Rate strike) const;
+    Volatility volatility(Rate strike) const;
+    virtual const Date& exerciseDate() const;
+    virtual VolatilityType volatilityType() const;
+    virtual Rate shift() const;
+    virtual const Date& referenceDate() const;
+    virtual Time exerciseTime() const;
+    virtual const DayCounter& dayCounter();
+    virtual Real optionPrice(Rate strike,
+                             Option::Type type = Option::Call,
+                             Real discount=1.0) const;
+    virtual Real digitalOptionPrice(Rate strike,
+                                    Option::Type type = Option::Call,
+                                    Real discount=1.0,
+                                    Real gap=1.0e-5) const;
+    virtual Real vega(Rate strike,
+                      Real discount=1.0) const;
+    virtual Real density(Rate strike,
+                         Real discount=1.0,
+                         Real gap=1.0E-4) const;
+    Volatility volatility(Rate strike, VolatilityType type, Real shift=0.0) const;
+};
+
+#if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<SmileSection> )
+#endif
+%template(SmileSectionVector) std::vector<ext::shared_ptr<SmileSection> >;
+
 
 %{
 using QuantLib::VolatilityTermStructure;
@@ -103,6 +146,11 @@ class BlackVolTermStructure : public VolatilityTermStructure {
                               Real strike, bool extrapolate = false) const;
     Real blackForwardVariance(Time, Time, Real strike,
                               bool extrapolate = false) const;
+    ext::shared_ptr<SmileSection> smileSection(const Date& maturity,
+                                               bool extrapolate = false) const;
+    ext::shared_ptr<SmileSection> smileSection(Time maturity,
+                                               bool extrapolate = false) const;
+    doubleOrNull atmLevel(Time t) const;
 };
 
 %template(BlackVolTermStructureHandle) Handle<BlackVolTermStructure>;
@@ -179,47 +227,6 @@ class YoYOptionletVolatilitySurface : public VolatilityTermStructure {
 
 %template(YoYOptionletVolatilitySurfaceHandle) Handle<YoYOptionletVolatilitySurface>;
 %template(RelinkableYoYOptionletVolatilitySurfaceHandle) RelinkableHandle<YoYOptionletVolatilitySurface>;
-
-
-%{
-using QuantLib::SmileSection;
-%}
-
-%shared_ptr(SmileSection);
-class SmileSection : public Observable {
-  private:
-    SmileSection();
-  public:
-    Real minStrike() const;
-    Real maxStrike() const;
-    Real atmLevel() const;
-    Real variance(Rate strike) const;
-    Volatility volatility(Rate strike) const;
-    virtual const Date& exerciseDate() const;
-    virtual VolatilityType volatilityType() const;
-    virtual Rate shift() const;
-    virtual const Date& referenceDate() const;
-    virtual Time exerciseTime() const;
-    virtual const DayCounter& dayCounter();
-    virtual Real optionPrice(Rate strike,
-                             Option::Type type = Option::Call,
-                             Real discount=1.0) const;
-    virtual Real digitalOptionPrice(Rate strike,
-                                    Option::Type type = Option::Call,
-                                    Real discount=1.0,
-                                    Real gap=1.0e-5) const;
-    virtual Real vega(Rate strike,
-                      Real discount=1.0) const;
-    virtual Real density(Rate strike,
-                         Real discount=1.0,
-                         Real gap=1.0E-4) const;
-    Volatility volatility(Rate strike, VolatilityType type, Real shift=0.0) const;
-};
-
-#if defined(SWIGCSHARP)
-SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<SmileSection> )
-#endif
-%template(SmileSectionVector) std::vector<ext::shared_ptr<SmileSection> >;
 
 
 %{
