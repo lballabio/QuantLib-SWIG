@@ -237,6 +237,7 @@ using QuantLib::KirkEngine;
 using QuantLib::BjerksundStenslandSpreadEngine;
 using QuantLib::OperatorSplittingSpreadEngine;
 using QuantLib::Fd2dBlackScholesVanillaEngine;
+using QuantLib::PearsonSpreadEngine;
 %}
 
 %shared_ptr(StulzEngine)
@@ -290,6 +291,18 @@ class Fd2dBlackScholesVanillaEngine : public PricingEngine {
         const FdmSchemeDesc& schemeDesc = FdmSchemeDesc::Hundsdorfer(),
         bool localVol = false,
         Real illegalLocalVolOverwrite = -Null<Real>());
+};
+
+%shared_ptr(PearsonSpreadEngine)
+class PearsonSpreadEngine : public PricingEngine {
+  public:
+    PearsonSpreadEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+        Real correlation,
+        Real integrationTolerance = 1e-10,
+        Size maxIntegrationIterations = 10000,
+        Real nStd = 8.0);
 };
 
 %{
