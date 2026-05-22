@@ -82,6 +82,10 @@ deprecate_feature(KrugerZeroCurve, CubicZeroCurve);
 #else
 %template(KrugerZeroCurve) InterpolatedZeroCurve<Kruger>;
 #endif
+%shared_ptr(InterpolatedZeroCurve<LinearThenFlat>);
+%shared_ptr(InterpolatedZeroCurve<ForwardFlat>);
+%template(ZeroCurveLinearThenFlat) InterpolatedZeroCurve<LinearThenFlat>;
+%template(ZeroCurveForwardFlat)    InterpolatedZeroCurve<ForwardFlat>;
 %template(ParabolicCubicZeroCurve) InterpolatedZeroCurve<ParabolicCubic>;
 %template(MonotonicParabolicCubicZeroCurve) InterpolatedZeroCurve<MonotonicParabolicCubic>;
 
