@@ -83,6 +83,10 @@ class Currency {
     }
 };
 
+namespace std {
+    %template(CurrencyVector) vector<Currency>;
+}
+
 
 namespace QuantLib {
 class AEDCurrency : public Currency {};

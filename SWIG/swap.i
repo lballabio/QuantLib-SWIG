@@ -31,6 +31,7 @@
 %include timebasket.i
 %include indexes.i
 %include bonds.i
+%include currencies.i
 
 %{
 using QuantLib::Swap;
@@ -749,6 +750,126 @@ class EquityTotalReturnSwap : public Swap {
     Real equityLegNPV() const;
     Real interestRateLegNPV() const;
     Real fairMargin() const;
+};
+
+
+%{
+using QuantLib::ConstNotionalCrossCurrencySwap;
+using QuantLib::ConstNotionalCrossCurrencyFixedVsFloatingSwap;
+using QuantLib::ConstNotionalCrossCurrencyBasisSwap;
+using QuantLib::DiscountingConstNotionalCrossCurrencySwapEngine;
+%}
+
+%shared_ptr(ConstNotionalCrossCurrencySwap)
+class ConstNotionalCrossCurrencySwap : public Swap {
+  public:
+    ConstNotionalCrossCurrencySwap(const Leg& firstLeg, const Currency& firstLegCcy,
+                                   const Leg& secondLeg, const Currency& secondLegCcy);
+    ConstNotionalCrossCurrencySwap(const std::vector<Leg>& legs,
+                                   const std::vector<bool>& payer,
+                                   const std::vector<Currency>& currencies);
+    const Currency& legCurrency(Size j) const;
+    Real inCcyLegNPV(Size j) const;
+    Real inCcyLegBPS(Size j) const;
+};
+
+%shared_ptr(ConstNotionalCrossCurrencyFixedVsFloatingSwap)
+class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossCurrencySwap {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ConstNotionalCrossCurrencyFixedVsFloatingSwap;
+    #endif
+  public:
+    ConstNotionalCrossCurrencyFixedVsFloatingSwap(
+        Type type, Real fixedNominal, const Currency& fixedCurrency,
+        const Schedule& fixedSchedule, Rate fixedRate,
+        const DayCounter& fixedDayCount, BusinessDayConvention fixedPaymentBdc,
+        Natural fixedPaymentLag, const Calendar& fixedPaymentCalendar,
+        Real floatNominal, const Currency& floatCurrency,
+        const Schedule& floatSchedule,
+        const ext::shared_ptr<IborIndex>& floatIndex, Spread floatSpread,
+        BusinessDayConvention floatPaymentBdc, Natural floatPaymentLag,
+        const Calendar& floatPaymentCalendar,
+        const bool telescopicValueDates = false,
+        bool floatCompoundSpread = false,
+        Natural floatLookbackDays = Null<Natural>(),
+        bool floatObservationShift = false,
+        Natural floatLockoutDays = 0,
+        RateAveraging::Type floatAveragingMethod = RateAveraging::Compound);
+
+    Type type() const;
+
+    Real fixedNominal() const;
+    const Currency& fixedCurrency() const;
+    const Schedule& fixedSchedule() const;
+    Rate fixedRate() const;
+    const DayCounter& fixedDayCount() const;
+    BusinessDayConvention fixedPaymentBdc() const;
+    Natural fixedPaymentLag() const;
+    const Calendar& fixedPaymentCalendar() const;
+
+    Real floatNominal() const;
+    const Currency& floatCurrency() const;
+    const Schedule& floatSchedule() const;
+    const ext::shared_ptr<IborIndex>& floatIndex() const;
+    Rate floatSpread() const;
+    BusinessDayConvention floatPaymentBdc() const;
+    Natural floatPaymentLag() const;
+    const Calendar& floatPaymentCalendar() const;
+    bool floatCompoundSpread() const;
+    Natural floatLookbackDays() const;
+    Natural floatLockoutDays() const;
+    RateAveraging::Type floatAveragingMethod() const;
+
+    Rate fairRate() const;
+    Spread fairSpread() const;
+};
+
+%shared_ptr(ConstNotionalCrossCurrencyBasisSwap)
+class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwap {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ConstNotionalCrossCurrencyBasisSwap;
+    #endif
+  public:
+    ConstNotionalCrossCurrencyBasisSwap(
+        Real payNominal, const Currency& payCurrency, const Schedule& paySchedule,
+        const ext::shared_ptr<IborIndex>& payIndex, Spread paySpread, Real payGearing, Real recNominal,
+        const Currency& recCurrency, const Schedule& recSchedule, const ext::shared_ptr<IborIndex>& recIndex,
+        Spread recSpread, Real recGearing, Integer payPaymentLag = 0, Integer recPaymentLag = 0,
+        bool payCompoundSpread = false, Natural payLookbackDays = Null<Natural>(), bool payObservationShift = false,
+        Natural payLockoutDays = 0, RateAveraging::Type payAveragingMethod = RateAveraging::Compound,
+        bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
+        Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
+        const bool telescopicValueDates = false);
+
+    Real payNominal() const;
+    const Currency& payCurrency() const;
+    const Schedule& paySchedule() const;
+    const ext::shared_ptr<IborIndex>& payIndex() const;
+    Spread paySpread() const;
+    Real payGearing() const;
+
+    Real recNominal() const;
+    const Currency& recCurrency() const;
+    const Schedule& recSchedule() const;
+    const ext::shared_ptr<IborIndex>& recIndex() const;
+    Spread recSpread() const;
+    Real recGearing() const;
+
+    Spread fairPaySpread() const;
+    Spread fairRecSpread() const;
+};
+
+%shared_ptr(DiscountingConstNotionalCrossCurrencySwapEngine)
+class DiscountingConstNotionalCrossCurrencySwapEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") DiscountingConstNotionalCrossCurrencySwapEngine;
+    #endif
+  public:
+    DiscountingConstNotionalCrossCurrencySwapEngine(
+        const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
+        const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
+        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+        const Date& settlementDate = Date(), const Date& npvDate = Date(), const Date& spotFXSettleDate = Date());
 };
 
 #endif
