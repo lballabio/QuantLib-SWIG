@@ -29,6 +29,7 @@
 %include dividends.i
 %include settings.i
 %include shortratemodels.i
+%include volatilities.i
 
 
 // mesher
@@ -1751,6 +1752,7 @@ using QuantLib::GBSMRNDCalculator;
 using QuantLib::HestonRNDCalculator;
 using QuantLib::LocalVolRNDCalculator;
 using QuantLib::SquareRootProcessRNDCalculator;
+using QuantLib::SmileSectionRNDCalculator;
 %}
 
 %shared_ptr(FdmIndicesOnBoundary)
@@ -1845,6 +1847,19 @@ class SquareRootProcessRNDCalculator : public RiskNeutralDensityCalculator {
     Real stationary_pdf(Real v) const;
     Real stationary_cdf(Real v) const;
     Real stationary_invcdf(Real q) const;
+};
+
+%shared_ptr(SmileSectionRNDCalculator)
+class SmileSectionRNDCalculator : public RiskNeutralDensityCalculator {
+  public:
+    SmileSectionRNDCalculator(
+        ext::shared_ptr<SmileSection> smile,
+        Size nStrikes = 200,
+        Real nStd = 5.0);
+
+    Real pdf(Real x) const;
+    Real cdf(Real x) const;
+    Real invcdf(Real p) const;
 };
 
 
