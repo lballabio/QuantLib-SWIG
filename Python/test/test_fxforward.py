@@ -152,7 +152,7 @@ def test_fair_forward_rate(common_vars):
     spot_fx = vars["spot_quote"].value()
     df_usd = vars["usd_curve_handle"].discount(vars["maturity_date"]) / vars["usd_curve_handle"].discount(settlement_date)
     df_sgd = vars["sgd_curve_handle"].discount(vars["maturity_date"]) / vars["sgd_curve_handle"].discount(settlement_date)
-    expected_fair_rate = spot_fx * (df_sgd / df_usd)
+    expected_fair_rate = spot_fx * (df_usd / df_sgd)
 
     calculated_fair_rate = fwd.fairForwardRate()
     # The calculated fair rate should closely match the expected formula value
