@@ -1001,7 +1001,8 @@ class InterpolatedSmileSection : public SmileSection {
                const Interpolator& interpolator = Interpolator(),
                const DayCounter& dc = Actual365Fixed(),
                const VolatilityType type = ShiftedLognormal,
-               const Real shift = 0.0);
+               const Real shift = 0.0,
+               bool flatStrikeExtrapolation = false);
     InterpolatedSmileSection(
                Time expiryTime,
                const std::vector<Rate>& strikes,
@@ -1010,7 +1011,8 @@ class InterpolatedSmileSection : public SmileSection {
                const Interpolator& interpolator = Interpolator(),
                const DayCounter& dc = Actual365Fixed(),
                const VolatilityType type = ShiftedLognormal,
-               const Real shift = 0.0);
+               const Real shift = 0.0,
+               bool flatStrikeExtrapolation = false);
     InterpolatedSmileSection(
                const Date& d,
                const std::vector<Rate>& strikes,
@@ -1020,7 +1022,8 @@ class InterpolatedSmileSection : public SmileSection {
                const Interpolator& interpolator = Interpolator(),
                const Date& referenceDate = Date(),
                const VolatilityType type = ShiftedLognormal,
-               const Real shift = 0.0);
+               const Real shift = 0.0,
+               bool flatStrikeExtrapolation = false);
     InterpolatedSmileSection(
                const Date& d,
                const std::vector<Rate>& strikes,
@@ -1030,7 +1033,8 @@ class InterpolatedSmileSection : public SmileSection {
                const Interpolator& interpolator = Interpolator(),
                const Date& referenceDate = Date(),
                const VolatilityType type = ShiftedLognormal,
-               const Real shift = 0.0);
+               const Real shift = 0.0,
+               bool flatStrikeExtrapolation = false);
 };
 
 %define export_smileinterpolation_curve(Name,Interpolator)
