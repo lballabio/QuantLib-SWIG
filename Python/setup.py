@@ -31,7 +31,7 @@ def define_macros():
     define_macros = []
 
     if py_limited_api():
-        define_macros += [("Py_LIMITED_API", "0x03080000")]
+        define_macros += [("Py_LIMITED_API", "0x03090000")]
 
     if free_threading():
         define_macros += [("SWIGPYTHON_NOGIL", None), ("Py_GIL_DISABLED", None)]
@@ -236,7 +236,7 @@ def free_threading():
 
 with open("./setup.cfg", "w") as f:
     if py_limited_api():
-        f.write("[bdist_wheel]" + os.linesep + "py_limited_api=cp38" + os.linesep)
+        f.write("[bdist_wheel]" + os.linesep + "py_limited_api=cp39" + os.linesep)
 
 
 setup(
