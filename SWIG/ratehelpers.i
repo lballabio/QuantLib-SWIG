@@ -621,7 +621,8 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   bool isFxBaseCurrencyCollateralCurrency,
                                                   bool isBasisOnFxBaseCurrencyLeg,
                                                   Frequency paymentFrequency = NoFrequency,
-                                                  Integer paymentLag = 0);
+                                                  Integer paymentLag = 0,
+                                                  Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
 };
 
 %shared_ptr(MtMCrossCurrencyBasisSwapRateHelper)
@@ -640,7 +641,8 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         bool isBasisOnFxBaseCurrencyLeg,
                                         bool isFxBaseCurrencyLegResettable,
                                         Frequency paymentFrequency = NoFrequency,
-                                        Integer paymentLag = 0);
+                                        Integer paymentLag = 0,
+                                        Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
 };
 
 %shared_ptr(IborIborBasisSwapRateHelper)
