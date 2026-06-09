@@ -936,4 +936,25 @@ struct ASX {
                                 const Date& referenceDate = Date());
 };
 
+%{
+using QuantLib::ECB;
+%}
+
+struct ECB {
+    static bool isECBdate(const Date& d);
+    static bool isECBcode(const std::string& in);
+    static std::string code(const Date& ecbDate);
+    static Date date(Month m, Year y);
+    static Date date(const std::string& ecbCode,
+                     const Date& referenceDate = Date());
+    static Date nextDate(const Date& d = Date());
+    static Date nextDate(const std::string& ecbCode,
+                         const Date& referenceDate = Date());
+    static std::vector<Date> nextDates(const Date& d = Date());
+    static std::vector<Date> nextDates(const std::string& ecbCode,
+                                       const Date& referenceDate = Date());
+    static std::string nextCode(const Date& d = Date());
+    static std::string nextCode(const std::string& ecbCode);
+};
+
 #endif
