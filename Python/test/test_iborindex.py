@@ -69,6 +69,40 @@ class IborIndexTest(unittest.TestCase):
             self.assertTrue(expected == actual)
 
 
+class BMAIndexTest(unittest.TestCase):
+    def setUp(self):
+        self.index = ql.BMAIndex()
+
+    def testInspectors(self):
+        """Testing BMA index inspectors"""
+
+        self.assertEqual(self.index.familyName(), "BMA")
+        self.assertEqual(self.index.tenor(), ql.Period(1, ql.Weeks))
+        self.assertEqual(self.index.fixingDays(), 1)
+        self.assertEqual(self.index.currency(), ql.USDCurrency())
+
+    def testFixingDates(self):
+        """Testing BMA fixing-date logic"""
+
+        self.assertTrue(self.index.isValidFixingDate(ql.Date(4, 1, 2023)))
+        self.assertFalse(self.index.isValidFixingDate(ql.Date(5, 1, 2023)))
+
+    def testMaturityDate(self):
+        """Testing BMA maturity-date calculation"""
+
+        self.assertEqual(
+            self.index.maturityDate(ql.Date(5, 1, 2023)),
+            ql.Date(12, 1, 2023))
+
+    def testFixingSchedule(self):
+        """Testing BMA fixing schedule"""
+
+        schedule = self.index.fixingSchedule(
+            ql.Date(5, 1, 2023), ql.Date(20, 1, 2023))
+        self.assertEqual(schedule[0], ql.Date(4, 1, 2023))
+        self.assertEqual(schedule[-1], ql.Date(25, 1, 2023))
+
+
 if __name__ == "__main__":
     print("testing QuantLib", ql.__version__)
     unittest.main(verbosity=2)

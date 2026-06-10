@@ -30,6 +30,7 @@
 %include currencies.i
 %include types.i
 %include termstructures.i
+%include scheduler.i
 %include timeseries.i
 %include vectors.i
 %include boost_shared_ptr.i
@@ -157,6 +158,21 @@ class OvernightIndex : public IborIndex {
             return ext::dynamic_pointer_cast<OvernightIndex>(self->clone(h));
         }
     }
+};
+
+%{
+using QuantLib::BMAIndex;
+%}
+
+%shared_ptr(BMAIndex)
+
+class BMAIndex : public InterestRateIndex {
+  public:
+    BMAIndex(const Handle<YieldTermStructure>& h =
+                                    Handle<YieldTermStructure>());
+    Handle<YieldTermStructure> forwardingTermStructure() const;
+    Date maturityDate(const Date& valueDate) const;
+    Schedule fixingSchedule(const Date& start, const Date& end);
 };
 
 %{

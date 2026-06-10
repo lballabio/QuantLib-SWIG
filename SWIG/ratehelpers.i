@@ -40,6 +40,7 @@ using QuantLib::FuturesRateHelper;
 using QuantLib::SwapRateHelper;
 using QuantLib::BondHelper;
 using QuantLib::FixedRateBondHelper;
+using QuantLib::BMASwapRateHelper;
 using QuantLib::OISRateHelper;
 using QuantLib::FxSwapRateHelper;
 using QuantLib::OvernightIndexFutureRateHelper;
@@ -329,6 +330,21 @@ class SwapRateHelper : public RateHelper {
     }
     Spread spread();
     ext::shared_ptr<VanillaSwap> swap();
+};
+
+%shared_ptr(BMASwapRateHelper)
+class BMASwapRateHelper : public RateHelper {
+  public:
+    BMASwapRateHelper(
+            const Handle<Quote>& liborFraction,
+            const Period& tenor,
+            Natural settlementDays,
+            const Calendar& calendar,
+            const Period& bmaPeriod,
+            BusinessDayConvention bmaConvention,
+            const DayCounter& bmaDayCount,
+            const ext::shared_ptr<BMAIndex>& bmaIndex,
+            const ext::shared_ptr<IborIndex>& index);
 };
 
 %shared_ptr(BondHelper)
