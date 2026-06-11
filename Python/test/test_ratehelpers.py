@@ -69,6 +69,37 @@ class FixedRateBondHelperTest(unittest.TestCase):
         ql.Settings.instance().evaluationDate = ql.Date()
 
 
+class BMASwapRateHelperTest(unittest.TestCase):
+    def setUp(self):
+        self.reference_date = ql.Date(4, 1, 2023)
+        ql.Settings.instance().evaluationDate = self.reference_date
+
+    def testConstruction(self):
+        """Testing BMA swap rate-helper construction"""
+
+        forecast_curve = ql.YieldTermStructureHandle(
+            ql.FlatForward(
+                self.reference_date,
+                ql.makeQuoteHandle(0.03),
+                ql.Actual360()))
+        helper = ql.BMASwapRateHelper(
+            ql.makeQuoteHandle(0.75),
+            ql.Period(5, ql.Years),
+            2,
+            ql.UnitedStates(ql.UnitedStates.GovernmentBond),
+            ql.Period(1, ql.Weeks),
+            ql.Following,
+            ql.ActualActual(ql.ActualActual.ISDA),
+            ql.BMAIndex(),
+            ql.USDLibor(ql.Period(1, ql.Months), forecast_curve))
+
+        self.assertTrue(helper.earliestDate() < helper.latestDate())
+        self.assertEqual(helper.quote().value(), 0.75)
+
+    def tearDown(self):
+        ql.Settings.instance().evaluationDate = ql.Date()
+
+
 class OISRateHelperTest(unittest.TestCase):
     def setUp(self):
 
