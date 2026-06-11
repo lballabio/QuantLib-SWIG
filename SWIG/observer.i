@@ -62,6 +62,7 @@ class PyObserver : public Observer {
     : callback_(PyPtr::fromBorrowed(callback)) {}
 
     void update() {
+        PyBlockThreads block_threads;
         PyPtr::fromResult(PyObject_CallObject(callback_.get(), NULL),
                           "failed to notify Python observer");
     }
