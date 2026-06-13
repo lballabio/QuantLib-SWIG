@@ -140,6 +140,18 @@ using QuantLib::Cubic;
 using QuantLib::Bicubic;
 using QuantLib::ConvexMonotone;
 using QuantLib::DefaultLogCubic;
+using QuantLib::LinearThenFlat;
+using QuantLib::Cubic__SplineOvershootingMinimization1;
+using QuantLib::Cubic__SplineOvershootingMinimization2;
+using QuantLib::Cubic__FritschButland_monotonic;
+using QuantLib::Cubic__FritschButland_nonMonotonic;
+using QuantLib::Cubic__Kruger;
+using QuantLib::Cubic__MonotonicKruger;
+using QuantLib::Cubic__MonotonicParabolic;
+using QuantLib::Cubic__Monotonic_NaturalSpline;
+using QuantLib::Cubic__NaturalSpline;
+using QuantLib::Cubic__Akima;
+using QuantLib::Cubic__Parabolic;
 
 class MonotonicCubic : public Cubic {
   public:
@@ -267,6 +279,7 @@ struct MixedInterpolation {
 struct BackwardFlat {};
 struct ForwardFlat {};
 struct Linear {};
+struct LinearThenFlat {};
 struct LogLinear {};
 struct Cubic {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -311,6 +324,17 @@ struct ParabolicCubic : Cubic {};
 struct MonotonicParabolicCubic : Cubic {};
 struct LogParabolicCubic : LogCubic {};
 struct MonotonicLogParabolicCubic : LogCubic {};
+struct Cubic__SplineOvershootingMinimization1{};
+struct Cubic__SplineOvershootingMinimization2{};
+struct Cubic__FritschButland_monotonic{};
+struct Cubic__FritschButland_nonMonotonic{};
+struct Cubic__Kruger {};
+struct Cubic__MonotonicKruger {};
+struct Cubic__MonotonicParabolic {};
+struct Cubic__Monotonic_NaturalSpline {};
+struct Cubic__NaturalSpline {};
+struct Cubic__Akima {};
+struct Cubic__Parabolic {};
 
 %define make_mixed_linear_cubic(T)
 %{
