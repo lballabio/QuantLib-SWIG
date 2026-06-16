@@ -238,6 +238,7 @@ using QuantLib::BjerksundStenslandSpreadEngine;
 using QuantLib::OperatorSplittingSpreadEngine;
 using QuantLib::Fd2dBlackScholesVanillaEngine;
 using QuantLib::PearsonSpreadEngine;
+using QuantLib::GaussianCopulaSpreadEngine;
 %}
 
 %shared_ptr(StulzEngine)
@@ -303,6 +304,16 @@ class PearsonSpreadEngine : public PricingEngine {
         Real integrationTolerance = 1e-10,
         Size maxIntegrationIterations = 10000,
         Real nStd = 8.0);
+};
+
+%shared_ptr(GaussianCopulaSpreadEngine)
+class GaussianCopulaSpreadEngine : public PricingEngine {
+  public:
+    GaussianCopulaSpreadEngine(
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process1,
+        ext::shared_ptr<GeneralizedBlackScholesProcess> process2,
+        Real correlation,
+        Size nPoints = 64);
 };
 
 %{
