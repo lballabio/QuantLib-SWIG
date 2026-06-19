@@ -275,7 +275,9 @@ class OvernightIndexedCoupon : public FloatingRateCoupon {
                 bool applyObservationShift = false,
                 bool compoundSpread = false,
                 const Date& rateComputationStartDate = Date(),
-                const Date& rateComputationEndDate = Date());
+                const Date& rateComputationEndDate = Date(),
+                const Date& exCouponDate = Date(),
+                ext::optional<Integer> roundingPrecision = ext::nullopt);
     const std::vector<Date>& fixingDates() const;
     const std::vector<Date>& interestDates() const;
     const std::vector<Time>& dt() const;
@@ -936,8 +938,9 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   bool dailyCapFloor = false,
                   bool inArrears = true,
                   bool nakedOption = false,
-                  const std::vector<Date>& paymentDates = {}) {
-    return QuantLib::OvernightLeg(schedule, index)
+                  const std::vector<Date>& paymentDates = {},
+                  ext::optional<Integer> roundingPrecision = ext::nullopt) {
+    auto leg = QuantLib::OvernightLeg(schedule, index)
         .withNotionals(nominals)
         .withPaymentDayCounter(paymentDayCounter)
         .withPaymentAdjustment(paymentConvention)
@@ -957,6 +960,11 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
         .inArrears(inArrears)
         .withNakedOption(nakedOption)
         .withPaymentDates(paymentDates);
+
+    if (roundingPrecision.has_value())
+        leg.withRoundingPrecision(*roundingPrecision);
+
+    return leg;
 }
 %}
 #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -983,7 +991,8 @@ Leg _OvernightLeg(const std::vector<Real>& nominals,
                   bool dailyCapFloor = false,
                   bool inArrears = true,
                   bool nakedOption = false,
-                  const std::vector<Date>& paymentDates = {});
+                  const std::vector<Date>& paymentDates = {},
+                  ext::optional<Integer> roundingPrecision = ext::nullopt);
 
 %{
 Leg _CmsLeg(const std::vector<Real>& nominals,
