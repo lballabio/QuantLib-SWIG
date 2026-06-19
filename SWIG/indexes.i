@@ -127,8 +127,7 @@ class IborIndex : public InterestRateIndex {
               BusinessDayConvention convention,
               bool endOfMonth,
               const DayCounter& dayCounter,
-              const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+              const Handle<YieldTermStructure>& h = {});
     BusinessDayConvention businessDayConvention() const;
     bool endOfMonth() const;
     Handle<YieldTermStructure> forwardingTermStructure() const;
@@ -151,8 +150,7 @@ class OvernightIndex : public IborIndex {
                    const Currency& currency,
                    const Calendar& calendar,
                    const DayCounter& dayCounter,
-                   const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+                   const Handle<YieldTermStructure>& h = {});
     %extend {
         ext::shared_ptr<OvernightIndex> clone(const Handle<YieldTermStructure>& h) const {
             return ext::dynamic_pointer_cast<OvernightIndex>(self->clone(h));
@@ -168,8 +166,7 @@ using QuantLib::BMAIndex;
 
 class BMAIndex : public InterestRateIndex {
   public:
-    BMAIndex(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+    BMAIndex(const Handle<YieldTermStructure>& h = {});
     Handle<YieldTermStructure> forwardingTermStructure() const;
     Date maturityDate(const Date& valueDate) const;
     Schedule fixingSchedule(const Date& start, const Date& end);
@@ -190,8 +187,7 @@ class Libor : public IborIndex {
           const Currency& currency,
           const Calendar& financialCenterCalendar,
           const DayCounter& dayCounter,
-          const Handle<YieldTermStructure>& h =
-                                     Handle<YieldTermStructure>());
+          const Handle<YieldTermStructure>& h = {});
     Calendar jointCalendar() const;
 };
 
@@ -204,8 +200,7 @@ class DailyTenorLibor : public IborIndex {
                     const Currency& currency,
                     const Calendar& financialCenterCalendar,
                     const DayCounter& dayCounter,
-                    const Handle<YieldTermStructure>& h =
-                                     Handle<YieldTermStructure>());
+                    const Handle<YieldTermStructure>& h = {});
 };
 
 %{
@@ -241,8 +236,7 @@ using QuantLib::Name;
 class Name : public IborIndex {
   public:
       Name(const Period& tenor,
-           const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+           const Handle<YieldTermStructure>& h = {});
 };
 %enddef
 
@@ -254,8 +248,7 @@ using QuantLib::Name;
 
 class Name : public Base {
   public:
-      Name(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+    Name(const Handle<YieldTermStructure>& h = {});
 };
 %enddef
 
@@ -267,8 +260,7 @@ using QuantLib::Name;
 
 class Name : public OvernightIndex {
   public:
-      Name(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+    Name(const Handle<YieldTermStructure>& h = {});
 };
 %enddef
 
@@ -280,8 +272,7 @@ using QuantLib::Name;
 
 class Name : public DailyTenorLibor {
   public:
-      Name(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+    Name(const Handle<YieldTermStructure>& h = {});
 };
 %enddef
 
@@ -340,8 +331,7 @@ using QuantLib::Name;
 class Name : public SwapIndex {
   public:
     Name(const Period &tenor,
-         const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+         const Handle<YieldTermStructure>& h = {});
     Name(const Period &tenor,
          const Handle<YieldTermStructure>& h1,
          const Handle<YieldTermStructure>& h2);
@@ -355,8 +345,7 @@ using QuantLib::Name;
 %shared_ptr(Name)
 class Name : public Base {
   public:
-    Name(const Handle<YieldTermStructure>& h =
-                                    Handle<YieldTermStructure>());
+    Name(const Handle<YieldTermStructure>& h = {});
     Name(const Handle<YieldTermStructure>& h1,
          const Handle<YieldTermStructure>& h2);
 };
