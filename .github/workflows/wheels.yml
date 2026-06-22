@@ -46,7 +46,7 @@ jobs:
             && ./configure --prefix=/usr CXXFLAGS=-O3 \
             && make -j 4 && sudo make install \
             && cd .. && rm -rf swig-${SWIG_VERSION}
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         repository: lballabio/QuantLib
         ref: ${{ env.QLREF }}
@@ -62,7 +62,7 @@ jobs:
         mkdir ../tarballs
         mv QuantLib-*.tar.gz ../tarballs
         cd ../tarballs && ../quantlib/tools/tgz2zip QuantLib-*.tar.gz && ls -lh
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
       with:
         repository: lballabio/QuantLib-SWIG
         ref: ${{ env.QLSWIGREF }}
@@ -88,7 +88,7 @@ jobs:
     outputs:
       version: ${{ steps.version.outputs.version }}
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/download-artifact@v8
       with:
         name: tarballs
@@ -105,7 +105,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-version
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Setup
       run: |
         brew install boost
@@ -149,7 +149,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-version
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Setup
       run: |
         brew install boost
@@ -196,7 +196,7 @@ jobs:
           - arch: x86
             platform: Win32
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
     - name: Setup Boost
@@ -252,7 +252,7 @@ jobs:
           - arch: x86
             platform: Win32
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v3
     - name: Setup Boost
@@ -322,7 +322,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-version
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/download-artifact@v8
       with:
         name: tarballs
@@ -378,7 +378,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: detect-version
     steps:
-    - uses: actions/checkout@v6
+    - uses: actions/checkout@v7
     - uses: actions/download-artifact@v8
       with:
         name: tarballs
