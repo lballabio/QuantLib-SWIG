@@ -111,6 +111,14 @@ class Calendar {
     std::string name();
     bool empty();
     %extend {
+        std::vector<Date> addedHolidays() {
+            return std::vector<Date>(self->addedHolidays().begin(),
+                                     self->addedHolidays().end());
+        }
+        std::vector<Date> removedHolidays() {
+            return std::vector<Date>(self->removedHolidays().begin(),
+                                     self->removedHolidays().end());
+        }
         std::string __str__() {
             return self->name()+" calendar";
         }

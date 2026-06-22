@@ -55,10 +55,30 @@ class BespokeCalendarTest(unittest.TestCase):
         self.assertFalse(calendar.isHoliday(test_date))
         calendar.addHoliday(test_date)
         self.assertTrue(calendar.isHoliday(test_date))
-        # TODO: Can extend test with this, if exposed:
-        # self.assertEqual(len(calendar.addedHolidays()), 1)
+        self.assertEqual(len(calendar.addedHolidays()), 1)
         calendar.resetAddedAndRemovedHolidays()
         self.assertFalse(calendar.isHoliday(test_date))
+
+
+class AddedRemovedHolidaysTest(unittest.TestCase):
+
+    def test_added_and_removed_holidays(self):
+        calendar = ql.TARGET()
+        added = ql.Date(15, ql.March, 2023)   # a Wednesday, normally a business day
+        removed = ql.Date(7, ql.April, 2023)  # Good Friday 2023, a real TARGET holiday
+
+        self.assertFalse(calendar.isHoliday(added))
+        self.assertTrue(calendar.isHoliday(removed))
+
+        calendar.addHoliday(added)
+        calendar.removeHoliday(removed)
+
+        self.assertEqual(list(calendar.addedHolidays()), [added])
+        self.assertEqual(list(calendar.removedHolidays()), [removed])
+
+        calendar.resetAddedAndRemovedHolidays()
+        self.assertEqual(len(calendar.addedHolidays()), 0)
+        self.assertEqual(len(calendar.removedHolidays()), 0)
 
 
 if __name__ == "__main__":
