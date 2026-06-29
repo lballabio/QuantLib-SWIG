@@ -87,6 +87,25 @@ class Index : public Observable {
 };
 
 
+// historical FX fixing index
+%{
+using QuantLib::FxIndex;
+%}
+
+%shared_ptr(FxIndex)
+
+class FxIndex : public Index {
+  public:
+    FxIndex(std::string familyName,
+            Currency sourceCurrency,
+            Currency targetCurrency,
+            Calendar fixingCalendar);
+    const std::string& familyName() const;
+    const Currency& sourceCurrency() const;
+    const Currency& targetCurrency() const;
+};
+
+
 // interest-rate indexes
 %{
 using QuantLib::InterestRateIndex;
