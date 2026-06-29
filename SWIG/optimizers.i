@@ -215,6 +215,7 @@ using QuantLib::ConjugateGradient;
 using QuantLib::Simplex;
 using QuantLib::SteepestDescent;
 using QuantLib::BFGS;
+using QuantLib::LBFGSB;
 using QuantLib::LevenbergMarquardt;
 using QuantLib::DifferentialEvolution;
 using QuantLib::SamplerGaussian;
@@ -262,6 +263,19 @@ class SteepestDescent : public OptimizationMethod {
 class BFGS : public OptimizationMethod {
   public:
     BFGS();
+};
+
+%shared_ptr(LBFGSB)
+class LBFGSB : public OptimizationMethod {
+  public:
+    LBFGSB(Size memory = 10,
+           Real pgTol = 1e-8,
+           Real fTol = 1e7 * QL_EPSILON);
+    LBFGSB(Array lowerBound,
+           Array upperBound,
+           Size memory = 10,
+           Real pgTol = 1e-8,
+           Real fTol = 1e7 * QL_EPSILON);
 };
 
 %shared_ptr(LevenbergMarquardt)
