@@ -1,23 +1,525 @@
-commit ff56838d010bc25eb91e9f6558d4525d1a5102d6
+commit 669d37c3e11f36b58664c710436f24c0792e8e86
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
-Date:   Thu, 16 Apr 2026 14:23:16 +0000
+Date:   Thu, 2 Jul 2026 07:06:59 +0000
 
-    Set version to 1.42.1
+    Set version to 1.43-rc
 
  Python/setup.py | 2 +-
+ SWIG/ql.i       | 4 ++--
  configure.ac    | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
-commit d2758e927b9f1b3e00613261a039c295eb09401f
+commit 1fad6790e4e2fe348778f1f8236e2c1b7048fc8f
+Merge: e794dc73 97c0c82f
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
-Date:   Thu, 16 Apr 2026 15:57:25 +0200
+Date:   Thu, 2 Jul 2026 08:25:26 +0200
+
+    Asset Swap fix: Changing include order (#881)
+
+commit 97c0c82f88b80a6ec3c64146206cf084845b82c3
+Author: kp9991 <kp9991@gmail.com>
+Date:   Thu, 2 Jul 2026 10:29:27 +1000
+
+    Changing include order
+
+ SWIG/bonds.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit e794dc73e99f536294e959e3a56c0168c307fa44
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2026 12:19:03 +0200
 
     Update news
 
- News.md | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ News.md | 11 +++++++----
+ 1 file changed, 7 insertions(+), 4 deletions(-)
 
-commit dadcdb1413a9a93b220b7c064720cd8411f27612
+commit d5925fe356457adedfe138c16d101eb132b26c26
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Jul 2026 09:56:20 +0200
+
+    Restore kwargs for G2 processes
+
+ SWIG/stochasticprocess.i | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+commit f8b3fecd00ff2a520eca745254dfb953eed2640f
+Merge: d750b617 67cca440
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 29 Jun 2026 10:14:15 +0200
+
+    Export LBFGSB optimizer (#879)
+
+commit 67cca4408f54e0574919d85418a89a0aeb1c225d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 24 Jun 2026 12:41:57 +0200
+
+    Export LBFGSB optimizer
+
+ SWIG/optimizers.i | 14 ++++++++++++++
+ 1 file changed, 14 insertions(+)
+
+commit d750b617a06468b01845939783d0731ebbb82e8c
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 22 Jun 2026 18:32:22 +0000
+
+    Bump actions/checkout from 6 to 7
+    
+    Bumps [actions/checkout](https://github.com/actions/checkout) from 6 to 7.
+    - [Release notes](https://github.com/actions/checkout/releases)
+    - [Changelog](https://github.com/actions/checkout/blob/main/CHANGELOG.md)
+    - [Commits](https://github.com/actions/checkout/compare/v6...v7)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: actions/checkout
+      dependency-version: '7'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/copyrights.yml                |  2 +-
+ .github/workflows/devenv-images.yml             | 10 +++++-----
+ .github/workflows/increase-version-number.yml   |  2 +-
+ .github/workflows/license-url.yml               |  2 +-
+ .github/workflows/linux.yml                     |  2 +-
+ .github/workflows/misspell.yml                  |  2 +-
+ .github/workflows/namespaces.yml                |  2 +-
+ .github/workflows/nupkg.yml                     | 18 +++++++++---------
+ .github/workflows/prepare-patch-release.yml     |  2 +-
+ .github/workflows/prepare-release-candidate.yml |  2 +-
+ .github/workflows/prepare-release.yml           |  2 +-
+ .github/workflows/publish-release.yml           |  2 +-
+ .github/workflows/sync-org-repo.yml             |  2 +-
+ .github/workflows/update-binder-branch.yml      |  2 +-
+ .github/workflows/wheels.yml                    | 18 +++++++++---------
+ 15 files changed, 35 insertions(+), 35 deletions(-)
+
+commit f3e44255edf55979611aa1947015ca032b33f448
+Merge: 56a35ebb cf641791
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 22 Jun 2026 10:19:32 +0200
+
+    Expose Calendar.addedHolidays()/removedHolidays() to Python (#875)
+
+commit 56a35ebbf4a144ba0112bcfbbc5774135943421f
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jun 2026 12:00:42 +0200
+
+    Clean up a few default arguments
+
+ SWIG/indexes.i | 33 +++++++++++----------------------
+ 1 file changed, 11 insertions(+), 22 deletions(-)
+
+commit 69533bd8ab6ddde3227be4d464a68b358ca96ca4
+Merge: 7c32d852 f3b6de9b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 22 Jun 2026 09:42:42 +0200
+
+    Export new optional rounding parameter for overnight-indexed coupons (#877)
+
+commit 7c32d852d6da950f733be23312bd022e304f413b
+Merge: 90d1ec98 66600e2d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 22 Jun 2026 09:42:26 +0200
+
+    Export Shir index (#876)
+
+commit cf6417913681b354b99dc6f3c7f56f8d6b8609b6
+Author: Arihant Lodha <arihantlodha48@gmail.com>
+Date:   Sun, 21 Jun 2026 20:20:49 +0900
+
+    Expose Calendar addedHolidays/removedHolidays to Python
+    
+    Calendar already exposed addHoliday/removeHoliday/resetAddedAndRemovedHolidays
+    but not the read-back accessors addedHolidays()/removedHolidays(), so the set of
+    user-modified holidays could not be inspected from Python. The accessors return
+    const std::set<Date>&, which has no SWIG typemap; they are wrapped via %extend
+    returning the already-supported std::vector<Date> (sorted, as std::set iterates
+    in order), mirroring how holidayList/businessDayList surface date collections.
+    
+    Also fills in the existing TODO in test_calendars.py that requested this.
+    
+    Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>
+
+ Python/test/test_calendars.py | 24 ++++++++++++++++++++++--
+ SWIG/calendars.i              |  8 ++++++++
+ 2 files changed, 30 insertions(+), 2 deletions(-)
+
+commit f3b6de9b960329240009c15be103995eee51860d
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jun 2026 12:34:12 +0200
+
+    Export new optional rounding parameter for overnight-indexed coupons
+
+ SWIG/cashflows.i | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+commit 66600e2da76f28fed56bb6202908dd223e61db97
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 19 Jun 2026 11:59:58 +0200
+
+    Export Shir index
+
+ SWIG/indexes.i | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 90d1ec981af57fc08c975fd5530e7f9ae6e72a55
+Merge: 0d0c3925 82693767
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jun 2026 17:43:56 +0200
+
+    Export `GaussianCopulaSpreadEngine` (#873)
+
+commit 82693767043cf259f4a0e1e40cd3cb6313bee918
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 16 Jun 2026 15:57:57 +0200
+
+    Export GaussianCopulaSpreadEngine
+
+ SWIG/basketoptions.i | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+commit 0d0c39253d8824fe922b972db8b0139b0f6ed073
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 15 Jun 2026 18:34:42 +0000
+
+    Bump pypa/cibuildwheel from 4.0 to 4.1
+    
+    Bumps [pypa/cibuildwheel](https://github.com/pypa/cibuildwheel) from 4.0 to 4.1.
+    - [Release notes](https://github.com/pypa/cibuildwheel/releases)
+    - [Changelog](https://github.com/pypa/cibuildwheel/blob/main/docs/changelog.md)
+    - [Commits](https://github.com/pypa/cibuildwheel/compare/v4.0...v4.1)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: pypa/cibuildwheel
+      dependency-version: '4.1'
+      dependency-type: direct:production
+      update-type: version-update:semver-minor
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/wheels.yml | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit 66c269e5bb1d680d38c17d50db80dc7840395c21
+Merge: 440cc08f 969ac6c3
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jun 2026 15:55:20 +0200
+
+    Export new market for Israel calendar (#871)
+
+commit 969ac6c32262cfd19822fee265d7b48ada76fc4e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 15 Jun 2026 14:40:54 +0200
+
+    Export new market for Israel calendar
+
+ SWIG/calendars.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 440cc08f569d052874edab6659968329b12a187c
+Merge: 2e8361fb 30c0abb8
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 11 Jun 2026 08:57:27 +0200
+
+    Add BMA index and swap rate helper bindings (#870)
+
+commit 30c0abb8397031d4e4f9d33a1195ff0990c2a475
+Author: JewonJeon <jewon.j0620@gmail.com>
+Date:   Wed, 10 Jun 2026 22:44:04 +0900
+
+    Add BMA index and swap rate helper bindings
+
+ Python/test/test_iborindex.py   | 34 ++++++++++++++++++++++++++++++++++
+ Python/test/test_ratehelpers.py | 31 +++++++++++++++++++++++++++++++
+ SWIG/indexes.i                  | 16 ++++++++++++++++
+ SWIG/ratehelpers.i              | 16 ++++++++++++++++
+ 4 files changed, 97 insertions(+)
+
+commit 2e8361fbf152be1875ce381a41b8938b6b0b97fe
+Merge: ae3e5e67 070ad054
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 14:58:45 +0200
+
+    Build official wheels for Python 3.9 upwards (#869)
+
+commit ae3e5e675d3db75e08946253a1307a0edbe008ec
+Merge: 7f746db4 7ac71ef1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 13:04:56 +0200
+
+    Export optional different frequency for second leg in xccy basis-swap helpers (#867)
+
+commit 7f746db41815a0d369546d58fd90db0d3b5bcf28
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 9 Jun 2026 10:43:44 +0000
+
+    Update copyright list in license
+
+ LICENSE.TXT | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit cd33c9189e00f32221b5455ba99fd19e94559ca9
+Merge: be52cfb0 4bc72e1e
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 12:43:15 +0200
+
+    Expose ECB struct (#866)
+
+commit be52cfb0d9837d912d5f70a9ad050eb3b89589f9
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 12:20:03 +0200
+
+    Make workflow run on a branch independent of QuantLib branch
+
+ .github/workflows/nupkg.yml  | 17 +++++++++++------
+ .github/workflows/wheels.yml | 17 +++++++++++------
+ 2 files changed, 22 insertions(+), 12 deletions(-)
+
+commit 070ad05458da7a87d69b55b8eddacbc02d881375
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 12:11:59 +0200
+
+    Build wheels for Python 3.9 upwards
+    
+    Python 3.8 has been in EOL for a while and is no longer testable
+    when creating wheels with cibuildwheel.  Python 3.9 is in EOL as
+    well but still supported by the above.
+
+ Python/setup.py    | 4 ++--
+ Python/setup.py.in | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+commit 121c24d2669b68eba542369168c35d9dfd8d935d
+Author: dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
+Date:   Mon, 8 Jun 2026 18:32:32 +0000
+
+    Bump pypa/cibuildwheel from 3.4 to 4.0
+    
+    Bumps [pypa/cibuildwheel](https://github.com/pypa/cibuildwheel) from 3.4 to 4.0.
+    - [Release notes](https://github.com/pypa/cibuildwheel/releases)
+    - [Changelog](https://github.com/pypa/cibuildwheel/blob/main/docs/changelog.md)
+    - [Commits](https://github.com/pypa/cibuildwheel/compare/v3.4...v4.0)
+    
+    ---
+    updated-dependencies:
+    - dependency-name: pypa/cibuildwheel
+      dependency-version: '4.0'
+      dependency-type: direct:production
+      update-type: version-update:semver-major
+    ...
+    
+    Signed-off-by: dependabot[bot] <support@github.com>
+
+ .github/workflows/wheels.yml | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
+
+commit 7ac71ef1aa7da8990235cae98e81572ed8c6af44
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 9 Jun 2026 12:00:52 +0200
+
+    Export optional different frequency for second leg in xccy helpers
+
+ SWIG/ratehelpers.i | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
+
+commit 4bc72e1e113c383d9e9cae296d77afed50bd38c0
+Author: Arihant Lodha <arihantlodha48@gmail.com>
+Date:   Tue, 9 Jun 2026 16:33:43 +0900
+
+    Expose ECB struct to Python
+    
+    ECB (European Central Bank reserve maintenance dates) was already present
+    in QuantLib alongside IMM and ASX, but not yet wrapped in the SWIG
+    interface.  This commit adds the ECB struct to SWIG/date.i following the
+    exact same pattern used for IMM and ASX, and adds a Python test covering
+    all newly exposed methods.
+
+ Python/test/test_ecb.py | 80 +++++++++++++++++++++++++++++++++++++++++++++++++
+ SWIG/date.i             | 21 +++++++++++++
+ 2 files changed, 101 insertions(+)
+
+commit 02487f22d7dff6dd363cf7c98deaaa7155db51c7
+Merge: 1f6060f7 daa86ab5
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 8 Jun 2026 12:31:23 +0200
+
+    Expose flatStrikeExtrapolation argument in InterpolatedSmileSection (#864)
+
+commit daa86ab5ce8548370bf49b722825a99f37c397a3
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Fri, 5 Jun 2026 13:24:59 -0400
+
+    Expose flatStrikeExtrapolation argument in InterpolatedSmileSection
+
+ SWIG/volatilities.i | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+commit 1f6060f76da0ced6465ab7c0d687d746c5edf249
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sun, 31 May 2026 16:53:53 +0200
+
+    Ported fix from C++ test
+
+ Python/test/test_fxforward.py | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 0bc4b6a5cf858932a420aecbd74d00bd8c42fa25
+Merge: 4a93ee55 600e173a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 29 May 2026 16:58:22 +0200
+
+    Export `SmileSectionRNDCalculator` (#863)
+
+commit 600e173a094cd98080437fb0b3ce672d43988a68
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 29 May 2026 14:54:03 +0200
+
+    Export SmileSectionRNDCalculator
+
+ SWIG/fdm.i | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+commit 4a93ee556ad231a95101e071cd8e5f654b001d40
+Merge: 4e01e1a2 b0b5af37
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 25 May 2026 17:44:08 +0200
+
+    Export cross-currency swaps (#862)
+
+commit b0b5af3789e4474f5bf9894ecffb9799a1f82b52
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 25 May 2026 16:19:27 +0200
+
+    Export cross-currency swaps
+
+ SWIG/currencies.i |   4 ++
+ SWIG/swap.i       | 121 ++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 125 insertions(+)
+
+commit 4e01e1a2161b3e1cfa700f9657595265f4fcc324
+Merge: 7a08e173 ab5eabfd
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 May 2026 11:59:46 +0200
+
+    Export new `smileSection` methods for Black volatility term structures (#860)
+
+commit 7a08e173f27a047737023c661e997c96b3ddbb97
+Merge: 0893e89b 7d8a286c
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 May 2026 11:59:33 +0200
+
+    Export Pearson engine for spread options (#859)
+
+commit ab5eabfd2df2b345123900d2d9d61fe7c344352b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 May 2026 11:14:31 +0200
+
+    Export new smileSection methods for Black volatility term structures
+
+ SWIG/volatilities.i | 89 +++++++++++++++++++++++++++++------------------------
+ 1 file changed, 48 insertions(+), 41 deletions(-)
+
+commit 7d8a286cf969c9434fa83379b85d1954a13f0800
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 20 May 2026 10:57:27 +0200
+
+    Export Pearson engine for spread options
+
+ SWIG/basketoptions.i | 13 +++++++++++++
+ 1 file changed, 13 insertions(+)
+
+commit 0893e89be25f248df99a340d66b75941ea90748e
+Merge: 13fe0b1a db9bc7dc
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 May 2026 18:07:13 +0200
+
+    Export optional term-structure argument for G2 processes (#858)
+
+commit db9bc7dc98853a459d87732c8bc43fcc3b62a44a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 May 2026 16:43:50 +0200
+
+    Export optional term-structure argument for G2 processes
+
+ SWIG/stochasticprocess.i | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
+
+commit 13fe0b1a1df897a5e73a6044c7205ef09ca5b5e7
+Merge: 274f7978 e8d4b028
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 May 2026 16:04:46 +0200
+
+    Export ZARONIA index (#857)
+
+commit e8d4b02825a79c3d91a232f68236fbe87f54aefb
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 19 May 2026 14:49:55 +0200
+
+    Export ZARONIA index
+
+ SWIG/indexes.i | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit 274f79783ce546cb2b15484ce41b8968f6e627b0
+Merge: 9f7d75d5 6527b573
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 12 May 2026 13:30:18 +0200
+
+    Add calendars, currencies and NOK index (#853)
+
+commit 6527b57367a9fe8e3531398a72ec5dc015e65949
+Author: arsen.podoba <arsen.podoba@softsolutions.it>
+Date:   Mon, 11 May 2026 15:41:02 +0200
+
+    rename NOKNibor to Nibor
+
+ SWIG/indexes.i | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+commit 3c3965a7b20401a1940d58ea6ce4cdc6d01cbd4b
+Author: arsen.podoba <arsen.podoba@softsolutions.it>
+Date:   Thu, 7 May 2026 15:34:22 +0200
+
+    Add calendars (Croatia, Malta, Montenegro, North Macedonia, Serbia, Slovenia, Uzbekistan), currencies (MKDCurrency, UZSCurrency) and NOKNibor index
+
+ SWIG/calendars.i  | 42 ++++++++++++++++++++++++++++++++++++++++++
+ SWIG/currencies.i |  2 ++
+ SWIG/indexes.i    |  1 +
+ 3 files changed, 45 insertions(+)
+
+commit 9f7d75d524390ab5cae2d5bae75d320de4517215
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 7 May 2026 10:38:37 +0200
+
+    Document caveats of free-threading wheels
+
+ Python/setup.py    | 12 +++++++++++-
+ Python/setup.py.in | 12 +++++++++++-
+ 2 files changed, 22 insertions(+), 2 deletions(-)
+
+commit 9aedf6585e3ca95699057fcdd12bcb2cbfb26fbe
+Merge: 1f2a7718 f002c0c6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Mon, 27 Apr 2026 16:33:04 +0200
+
+    Add generic LogCubicSpreadDiscountCurve (#851)
+
+commit f002c0c6d590c03c376a0962a38264eb4910c07a
+Author: Eugene Toder <eltoder@twosigma.com>
+Date:   Sat, 25 Apr 2026 12:36:04 -0400
+
+    Add generic LogCubicSpreadDiscountCurve
+
+ SWIG/spreaddiscountcurve.i | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+commit 098a16849b87212e88d9568306be256c5cc3e217
 Author: Luigi Ballabio <luigi.ballabio@gmail.com>
 Date:   Thu, 16 Apr 2026 15:51:10 +0200
 
@@ -27,3 +529,82 @@ Date:   Thu, 16 Apr 2026 15:51:10 +0200
  .github/workflows/prepare-release-candidate.yml |  4 +--
  .github/workflows/prepare-release.yml           |  4 +--
  3 files changed, 45 insertions(+), 4 deletions(-)
+
+commit eff664808ee2fa0042b9a70f09601650b6c7e9d6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Thu, 16 Apr 2026 11:14:35 +0200
+
+    Allow choosing QUantLib version in devenv_images workflow
+
+ .github/workflows/devenv-images.yml | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+commit 8ba5c209d97ccc6b1d3e1202c17aada27d542ab6
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 15 Apr 2026 11:32:46 +0200
+
+    Remove prerelease tag when creating a release draft
+
+ .github/workflows/publish-release.yml | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+commit af989bacb6caf05e931de53ea170e1ab66121c86
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Wed, 1 Apr 2026 16:43:50 +0200
+
+    Avoid deprecated instruction in Dockerfiles
+
+ dockerfiles/ci.base.Dockerfile       | 5 +++--
+ dockerfiles/ci.csharp.Dockerfile     | 5 +++--
+ dockerfiles/ci.default.Dockerfile    | 5 +++--
+ dockerfiles/ci.java.Dockerfile       | 5 +++--
+ dockerfiles/ci.python.Dockerfile     | 5 +++--
+ dockerfiles/ci.r.Dockerfile          | 5 +++--
+ dockerfiles/ci.scala.Dockerfile      | 5 +++--
+ dockerfiles/ci.threadsafe.Dockerfile | 5 +++--
+ 8 files changed, 24 insertions(+), 16 deletions(-)
+
+commit 2c5efbc49651a9930f9e154a619bceb77ec8c271
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Apr 2026 10:05:04 +0200
+
+    Ensure that tag is available when updating binder branch
+
+ .github/workflows/update-binder-branch.yml | 1 +
+ 1 file changed, 1 insertion(+)
+
+commit f0a6ff3bc80b5cb2611184426e428c16b2803e0b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Apr 2026 10:36:46 +0200
+
+    Increase version number automatically after release
+
+ .github/workflows/increase-version-number.yml | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+commit 8fb7e193a6760f7443f11f7d3fcbc9cd3601b1be
+Merge: 3c996565 bde93d7a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Tue, 14 Apr 2026 15:05:07 +0200
+
+    Remove features deprecated in version 1.38 and no longer in the C++ library (#849)
+
+commit 3c9965655326736d6ddf8f6510ca426d243691ee
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Tue, 14 Apr 2026 08:18:24 +0000
+
+    Set version to 1.43-dev
+
+ Python/setup.py | 2 +-
+ R/DESCRIPTION   | 2 +-
+ configure.ac    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+commit bde93d7ad152dfbc78f9ca5cfb617fff3ba9ac2a
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 20 Mar 2026 17:17:53 +0100
+
+    Remove features deprecated in version 1.38 and no longer in the C++ library
+
+ SWIG/inflation.i | 15 ---------------
+ 1 file changed, 15 deletions(-)
