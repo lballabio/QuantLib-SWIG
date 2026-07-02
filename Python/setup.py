@@ -241,7 +241,7 @@ with open("./setup.cfg", "w") as f:
 
 setup(
     name="QuantLib",
-    version="1.43-dev",
+    version="1.43-rc",
     description="Python bindings for the QuantLib library",
     long_description=long_description,
     long_description_content_type="text/x-rst",
