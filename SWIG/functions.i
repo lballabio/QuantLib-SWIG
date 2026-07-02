@@ -36,12 +36,14 @@ class UnaryFunction {
     : function_(PyPtr::fromBorrowed(function)) {}
 
     Real operator()(Real x) const {
+        PyBlockThreads block_threads;
         auto pyResult = PyPtr::fromResult(
             PyObject_CallFunction(function_.get(), "d", x),
             "failed to call Python function");
         return PyFloat_AsDouble(pyResult.get());
     }
     Real derivative(Real x) const {
+        PyBlockThreads block_threads;
         auto pyResult = PyPtr::fromResult(
             PyObject_CallMethod(function_.get(), "derivative", "d", x),
             "failed to call derivative() on Python object");
@@ -57,6 +59,7 @@ class BinaryFunction {
     : function_(PyPtr::fromBorrowed(function)) {}
 
     Real operator()(Real x, Real y) const {
+        PyBlockThreads block_threads;
         auto pyResult = PyPtr::fromResult(
             PyObject_CallFunction(function_.get(), "dd", x, y),
             "failed to call Python function");
@@ -72,6 +75,7 @@ class ArrayFunction {
     : function_(PyPtr::fromBorrowed(function)) {}
 
     Real operator()(const Array& x) const {
+        PyBlockThreads block_threads;
         auto tuple = PyPtr::fromResult(PyTuple_New(x.size()), "failed to convert arguments");
         for (Size i=0; i<x.size(); i++)
             PyTuple_SetItem(tuple.get(), i, PyFloat_FromDouble(x[i]));

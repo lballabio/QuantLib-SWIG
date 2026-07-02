@@ -263,9 +263,64 @@ class PyPtr {
     PyObject* ptr_;
 };
 
+static thread_local PyThreadState* s_saved_thread_state = nullptr;
+
+// Similar to Py_BEGIN_ALLOW_THREADS/Py_END_ALLOW_THREADS but exception-safe and can be nested.
+class PyAllowThreads {
+  public:
+    PyAllowThreads(): allowed_(false) {
+        if (s_saved_thread_state == nullptr) {
+            s_saved_thread_state = PyEval_SaveThread();
+            allowed_ = true;
+        }
+    }
+    ~PyAllowThreads() {
+        if (allowed_) {
+            PyEval_RestoreThread(s_saved_thread_state);
+            s_saved_thread_state = nullptr;
+        }
+    }
+  private:
+    bool allowed_;
+};
+
+// Similar to Py_BLOCK_THREADS/Py_UNBLOCK_THREADS but exception-safe and is a no-op when threads
+// are not allowed.
+class PyBlockThreads {
+  public:
+    PyBlockThreads(): blocked_(false) {
+        if (s_saved_thread_state != nullptr) {
+            PyEval_RestoreThread(s_saved_thread_state);
+            s_saved_thread_state = nullptr;
+            blocked_ = true;
+        }
+    }
+    ~PyBlockThreads() {
+        if (blocked_) {
+            s_saved_thread_state = PyEval_SaveThread();
+        }
+    }
+  private:
+    bool blocked_;
+};
+
+template <class Wrapped>
+class ExpensiveLazyObject : public Wrapped {
+  public:
+    using Wrapped::Wrapped;
+  private:
+    void performCalculations() const override {
+        PyAllowThreads allow_threads;
+        Wrapped::performCalculations();
+    }
+};
+
 #define cpp_deprecate_feature(OldName, NewName) \
     PyErr_WarnEx(PyExc_FutureWarning, (#OldName " is deprecated; use " #NewName), 1)
 #else
+template <class Wrapped>
+using ExpensiveLazyObject = Wrapped;
+
 #define cpp_deprecate_feature(OldName, NewName)
 #endif
 %}

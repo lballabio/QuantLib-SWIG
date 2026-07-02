@@ -30,7 +30,6 @@
 using QuantLib::Discount;
 using QuantLib::ZeroYield;
 using QuantLib::ForwardRate;
-using QuantLib::PiecewiseYieldCurve;
 %}
 
 %{
@@ -88,7 +87,7 @@ struct _IterativeBootstrap {
 %define export_piecewise_curve(Name,Traits,Interpolator)
 
 %{
-typedef PiecewiseYieldCurve<Traits, Interpolator> Name;
+typedef ExpensiveLazyObject<QuantLib::PiecewiseYieldCurve<Traits, Interpolator>> Name;
 %}
 
 %shared_ptr(Name);
@@ -244,8 +243,7 @@ struct _GlobalBootstrap {
 
 
 %{
-using QuantLib::SimpleZeroYield;
-typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, QuantLib::GlobalBootstrap>
+typedef QuantLib::PiecewiseYieldCurve<QuantLib::SimpleZeroYield, Linear, QuantLib::GlobalBootstrap>
     GlobalLinearSimpleZeroCurve;
 %}
 
@@ -280,14 +278,10 @@ class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
 };
 
 
-%{
-using QuantLib::PiecewiseSpreadYieldCurve;
-%}
-
 %define export_piecewise_spread_curve(Name,Traits,Interpolator)
 
 %{
-typedef PiecewiseSpreadYieldCurve<Traits, Interpolator> Name;
+typedef ExpensiveLazyObject<QuantLib::PiecewiseSpreadYieldCurve<Traits, Interpolator>> Name;
 %}
 
 %shared_ptr(Name);
