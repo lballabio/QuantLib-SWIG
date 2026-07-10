@@ -65,7 +65,23 @@ def bond_setup():
     bondEngine = ql.DiscountingBondEngine(term_structure_handle)
     bond.setPricingEngine(bondEngine)
 
-    return {
+    yield {
+        'settlement_days': settlement_days,
+        'face_amount': face_amount,
+        'redemption': redemption,
+        'issue_date': issue_date,
+        'maturity_date': maturity_date,
+        'calendar': calendar,
+        'settlement_date': settlement_date,
+        'day_counter': day_counter,
+        'sched': sched,
+        'coupons': coupons,
+        'bond': bond,
+        'flat_forward': flat_forward,
+        'term_structure_handle': term_structure_handle
+    }
+
+    ql.Settings.instance().evaluationDate = ql.Date()
         'settlement_days': settlement_days,
         'face_amount': face_amount,
         'redemption': redemption,
