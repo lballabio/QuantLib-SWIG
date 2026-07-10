@@ -18,7 +18,7 @@
 TODO 
 The Heston MC tests (testMCDiscreteGeometricAveragePriceHeston, testMCDiscreteArithmeticAveragePriceHeston, testDiscreteGeometricAveragePriceHestonPastFixings, testChoiAsianEngineVsMC, testChoiAsianEngineSpecialCases, testPastFixingsModelDependency) are 
 omitted because the corresponding Python bindings 
-(MakeMCDiscreteGeometricAPHestonEngine, ChoiAsianEngine, Heston MC arithmetic engine are not exposed
+(MakeMCDiscreteGeometricAPHestonEngine, ChoiAsianEngine, Heston MC arithmetic engine) are not exposed.
 
 '''
 import math
