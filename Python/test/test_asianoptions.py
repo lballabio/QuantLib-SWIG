@@ -822,8 +822,8 @@ def test_continuous_seasoned_asian_options():
     )
     seasoned_npv = seasoned_option.NPV()
 
-    assert seasoned_npv < fresh_npv, (
-        f"Seasoned put ({seasoned_npv}) should be < fresh put ({fresh_npv}) "
+    assert seasoned_npv > fresh_npv, (
+        f"Seasoned put ({seasoned_npv}) should be > fresh put ({fresh_npv}) "
         f"when avg ({current_average}) < strike ({strike})"
     )
 
