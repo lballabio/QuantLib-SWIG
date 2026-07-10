@@ -239,6 +239,7 @@ def test_zSpread(bond_setup):
                                           bond_setup['day_counter'], ql.Compounded, ql.Annual), 8) == 0.02125053
 
 
-    if __name__ == "__main__":
-        print("testing QuantLib", ql.__version__)
-        pytest.main([__file__, '-v'])
+
+if __name__ == "__main__":
+    print("testing QuantLib", ql.__version__)
+    pytest.main([__file__, '-v'])
