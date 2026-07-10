@@ -854,4 +854,4 @@ def test_continuous_seasoned_asian_options():
     with pytest.raises(Exception):
         seasoned_geom.NPV()
 
-    ql.Settings.instance().evaluationDate = ql.Date.todaysDate()
+ql.Settings.instance().evaluationDate = ql.Date()
