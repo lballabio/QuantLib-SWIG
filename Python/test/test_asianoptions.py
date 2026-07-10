@@ -709,7 +709,7 @@ def test_turnbull_wakeman_engine(opt_type, underlying, strike, b, rfr,
     fixing_dates = [today + _time_to_days_360(i * dt + first) for i in range(fixings)]
 
     spot = ql.SimpleQuote(underlying)
-    qTS = ql.YieldTermStructureHandle(ql.FlatForward(today, b + rfr, dc))
+    qTS = ql.YieldTermStructureHandle(ql.FlatForward(today, rfr - b, dc))
     rTS = ql.YieldTermStructureHandle(ql.FlatForward(today, rfr, dc))
 
     vol_slope = 0.005
