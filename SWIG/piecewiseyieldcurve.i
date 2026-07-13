@@ -31,6 +31,7 @@ using QuantLib::Discount;
 using QuantLib::ZeroYield;
 using QuantLib::ForwardRate;
 using QuantLib::PiecewiseYieldCurve;
+using QuantLib::SimpleZeroYield;
 %}
 
 %{
@@ -177,6 +178,27 @@ export_piecewise_curve(PiecewiseParabolicCubicZero,ZeroYield,ParabolicCubic);
 export_piecewise_curve(PiecewiseMonotonicParabolicCubicZero,ZeroYield,MonotonicParabolicCubic);
 export_piecewise_curve(PiecewiseLogParabolicCubicDiscount,Discount,LogParabolicCubic);
 export_piecewise_curve(PiecewiseMonotonicLogParabolicCubicDiscount,Discount,MonotonicLogParabolicCubic);
+export_piecewise_curve(PiecewiseForwardRateBackward,ForwardRate,BackwardFlat);
+export_piecewise_curve(PiecewiseForwardRateLinear,ForwardRate,Linear);
+export_piecewise_curve(PiecewiseForwardRateCubic,ForwardRate,Cubic);
+export_piecewise_curve(PiecewiseZeroYieldBackward,ZeroYield,BackwardFlat);
+export_piecewise_curve(PiecewiseZeroYieldForward,ZeroYield,ForwardFlat);
+export_piecewise_curve(PiecewiseZeroYieldLinear,ZeroYield,Linear);
+export_piecewise_curve(PiecewiseZeroYieldLinearThenFlat,ZeroYield,LinearThenFlat);
+export_piecewise_curve(PiecewiseZeroYieldCubic,ZeroYield,Cubic);
+export_piecewise_curve(PiecewiseZeroYield_Cubic__SplineOvershootingMinimization2, ZeroYield,Cubic__SplineOvershootingMinimization2 );
+export_piecewise_curve(PiecewiseZeroYield_Cubic__FritschButland_monotonic, ZeroYield,Cubic__FritschButland_monotonic);
+export_piecewise_curve(PiecewiseZeroYield_Cubic__Kruger, ZeroYield,Cubic__Kruger);
+export_piecewise_curve(PiecewiseZeroYield_Cubic__MonotonicKruger, ZeroYield,Cubic__MonotonicKruger );
+export_piecewise_curve(PiecewiseZeroYield_Cubic__MonotonicParabolic, ZeroYield,Cubic__MonotonicParabolic );
+export_piecewise_curve(PiecewiseZeroYield_Cubic__Monotonic_NaturalSpline, ZeroYield,Cubic__Monotonic_NaturalSpline);
+export_piecewise_curve(PiecewiseZeroYield_Cubic__NaturalSpline, ZeroYield,Cubic__NaturalSpline );
+export_piecewise_curve(PiecewiseZeroYield_Cubic__Parabolic, ZeroYield,Cubic__Parabolic );
+export_piecewise_curve(PiecewiseZeroYield_Cubic__SplineOvershootingMinimization1, ZeroYield,Cubic__SplineOvershootingMinimization1 );
+export_piecewise_curve(PiecewiseDiscountLogLinear,Discount,LogLinear);
+export_piecewise_curve(PiecewiseDiscountLinear,Discount,Linear);
+export_piecewise_curve(PiecewiseDiscountCubic,Discount,Cubic);
+export_piecewise_curve(PiecewiseYieldSimpleZeroYieldCurveLinear,SimpleZeroYield,Linear);
 
 
 // global boostrapper
