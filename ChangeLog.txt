@@ -1,4 +1,23 @@
-commit 669d37c3e11f36b58664c710436f24c0792e8e86
+commit ec9593a0693398170249ffbc9ceaa2d8d1f5fd80
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 13 Jul 2026 09:39:50 +0000
+
+    Set version to 1.43
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit df6dc75062495cd85d91c8d82bc454e21d37bb9e
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Thu, 2 Jul 2026 07:06:59 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 599 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 590 insertions(+), 9 deletions(-)
+
+commit 948c2aaf96a9e68542d9e8a50a32fe870fb3ab42
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Thu, 2 Jul 2026 07:06:59 +0000
 
