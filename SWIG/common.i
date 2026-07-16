@@ -45,43 +45,43 @@
 %}
 
 #if defined(SWIGPYTHON)
-%typemap(in) ext::optional<bool> %{
+%typemap(in) std::optional<bool> %{
     if ($input == Py_None)
-        $1 = ext::nullopt;
+        $1 = std::nullopt;
     else if (PyBool_Check($input))
         $1 = $input == Py_True;
     else
         SWIG_exception(SWIG_TypeError, "bool expected");
 %}
-%typecheck (QL_TYPECHECK_BOOL) ext::optional<bool> %{
+%typecheck (QL_TYPECHECK_BOOL) std::optional<bool> %{
     $1 = (PyBool_Check($input) || $input == Py_None) ? 1 : 0;
 %}
-%typemap(out) ext::optional<bool> %{
+%typemap(out) std::optional<bool> %{
     $result = !$1 ? Py_None : *$1 ? Py_True : Py_False;
     Py_INCREF($result);
 %}
 
-%typemap(in) ext::optional<Integer> %{
+%typemap(in) std::optional<Integer> %{
     if ($input == Py_None)
-        $1 = ext::nullopt;
+        $1 = std::nullopt;
     else if (PyLong_Check($input))
         $1 = PyLong_AsLong($input);
     else
         SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_INTEGER) ext::optional<Integer> %{
+%typecheck (QL_TYPECHECK_INTEGER) std::optional<Integer> %{
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
 %}
-%typemap(out) ext::optional<Integer> %{
+%typemap(out) std::optional<Integer> %{
     $result = !$1 ? Py_None : PyLong_FromLong(*$1);
     Py_INCREF($result);
 %}
 #else
 #if defined(SWIGCSHARP)
-%typemap(cscode) ext::optional<bool> %{
+%typemap(cscode) std::optional<bool> %{
     public static implicit operator OptionalBool(bool b) => new OptionalBool(b);
 %}
-%typemap(cscode) ext::optional<Integer> %{
+%typemap(cscode) std::optional<Integer> %{
     public static implicit operator OptionalInteger(int i) => new OptionalInteger(i);
 %}
 #endif
@@ -92,8 +92,8 @@ namespace ext {
         optional(T t);
     };
 }
-%template(OptionalBool) ext::optional<bool>;
-%template(OptionalInteger) ext::optional<Integer>;
+%template(OptionalBool) std::optional<bool>;
+%template(OptionalInteger) std::optional<Integer>;
 #endif
 
 %{
