@@ -85,7 +85,7 @@
     public static implicit operator OptionalInteger(int i) => new OptionalInteger(i);
 %}
 #endif
-namespace ext {
+namespace std {
     template<class T>
     class optional {
       public:
