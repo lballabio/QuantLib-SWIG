@@ -44,10 +44,10 @@ bool Settings_includeReferenceDateEvents_get(Settings* self) {
 void Settings_includeReferenceDateEvents_set(Settings* self, bool b) {
     self->includeReferenceDateEvents() = b;
 }
-ext::optional<bool> Settings_includeTodaysCashFlows_get(Settings* self) {
+std::optional<bool> Settings_includeTodaysCashFlows_get(Settings* self) {
     return self->includeTodaysCashFlows();
 }
-void Settings_includeTodaysCashFlows_set(Settings* self, ext::optional<bool> b) {
+void Settings_includeTodaysCashFlows_set(Settings* self, std::optional<bool> b) {
     self->includeTodaysCashFlows() = b;
 }
 #endif
@@ -66,7 +66,7 @@ class Settings {
         Date evaluationDate;
         bool enforcesTodaysHistoricFixings;
         bool includeReferenceDateEvents;
-        ext::optional<bool> includeTodaysCashFlows;
+        std::optional<bool> includeTodaysCashFlows;
         #else
         Date getEvaluationDate() {
             return self->evaluationDate();
@@ -94,7 +94,7 @@ class Settings {
 %rename(SavedSettings) _SavedSettings;
 %inline %{
 class _SavedSettings {
-    ext::optional<QuantLib::SavedSettings> saved_;
+    std::optional<QuantLib::SavedSettings> saved_;
   public:
     void __enter__() {
         saved_.emplace();
