@@ -98,7 +98,7 @@ object CPIBond {
           new ZeroCouponInflationSwapHelper(
             new QuoteHandle(new SimpleQuote(datum.rate/100d)), observationLag,
             datum.date, calendar, convention, dayCounter, inflationIndex,
-            CPI.InterpolationType.AsIndex, yTS) }
+            CPI.InterpolationType.AsIndex) }
 
         cpiTS linkTo new PiecewiseZeroInflation(          
           evaluationDate, inflationIndex.lastFixingDate,
