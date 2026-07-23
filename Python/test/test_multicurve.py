@@ -52,7 +52,7 @@ class MultiCurveTest(unittest.TestCase):
 
         accuracy = 1.0e-10
         multi_curve = ql.MultiCurve(accuracy)
-        curve_3m = ql.GlobalLinearSimpleZeroCurve(
+        curve_3m = ql.GlobalPiecewiseLogLinearDiscount(
             today, helpers, ql.Actual360(), ql.GlobalBootstrap(accuracy)
         )
         external_3m = multi_curve.addBootstrappedCurve(internal_3m, curve_3m)
