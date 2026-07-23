@@ -172,6 +172,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include options.i
 %include payoffs.i
 %include piecewiseyieldcurve.i
+%include multicurve.i
 %include randomnumbers.i
 %include ratehelpers.i
 %include rounding.i
