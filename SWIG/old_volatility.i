@@ -188,7 +188,7 @@ class OptionletStripper1 : public StrippedOptionletBase {
                            Real displacement = 0.0,
                            bool dontThrow = false,
                            Period optionletFrequency = Period()) {
-            ext::optional<Period> frequency = ext::nullopt;
+            std::optional<Period> frequency = std::nullopt;
             if (optionletFrequency != Period())
                 frequency = optionletFrequency;
             return new OptionletStripper1(parVolSurface, index, switchStrikes, accuracy, maxIter,

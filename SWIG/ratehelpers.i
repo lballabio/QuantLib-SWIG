@@ -253,9 +253,9 @@ class SwapRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            ext::optional<bool> withIndexedCoupons = ext::nullopt
+            std::optional<bool> withIndexedCoupons = std::nullopt
     #if defined(SWIGPYTHON)
-            , ext::optional<BusinessDayConvention> floatConvention = ext::nullopt
+            , std::optional<BusinessDayConvention> floatConvention = std::nullopt
     #endif
     );
     SwapRateHelper(
@@ -273,9 +273,9 @@ class SwapRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            ext::optional<bool> withIndexedCoupons = ext::nullopt
+            std::optional<bool> withIndexedCoupons = std::nullopt
     #if defined(SWIGPYTHON)
-            , ext::optional<BusinessDayConvention> floatConvention = ext::nullopt
+            , std::optional<BusinessDayConvention> floatConvention = std::nullopt
     #endif
     );
     SwapRateHelper(
@@ -287,7 +287,7 @@ class SwapRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            ext::optional<bool> withIndexedCoupons = ext::nullopt);
+            std::optional<bool> withIndexedCoupons = std::nullopt);
     SwapRateHelper(
             Rate rate,
             const ext::shared_ptr<SwapIndex>& index,
@@ -297,7 +297,7 @@ class SwapRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            ext::optional<bool> withIndexedCoupons = ext::nullopt);
+            std::optional<bool> withIndexedCoupons = std::nullopt);
     %extend {
         static ext::shared_ptr<SwapRateHelper> forDates(
                 const Handle<Quote>& rate,
@@ -313,9 +313,9 @@ class SwapRateHelper : public RateHelper {
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date(),
                 bool endOfMonth = false,
-                ext::optional<bool> withIndexedCoupons = ext::nullopt
+                std::optional<bool> withIndexedCoupons = std::nullopt
     #if defined(SWIGPYTHON)
-                , ext::optional<BusinessDayConvention> floatConvention = ext::nullopt
+                , std::optional<BusinessDayConvention> floatConvention = std::nullopt
     #endif
         ) {
             return ext::make_shared<SwapRateHelper>(
@@ -403,8 +403,8 @@ class OISRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             RateAveraging::Type averagingMethod = RateAveraging::Compound,
-            ext::optional<bool> endOfMonth = ext::nullopt,
-            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+            std::optional<bool> endOfMonth = std::nullopt,
+            std::optional<Frequency> fixedPaymentFrequency = std::nullopt,
             const Calendar& fixedCalendar = Calendar(),
             Natural lookbackDays = Null<Natural>(),
             Natural lockoutDays = 0,
@@ -429,8 +429,8 @@ class OISRateHelper : public RateHelper {
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date(),
                 RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                ext::optional<bool> endOfMonth = ext::nullopt,
-                ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+                std::optional<bool> endOfMonth = std::nullopt,
+                std::optional<Frequency> fixedPaymentFrequency = std::nullopt,
                 const Calendar& fixedCalendar = Calendar(),
                 Natural lookbackDays = Null<Natural>(),
                 Natural lockoutDays = 0,
@@ -464,8 +464,8 @@ class OISRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(), 
             RateAveraging::Type averagingMethod = RateAveraging::Compound,
-            ext::optional<bool> endOfMonth = ext::nullopt,
-            ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+            std::optional<bool> endOfMonth = std::nullopt,
+            std::optional<Frequency> fixedPaymentFrequency = std::nullopt,
             const Calendar& fixedCalendar = Calendar(),
             Natural lookbackDays = Null<Natural>(),
             Natural lockoutDays = 0,
@@ -490,8 +490,8 @@ class OISRateHelper : public RateHelper {
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date(),
                 RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                ext::optional<bool> endOfMonth = ext::nullopt,
-                ext::optional<Frequency> fixedPaymentFrequency = ext::nullopt,
+                std::optional<bool> endOfMonth = std::nullopt,
+                std::optional<Frequency> fixedPaymentFrequency = std::nullopt,
                 const Calendar& fixedCalendar = Calendar(),
                 Natural lookbackDays = Null<Natural>(),
                 Natural lockoutDays = 0,
