@@ -620,6 +620,7 @@ class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool collateralOnFixedLeg,
                                              Integer paymentLag = 0);
+    const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const;
 };
 
 %shared_ptr(ConstNotionalCrossCurrencyBasisSwapRateHelper)
@@ -639,6 +640,7 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
                                                   Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
+    const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
 };
 
 %shared_ptr(MtMCrossCurrencyBasisSwapRateHelper)
@@ -659,6 +661,7 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         Frequency paymentFrequency = NoFrequency,
                                         Integer paymentLag = 0,
                                         Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
+    const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const;
 };
 
 %shared_ptr(IborIborBasisSwapRateHelper)
