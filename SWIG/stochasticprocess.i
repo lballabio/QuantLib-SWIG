@@ -294,6 +294,9 @@ using QuantLib::G2Process;
 
 %shared_ptr(G2Process)
 class G2Process : public StochasticProcess {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") G2Process;
+    #endif
   public:
     G2Process(Real a, Real sigma, Real b, Real eta, Real rho,
               const Handle<YieldTermStructure>& termStructure = {});
@@ -307,6 +310,9 @@ using QuantLib::G2ForwardProcess;
 
 %shared_ptr(G2ForwardProcess)
 class G2ForwardProcess : public StochasticProcess {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") G2ForwardProcess;
+    #endif
   public:
     G2ForwardProcess(Real a, Real sigma, Real b, Real eta, Real rho,
                      const Handle<YieldTermStructure>& termStructure = {});

@@ -122,8 +122,8 @@ class VanillaSwap : public FixedVsFloatingSwap {
                 const ext::shared_ptr<IborIndex>& index,
                 Spread spread,
                 const DayCounter& floatingDayCount,
-                ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
-                ext::optional<bool> withIndexedCoupons = ext::nullopt);
+                std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
+                std::optional<bool> withIndexedCoupons = std::nullopt);
     #else
     %extend {
         VanillaSwap(Type type, Real nominal,
@@ -133,9 +133,9 @@ class VanillaSwap : public FixedVsFloatingSwap {
                     const ext::shared_ptr<IborIndex>& index,
                     Spread spread,
                     const DayCounter& floatingDayCount,
-                    ext::optional<bool> withIndexedCoupons = ext::nullopt) {
+                    std::optional<bool> withIndexedCoupons = std::nullopt) {
             // work around the lack of typemap for this argument
-            ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt;
+            std::optional<BusinessDayConvention> paymentConvention = std::nullopt;
 
             return new VanillaSwap(type, nominal, fixedSchedule, fixedRate, fixedDayCount,
                                    floatSchedule, index, spread, floatingDayCount,
@@ -313,7 +313,7 @@ class DiscountingSwapEngine : public PricingEngine {
                               const Date& settlementDate = Date(),
                               const Date& npvDate = Date()) {
             return new DiscountingSwapEngine(discountCurve,
-                                             ext::nullopt,
+                                             std::nullopt,
                                              settlementDate,
                                              npvDate);
         }
@@ -565,7 +565,7 @@ class MultipleResetsSwap : public FixedVsFloatingSwap {
                        Size resetsPerCoupon,
                        Spread spread = 0.0,
                        RateAveraging::Type averagingMethod = RateAveraging::Compound,
-                       ext::optional<BusinessDayConvention> paymentConvention = ext::nullopt,
+                       std::optional<BusinessDayConvention> paymentConvention = std::nullopt,
                        Integer paymentLag = 0,
                        const Calendar& paymentCalendar = Calendar());
 
@@ -868,7 +868,7 @@ class DiscountingConstNotionalCrossCurrencySwapEngine : public PricingEngine {
     DiscountingConstNotionalCrossCurrencySwapEngine(
         const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
         const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
-        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+        const Handle<Quote>& spotFX, std::optional<bool> includeSettlementDateFlows = std::nullopt,
         const Date& settlementDate = Date(), const Date& npvDate = Date(), const Date& spotFXSettleDate = Date());
 };
 
