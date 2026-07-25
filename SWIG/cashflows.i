@@ -212,6 +212,129 @@ class FloatingRateCoupon : public Coupon {
 
 
 %{
+using QuantLib::FxReset;
+using QuantLib::FxResetConvention;
+using QuantLib::FxResetPricer;
+using QuantLib::DiscountingFxResetPricer;
+using QuantLib::FxResetCoupon;
+using QuantLib::FxResetNotionalExchange;
+using QuantLib::setFxResetPricer;
+%}
+
+class FxReset {
+  public:
+    FxReset(const Date& fixingDate, const Date& valueDate);
+    const Date& fixingDate() const;
+    const Date& valueDate() const;
+};
+
+class FxResetConvention {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FxResetConvention;
+    #endif
+  public:
+    FxResetConvention(Natural fixingDays = 0,
+                      const Calendar& fixingCalendar = Calendar());
+    FxReset reset(const Date& valueDate) const;
+    Natural fixingDays() const;
+    const Calendar& fixingCalendar() const;
+};
+
+%shared_ptr(FxResetPricer)
+class FxResetPricer {
+  private:
+    FxResetPricer();
+  public:
+    virtual Real fxRate(const FxReset& reset) const;
+};
+
+%shared_ptr(DiscountingFxResetPricer)
+class DiscountingFxResetPricer : public FxResetPricer {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") DiscountingFxResetPricer;
+    #endif
+  public:
+    DiscountingFxResetPricer(
+        const Currency& constantLegCurrency,
+        const Currency& resettableLegCurrency,
+        const Handle<YieldTermStructure>& constantLegCurve,
+        const Handle<YieldTermStructure>& resettableLegCurve,
+        const Handle<Quote>& spotFx,
+        bool spotIsResettablePerConstant,
+        const Date& spotFxSettleDate = Date());
+    Real fxRate(const FxReset& reset) const;
+    const Currency& constantLegCurrency() const;
+    const Currency& resettableLegCurrency() const;
+};
+
+%shared_ptr(FxResetCoupon)
+class FxResetCoupon : public FloatingRateCoupon {
+  public:
+    FxResetCoupon(const ext::shared_ptr<FloatingRateCoupon>& underlying,
+                  Real constantLegNotional,
+                  const FxReset& fxReset);
+    const ext::shared_ptr<FloatingRateCoupon>& underlying() const;
+    Real constantLegNotional() const;
+    const FxReset& fxReset() const;
+    Date fxResetDate() const;
+    Date fxResetValueDate() const;
+    const ext::shared_ptr<FxResetPricer>& fxResetPricer() const;
+    void setFxResetPricer(const ext::shared_ptr<FxResetPricer>& pricer);
+};
+
+%inline %{
+    ext::shared_ptr<FxResetCoupon> as_fx_reset_coupon(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<FxResetCoupon>(cf);
+    }
+%}
+
+%shared_ptr(FxResetNotionalExchange)
+class FxResetNotionalExchange : public CashFlow {
+  public:
+    Real constantLegNotional() const;
+    const ext::shared_ptr<FxResetPricer>& fxResetPricer() const;
+    void setFxResetPricer(const ext::shared_ptr<FxResetPricer>& pricer);
+};
+
+%extend FxResetNotionalExchange {
+    FxResetNotionalExchange(const Date& paymentDate,
+                            Real constantLegNotional,
+                            const FxReset* previousReset,
+                            const FxReset* currentReset) {
+        return new FxResetNotionalExchange(
+            paymentDate, constantLegNotional,
+            previousReset ? std::optional<FxReset>(*previousReset) : std::nullopt,
+            currentReset ? std::optional<FxReset>(*currentReset) : std::nullopt);
+    }
+    bool hasPreviousReset() const {
+        return self->previousReset().has_value();
+    }
+    FxReset previousReset() const {
+        QL_REQUIRE(self->previousReset(), "the notional exchange has no previous FX reset");
+        return *self->previousReset();
+    }
+    bool hasCurrentReset() const {
+        return self->currentReset().has_value();
+    }
+    FxReset currentReset() const {
+        QL_REQUIRE(self->currentReset(), "the notional exchange has no current FX reset");
+        return *self->currentReset();
+    }
+};
+
+%inline %{
+    ext::shared_ptr<FxResetNotionalExchange> as_fx_reset_notional_exchange(
+                                      const ext::shared_ptr<CashFlow>& cf) {
+        return ext::dynamic_pointer_cast<FxResetNotionalExchange>(cf);
+    }
+%}
+
+void setFxResetPricer(const Leg&,
+                      const ext::shared_ptr<FxResetPricer>&);
+
+
+%{
 using QuantLib::CappedFlooredCoupon;
 %}
 
