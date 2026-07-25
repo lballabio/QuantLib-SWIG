@@ -673,7 +673,8 @@ class IborIborBasisSwapRateHelper : public RateHelper {
                                 const ext::shared_ptr<IborIndex>& baseIndex,
                                 const ext::shared_ptr<IborIndex>& otherIndex,
                                 Handle<YieldTermStructure> discountHandle,
-                                bool bootstrapBaseCurve);
+                                bool bootstrapBaseCurve,
+                                std::optional<bool> useIndexedCoupons = std::nullopt);
     ext::shared_ptr<Swap> swap();
 };
 
