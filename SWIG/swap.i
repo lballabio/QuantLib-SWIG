@@ -876,7 +876,10 @@ class MtMCrossCurrencyBasisSwap : public Swap {
         Real fxQuoteNominal, Currency fxQuoteCurrency, Schedule fxQuoteSchedule,
         const ext::shared_ptr<IborIndex>& fxQuoteIndex, Spread fxQuoteSpread, Real fxQuoteGearing,
         bool isFxBaseCurrencyLegResettable,
+        FxResetConvention fxResetConvention = FxResetConvention(),
         Integer fxBasePaymentLag = 0, Integer fxQuotePaymentLag = 0,
+        BusinessDayConvention fxBasePaymentConvention = Following,
+        BusinessDayConvention fxQuotePaymentConvention = Following,
         bool fxBaseCompoundSpread = false, Natural fxBaseLookbackDays = Null<Natural>(),
         bool fxBaseObservationShift = false, Natural fxBaseLockoutDays = 0,
         RateAveraging::Type fxBaseAveragingMethod = RateAveraging::Compound,
@@ -919,7 +922,12 @@ class MtMCrossCurrencyBasisSwap : public Swap {
     bool isFxBaseCurrencyLegResettable() const;
     Size resettingLegIndex() const;
     Size constantLegIndex() const;
+    const Leg& resettingLeg() const;
+    const Leg& constantLeg() const;
     Real constantLegNotional() const;
+    const FxResetConvention& fxResetConvention() const;
+    BusinessDayConvention fxBasePaymentConvention() const;
+    BusinessDayConvention fxQuotePaymentConvention() const;
 
     Spread fairFxBaseSpread() const;
     Spread fairFxQuoteSpread() const;

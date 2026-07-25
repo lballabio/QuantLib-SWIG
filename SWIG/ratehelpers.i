@@ -660,8 +660,11 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         bool isFxBaseCurrencyLegResettable,
                                         Frequency paymentFrequency = NoFrequency,
                                         Integer paymentLag = 0,
-                                        Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
+                                        Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
+                                        Natural fxResetFixingDays = 0,
+                                        Calendar fxResetFixingCalendar = Calendar());
     const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const;
+    const FxResetConvention& fxResetConvention() const;
 };
 
 %shared_ptr(IborIborBasisSwapRateHelper)
