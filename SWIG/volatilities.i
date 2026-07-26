@@ -50,15 +50,15 @@ using QuantLib::Normal;
 enum VolatilityType { ShiftedLognormal, Normal };
 
 #if defined(SWIGPYTHON)
-%typemap(in) ext::optional<VolatilityType> %{
+%typemap(in) std::optional<VolatilityType> %{
     if ($input == Py_None)
-        $1 = ext::nullopt;
+        $1 = std::nullopt;
     else if (PyLong_Check($input))
         $1 = (VolatilityType)PyLong_AsLong($input);
     else
         SWIG_exception(SWIG_TypeError, "int expected");
 %}
-%typecheck (QL_TYPECHECK_VOLATILITYTYPE) ext::optional<VolatilityType> %{
+%typecheck (QL_TYPECHECK_VOLATILITYTYPE) std::optional<VolatilityType> %{
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
 %}
 #endif
@@ -586,7 +586,7 @@ class BlackVolatilitySurfaceDelta : public BlackVolTermStructure {
                                 const Handle<YieldTermStructure>& foreignTS,
                                 DeltaVolQuote::DeltaType dt = DeltaVolQuote::DeltaType::Spot,
                                 DeltaVolQuote::AtmType at = DeltaVolQuote::AtmType::AtmDeltaNeutral,
-                                ext::optional<DeltaVolQuote::DeltaType> atmDeltaType = ext::nullopt,
+                                std::optional<DeltaVolQuote::DeltaType> atmDeltaType = std::nullopt,
                                 SmileInterpolationMethod interpolationMethod =
                                         SmileInterpolationMethod::Linear,
                                 bool flatStrikeExtrapolation = false,
@@ -595,7 +595,7 @@ class BlackVolatilitySurfaceDelta : public BlackVolTermStructure {
                                 const Period& switchTenor = 0 * Days,
                                 DeltaVolQuote::DeltaType ltdt = DeltaVolQuote::DeltaType::Fwd,
                                 DeltaVolQuote::AtmType ltat = DeltaVolQuote::AtmType::AtmDeltaNeutral,
-                                ext::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = ext::nullopt);
+                                std::optional<DeltaVolQuote::DeltaType> longTermAtmDeltaType = std::nullopt);
 };
 
 

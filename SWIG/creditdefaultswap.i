@@ -106,7 +106,7 @@ class CreditDefaultSwap : public Instrument {
     Rate runningSpread() const;
     %extend {
         doubleOrNull upfront() const {
-            ext::optional<Rate> result =
+            std::optional<Rate> result =
                 self->upfront();
             if (result)
                 return *result;

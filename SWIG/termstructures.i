@@ -233,7 +233,7 @@ class UltimateForwardTermStructure : public YieldTermStructure {
                                  const Handle<Quote>& ultimateForwardRate,
                                  const Period& firstSmoothingPoint,
                                  Real alpha,
-                                 ext::optional<Integer> roundingDigits = ext::nullopt,
+                                 std::optional<Integer> roundingDigits = std::nullopt,
                                  Compounding compounding = Compounded,
                                  Frequency frequency = Annual);
 };
