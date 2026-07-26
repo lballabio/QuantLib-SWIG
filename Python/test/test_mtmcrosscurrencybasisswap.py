@@ -96,6 +96,55 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
         self.assertEqual(helper.fxResetConvention().fixingDays(), 2)
         self.assertEqual(helper.swap().fxResetConvention().fixingDays(), 2)
 
+    def testIndexedCouponArguments(self):
+        """Testing indexed-coupon arguments for cross-currency swaps..."""
+        start = ql.Date(17, ql.January, 2025)
+        end = ql.Date(17, ql.January, 2026)
+        schedule = ql.Schedule(
+            start, end, ql.Period(3, ql.Months), self.calendar,
+            ql.Following, ql.Following, ql.DateGeneration.Forward, False)
+
+        fixed_vs_floating_swap = (
+            ql.ConstNotionalCrossCurrencyFixedVsFloatingSwap(
+                ql.Swap.Payer,
+                100.0, ql.EURCurrency(), schedule, 0.02,
+                ql.Actual365Fixed(), ql.Following, 0, self.calendar,
+                110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0,
+                ql.Following, 0, self.calendar,
+                useIndexedCoupons=True))
+        basis_swap = ql.ConstNotionalCrossCurrencyBasisSwap(
+            100.0, ql.EURCurrency(), schedule, self.eur_index, 0.0, 1.0,
+            110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0, 1.0,
+            useIndexedCoupons=False)
+        mtm_swap = ql.MtMCrossCurrencyBasisSwap(
+            ql.MtMCrossCurrencyBasisSwap.Type_PayFxBaseCurrency,
+            100.0, ql.EURCurrency(), schedule, self.eur_index, 0.0, 1.0,
+            110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0, 1.0,
+            False, useIndexedCoupons=True)
+
+        quote = ql.makeQuoteHandle(-0.001)
+        tenor = ql.Period(1, ql.Years)
+        fixed_vs_floating_helper = (
+            ql.ConstNotionalCrossCurrencySwapRateHelper(
+                ql.makeQuoteHandle(0.02), tenor, 2, self.calendar,
+                ql.Following, False, ql.Annual, ql.Actual365Fixed(),
+                self.usd_index, self.curve, False, 0, True))
+        basis_helper = ql.ConstNotionalCrossCurrencyBasisSwapRateHelper(
+            quote, tenor, 2, self.calendar, ql.Following, False,
+            self.eur_index, self.usd_index, self.curve, False, True,
+            ql.Semiannual, 0, ql.Semiannual, False)
+        mtm_helper = ql.MtMCrossCurrencyBasisSwapRateHelper(
+            quote, tenor, 2, self.calendar, ql.Following, False,
+            self.eur_index, self.usd_index, self.curve, False, True, False,
+            ql.Semiannual, 0, ql.Semiannual, 0, self.calendar, True)
+
+        self.assertTrue(fixed_vs_floating_swap)
+        self.assertTrue(basis_swap)
+        self.assertTrue(mtm_swap)
+        self.assertTrue(fixed_vs_floating_helper.swap())
+        self.assertTrue(basis_helper.swap())
+        self.assertTrue(mtm_helper.swap())
+
 
 if __name__ == '__main__':
     unittest.main()

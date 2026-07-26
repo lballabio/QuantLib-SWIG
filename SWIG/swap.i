@@ -796,7 +796,8 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         Natural floatLookbackDays = Null<Natural>(),
         bool floatObservationShift = false,
         Natural floatLockoutDays = 0,
-        RateAveraging::Type floatAveragingMethod = RateAveraging::Compound);
+        RateAveraging::Type floatAveragingMethod = RateAveraging::Compound,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
 
     Type type() const;
 
@@ -841,7 +842,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         Natural payLockoutDays = 0, RateAveraging::Type payAveragingMethod = RateAveraging::Compound,
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
-        const bool telescopicValueDates = false);
+        const bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
 
     Real payNominal() const;
     const Currency& payCurrency() const;
@@ -886,7 +888,8 @@ class MtMCrossCurrencyBasisSwap : public Swap {
         bool fxQuoteCompoundSpread = false, Natural fxQuoteLookbackDays = Null<Natural>(),
         bool fxQuoteObservationShift = false, Natural fxQuoteLockoutDays = 0,
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
-        bool telescopicValueDates = false);
+        bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
 
     Type type() const;
     bool paysFxBaseCurrency() const;
