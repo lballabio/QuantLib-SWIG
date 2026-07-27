@@ -7,6 +7,7 @@
  Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
  Copyright (C) 2018 Matthias Groncki
  Copyright (C) 2023 Marcin Rybacki
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -927,10 +928,14 @@ class MtMCrossCurrencyBasisSwap : public Swap {
     Size constantLegIndex() const;
     const Leg& resettingLeg() const;
     const Leg& constantLeg() const;
+    const Currency& legCurrency(Size j) const;
+    Real inCcyLegNPV(Size j) const;
     Real constantLegNotional() const;
     const FxResetConvention& fxResetConvention() const;
     BusinessDayConvention fxBasePaymentConvention() const;
     BusinessDayConvention fxQuotePaymentConvention() const;
+    const std::vector<Real>& fxResetRates() const;
+    const std::vector<Real>& fxResetNotionals() const;
 
     Spread fairFxBaseSpread() const;
     Spread fairFxQuoteSpread() const;
