@@ -30,6 +30,7 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
 
         self.assertEqual(reset.fixingDate(), self.today)
         self.assertEqual(reset.valueDate(), value_date)
+        self.assertEqual(convention.valueDate(reset.fixingDate()), value_date)
 
         pricer = ql.DiscountingFxResetPricer(
             ql.EURCurrency(), ql.USDCurrency(), self.curve, self.curve,
