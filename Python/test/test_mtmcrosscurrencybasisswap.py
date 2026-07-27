@@ -1,4 +1,5 @@
 # Copyright (C) 2026 QuantLib contributors
+# Copyright (C) 2026 Kyrylo Protsenko
 
 # This file is part of QuantLib, a free-software/open-source library
 # for financial quantitative analysts and developers - http://quantlib.org/
@@ -83,6 +84,21 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
             self.calendar.advance(
                 first_coupon.fxResetValueDate(), -2, ql.Days))
 
+        swap.setPricingEngine(ql.DiscountingMtMCrossCurrencyBasisSwapEngine(
+            ql.USDCurrency(), self.curve, ql.EURCurrency(), self.curve,
+            ql.makeQuoteHandle(1.10)))
+        reset_rates = swap.fxResetRates()
+        reset_notionals = swap.fxResetNotionals()
+        self.assertEqual(len(reset_rates), len(coupons))
+        self.assertEqual(len(reset_notionals), len(coupons))
+        self.assertEqual(swap.legCurrency(0), ql.EURCurrency())
+        self.assertEqual(swap.legCurrency(1), ql.USDCurrency())
+        self.assertAlmostEqual(swap.legNPV(0), 1.10 * swap.inCcyLegNPV(0))
+        self.assertAlmostEqual(swap.legNPV(1), swap.inCcyLegNPV(1))
+        for rate, notional in zip(reset_rates, reset_notionals):
+            self.assertAlmostEqual(rate, 1.0 / 1.10)
+            self.assertAlmostEqual(notional, 100.0)
+
         pricer = ql.DiscountingFxResetPricer(
             ql.USDCurrency(), ql.EURCurrency(), self.curve, self.curve,
             ql.makeQuoteHandle(1.0), True)
@@ -96,6 +112,9 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
             ql.NoFrequency, 0, ql.NoFrequency, 2, self.calendar)
         self.assertEqual(helper.fxResetConvention().fixingDays(), 2)
         self.assertEqual(helper.swap().fxResetConvention().fixingDays(), 2)
+        self.assertEqual(helper.swap().legCurrency(0), ql.EURCurrency())
+        self.assertEqual(helper.swap().legCurrency(1), ql.USDCurrency())
+        self.assertTrue(hasattr(helper.swap(), 'inCcyLegNPV'))
 
 
 if __name__ == '__main__':
