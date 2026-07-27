@@ -236,6 +236,7 @@ class FxResetConvention {
     FxResetConvention(Natural fixingDays = 0,
                       const Calendar& fixingCalendar = Calendar());
     FxReset reset(const Date& valueDate) const;
+    Date valueDate(const Date& fixingDate) const;
     Natural fixingDays() const;
     const Calendar& fixingCalendar() const;
 };
