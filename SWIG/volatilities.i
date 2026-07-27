@@ -873,6 +873,7 @@ class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
                        const Period& swapTenor) const;
 };
 
+%feature("kwargs") SabrSwaptionVolatilityCube;
 %shared_ptr(SabrSwaptionVolatilityCube);
 class SabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
   public:
@@ -897,7 +898,8 @@ class SabrSwaptionVolatilityCube : public SwaptionVolatilityCube {
              const bool useMaxError = false,
              const Size maxGuesses = 50,
              const bool backwardFlat = false,
-             const Real cutoffStrike = 0.0001);
+             const Real cutoffStrike = 0.0001,
+             const bool singlePassCalibration = false);
     Matrix sparseSabrParameters() const;
     Matrix denseSabrParameters() const;
     Matrix marketVolCube() const;
