@@ -224,8 +224,8 @@ using QuantLib::setFxResetPricer;
 class FxReset {
   public:
     FxReset(const Date& fixingDate, const Date& valueDate);
-    Date fixingDate() const;
-    Date valueDate() const;
+    const Date& fixingDate() const;
+    const Date& valueDate() const;
 };
 
 class FxResetConvention {
