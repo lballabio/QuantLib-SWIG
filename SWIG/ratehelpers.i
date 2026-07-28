@@ -619,7 +619,8 @@ class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
                                              ext::shared_ptr<IborIndex> floatIndex,
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool collateralOnFixedLeg,
-                                             Integer paymentLag = 0);
+                                             Integer paymentLag = 0,
+                                             std::optional<bool> useIndexedCoupons = std::nullopt);
     const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const;
 };
 
@@ -639,7 +640,8 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   bool isBasisOnFxBaseCurrencyLeg,
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
-                                                  Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
+                                                  Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
+                                                  std::optional<bool> useIndexedCoupons = std::nullopt);
     const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
 };
 
@@ -680,7 +682,8 @@ class IborIborBasisSwapRateHelper : public RateHelper {
                                 const ext::shared_ptr<IborIndex>& baseIndex,
                                 const ext::shared_ptr<IborIndex>& otherIndex,
                                 Handle<YieldTermStructure> discountHandle,
-                                bool bootstrapBaseCurve);
+                                bool bootstrapBaseCurve,
+                                std::optional<bool> useIndexedCoupons = std::nullopt);
     ext::shared_ptr<Swap> swap();
 };
 
@@ -695,7 +698,12 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      bool endOfMonth,
                                      const ext::shared_ptr<OvernightIndex>& baseIndex,
                                      const ext::shared_ptr<IborIndex>& otherIndex,
-                                     Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>());
+                                     Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
+                                     bool bootstrapBaseCurve = false,
+                                     Integer paymentLag = 0,
+                                     std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
+                                     std::optional<Frequency> iborPaymentFrequency = std::nullopt,
+                                     std::optional<bool> useIndexedCoupons = std::nullopt);
     ext::shared_ptr<Swap> swap();
 };
 

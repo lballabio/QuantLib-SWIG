@@ -179,8 +179,7 @@ export_piecewise_curve(PiecewiseLogParabolicCubicDiscount,Discount,LogParabolicC
 export_piecewise_curve(PiecewiseMonotonicLogParabolicCubicDiscount,Discount,MonotonicLogParabolicCubic);
 
 
-// global boostrapper
-// hard-coded to linearly-interpolated, simply-compounded zero rates for now
+// global bootstrapper
 
 %{
 class AdditionalErrors {
@@ -228,6 +227,17 @@ struct _GlobalBootstrap {
    : additionalHelpers(additionalHelpers), additionalDates(additionalDates), accuracy(accuracy),
      optimizer(optimizer), endCriteria(endCriteria) {}
 };
+
+template <class Curve>
+inline typename Curve::bootstrap_type make_global_bootstrap(const _GlobalBootstrap& b) {
+    if (b.additionalHelpers.empty()) {
+        return typename Curve::bootstrap_type(b.accuracy, b.optimizer, b.endCriteria);
+    }
+    return typename Curve::bootstrap_type(b.additionalHelpers,
+                                          AdditionalDates(b.additionalDates),
+                                          AdditionalErrors(b.additionalHelpers),
+                                          b.accuracy, b.optimizer, b.endCriteria);
+}
 %}
 
 %rename(GlobalBootstrap) _GlobalBootstrap;
@@ -243,41 +253,74 @@ struct _GlobalBootstrap {
 };
 
 
+%define export_global_piecewise_curve(Name,Traits,Interpolator)
+
 %{
-using QuantLib::SimpleZeroYield;
-typedef PiecewiseYieldCurve<SimpleZeroYield, Linear, QuantLib::GlobalBootstrap>
-    GlobalLinearSimpleZeroCurve;
+typedef PiecewiseYieldCurve<Traits, Interpolator, QuantLib::GlobalBootstrap> Name;
 %}
 
-%shared_ptr(GlobalLinearSimpleZeroCurve);
-class GlobalLinearSimpleZeroCurve : public YieldTermStructure {
+%shared_ptr(Name);
+class Name : public YieldTermStructure {
   public:
     %extend {
-        GlobalLinearSimpleZeroCurve(
+        Name(
              const Date& referenceDate,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
              const _GlobalBootstrap& b) {
-            if (b.additionalHelpers.empty()) {
-                return new GlobalLinearSimpleZeroCurve(
-                    referenceDate, instruments, dayCounter, Linear(),
-                    GlobalLinearSimpleZeroCurve::bootstrap_type(b.accuracy, b.optimizer, b.endCriteria));
-            } else {
-                return new GlobalLinearSimpleZeroCurve(
-                    referenceDate, instruments, dayCounter, Linear(),
-                    GlobalLinearSimpleZeroCurve::bootstrap_type(b.additionalHelpers,
-                                                                AdditionalDates(b.additionalDates),
-                                                                AdditionalErrors(b.additionalHelpers),
-                                                                b.accuracy, b.optimizer, b.endCriteria));
-            }
+            return new Name(referenceDate, instruments, dayCounter, Interpolator(),
+                            make_global_bootstrap<Name>(b));
+        }
+        Name(
+             Natural settlementDays,
+             const Calendar& calendar,
+             const std::vector<ext::shared_ptr<RateHelper> >& instruments,
+             const DayCounter& dayCounter,
+             const _GlobalBootstrap& b) {
+            return new Name(settlementDays, calendar, instruments, dayCounter, Interpolator(),
+                            make_global_bootstrap<Name>(b));
         }
     }
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
     #if !defined(SWIGR)
     std::vector<std::pair<Date,Real> > nodes() const;
     #endif
+
+    void recalculate();
+    void freeze();
+    void unfreeze();
 };
+
+%enddef
+
+
+%{
+using QuantLib::SimpleZeroYield;
+%}
+
+// Keep the original name for backwards compatibility.
+export_global_piecewise_curve(GlobalLinearSimpleZeroCurve,SimpleZeroYield,Linear);
+
+export_global_piecewise_curve(GlobalPiecewiseFlatForward,ForwardRate,BackwardFlat);
+export_global_piecewise_curve(GlobalPiecewiseLogLinearDiscount,Discount,LogLinear);
+export_global_piecewise_curve(GlobalPiecewiseLinearForward,ForwardRate,Linear);
+export_global_piecewise_curve(GlobalPiecewiseLinearZero,ZeroYield,Linear);
+export_global_piecewise_curve(GlobalPiecewiseCubicZero,ZeroYield,Cubic);
+export_global_piecewise_curve(GlobalPiecewiseLogCubicDiscount,Discount,LogCubic);
+export_global_piecewise_curve(GlobalPiecewiseSplineCubicDiscount,Discount,SplineCubic);
+export_global_piecewise_curve(GlobalPiecewiseKrugerZero,ZeroYield,Kruger);
+export_global_piecewise_curve(GlobalPiecewiseKrugerLogDiscount,Discount,KrugerLog);
+export_global_piecewise_curve(GlobalPiecewiseConvexMonotoneForward,ForwardRate,ConvexMonotone);
+export_global_piecewise_curve(GlobalPiecewiseConvexMonotoneZero,ZeroYield,ConvexMonotone);
+export_global_piecewise_curve(GlobalPiecewiseNaturalCubicZero,ZeroYield,SplineCubic);
+export_global_piecewise_curve(GlobalPiecewiseNaturalLogCubicDiscount,Discount,SplineLogCubic);
+export_global_piecewise_curve(GlobalPiecewiseLogMixedLinearCubicDiscount,Discount,LogMixedLinearCubic);
+export_global_piecewise_curve(GlobalPiecewiseParabolicCubicZero,ZeroYield,ParabolicCubic);
+export_global_piecewise_curve(GlobalPiecewiseMonotonicParabolicCubicZero,ZeroYield,MonotonicParabolicCubic);
+export_global_piecewise_curve(GlobalPiecewiseLogParabolicCubicDiscount,Discount,LogParabolicCubic);
+export_global_piecewise_curve(GlobalPiecewiseMonotonicLogParabolicCubicDiscount,Discount,MonotonicLogParabolicCubic);
 
 
 %{
