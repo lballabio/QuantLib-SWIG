@@ -887,7 +887,8 @@ class MtMCrossCurrencyBasisSwap : public Swap {
         bool fxQuoteCompoundSpread = false, Natural fxQuoteLookbackDays = Null<Natural>(),
         bool fxQuoteObservationShift = false, Natural fxQuoteLockoutDays = 0,
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
-        bool telescopicValueDates = false);
+        bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
 
     Type type() const;
     bool paysFxBaseCurrency() const;

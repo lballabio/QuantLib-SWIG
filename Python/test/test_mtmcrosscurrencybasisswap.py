@@ -32,6 +32,8 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
         self.assertEqual(reset.fixingDate(), self.today)
         self.assertEqual(reset.valueDate(), value_date)
         self.assertEqual(convention.valueDate(reset.fixingDate()), value_date)
+        self.assertEqual(convention.reset(value_date).fixingDate(), self.today)
+        self.assertEqual(convention.reset(value_date).valueDate(), value_date)
 
         pricer = ql.DiscountingFxResetPricer(
             ql.EURCurrency(), ql.USDCurrency(), self.curve, self.curve,
@@ -43,6 +45,7 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
         self.assertFalse(exchange.hasPreviousReset())
         self.assertTrue(exchange.hasCurrentReset())
         self.assertEqual(exchange.currentReset().fixingDate(), self.today)
+        self.assertEqual(exchange.currentReset().valueDate(), value_date)
 
         exchange.setFxResetPricer(pricer)
         self.assertAlmostEqual(exchange.amount(), -110.0)
@@ -60,7 +63,8 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
             ql.MtMCrossCurrencyBasisSwap.Type_PayFxBaseCurrency,
             100.0, ql.EURCurrency(), schedule, self.eur_index, 0.0, 1.0,
             110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0, 1.0,
-            True, convention, 2, 3, ql.ModifiedFollowing, ql.Preceding)
+            True, convention, 2, 3, ql.ModifiedFollowing, ql.Preceding,
+            useIndexedCoupons=False)
 
         self.assertEqual(swap.fxResetConvention().fixingDays(), 2)
         self.assertEqual(swap.fxBasePaymentConvention(), ql.ModifiedFollowing)
@@ -109,7 +113,8 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
             ql.makeQuoteHandle(-0.001), ql.Period(1, ql.Years), 2,
             self.calendar, ql.Following, False, self.eur_index,
             self.usd_index, self.curve, False, True, True,
-            ql.NoFrequency, 0, ql.NoFrequency, 2, self.calendar)
+            ql.NoFrequency, 0, ql.NoFrequency, 2, self.calendar,
+            False)
         self.assertEqual(helper.fxResetConvention().fixingDays(), 2)
         self.assertEqual(helper.swap().fxResetConvention().fixingDays(), 2)
         self.assertEqual(helper.swap().legCurrency(0), ql.EURCurrency())

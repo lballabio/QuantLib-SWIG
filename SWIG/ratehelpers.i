@@ -662,7 +662,8 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         Integer paymentLag = 0,
                                         Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
                                         Natural fxResetFixingDays = 0,
-                                        Calendar fxResetFixingCalendar = Calendar());
+                                        Calendar fxResetFixingCalendar = Calendar(),
+                                        std::optional<bool> useIndexedCoupons = std::nullopt);
     const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const;
     const FxResetConvention& fxResetConvention() const;
 };
