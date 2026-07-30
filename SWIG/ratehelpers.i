@@ -50,6 +50,7 @@ using QuantLib::ConstNotionalCrossCurrencyBasisSwapRateHelper;
 using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
+using QuantLib::OvernightOvernightBasisSwapRateHelper;
 using QuantLib::MultipleResetsSwapRateHelper;
 %}
 
@@ -691,6 +692,28 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      Handle<YieldTermStructure> discountHandle = {},
                                      bool bootstrapBaseCurve = false,
                                      Integer paymentLag = 0);
+    ext::shared_ptr<Swap> swap();
+};
+
+%shared_ptr(OvernightOvernightBasisSwapRateHelper)
+class OvernightOvernightBasisSwapRateHelper : public RateHelper {
+  public:
+    OvernightOvernightBasisSwapRateHelper(
+        const Handle<Quote>& basis,
+        const Period& tenor,
+        Natural settlementDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<OvernightIndex>& baseIndex,
+        const ext::shared_ptr<OvernightIndex>& otherIndex,
+        Handle<YieldTermStructure> discountHandle = {},
+        bool bootstrapBaseCurve = false,
+        Integer paymentLag = 0,
+        Frequency paymentFrequency = Annual,
+        RateAveraging::Type baseAveragingMethod = RateAveraging::Compound,
+        RateAveraging::Type otherAveragingMethod = RateAveraging::Compound,
+        bool telescopicValueDates = false);
     ext::shared_ptr<Swap> swap();
 };
 
