@@ -390,9 +390,9 @@ class Cmaes : public OptimizationMethod {
         Cmaes(Size populationSize = 0,
               Real sigma = 0.3,
               unsigned long seed = 0,
-              Array lowerBound = {},
-              Array upperBound = {},
-              Array initialMean = {}) {
+              Array lowerBound = Array(),
+              Array upperBound = Array(),
+              Array initialMean = Array()) {
             Cmaes::Configuration cfg =
                 Cmaes::Configuration()
                 .withPopulationSize(populationSize)
