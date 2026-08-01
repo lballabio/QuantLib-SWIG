@@ -227,7 +227,7 @@ using QuantLib::ReannealingTrivial;
 using QuantLib::GaussianSimulatedAnnealing;
 using QuantLib::MirrorGaussianSimulatedAnnealing;
 using QuantLib::LogNormalSimulatedAnnealing;
-
+using QuantLib::Cmaes;
 %}
 
 %shared_ptr(OptimizationMethod)
@@ -379,6 +379,32 @@ class LogNormalSimulatedAnnealing : public OptimizationMethod {
             ResetScheme resetScheme = ResetToBestPoint,
             Size resetSteps = 150);
 };
+
+%shared_ptr(Cmaes)
+class Cmaes : public OptimizationMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") Cmaes;
+    #endif
+  public:
+    %extend {
+        Cmaes(Size populationSize = 0,
+              Real sigma = 0.3,
+              unsigned long seed = 0,
+              Array lowerBound = {},
+              Array upperBound = {},
+              Array initialMean = {}) {
+            Cmaes::Configuration cfg =
+                Cmaes::Configuration()
+                .withPopulationSize(populationSize)
+                .withSigma(sigma)
+                .withSeed(seed)
+                .withBounds(lowerBound, upperBound)
+                .withInitialMean(initialMean);
+            return new Cmaes(cfg);
+        }
+    }
+};
+
 
 %{
 using QuantLib::Problem;
