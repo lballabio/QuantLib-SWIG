@@ -690,7 +690,7 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      bool endOfMonth,
                                      const ext::shared_ptr<OvernightIndex>& baseIndex,
                                      const ext::shared_ptr<IborIndex>& otherIndex,
-                                     Handle<YieldTermStructure> discountHandle = Handle<YieldTermStructure>(),
+                                     Handle<YieldTermStructure> discountHandle = {},
                                      bool bootstrapBaseCurve = false,
                                      Integer paymentLag = 0,
                                      std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
