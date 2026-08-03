@@ -268,8 +268,12 @@ class Name : public YieldTermStructure {
              const Date& referenceDate,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const _GlobalBootstrap& b) {
-            return new Name(referenceDate, instruments, dayCounter, Interpolator(),
+             const _GlobalBootstrap& b,
+             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+             const std::vector<Date>& jumpDates = std::vector<Date>(),
+             const Interpolator& i = Interpolator()) {
+            return new Name(referenceDate, instruments, dayCounter,
+                            jumps, jumpDates, i,
                             make_global_bootstrap<Name>(b));
         }
         Name(
@@ -277,8 +281,12 @@ class Name : public YieldTermStructure {
              const Calendar& calendar,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const _GlobalBootstrap& b) {
-            return new Name(settlementDays, calendar, instruments, dayCounter, Interpolator(),
+             const _GlobalBootstrap& b,
+             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+             const std::vector<Date>& jumpDates = std::vector<Date>(),
+             const Interpolator& i = Interpolator()) {
+            return new Name(settlementDays, calendar, instruments, dayCounter,
+                            jumps, jumpDates, i,
                             make_global_bootstrap<Name>(b));
         }
     }

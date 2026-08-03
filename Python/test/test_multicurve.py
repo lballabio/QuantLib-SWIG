@@ -52,8 +52,14 @@ class MultiCurveTest(unittest.TestCase):
 
         accuracy = 1.0e-10
         multi_curve = ql.MultiCurve(accuracy)
+        jump = ql.SimpleQuote(0.99)
         curve_3m = ql.GlobalPiecewiseLogLinearDiscount(
-            today, helpers, ql.Actual360(), ql.GlobalBootstrap(accuracy)
+            today,
+            helpers,
+            ql.Actual360(),
+            ql.GlobalBootstrap(accuracy),
+            [ql.QuoteHandle(jump)],
+            [ql.Date(31, ql.December, 2027)],
         )
         external_3m = multi_curve.addBootstrappedCurve(internal_3m, curve_3m)
 
