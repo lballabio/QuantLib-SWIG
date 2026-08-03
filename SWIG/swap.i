@@ -7,6 +7,7 @@
  Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
  Copyright (C) 2018 Matthias Groncki
  Copyright (C) 2023 Marcin Rybacki
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -95,6 +96,8 @@ class FixedVsFloatingSwap : public Swap {
     const DayCounter& floatingDayCount();
 
     BusinessDayConvention paymentConvention() const;
+    Integer paymentLag() const;
+    const Calendar& paymentCalendar() const;
 
     const Leg& fixedLeg();
     const Leg& floatingLeg();
@@ -277,7 +280,9 @@ class NonstandardSwap : public Swap {
                     const DayCounter &floatDayCount,
                     const bool intermediateCapitalExchange = false,
                     const bool finalCapitalExchange = false,
-                    BusinessDayConvention paymentConvention = Following);
+                    BusinessDayConvention paymentConvention = Following,
+                    Integer paymentLag = 0,
+                    Calendar paymentCalendar = Calendar());
     // Inspectors
     Type type() const;
     const std::vector<Real> &fixedNominal() const;
@@ -296,6 +301,8 @@ class NonstandardSwap : public Swap {
     const DayCounter &floatingDayCount() const;
 
     BusinessDayConvention paymentConvention() const;
+    Integer paymentLag() const;
+    const Calendar& paymentCalendar() const;
 
     const Leg &fixedLeg() const;
     const Leg &floatingLeg() const;
