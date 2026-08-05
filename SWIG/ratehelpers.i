@@ -667,7 +667,8 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         Calendar fxResetFixingCalendar = Calendar(),
                                         std::optional<bool> useIndexedCoupons = std::nullopt);
     const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const;
-    const FxResetConvention& fxResetConvention() const;
+    Natural fxResetFixingDays() const;
+    const Calendar& fxResetFixingCalendar() const;
 };
 
 %shared_ptr(IborIborBasisSwapRateHelper)

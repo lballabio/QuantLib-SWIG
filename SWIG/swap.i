@@ -884,7 +884,8 @@ class MtMCrossCurrencyBasisSwap : public Swap {
         Real fxQuoteNominal, Currency fxQuoteCurrency, Schedule fxQuoteSchedule,
         const ext::shared_ptr<IborIndex>& fxQuoteIndex, Spread fxQuoteSpread, Real fxQuoteGearing,
         bool isFxBaseCurrencyLegResettable,
-        FxResetConvention fxResetConvention = FxResetConvention(),
+        Natural fxResetFixingDays = 0,
+        Calendar fxResetFixingCalendar = Calendar(),
         Integer fxBasePaymentLag = 0, Integer fxQuotePaymentLag = 0,
         BusinessDayConvention fxBasePaymentConvention = Following,
         BusinessDayConvention fxQuotePaymentConvention = Following,
@@ -936,7 +937,8 @@ class MtMCrossCurrencyBasisSwap : public Swap {
     const Currency& legCurrency(Size j) const;
     Real inCcyLegNPV(Size j) const;
     Real constantLegNotional() const;
-    const FxResetConvention& fxResetConvention() const;
+    Natural fxResetFixingDays() const;
+    Calendar fxResetFixingCalendar() const;
     BusinessDayConvention fxBasePaymentConvention() const;
     BusinessDayConvention fxQuotePaymentConvention() const;
     const std::vector<Real>& fxResetRates() const;
