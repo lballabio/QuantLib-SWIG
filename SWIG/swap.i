@@ -391,7 +391,8 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
             RateAveraging::Type averagingMethod = RateAveraging::Compound,
             Natural lookbackDays = Null<Natural>(),
             Natural lockoutDays = 0,
-            bool applyObservationShift = false);
+            bool applyObservationShift = false,
+            std::optional<Integer> roundingPrecision = std::nullopt);
     
     OvernightIndexedSwap(
             Type type,
@@ -408,7 +409,8 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
             RateAveraging::Type averagingMethod = RateAveraging::Compound,
             Natural lookbackDays = Null<Natural>(),
             Natural lockoutDays = 0,
-            bool applyObservationShift = false);
+            bool applyObservationShift = false,
+            std::optional<Integer> roundingPrecision = std::nullopt);
 
     OvernightIndexedSwap(Type type,
                          const std::vector<Real>& fixedNominals,
@@ -426,7 +428,8 @@ class OvernightIndexedSwap : public FixedVsFloatingSwap {
                          RateAveraging::Type averagingMethod = RateAveraging::Compound,
                          Natural lookbackDays = Null<Natural>(),
                          Natural lockoutDays = 0,
-                         bool applyObservationShift = false);
+                         bool applyObservationShift = false,
+                         std::optional<Integer> roundingPrecision = std::nullopt);
 
     Real overnightLegBPS();
     Real overnightLegNPV();
@@ -496,6 +499,7 @@ class MakeOIS {
         MakeOIS& withLookbackDays(Natural lookbackDays);
         MakeOIS& withLockoutDays(Natural lockoutDays);
         MakeOIS& withObservationShift(bool applyObservationShift = true);
+        MakeOIS& withRoundingPrecision(std::optional<Integer> roundingPrecision);
         MakeOIS& withPricingEngine(
                               const ext::shared_ptr<PricingEngine>& engine);
 };
@@ -539,6 +543,7 @@ _MAKEOIS_METHODS = {
     "lookbackDays": "withLookbackDays",
     "lockoutDays": "withLockoutDays",
     "applyObservationShift": "withObservationShift",
+    "roundingPrecision": "withRoundingPrecision",
     "pricingEngine": "withPricingEngine",
 }
 

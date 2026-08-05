@@ -2,6 +2,7 @@
 /*
  Copyright (C) 2005, 2006, 2007, 2008 StatPro Italia srl
  Copyright (C) 2018 Matthias Lungwitz
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -267,8 +268,12 @@ class Name : public YieldTermStructure {
              const Date& referenceDate,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const _GlobalBootstrap& b) {
-            return new Name(referenceDate, instruments, dayCounter, Interpolator(),
+             const _GlobalBootstrap& b,
+             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+             const std::vector<Date>& jumpDates = std::vector<Date>(),
+             const Interpolator& i = Interpolator()) {
+            return new Name(referenceDate, instruments, dayCounter,
+                            jumps, jumpDates, i,
                             make_global_bootstrap<Name>(b));
         }
         Name(
@@ -276,8 +281,12 @@ class Name : public YieldTermStructure {
              const Calendar& calendar,
              const std::vector<ext::shared_ptr<RateHelper> >& instruments,
              const DayCounter& dayCounter,
-             const _GlobalBootstrap& b) {
-            return new Name(settlementDays, calendar, instruments, dayCounter, Interpolator(),
+             const _GlobalBootstrap& b,
+             const std::vector<Handle<Quote> >& jumps = std::vector<Handle<Quote> >(),
+             const std::vector<Date>& jumpDates = std::vector<Date>(),
+             const Interpolator& i = Interpolator()) {
+            return new Name(settlementDays, calendar, instruments, dayCounter,
+                            jumps, jumpDates, i,
                             make_global_bootstrap<Name>(b));
         }
     }
