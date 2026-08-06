@@ -315,7 +315,7 @@ class DiscountingSwapEngine : public PricingEngine {
     #endif
   public:
     DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve,
-                          ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+                          std::optional<bool> includeSettlementDateFlows = std::nullopt,
                           const Date& settlementDate = Date(),
                           const Date& npvDate = Date());
     #if defined(SWIGJAVA)
