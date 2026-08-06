@@ -1,4 +1,3 @@
-# Copyright (C) 2026 QuantLib contributors
 # Copyright (C) 2026 Kyrylo Protsenko
 
 # This file is part of QuantLib, a free-software/open-source library
