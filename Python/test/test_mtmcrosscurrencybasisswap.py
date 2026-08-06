@@ -53,15 +53,14 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
         schedule = ql.Schedule(
             start, end, ql.Period(3, ql.Months), self.calendar,
             ql.Following, ql.Following, ql.DateGeneration.Forward, False)
-        convention = ql.FxResetConvention(2, self.calendar)
-
         swap = ql.MtMCrossCurrencyBasisSwap(
             ql.MtMCrossCurrencyBasisSwap.Type_PayFxBaseCurrency,
             100.0, ql.EURCurrency(), schedule, self.eur_index, 0.0, 1.0,
             110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0, 1.0,
-            True, convention, 2, 3, ql.ModifiedFollowing, ql.Preceding)
+            True, 2, self.calendar, 2, 3,
+            ql.ModifiedFollowing, ql.Preceding)
 
-        self.assertEqual(swap.fxResetConvention().fixingDays(), 2)
+        self.assertEqual(swap.fxResetFixingDays(), 2)
         self.assertEqual(swap.fxBasePaymentConvention(), ql.ModifiedFollowing)
         self.assertEqual(swap.fxQuotePaymentConvention(), ql.Preceding)
         self.assertEqual(swap.resettingLegIndex(), 0)
@@ -109,8 +108,8 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
             self.calendar, ql.Following, False, self.eur_index,
             self.usd_index, self.curve, False, True, True,
             ql.NoFrequency, 0, ql.NoFrequency, 2, self.calendar)
-        self.assertEqual(helper.fxResetConvention().fixingDays(), 2)
-        self.assertEqual(helper.swap().fxResetConvention().fixingDays(), 2)
+        self.assertEqual(helper.fxResetFixingDays(), 2)
+        self.assertEqual(helper.swap().fxResetFixingDays(), 2)
         self.assertEqual(helper.swap().legCurrency(0), ql.EURCurrency())
         self.assertEqual(helper.swap().legCurrency(1), ql.USDCurrency())
         self.assertTrue(hasattr(helper.swap(), 'inCcyLegNPV'))
