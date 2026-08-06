@@ -310,21 +310,20 @@ class NonstandardSwap : public Swap {
 
 %shared_ptr(DiscountingSwapEngine)
 class DiscountingSwapEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") DiscountingSwapEngine;
+    #endif
   public:
+    DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve,
+                          ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+                          const Date& settlementDate = Date(),
+                          const Date& npvDate = Date());
+    #if defined(SWIGJAVA)
     DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve,
                           bool includeSettlementDateFlows,
                           const Date& settlementDate = Date(),
                           const Date& npvDate = Date());
-    %extend {
-        DiscountingSwapEngine(const Handle<YieldTermStructure>& discountCurve,
-                              const Date& settlementDate = Date(),
-                              const Date& npvDate = Date()) {
-            return new DiscountingSwapEngine(discountCurve,
-                                             std::nullopt,
-                                             settlementDate,
-                                             npvDate);
-        }
-    }
+    #endif
 };
 
 
