@@ -977,7 +977,7 @@ class DiscountingMtMCrossCurrencyBasisSwapEngine : public PricingEngine {
     DiscountingMtMCrossCurrencyBasisSwapEngine(
         const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
         const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
-        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+        const Handle<Quote>& spotFX, std::optional<bool> includeSettlementDateFlows = std::nullopt,
         const Date& settlementDate = Date(), const Date& npvDate = Date(),
         const Date& spotFXSettleDate = Date());
 };
