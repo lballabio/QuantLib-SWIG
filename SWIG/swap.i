@@ -768,7 +768,9 @@ class EquityTotalReturnSwap : public Swap {
 using QuantLib::ConstNotionalCrossCurrencySwap;
 using QuantLib::ConstNotionalCrossCurrencyFixedVsFloatingSwap;
 using QuantLib::ConstNotionalCrossCurrencyBasisSwap;
+using QuantLib::MtMCrossCurrencyBasisSwap;
 using QuantLib::DiscountingConstNotionalCrossCurrencySwapEngine;
+using QuantLib::DiscountingMtMCrossCurrencyBasisSwapEngine;
 %}
 
 %shared_ptr(ConstNotionalCrossCurrencySwap)
@@ -805,7 +807,8 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         Natural floatLookbackDays = Null<Natural>(),
         bool floatObservationShift = false,
         Natural floatLockoutDays = 0,
-        RateAveraging::Type floatAveragingMethod = RateAveraging::Compound);
+        RateAveraging::Type floatAveragingMethod = RateAveraging::Compound,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
 
     Type type() const;
 
@@ -850,7 +853,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         Natural payLockoutDays = 0, RateAveraging::Type payAveragingMethod = RateAveraging::Compound,
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
-        const bool telescopicValueDates = false);
+        const bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
 
     Real payNominal() const;
     const Currency& payCurrency() const;
@@ -870,6 +874,87 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     Spread fairRecSpread() const;
 };
 
+%shared_ptr(MtMCrossCurrencyBasisSwap)
+class MtMCrossCurrencyBasisSwap : public Swap {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MtMCrossCurrencyBasisSwap;
+    #endif
+  public:
+    enum class Type { PayFxBaseCurrency, ReceiveFxBaseCurrency };
+
+    MtMCrossCurrencyBasisSwap(
+        Type type,
+        Real fxBaseNominal, Currency fxBaseCurrency, Schedule fxBaseSchedule,
+        const ext::shared_ptr<IborIndex>& fxBaseIndex, Spread fxBaseSpread, Real fxBaseGearing,
+        Real fxQuoteNominal, Currency fxQuoteCurrency, Schedule fxQuoteSchedule,
+        const ext::shared_ptr<IborIndex>& fxQuoteIndex, Spread fxQuoteSpread, Real fxQuoteGearing,
+        bool isFxBaseCurrencyLegResettable,
+        Natural fxResetFixingDays = 0,
+        Calendar fxResetFixingCalendar = Calendar(),
+        Integer fxBasePaymentLag = 0, Integer fxQuotePaymentLag = 0,
+        BusinessDayConvention fxBasePaymentConvention = Following,
+        BusinessDayConvention fxQuotePaymentConvention = Following,
+        bool fxBaseCompoundSpread = false, Natural fxBaseLookbackDays = Null<Natural>(),
+        bool fxBaseObservationShift = false, Natural fxBaseLockoutDays = 0,
+        RateAveraging::Type fxBaseAveragingMethod = RateAveraging::Compound,
+        bool fxQuoteCompoundSpread = false, Natural fxQuoteLookbackDays = Null<Natural>(),
+        bool fxQuoteObservationShift = false, Natural fxQuoteLockoutDays = 0,
+        RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
+        bool telescopicValueDates = false,
+        std::optional<bool> useIndexedCoupons = std::nullopt);
+
+    Type type() const;
+    bool paysFxBaseCurrency() const;
+
+    Real fxBaseNominal() const;
+    const Currency& fxBaseCurrency() const;
+    const Schedule& fxBaseSchedule() const;
+    const ext::shared_ptr<IborIndex>& fxBaseIndex() const;
+    Spread fxBaseSpread() const;
+    Real fxBaseGearing() const;
+
+    Real fxQuoteNominal() const;
+    const Currency& fxQuoteCurrency() const;
+    const Schedule& fxQuoteSchedule() const;
+    const ext::shared_ptr<IborIndex>& fxQuoteIndex() const;
+    Spread fxQuoteSpread() const;
+    Real fxQuoteGearing() const;
+
+    Real payNominal() const;
+    const Currency& payCurrency() const;
+    const Schedule& paySchedule() const;
+    const ext::shared_ptr<IborIndex>& payIndex() const;
+    Spread paySpread() const;
+    Real payGearing() const;
+
+    Real recNominal() const;
+    const Currency& recCurrency() const;
+    const Schedule& recSchedule() const;
+    const ext::shared_ptr<IborIndex>& recIndex() const;
+    Spread recSpread() const;
+    Real recGearing() const;
+
+    bool isFxBaseCurrencyLegResettable() const;
+    Size resettingLegIndex() const;
+    Size constantLegIndex() const;
+    const Leg& resettingLeg() const;
+    const Leg& constantLeg() const;
+    const Currency& legCurrency(Size j) const;
+    Real inCcyLegNPV(Size j) const;
+    Real constantLegNotional() const;
+    Natural fxResetFixingDays() const;
+    Calendar fxResetFixingCalendar() const;
+    BusinessDayConvention fxBasePaymentConvention() const;
+    BusinessDayConvention fxQuotePaymentConvention() const;
+    const std::vector<Real>& fxResetRates() const;
+    const std::vector<Real>& fxResetNotionals() const;
+
+    Spread fairFxBaseSpread() const;
+    Spread fairFxQuoteSpread() const;
+    Spread fairPaySpread() const;
+    Spread fairRecSpread() const;
+};
+
 %shared_ptr(DiscountingConstNotionalCrossCurrencySwapEngine)
 class DiscountingConstNotionalCrossCurrencySwapEngine : public PricingEngine {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -881,6 +966,20 @@ class DiscountingConstNotionalCrossCurrencySwapEngine : public PricingEngine {
         const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
         const Handle<Quote>& spotFX, std::optional<bool> includeSettlementDateFlows = std::nullopt,
         const Date& settlementDate = Date(), const Date& npvDate = Date(), const Date& spotFXSettleDate = Date());
+};
+
+%shared_ptr(DiscountingMtMCrossCurrencyBasisSwapEngine)
+class DiscountingMtMCrossCurrencyBasisSwapEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") DiscountingMtMCrossCurrencyBasisSwapEngine;
+    #endif
+  public:
+    DiscountingMtMCrossCurrencyBasisSwapEngine(
+        const Currency& domesticCcy, const Handle<YieldTermStructure>& domesticCcyDiscountCurve,
+        const Currency& foreignCcy, const Handle<YieldTermStructure>& foreignCcyDiscountCurve,
+        const Handle<Quote>& spotFX, ext::optional<bool> includeSettlementDateFlows = ext::nullopt,
+        const Date& settlementDate = Date(), const Date& npvDate = Date(),
+        const Date& spotFXSettleDate = Date());
 };
 
 #endif
