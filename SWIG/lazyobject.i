@@ -36,6 +36,7 @@ class LazyObject : public Observable {
     void recalculate();
     void freeze();
     void unfreeze();
+    void deepUpdate();
     %extend {
         static void forwardFirstNotificationOnly() {
             LazyObject::Defaults::instance().forwardFirstNotificationOnly();
