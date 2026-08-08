@@ -620,7 +620,9 @@ class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
                                              ext::shared_ptr<IborIndex> floatIndex,
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool collateralOnFixedLeg,
-                                             Integer paymentLag = 0);
+                                             Integer paymentLag = 0,
+                                             std::optional<bool> useIndexedCoupons = std::nullopt);
+    const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const;
 };
 
 %shared_ptr(ConstNotionalCrossCurrencyBasisSwapRateHelper)
@@ -639,7 +641,9 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   bool isBasisOnFxBaseCurrencyLeg,
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
-                                                  Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
+                                                  Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
+                                                  std::optional<bool> useIndexedCoupons = std::nullopt);
+    const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
 };
 
 %shared_ptr(MtMCrossCurrencyBasisSwapRateHelper)
@@ -659,7 +663,13 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         bool isFxBaseCurrencyLegResettable,
                                         Frequency paymentFrequency = NoFrequency,
                                         Integer paymentLag = 0,
-                                        Frequency quoteCurrencyPaymentFrequencpy = NoFrequency);
+                                        Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
+                                        Natural fxResetFixingDays = 0,
+                                        Calendar fxResetFixingCalendar = Calendar(),
+                                        std::optional<bool> useIndexedCoupons = std::nullopt);
+    const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const;
+    Natural fxResetFixingDays() const;
+    const Calendar& fxResetFixingCalendar() const;
 };
 
 %shared_ptr(IborIborBasisSwapRateHelper)

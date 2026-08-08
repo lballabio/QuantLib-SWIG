@@ -1445,7 +1445,7 @@ using QuantLib::ForwardVanillaEngine;
 using QuantLib::QuantoEngine;
 typedef ForwardVanillaEngine<AnalyticEuropeanEngine> ForwardEuropeanEngine;
 typedef QuantoEngine<VanillaOption,AnalyticEuropeanEngine> QuantoEuropeanEngine;
-typedef QuantoEngine<ForwardVanillaOption,AnalyticEuropeanEngine> QuantoForwardEuropeanEngine;
+typedef QuantoEngine<ForwardVanillaOption,ForwardVanillaEngine<AnalyticEuropeanEngine> > QuantoForwardEuropeanEngine;
 %}
 
 

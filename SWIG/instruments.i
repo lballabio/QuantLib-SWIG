@@ -50,7 +50,9 @@ class Instrument : public LazyObject {
   public:
     Real NPV() const;
     Real errorEstimate() const;
+    Date valuationDate() const;
     bool isExpired() const;
+    const ext::shared_ptr<PricingEngine>& pricingEngine() const;
     void setPricingEngine(const ext::shared_ptr<PricingEngine>&);
   private:
     Instrument();

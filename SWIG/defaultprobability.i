@@ -214,7 +214,8 @@ class SpreadCdsHelper : public DefaultProbabilityHelper {
             const Date& startDate = Date(),
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
-            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+            const Date& tradeDate = Date());
     #else
     SpreadCdsHelper(
             const Handle<Quote>& spread,
@@ -232,7 +233,8 @@ class SpreadCdsHelper : public DefaultProbabilityHelper {
             const Date& startDate = Date(),
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
-            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+            const Date& tradeDate = Date());
     SpreadCdsHelper(
             Rate spread,
             const Period& tenor,
@@ -249,7 +251,8 @@ class SpreadCdsHelper : public DefaultProbabilityHelper {
             const Date& startDate = Date(),
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
-            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+            const Date& tradeDate = Date());
     #endif
 };
 
@@ -277,7 +280,8 @@ class UpfrontCdsHelper : public DefaultProbabilityHelper {
             const Date& startDate = Date(),
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
-            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+            const Date& tradeDate = Date());
     #else
     UpfrontCdsHelper(
             const Handle<Quote>& upfront,
@@ -297,7 +301,8 @@ class UpfrontCdsHelper : public DefaultProbabilityHelper {
             const Date& startDate = Date(),
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
-            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+            const Date& tradeDate = Date());
     UpfrontCdsHelper(
             Rate upfront,
             Rate spread,
@@ -316,7 +321,8 @@ class UpfrontCdsHelper : public DefaultProbabilityHelper {
             const Date& startDate = Date(),
             const DayCounter& lastPeriodDayCounter = DayCounter(),
             bool rebatesAccrual = true,
-            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint);
+            CreditDefaultSwap::PricingModel model = CreditDefaultSwap::Midpoint,
+            const Date& tradeDate = Date());
     #endif
 };
 

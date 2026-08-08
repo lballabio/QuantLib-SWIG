@@ -2,6 +2,7 @@
 /*
  Copyright (C) 2014 Matthias Groncki
  Copyright (C) 2017, 2018 Matthias Lungwitz
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -71,6 +72,12 @@ class Gaussian1dModel : public TermStructureConsistentModel {
                                const Real y = 0.0,
                                ext::shared_ptr<IborIndex> iborIdx =
                                    ext::shared_ptr<IborIndex>()) const;
+
+        const Real compoundedRate(
+            const OvernightIndexedCoupon &coupon,
+            const Date &referenceDate = Null<Date>(), const Real y = 0.0,
+            const Handle<YieldTermStructure> &yts =
+                Handle<YieldTermStructure>()) const;
 
         const Real swapRate(const Date &fixing, const Period &tenor,
                             const Date &referenceDate = Null<Date>(),
