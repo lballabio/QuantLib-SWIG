@@ -25,10 +25,22 @@
 %{
 using QuantLib::Observer;
 using QuantLib::Observable;
+using QuantLib::ObservableSettings;
 %}
 
 %shared_ptr(Observable);
 class Observable {};
+
+class ObservableSettings {
+  private:
+    ObservableSettings();
+  public:
+    static ObservableSettings& instance();
+    void disableUpdates(bool deferred = false);
+    void enableUpdates();
+    bool updatesEnabled();
+    bool updatesDeferred();
+};
 
 
 %extend Handle {
