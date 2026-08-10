@@ -10,6 +10,6 @@ cd ..
 
 # Build QuantLib
 cd QuantLib-1.*/
-./configure --disable-static --enable-thread-safe-observer-pattern --disable-test-suite --enable-skip-examples --enable-unity-build CXXFLAGS="${CXXQLFLAGS}"
+./configure --disable-static --enable-thread-safe-observer-pattern --enable-sessions --disable-test-suite --enable-skip-examples --enable-unity-build CXXFLAGS="${CXXQLFLAGS}"
 make -j 4 install
 cd ..

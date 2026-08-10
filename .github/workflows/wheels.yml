@@ -161,7 +161,7 @@ jobs:
       run: |
         tar xfz QuantLib-${{ needs.detect-version.outputs.version }}.tar.gz
         cd QuantLib-${{ needs.detect-version.outputs.version }}/
-        ./configure --disable-shared --with-boost-include=`brew --prefix`/include --enable-unity-build --enable-thread-safe-observer-pattern --disable-test-suite --enable-skip-examples
+        ./configure --disable-shared --with-boost-include=`brew --prefix`/include --enable-unity-build --enable-thread-safe-observer-pattern --enable-sessions --disable-test-suite --enable-skip-examples
         make -j3 CXXFLAGS="-std=c++17 -g0 -O3 -fno-common -dynamic -DNDEBUG -fwrapv" LDFLAGS="-fno-common -dynamic -DNDEBUG -fwrapv"
         sudo make install
     - name: Unpack QuantLib-SWIG
