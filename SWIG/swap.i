@@ -854,7 +854,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
         const bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        bool paymentLagOnNotionalExchanges = false);
 
     Real payNominal() const;
     const Currency& payCurrency() const;

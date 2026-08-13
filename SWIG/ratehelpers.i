@@ -642,7 +642,8 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
                                                   Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
-                                                  std::optional<bool> useIndexedCoupons = std::nullopt);
+                                                  std::optional<bool> useIndexedCoupons = std::nullopt,
+                                                  bool paymentLagOnNotionalExchanges = false);
     const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
 };
 
