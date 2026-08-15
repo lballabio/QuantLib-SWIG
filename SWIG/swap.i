@@ -854,7 +854,9 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
         const bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        bool paymentLagOnNotionalExchanges = false,
+        StubIndexConfig payStubIndexConfig = StubIndexConfig());
 
     Real payNominal() const;
     const Currency& payCurrency() const;
@@ -869,6 +871,7 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     const ext::shared_ptr<IborIndex>& recIndex() const;
     Spread recSpread() const;
     Real recGearing() const;
+    const StubIndexConfig& payStubIndexConfig() const;
 
     Spread fairPaySpread() const;
     Spread fairRecSpread() const;
@@ -901,7 +904,8 @@ class MtMCrossCurrencyBasisSwap : public Swap {
         bool fxQuoteObservationShift = false, Natural fxQuoteLockoutDays = 0,
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
         bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        StubIndexConfig fxBaseStubIndexConfig = StubIndexConfig());
 
     Type type() const;
     bool paysFxBaseCurrency() const;
@@ -912,6 +916,7 @@ class MtMCrossCurrencyBasisSwap : public Swap {
     const ext::shared_ptr<IborIndex>& fxBaseIndex() const;
     Spread fxBaseSpread() const;
     Real fxBaseGearing() const;
+    const StubIndexConfig& fxBaseStubIndexConfig() const;
 
     Real fxQuoteNominal() const;
     const Currency& fxQuoteCurrency() const;

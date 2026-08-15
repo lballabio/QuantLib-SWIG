@@ -316,9 +316,12 @@ class SwapIndex : public InterestRateIndex {
 };
 
 #if defined(SWIGCSHARP)
+SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<IborIndex> )
 SWIG_STD_VECTOR_ENHANCED( ext::shared_ptr<SwapIndex> )
 #endif
 namespace std {
+    %template(IborIndexVector)
+        vector<ext::shared_ptr<IborIndex> >;
     %template(SwapIndexVector)
         vector<ext::shared_ptr<SwapIndex> >;
 }

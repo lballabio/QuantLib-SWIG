@@ -641,7 +641,9 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
                                                   Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
-                                                  std::optional<bool> useIndexedCoupons = std::nullopt);
+                                                  std::optional<bool> useIndexedCoupons = std::nullopt,
+                                                  bool paymentLagOnNotionalExchanges = false,
+                                                  StubIndexConfig baseStubIndexConfig = StubIndexConfig());
     const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
 };
 
@@ -665,7 +667,8 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
                                         Natural fxResetFixingDays = 0,
                                         Calendar fxResetFixingCalendar = Calendar(),
-                                        std::optional<bool> useIndexedCoupons = std::nullopt);
+                                        std::optional<bool> useIndexedCoupons = std::nullopt,
+                                        StubIndexConfig baseStubIndexConfig = StubIndexConfig());
     const ext::shared_ptr<MtMCrossCurrencyBasisSwap>& swap() const;
     Natural fxResetFixingDays() const;
     const Calendar& fxResetFixingCalendar() const;
@@ -700,7 +703,11 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      const ext::shared_ptr<IborIndex>& otherIndex,
                                      Handle<YieldTermStructure> discountHandle = {},
                                      bool bootstrapBaseCurve = false,
-                                     Integer paymentLag = 0);
+                                     Integer paymentLag = 0,
+                                     std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
+                                     std::optional<bool> useIndexedCoupons = std::nullopt,
+                                     DateGeneration::Rule rule = DateGeneration::Backward,
+                                     StubIndexConfig iborStubIndexConfig = StubIndexConfig());
     ext::shared_ptr<Swap> swap();
 };
 
