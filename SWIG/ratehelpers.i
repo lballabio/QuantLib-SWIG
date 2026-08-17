@@ -620,7 +620,8 @@ class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool collateralOnFixedLeg,
                                              Integer paymentLag = 0,
-                                             std::optional<bool> useIndexedCoupons = std::nullopt);
+                                             std::optional<bool> useIndexedCoupons = std::nullopt,
+                                             Frequency floatPaymentFrequency = NoFrequency);
     const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const;
 };
 
@@ -641,7 +642,8 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
                                                   Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
-                                                  std::optional<bool> useIndexedCoupons = std::nullopt);
+                                                  std::optional<bool> useIndexedCoupons = std::nullopt,
+                                                  bool paymentLagOnNotionalExchanges = false);
     const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
 };
 

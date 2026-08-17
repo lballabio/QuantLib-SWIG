@@ -7,7 +7,7 @@
  Copyright (C) 2017, 2018, 2019 Matthias Lungwitz
  Copyright (C) 2018 Matthias Groncki
  Copyright (C) 2023 Marcin Rybacki
- Copyright (C) 2026 Kyrylo Protsenko
+ Copyright (C) 2026 Kyrylo Protsenko 
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -854,7 +854,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         bool recCompoundSpread = false, Natural recLookbackDays = Null<Natural>(), bool recObservationShift = false,
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
         const bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        bool paymentLagOnNotionalExchanges = false);
 
     Real payNominal() const;
     const Currency& payCurrency() const;

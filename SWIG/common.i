@@ -89,6 +89,7 @@ namespace std {
     template<class T>
     class optional {
       public:
+        optional();
         optional(T t);
     };
 }
