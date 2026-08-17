@@ -73,7 +73,7 @@
    per-thread.
 */
 #ifndef QL_ENABLE_SESSIONS
-//#   define QL_ENABLE_SESSIONS
+#   define QL_ENABLE_SESSIONS
 #endif
 
 /* If defined, a thread-safe (but less performant) version of the

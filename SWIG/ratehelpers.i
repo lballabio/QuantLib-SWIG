@@ -4,6 +4,7 @@
  Copyright (C) 2009 Joseph Malicki
  Copyright (C) 2018 Matthias Lungwitz
  Copyright (C) 2021 Marcin Rybacki
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -693,6 +694,7 @@ class IborIborBasisSwapRateHelper : public RateHelper {
                                 bool bootstrapBaseCurve,
                                 std::optional<bool> useIndexedCoupons = std::nullopt,
                                 DateGeneration::Rule rule = DateGeneration::Backward,
+                                Integer paymentLag = 0,
                                 StubIndexConfig baseStubIndexConfig = StubIndexConfig(),
                                 StubIndexConfig otherStubIndexConfig = StubIndexConfig());
     ext::shared_ptr<Swap> swap();
@@ -715,6 +717,8 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
                                      std::optional<bool> useIndexedCoupons = std::nullopt,
                                      DateGeneration::Rule rule = DateGeneration::Backward,
+                                     RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                                     bool telescopicValueDates = false,
                                      StubIndexConfig iborStubIndexConfig = StubIndexConfig());
     ext::shared_ptr<Swap> swap();
 };

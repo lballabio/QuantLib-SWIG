@@ -5,6 +5,7 @@
  Copyright (C) 2005 Johan Witters
  Copyright (C) 2018 Matthias Groncki
  Copyright (C) 2023 Skandinaviska Enskilda Banken AB (publ)
+ Copyright (C) 2026 Lawrenz Law
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -252,6 +253,12 @@ namespace QuantLib {
     };
 
     class Japan : public Calendar {};
+
+    class Malaysia : public Calendar {
+      public:
+        enum Market { KLSE };
+        Malaysia(Market m = KLSE);
+    };
 
     class Malta : public Calendar {
       public:

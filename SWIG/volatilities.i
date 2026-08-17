@@ -191,6 +191,8 @@ class OptionletVolatilityStructure : public VolatilityTermStructure {
                        bool extrapolate = false) const ;
     Real blackVariance(Time, Rate strike,
                        bool extrapolate = false) const;
+    virtual VolatilityType volatilityType() const;
+    virtual Real displacement() const;
 };
 
 %template(OptionletVolatilityStructureHandle) Handle<OptionletVolatilityStructure>;
@@ -247,6 +249,7 @@ class SwaptionVolatilityStructure : public VolatilityTermStructure {
     Real blackVariance(Time start, Time length,
                        Rate strike, bool extrapolate = false) const;
     Date optionDateFromTenor(const Period& p) const;
+    virtual VolatilityType volatilityType() const;
     Real shift(const Period& optionTenor,
                const Period& swapTenor,
                bool extrapolate = false) const;
@@ -753,8 +756,6 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
             return { (unsigned int)sizes.first, (unsigned int)sizes.second };
         }
     }
-
-    VolatilityType volatilityType() const;
 };
 
 
