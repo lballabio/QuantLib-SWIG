@@ -4,6 +4,7 @@
  Copyright (C) 2009 Joseph Malicki
  Copyright (C) 2018 Matthias Lungwitz
  Copyright (C) 2021 Marcin Rybacki
+ Copyright (C) 2026 Kyrylo Protsenko
 
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -621,7 +622,8 @@ class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
                                              Handle<YieldTermStructure> collateralCurve,
                                              bool collateralOnFixedLeg,
                                              Integer paymentLag = 0,
-                                             std::optional<bool> useIndexedCoupons = std::nullopt);
+                                             std::optional<bool> useIndexedCoupons = std::nullopt,
+                                             Frequency floatPaymentFrequency = NoFrequency);
     const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const;
 };
 
@@ -642,7 +644,8 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
                                                   Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
-                                                  std::optional<bool> useIndexedCoupons = std::nullopt);
+                                                  std::optional<bool> useIndexedCoupons = std::nullopt,
+                                                  bool paymentLagOnNotionalExchanges = false);
     const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
 };
 
@@ -684,7 +687,9 @@ class IborIborBasisSwapRateHelper : public RateHelper {
                                 const ext::shared_ptr<IborIndex>& baseIndex,
                                 const ext::shared_ptr<IborIndex>& otherIndex,
                                 Handle<YieldTermStructure> discountHandle,
-                                bool bootstrapBaseCurve);
+                                bool bootstrapBaseCurve,
+                                std::optional<bool> useIndexedCoupons = std::nullopt,
+                                DateGeneration::Rule rule = DateGeneration::Backward);
     ext::shared_ptr<Swap> swap();
 };
 
@@ -701,7 +706,10 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      const ext::shared_ptr<IborIndex>& otherIndex,
                                      Handle<YieldTermStructure> discountHandle = {},
                                      bool bootstrapBaseCurve = false,
-                                     Integer paymentLag = 0);
+                                     Integer paymentLag = 0,
+                                     std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
+                                     std::optional<bool> useIndexedCoupons = std::nullopt,
+                                     DateGeneration::Rule rule = DateGeneration::Backward);
     ext::shared_ptr<Swap> swap();
 };
 

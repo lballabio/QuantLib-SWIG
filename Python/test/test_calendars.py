@@ -35,6 +35,21 @@ class JointCalendarTest(unittest.TestCase):
         self.assertEqual(joint_holidays, base_holidays)
 
 
+class MalaysiaCalendarTest(unittest.TestCase):
+
+    def test_klse_holidays(self):
+        calendar = ql.Malaysia(ql.Malaysia.KLSE)
+        self.assertEqual(calendar.name(), "Kuala Lumpur stock exchange")
+        # Chinese New Year 2025 (Wed/Thu) and the National Day substitute (Mon)
+        self.assertTrue(calendar.isHoliday(ql.Date(29, ql.January, 2025)))
+        self.assertTrue(calendar.isHoliday(ql.Date(30, ql.January, 2025)))
+        self.assertTrue(calendar.isHoliday(ql.Date(1, ql.September, 2025)))
+        self.assertTrue(calendar.isBusinessDay(ql.Date(2, ql.January, 2025)))
+
+    def test_default_market(self):
+        self.assertEqual(ql.Malaysia().name(), ql.Malaysia(ql.Malaysia.KLSE).name())
+
+
 class BespokeCalendarTest(unittest.TestCase):
 
     def test_hash(self):
