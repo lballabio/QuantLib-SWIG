@@ -51,6 +51,7 @@ using QuantLib::ConstNotionalCrossCurrencyBasisSwapRateHelper;
 using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
+using QuantLib::OvernightOvernightBasisSwapRateHelper;
 using QuantLib::MultipleResetsSwapRateHelper;
 %}
 
@@ -360,6 +361,9 @@ class BondHelper : public RateHelper {
 
 %shared_ptr(FixedRateBondHelper)
 class FixedRateBondHelper : public BondHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FixedRateBondHelper;
+    #endif
   public:
     FixedRateBondHelper(
                   const Handle<Quote>& cleanPrice,
@@ -516,6 +520,7 @@ class OISRateHelper : public RateHelper {
 %shared_ptr(FxSwapRateHelper)
 class FxSwapRateHelper : public RateHelper {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FxSwapRateHelper;
     %feature("kwargs") forDates;
     #endif
   public:
@@ -608,6 +613,9 @@ class SofrFutureRateHelper : public OvernightIndexFutureRateHelper {
 
 %shared_ptr(ConstNotionalCrossCurrencySwapRateHelper)
 class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ConstNotionalCrossCurrencySwapRateHelper;
+    #endif
   public:
     ConstNotionalCrossCurrencySwapRateHelper(const Handle<Quote>& fixedRate,
                                              const Period& tenor,
@@ -629,6 +637,9 @@ class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
 
 %shared_ptr(ConstNotionalCrossCurrencyBasisSwapRateHelper)
 class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ConstNotionalCrossCurrencyBasisSwapRateHelper;
+    #endif
   public:
     ConstNotionalCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
                                                   const Period& tenor,
@@ -653,6 +664,9 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
 
 %shared_ptr(MtMCrossCurrencyBasisSwapRateHelper)
 class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MtMCrossCurrencyBasisSwapRateHelper;
+    #endif
   public:
     MtMCrossCurrencyBasisSwapRateHelper(const Handle<Quote>& basis,
                                         const Period& tenor,
@@ -681,6 +695,9 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
 
 %shared_ptr(IborIborBasisSwapRateHelper)
 class IborIborBasisSwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") IborIborBasisSwapRateHelper;
+    #endif
   public:
     IborIborBasisSwapRateHelper(const Handle<Quote>& basis,
                                 const Period& tenor,
@@ -702,6 +719,9 @@ class IborIborBasisSwapRateHelper : public RateHelper {
 
 %shared_ptr(OvernightIborBasisSwapRateHelper)
 class OvernightIborBasisSwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") OvernightIborBasisSwapRateHelper;
+    #endif
   public:
     OvernightIborBasisSwapRateHelper(const Handle<Quote>& basis,
                                      const Period& tenor,
@@ -723,8 +743,36 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
     ext::shared_ptr<Swap> swap();
 };
 
+%shared_ptr(OvernightOvernightBasisSwapRateHelper)
+class OvernightOvernightBasisSwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") OvernightOvernightBasisSwapRateHelper;
+    #endif
+  public:
+    OvernightOvernightBasisSwapRateHelper(
+        const Handle<Quote>& basis,
+        const Period& tenor,
+        Natural settlementDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<OvernightIndex>& baseIndex,
+        const ext::shared_ptr<OvernightIndex>& otherIndex,
+        Handle<YieldTermStructure> discountHandle = {},
+        bool bootstrapBaseCurve = false,
+        Integer paymentLag = 0,
+        Frequency paymentFrequency = Annual,
+        RateAveraging::Type baseAveragingMethod = RateAveraging::Compound,
+        RateAveraging::Type otherAveragingMethod = RateAveraging::Compound,
+        bool telescopicValueDates = false);
+    ext::shared_ptr<Swap> swap();
+};
+
 %shared_ptr(MultipleResetsSwapRateHelper)
 class MultipleResetsSwapRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") MultipleResetsSwapRateHelper;
+    #endif
   public:
     MultipleResetsSwapRateHelper(
         Natural settlementDays,
