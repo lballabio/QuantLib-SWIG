@@ -59,6 +59,31 @@ class InterpolatedZeroCurve : public YieldTermStructure {
 };
 
 %template(ZeroCurve) InterpolatedZeroCurve<Linear>;
+
+%{
+using QuantLib::InterpolatedSimpleZeroCurve;
+%}
+
+%shared_ptr(InterpolatedSimpleZeroCurve<Linear>);
+
+template <class Interpolator>
+class InterpolatedSimpleZeroCurve : public YieldTermStructure {
+  public:
+    InterpolatedSimpleZeroCurve(const std::vector<Date>& dates,
+                                const std::vector<Rate>& yields,
+                                const DayCounter& dayCounter,
+                                const Calendar& calendar = Calendar(),
+                                const Interpolator& i = Interpolator());
+    const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
+    const std::vector<Date>& dates() const;
+    const std::vector<Rate>& zeroRates() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Rate> > nodes() const;
+    #endif
+};
+
+%template(SimpleZeroCurve) InterpolatedSimpleZeroCurve<Linear>;
 #if defined(SWIGPYTHON)
 %template(_LogLinearZeroCurve) InterpolatedZeroCurve<LogLinear>;
 %template(_LogCubicZeroCurve) InterpolatedZeroCurve<DefaultLogCubic>;
