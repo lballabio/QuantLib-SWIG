@@ -515,7 +515,6 @@ class StubIborCoupon : public IborCoupon {
     StubIborCoupon(const Date& paymentDate, Real nominal,
                    const Date& startDate, const Date& endDate,
                    Natural fixingDays,
-                   const ext::shared_ptr<IborIndex>& index,
                    StubIndexConfig stubIndexConfig,
                    Real gearing = 1.0, Spread spread = 0.0,
                    const Date& refPeriodStart = Date(),
