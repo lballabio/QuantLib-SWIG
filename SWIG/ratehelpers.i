@@ -760,9 +760,6 @@ class OvernightOvernightBasisSwapRateHelper : public RateHelper {
 
 %shared_ptr(OvernightIndexedFundingRateHelper)
 class OvernightIndexedFundingRateHelper : public RateHelper {
-    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
-    %feature("kwargs") OvernightIndexedFundingRateHelper;
-    #endif
   public:
     OvernightIndexedFundingRateHelper(
         const Handle<Quote>& margin,
