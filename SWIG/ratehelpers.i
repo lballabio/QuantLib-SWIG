@@ -53,6 +53,8 @@ using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
 using QuantLib::OvernightOvernightBasisSwapRateHelper;
 using QuantLib::MultipleResetsSwapRateHelper;
+using QuantLib::QuoteSensitivities;
+using QuantLib::TermStructure;
 %}
 
 %shared_ptr(RateHelper)
@@ -66,6 +68,44 @@ class RateHelper : public Observable {
 	Date pillarDate() const;
 	Real impliedQuote() const;
 	Real quoteError() const;
+    /*! Implied-quote sensitivities to the bootstrapped discount factors as
+        (t, dQ/dP(t)) pairs. Time uses the curve's day counter. An empty result
+        triggers numerical differentiation.
+    */
+    std::vector<std::pair<Time,Real> > impliedQuoteSensitivities() const;
+    %extend {
+        //! whether analytical quote sensitivities are available
+        bool hasAnalyticQuoteSensitivities() {
+            return self->impliedQuoteSensitivitiesByCurve().available;
+        }
+        #if !defined(SWIGR)
+        /*! Implied-quote sensitivities to the given curve's discount factors
+            as (d, dQ/dP(d)) pairs. An empty result means either no dependency
+            or incomplete analytical support. hasCompleteQuoteSensitivities()
+            distinguishes the cases.
+        */
+        std::vector<std::pair<Date,Real> > impliedQuoteSensitivities(
+                              const ext::shared_ptr<YieldTermStructure>& curve) {
+            QL_REQUIRE(curve, "null curve");
+            QuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
+            const TermStructure* id = curve.get();
+            if (!s.available || s.incomplete.count(id) != 0)
+                return {};
+            auto i = s.sensitivities.find(id);
+            if (i == s.sensitivities.end())
+                return {};
+            return i->second;
+        }
+        #endif
+        //! whether all contributions from the curve are analytical
+        bool hasCompleteQuoteSensitivities(
+                              const ext::shared_ptr<YieldTermStructure>& curve) {
+            QL_REQUIRE(curve, "null curve");
+            QuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
+            return s.available &&
+                   s.incomplete.count(static_cast<const TermStructure*>(curve.get())) == 0;
+        }
+    }
   private:
     RateHelper();
 };
@@ -630,7 +670,7 @@ class ConstNotionalCrossCurrencySwapRateHelper : public RateHelper {
                                              bool collateralOnFixedLeg,
                                              Integer paymentLag = 0,
                                              std::optional<bool> useIndexedCoupons = std::nullopt,
-                                             Frequency floatPaymentFrequency = NoFrequency);
+                                             std::optional<Frequency> floatPaymentFrequency = std::nullopt);
     const ext::shared_ptr<ConstNotionalCrossCurrencyFixedVsFloatingSwap>& swap() const;
 };
 
@@ -653,7 +693,7 @@ class ConstNotionalCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                                   bool isBasisOnFxBaseCurrencyLeg,
                                                   Frequency paymentFrequency = NoFrequency,
                                                   Integer paymentLag = 0,
-                                                  Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
+                                                  Frequency quoteCurrencyPaymentFrequency = NoFrequency,
                                                   std::optional<bool> useIndexedCoupons = std::nullopt,
                                                   bool paymentLagOnNotionalExchanges = false);
     const ext::shared_ptr<ConstNotionalCrossCurrencyBasisSwap>& swap() const;
@@ -679,7 +719,7 @@ class MtMCrossCurrencyBasisSwapRateHelper : public RateHelper {
                                         bool isFxBaseCurrencyLegResettable,
                                         Frequency paymentFrequency = NoFrequency,
                                         Integer paymentLag = 0,
-                                        Frequency quoteCurrencyPaymentFrequencpy = NoFrequency,
+                                        Frequency quoteCurrencyPaymentFrequency = NoFrequency,
                                         Natural fxResetFixingDays = 0,
                                         Calendar fxResetFixingCalendar = Calendar(),
                                         std::optional<bool> useIndexedCoupons = std::nullopt);
@@ -705,7 +745,8 @@ class IborIborBasisSwapRateHelper : public RateHelper {
                                 Handle<YieldTermStructure> discountHandle,
                                 bool bootstrapBaseCurve,
                                 std::optional<bool> useIndexedCoupons = std::nullopt,
-                                DateGeneration::Rule rule = DateGeneration::Backward);
+                                DateGeneration::Rule rule = DateGeneration::Backward,
+                                Integer paymentLag = 0);
     ext::shared_ptr<Swap> swap();
 };
 
@@ -728,7 +769,10 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      Integer paymentLag = 0,
                                      std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
                                      std::optional<bool> useIndexedCoupons = std::nullopt,
-                                     DateGeneration::Rule rule = DateGeneration::Backward);
+                                     DateGeneration::Rule rule = DateGeneration::Backward,
+                                     RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                                     bool telescopicValueDates = false,
+                                     bool basisOnIborLeg = false);
     ext::shared_ptr<Swap> swap();
 };
 
