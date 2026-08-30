@@ -97,7 +97,7 @@ using QuantLib::BasketGeneratingEngine;
 %}
 
 %shared_ptr(NonstandardSwaption)
-class NonstandardSwaption : public Instrument {
+class NonstandardSwaption : public Option {
   public:
     NonstandardSwaption(const ext::shared_ptr<NonstandardSwap>& swap,
                 const ext::shared_ptr<Exercise>& exercise,
@@ -136,7 +136,7 @@ class NonstandardSwaption : public Instrument {
 };
 
 %shared_ptr(FloatFloatSwaption)
-class FloatFloatSwaption : public Instrument {
+class FloatFloatSwaption : public Option {
 public:
     FloatFloatSwaption(const ext::shared_ptr<FloatFloatSwap>& swap,
                 const ext::shared_ptr<Exercise>& exercise,
