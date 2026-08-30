@@ -712,16 +712,23 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
                              const VolatilityType type = ShiftedLognormal,
                              const std::vector<std::vector<Real> >& shifts =
                                           std::vector<std::vector<Real> >());
-    SwaptionVolatilityMatrix(const Date& referenceDate,
-                             const Calendar& calendar,
-                             BusinessDayConvention bdc,
-                             const std::vector<Period>& optionTenors,
-                             const std::vector<Period>& swapTenors,
-                             const Matrix& vols,
-                             const DayCounter& dayCounter,
-                             const bool flatExtrapolation = false,
-                             const VolatilityType type = ShiftedLognormal,
-                             const Matrix& shifts = Matrix());
+    %extend {
+        static ext::shared_ptr<SwaptionVolatilityMatrix> forTenors(
+                const Date& referenceDate,
+                const Calendar& calendar,
+                BusinessDayConvention bdc,
+                const std::vector<Period>& optionTenors,
+                const std::vector<Period>& swapTenors,
+                const Matrix& vols,
+                const DayCounter& dayCounter,
+                const bool flatExtrapolation = false,
+                const VolatilityType type = ShiftedLognormal,
+                const Matrix& shifts = Matrix()) {
+            return ext::make_shared<SwaptionVolatilityMatrix>(
+                referenceDate, calendar, bdc, optionTenors, swapTenors, vols,
+                dayCounter, flatExtrapolation, type, shifts);
+        }
+    }
     SwaptionVolatilityMatrix(const Date& referenceDate,
                              const Calendar& calendar,
                              BusinessDayConvention bdc,
