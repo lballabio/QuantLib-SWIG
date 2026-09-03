@@ -808,7 +808,8 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         bool floatObservationShift = false,
         Natural floatLockoutDays = 0,
         RateAveraging::Type floatAveragingMethod = RateAveraging::Compound,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        StubIndexConfig floatStubIndexConfig = StubIndexConfig());
 
     Type type() const;
 
@@ -855,7 +856,9 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
         const bool telescopicValueDates = false,
         std::optional<bool> useIndexedCoupons = std::nullopt,
-        bool paymentLagOnNotionalExchanges = false);
+        bool paymentLagOnNotionalExchanges = false,
+        StubIndexConfig payStubIndexConfig = StubIndexConfig(),
+        StubIndexConfig recStubIndexConfig = StubIndexConfig());
 
     Real payNominal() const;
     const Currency& payCurrency() const;
@@ -870,6 +873,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     const ext::shared_ptr<IborIndex>& recIndex() const;
     Spread recSpread() const;
     Real recGearing() const;
+    const StubIndexConfig& payStubIndexConfig() const;
+    const StubIndexConfig& recStubIndexConfig() const;
 
     Spread fairPaySpread() const;
     Spread fairRecSpread() const;
@@ -902,7 +907,9 @@ class MtMCrossCurrencyBasisSwap : public Swap {
         bool fxQuoteObservationShift = false, Natural fxQuoteLockoutDays = 0,
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
         bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        StubIndexConfig fxBaseStubIndexConfig = StubIndexConfig(),
+        StubIndexConfig fxQuoteStubIndexConfig = StubIndexConfig());
 
     Type type() const;
     bool paysFxBaseCurrency() const;
@@ -913,6 +920,8 @@ class MtMCrossCurrencyBasisSwap : public Swap {
     const ext::shared_ptr<IborIndex>& fxBaseIndex() const;
     Spread fxBaseSpread() const;
     Real fxBaseGearing() const;
+    const StubIndexConfig& fxBaseStubIndexConfig() const;
+    const StubIndexConfig& fxQuoteStubIndexConfig() const;
 
     Real fxQuoteNominal() const;
     const Currency& fxQuoteCurrency() const;
