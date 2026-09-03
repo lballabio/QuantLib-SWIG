@@ -101,69 +101,44 @@ class CurveJacobianGraphProxy {
         return graph_.inverseJacobian(*of, *withRespectTo, analyticEquations);
     }
 
-    Matrix zeroNodeJacobian(const ext::shared_ptr<YieldTermStructure>& curve,
-                            std::vector<bool>* analyticDerivatives = nullptr) const {
-        QL_REQUIRE(curve, "null curve");
-        return graph_.zeroNodeJacobian(*curve, analyticDerivatives);
-    }
-
-    Matrix nodeZeroJacobian(const ext::shared_ptr<YieldTermStructure>& curve,
-                            std::vector<bool>* analyticDerivatives = nullptr) const {
-        QL_REQUIRE(curve, "null curve");
-        return graph_.nodeZeroJacobian(*curve, analyticDerivatives);
-    }
-
-    std::map<const YieldTermStructure*, Array> riskInput(
+    std::map<const YieldTermStructure*, Array> sensitivityInput(
         const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-              const std::vector<Array>& nodeRisk) const {
-        QL_REQUIRE(curves.size() == nodeRisk.size(),
+        const std::vector<Array>& nodeSensitivities) const {
+        QL_REQUIRE(curves.size() == nodeSensitivities.size(),
                    "the number of curves (" << curves.size() <<
-                   ") does not match the number of node-risk vectors (" <<
-                   nodeRisk.size() << ")");
+                   ") does not match the number of node-sensitivity vectors (" <<
+                   nodeSensitivities.size() << ")");
         std::map<const YieldTermStructure*, Array> input;
         for (Size i = 0; i < curves.size(); ++i) {
             QL_REQUIRE(curves[i], "null curve");
-            auto [entry, inserted] = input.emplace(curves[i].get(), nodeRisk[i]);
+            auto [entry, inserted] =
+                input.emplace(curves[i].get(), nodeSensitivities[i]);
             if (!inserted) {
-                QL_REQUIRE(entry->second.size() == nodeRisk[i].size(),
-                           "node-risk vectors for the same curve have different sizes");
-                entry->second += nodeRisk[i];
+                QL_REQUIRE(entry->second.size() == nodeSensitivities[i].size(),
+                           "node-sensitivity vectors for the same curve "
+                           "have different sizes");
+                entry->second += nodeSensitivities[i];
             }
         }
         return input;
     }
 
-    //! converts a risk map to registration order
+    //! converts a sensitivity map to registration order
     std::vector<Array> ordered(
-        const std::map<const YieldTermStructure*, Array>& risk) const {
+        const std::map<const YieldTermStructure*, Array>& sensitivities) const {
         std::vector<Array> result;
         result.reserve(curves_.size());
         for (const auto& c : curves_)
-            result.push_back(risk.at(c.get()));
+            result.push_back(sensitivities.at(c.get()));
         return result;
     }
 
-    std::map<const YieldTermStructure*, Array> parRiskMap(
+    std::map<const YieldTermStructure*, Array> marketQuoteSensitivitiesMap(
         const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-               const std::vector<Array>& nodeRisk,
-               std::vector<bool>* analyticEquations = nullptr) const {
-        return graph_.parRisk(riskInput(curves, nodeRisk), analyticEquations);
-    }
-
-    std::map<const YieldTermStructure*, Array> zeroRiskMap(
-        const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                const std::vector<Array>& nodeRisk,
-                std::vector<bool>* analyticEquations = nullptr) const {
-        return graph_.zeroRisk(riskInput(curves, nodeRisk), analyticEquations);
-    }
-
-    void propagateMap(const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                      const std::vector<Array>& nodeRisk,
-                      std::map<const YieldTermStructure*, Array>* zeroRisk,
-                      std::map<const YieldTermStructure*, Array>* parRisk,
-                      std::vector<bool>* analyticEquations = nullptr) const {
-        graph_.propagateNodeRisk(riskInput(curves, nodeRisk),
-                                 zeroRisk, parRisk, analyticEquations);
+        const std::vector<Array>& nodeSensitivities,
+        std::vector<bool>* analyticEquations = nullptr) const {
+        return graph_.marketQuoteSensitivities(
+            sensitivityInput(curves, nodeSensitivities), analyticEquations);
     }
 
   private:
@@ -293,120 +268,38 @@ class CurveJacobianGraphProxy {
                                          &analyticEquations);
         }
 
-        /*! Jacobian of continuously compounded zero rates at a curve's node
-            dates with respect to its free stored nodes.
+        /*! Converts sensitivities to free curve nodes into sensitivities to
+            the market quotes of the registered bootstrap helpers. Results are
+            derivatives per unit quote change and are not bump-scaled. Input
+            curves must be registered. Each vector must match its curve's
+            free nodes. Repeated curves are summed. Results contain one entry
+            per registered curve and follow curves().
         */
-        Matrix zeroNodeJacobian(
-                const ext::shared_ptr<YieldTermStructure>& curve) {
-            return self->zeroNodeJacobian(curve);
-        }
-        Matrix zeroNodeJacobian(
-                const ext::shared_ptr<YieldTermStructure>& curve,
-                std::vector<bool>& analyticDerivatives) {
-            return self->zeroNodeJacobian(curve, &analyticDerivatives);
-        }
-
-        /*! Jacobian of a curve's free stored nodes with respect to
-            continuously compounded zero rates at its node dates.
-        */
-        Matrix nodeZeroJacobian(
-                const ext::shared_ptr<YieldTermStructure>& curve) {
-            return self->nodeZeroJacobian(curve);
-        }
-        Matrix nodeZeroJacobian(
-                const ext::shared_ptr<YieldTermStructure>& curve,
-                std::vector<bool>& analyticDerivatives) {
-            return self->nodeZeroJacobian(curve, &analyticDerivatives);
-        }
-
-        /*! Converts curve-node sensitivities to helper-quote sensitivities.
-            Input curves must be registered. Each risk vector must match its
-            curve's free nodes. Repeated curves are summed. Results follow
-            curves().
-        */
-        std::vector<Array> parRisk(
+        std::vector<Array> marketQuoteSensitivities(
             const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                const std::vector<Array>& nodeRisk) {
-            return self->ordered(self->parRiskMap(curves, nodeRisk));
-        }
-
-        std::vector<Array> parRisk(
-            const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                const std::vector<Array>& nodeRisk,
-                std::vector<bool>& analyticEquations) {
+            const std::vector<Array>& nodeSensitivities) {
             return self->ordered(
-                self->parRiskMap(curves, nodeRisk, &analyticEquations));
+                self->marketQuoteSensitivitiesMap(curves, nodeSensitivities));
         }
 
-        /*! Propagates node sensitivities through curve dependencies. Zero risk
-            fixes each curve while the others rebootstrap. The curve's bootstrap
-            block converts zero risk to par risk only for acyclic dependencies.
-            Cyclic components require a reduced solve.
-            Inputs and results follow parRisk().
-        */
-        std::vector<Array> zeroRisk(
+        std::vector<Array> marketQuoteSensitivities(
             const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                 const std::vector<Array>& nodeRisk) {
-            return self->ordered(self->zeroRiskMap(curves, nodeRisk));
+            const std::vector<Array>& nodeSensitivities,
+            std::vector<bool>& analyticEquations) {
+            return self->ordered(self->marketQuoteSensitivitiesMap(
+                curves, nodeSensitivities, &analyticEquations));
         }
 
-        std::vector<Array> zeroRisk(
+        //! market-quote sensitivities of one registered curve
+        Array marketQuoteSensitivities(
             const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                 const std::vector<Array>& nodeRisk,
-                  std::vector<bool>& analyticEquations) {
-            return self->ordered(
-                self->zeroRiskMap(curves, nodeRisk, &analyticEquations));
-        }
-
-        //! zero risk on one registered curve
-        Array zeroRisk(const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                       const std::vector<Array>& nodeRisk,
-                       const ext::shared_ptr<YieldTermStructure>& onCurve) {
+            const std::vector<Array>& nodeSensitivities,
+            const ext::shared_ptr<YieldTermStructure>& onCurve) {
             QL_REQUIRE(onCurve, "null curve");
-            std::map<const YieldTermStructure*, Array> risk =
-                self->zeroRiskMap(curves, nodeRisk);
-            auto i = risk.find(onCurve.get());
-            QL_REQUIRE(i != risk.end(),
-                       "the given curve was not added to the graph");
-            return i->second;
-        }
-
-        /*! Computes zero and par risk in one propagation. Results contain one
-            entry per registered curve and follow curves().
-        */
-        void propagateRisk(
-                const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                const std::vector<Array>& nodeRisk,
-                std::vector<Array>& zeroRisk,
-                std::vector<Array>& parRisk) {
-            std::map<const YieldTermStructure*, Array> z, p;
-            self->propagateMap(curves, nodeRisk, &z, &p);
-            zeroRisk = self->ordered(z);
-            parRisk = self->ordered(p);
-        }
-
-        void propagateRisk(
-                const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                const std::vector<Array>& nodeRisk,
-                std::vector<Array>& zeroRisk,
-                std::vector<Array>& parRisk,
-                std::vector<bool>& analyticEquations) {
-            std::map<const YieldTermStructure*, Array> z, p;
-            self->propagateMap(curves, nodeRisk, &z, &p,
-                               &analyticEquations);
-            zeroRisk = self->ordered(z);
-            parRisk = self->ordered(p);
-        }
-
-        //! par risk on one registered curve
-        Array parRisk(const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
-                      const std::vector<Array>& nodeRisk,
-                      const ext::shared_ptr<YieldTermStructure>& onCurve) {
-            QL_REQUIRE(onCurve, "null curve");
-            std::map<const YieldTermStructure*, Array> risk =
-                self->parRiskMap(curves, nodeRisk);
-            auto i = risk.find(onCurve.get());
-            QL_REQUIRE(i != risk.end(),
+            std::map<const YieldTermStructure*, Array> sensitivities =
+                self->marketQuoteSensitivitiesMap(curves, nodeSensitivities);
+            auto i = sensitivities.find(onCurve.get());
+            QL_REQUIRE(i != sensitivities.end(),
                        "the given curve was not added to the graph");
             return i->second;
         }

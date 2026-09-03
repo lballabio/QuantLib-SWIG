@@ -220,69 +220,8 @@ class CurveJacobianTest(unittest.TestCase):
                                 "curve" % (j, c, k, name),
                         )
 
-    def test_zero_node_transformations(self):
-        """Continuous-zero and stored-node Jacobians are mutual inverses."""
-        for curve_type, expected_analytic in (
-            (ql.PiecewiseLogLinearDiscount, True),
-            (ql.PiecewiseLinearZero, True),
-            (ql.PiecewiseLinearForward, False),
-        ):
-            curve, quotes, _ = self.build_ois_curve(curve_type)
-            curve.enableExtrapolation()
-            graph = ql.CurveJacobianGraph(True)
-            graph.add(curve)
-            self.assertTrue(graph.isComplete())
-
-            analytic = ql.BoolVector()
-            zero_node = graph.zeroNodeJacobian(curve, analytic)
-            node_zero = graph.nodeZeroJacobian(curve)
-            nodes = len(curve.data()) - 1
-            self.assertEqual(zero_node.rows(), nodes)
-            self.assertEqual(zero_node.columns(), nodes)
-            self.assertEqual(len(analytic), nodes)
-            self.assertTrue(all(flag == expected_analytic for flag in analytic))
-
-            identity = zero_node * node_zero
-            for i in range(nodes):
-                for j in range(nodes):
-                    self.assertAlmostEqual(
-                        identity[i][j], 1.0 if i == j else 0.0,
-                        delta=1.0e-8,
-                    )
-
-            inverse = graph.inverseJacobian(curve, curve)
-            dates = list(curve.dates())[1:]
-            for k, quote in enumerate(quotes):
-                value = quote.value()
-                quote.setValue(value + BUMP)
-                up = [
-                    curve.zeroRate(
-                        d, ql.Actual360(), ql.Continuous,
-                        ql.NoFrequency, True,
-                    ).rate()
-                    for d in dates
-                ]
-                quote.setValue(value - BUMP)
-                down = [
-                    curve.zeroRate(
-                        d, ql.Actual360(), ql.Continuous,
-                        ql.NoFrequency, True,
-                    ).rate()
-                    for d in dates
-                ]
-                quote.setValue(value)
-                curve.data()
-
-                for i in range(nodes):
-                    expected = (up[i] - down[i]) / (2.0 * BUMP)
-                    calculated = sum(
-                        zero_node[i][j] * inverse[j][k]
-                        for j in range(nodes)
-                    )
-                    self.assertAlmostEqual(calculated, expected, delta=2.0e-5)
-
-    def test_par_risk_propagates_across_curves(self):
-        """Node risk on one curve becomes par risk on every curve."""
+    def test_market_quote_sensitivities_propagate_across_curves(self):
+        """Node sensitivities on one curve become market-quote sensitivities on every curve."""
         ois, ois_quotes, _ = self.build_ois_curve()
         projection, projection_quotes, _ = self.build_projection_curve(ois)
 
@@ -290,50 +229,50 @@ class CurveJacobianTest(unittest.TestCase):
         graph.add(ois)
         graph.add(projection)
 
-        # arbitrary node risk on the projection curve only
+        # arbitrary node sensitivities on the projection curve only
         nodes = len(projection.data()) - 1
-        node_risk = ql.Array(nodes)
+        node_sensitivities = ql.Array(nodes)
         for j in range(nodes):
-            node_risk[j] = 1.0 + 0.5 * j
+            node_sensitivities[j] = 1.0 + 0.5 * j
 
         analytic = ql.BoolVector()
-        risk = graph.parRisk([projection], [node_risk], analytic)
-        self.assertEqual(len(risk), 2)
+        sensitivities = graph.marketQuoteSensitivities([projection], [node_sensitivities], analytic)
+        self.assertEqual(len(sensitivities), 2)
         self.assertEqual(len(analytic), len(ois_quotes) + len(projection_quotes))
         self.assertTrue(all(analytic))
-        self.assertEqual(len(risk[0]), len(ois_quotes))
-        self.assertEqual(len(risk[1]), len(projection_quotes))
+        self.assertEqual(len(sensitivities[0]), len(ois_quotes))
+        self.assertEqual(len(sensitivities[1]), len(projection_quotes))
 
         # the same result, curve by curve
-        on_ois = graph.parRisk([projection], [node_risk], ois)
+        on_ois = graph.marketQuoteSensitivities([projection], [node_sensitivities], ois)
         for k in range(len(on_ois)):
-            self.assertAlmostEqual(on_ois[k], risk[0][k], delta=1.0e-12)
+            self.assertAlmostEqual(on_ois[k], sensitivities[0][k], delta=1.0e-12)
 
-        # it must equal transpose(inverseJacobian) * nodeRisk
+        # it must equal transpose(inverseJacobian) * nodeSensitivities
         for c, curve in enumerate([ois, projection]):
             jacobian = graph.inverseJacobian(projection, curve)
             for k in range(jacobian.columns()):
                 expected = sum(
-                    jacobian[j][k] * node_risk[j] for j in range(jacobian.rows())
+                    jacobian[j][k] * node_sensitivities[j] for j in range(jacobian.rows())
                 )
                 self.assertAlmostEqual(
-                    risk[c][k], expected, delta=1.0e-10,
+                    sensitivities[c][k], expected, delta=1.0e-10,
                     msg="quote %d of curve %d" % (k, c),
                 )
 
-        # the discount quotes must carry a non-trivial part of the risk
+        # the discount quotes must carry a non-trivial part of the sensitivity
         self.assertTrue(
-            any(abs(risk[0][k]) > 1.0e-10 for k in range(len(risk[0]))),
-            "no risk was propagated to the discount curve",
+            any(abs(sensitivities[0][k]) > 1.0e-10 for k in range(len(sensitivities[0]))),
+            "no sensitivity was propagated to the discount curve",
         )
 
-        # Multiple trade-risk contributions on the same curve are summed.
-        doubled = graph.parRisk(
-            [projection, projection], [node_risk, node_risk]
+        # Multiple contributions on the same curve are summed.
+        doubled = graph.marketQuoteSensitivities(
+            [projection, projection], [node_sensitivities, node_sensitivities]
         )
-        for c in range(len(risk)):
-            for k in range(len(risk[c])):
-                self.assertAlmostEqual(doubled[c][k], 2.0 * risk[c][k],
+        for c in range(len(sensitivities)):
+            for k in range(len(sensitivities[c])):
+                self.assertAlmostEqual(doubled[c][k], 2.0 * sensitivities[c][k],
                                        delta=1.0e-12)
 
     def test_supported_derived_curve_is_inspected_by_add(self):
@@ -356,10 +295,10 @@ class CurveJacobianTest(unittest.TestCase):
         self.assertTrue(open_analytic[0])
         self.assertFalse(any(open_analytic[1:]))
 
-        node_risk = ql.Array(len(projection.data()) - 1)
-        for j in range(len(node_risk)):
-            node_risk[j] = 1.0 + j
-        open_risk = graph.parRisk([projection], [node_risk])
+        node_sensitivities = ql.Array(len(projection.data()) - 1)
+        for j in range(len(node_sensitivities)):
+            node_sensitivities[j] = 1.0 + j
+        open_sensitivities = graph.marketQuoteSensitivities([projection], [node_sensitivities])
 
         graph.add(wrapper)
         self.assertEqual(len(graph.curves()), 2)
@@ -371,10 +310,10 @@ class CurveJacobianTest(unittest.TestCase):
         self.assertTrue(analytic[0])
         self.assertFalse(any(analytic[1:]))
 
-        closed_risk = graph.parRisk([projection], [node_risk])
-        for c in range(len(open_risk)):
-            for k in range(len(open_risk[c])):
-                self.assertAlmostEqual(open_risk[c][k], closed_risk[c][k],
+        closed_sensitivities = graph.marketQuoteSensitivities([projection], [node_sensitivities])
+        for c in range(len(open_sensitivities)):
+            for k in range(len(open_sensitivities[c])):
+                self.assertAlmostEqual(open_sensitivities[c][k], closed_sensitivities[c][k],
                                        delta=1.0e-10)
 
     def test_opaque_derived_curve_is_not_supported(self):
