@@ -24,7 +24,6 @@ import org.quantlib.Actual365Fixed;
 import org.quantlib.AmericanExercise;
 import org.quantlib.AnalyticEuropeanEngine;
 import org.quantlib.AnalyticHestonEngine;
-import org.quantlib.AnalyticHestonEngine_Integration;
 import org.quantlib.AnalyticPTDHestonEngine;
 import org.quantlib.BaroneAdesiWhaleyApproximationEngine;
 import org.quantlib.BatesEngine;
@@ -52,6 +51,7 @@ import org.quantlib.DayCounter;
 import org.quantlib.EuropeanExercise;
 import org.quantlib.Exercise;
 import org.quantlib.FdBlackScholesVanillaEngine;
+import org.quantlib.FourierIntegration;
 import org.quantlib.HestonModel;
 import org.quantlib.HestonProcess;
 import org.quantlib.FlatForward;
@@ -207,7 +207,7 @@ public class EquityOptions {
 					new TimeGrid(dayCounter.yearFraction(todaysDate, maturity), 10)					
 				), 
 				AnalyticPTDHestonEngine.ComplexLogFormula.AndersenPiterbarg,
-				AnalyticHestonEngine_Integration.gaussLaguerre(32)) );
+				FourierIntegration.gaussLaguerre(32)) );
         System.out.printf(fmt, new Object[] { method,
                                               europeanOption.NPV(),
                                               Double.NaN,

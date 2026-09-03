@@ -201,6 +201,7 @@ class FloatingRateCoupon : public Coupon {
     Real price(const Handle<YieldTermStructure>& discountCurve) const;
     ext::shared_ptr<InterestRateIndex> index() const;
     void setPricer(const ext::shared_ptr<FloatingRateCouponPricer>& p);
+    ext::shared_ptr<FloatingRateCouponPricer> pricer() const;
 };
 
 %inline %{
@@ -546,6 +547,7 @@ class MultipleResetsCoupon : public FloatingRateCoupon {
 %{
 using QuantLib::IborCouponPricer;
 using QuantLib::BlackIborCouponPricer;
+using QuantLib::OvernightIndexedCouponPricer;
 using QuantLib::CompoundingOvernightIndexedCouponPricer;
 using QuantLib::BlackCompoundingOvernightIndexedCouponPricer;
 using QuantLib::ArithmeticAveragedOvernightIndexedCouponPricer;
@@ -579,10 +581,34 @@ class BlackIborCouponPricer : public IborCouponPricer {
                           std::optional<bool> useIndexedCoupon = std::nullopt);
 };
 
-%shared_ptr(CompoundingOvernightIndexedCouponPricer)
-class CompoundingOvernightIndexedCouponPricer: public FloatingRateCouponPricer {
+%shared_ptr(OvernightIndexedCouponPricer)
+class OvernightIndexedCouponPricer: public FloatingRateCouponPricer {
+  private:
+    OvernightIndexedCouponPricer();
   public:
-    CompoundingOvernightIndexedCouponPricer();
+    void setCapletVolatility(
+               const Handle<OptionletVolatilityStructure>& v = {});
+    const Handle<OptionletVolatilityStructure>& capletVolatility() const;
+    void setEffectiveVolatilityInput(bool effectiveVolatilityInput);
+    bool effectiveVolatilityInput() const;
+    Real effectiveCapletVolatility() const;
+    Real effectiveFloorletVolatility() const;
+};
+
+%inline %{
+    ext::shared_ptr<OvernightIndexedCouponPricer>
+    as_overnight_indexed_coupon_pricer(
+               const ext::shared_ptr<FloatingRateCouponPricer>& pricer) {
+        return ext::dynamic_pointer_cast<OvernightIndexedCouponPricer>(pricer);
+    }
+%}
+
+%shared_ptr(CompoundingOvernightIndexedCouponPricer)
+class CompoundingOvernightIndexedCouponPricer: public OvernightIndexedCouponPricer {
+  public:
+    CompoundingOvernightIndexedCouponPricer(
+               const Handle<OptionletVolatilityStructure>& v = {},
+               bool effectiveVolatilityInput = false);
 };
 
 %shared_ptr(BlackCompoundingOvernightIndexedCouponPricer)
@@ -594,7 +620,7 @@ class BlackCompoundingOvernightIndexedCouponPricer: public CompoundingOvernightI
 };
 
 %shared_ptr(ArithmeticAveragedOvernightIndexedCouponPricer)
-class ArithmeticAveragedOvernightIndexedCouponPricer: public FloatingRateCouponPricer {
+class ArithmeticAveragedOvernightIndexedCouponPricer: public OvernightIndexedCouponPricer {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
     %feature("kwargs") ArithmeticAveragedOvernightIndexedCouponPricer;
     #endif
@@ -602,7 +628,9 @@ class ArithmeticAveragedOvernightIndexedCouponPricer: public FloatingRateCouponP
     ArithmeticAveragedOvernightIndexedCouponPricer(
             Real meanReversion = 0.03,
             Real volatility = 0.00,  // NO convexity adjustment by default
-            bool byApprox = false);  // TRUE to use Katsumi Takada approximation
+            bool byApprox = false,   // TRUE to use Katsumi Takada approximation
+            const Handle<OptionletVolatilityStructure>& v = {},
+            bool effectiveVolatilityInput = false);
 };
 
 %shared_ptr(BlackAveragingOvernightIndexedCouponPricer)

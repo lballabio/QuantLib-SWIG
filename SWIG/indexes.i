@@ -378,6 +378,13 @@ class SwapSpreadIndex : public InterestRateIndex {
     Real gearing2();
 };
 
+%inline %{
+    ext::shared_ptr<SwapSpreadIndex> as_swap_spread_index(
+                          const ext::shared_ptr<InterestRateIndex>& index) {
+        return ext::dynamic_pointer_cast<SwapSpreadIndex>(index);
+    }
+%}
+
 %{
 using QuantLib::EquityIndex;
 %}

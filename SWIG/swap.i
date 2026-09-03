@@ -881,7 +881,7 @@ class MtMCrossCurrencyBasisSwap : public Swap {
     %feature("kwargs") MtMCrossCurrencyBasisSwap;
     #endif
   public:
-    enum class Type { PayFxBaseCurrency, ReceiveFxBaseCurrency };
+    enum Type { PayFxBaseCurrency, ReceiveFxBaseCurrency };
 
     MtMCrossCurrencyBasisSwap(
         Type type,
