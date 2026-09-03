@@ -53,7 +53,7 @@ using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
 using QuantLib::OvernightOvernightBasisSwapRateHelper;
 using QuantLib::MultipleResetsSwapRateHelper;
-using QuantLib::QuoteSensitivities;
+using QuantLib::ImpliedQuoteSensitivities;
 using QuantLib::TermStructure;
 %}
 
@@ -87,7 +87,7 @@ class RateHelper : public Observable {
         std::vector<std::pair<Date,Real> > impliedQuoteSensitivities(
                               const ext::shared_ptr<YieldTermStructure>& curve) {
             QL_REQUIRE(curve, "null curve");
-            QuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
+            ImpliedQuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
             const TermStructure* id = curve.get();
             if (!s.available || s.incomplete.count(id) != 0)
                 return {};
@@ -101,7 +101,7 @@ class RateHelper : public Observable {
         bool hasCompleteQuoteSensitivities(
                               const ext::shared_ptr<YieldTermStructure>& curve) {
             QL_REQUIRE(curve, "null curve");
-            QuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
+            ImpliedQuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
             return s.available &&
                    s.incomplete.count(static_cast<const TermStructure*>(curve.get())) == 0;
         }
