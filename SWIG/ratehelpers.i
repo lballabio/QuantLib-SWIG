@@ -728,7 +728,10 @@ class OvernightIborBasisSwapRateHelper : public RateHelper {
                                      Integer paymentLag = 0,
                                      std::optional<Frequency> overnightPaymentFrequency = std::nullopt,
                                      std::optional<bool> useIndexedCoupons = std::nullopt,
-                                     DateGeneration::Rule rule = DateGeneration::Backward);
+                                     DateGeneration::Rule rule = DateGeneration::Backward,
+                                     RateAveraging::Type averagingMethod = RateAveraging::Compound,
+                                     bool telescopicValueDates = false,
+                                     bool basisOnIborLeg = false);
     ext::shared_ptr<Swap> swap();
 };
 
