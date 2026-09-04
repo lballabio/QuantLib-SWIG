@@ -187,12 +187,13 @@ class OptionletStripper1 : public StrippedOptionletBase {
                            VolatilityType type = ShiftedLognormal,
                            Real displacement = 0.0,
                            bool dontThrow = false,
-                           Period optionletFrequency = Period()) {
+                           Period optionletFrequency = Period(),
+                           Natural paymentLag = 0) {
             std::optional<Period> frequency = std::nullopt;
             if (optionletFrequency != Period())
                 frequency = optionletFrequency;
             return new OptionletStripper1(parVolSurface, index, switchStrikes, accuracy, maxIter,
-                                          discount, type, displacement, dontThrow, frequency);
+                                          discount, type, displacement, dontThrow, frequency, paymentLag);
         }
     }
     const Matrix& capFloorPrices() const;
