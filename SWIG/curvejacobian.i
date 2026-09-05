@@ -63,7 +63,7 @@ class CurveJacobianGraphProxy {
                 return;
         QL_FAIL("the given curve type is not supported by "
                 "CurveJacobianGraph.add(); supported curves must provide "
-                "bootstrap Jacobians or expose their underlying curve to C++");
+                "bootstrap Jacobians");
     }
 
     template <class Curve>
@@ -168,14 +168,6 @@ bool registerCurveJacobianAdder() {
 %define export_curve_to_jacobian_graph(Name)
 %{
 bool Name ## _registeredWithCurveJacobianGraph = registerCurveJacobianAdder<Name>();
-%}
-%enddef
-
-/* Registers an inspectable derived curve without a bootstrap block. */
-%define export_derived_curve_to_jacobian_graph(Name,Curve)
-%{
-bool Name ## _registeredAsDerivedWithCurveJacobianGraph =
-    registerCurveJacobianAdder<Curve>();
 %}
 %enddef
 

@@ -43,14 +43,4 @@ deprecate_feature(MonotonicLogCubicSpreadDiscountCurve, LogCubicSpreadDiscountCu
 %template(NaturalLogCubicSpreadDiscountCurve) InterpolatedSpreadDiscountCurve<SplineLogCubic>;
 %template(LogMixedLinearCubicSpreadDiscountCurve) InterpolatedSpreadDiscountCurve<LogMixedLinearCubic>;
 
-export_derived_curve_to_jacobian_graph(
-    SpreadDiscountCurve, InterpolatedSpreadDiscountCurve<LogLinear>)
-export_derived_curve_to_jacobian_graph(
-    LogCubicSpreadDiscountCurve, InterpolatedSpreadDiscountCurve<LogCubic>)
-export_derived_curve_to_jacobian_graph(
-    NaturalLogCubicSpreadDiscountCurve, InterpolatedSpreadDiscountCurve<SplineLogCubic>)
-export_derived_curve_to_jacobian_graph(
-    LogMixedLinearCubicSpreadDiscountCurve,
-    InterpolatedSpreadDiscountCurve<LogMixedLinearCubic>)
-
 #endif
