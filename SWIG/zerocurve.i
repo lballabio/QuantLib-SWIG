@@ -49,6 +49,15 @@ class InterpolatedZeroCurve : public YieldTermStructure {
                           const Interpolator& i = Interpolator(),
                           Compounding compounding = Continuous,
                           Frequency frequency = Annual);
+    InterpolatedZeroCurve(const std::vector<Date>& dates,
+                          const std::vector<Rate>& yields,
+                          const DayCounter& dayCounter,
+                          const Calendar& calendar,
+                          const std::vector<Handle<Quote> >& jumps,
+                          const std::vector<Date>& jumpDates = std::vector<Date>(),
+                          const Interpolator& i = Interpolator(),
+                          Compounding compounding = Continuous,
+                          Frequency frequency = Annual);
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;
     const std::vector<Date>& dates() const;
@@ -73,6 +82,13 @@ class InterpolatedSimpleZeroCurve : public YieldTermStructure {
                                 const std::vector<Rate>& yields,
                                 const DayCounter& dayCounter,
                                 const Calendar& calendar = Calendar(),
+                                const Interpolator& i = Interpolator());
+    InterpolatedSimpleZeroCurve(const std::vector<Date>& dates,
+                                const std::vector<Rate>& yields,
+                                const DayCounter& dayCounter,
+                                const Calendar& calendar,
+                                const std::vector<Handle<Quote> >& jumps,
+                                const std::vector<Date>& jumpDates = std::vector<Date>(),
                                 const Interpolator& i = Interpolator());
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;

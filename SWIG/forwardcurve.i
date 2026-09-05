@@ -43,6 +43,13 @@ class InterpolatedForwardCurve : public YieldTermStructure {
                              const DayCounter& dayCounter,
                              const Calendar& calendar = Calendar(),
                              const Interpolator& i = Interpolator());
+    InterpolatedForwardCurve(const std::vector<Date>& dates,
+                             const std::vector<Rate>& forwards,
+                             const DayCounter& dayCounter,
+                             const Calendar& calendar,
+                             const std::vector<Handle<Quote> >& jumps,
+                             const std::vector<Date>& jumpDates = std::vector<Date>(),
+                             const Interpolator& i = Interpolator());
     const std::vector<Date>& dates() const;
     const std::vector<Rate>& forwards() const;
     #if !defined(SWIGR)
