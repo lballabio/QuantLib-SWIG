@@ -3,6 +3,7 @@
 
 %include termstructures.i
 %include interpolation.i
+%include curvejacobian.i
 
 %{
 using QuantLib::InterpolatedSpreadDiscountCurve;
