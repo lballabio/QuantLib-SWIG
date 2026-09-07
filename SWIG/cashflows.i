@@ -459,23 +459,21 @@ class CappedFlooredOvernightIndexedCoupon : public FloatingRateCoupon {
 using QuantLib::IborCoupon;
 using QuantLib::CappedFlooredIborCoupon;
 using QuantLib::MultipleResetsCoupon;
-using QuantLib::StubIndexConvention;
 using QuantLib::StubIndexSelection;
 using QuantLib::StubIborCoupon;
 %}
 
-enum class StubIndexConvention {
-    ClosestIndex,
-    Interpolated
-};
-
 class StubIndexSelection {
   public:
+    enum Convention {
+        ClosestIndex,
+        Interpolated
+    };
     StubIndexSelection();
-    StubIndexSelection(StubIndexConvention convention,
+    StubIndexSelection(Convention convention,
                        std::vector<ext::shared_ptr<IborIndex> > indices);
     bool empty() const;
-    StubIndexConvention convention() const;
+    Convention convention() const;
     const std::vector<ext::shared_ptr<IborIndex> >& indices() const;
 };
 
