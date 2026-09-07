@@ -54,7 +54,7 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
             start, end, ql.Period(3, ql.Months), self.calendar,
             ql.Following, ql.Following, ql.DateGeneration.Forward, False)
         swap = ql.MtMCrossCurrencyBasisSwap(
-            ql.MtMCrossCurrencyBasisSwap.Type_PayFxBaseCurrency,
+            ql.MtMCrossCurrencyBasisSwap.PayFxBaseCurrency,
             100.0, ql.EURCurrency(), schedule, self.eur_index, 0.0, 1.0,
             110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0, 1.0,
             True, 2, self.calendar, 2, 3,
@@ -135,7 +135,7 @@ class MtMCrossCurrencyBasisSwapTest(unittest.TestCase):
             110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0, 1.0,
             useIndexedCoupons=False)
         mtm_swap = ql.MtMCrossCurrencyBasisSwap(
-            ql.MtMCrossCurrencyBasisSwap.Type_PayFxBaseCurrency,
+            ql.MtMCrossCurrencyBasisSwap.PayFxBaseCurrency,
             100.0, ql.EURCurrency(), schedule, self.eur_index, 0.0, 1.0,
             110.0, ql.USDCurrency(), schedule, self.usd_index, 0.0, 1.0,
             False, useIndexedCoupons=True)

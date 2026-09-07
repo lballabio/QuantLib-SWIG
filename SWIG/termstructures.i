@@ -215,6 +215,8 @@ class FlatForward : public YieldTermStructure {
                 const DayCounter& dayCounter,
                 Compounding compounding = QuantLib::Continuous,
                 Frequency frequency = QuantLib::Annual);
+    Compounding compounding() const;
+    Frequency compoundingFrequency() const;
 };
 
 

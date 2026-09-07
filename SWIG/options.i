@@ -342,55 +342,72 @@ class PiecewiseTimeDependentHestonModel : public CalibratedModel {
 
 };
 
+%{
+using QuantLib::RoughHestonModel;
+%}
+
+%shared_ptr(RoughHestonModel)
+class RoughHestonModel : public CalibratedModel {
+  public:
+    RoughHestonModel(const ext::shared_ptr<HestonProcess>& process, Real hurst);
+    Real theta() const;
+    Real kappa() const;
+    Real sigma() const;
+    Real rho() const;
+    Real v0() const;
+    Real hurst() const;
+    ext::shared_ptr<HestonProcess> process() const;
+};
+
 
 %{
 using QuantLib::AnalyticHestonEngine;
+using QuantLib::AnalyticRoughHestonEngine;
+using QuantLib::FourierIntegration;
 %}
-%rename (AnalyticHestonEngine_Integration) AnalyticHestonEngine::Integration;
-%rename (AnalyticHestonEngine_OptimalAlpha) AnalyticHestonEngine::OptimalAlpha;
 
+class FourierIntegration {
+  private:
+    FourierIntegration();
+  public:
+    static FourierIntegration gaussLaguerre    (Size integrationOrder = 128);
+    static FourierIntegration gaussLegendre    (Size integrationOrder = 128);
+    static FourierIntegration gaussChebyshev   (Size integrationOrder = 128);
+    static FourierIntegration gaussChebyshev2nd(Size integrationOrder = 128);
+
+    static FourierIntegration gaussLobatto(Real relTolerance, Real absTolerance,
+                                    Size maxEvaluations = 1000,
+                                    bool useConvergenceEstimate = false);
+
+    static FourierIntegration gaussKronrod(Real absTolerance,
+                                    Size maxEvaluations = 1000);
+    static FourierIntegration simpson(Real absTolerance,
+                               Size maxEvaluations = 1000);
+    static FourierIntegration trapezoid(Real absTolerance,
+                                 Size maxEvaluations = 1000);
+    static FourierIntegration discreteSimpson(Size evaluation = 1000);
+    static FourierIntegration discreteTrapezoid(Size evaluation = 1000);
+    static FourierIntegration expSinh(Real relTolerance = 1e-8);
+
+    static Real andersenPiterbargIntegrationLimit(
+            Real c_inf, Real epsilon, Real v0, Real t);
+
+    Size numberOfEvaluations() const;
+    bool isAdaptiveIntegration() const;
+};
+
+
+%rename (AnalyticHestonEngine_OptimalAlpha) AnalyticHestonEngine::OptimalAlpha;
 %shared_ptr(AnalyticHestonEngine)
 #if !defined(SWIGCSHARP)
-%feature ("flatnested") AnalyticHestonEngine::Integration;
 %feature ("flatnested") AnalyticHestonEngine::OptimalAlpha;
 #endif
-
 class AnalyticHestonEngine : public PricingEngine {
   public:
     enum ComplexLogFormula {
         Gatheral, BranchCorrection, AndersenPiterbarg,
         AndersenPiterbargOptCV, AsymptoticChF, AngledContour, AngledContourNoCV,
         OptimalCV
-    };
-
-    class Integration {
-      private:
-        Integration();
-      public:
-        static Integration gaussLaguerre    (Size integrationOrder = 128);
-        static Integration gaussLegendre    (Size integrationOrder = 128);
-        static Integration gaussChebyshev   (Size integrationOrder = 128);
-        static Integration gaussChebyshev2nd(Size integrationOrder = 128);
-
-        static Integration gaussLobatto(Real relTolerance, Real absTolerance,
-                                        Size maxEvaluations = 1000,
-                                        bool useConvergenceEstimate = false);
-
-        static Integration gaussKronrod(Real absTolerance,
-                                        Size maxEvaluations = 1000);
-        static Integration simpson(Real absTolerance,
-                                   Size maxEvaluations = 1000);
-        static Integration trapezoid(Real absTolerance,
-                                     Size maxEvaluations = 1000);
-        static Integration discreteSimpson(Size evaluation = 1000);
-        static Integration discreteTrapezoid(Size evaluation = 1000);
-        static Integration expSinh(Real relTolerance = 1e-8);
-
-        static Real andersenPiterbargIntegrationLimit(
-            Real c_inf, Real epsilon, Real v0, Real t);
-
-        Size numberOfEvaluations() const;
-        bool isAdaptiveIntegration() const;
     };
 
     class OptimalAlpha {
@@ -419,7 +436,8 @@ class AnalyticHestonEngine : public PricingEngine {
                          Real relTolerance,
                          Size maxEvaluations);
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
-                         ComplexLogFormula cpxLog, const AnalyticHestonEngine::Integration& itg,
+                         ComplexLogFormula cpxLog,
+                         const FourierIntegration& itg,
                          Real andersenPiterbargEpsilon = 1e-8);
 
     Size numberOfEvaluations() const;
@@ -436,6 +454,30 @@ class AnalyticHestonEngine : public PricingEngine {
     }
 #endif
 };
+
+%shared_ptr(AnalyticRoughHestonEngine)
+class AnalyticRoughHestonEngine : public PricingEngine {
+  public:
+
+    enum Approximation { AdamsPredictorCorrector, Pade, Lifted };
+
+    explicit AnalyticRoughHestonEngine(
+            const ext::shared_ptr<RoughHestonModel>& model,
+            Size integrationOrder = 128,
+            Size timeSteps = 256,
+            Approximation approximation = Approximation::AdamsPredictorCorrector,
+            Size nFactors = 20);
+
+    AnalyticRoughHestonEngine(
+            const ext::shared_ptr<RoughHestonModel>& model,
+            FourierIntegration integration,
+            Size timeSteps = 256,
+            Real andersenPiterbargEpsilon = 1e-25,
+            Real alpha = -0.5,
+            Approximation approximation = Approximation::AdamsPredictorCorrector,
+            Size nFactors = 20);
+};
+
 
 %{
 using QuantLib::COSHestonEngine;
@@ -473,7 +515,6 @@ using QuantLib::AnalyticPTDHestonEngine;
 class AnalyticPTDHestonEngine : public PricingEngine {
   public:
     enum ComplexLogFormula { Gatheral, AndersenPiterbarg };
-    typedef AnalyticHestonEngine::Integration Integration;
     
     AnalyticPTDHestonEngine(
             const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
@@ -488,7 +529,7 @@ class AnalyticPTDHestonEngine : public PricingEngine {
     AnalyticPTDHestonEngine(
         const ext::shared_ptr<PiecewiseTimeDependentHestonModel>& model,
         ComplexLogFormula cpxLog,
-        const Integration& itg,
+        const FourierIntegration& itg,
         Real andersenPiterbargEpsilon = 1e-8);            
 };
 

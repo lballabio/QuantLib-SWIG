@@ -122,6 +122,7 @@ class VolatilityTermStructure : public TermStructure {
   public:
     Real minStrike() const;
     Real maxStrike() const;
+    BusinessDayConvention businessDayConvention() const;
 };
 
 
@@ -703,6 +704,34 @@ class SwaptionVolatilityMatrix : public SwaptionVolatilityDiscrete {
     SwaptionVolatilityMatrix(const Date& referenceDate,
                              const Calendar& calendar,
                              BusinessDayConvention bdc,
+                             const std::vector<Period>& optionTenors,
+                             const std::vector<Period>& swapTenors,
+                             const std::vector<std::vector<Handle<Quote> > >& vols,
+                             const DayCounter& dayCounter,
+                             const bool flatExtrapolation = false,
+                             const VolatilityType type = ShiftedLognormal,
+                             const std::vector<std::vector<Real> >& shifts =
+                                          std::vector<std::vector<Real> >());
+    %extend {
+        static ext::shared_ptr<SwaptionVolatilityMatrix> forTenors(
+                const Date& referenceDate,
+                const Calendar& calendar,
+                BusinessDayConvention bdc,
+                const std::vector<Period>& optionTenors,
+                const std::vector<Period>& swapTenors,
+                const Matrix& vols,
+                const DayCounter& dayCounter,
+                const bool flatExtrapolation = false,
+                const VolatilityType type = ShiftedLognormal,
+                const Matrix& shifts = Matrix()) {
+            return ext::make_shared<SwaptionVolatilityMatrix>(
+                referenceDate, calendar, bdc, optionTenors, swapTenors, vols,
+                dayCounter, flatExtrapolation, type, shifts);
+        }
+    }
+    SwaptionVolatilityMatrix(const Date& referenceDate,
+                             const Calendar& calendar,
+                             BusinessDayConvention bdc,
                              const std::vector<Date>& dates,
                              const std::vector<Period>& lengths,
                              const Matrix& vols,
@@ -872,6 +901,12 @@ class SwaptionVolatilityCube : public SwaptionVolatilityDiscrete {
     public:
         Rate atmStrike(const Date& optionDate,
                        const Period& swapTenor) const;
+        const Handle<SwaptionVolatilityStructure>& atmVol() const;
+        const std::vector<Spread>& strikeSpreads() const;
+        const std::vector<std::vector<Handle<Quote> > >& volSpreads() const;
+        ext::shared_ptr<SwapIndex> swapIndexBase() const;
+        ext::shared_ptr<SwapIndex> shortSwapIndexBase() const;
+        bool vegaWeightedSmileFit() const;
 };
 
 %feature("kwargs") SabrSwaptionVolatilityCube;
@@ -929,6 +964,7 @@ class InterpolatedSwaptionVolatilityCube : public SwaptionVolatilityCube {
                                        const ext::shared_ptr<SwapIndex>& swapIndex,
                                        const ext::shared_ptr<SwapIndex>& shortSwapIndex,
                                        bool vegaWeightedSmileFit);
+    const Matrix& volSpreads(Size i) const;
 };
 
 
