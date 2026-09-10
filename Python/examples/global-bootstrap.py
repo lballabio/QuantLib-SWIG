@@ -151,12 +151,8 @@ data = []
 for i, h in enumerate(helpers):
     pillar = h.pillarDate()
 
-    if i < 13:
-        day_counter = ql.Actual360()
-        compounding = ql.Simple
-    else:
-        day_counter = ql.Thirty360(ql.Thirty360.BondBasis)
-        compounding = ql.SimpleThenCompounded
+    day_counter = ql.Actual360()
+    compounding = ql.Simple
 
     r = curve.zeroRate(pillar, day_counter, compounding, ql.Annual).rate()
     data.append((pillar.to_date(), r * 100))
