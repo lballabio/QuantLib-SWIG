@@ -181,7 +181,7 @@ _MAKECDS_METHODS = {
     "couponTenor": "withCouponTenor",
     "dayCounter": "withDayCounter",
     "lastPeriodDayCounter": "withLastPeriodDayCounter",
-    "dateGenerationRule": "withRule",
+    "dateGenerationRule": "withDateGenerationRule",
     "cashSettlementDays": "withCashSettlementDays",
     "tradeDate": "withTradeDate",
     "pricingEngine": "withPricingEngine",
