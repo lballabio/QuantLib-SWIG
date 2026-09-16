@@ -29,6 +29,7 @@
 %include marketelements.i
 %include interpolation.i
 %include termstructures.i
+%include curvejacobian.i
 %include piecewiseyieldcurve.i
 %include bonds.i
 
@@ -393,6 +394,8 @@ class Name : public DefaultProbabilityTermStructure {
     #if !defined(SWIGR)
     std::vector<std::pair<Date,Real> > nodes() const;
     #endif
+
+    export_curve_jacobian_methods
 };
 
 %enddef

@@ -46,6 +46,7 @@ class OvernightIndexFuture : public Instrument {
         RateAveraging::Type averagingMethod = RateAveraging::Compound);
 
     Real convexityAdjustment() const;
+    RateAveraging::Type averagingMethod() const;
 };
 
 
