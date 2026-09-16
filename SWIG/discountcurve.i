@@ -48,6 +48,13 @@ class InterpolatedDiscountCurve : public YieldTermStructure {
                               const DayCounter& dayCounter,
                               const Calendar& calendar = Calendar(),
                               const Interpolator& i = Interpolator());
+    InterpolatedDiscountCurve(const std::vector<Date>& dates,
+                              const std::vector<DiscountFactor>& discounts,
+                              const DayCounter& dayCounter,
+                              const Calendar& calendar,
+                              const std::vector<Handle<Quote> >& jumps,
+                              const std::vector<Date>& jumpDates = std::vector<Date>(),
+                              const Interpolator& i = Interpolator());
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;
     const std::vector<Date>& dates() const;

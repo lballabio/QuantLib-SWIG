@@ -137,10 +137,6 @@ for (i in seq(1, helpers$size())) {
   
   day_counter = Actual360()
   compounding = "Simple"
-  if (i > 13) {
-    day_counter = Thirty360(Thirty360_BondBasis_get())
-    compounding = "SimpleThenCompounded"
-  }
 
   r = YieldTermStructure_zeroRate(curve, pillar, day_counter, compounding, "Annual")
   

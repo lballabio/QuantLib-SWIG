@@ -808,7 +808,8 @@ class ConstNotionalCrossCurrencyFixedVsFloatingSwap : public ConstNotionalCrossC
         bool floatObservationShift = false,
         Natural floatLockoutDays = 0,
         RateAveraging::Type floatAveragingMethod = RateAveraging::Compound,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        StubIndexSelection floatStubIndexSelection = StubIndexSelection());
 
     Type type() const;
 
@@ -855,7 +856,9 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
         Natural recLockoutDays = 0, RateAveraging::Type recAveragingMethod = RateAveraging::Compound,
         const bool telescopicValueDates = false,
         std::optional<bool> useIndexedCoupons = std::nullopt,
-        bool paymentLagOnNotionalExchanges = false);
+        bool paymentLagOnNotionalExchanges = false,
+        StubIndexSelection payStubIndexSelection = StubIndexSelection(),
+        StubIndexSelection recStubIndexSelection = StubIndexSelection());
 
     Real payNominal() const;
     const Currency& payCurrency() const;
@@ -870,6 +873,8 @@ class ConstNotionalCrossCurrencyBasisSwap : public ConstNotionalCrossCurrencySwa
     const ext::shared_ptr<IborIndex>& recIndex() const;
     Spread recSpread() const;
     Real recGearing() const;
+    const StubIndexSelection& payStubIndexSelection() const;
+    const StubIndexSelection& recStubIndexSelection() const;
 
     Spread fairPaySpread() const;
     Spread fairRecSpread() const;
@@ -902,7 +907,9 @@ class MtMCrossCurrencyBasisSwap : public Swap {
         bool fxQuoteObservationShift = false, Natural fxQuoteLockoutDays = 0,
         RateAveraging::Type fxQuoteAveragingMethod = RateAveraging::Compound,
         bool telescopicValueDates = false,
-        std::optional<bool> useIndexedCoupons = std::nullopt);
+        std::optional<bool> useIndexedCoupons = std::nullopt,
+        StubIndexSelection fxBaseStubIndexSelection = StubIndexSelection(),
+        StubIndexSelection fxQuoteStubIndexSelection = StubIndexSelection());
 
     Type type() const;
     bool paysFxBaseCurrency() const;
@@ -913,6 +920,8 @@ class MtMCrossCurrencyBasisSwap : public Swap {
     const ext::shared_ptr<IborIndex>& fxBaseIndex() const;
     Spread fxBaseSpread() const;
     Real fxBaseGearing() const;
+    const StubIndexSelection& fxBaseStubIndexSelection() const;
+    const StubIndexSelection& fxQuoteStubIndexSelection() const;
 
     Real fxQuoteNominal() const;
     const Currency& fxQuoteCurrency() const;
