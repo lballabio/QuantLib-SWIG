@@ -89,6 +89,22 @@ class Swaption : public Option {
         Real forwardPrice() {
             return self->result<Real>("forwardPrice");
         }
+
+        Rate strike() {
+            return self->result<Real>("strike");
+        }
+
+        Rate atmForward() {
+            return self->result<Real>("atmForward");
+        }
+
+        Time swapLength() {
+            return self->result<Real>("swapLength");
+        }
+
+        Real stdDev() {
+            return self->result<Real>("stdDev");
+        }
     }
 };
 
