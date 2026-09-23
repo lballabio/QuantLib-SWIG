@@ -136,7 +136,5 @@ object CPIBond {
         bond setPricingEngine new DiscountingBondEngine(yTS)
         println("clean price: " + bond.cleanPrice + " \t exec time: " + 
           (System.currentTimeMillis - startTime)/1000d)
-          
-        cpiTS reset  // break cyclic reference between cpiTS, zeroSwapHelpers and inflationIndex
     }
 }
