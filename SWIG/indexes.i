@@ -492,12 +492,6 @@ export_overnight_instance(Swestr);
 export_overnight_instance(Tonar);
 export_overnight_instance(Zaronia);
 
-#if defined(SWIGPYTHON)
-deprecate_feature(Tona, Tonar);
-#else
-export_overnight_instance(Tona);
-#endif
-
 export_swap_instance(EuriborSwapIsdaFixA);
 export_swap_instance(EuriborSwapIsdaFixB);
 export_swap_instance(EuriborSwapIfrFix);
