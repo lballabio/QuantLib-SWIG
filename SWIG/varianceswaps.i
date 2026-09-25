@@ -46,6 +46,9 @@ class VarianceSwap : public Instrument {
 
 %shared_ptr(ReplicatingVarianceSwapEngine)
 class ReplicatingVarianceSwapEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") ReplicatingVarianceSwapEngine;
+    #endif
   public:
     ReplicatingVarianceSwapEngine(
         const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
