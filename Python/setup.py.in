@@ -130,7 +130,18 @@ def extra_compile_args():
     compiler = get_default_compiler()
 
     if compiler == "msvc":
-        extra_compile_args = ["/GR", "/FD", "/Zm250", "/EHsc", "/bigobj", "/std:c++17"]
+        # /utf-8: the QuantLib headers are UTF-8 (author names in the licence
+        # headers, mathematical symbols in the documentation); tell the
+        # compiler so, rather than letting it warn C4819.
+        extra_compile_args = [
+            "/GR",
+            "/FD",
+            "/Zm250",
+            "/EHsc",
+            "/bigobj",
+            "/std:c++17",
+            "/utf-8",
+        ]
 
         if is_debug_quantlib():
             if "QL_STATIC_RUNTIME" in os.environ:
