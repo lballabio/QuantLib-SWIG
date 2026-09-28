@@ -192,6 +192,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include timeseries.i
 %include tracing.i
 %include types.i
+%include varianceswaps.i
 %include volatilities.i
 %include volatilitymodels.i
 %include zerocurve.i
