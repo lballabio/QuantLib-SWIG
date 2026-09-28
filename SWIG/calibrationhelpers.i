@@ -68,9 +68,6 @@ class BlackCalibrationHelper : public CalibrationHelper {
     ext::shared_ptr<BlackCalibrationHelper> as_black_helper(const ext::shared_ptr<CalibrationHelper>& h) {
         return ext::dynamic_pointer_cast<BlackCalibrationHelper>(h);
     }
-    ext::shared_ptr<SwaptionHelper> as_swaption_helper(const ext::shared_ptr<BlackCalibrationHelper>& h) {
-        return ext::dynamic_pointer_cast<SwaptionHelper>(h);
-    }
 %}
 
 %shared_ptr(SwaptionHelper)
@@ -146,6 +143,12 @@ class SwaptionHelper : public BlackCalibrationHelper {
         }
     }
 };
+
+%inline %{
+    ext::shared_ptr<SwaptionHelper> as_swaption_helper(const ext::shared_ptr<BlackCalibrationHelper>& h) {
+        return ext::dynamic_pointer_cast<SwaptionHelper>(h);
+    }
+%}
 
 %shared_ptr(CapHelper)
 class CapHelper : public BlackCalibrationHelper {
