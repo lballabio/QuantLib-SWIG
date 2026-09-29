@@ -10,4 +10,4 @@ RUN apt-get update \
 
 RUN cd /tmp \
  && wget https://dot.net/v1/dotnet-install.sh \
- && bash dotnet-install.sh --install-dir /usr/local/bin/ -c 9.0
+ && bash dotnet-install.sh --install-dir /usr/local/bin/ -c 10.0
