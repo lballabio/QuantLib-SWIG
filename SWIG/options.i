@@ -376,18 +376,19 @@ class FourierIntegration {
     static FourierIntegration gaussChebyshev2nd(Size integrationOrder = 128);
 
     static FourierIntegration gaussLobatto(Real relTolerance, Real absTolerance,
-                                    Size maxEvaluations = 1000,
-                                    bool useConvergenceEstimate = false);
+                                           Size maxEvaluations = 1000,
+                                           bool useConvergenceEstimate = false);
 
     static FourierIntegration gaussKronrod(Real absTolerance,
-                                    Size maxEvaluations = 1000);
+                                           Size maxEvaluations = 1000);
     static FourierIntegration simpson(Real absTolerance,
-                               Size maxEvaluations = 1000);
+                                      Size maxEvaluations = 1000);
     static FourierIntegration trapezoid(Real absTolerance,
-                                 Size maxEvaluations = 1000);
+                                        Size maxEvaluations = 1000);
     static FourierIntegration discreteSimpson(Size evaluation = 1000);
     static FourierIntegration discreteTrapezoid(Size evaluation = 1000);
     static FourierIntegration expSinh(Real relTolerance = 1e-8);
+    static FourierIntegration tanhSinh(Real relTolerance = 1e-8);
 
     static Real andersenPiterbargIntegrationLimit(
             Real c_inf, Real epsilon, Real v0, Real t);
