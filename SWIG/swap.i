@@ -47,6 +47,7 @@ using QuantLib::MakeOIS;
 using QuantLib::MultipleResetsSwap;
 using QuantLib::MakeMultipleResetsSwap;
 using QuantLib::ZeroCouponSwap;
+using QuantLib::BMASwap;
 using QuantLib::EquityTotalReturnSwap;
 using QuantLib::simplifyNotificationGraph;
 %}
@@ -712,6 +713,37 @@ class ZeroCouponSwap : public Swap {
     Real fairFixedPayment() const;
     Rate fairFixedRate(const DayCounter& dayCounter) const;
 };
+
+%shared_ptr(BMASwap)
+class BMASwap : public Swap {
+  public:
+    BMASwap(Type type,
+            Real nominal,
+            Schedule liborSchedule,
+            Rate liborFraction,
+            Rate liborSpread,
+            const ext::shared_ptr<IborIndex>& liborIndex,
+            const DayCounter& liborDayCount,
+            Schedule bmaSchedule,
+            const ext::shared_ptr<BMAIndex>& bmaIndex,
+            const DayCounter& bmaDayCount);
+
+    Real liborFraction() const;
+    Spread liborSpread() const;
+    Real nominal() const;
+    Type type() const;
+    const Leg& bmaLeg() const;
+    const Leg& liborLeg() const;
+
+    Real liborLegBPS() const;
+    Real liborLegNPV() const;
+    Rate fairLiborFraction() const;
+    Spread fairLiborSpread() const;
+
+    Real bmaLegBPS() const;
+    Real bmaLegNPV() const;
+};
+
 
 %shared_ptr(EquityTotalReturnSwap)
 class EquityTotalReturnSwap : public Swap {

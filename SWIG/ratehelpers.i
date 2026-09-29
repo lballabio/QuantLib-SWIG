@@ -348,6 +348,8 @@ class BMASwapRateHelper : public RateHelper {
             const DayCounter& bmaDayCount,
             const ext::shared_ptr<BMAIndex>& bmaIndex,
             const ext::shared_ptr<IborIndex>& index);
+
+    ext::shared_ptr<BMASwap> swap() const;
 };
 
 %shared_ptr(BondHelper)
@@ -583,6 +585,7 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& customPillarDate = Date());
 
     Real convexityAdjustment() const;
+    ext::shared_ptr<OvernightIndexFuture> future() const;
 };
 
 %shared_ptr(SofrFutureRateHelper)
@@ -881,6 +884,8 @@ class MultipleResetsSwapRateHelper : public RateHelper {
         Frequency fixedFrequency = NoFrequency,
         DayCounter fixedDayCount = DayCounter(),
         BusinessDayConvention fixedConvention = ModifiedFollowing);
+
+    ext::shared_ptr<MultipleResetsSwap> swap() const;
 };
 
 
