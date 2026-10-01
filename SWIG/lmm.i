@@ -191,6 +191,10 @@ class CurveState {
 };
 
 class LMMCurveState : public CurveState {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") setOnForwardRates;
+    %feature("kwargs") setOnDiscountRatios;
+    #endif
   public:
     LMMCurveState(const std::vector<Time>& rateTimes);
 
@@ -248,6 +252,9 @@ class MarketModelEvolver {
 
 %shared_ptr(LogNormalFwdRateIpc)
 class LogNormalFwdRateIpc : public MarketModelEvolver {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") LogNormalFwdRateIpc;
+    #endif
   public:
     %extend {
         LogNormalFwdRateIpc(const ext::shared_ptr<MarketModel>& model,

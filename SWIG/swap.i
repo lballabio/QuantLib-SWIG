@@ -267,6 +267,9 @@ def _apply_kwargs(func_name, method_map, mv, attrs):
 
 %shared_ptr(NonstandardSwap)
 class NonstandardSwap : public Swap {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") NonstandardSwap;
+    #endif
   public:
     NonstandardSwap(Type type,
                     const std::vector<Real> &fixedNominal,
