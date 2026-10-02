@@ -31,8 +31,8 @@
 %{
 #include <ql/quantlib.hpp>
 
-#if QL_HEX_VERSION < 0x01430000
-    #error at least QuantLib 1.43 required, please update
+#if QL_HEX_VERSION < 0x01440000
+    #error at least QuantLib 1.44 required, please update
 #endif
 
 #if defined (SWIGJAVA) || defined (SWIGCSHARP) 
