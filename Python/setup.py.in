@@ -227,13 +227,20 @@ a comprehensive software framework for quantitative finance.
 
 QuantLib is Non-Copylefted Free Software and OSI Certified Open Source Software.
 
-Free-threading wheels are also provided.  Note, though, that the
-underlying C++ library is not thread-safe.  It has globals (most
-notably, the evaluation date) that in the current version of the
-wheels can't be set per thread.  Also, we suggest to avoid sharing
-objects and state across threads; each thread should have its set of
-curves and instruments.  Given that they calculate and cache results
-lazily, sharing them will probably lead to data races.
+Free-threading wheels are also provided, and we did build the wheels
+with some configuration options that make it possible to use them
+using some limited multi-threading. In particular:
+
+- the globals in the library are per-thread; most notably,
+  the evaluation date and the stored index fixings;
+
+- there is code in place to prevent the garbage collector
+  to interfere with notifications inside the library.
+
+Note, though, that the underlying C++ library is not thread-safe and
+any complex attempt at multi-threading will probably fail. We suggest
+to avoid sharing objects and state across threads; each thread should
+have its set of objects, evaluation date etc.
 """
 
 
