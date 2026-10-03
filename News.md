@@ -7,6 +7,12 @@ Removed features
 Features removed from the C++ library in this release were also removed from these wrappers; see <https://github.com/lballabio/QuantLib-SWIG/pull/885> for a full list.
 
 
+Breaking changes
+----------------
+
+The constructor of `GlobalLinearSimpleZeroCurve` was overloaded and therefore can no longer support keyword arguments.
+
+
 Full list of pull requests
 --------------------------
 
