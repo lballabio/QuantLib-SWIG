@@ -94,6 +94,8 @@ class YieldTermStructure : public TermStructure {
 %template(YieldTermStructureHandle) Handle<YieldTermStructure>;
 %template(RelinkableYieldTermStructureHandle) RelinkableHandle<YieldTermStructure>;
 
+%include curvenodes.i
+
 
 // implied term structure
 
