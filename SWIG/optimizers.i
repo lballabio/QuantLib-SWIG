@@ -285,6 +285,7 @@ class LevenbergMarquardt : public OptimizationMethod {
                        Real xtol = 1.0e-8,
                        Real gtol = 1.0e-8,
                        bool useCostFunctionsJacobian = false);
+    bool usesCostFunctionJacobian() const;
 };
 
 %shared_ptr(DifferentialEvolution)
