@@ -1,4 +1,65 @@
-commit 01ac229ee10c6d05bd92d93703d94244b4a71771
+commit 7fca5e0607cbdc815723eb9bf56b500e1fc8fac6
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Mon, 12 Oct 2026 08:08:01 +0000
+
+    Set version to 1.44
+
+ Python/setup.py | 2 +-
+ configure.ac    | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+commit 2cf6a9709f9fc7d2c3c30fcabdb1d8ed06e9c776
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 3 Oct 2026 14:27:52 +0200
+
+    Update description of free-threaded wheels
+
+ Python/setup.py    | 21 ++++++++++++++-------
+ Python/setup.py.in | 21 ++++++++++++++-------
+ 2 files changed, 28 insertions(+), 14 deletions(-)
+
+commit 7e85d8232af6b152eef3d8827571438beea95b5b
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 3 Oct 2026 13:48:43 +0200
+
+    Updated News
+
+ News.md | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+commit 04f124ab561c5b9831c603d8d0433d7b505303a1
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Sat, 3 Oct 2026 10:31:05 +0200
+
+    Disable wheels that can't be built by the CI workflow
+    
+    On i686 manylinux, building the pypy and no-gil wheels causes
+    the compilation to exceed the virtual memory limit for the
+    allocated runner machine.
+
+ .github/workflows/wheels.yml | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
+
+commit 51faac51fe1107dea12d35c35c3218f1ce0ddcdf
+Author: Luigi Ballabio <luigi.ballabio@gmail.com>
+Date:   Fri, 2 Oct 2026 22:29:46 +0200
+
+    Avoid obsoleted macos-14 in CI builds
+
+ .github/workflows/nupkg.yml  | 2 +-
+ .github/workflows/wheels.yml | 4 ++--
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+
+commit d19e495848777261bd5ccfc34ff0379c8df14d6b
+Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
+Date:   Fri, 2 Oct 2026 15:38:47 +0000
+
+    Update changelog
+
+ ChangeLog.txt | 1407 +++++++++++++++++++++++++++++++++++++++++----------------
+ 1 file changed, 1022 insertions(+), 385 deletions(-)
+
+commit f9b869f72b638388910828fb8c34a6f20902932e
 Author: lballabio[bot] <224797326+lballabio-bot@users.noreply.github.com>
 Date:   Fri, 2 Oct 2026 15:38:47 +0000
 
