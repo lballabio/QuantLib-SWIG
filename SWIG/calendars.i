@@ -292,6 +292,12 @@ namespace QuantLib {
 
     class Norway : public Calendar {};
 
+    class Philippines : public Calendar {
+      public:
+        enum Market { PSE };
+        Philippines(Market m = PSE);
+    };
+
     class Poland : public Calendar {
       public:
         enum Market { Settlement, WSE };

@@ -333,6 +333,9 @@ If max_steps is specified, it would limit binomial steps to this value.
 
 template <class T, class U>
 class BinomialBarrierEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") BinomialBarrierEngine;
+    #endif
   public:
     BinomialBarrierEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>&,
                           Size steps,

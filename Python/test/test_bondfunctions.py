@@ -204,12 +204,12 @@ class BondFunctionsTest(unittest.TestCase):
         self.assertEqual(round(ql.BondFunctions.basisPointValue(self.bond,
                                                                 0.03, self.day_counter, ql.Compounded, ql.Annual,
                                                                 self.settlement_date), 8),
-                         -0.07527271)
+                         -0.07524195)
         self.assertEqual(round(ql.BondFunctions.basisPointValue(self.bond,
                                                                 ql.InterestRate(
                                                                     0.03, self.day_counter, ql.Compounded, ql.Annual),
                                                                 self.settlement_date), 8),
-                         -0.07527271)
+                         -0.07524195)
 
     def testYieldValueBasisPoint(self):
         """ Testing BondFunctions yieldValueBasisPoint. """

@@ -31,8 +31,8 @@
 %{
 #include <ql/quantlib.hpp>
 
-#if QL_HEX_VERSION < 0x01430000
-    #error at least QuantLib 1.43 required, please update
+#if QL_HEX_VERSION < 0x01440000
+    #error at least QuantLib 1.44 required, please update
 #endif
 
 #if defined (SWIGJAVA) || defined (SWIGCSHARP) 
@@ -192,6 +192,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include timeseries.i
 %include tracing.i
 %include types.i
+%include varianceswaps.i
 %include volatilities.i
 %include volatilitymodels.i
 %include zerocurve.i

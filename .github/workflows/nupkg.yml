@@ -138,7 +138,7 @@ jobs:
         path: C:\local\QuantLib-SWIG-${{ needs.detect-version.outputs.version }}\CSharp\cpp\NQuantLibc.dll
 
   dotnet-osx-wrap:
-    runs-on: macos-14
+    runs-on: macos-15
     needs: detect-version
     strategy:
       fail-fast: false

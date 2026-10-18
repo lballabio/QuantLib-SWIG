@@ -767,6 +767,9 @@ class FdmHullWhiteOp : public FdmLinearOpComposite {
 
 %shared_ptr(FdmLocalVolFwdOp)
 class FdmLocalVolFwdOp : public FdmLinearOpComposite {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FdmLocalVolFwdOp;
+    #endif
   public:
       FdmLocalVolFwdOp(
         const ext::shared_ptr<FdmMesher>& mesher,
@@ -779,6 +782,9 @@ class FdmLocalVolFwdOp : public FdmLinearOpComposite {
 
 %shared_ptr(FdmOrnsteinUhlenbeckOp)
 class FdmOrnsteinUhlenbeckOp : public FdmLinearOpComposite {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FdmOrnsteinUhlenbeckOp;
+    #endif
   public:
     FdmOrnsteinUhlenbeckOp(
         const ext::shared_ptr<FdmMesher>& mesher,
@@ -1461,6 +1467,9 @@ class FdmSimpleStorageCondition : public StepCondition<Array> {
 
 %shared_ptr(FdmSimpleSwingCondition)
 class FdmSimpleSwingCondition : public StepCondition<Array> {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") FdmSimpleSwingCondition;
+    #endif
   public:
       FdmSimpleSwingCondition(
               const std::vector<Time> & exerciseTimes,
