@@ -295,6 +295,22 @@ class AnalyticEuropeanEngine : public PricingEngine {
 
 
 %{
+using QuantLib::JumpDiffusionEngine;
+%}
+
+%shared_ptr(JumpDiffusionEngine)
+class JumpDiffusionEngine : public PricingEngine {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") JumpDiffusionEngine;
+    #endif
+  public:
+    JumpDiffusionEngine(const ext::shared_ptr<Merton76Process>& process,
+                        Real relativeAccuracy = 1e-4,
+                        Size maxIterations = 100);
+};
+
+
+%{
 using QuantLib::HestonModel;
 %}
 
