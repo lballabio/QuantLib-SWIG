@@ -3,6 +3,7 @@
  Copyright (C) 2003, 2004, 2014 StatPro Italia srl
  Copyright (C) 2018, 2019 Matthias Lungwitz
  Copyright (C) 2020 Marcin Rybacki
+ Copyright (C) 2026 Kyrylo Protsenko
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -34,6 +35,8 @@
 %include functions.i
 
 %{
+#include <ql/termstructures/interpolatedcurve.hpp>
+
 using QuantLib::TermStructure;
 %}
 
@@ -94,7 +97,27 @@ class YieldTermStructure : public TermStructure {
 %template(YieldTermStructureHandle) Handle<YieldTermStructure>;
 %template(RelinkableYieldTermStructureHandle) RelinkableHandle<YieldTermStructure>;
 
-%include curvenodes.i
+%{
+using QuantLib::InterpolatedNodes;
+%}
+
+// Node dates and values on the interpolated curve classes
+%shared_ptr(InterpolatedNodes)
+class InterpolatedNodes {
+  private:
+    InterpolatedNodes();
+  public:
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
+};
+
+// Declared after %shared_ptr(InterpolatedNodes) so that the C# binding returns an InterpolatedNodes proxy
+%inline %{
+    ext::shared_ptr<InterpolatedNodes> as_interpolated_nodes(const ext::shared_ptr<TermStructure>& curve) {
+        return ext::dynamic_pointer_cast<InterpolatedNodes>(curve);
+    }
+%}
 
 
 // implied term structure
