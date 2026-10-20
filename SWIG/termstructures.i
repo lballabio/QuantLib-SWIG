@@ -35,8 +35,6 @@
 %include functions.i
 
 %{
-#include <ql/termstructures/interpolatedcurve.hpp>
-
 using QuantLib::TermStructure;
 %}
 
