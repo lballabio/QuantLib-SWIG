@@ -25,6 +25,14 @@
 
 %include linearalgebra.i
 %include optimizers.i
+%include vectors.i
+
+#if !defined(SWIGR)
+namespace std {
+    %template(SizeRealPair) pair<Size,Real>;
+    %template(SizeRealPairVector) vector<pair<Size,Real> >;
+}
+#endif
 
 %{
 // safe versions which copy their arguments
@@ -44,6 +52,10 @@ class SafeInterpolation {
     }
     Real secondDerivative(Real x, bool allowExtrapolation = false) const {
         return f_.secondDerivative(x, allowExtrapolation);
+    }
+    std::vector<std::pair<Size, Real> > nodeWeights(
+        Real x, bool allowExtrapolation = false) const {
+        return f_.nodeWeights(x, allowExtrapolation);
     }
     Array x_, y_;
     I f_;
@@ -65,6 +77,16 @@ class Safe##T {
     Real derivative(Real x, bool extrapolate = false) const;
     Real secondDerivative(Real x, bool extrapolate = false) const;
     Real primitive(Real x, bool extrapolate = false) const;
+    #if !defined(SWIGR)
+    /*! Sensitivities of the value at x to the node values, as pairs
+        (j, df(x)/dy[j]) for the nodes the value depends upon.  An empty
+        vector means that node sensitivities are not implemented for
+        this interpolation.  Outside the interpolation range the
+        weights refer to the interpolant's own extension.
+    */
+    std::vector<std::pair<Size,Real> > nodeWeights(
+        Real x, bool extrapolate = false) const;
+    #endif
 };
 %enddef
 
