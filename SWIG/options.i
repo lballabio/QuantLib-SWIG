@@ -472,6 +472,52 @@ class AnalyticHestonEngine : public PricingEngine {
 #endif
 };
 
+
+%{
+using QuantLib::HestonExpansionEngine;
+using QuantLib::HestonExpansion;
+using QuantLib::LPP2HestonExpansion;
+using QuantLib::LPP3HestonExpansion;
+using QuantLib::FordeHestonExpansion;
+%}
+
+%shared_ptr(HestonExpansionEngine)
+class HestonExpansionEngine : public PricingEngine {
+  public:
+    enum HestonExpansionFormula { LPP2, LPP3, Forde };
+    HestonExpansionEngine(const ext::shared_ptr<HestonModel>& model,
+                          HestonExpansionFormula formula);
+};
+
+%shared_ptr(HestonExpansion)
+class HestonExpansion {
+  private:
+    HestonExpansion();
+  public:
+    Real impliedVolatility(Real strike, Real forward) const;
+};
+
+%shared_ptr(LPP2HestonExpansion)
+class LPP2HestonExpansion : public HestonExpansion {
+  public:
+    LPP2HestonExpansion(Real kappa, Real theta, Real sigma,
+                        Real v0, Real rho, Real term);
+};
+
+%shared_ptr(LPP3HestonExpansion)
+class LPP3HestonExpansion : public HestonExpansion {
+  public:
+    LPP3HestonExpansion(Real kappa, Real theta, Real sigma,
+                        Real v0, Real rho, Real term);
+};
+
+%shared_ptr(FordeHestonExpansion)
+class FordeHestonExpansion : public HestonExpansion {
+  public:
+    FordeHestonExpansion(Real kappa, Real theta, Real sigma,
+                         Real v0, Real rho, Real term);
+};
+
 %shared_ptr(AnalyticRoughHestonEngine)
 class AnalyticRoughHestonEngine : public PricingEngine {
   public:
