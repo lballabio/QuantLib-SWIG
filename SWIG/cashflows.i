@@ -36,18 +36,33 @@
 %include volatilities.i
 
 %{
+using QuantLib::Event;
 using QuantLib::CashFlow;
 using QuantLib::Leg;
 %}
 
+%shared_ptr(Event)
+class Event : public Observable {
+  private:
+    Event();
+  public:
+    virtual Date date() const;
+    virtual bool hasOccurred(
+        const Date& refDate = Date(),
+        std::optional<bool> includeRefDate = std::nullopt) const;
+};
+
 %shared_ptr(CashFlow)
-class CashFlow : public Observable {
+class CashFlow : public Event {
   private:
     CashFlow();
   public:
-    Real amount() const;
-    Date date() const;
-    bool hasOccurred(const Date& refDate = Date()) const;
+    #if defined(SWIGR)
+    virtual Date date() const;
+    #endif
+    virtual Real amount() const;
+    virtual Date exCouponDate() const;
+    bool tradingExCoupon(const Date& refDate = Date()) const;
 };
 
 #if defined(SWIGCSHARP)
@@ -127,7 +142,6 @@ class Coupon : public CashFlow {
     Date accrualEndDate() const;
     Date referencePeriodStart() const;
     Date referencePeriodEnd() const;
-    Date exCouponDate() const;
     Real rate() const;
     Time accrualPeriod() const;
     BigInteger accrualDays() const;
