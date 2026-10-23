@@ -129,6 +129,25 @@ class ImpliedTermStructure : public YieldTermStructure {
   public:
     ImpliedTermStructure(const Handle<YieldTermStructure>& curveHandle,
                          const Date& referenceDate);
+    ImpliedTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                         Natural settlementDays,
+                         const Calendar& calendar);
+};
+
+// shifted term structure
+
+%{
+using QuantLib::ShiftedYieldTermStructure;
+%}
+
+%shared_ptr(ShiftedYieldTermStructure);
+class ShiftedYieldTermStructure : public YieldTermStructure {
+  public:
+    ShiftedYieldTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                              const Date& referenceDate);
+    ShiftedYieldTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                              Natural settlementDays,
+                              const Calendar& calendar);
 };
 
 // spreaded term structures
@@ -307,5 +326,18 @@ class QuantoTermStructure : public YieldTermStructure {
                         Real underlyingExchRateCorrelation);
 };
 
+// spliced term structure
+
+%{
+using QuantLib::SplicedYieldTermStructure;
+%}
+
+%shared_ptr(SplicedYieldTermStructure);
+class SplicedYieldTermStructure : public YieldTermStructure {
+  public:
+    SplicedYieldTermStructure(const Handle<YieldTermStructure>& curve1,
+                              const Handle<YieldTermStructure>& curve2,
+                              const Date& switchDate);
+};
 
 #endif
