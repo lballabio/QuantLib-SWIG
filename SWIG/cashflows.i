@@ -59,6 +59,9 @@ class CashFlow : public Event {
   public:
     #if defined(SWIGR)
     virtual Date date() const;
+    virtual bool hasOccurred(
+        const Date& refDate = Date(),
+        std::optional<bool> includeRefDate = std::nullopt) const;
     #endif
     virtual Real amount() const;
     virtual Date exCouponDate() const;
