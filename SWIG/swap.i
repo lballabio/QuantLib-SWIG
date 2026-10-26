@@ -271,6 +271,7 @@ class NonstandardSwap : public Swap {
     %feature("kwargs") NonstandardSwap;
     #endif
   public:
+    NonstandardSwap(const FixedVsFloatingSwap& swap);
     NonstandardSwap(Type type,
                     const std::vector<Real> &fixedNominal,
                     const std::vector<Real> &floatingNominal,
