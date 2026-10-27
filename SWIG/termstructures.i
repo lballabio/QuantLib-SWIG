@@ -3,6 +3,7 @@
  Copyright (C) 2003, 2004, 2014 StatPro Italia srl
  Copyright (C) 2018, 2019 Matthias Lungwitz
  Copyright (C) 2020 Marcin Rybacki
+ Copyright (C) 2026 Kyrylo Protsenko
  
  This file is part of QuantLib, a free-software/open-source library
  for financial quantitative analysts and developers - http://quantlib.org/
@@ -94,6 +95,28 @@ class YieldTermStructure : public TermStructure {
 %template(YieldTermStructureHandle) Handle<YieldTermStructure>;
 %template(RelinkableYieldTermStructureHandle) RelinkableHandle<YieldTermStructure>;
 
+%{
+using QuantLib::InterpolatedNodes;
+%}
+
+// Node dates and values on the interpolated curve classes
+%shared_ptr(InterpolatedNodes)
+class InterpolatedNodes {
+  private:
+    InterpolatedNodes();
+  public:
+    const std::vector<Date>& dates() const;
+    const std::vector<Time>& times() const;
+    const std::vector<Real>& data() const;
+};
+
+// Declared after %shared_ptr(InterpolatedNodes) so that the C# binding returns an InterpolatedNodes proxy
+%inline %{
+    ext::shared_ptr<InterpolatedNodes> as_interpolated_nodes(const ext::shared_ptr<TermStructure>& curve) {
+        return ext::dynamic_pointer_cast<InterpolatedNodes>(curve);
+    }
+%}
+
 
 // implied term structure
 
@@ -106,6 +129,25 @@ class ImpliedTermStructure : public YieldTermStructure {
   public:
     ImpliedTermStructure(const Handle<YieldTermStructure>& curveHandle,
                          const Date& referenceDate);
+    ImpliedTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                         Natural settlementDays,
+                         const Calendar& calendar);
+};
+
+// shifted term structure
+
+%{
+using QuantLib::ShiftedYieldTermStructure;
+%}
+
+%shared_ptr(ShiftedYieldTermStructure);
+class ShiftedYieldTermStructure : public YieldTermStructure {
+  public:
+    ShiftedYieldTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                              const Date& referenceDate);
+    ShiftedYieldTermStructure(const Handle<YieldTermStructure>& curveHandle,
+                              Natural settlementDays,
+                              const Calendar& calendar);
 };
 
 // spreaded term structures
@@ -284,5 +326,18 @@ class QuantoTermStructure : public YieldTermStructure {
                         Real underlyingExchRateCorrelation);
 };
 
+// spliced term structure
+
+%{
+using QuantLib::SplicedYieldTermStructure;
+%}
+
+%shared_ptr(SplicedYieldTermStructure);
+class SplicedYieldTermStructure : public YieldTermStructure {
+  public:
+    SplicedYieldTermStructure(const Handle<YieldTermStructure>& curve1,
+                              const Handle<YieldTermStructure>& curve2,
+                              const Date& switchDate);
+};
 
 #endif

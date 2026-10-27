@@ -52,6 +52,7 @@ using QuantLib::MtMCrossCurrencyBasisSwapRateHelper;
 using QuantLib::IborIborBasisSwapRateHelper;
 using QuantLib::OvernightIborBasisSwapRateHelper;
 using QuantLib::OvernightOvernightBasisSwapRateHelper;
+using QuantLib::OvernightIndexedFundingRateHelper;
 using QuantLib::MultipleResetsSwapRateHelper;
 using QuantLib::ImpliedQuoteSensitivities;
 using QuantLib::TermStructure;
@@ -348,7 +349,7 @@ class SwapRateHelper : public RateHelper {
                 Calendar calendar,
                 Frequency fixedFrequency,
                 BusinessDayConvention fixedConvention,
-                DayCounter fixedDayCount,
+                const DayCounter& fixedDayCount,
                 const ext::shared_ptr<IborIndex>& index,
                 const Handle<Quote>& spread = Handle<Quote>(),
                 const Handle<YieldTermStructure>& discountingCurve = {},
@@ -387,6 +388,8 @@ class BMASwapRateHelper : public RateHelper {
             const DayCounter& bmaDayCount,
             const ext::shared_ptr<BMAIndex>& bmaIndex,
             const ext::shared_ptr<IborIndex>& index);
+
+    ext::shared_ptr<BMASwap> swap() const;
 };
 
 %shared_ptr(BondHelper)
@@ -457,7 +460,8 @@ class OISRateHelper : public RateHelper {
             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {},
             DateGeneration::Rule rule = DateGeneration::Backward,
             const Calendar& overnightCalendar = Calendar(),
-            BusinessDayConvention convention = ModifiedFollowing);
+            BusinessDayConvention convention = ModifiedFollowing,
+            const DayCounter& fixedDayCount = DayCounter());
     %extend {
         static ext::shared_ptr<OISRateHelper> forDates(
                 const Date& startDate,
@@ -483,13 +487,15 @@ class OISRateHelper : public RateHelper {
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {},
                 DateGeneration::Rule rule = DateGeneration::Backward,
                 const Calendar& overnightCalendar = Calendar(),
-                BusinessDayConvention convention = ModifiedFollowing) {
+                BusinessDayConvention convention = ModifiedFollowing,
+                const DayCounter& fixedDayCount = DayCounter()) {
             return ext::make_shared<OISRateHelper>(
                 startDate, endDate, rate, index, discountingCurve,
                 telescopicValueDates, paymentLag, paymentConvention, paymentFrequency,
                 paymentCalendar, overnightSpread, pillar, customPillarDate, averagingMethod,
                 endOfMonth, fixedPaymentFrequency, fixedCalendar, lookbackDays, lockoutDays,
-                applyObservationShift, pricer, rule, overnightCalendar, convention);
+                applyObservationShift, pricer, rule, overnightCalendar, convention,
+                fixedDayCount);
         }
     }
     #else
@@ -518,7 +524,8 @@ class OISRateHelper : public RateHelper {
             const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {},
             DateGeneration::Rule rule = DateGeneration::Backward,
             const Calendar& overnightCalendar = Calendar(),
-            BusinessDayConvention convention = ModifiedFollowing);
+            BusinessDayConvention convention = ModifiedFollowing,
+            const DayCounter& fixedDayCount = DayCounter());
     %extend {
         static ext::shared_ptr<OISRateHelper> forDates(
                 const Date& startDate,
@@ -544,13 +551,15 @@ class OISRateHelper : public RateHelper {
                 const ext::shared_ptr<FloatingRateCouponPricer>& pricer = {},
                 DateGeneration::Rule rule = DateGeneration::Backward,
                 const Calendar& overnightCalendar = Calendar(),
-                BusinessDayConvention convention = ModifiedFollowing) {
+                BusinessDayConvention convention = ModifiedFollowing,
+                const DayCounter& fixedDayCount = DayCounter()) {
             return ext::make_shared<OISRateHelper>(
                 startDate, endDate, rate, index, discountingCurve,
                 telescopicValueDates, paymentLag, paymentConvention, paymentFrequency,
                 paymentCalendar, overnightSpread, pillar, customPillarDate, averagingMethod,
                 endOfMonth, fixedPaymentFrequency, fixedCalendar, lookbackDays, lockoutDays,
-                applyObservationShift, pricer, rule, overnightCalendar, convention);
+                applyObservationShift, pricer, rule, overnightCalendar, convention,
+                fixedDayCount);
         }
     }
     #endif
@@ -616,6 +625,7 @@ class OvernightIndexFutureRateHelper : public RateHelper {
             const Date& customPillarDate = Date());
 
     Real convexityAdjustment() const;
+    ext::shared_ptr<OvernightIndexFuture> future() const;
 };
 
 %shared_ptr(SofrFutureRateHelper)
@@ -809,6 +819,93 @@ class OvernightOvernightBasisSwapRateHelper : public RateHelper {
     ext::shared_ptr<Swap> swap();
 };
 
+%shared_ptr(OvernightIndexedFundingRateHelper)
+class OvernightIndexedFundingRateHelper : public RateHelper {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") OvernightIndexedFundingRateHelper;
+    %feature("kwargs") forDates;
+    #endif
+  public:
+    #if defined(SWIGPYTHON)
+    OvernightIndexedFundingRateHelper(
+        const std::variant<Real, Handle<Quote>>& margin,
+        const Period& tenor,
+        Natural settlementDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<OvernightIndex>& overnightIndex,
+        const Period& paymentTenor,
+        DayCounter paymentDayCounter,
+        Integer paymentLag = 0,
+        bool telescopicValueDates = false,
+        DateGeneration::Rule rule = DateGeneration::Backward,
+        Pillar::Choice pillar = Pillar::LastRelevantDate,
+        Date customPillarDate = Date());
+    %extend {
+        static ext::shared_ptr<OvernightIndexedFundingRateHelper> forDates(
+                const std::variant<Real, Handle<Quote>>& margin,
+                const Date& startDate,
+                const Date& endDate,
+                Calendar calendar,
+                BusinessDayConvention convention,
+                bool endOfMonth,
+                const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                const Period& paymentTenor,
+                DayCounter paymentDayCounter,
+                Integer paymentLag = 0,
+                bool telescopicValueDates = false,
+                DateGeneration::Rule rule = DateGeneration::Backward,
+                Pillar::Choice pillar = Pillar::LastRelevantDate,
+                Date customPillarDate = Date()) {
+            return ext::make_shared<OvernightIndexedFundingRateHelper>(
+                margin, startDate, endDate, calendar, convention, endOfMonth,
+                overnightIndex, paymentTenor, paymentDayCounter, paymentLag,
+                telescopicValueDates, rule, pillar, customPillarDate);
+        }
+    }
+    #else
+    OvernightIndexedFundingRateHelper(
+        const Handle<Quote>& margin,
+        const Period& tenor,
+        Natural settlementDays,
+        Calendar calendar,
+        BusinessDayConvention convention,
+        bool endOfMonth,
+        const ext::shared_ptr<OvernightIndex>& overnightIndex,
+        const Period& paymentTenor,
+        DayCounter paymentDayCounter,
+        Integer paymentLag = 0,
+        bool telescopicValueDates = false,
+        DateGeneration::Rule rule = DateGeneration::Backward,
+        Pillar::Choice pillar = Pillar::LastRelevantDate,
+        Date customPillarDate = Date());
+    %extend {
+        static ext::shared_ptr<OvernightIndexedFundingRateHelper> forDates(
+                const Handle<Quote>& margin,
+                const Date& startDate,
+                const Date& endDate,
+                Calendar calendar,
+                BusinessDayConvention convention,
+                bool endOfMonth,
+                const ext::shared_ptr<OvernightIndex>& overnightIndex,
+                const Period& paymentTenor,
+                DayCounter paymentDayCounter,
+                Integer paymentLag = 0,
+                bool telescopicValueDates = false,
+                DateGeneration::Rule rule = DateGeneration::Backward,
+                Pillar::Choice pillar = Pillar::LastRelevantDate,
+                Date customPillarDate = Date()) {
+            return ext::make_shared<OvernightIndexedFundingRateHelper>(
+                margin, startDate, endDate, calendar, convention, endOfMonth,
+                overnightIndex, paymentTenor, paymentDayCounter, paymentLag,
+                telescopicValueDates, rule, pillar, customPillarDate);
+        }
+    }
+    #endif
+    ext::shared_ptr<Swap> swap();
+};
+
 %shared_ptr(MultipleResetsSwapRateHelper)
 class MultipleResetsSwapRateHelper : public RateHelper {
     #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
@@ -827,6 +924,8 @@ class MultipleResetsSwapRateHelper : public RateHelper {
         Frequency fixedFrequency = NoFrequency,
         DayCounter fixedDayCount = DayCounter(),
         BusinessDayConvention fixedConvention = ModifiedFollowing);
+
+    ext::shared_ptr<MultipleResetsSwap> swap() const;
 };
 
 

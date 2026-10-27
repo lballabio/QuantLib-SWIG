@@ -115,7 +115,6 @@ object CPIBond {
         val contractObservationLag = new Period(3, TimeUnit.Months)
         val observationInterpolation = CPI.InterpolationType.Flat
         val settlementDays = 3
-        val growthOnly = true
         
         val baseCPI = 206.1
         val startDate = new Date(2, October, 2007)
@@ -127,7 +126,7 @@ object CPIBond {
           BusinessDayConvention.Unadjusted,
           DateGeneration.Rule.Backward, false)
           
-        val bond = new CPIBond(settlementDays, notional, growthOnly,
+        val bond = new CPIBond(settlementDays, notional,
                                baseCPI, contractObservationLag,
                                inflationIndex, observationInterpolation,
                                fixedSchedule, fixedRates, fixedDayCounter, 
@@ -136,7 +135,5 @@ object CPIBond {
         bond setPricingEngine new DiscountingBondEngine(yTS)
         println("clean price: " + bond.cleanPrice + " \t exec time: " + 
           (System.currentTimeMillis - startTime)/1000d)
-          
-        cpiTS reset  // break cyclic reference between cpiTS, zeroSwapHelpers and inflationIndex
     }
 }
