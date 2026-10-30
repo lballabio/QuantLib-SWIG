@@ -145,6 +145,18 @@ class OptionsTest(unittest.TestCase):
         )
         self.assertAlmostEqual(7.9193, option.NPV(), 3)
 
+    def testSuperSharePayoff(self):
+        """Testing super-share payoff"""
+
+        payoff = ql.SuperSharePayoff(100.0, 110.0, 10.0)
+
+        self.assertEqual(payoff.optionType(), ql.Option.Call)
+        self.assertEqual(payoff.strike(), 100.0)
+        self.assertEqual(payoff(95.0), 0.0)
+        self.assertEqual(payoff(100.0), 10.0)
+        self.assertEqual(payoff(105.0), 10.0)
+        self.assertEqual(payoff(110.0), 0.0)
+
 
 if __name__ == '__main__':
     print("testing QuantLib", ql.__version__)
