@@ -1546,6 +1546,19 @@ class AnalyticH1HWEngine : public PricingEngine {
 
 
 %{
+using QuantLib::AnalyticBlackVasicekEngine;
+%}
+
+%shared_ptr(AnalyticBlackVasicekEngine);
+class AnalyticBlackVasicekEngine : public PricingEngine {
+  public:
+    AnalyticBlackVasicekEngine(const ext::shared_ptr<GeneralizedBlackScholesProcess>& process,
+                               const ext::shared_ptr<Vasicek>& vasicekModel,
+                               Real correlation);
+};
+
+
+%{
 using QuantLib::ForwardVanillaEngine;
 using QuantLib::QuantoEngine;
 typedef ForwardVanillaEngine<AnalyticEuropeanEngine> ForwardEuropeanEngine;
