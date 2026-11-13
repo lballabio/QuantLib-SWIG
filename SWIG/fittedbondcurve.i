@@ -92,6 +92,7 @@ using QuantLib::ExponentialSplinesFitting;
 using QuantLib::NelsonSiegelFitting;
 using QuantLib::SvenssonFitting;
 using QuantLib::CubicBSplinesFitting;
+using QuantLib::NaturalCubicFitting;
 using QuantLib::SimplePolynomialFitting;
 using QuantLib::SpreadFittingMethod;
 %}
@@ -154,6 +155,21 @@ class CubicBSplinesFitting : public FittingMethod {
                          Real maxCutoffTime = QL_MAX_REAL,
                          Constraint constraint = NoConstraint());
     Real basisFunction(Integer i, Time t);
+};
+
+%shared_ptr(NaturalCubicFitting)
+class NaturalCubicFitting : public FittingMethod {
+    #if !defined(SWIGJAVA) && !defined(SWIGCSHARP)
+    %feature("kwargs") NaturalCubicFitting;
+    #endif
+  public:
+    NaturalCubicFitting(const std::vector<Time>& knotTimes,
+                        const Array& weights = Array(),
+                        const ext::shared_ptr<OptimizationMethod>& optimizationMethod = {},
+                        const Array& l2 = Array(),
+                        Real minCutoffTime = 0.0,
+                        Real maxCutoffTime = QL_MAX_REAL,
+                        Constraint constraint = NoConstraint());
 };
 
 %shared_ptr(SimplePolynomialFitting)
