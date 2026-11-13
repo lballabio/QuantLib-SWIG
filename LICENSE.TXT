@@ -44,6 +44,7 @@ Copyright (C) 2026 Himanshu Gupta
 Copyright (C) 2026 Kyrylo Protsenko
 Copyright (C) 2026 Lawrenz Law
 Copyright (C) 2026 Mahimn Patel
+Copyright (C) 2026 Qin Dai
 Copyright (C) 2026 Ryan Duguid
 
 Redistribution and use in source and binary forms, with or without
