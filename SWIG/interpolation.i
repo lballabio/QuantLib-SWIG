@@ -55,7 +55,7 @@ class SafeInterpolation {
     }
     std::vector<std::pair<Size, Real> > nodeWeights(
         Real x, bool allowExtrapolation = false) const {
-        return f_.nodeWeights(x, allowExtrapolation);
+        return f_.nodeSensitivities(x, allowExtrapolation);
     }
     Array x_, y_;
     I f_;
