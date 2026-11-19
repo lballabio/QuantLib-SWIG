@@ -455,7 +455,8 @@ class AnalyticHestonEngine : public PricingEngine {
     AnalyticHestonEngine(const ext::shared_ptr<HestonModel>& model,
                          ComplexLogFormula cpxLog,
                          const FourierIntegration& itg,
-                         Real andersenPiterbargEpsilon = 1e-8);
+                         Real andersenPiterbargEpsilon = 1e-25,
+                         Real alpha = -0.5);
 
     Size numberOfEvaluations() const;
 #if defined(SWIGCSHARP) || defined(SWIGPYTHON)

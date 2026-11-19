@@ -108,6 +108,9 @@ class InterpolatedNodes {
     const std::vector<Date>& dates() const;
     const std::vector<Time>& times() const;
     const std::vector<Real>& data() const;
+    #if !defined(SWIGR)
+    std::vector<std::pair<Date,Real> > nodes() const;
+    #endif
 };
 
 // Declared after %shared_ptr(InterpolatedNodes) so that the C# binding returns an InterpolatedNodes proxy

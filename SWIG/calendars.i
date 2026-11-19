@@ -280,7 +280,7 @@ namespace QuantLib {
 
     class NewZealand : public Calendar {
       public:
-        enum Market { Wellington, Auckland };
+        enum Market { Wellington, Auckland, NZFMA };
         NewZealand(Market m = Wellington);
     };
 

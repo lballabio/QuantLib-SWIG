@@ -1864,7 +1864,7 @@ class SmileSectionRNDCalculator : public RiskNeutralDensityCalculator {
     SmileSectionRNDCalculator(
         ext::shared_ptr<SmileSection> smile,
         Size nStrikes = 200,
-        Real nStd = 5.0);
+        Real nStd = 8.0);
 
     Real pdf(Real x) const;
     Real cdf(Real x) const;
