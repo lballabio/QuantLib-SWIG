@@ -259,7 +259,7 @@ with open("./setup.cfg", "w") as f:
 
 setup(
     name="QuantLib",
-    version="1.44",
+    version="1.44+fawkes.1",  # local label: the custom QuantLib build with ql/experimental/fxslv
     description="Python bindings for the QuantLib library",
     long_description=long_description,
     long_description_content_type="text/x-rst",
