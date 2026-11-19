@@ -192,8 +192,7 @@ bool Name ## _registeredWithCurveJacobianGraph = registerCurveJacobianAdder<Name
 
         This is the inverse of jacobian() for a standalone curve. For a
         MultiCurve member, it includes feedback through the group. Columns
-        contain this curve's quotes first, followed by the other members in
-        registration order.
+        follow the registration order of the group members for every curve.
     */
     Matrix inverseJacobian() {
         return self->inverseJacobian();

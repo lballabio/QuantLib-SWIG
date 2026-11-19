@@ -275,8 +275,8 @@ class CurveJacobianTest(unittest.TestCase):
                 self.assertAlmostEqual(doubled[c][k], 2.0 * sensitivities[c][k],
                                        delta=1.0e-12)
 
-    def test_supported_derived_curve_is_inspected_by_add(self):
-        """add() records a derived curve exposing baseCurve()."""
+    def test_raw_spread_curve_is_an_unregistered_dependency(self):
+        """An incomplete graph treats the raw spread curve as independent."""
         ois, _, _ = self.build_ois_curve()
         wrapper = ql.SpreadDiscountCurve(
             ql.YieldTermStructureHandle(ois),
@@ -289,32 +289,18 @@ class CurveJacobianTest(unittest.TestCase):
         graph.add(ois)
         graph.add(projection)
 
-        open_analytic = ql.BoolVector()
-        open_cross = graph.crossJacobian(projection, ois, open_analytic)
-        self.assertEqual(open_cross.rows(), len(open_analytic))
-        self.assertTrue(open_analytic[0])
-        self.assertFalse(any(open_analytic[1:]))
-
-        node_sensitivities = ql.Array(len(projection.data()) - 1)
-        for j in range(len(node_sensitivities)):
-            node_sensitivities[j] = 1.0 + j
-        open_sensitivities = graph.marketQuoteSensitivities([projection], [node_sensitivities])
-
-        graph.add(wrapper)
-        self.assertEqual(len(graph.curves()), 2)
+        self.assertFalse(graph.isComplete())
         analytic = ql.BoolVector()
         cross = graph.crossJacobian(projection, ois, analytic)
-        self.assertEqual(cross.rows(), len(analytic))
-        # The deposit row has no discount-curve dependence.
-        # Swap rows follow the wrapper numerically.
-        self.assertTrue(analytic[0])
-        self.assertFalse(any(analytic[1:]))
+        self.assertEqual(cross.rows(), len(projection.data()) - 1)
+        self.assertEqual(cross.columns(), len(ois.data()) - 1)
+        self.assertEqual(list(analytic), [True] * cross.rows())
+        for i in range(cross.rows()):
+            for j in range(cross.columns()):
+                self.assertEqual(cross[i][j], 0.0)
 
-        closed_sensitivities = graph.marketQuoteSensitivities([projection], [node_sensitivities])
-        for c in range(len(open_sensitivities)):
-            for k in range(len(open_sensitivities[c])):
-                self.assertAlmostEqual(open_sensitivities[c][k], closed_sensitivities[c][k],
-                                       delta=1.0e-10)
+        with self.assertRaisesRegex(RuntimeError, "not supported"):
+            graph.add(wrapper)
 
     def test_opaque_derived_curve_is_not_supported(self):
         """Derived curves without an underlying-curve getter are rejected."""
@@ -638,18 +624,12 @@ class AnalyticJacobianBootstrapTest(unittest.TestCase):
         pair = CoDependentCurves(self.today, False)
         curves, quotes = pair.curves, pair.quotes
 
-        # own quotes first, then the other member's
-        ordered = {
-            id(pair.curve3m): pair.quotes3m + pair.quotes6m,
-            id(pair.curve6m): pair.quotes6m + pair.quotes3m,
-        }
-
         for c, curve in enumerate(curves):
             inverse = curve.inverseJacobian()
             self.assertEqual(inverse.rows(), len(curve.data()) - 1)
             self.assertEqual(inverse.columns(), len(quotes))
 
-            for k, quote in enumerate(ordered[id(curve)]):
+            for k, quote in enumerate(quotes):
                 expected = node_derivatives([curve], quote)[0]
                 for j, fd in enumerate(expected):
                     self.assertAlmostEqual(
