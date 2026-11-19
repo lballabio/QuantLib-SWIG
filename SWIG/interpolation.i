@@ -53,7 +53,7 @@ class SafeInterpolation {
     Real secondDerivative(Real x, bool allowExtrapolation = false) const {
         return f_.secondDerivative(x, allowExtrapolation);
     }
-    std::vector<std::pair<Size, Real> > nodeWeights(
+    std::vector<std::pair<Size, Real> > nodeSensitivities(
         Real x, bool allowExtrapolation = false) const {
         return f_.nodeSensitivities(x, allowExtrapolation);
     }
@@ -84,7 +84,7 @@ class Safe##T {
         this interpolation.  Outside the interpolation range the
         weights refer to the interpolant's own extension.
     */
-    std::vector<std::pair<Size,Real> > nodeWeights(
+    std::vector<std::pair<Size,Real> > nodeSensitivities(
         Real x, bool extrapolate = false) const;
     #endif
 };

@@ -423,8 +423,8 @@ class CurveJacobianTest(unittest.TestCase):
             self.assertAlmostEqual(value, other, delta=1.0e-12)
 
 
-class InterpolationNodeWeightsTest(unittest.TestCase):
-    """nodeWeights() is the analytical primitive the Jacobians build on."""
+class InterpolationNodeSensitivitiesTest(unittest.TestCase):
+    """nodeSensitivities() is the analytical primitive the Jacobians build on."""
 
     def test_linear_interpolation_weights(self):
         x = ql.Array(4)
@@ -435,7 +435,7 @@ class InterpolationNodeWeightsTest(unittest.TestCase):
         f = ql.LinearInterpolation(x, y)
 
         # halfway between nodes 1 and 2: equal weights, no other node
-        weights = dict(f.nodeWeights(1.5))
+        weights = dict(f.nodeSensitivities(1.5))
         self.assertEqual(sorted(weights), [1, 2])
         self.assertAlmostEqual(weights[1], 0.5, delta=1.0e-12)
         self.assertAlmostEqual(weights[2], 0.5, delta=1.0e-12)
@@ -460,7 +460,7 @@ class InterpolationNodeWeightsTest(unittest.TestCase):
         for j in range(4):
             x[j], y[j] = float(j), 1.0 + 0.1 * j
         # node weights are not implemented for every interpolation
-        self.assertEqual(len(ql.LagrangeInterpolation(x, y).nodeWeights(1.5)), 0)
+        self.assertEqual(len(ql.LagrangeInterpolation(x, y).nodeSensitivities(1.5)), 0)
 
 
 class CoDependentCurves:
