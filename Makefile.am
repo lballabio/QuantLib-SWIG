@@ -2,7 +2,6 @@
 SUBDIRS = CSharp Java Python R Scala
 
 EXTRA_DIST = \
-	ChangeLog.txt \
 	LICENSE.TXT \
 	News.md \
 	README.md \

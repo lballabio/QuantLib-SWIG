@@ -509,6 +509,11 @@ class Matrix {
     Size rows() const;
     Size columns() const;
     %extend {
+        #if defined(SWIGCSHARP)
+        Matrix multiply(const Matrix& other) {
+            return (*self) * other;
+        }
+        #endif
         std::string __str__() {
             std::ostringstream out;
             out << *self;
@@ -628,6 +633,10 @@ class SVD {
     const Matrix& V() const;
     Matrix S() const;
     const Array& singularValues() const;
+    Array solveFor(const Array& b) const;
+    Real norm2() const;
+    Real cond() const;
+    Size rank() const;
 };
 
 Matrix CholeskyDecomposition(const Matrix& m, bool flexible = false);

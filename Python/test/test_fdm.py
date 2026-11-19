@@ -548,6 +548,28 @@ class FdmTest(unittest.TestCase):
         self.assertAlmostEqual(calculated, expected, 8)
 
 
+    def testSmileSectionRNDCalculatorDefaultRange(self):
+        """Testing default range of the smile-section risk neutral density calculator"""
+
+        dc = ql.Actual365Fixed()
+        forward = 100.0
+        vol = 0.2
+        exerciseDate = self.todaysDate + ql.Period(1, ql.Years)
+
+        smile = ql.FlatSmileSection(
+            exerciseDate, vol, dc, self.todaysDate, forward)
+
+        rnd = ql.SmileSectionRNDCalculator(smile)
+
+        stdDev = vol * math.sqrt(dc.yearFraction(self.todaysDate, exerciseDate))
+        logMean = math.log(forward) - 0.5 * stdDev * stdDev
+        phi = ql.CumulativeNormalDistribution()
+
+        for nStdDev in (6.0, 7.0):
+            calculated = (rnd.invcdf(phi(-nStdDev)) - logMean) / stdDev
+            self.assertAlmostEqual(calculated, -nStdDev, 6)
+
+
     def testOrnsteinUhlenbeckVsBachelier(self):
         """Testing Fdm Ornstein-Uhlenbeck pricing"""
 

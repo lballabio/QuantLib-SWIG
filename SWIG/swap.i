@@ -287,6 +287,11 @@ class NonstandardSwap : public Swap {
                     BusinessDayConvention paymentConvention = Following,
                     Integer paymentLag = 0,
                     Calendar paymentCalendar = Calendar());
+    %extend {
+        static ext::shared_ptr<NonstandardSwap> fromSwap(const FixedVsFloatingSwap& swap) {
+            return ext::make_shared<NonstandardSwap>(swap);
+        }
+    }
     // Inspectors
     Type type() const;
     const std::vector<Real> &fixedNominal() const;

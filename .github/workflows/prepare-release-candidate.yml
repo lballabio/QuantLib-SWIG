@@ -28,10 +28,6 @@ jobs:
         sed -i -e "s/^#if QL_HEX_VERSION < .*$/#if QL_HEX_VERSION < 0x01${NEXT_MINOR}0000/g" SWIG/ql.i
         sed -i -e "s/^    #error at least QuantLib.*$/    #error at least QuantLib 1.${NEXT_MINOR} required, please update/g" SWIG/ql.i
         git commit -a -m "Set version to 1.${NEXT_MINOR}-rc"
-    - name: Update ChangeLog
-      run: |
-        git log --pretty=medium --date=rfc --stat --grep='Merge [^p]' --grep='[Mm]erged' --grep='[Pp]ull from' --invert-grep ${LATEST_TAG}.. > ChangeLog.txt
-        git commit -a -m "Update changelog"
     - uses: peter-evans/create-pull-request@v8
       with:
         token: ${{ secrets.MACHINE_ACCOUNT_PAT }}
