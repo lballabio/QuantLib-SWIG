@@ -249,17 +249,17 @@ class SwapRateHelper : public RateHelper {
             BusinessDayConvention fixedConvention,
             const DayCounter& fixedDayCount,
             const ext::shared_ptr<IborIndex>& index,
-            const Handle<Quote>& spread = Handle<Quote>(),
+            const Handle<Quote>& spread = {},
             const Period& fwdStart = 0*Days,
             const Handle<YieldTermStructure>& discountingCurve = {},
             Natural settlementDays = Null<Natural>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            std::optional<bool> withIndexedCoupons = std::nullopt
-    #if defined(SWIGPYTHON)
-            , std::optional<BusinessDayConvention> floatConvention = std::nullopt
-    #endif
+            std::optional<bool> withIndexedCoupons = std::nullopt,
+            std::optional<BusinessDayConvention> floatConvention = std::nullopt,
+            const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+            DateGeneration::Rule rule = DateGeneration::Backward
     );
     SwapRateHelper(
             Rate rate,
@@ -269,17 +269,17 @@ class SwapRateHelper : public RateHelper {
             BusinessDayConvention fixedConvention,
             const DayCounter& fixedDayCount,
             const ext::shared_ptr<IborIndex>& index,
-            const Handle<Quote>& spread = Handle<Quote>(),
+            const Handle<Quote>& spread = {},
             const Period& fwdStart = 0*Days,
             const Handle<YieldTermStructure>& discountingCurve = {},
             Natural settlementDays = Null<Natural>(),
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            std::optional<bool> withIndexedCoupons = std::nullopt
-    #if defined(SWIGPYTHON)
-            , std::optional<BusinessDayConvention> floatConvention = std::nullopt
-    #endif
+            std::optional<bool> withIndexedCoupons = std::nullopt,
+            std::optional<BusinessDayConvention> floatConvention = std::nullopt,
+            const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+            DateGeneration::Rule rule = DateGeneration::Backward
     );
     SwapRateHelper(
             const Handle<Quote>& rate,
@@ -290,7 +290,9 @@ class SwapRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            std::optional<bool> withIndexedCoupons = std::nullopt);
+            std::optional<bool> withIndexedCoupons = std::nullopt,
+            const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+            DateGeneration::Rule rule = DateGeneration::Backward);
     SwapRateHelper(
             Rate rate,
             const ext::shared_ptr<SwapIndex>& index,
@@ -300,7 +302,9 @@ class SwapRateHelper : public RateHelper {
             Pillar::Choice pillar = Pillar::LastRelevantDate,
             Date customPillarDate = Date(),
             bool endOfMonth = false,
-            std::optional<bool> withIndexedCoupons = std::nullopt);
+            std::optional<bool> withIndexedCoupons = std::nullopt,
+            const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+            DateGeneration::Rule rule = DateGeneration::Backward);
     %extend {
         static ext::shared_ptr<SwapRateHelper> forDates(
                 const Handle<Quote>& rate,
@@ -311,24 +315,21 @@ class SwapRateHelper : public RateHelper {
                 BusinessDayConvention fixedConvention,
                 const DayCounter& fixedDayCount,
                 const ext::shared_ptr<IborIndex>& index,
-                const Handle<Quote>& spread = Handle<Quote>(),
+                const Handle<Quote>& spread = {},
                 const Handle<YieldTermStructure>& discountingCurve = {},
                 Pillar::Choice pillar = Pillar::LastRelevantDate,
                 Date customPillarDate = Date(),
                 bool endOfMonth = false,
-                std::optional<bool> withIndexedCoupons = std::nullopt
-    #if defined(SWIGPYTHON)
-                , std::optional<BusinessDayConvention> floatConvention = std::nullopt
-    #endif
+                std::optional<bool> withIndexedCoupons = std::nullopt,
+                std::optional<BusinessDayConvention> floatConvention = std::nullopt,
+                const ext::shared_ptr<FloatingRateCouponPricer>& couponPricer = {},
+                DateGeneration::Rule rule = DateGeneration::Backward
         ) {
             return ext::make_shared<SwapRateHelper>(
                 rate, startDate, endDate, std::move(calendar), fixedFrequency,
                 fixedConvention, fixedDayCount, index, spread, discountingCurve,
-                pillar, customPillarDate, endOfMonth, withIndexedCoupons
-    #if defined(SWIGPYTHON)
-                , floatConvention
-    #endif
-            );
+                pillar, customPillarDate, endOfMonth, withIndexedCoupons,
+                floatConvention, couponPricer, rule);
         }
     }
     Spread spread();

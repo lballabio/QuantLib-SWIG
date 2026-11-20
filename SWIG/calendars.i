@@ -75,6 +75,13 @@ enum JointCalendarRule { JoinHolidays, JoinBusinessDays };
 %typecheck (QL_TYPECHECK_BUSINESSDAYCONVENTION) std::optional<BusinessDayConvention> %{
     $1 = (PyLong_Check($input) || $input == Py_None) ? 1 : 0;
 %}
+#else
+#if defined(SWIGCSHARP)
+%typemap(cscode) std::optional<BusinessDayConvention> %{
+    public static implicit operator OptionalBusinessDayConvention(BusinessDayConvention b) => new OptionalBusinessDayConvention(b);
+%}
+#endif
+%template(OptionalBusinessDayConvention) std::optional<BusinessDayConvention>;
 #endif
 
 class Calendar {
