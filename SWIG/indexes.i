@@ -396,17 +396,21 @@ using QuantLib::EquityIndex;
 
 class EquityIndex : public Index {
   public:
+    enum ReturnType { Price, TotalReturn, ExcessReturn };
+
     EquityIndex(std::string name,
                 Calendar fixingCalendar,
                 Currency currency,
                 Handle<YieldTermStructure> interest = {},
                 Handle<YieldTermStructure> dividend = {},
-                Handle<Quote> spot = {});
+                Handle<Quote> spot = {},
+                ReturnType returnType = Price);
 
     Currency currency() const;
     Handle<YieldTermStructure> equityInterestRateCurve() const;
     Handle<YieldTermStructure> equityDividendCurve() const;
     Handle<Quote> spot() const;
+    ReturnType returnType() const;
 
     ext::shared_ptr<EquityIndex> clone(const Handle<YieldTermStructure>& interest,
                                        const Handle<YieldTermStructure>& dividend,
