@@ -32,8 +32,6 @@ namespace std {
 }
 
 %{
-#include <ql/experimental/termstructures/jacobian/curvejacobiangraph.hpp>
-
 // The graph needs concrete curve types, while wrappers expose base pointers.
 // Each supported type registers a downcasting adder.
 class CurveJacobianGraphProxy;
@@ -173,50 +171,17 @@ bool Name ## _registeredWithCurveJacobianGraph = registerCurveJacobianAdder<Name
 
 /* Adds Jacobian accessors to an exported piecewise curve. */
 %define export_curve_jacobian_methods
-%extend {
-    /*! Jacobian of alive helper quotes with respect to free curve nodes.
-
-        Rows follow the helpers and columns follow data()[1:]. Other curves'
-        nodes are held fixed. analyticEquations identifies helper equations
-        calculated analytically. The
-        remaining rows use numerical differentiation.
-    */
-    Matrix jacobian() {
-        return self->jacobian();
-    }
-    Matrix jacobian(std::vector<bool>& analyticEquations) {
-        return self->jacobian(&analyticEquations);
-    }
-
-    /*! Jacobian of free curve nodes with respect to helper quotes.
-
-        This is the inverse of jacobian() for a standalone curve. For a
-        MultiCurve member, it includes feedback through the group. Columns
-        follow the registration order of the group members for every curve.
-    */
-    Matrix inverseJacobian() {
-        return self->inverseJacobian();
-    }
-    Matrix inverseJacobian(std::vector<bool>& analyticEquations) {
-        return self->inverseJacobian(&analyticEquations);
-    }
-}
+    Matrix jacobian(std::vector<bool>* analyticEquations = nullptr) const;
+    Matrix inverseJacobian(std::vector<bool>* analyticEquations = nullptr) const;
 %enddef
 
 %rename(CurveJacobianGraph) CurveJacobianGraphProxy;
 class CurveJacobianGraphProxy {
   public:
-    //! cross-curve Jacobians for registered bootstrapped curves
-    /*! Tracks curve dependencies and propagates node sensitivities to helper
-        quotes. Rows follow alive helpers. Columns follow free curve nodes and
-        exclude the reference-date value.
-    */
     explicit CurveJacobianGraphProxy(bool errorOnIncomplete = false);
 
-    //! whether all reported curve dependencies are registered
     bool isComplete() const;
 
-    //! registers a curve and replaces any existing entry for it
     void add(const ext::shared_ptr<YieldTermStructure>& curve);
 
     //! the registered curves, in registration order
@@ -228,11 +193,6 @@ class CurveJacobianGraphProxy {
             self->add(curve.currentLink());
         }
 
-        /*! Jacobian of the first curve's helper quotes with respect to the
-            second curve's nodes. Other curve nodes are held fixed. Equal
-            curves give the local Jacobian. analyticEquations identifies
-            helper equations that did not require numerical differentiation.
-        */
         Matrix crossJacobian(const ext::shared_ptr<YieldTermStructure>& of,
                              const ext::shared_ptr<YieldTermStructure>& withRespectTo) {
             return self->crossJacobian(of, withRespectTo);
@@ -244,10 +204,6 @@ class CurveJacobianGraphProxy {
                                        &analyticEquations);
         }
 
-        /*! Block of the inverse Jacobian for the registered curve system.
-            Rows are the first curve's nodes and columns are the second
-            curve's helper quotes. Dependency cycles are included.
-        */
         Matrix inverseJacobian(const ext::shared_ptr<YieldTermStructure>& of,
                                const ext::shared_ptr<YieldTermStructure>& withRespectTo) {
             return self->inverseJacobian(of, withRespectTo);
@@ -259,12 +215,8 @@ class CurveJacobianGraphProxy {
                                          &analyticEquations);
         }
 
-        /*! Converts sensitivities to free curve nodes into sensitivities to
-            the market quotes of the registered bootstrap helpers. Results are
-            derivatives per unit quote change and are not bump-scaled. Input
-            curves must be registered. Each vector must match its curve's
-            free nodes. Repeated curves are summed. Results contain one entry
-            per registered curve and follow curves().
+        /*! Repeated input curves are summed. The result contains one entry
+            per registered curve, in the order returned by curves().
         */
         std::vector<Array> marketQuoteSensitivities(
             const std::vector<ext::shared_ptr<YieldTermStructure> >& curves,
