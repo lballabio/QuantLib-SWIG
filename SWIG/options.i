@@ -429,11 +429,13 @@ class AnalyticHestonEngine : public PricingEngine {
 
     class OptimalAlpha {
       public:
+        enum Method { AvoidCancellation, OptimalValue };
         %extend {
             OptimalAlpha(
                 const Time t,
-                const ext::shared_ptr<AnalyticHestonEngine>& engine) {
-                    return new AnalyticHestonEngine::OptimalAlpha(t, engine.get());
+                const ext::shared_ptr<AnalyticHestonEngine>& engine,
+                Method method = OptimalValue) {
+                return new AnalyticHestonEngine::OptimalAlpha(t, engine.get(), method);
             }
         }
         Real operator()(Real strike) const;
