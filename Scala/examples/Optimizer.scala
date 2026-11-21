@@ -60,6 +60,5 @@ object Optimizer {
         optimize(new ConjugateGradient,     "ConjugateGradient  ")
         optimize(new SteepestDescent,       "SteepestDescent    ")
         optimize(new BFGS,                  "BFGS               ")
-        optimize(new DifferentialEvolution, "DifferentialEvolution")
     }
 }
