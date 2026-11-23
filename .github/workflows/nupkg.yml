@@ -214,7 +214,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: '11.0.x'
     - uses: actions/download-artifact@v8
       with:
         name: tarballs
@@ -258,7 +258,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        dotnet: ['net6.0', 'net8.0', 'net9.0', 'net10.0']
+        dotnet: ['net6.0', 'net8.0', 'net9.0', 'net10.0', 'net11.0']
     needs: [dotnet-nupkg, detect-version]
     steps:
     - uses: actions/checkout@v7
@@ -280,7 +280,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: '11.0.x'
     - name: Run C# examples
       env:
         QL_VERSION: ${{ needs.detect-version.outputs.version }}
@@ -303,7 +303,7 @@ jobs:
       fail-fast: false
       matrix:
         os: ['macos-15-intel', 'macos-15', 'ubuntu-22.04']
-        dotnet: ['net8.0', 'net9.0', 'net10.0']
+        dotnet: ['net8.0', 'net9.0', 'net10.0', 'net11.0']
     runs-on: ${{ matrix.os }}
     needs: [dotnet-nupkg, detect-version]
     steps:
@@ -326,7 +326,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: '11.0.x'
     - name: Run C# examples
       env:
         QL_VERSION: ${{ needs.detect-version.outputs.version }}
@@ -365,7 +365,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: '11.0.x'
     - name: Publish the package to nugettest.org
       run: |
         dotnet nuget push C:\local\nupkg\*.nupkg --source https://int.nugettest.org/api/v2/package --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --skip-duplicate
@@ -389,7 +389,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '10.0.x'
+        dotnet-version: '11.0.x'
     - name: Publish the package to nuget.org
       run: |
         dotnet nuget push C:\local\nupkg\*.nupkg --source https://www.nuget.org/api/v2/package --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --skip-duplicate
