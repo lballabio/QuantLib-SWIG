@@ -132,6 +132,7 @@ QL_DEPRECATED_DISABLE_WARNING
 %include credit.i
 %include creditdefaultswap.i
 %include currencies.i
+%include curvejacobian.i
 %include date.i
 %include daycounters.i
 %include defaultprobability.i
