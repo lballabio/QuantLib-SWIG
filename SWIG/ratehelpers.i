@@ -54,6 +54,8 @@ using QuantLib::OvernightIborBasisSwapRateHelper;
 using QuantLib::OvernightOvernightBasisSwapRateHelper;
 using QuantLib::OvernightIndexedFundingRateHelper;
 using QuantLib::MultipleResetsSwapRateHelper;
+using QuantLib::ImpliedQuoteSensitivities;
+using QuantLib::TermStructure;
 %}
 
 %shared_ptr(RateHelper)
@@ -67,6 +69,44 @@ class RateHelper : public Observable {
 	Date pillarDate() const;
 	Real impliedQuote() const;
 	Real quoteError() const;
+    /*! Implied-quote sensitivities to the bootstrapped discount factors as
+        (t, dQ/dP(t)) pairs. Time uses the curve's day counter. An empty result
+        triggers numerical differentiation.
+    */
+    std::vector<std::pair<Time,Real> > impliedQuoteSensitivities() const;
+    %extend {
+        //! whether analytical quote sensitivities are available
+        bool hasAnalyticQuoteSensitivities() {
+            return self->impliedQuoteSensitivitiesByCurve().available;
+        }
+        #if !defined(SWIGR)
+        /*! Implied-quote sensitivities to the given curve's discount factors
+            as (d, dQ/dP(d)) pairs. An empty result means either no dependency
+            or incomplete analytical support. hasCompleteQuoteSensitivities()
+            distinguishes the cases.
+        */
+        std::vector<std::pair<Date,Real> > impliedQuoteSensitivities(
+                              const ext::shared_ptr<YieldTermStructure>& curve) {
+            QL_REQUIRE(curve, "null curve");
+            ImpliedQuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
+            const TermStructure* id = curve.get();
+            if (!s.available || s.incomplete.count(id) != 0)
+                return {};
+            auto i = s.sensitivities.find(id);
+            if (i == s.sensitivities.end())
+                return {};
+            return i->second;
+        }
+        #endif
+        //! whether all contributions from the curve are analytical
+        bool hasCompleteQuoteSensitivities(
+                              const ext::shared_ptr<YieldTermStructure>& curve) {
+            QL_REQUIRE(curve, "null curve");
+            ImpliedQuoteSensitivities s = self->impliedQuoteSensitivitiesByCurve();
+            return s.available &&
+                   s.incomplete.count(static_cast<const TermStructure*>(curve.get())) == 0;
+        }
+    }
   private:
     RateHelper();
 };
